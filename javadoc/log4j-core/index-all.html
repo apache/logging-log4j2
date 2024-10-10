@@ -6561,7 +6561,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Throwables.html#getRootCause(java.lang.Throwable)" class="member-name-link">getRootCause(Throwable)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Throwables.html" title="class in org.apache.logging.log4j.core.util">Throwables</a></dt>
 <dd>
-<div class="block">Returns the deepest cause of the given <code>throwable</code>.</div>
+<div class="block">Extracts the deepest exception in the causal chain of the given <code>throwable</code>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#getRootLogger()" class="member-name-link">getRootLogger()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
 <dd>
@@ -13384,13 +13384,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D)" class="member-name-link">ThrowablePatternConverter(String, String, String[])</a> - Constructor for class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, ThrowablePropertyRendererFactory, ThrowableStackTraceRendererFactory)</code> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">ThrowablePatternConverter(String, String, String[], Configuration)</a> - Constructor for class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThrowablePatternConverter</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, Function)</code> instead.</div>
+<div class="deprecation-comment">Use <code>ThrowablePatternConverter(String, String, String[], Configuration, ThrowablePropertyRendererFactory, ThrowableStackTraceRendererFactory)</code> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/Throwables.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Throwables</a> - Class in <a href="org/apache/logging/log4j/core/util/package-summary.html">org.apache.logging.log4j.core.util</a></dt>

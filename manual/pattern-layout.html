@@ -502,7 +502,7 @@ using an
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If the provided pattern does not contain an exception converter and <a href="#plugin-attr-alwaysWriteExceptions"><code>alwaysWriteExceptions</code></a> is not disabled, an implicit <a href="#converter-exception-extended"><code>%xEX</code></a> is appended to the pattern.</p>
+<p>If the provided pattern does not contain an exception converter and <a href="#plugin-attr-alwaysWriteExceptions"><code>alwaysWriteExceptions</code></a> is not disabled, an implicit <a href="#converter-exception-extended"><code>%xEx</code></a> is appended to the pattern.</p>
 </div>
 </td>
 </tr>
@@ -566,7 +566,7 @@ If configured, the <code>replace</code> element must specify the regular express
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%xEX</code></a> pattern is appended.
+<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%xEx</code></a> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to <code>false</code> disables this behavior and allows you to exclude exceptions from your pattern output.</p>
 </div>
@@ -1308,7 +1308,7 @@ equalsIgnoreCase{pattern}{test}{substitution}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, <code>%equals{[%marker]}{[]}\{}</code> will replace <code>[]</code> strings produced by events without markers with an empty string.</p>
+<p>For example, <code>%equals{[%marker]}{[]}{}</code> will replace <code>[]</code> strings produced by events without markers with an empty string.</p>
 </div>
 <div class="paragraph">
 <p>The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.</p>
@@ -1317,92 +1317,18 @@ equalsIgnoreCase{pattern}{test}{substitution}</code></pre>
 <div class="sect3">
 <h4 id="converter-exception"><a class="anchor" href="#converter-exception"></a>Exception</h4>
 <div class="paragraph">
-<p>Outputs the <code>Throwable</code> attached to the log event</p>
+<p>Outputs information extracted from the <code>Throwable</code> attached to the log event.
+It features two modes:</p>
 </div>
-<div class="listingblock">
-<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html"><code>ThrowablePatternConverter</code></a> specifier grammar</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">ex|exception|throwable
-  { "none"
-  | "full"
-  | depth
-  | "short"
-  | "short.className"
-  | "short.fileName"
-  | "short.lineNumber"
-  | "short.methodName"
-  | "short.message"
-  | "short.localizedMessage"
-  }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By default this will output the full stack trace as one would normally find with a call to <code>Throwable#printStackTrace()</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can follow the throwable conversion word with an option in the form <code>%throwable{option}</code>.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short}</code> outputs the first line of the <code>Throwable</code>.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.className}</code> outputs the name of the class where the exception occurred.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.methodName}</code> outputs the name of the method where the exception occurred.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.fileName}</code> outputs the name of the file containing the class where the exception occurred.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.lineNumber}</code> outputs the line number of the file containing the class where the exception occurred.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.message}</code> outputs the message.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{short.localizedMessage}</code> outputs the localized message.</p>
-</div>
-<div class="paragraph">
-<p><code>%throwable{n}</code> outputs the first <code>n</code> lines of the stack trace.</p>
-</div>
-<div class="paragraph">
-<p>Specifying <code>%throwable{none}</code> or <code>%throwable{0}</code> suppresses output of the exception.</p>
-</div>
-<div class="paragraph">
-<p>Use <code>{filters(packages)}</code>, where <code>packages</code> is a list of package names, to suppress matching stack frames from stack traces.</p>
-</div>
-<div class="paragraph">
-<p>You can change the used line separator in multiple ways:</p>
-</div>
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>Use <code>{separator(separator)}</code> to set the separator string literal.
-It defaults to <code>System.lineSeparator()</code>.
-The contents of <code>separator</code> will be rendered verbatim without being subject to any processing.</p>
+<p><a href="#converter-exception-stack-trace">Rendering the exception stack trace</a> (the default mode)</p>
 </li>
 <li>
-<p><code>{suffix(pattern)}</code> is identical to <code>{separator(separator)}</code> with the exception that the provided <code>pattern</code> will be processed as a <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion pattern before being rendered.
-Exception-rendering directives in the <code>pattern</code> (<code>%ex</code>, <code>%rEx</code>, etc.) will be discarded.</p>
+<p><a href="#converter-exception-property">Extracting an exception property</a> (message, class name, line number, etc.)</p>
 </li>
-</ul>
-</div>
-<div class="paragraph">
-<p><code>{separator(&#8230;&#8203;)}</code> and <code>{suffix(pattern)}</code> get concatenated to produce <em>the effective line separator</em> as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
-    String formattedSuffix = format(suffix, event);
-    return isNotBlank(formattedSuffix)
-           ? (' ' + formattedSuffix + lineSeparator)
-           : lineSeparator;
-}</code></pre>
-</div>
+</ol>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1418,35 +1344,188 @@ Exception-rendering directives in the <code>pattern</code> (<code>%ex</code>, <c
 </tr>
 </table>
 </div>
-</div>
-<div class="sect3">
-<h4 id="converter-exception-extended"><a class="anchor" href="#converter-exception-extended"></a>Exception (Extended)</h4>
+<div class="sect4">
+<h5 id="converter-exception-stack-trace"><a class="anchor" href="#converter-exception-stack-trace"></a>Exception stack trace</h5>
 <div class="paragraph">
-<p>The same as <a href="#converter-exception">the <code>exception</code> converter</a>, but also includes class packaging information</p>
+<p>In this mode, the exception stack trace will be rendered according to the configuration provided.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>All rendered exception stack traces are ensured to be prefixed with a new line obtained using <code>System.lineSeparator()</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html"><code>ThrowablePatternConverter</code></a> specifier grammar <strong>for rendering stack traces</strong>:</p>
 </div>
 <div class="listingblock">
-<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html"><code>ThrowablePatternConverter</code></a> specifier grammar</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">xEx|xException|xThrowable
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">ex|exception|throwable
   { "none"
-  | "full"
-  | depth
   | "short"
-  | "short.className"
+  | depth
+  | "full"
+  }
+  {filters(package,package,...)}
+  {separator(text)}
+  {suffix(pattern)}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If this mode is employed without any configuration, the output will be identical to the one obtained from <code>Throwable#printStackTrace()</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>none</code></dt>
+<dd>
+<p>Suppress the output of the converter</p>
+</dd>
+<dt class="hdlist1"><code>short</code></dt>
+<dd>
+<p>Outputs the first line of the stack trace (analogous to <code>%ex{1}</code>)</p>
+</dd>
+<dt class="hdlist1"><code>depth</code></dt>
+<dd>
+<p>Outputs the first <code>depth</code> lines of the stack trace (<code>%ex{0}</code> is analogous to <code>%ex{none}</code>)</p>
+</dd>
+<dt class="hdlist1"><code>full</code></dt>
+<dd>
+<p>Outputs the complete stack trace (analogous to no configuration)</p>
+</dd>
+<dt class="hdlist1"><code>filters(package,package,&#8230;&#8203;)</code></dt>
+<dd>
+<p>Suppresses stack trace elements of classes located in packages whose names start with the package names provided.
+Suppressed stack trace elements will be denoted in the output.
+For instance, <code>%ex{filters(org.junit)}</code> can be used to suppress JUnit classes in the rendered stack trace.</p>
+</dd>
+<dt class="hdlist1"><code>separator(text)</code></dt>
+<dt class="hdlist1"><code>suffix(pattern)</code></dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>You can change the used line separator in multiple ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>separator(text)</code> to set the separator string literal.
+It defaults to <code>System.lineSeparator()</code>.
+The contents of <code>text</code> will be rendered verbatim without being subject to any processing.</p>
+</li>
+<li>
+<p><code>suffix(pattern)</code> is identical to <code>{separator(text)}</code> with the exception that the provided <code>pattern</code> will be processed as a <a href="pattern-layout.html" class="xref page">Pattern Layout</a> conversion pattern before being rendered.
+Exception-rendering directives in the <code>pattern</code> (<code>%ex</code>, <code>%rEx</code>, etc.) will be discarded.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>{separator(text)}</code> and <code>{suffix(pattern)}</code> get concatenated to produce <em>the effective line separator</em> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+    String formattedSuffix = format(suffix, event);
+    return isNotBlank(formattedSuffix)
+           ? (' ' + formattedSuffix + lineSeparator)
+           : lineSeparator;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are strongly advised to avoid using both <code>separator(text)</code> and <code>suffix(pattern)</code> at the same time; simply use one instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="converter-exception-property"><a class="anchor" href="#converter-exception-property"></a>Exception property</h5>
+<div class="paragraph">
+<p>In this mode, extracted attributes of the <code>Throwable</code> are injected <em>verbatim</em>.
+That is, no newlines, suffixes, prefixes, etc. will be added.</p>
+</div>
+<div class="paragraph">
+<p><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html"><code>ThrowablePatternConverter</code></a> specifier grammar <strong>for extracting properties</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">ex|exception|throwable
+  { "short.className"
   | "short.fileName"
   | "short.lineNumber"
   | "short.methodName"
   | "short.message"
   | "short.localizedMessage"
-  }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}</code></pre>
+  }</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>short.className</code></dt>
+<dd>
+<p>Class name of the first stack trace element in the causal chain</p>
+</dd>
+<dt class="hdlist1"><code>short.fileName</code></dt>
+<dd>
+<p>File name of the first stack trace element in the causal chain</p>
+</dd>
+<dt class="hdlist1"><code>short.lineNumber</code></dt>
+<dd>
+<p>Line number of the first stack trace element in the causal chain</p>
+</dd>
+<dt class="hdlist1"><code>short.methodName</code></dt>
+<dd>
+<p>Method name of the first stack trace element in the causal chain</p>
+</dd>
+<dt class="hdlist1"><code>short.message</code></dt>
+<dd>
+<p>Exception message</p>
+</dd>
+<dt class="hdlist1"><code>short.message</code></dt>
+<dd>
+<p>Localized exception message</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="converter-exception-extended"><a class="anchor" href="#converter-exception-extended"></a>Exception (Extended)</h4>
+<div class="paragraph">
+<p>The same as <a href="#converter-exception">the <code>exception</code> converter</a>, but additionally includes class packaging information in the rendered stack traces.</p>
+</div>
+<div class="listingblock">
+<div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ExtendedThrowablePatternConverter.html"><code>ExtendedThrowablePatternConverter</code></a> specifier grammar</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">xEx|xException|xThrowable
+  [... same as the exception converter grammar ...]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Different from <a href="#converter-exception">the <code>%throwable</code> conversion</a>, at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the <code>Implementation-Version</code> as found in that JAR&#8217;s manifest will be added.
-If the information is uncertain, then the class packaging data will be preceded by a <code>~</code> (tilde) character.</p>
+<p>Each stack trace element is suffixed with a string containing the name of the JAR file that contains the class (or the directory the class is located in) and the <code>Implementation-Version</code> as found in that JAR&#8217;s manifest.
+If the information is uncertain, then the class packaging information will be preceded by a <code>~</code> (tilde) character.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2067,27 +2146,29 @@ For instance, <code>%replace{%logger %msg}{\.}{/}</code> will replace all dots i
 <div class="sect3">
 <h4 id="converter-rootException"><a class="anchor" href="#converter-rootException"></a>Root exception</h4>
 <div class="paragraph">
-<p>The same as <a href="#converter-exception">the <code>exception</code> converter</a>, but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception</p>
+<p>Same as <a href="#converter-exception">the <code>exception</code> converter</a>, but the stack trace causal chain is processed in reverse order.</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html"><code>RootThrowablePatternConverter</code></a> specifier grammar</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">rEx|rException|rThrowable
-  { "none"
-  | "full"
-  | depth
-  | "short"
-  | "short.className"
-  | "short.fileName"
-  | "short.lineNumber"
-  | "short.methodName"
-  | "short.message"
-  | "short.localizedMessage"
-  }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}</code></pre>
+  [... same as the exception converter grammar ...]</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Note that the inverted causal chain will not only affect the stack trace, but also extracted properties.
+That is, for instance, <code>%rEx{short.className}</code> and <code>%ex{short.className}</code> might yield different results.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
