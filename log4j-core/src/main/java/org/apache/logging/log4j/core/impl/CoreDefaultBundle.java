@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.Clock;
@@ -47,6 +48,7 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactory;
 import org.apache.logging.log4j.kit.recycler.RecyclerFactoryProvider;
@@ -157,7 +159,9 @@ public final class CoreDefaultBundle {
     @SingletonFactory
     @ConditionalOnMissingBinding
     public ContextSelector defaultContextSelector(final ConfigurableInstanceFactory instanceFactory) {
-        return new ClassLoaderContextSelector(instanceFactory);
+        return SystemUtils.isOsAndroid()
+                ? new BasicContextSelector(instanceFactory)
+                : new ClassLoaderContextSelector(instanceFactory);
     }
 
     @SingletonFactory
