@@ -40,6 +40,8 @@
 
     <!-- Dependency versions -->
     <reload4j.version>1.2.25</reload4j.version>
+    <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
+    <logback.version>1.4.14</logback.version>
     <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
 
@@ -47,15 +49,33 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j2.version}</version>
+        <groupId>co.elastic.logging</groupId>
+        <artifactId>log4j2-ecs-layout</artifactId>
+        <version>${log4j2-ecs-layout.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
       </dependency>
 
       <dependency>
         <groupId>ch.qos.reload4j</groupId>
         <artifactId>reload4j</artifactId>
         <version>${reload4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
       </dependency>
 
     </dependencies>

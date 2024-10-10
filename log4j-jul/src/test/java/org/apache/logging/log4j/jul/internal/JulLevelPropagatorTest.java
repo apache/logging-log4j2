@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.logging.jul.tolog4j.LevelTranslator;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -56,7 +55,7 @@ class JulLevelPropagatorTest {
 
     @Test
     void when_set_level_synchronization_works() {
-        Configurator.setLevel("", LevelTranslator.CONFIG);
+        Configurator.setLevel("", LevelConverter.CONFIG);
         Configurator.setLevel("foo", org.apache.logging.log4j.Level.DEBUG);
         Configurator.setLevel("foo.bar", org.apache.logging.log4j.Level.TRACE);
 

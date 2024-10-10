@@ -23,8 +23,8 @@ import aQute.bnd.annotation.spi.ServiceConsumer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ServiceLoader;
 import java.util.logging.LogRecord;
-import org.apache.logging.jul.tolog4j.LevelTranslator;
 import org.apache.logging.log4j.jul.internal.JulLevelPropagator;
+import org.apache.logging.log4j.jul.internal.LevelConverter;
 import org.apache.logging.log4j.jul.spi.LevelChangePropagator;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,7 +33,7 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 /**
  * Bridge from JUL to Log4j API
  * <p>
- *     This is an alternative to {@link org.apache.logging.jul.tolog4j.LogManager} (running as complete JUL replacement),
+ *     This is an alternative to {@code org.apache.logging.jul.LogManager} (running as complete JUL replacement),
  *     especially useful for webapps running on a container for which the LogManager cannot or should not be used.
  * </p>
  *
@@ -176,7 +176,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler {
 
         final org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
         final String msg = julFormatter.formatMessage(record);
-        final org.apache.logging.log4j.Level log4jLevel = LevelTranslator.toLevel(record.getLevel());
+        final org.apache.logging.log4j.Level log4jLevel = LevelConverter.toLog4jLevel(record.getLevel());
         final Throwable thrown = record.getThrown();
         if (log4jLogger instanceof ExtendedLogger) {
             // relevant for location information
