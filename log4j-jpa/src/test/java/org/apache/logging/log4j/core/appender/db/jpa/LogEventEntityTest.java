@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -25,8 +27,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LogEventEntityTest {
 
@@ -116,12 +117,12 @@ public class LogEventEntityTest {
                 return 0;
             }
         };
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     @Test
     public void testToImmutable_TestBaseEntity() {
         final LogEvent logEvent = new TestBaseEntity();
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 }

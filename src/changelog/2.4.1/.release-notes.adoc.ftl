@@ -42,7 +42,7 @@ This is the ninth GA release.
 It contains several bugfixes and new features.
 Log4j 2 requires a minimum of Java 7.
 
-Apache Log4j 2.4.1 requires a minimum of Java 7 to build and run.
+Log4j 2.4.1 requires a minimum of Java 7 to build and run.
 Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.
 
 Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does

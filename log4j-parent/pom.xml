@@ -55,7 +55,7 @@
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.5.0</surefire.version>
+    <surefire.version>3.5.1</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
@@ -108,9 +108,8 @@
     <jeromq.version>0.6.0</jeromq.version>
     <jmdns.version>3.5.12</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.40.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.10.3</junit-jupiter.version>
+    <junit-jupiter.version>5.11.2</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.8.0</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
@@ -574,12 +573,6 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit</artifactId>
-        <version>${json-unit.version}</version>
       </dependency>
 
       <dependency>
@@ -1189,6 +1182,8 @@
                     <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
                     <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
                     <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+                    <!-- Generates GraalVM reachability metadata -->
+                    <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
                   </annotationProcessors>
                   <compilerArgs>
                     <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
@@ -1198,6 +1193,9 @@
                     <arg>-Alog4j.docgen.version=${project.version}</arg>
                     <arg>-Alog4j.docgen.description=${project.description}</arg>
                     <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+                    <!-- Provide arguments for the GraalVM processor -->
+                    <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+                    <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
                   </compilerArgs>
                   <proc>only</proc>
                 </configuration>

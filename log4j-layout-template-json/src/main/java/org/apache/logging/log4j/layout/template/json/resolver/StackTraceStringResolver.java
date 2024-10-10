@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
+
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -126,7 +128,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
             final int truncationPointIndex = findTruncationPointIndex(srcWriter, startIndex, endIndex, sequencePointer);
             if (truncationPointIndex > 0) {
                 dstWriter.append(srcWriter, startIndex, truncationPointIndex);
-                dstWriter.append(System.lineSeparator());
+                dstWriter.append(LINE_SEPARATOR);
                 dstWriter.append(truncationSuffix);
             }
 
@@ -137,7 +139,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
 
             // Copy the label to avoid stepping over it again.
             if (labeledLineStartIndex > 0) {
-                dstWriter.append(System.lineSeparator());
+                dstWriter.append(LINE_SEPARATOR);
                 startIndex = labeledLineStartIndex;
                 for (; ; ) {
                     final char c = srcWriter.charAt(startIndex++);

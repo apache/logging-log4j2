@@ -16,18 +16,18 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.theInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -213,7 +213,7 @@ public class LoggerTest {
         final List<String> msgs = list.strList;
         assertThat(msgs, hasSize(1));
         final String expected = "java.lang.Throwable: Testing";
-        assertTrue("Incorrect message data", msgs.get(0).contains(expected));
+        assertTrue(msgs.get(0).contains(expected), "Incorrect message data");
     }
 
     @SuppressWarnings("unchecked")
@@ -224,24 +224,24 @@ public class LoggerTest {
         ThreadContext.clearMap();
         logger.debug("Debug message");
         assertThat(list.strList, hasSize(2));
-        assertTrue("Incorrect year", list.strList.get(0).startsWith("2010"));
+        assertTrue(list.strList.get(0).startsWith("2010"), "Incorrect year");
     }
 
     @Test
     public void mdcNullBackedIsEmpty() {
-        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertTrue(ThreadContext.isEmpty());
     }
 
     @Test
     public void mdcNullBackedContainsKey() {
-        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertFalse(ThreadContext.containsKey("something"));
     }
 
     @Test
     public void mdcNullBackedContainsNullKey() {
-        assertNull("Setup wrong", MDC.getCopyOfContextMap());
+        assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertFalse(ThreadContext.containsKey(null));
     }
 
@@ -249,7 +249,7 @@ public class LoggerTest {
     public void mdcContainsNullKey() {
         try {
             ThreadContext.put("some", "thing");
-            assertNotNull("Setup wrong", MDC.getCopyOfContextMap());
+            assertNotNull(MDC.getCopyOfContextMap(), "Setup wrong");
             assertFalse(ThreadContext.containsKey(null));
         } finally {
             ThreadContext.clearMap();

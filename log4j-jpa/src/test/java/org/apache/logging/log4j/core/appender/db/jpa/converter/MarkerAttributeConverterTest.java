@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@Tag("Appenders.Jpa")
 public class MarkerAttributeConverterTest {
     private MarkerAttributeConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.converter = new MarkerAttributeConverter();
     }
@@ -42,13 +41,13 @@ public class MarkerAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(marker);
 
-        assertNotNull("The converted value should not be null.", converted);
-        assertEquals("The converted value is not correct.", "testConvert01", converted);
+        assertNotNull(converted, "The converted value should not be null.");
+        assertEquals("testConvert01", converted, "The converted value is not correct.");
 
         final Marker reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", "testConvert01", marker.getName());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals("testConvert01", marker.getName(), "The reversed value is not correct.");
     }
 
     @Test
@@ -59,33 +58,33 @@ public class MarkerAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(marker);
 
-        assertNotNull("The converted value should not be null.", converted);
+        assertNotNull(converted, "The converted value should not be null.");
         assertEquals(
-                "The converted value is not correct.",
                 "testConvert02[ anotherConvert02[ finalConvert03 ] ]",
-                converted);
+                converted,
+                "The converted value is not correct.");
 
         final Marker reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", "testConvert02", marker.getName());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals("testConvert02", marker.getName(), "The reversed value is not correct.");
         final Marker[] parents = marker.getParents();
-        assertNotNull("The first parent should not be null.", parents);
-        assertNotNull("The first parent should not be null.", parents[0]);
-        assertEquals("The first parent is not correct.", "anotherConvert02", parents[0].getName());
-        assertNotNull("The second parent should not be null.", parents[0].getParents());
-        assertNotNull("The second parent should not be null.", parents[0].getParents()[0]);
-        assertEquals("The second parent is not correct.", "finalConvert03", parents[0].getParents()[0].getName());
+        assertNotNull(parents, "The first parent should not be null.");
+        assertNotNull(parents[0], "The first parent should not be null.");
+        assertEquals("anotherConvert02", parents[0].getName(), "The first parent is not correct.");
+        assertNotNull(parents[0].getParents(), "The second parent should not be null.");
+        assertNotNull(parents[0].getParents()[0], "The second parent should not be null.");
+        assertEquals("finalConvert03", parents[0].getParents()[0].getName(), "The second parent is not correct.");
     }
 
     @Test
     public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
     public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 }

@@ -18,3 +18,9 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 This file is a stub.
 Its content will be auto-generated during build.
+
+// The following anchors are used in the documentation.
+// We add them here to hide IDE errors.
+
+[#release-notes-2-25-0]
+== `2.25.0`

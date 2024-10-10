@@ -62,8 +62,11 @@ public class RollingAppenderDirectWriteTest {
                         final InputStream uncompressed = fileName.endsWith(".gz") ? new GZIPInputStream(is) : is;
                         final BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressed, UTF_8))) {
                     String line;
+                    int lineIndex = 0;
                     while ((line = reader.readLine()) != null) {
-                        assertThat(line).matches(LINE_PATTERN);
+                        assertThat(line)
+                                .as("line %d of file `%s`", ++lineIndex, file)
+                                .matches(LINE_PATTERN);
                         ++found;
                     }
                 }

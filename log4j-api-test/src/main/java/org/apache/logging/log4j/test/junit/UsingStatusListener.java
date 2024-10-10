@@ -35,7 +35,5 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 @Documented
-@ExtendWith(ExtensionContextAnchor.class)
-@ExtendWith(TestPropertyResolver.class)
-@ExtendWith(StatusListenerExtension.class)
+@ExtendWith({ExtensionContextAnchor.class, TestPropertyResolver.class, StatusListenerExtension.class})
 public @interface UsingStatusListener {}

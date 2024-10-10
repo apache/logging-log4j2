@@ -1,0 +1,128 @@
+////
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+////
+
+= Building GraalVM native images
+
+Since version
+xref:release-notes.adoc#release-notes-2-25-0[`2.25.0`]
+both
+xref:manual/api.adoc[Log4j API]
+and
+xref:manual/implementation.adoc[its reference implementation]
+provide out-of-the-box support for creating native executables using
+https://www.graalvm.org/[GraalVM].
+
+This document complements the
+xref:manual/installation.adoc[Installation Guide]
+and provides additional details on the steps necessary to create native images that use the Log4j API.
+The information is split depending on which Log4j API implementation you are using.
+
+.Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.
+[%collapsible]
+====
+include::partial$concepts.adoc[tag=!software-type]
+====
+
+[TIP]
+====
+Are you looking for an example of GraalVM application that uses the Log4j API?
+Check out
+the https://github.com/apache/logging-log4j-samples/tree/main/log4j-samples-graalvm[`log4j-samples-graalvm`]
+project.
+====
+
+[#impl-simple]
+== Using Simple Logger
+
+If you use
+xref:manual/simple-logger.adoc[Simple Logger] shipped with xref:manual/api.adoc[Log4j API]
+in your application, no additional steps are required to compile a GraalVM native image.
+
+[#impl-core]
+== Using Log4j Core
+
+Since version
+xref:release-notes.adoc#release-notes-2-25-0[`2.25.0`],
+xref:manual/implementation.adoc[Log4j Core]
+and
+xref:components.adoc[all its official extensions]
+are bundled with the necessary
+https://www.graalvm.org/latest/reference-manual/native-image/metadata/[GraalVM reachability metadata]
+to help GraalVM with the creation of native images.
+Additional steps are only required:
+
+* If you use a configuration file, which is not in a
+xref:manual/configuration.adoc#automatic-configuration[standard location], you need to create a
+https://www.graalvm.org/jdk17/reference-manual/native-image/metadata/#resource-metadata-in-json[`META-INF/native-image/<groupId>/<artifactId>/resource-config.json`] file in your classpath with content:
++
+[source,json]
+----
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "path/to/your/configuration/file"
+      }
+    ]
+  }
+}
+----
+
+* If you use **third-party**
+xref:manual/plugins.adoc[Log4j Plugin JARs]
+you need to make sure they contain a
+https://www.graalvm.org/jdk17/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json[`reflect-config.json`] metadata file.
+If that is not the case, please point the maintainer to the
+xref:manual/plugins.adoc#plugin-registry[Log4j Plugin registration documentation].
+
+[#impl-jul]
+== Using JUL
+
+Since version `2.24.0` the
+xref:manual/installation.adoc#impl-jul[Log4j API to JUL bridge]
+is tested for compatibility with GraalVM.
+
+Although `java.util.logging` is embedded into the JRE, currently not all
+https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Formatter.html[`j.u.l.Formatter`]
+and
+https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Handler.html[`j.u.l.Handler`]
+implementations have the required GraalVM metadata.
+See the official
+https://www.graalvm.org/latest/reference-manual/native-image/guides/add-logging-to-native-executable/[Add Logging to a Native Executable]
+guide for more information on how to add additional elements to your configuration.
+
+[TIP]
+====
+See
+https://github.com/apache/logging-log4j-samples/blob/main/log4j-samples-graalvm/src/reachability-metadata/jul/reflect-config.json[`reflect-config.json` in our `log4j-samples-graalvm` example project]
+for an example on how to enable `j.u.l.FileHandler`.
+====
+
+[#impl-logback]
+== Using Logback
+
+Since version `2.24.0` the
+xref:manual/installation.adoc#impl-logback[Log4j API to SLF4J bridge]
+is tested for compatibility with GraalVM.
+
+While Logback itself does not provide any GraalVM metadata, the data is available in the third-party
+https://github.com/oracle/graalvm-reachability-metadata/[GraalVM reachability metadata repository].
+
+See the GraalVM Reachability Metadata Support documentation appropriate for your build tool for more information:
+
+* https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support[Gradle Plugin documentation]
+* https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support[Maven Plugin documentation]

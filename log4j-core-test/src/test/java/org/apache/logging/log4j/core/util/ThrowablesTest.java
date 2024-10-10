@@ -21,51 +21,50 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-public class ThrowablesTest {
+class ThrowablesTest {
 
     @Test
-    public void testGetRootCauseNone() {
+    void testGetRootCauseNone() {
         final NullPointerException throwable = new NullPointerException();
         assertEquals(throwable, Throwables.getRootCause(throwable));
     }
 
     @Test
-    public void testGetRootCauseDepth1() {
+    void testGetRootCauseDepth1() {
         final Throwable cause = new NullPointerException();
         final Throwable error = new UnsupportedOperationException(cause);
         assertEquals(cause, Throwables.getRootCause(error));
     }
 
     @Test
-    public void testGetRootCauseDepth2() {
+    void testGetRootCauseDepth2() {
         final Throwable rootCause = new NullPointerException();
         final Throwable cause = new UnsupportedOperationException(rootCause);
         final Throwable error = new IllegalArgumentException(cause);
         assertEquals(rootCause, Throwables.getRootCause(error));
     }
 
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
-    public void testGetRootCauseLoop() {
+    void testGetRootCauseLoop() {
         final Throwable cause1 = new RuntimeException();
         final Throwable cause2 = new RuntimeException(cause1);
         final Throwable cause3 = new RuntimeException(cause2);
         cause1.initCause(cause3);
-        assertThrows(IllegalArgumentException.class, () -> Throwables.getRootCause(cause3));
+        assertEquals(cause1, Throwables.getRootCause(cause3));
     }
 
     @Test
-    public void testRethrowRuntimeException() {
+    void testRethrowRuntimeException() {
         assertThrows(NullPointerException.class, () -> Throwables.rethrow(new NullPointerException()));
     }
 
     @Test
-    public void testRethrowError() {
+    void testRethrowError() {
         assertThrows(UnknownError.class, () -> Throwables.rethrow(new UnknownError()));
     }
 
     @Test
-    public void testRethrowCheckedException() {
+    void testRethrowCheckedException() {
         assertThrows(NoSuchMethodException.class, () -> Throwables.rethrow(new NoSuchMethodException()));
     }
 }

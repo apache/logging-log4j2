@@ -1,0 +1,12 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "log4j2.*"
+      },
+      {
+        "pattern": "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"
+      }
+    ]
+  }
+}

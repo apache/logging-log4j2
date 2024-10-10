@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SmtpManagerTest {
 
