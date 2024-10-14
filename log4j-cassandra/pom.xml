@@ -46,7 +46,7 @@
     <!-- at least this version has one CVE less than the one suggested by Cassandra -->
     <guava.version>25.1-jre</guava.version>
     <!-- Pinned transitive dependencies for reproducibility between Linux and MacOS -->
-    <jnr-ffi.version>2.2.16</jnr-ffi.version>
+    <jnr-ffi.version>2.2.17</jnr-ffi.version>
     <snappy.version>1.1.10.7</snappy.version>
   </properties>
 
