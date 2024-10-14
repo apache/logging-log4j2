@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="3085" link="https://github.com/apache/logging-log4j2/pull/3085"/>
+  <description format="asciidoc">Fix the conversion of `o.a.l.Priority` classes to Log4j 2 levels.</description>
+</entry>
