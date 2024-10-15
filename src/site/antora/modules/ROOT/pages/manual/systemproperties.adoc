@@ -46,7 +46,7 @@ If a `log4j2.system.properties` file is available on the classpath its contents 
 
 [WARNING]
 ====
-To provide backward compatibility with versions older than 2.10 a certain number of additional property names is also supported using a fuzzy matching algorithm.
+To provide backward compatibility with versions older than 2.10.0 a certain number of additional property names are also supported using a fuzzy matching algorithm.
 
 In case of problems with the properties sub-system, make sure that your application does not use property names with the following case-insensitive prefixes:
 

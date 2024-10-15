@@ -58,6 +58,8 @@ Please migrate to xref:components.adoc#log4j-mongodb[`log4j-mongodb`] (client ve
 
 === JMX changes
 
-Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
+system property.
 
 <#include "../.changelog.adoc.ftl">
