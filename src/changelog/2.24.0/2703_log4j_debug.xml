@@ -4,5 +4,8 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="2703" link="https://github.com/apache/logging-log4j2/issues/2703"/>
-  <description format="asciidoc">Fix handling of `log4j2.debug`.</description>
+  <description format="asciidoc">
+    Fix handling of
+    xref:manual/status-logger#log4j2.debug[`log4j2.debug`].
+  </description>
 </entry>

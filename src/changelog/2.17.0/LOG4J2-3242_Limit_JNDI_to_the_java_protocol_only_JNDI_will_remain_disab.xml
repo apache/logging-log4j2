@@ -4,6 +4,15 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="LOG4J2-3242" link="https://issues.apache.org/jira/browse/LOG4J2-3242"/>
-  <description format="asciidoc">Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
-        'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.</description>
+  <description format="asciidoc">
+    Limit JNDI to the java protocol only.
+    JNDI will remain disabled by default.
+    Rename JNDI enablement property from
+    xref:manual/systemproperties.adoc#properties-jndi[`log4j2.enableJndi`]
+    to
+    xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[`log4j2.enableJndiLookup`],
+    xref:manual/systemproperties.adoc#log4j2.enableJndiJms[`log4j2.enableJndiJms`],
+    and
+    xref:manual/systemproperties.adoc#log4j2.enableJndiContextSelector[`log4j2.enableJndiContextSelector`].
+  </description>
 </entry>
