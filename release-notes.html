@@ -666,7 +666,9 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <div class="sect2">
 <h3 id="_jmx_changes"><a class="anchor" href="#_jmx_changes"></a>JMX changes</h3>
 <div class="paragraph">
-<p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the <code>log4j2.disableJmx=false</code> system property.</p>
+<p>Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the
+<a href="manual/systemproperties.html#log4j2.disableJmx" class="xref page"><code>log4j2.disableJmx</code></a>
+system property.</p>
 </div>
 </div>
 <div class="sect2">
@@ -677,7 +679,7 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <p>Add a faster <code>DefaultThreadContextMap</code> implementation. (<a href="https://github.com/apache/logging-log4j2/pull/2330">2330</a>)</p>
 </li>
 <li>
-<p>Add Logback throwable-consuming semantics as an option in <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code>. Users can enable it by setting the property <code>log4j2.messageFactory</code> to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2363">2363</a>)</p>
+<p>Add Logback throwable-consuming semantics as an option in <code>log4j-slf4j-impl</code> and <code>log4j-slf4j2-impl</code>. Users can enable it by setting the property <a href="manual/systemproperties.html#log4j2.messageFactory" class="xref page"><code>log4j2.messageFactory</code></a> to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2363">2363</a>)</p>
 </li>
 <li>
 <p>Add trace context fields to <code>GcpLayout.json</code> (<a href="https://github.com/apache/logging-log4j2/pull/2498">2498</a>)</p>
@@ -708,13 +710,13 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <p>Disable level modification via JUL by default. (<a href="https://github.com/apache/logging-log4j2/issues/2353">2353</a>)</p>
 </li>
 <li>
-<p>Centralize initialization in the <code>Provider</code> class and deprecate <code>log4j2.loggerContextFactory</code> property. (<a href="https://github.com/apache/logging-log4j2/pull/2374">2374</a>)</p>
+<p>Centralize initialization in the <code>Provider</code> class and deprecate the <a href="manual/systemproperties.html#log4j2.loggerContextFactory" class="xref page"><code>log4j2.loggerContextFactory</code></a> property. (<a href="https://github.com/apache/logging-log4j2/pull/2374">2374</a>)</p>
 </li>
 <li>
 <p>Remove <code>log4j-kubernetes</code> lookup. User should migrate to <a href="https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md"><code>io.fabric8:kubernetes-log4j</code></a>. (<a href="https://github.com/apache/logging-log4j2/pull/2412">2412</a>)</p>
 </li>
 <li>
-<p>Disable JMX support by default. Require <code>log4j2.disableJmx</code> to be set to <code>false</code> to enable JMX support. (<a href="https://github.com/apache/logging-log4j2/issues/2462">2462</a>)</p>
+<p>Disable JMX support by default. Requires <a href="manual/systemproperties.html#log4j2.disableJmx" class="xref page"><code>log4j2.disableJmx</code></a> to be set to <code>false</code> to enable JMX support. (<a href="https://github.com/apache/logging-log4j2/issues/2462">2462</a>)</p>
 </li>
 <li>
 <p>Replace some usages of <code>DateTimeFormatter#toString()</code> with <code>DateTimeFormatter#formatTo(StringBuilder)</code> to cut down on allocations (<a href="https://github.com/apache/logging-log4j2/pull/2515">2515</a>)</p>
@@ -732,13 +734,13 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <p>Fixes property source ordering to account for different sources with the same priority. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3618">LOG4J2-3618</a>)</p>
 </li>
 <li>
-<p>Prioritize user-defined values of <code>log4j2.enableThreadLocals</code>, <code>log4j2.garbagefreeThreadContextMap</code> and <code>log4j2.shutdownHookEnabled</code> over the value of <code>log4j.isWebapp</code>. (<a href="https://github.com/apache/logging-log4j2/pull/2517">2517</a>)</p>
+<p>Prioritize user-defined values of <a href="manual/systemproperties.html#log4j2.enableThreadlocals" class="xref page"><code>log4j2.enableThreadlocals</code></a>, <a href="manual/systemproperties.html#log4j2.garbagefreeThreadContextMap" class="xref page"><code>log4j2.garbagefreeThreadContextMap</code></a> and <a href="manual/systemproperties.html#log4j2.shutdownHookEnabled" class="xref page"><code>log4j2.shutdownHookEnabled</code></a> over the value of <a href="manual/systemproperties.html#log4j2.isWebapp" class="xref page"><code>log4j2.isWebapp</code></a>. (<a href="https://github.com/apache/logging-log4j2/pull/2517">2517</a>)</p>
 </li>
 <li>
 <p>Disallow duplicate keys in JSON Template Layout templates</p>
 </li>
 <li>
-<p>Deprecate <code>log4j2.defaultStatusLevel</code> property in Log4j Core in favor of <code>log4j2.statusLoggerLevel</code> (<a href="https://github.com/apache/logging-log4j2/pull/2481">2481</a>)</p>
+<p>Deprecate <code>log4j2.defaultStatusLevel</code> property in Log4j Core in favor of <a href="manual/status-logger.html#log4j2.statusLoggerLevel" class="xref page"><code>log4j2.statusLoggerLevel</code></a>. (<a href="https://github.com/apache/logging-log4j2/pull/2481">2481</a>)</p>
 </li>
 </ul>
 </div>
@@ -773,13 +775,13 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <p>Fix custom thread-context data provider handling in lookups and filters. (<a href="https://github.com/apache/logging-log4j2/issues/2331">2331</a>)</p>
 </li>
 <li>
-<p>Fix handling of <code>log4j2.messageFactory</code> and <code>log4j2.flowMessageFactory</code> properties (<a href="https://github.com/apache/logging-log4j2/pull/2505">2505</a>)</p>
+<p>Fix handling of <a href="manual/systemproperties.html#log4j2.messageFactory" class="xref page"><code>log4j2.messageFactory</code></a> and <a href="manual/systemproperties.html#log4j2.flowMessageFactory" class="xref page"><code>log4j2.flowMessageFactory</code></a> properties. (<a href="https://github.com/apache/logging-log4j2/issues/2379">2379</a>)</p>
 </li>
 <li>
 <p>Discard blank keys in <code>PropertiesUtil</code> (<a href="https://github.com/apache/logging-log4j2/issues/2414">2414</a>)</p>
 </li>
 <li>
-<p>Fix handling of <code>log4j2.debug</code>. (<a href="https://github.com/apache/logging-log4j2/issues/2703">2703</a>)</p>
+<p>Fix handling of <a href="manual/status-logger.html#log4j2.debug" class="xref page"><code>log4j2.debug</code></a>. (<a href="https://github.com/apache/logging-log4j2/issues/2703">2703</a>)</p>
 </li>
 <li>
 <p>Fix location requirement for the <code>%F</code> and <code>%file</code> keys in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/issues/2781">2781</a>)</p>
@@ -925,7 +927,7 @@ Please migrate to <a href="components.html#log4j-mongodb" class="xref page"><cod
 <p>Fix <code>StatusLogger</code> log level filtering when debug mode is enabled (<a href="https://github.com/apache/logging-log4j2/issues/2337">2337</a>)</p>
 </li>
 <li>
-<p>Add <code>log4j2.StatusLogger.dateFormatZone</code> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
+<p>Add <a href="#manual/statusLogger.adoc#log4j2.statusLoggerDateFormatZone" class="xref unresolved"><code>log4j2.statusLoggerDateFormatZone</code></a> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
 </li>
 <li>
 <p>Fix <code>StatusLogger</code> to correctly read <code>log4j2.StatusLogger.properties</code> resource (<a href="https://github.com/apache/logging-log4j2/pull/2354">2354</a>)</p>
@@ -1221,7 +1223,7 @@ for details.</p>
 <p>Change the order of evaluation of <code>FormattedMessage</code> formatters. Messages are evaluated using <code>java.util.Format</code> only if they don&#8217;t comply to the <code>java.text.MessageFormat</code> or <code>ParameterizedMessage</code> format. (<a href="https://github.com/apache/logging-log4j2/issues/1223">1223</a>)</p>
 </li>
 <li>
-<p>Change default encoding of HTTP Basic Authentication to UTF-8 and add <code>log4j2.configurationAuthorizationEncoding</code> property to overwrite it. (<a href="https://github.com/apache/logging-log4j2/pull/1970">1970</a>)</p>
+<p>Change default encoding of HTTP Basic Authentication to UTF-8 and add <a href="manual/systemproperties.html#log4j2.configurationAuthorizationEncoding" class="xref page"><code>log4j2.configurationAuthorizationEncoding</code></a> property to overwrite it. (<a href="https://github.com/apache/logging-log4j2/pull/1970">1970</a>)</p>
 </li>
 </ul>
 </div>
@@ -2157,7 +2159,7 @@ Java 6 and Java 7 are no longer supported by the Log4j team.</p>
 <p>Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders().</p>
 </li>
 <li>
-<p>Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2486">LOG4J2-2486</a>)</p>
+<p>Require <a href="manual/systemproperties.html#log4j2.scriptEnableLanguages" class="xref page"><code>log4j2.scriptEnableLanguages</code></a> to be specified to enable scripting for specific languages. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2486">LOG4J2-2486</a>)</p>
 </li>
 <li>
 <p>Add the log4j-to-jul JDK Logging Bridge (<a href="https://issues.apache.org/jira/browse/LOG4J2-3282">LOG4J2-3282</a>)</p>
@@ -2529,7 +2531,7 @@ Java 7 is no longer supported by the Log4j team.</p>
 <p>ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3292">LOG4J2-3292</a>)</p>
 </li>
 <li>
-<p>JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property log4j2.enableJndiJdbc is set to true. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3293">LOG4J2-3293</a>)</p>
+<p><a href="manual/appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a> now uses <code>JndiManager</code> to access JNDI resources. JNDI is only enabled when the system property <a href="manual/systemproperties.html#log4j2.enableJndiJdbc" class="xref page"><code>log4j2.enableJndiJdbc</code></a> is set to <code>true</code>. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3293">LOG4J2-3293</a>)</p>
 </li>
 </ul>
 </div>
@@ -2565,7 +2567,11 @@ Recursive evaluation is still allowed while generating the configuration.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The single <code>log4j2.enableJndi</code> property introduced in Log4j 2.16.0 has been replaced with three individual properties; <code>log4j2.enableJndiContextSelector</code>, <code>log4j2.enableJndiJms</code>, and <code>log4j2.enableJndiLookup</code>.</p>
+<p>The single <code>log4j2.enableJndi</code> property introduced in Log4j 2.16.0 has been replaced with three individual properties:
+<a href="manual/systemproperties.html#log4j2.enableJndiContextSelector" class="xref page"><code>log4j2.enableJndiContextSelector</code></a>,
+<a href="manual/systemproperties.html#log4j2.enableJndiJms" class="xref page"><code>log4j2.enableJndiJms</code></a>,
+and
+ <a href="manual/systemproperties.html#log4j2.enableJndiLookup" class="xref page"><code>log4j2.enableJndiLookup</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>The Log4j 2.17.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
@@ -2589,7 +2595,7 @@ Java 7 is no longer supported by the Log4j team.</p>
 <p>Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the Maven enforcer plugin. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3241">LOG4J2-3241</a>)</p>
 </li>
 <li>
-<p>Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from 'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3242">LOG4J2-3242</a>)</p>
+<p>Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from <a href="manual/systemproperties.html#properties-jndi" class="xref page"><code>log4j2.enableJndi</code></a> to <a href="manual/systemproperties.html#log4j2.enableJndiLookup" class="xref page"><code>log4j2.enableJndiLookup</code></a>, <a href="manual/systemproperties.html#log4j2.enableJndiJms" class="xref page"><code>log4j2.enableJndiJms</code></a>, and <a href="manual/systemproperties.html#log4j2.enableJndiContextSelector" class="xref page"><code>log4j2.enableJndiContextSelector</code></a>. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3242">LOG4J2-3242</a>)</p>
 </li>
 <li>
 <p>PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3247">LOG4J2-3247</a>)</p>
@@ -2656,7 +2662,7 @@ Java 7 is no longer supported by the Log4j team.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3208">LOG4J2-3208</a>)</p>
+<p>Disable JNDI by default. Require <a href="manual/systemproperties.html#properties-jndi" class="xref page"><code>log4j2.enableJndi</code></a> to be set to true to allow JNDI. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3208">LOG4J2-3208</a>)</p>
 </li>
 <li>
 <p>Completely remove support for Message Lookups. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3211">LOG4J2-3211</a>)</p>
@@ -2950,7 +2956,7 @@ Java 7 is no longer supported by the Log4j team.</p>
 <p>Fixed an unlikely race condition in Log4jMarker.getParents() volatile access. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3159">LOG4J2-3159</a>)</p>
 </li>
 <li>
-<p>Fix documentation on how to toggle log4j2.debug system property. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3160">LOG4J2-3160</a>)</p>
+<p>Fix documentation on how to toggle <a href="manual/status-logger.html#log4j2.debug" class="xref page"><code>log4j2.debug</code></a> system property. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3160">LOG4J2-3160</a>)</p>
 </li>
 <li>
 <p>Fix bug when file names contain regex characters. (<a href="https://issues.apache.org/jira/browse/LOG4J2-3168">LOG4J2-3168</a>)</p>
@@ -4921,7 +4927,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 <p>Update Apache Commons Compress from 1.15 to 1.16.1. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2245">LOG4J2-2245</a>)</p>
 </li>
 <li>
-<p>The internal status logger timestamp format is now configurable with system property <code>log4j2.StatusLogger.DateFormat</code>. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2250">LOG4J2-2250</a>)</p>
+<p>The internal status logger timestamp format is now configurable with system property <a href="manual/status-logger.html#log4j2.statusLoggerDateFormat" class="xref page"><code>log4j2.statusLoggerDateFormat</code></a>. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2250">LOG4J2-2250</a>)</p>
 </li>
 <li>
 <p>Reusable LogEvents now pass the original format string to downstream components like layouts and filters. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2252">LOG4J2-2252</a>)</p>
@@ -5220,7 +5226,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 <p>Jansi now needs to be enabled explicitly (by setting system property <code>log4j.skipJansi</code> to <code>false</code>). To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2087">LOG4J2-2087</a>)</p>
 </li>
 <li>
-<p>Log4j respects the configured "log4j2.is.webapp" property (<a href="https://issues.apache.org/jira/browse/LOG4J2-2091">LOG4J2-2091</a>)</p>
+<p>Log4j respects the configured <a href="manual/systemproperties.html#log4j2.isWebapp" class="xref page"><code>log4j2.isWebapp</code></a> property. (<a href="https://issues.apache.org/jira/browse/LOG4J2-2091">LOG4J2-2091</a>)</p>
 </li>
 <li>
 <p>LevelMixIn class for Jackson is coded incorrectly (<a href="https://issues.apache.org/jira/browse/LOG4J2-2100">LOG4J2-2100</a>)</p>
