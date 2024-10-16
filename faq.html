@@ -594,6 +594,87 @@ The generated logger code will take care of the FQCN.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="android"><a class="anchor" href="#android"></a>Can I use Log4j with Android?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Of course, you can!
+Since version <code>2.25.0</code> both the Log4j API and our three Log4j API implementations are tested for compatibility with the Android platform.</p>
+</div>
+<div class="paragraph">
+<p>If you use
+<a href="manual/api.html" class="xref page">Log4j API</a>
+in an Android project, you have four choices for the Log4j API implementation:</p>
+</div>
+<div id="android-log4j-core" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j Core</dt>
+<dd>
+<div class="paragraph">
+<p>Our
+<a href="manual/implementation.html" class="xref page">reference Log4j API implementation</a>
+works on Android out-of-the-box.
+However, due to the limitations of the Android platform, the following features will not work:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The
+<a href="manual/configuration.html#xinclude" class="xref page">XInclude feature</a>
+for XML configuration files will not work if you are using the standard Android XML parser.
+You might need to add the
+<a href="https://xerces.apache.org/">Xerces parser</a>
+to use the feature.</p>
+</li>
+<li>
+<p>Due to the lack of Android support for multi-release JARs, some location-based features like the no-arg
+<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()"><code>LogManager.getLogger()</code></a>
+method or
+<a href="manual/systemproperties.html#log4j.loggerContext.selector" class="xref page"><code>ClassLoaderContextSelector</code></a>
+(default on JRE) are not available.
+You should use <code>BasicContextSelector</code> (default on Android) or <code>BasicAsyncLoggerContextSelector</code> instead.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div id="android-jul" class="dlist">
+<dl>
+<dt class="hdlist1">JUL</dt>
+</dl>
+</div>
+<div id="android-logback" class="dlist">
+<dl>
+<dt class="hdlist1">Logback</dt>
+<dd>
+<div class="paragraph">
+<p>Both our
+<a href="manual/installation.html#impl-jul" class="xref page">Log4j API-to-JUL</a>
+and
+<a href="manual/installation.html#impl-logback" class="xref page">Log4j API-to-SLF4J</a>
+bridges are tested for compatibility with Android.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="android-native" class="dlist">
+<dl>
+<dt class="hdlist1">Log4j API-to-Android logging API bridge</dt>
+<dd>
+<div class="paragraph">
+<p>If you wish to bridge Log4j API to
+<a href="https://developer.android.com/reference/android/util/Log">Android&#8217;s native logging API</a>
+directly, you can use the <strong>third-party</strong> <code>com.celeral:log4j2-android</code> artifact.
+See the
+<a href="https://github.com/Celeral/log4j2-android"><code>log4j2-android</code> project website</a>
+for more information.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
 </article>
   </div>
 </main>
