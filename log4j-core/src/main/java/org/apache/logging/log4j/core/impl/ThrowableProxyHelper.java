@@ -34,7 +34,8 @@ import org.apache.logging.log4j.util.LoaderUtil;
  */
 @Deprecated
 final class ThrowableProxyHelper {
-
+    private static Map<String, Class> className2ClassMap = new ConcurrentHashMap();
+    
     private ThrowableProxyHelper() {
         // Utility Class
     }
@@ -199,7 +200,10 @@ final class ThrowableProxyHelper {
      */
     private static Class<?> loadClass(final ClassLoader lastLoader, final String className) {
         // XXX: this is overly complicated
-        Class<?> clazz;
+        Class<?> clazz = className2ClassMap.get(className);
+        if (null != clazz) {
+            return clazz;
+        }
         if (lastLoader != null) {
             try {
                 clazz = lastLoader.loadClass(className);
