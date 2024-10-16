@@ -4,5 +4,8 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="LOG4J2-2250" link="https://issues.apache.org/jira/browse/LOG4J2-2250"/>
-  <description format="asciidoc">The internal status logger timestamp format is now configurable with system property `log4j2.StatusLogger.DateFormat`.</description>
+  <description format="asciidoc">
+    The internal status logger timestamp format is now configurable with system property
+    xref:manual/status-logger.adoc#log4j2.statusLoggerDateFormat[`log4j2.statusLoggerDateFormat`].
+  </description>
 </entry>
