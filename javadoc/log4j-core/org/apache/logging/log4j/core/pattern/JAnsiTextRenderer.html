@@ -85,11 +85,14 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="TextRenderer.html" title="interface in org.apache.logging.log4j.core.pattern">TextRenderer</a></span></div>
 <div class="block">Renders an input as ANSI escaped output.
-
- Uses the JAnsi rendering syntax as the default to render a message into an ANSI escaped string.
-
+ <p>
+ Uses the
+ <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JLine AnsiRenderer syntax</a>
+ to render a message into an ANSI escaped string.
+ </p>
+ <p>
  The default syntax for embedded ANSI codes is:
-
+ </p>
  <pre>
    &#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@
  </pre>
@@ -124,16 +127,11 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
  logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
  </pre>
 
- Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
- Apache 2.0.)</div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><code>AnsiRenderer</code></li>
-</ul>
-</dd>
-</dl>
+ <p>
+     <strong>Note:</strong> this class was originally copied and then heavily modified from
+     <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JAnsi/JLine AnsiRenderer</a>,
+     licensed under an Apache Software License, version 2.0.
+ </p></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -146,7 +144,7 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;</code></div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#DefaultExceptionStyleMap" class="member-name-link">DefaultExceptionStyleMap</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -161,7 +159,7 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String%5B%5D,java.util.Map)" class="member-name-link">JAnsiTextRenderer</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;formats,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;&nbsp;defaultStyleMap)</code></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;defaultStyleMap)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -177,7 +175,7 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStyleMap()" class="member-name-link">getStyleMap</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
@@ -216,7 +214,7 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <li>
 <section class="detail" id="DefaultExceptionStyleMap">
 <h3>DefaultExceptionStyleMap</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;</span>&nbsp;<span class="element-name">DefaultExceptionStyleMap</span></div>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">DefaultExceptionStyleMap</span></div>
 </section>
 </li>
 </ul>
@@ -231,7 +229,7 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <section class="detail" id="&lt;init&gt;(java.lang.String[],java.util.Map)">
 <h3>JAnsiTextRenderer</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">JAnsiTextRenderer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;formats,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;&nbsp;defaultStyleMap)</span></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;defaultStyleMap)</span></div>
 </section>
 </li>
 </ul>
@@ -242,12 +240,6 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
-<li>
-<section class="detail" id="getStyleMap()">
-<h3>getStyleMap</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>org.fusesource.jansi.AnsiRenderer.Code[]&gt;</span>&nbsp;<span class="element-name">getStyleMap</span>()</div>
-</section>
-</li>
 <li>
 <section class="detail" id="render(java.lang.String,java.lang.StringBuilder,java.lang.String)">
 <h3>render</h3>
@@ -286,6 +278,12 @@ implements <a href="TextRenderer.html" title="interface in org.apache.logging.lo
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getStyleMap()">
+<h3>getStyleMap</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">getStyleMap</span>()</div>
 </section>
 </li>
 <li>

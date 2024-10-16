@@ -1752,51 +1752,6 @@ utility class can be used by users to format primitive values without incurring 
 </div>
 </div>
 <div class="sect2">
-<h3 id="properties-jansi"><a class="anchor" href="#properties-jansi"></a>JANSI</h3>
-<div class="paragraph">
-<p>If the <a href="https://fusesource.github.io/jansi/">JANSI</a> library is on the runtime classpath of the application, the following property can be used to control its usage:</p>
-</div>
-<div class="sect3">
-<h4 id="log4j2.skipJansi"><a class="anchor" href="#log4j2.skipJansi"></a><code>log4j2.skipJansi</code></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_SKIP_JANSI</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If the following conditions are satisfied:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Log4j runs on Windows,</p>
-</li>
-<li>
-<p>this property is set to <code>false</code>,</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Log4j will use the JANSI library to color the output of the console appender.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="properties-jmx"><a class="anchor" href="#properties-jmx"></a>JMX</h3>
 <div class="sect3">
 <h4 id="log4j2.disableJmx"><a class="anchor" href="#log4j2.disableJmx"></a><code>log4j2.disableJmx</code></h4>

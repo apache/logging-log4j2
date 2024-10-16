@@ -376,6 +376,14 @@ The support for the <code>{ansi}</code> option in exception converters is remove
 </div>
 </div>
 <div class="sect2">
+<h3 id="_ansi_support_on_windows"><a class="anchor" href="#_ansi_support_on_windows"></a>ANSI support on Windows</h3>
+<div class="paragraph">
+<p>Since 2017, Windows 10 and newer have offered native support for ANSI escapes.
+The support for the outdated Jansi 1.x library has therefore been removed.
+See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on Windows</a> for more information.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="release-notes-2-x-x-added"><a class="anchor" href="#release-notes-2-x-x-added"></a>Added</h3>
 <div class="ulist">
 <ul>
@@ -393,7 +401,13 @@ The support for the <code>{ansi}</code> option in exception converters is remove
 <div class="ulist">
 <ul>
 <li>
+<p>Remove JAnsi library support. Windows 10 console has supported ANSI escapes since 2017. (<a href="https://github.com/apache/logging-log4j2/issues/1736">1736</a>)</p>
+</li>
+<li>
 <p>Consolidate exception rendering logic and improve circular reference support in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
+</li>
+<li>
+<p>Rewrite <code>JAnsiTextRenderer</code> to work without JAnsi library. (<a href="https://github.com/apache/logging-log4j2/pull/2916">2916</a>)</p>
 </li>
 <li>
 <p>Change the whitespace prefixing logic in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/3045">3045</a>)</p>

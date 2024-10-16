@@ -166,10 +166,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="ConsoleAppender.html" title="class in org.apache.logging.log4j.core.appender">ConsoleAppender</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createAppender(org.apache.logging.log4j.core.Layout,org.apache.logging.log4j.core.Filter,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">createAppender</a><wbr>(<a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout,
  <a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>&nbsp;filter,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;targetStr,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;target,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;follow,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ignore)</code></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ignoreExceptions)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">Deprecated in 2.7; use <a href="#newBuilder()"><code>newBuilder()</code></a>.</div>
@@ -257,10 +257,10 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ConsoleAppender.html" title="class in org.apache.logging.log4j.core.appender">ConsoleAppender</a></span>&nbsp;<span class="element-name">createAppender</span><wbr><span class="parameters">(<a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout,
  <a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>&nbsp;filter,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;targetStr,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;target,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;follow,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ignore)</span></div>
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ignoreExceptions)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">Deprecated in 2.7; use <a href="#newBuilder()"><code>newBuilder()</code></a>.</div>
 </div>
@@ -269,10 +269,10 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>layout</code> - The layout to use (required).</dd>
 <dd><code>filter</code> - The Filter or null.</dd>
-<dd><code>targetStr</code> - The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".</dd>
+<dd><code>target</code> - The target ("SYSTEM_OUT" or "SYSTEM_ERR"). The default is "SYSTEM_OUT".</dd>
 <dd><code>name</code> - The name of the Appender (required).</dd>
 <dd><code>follow</code> - If true will follow changes to the underlying output stream.</dd>
-<dd><code>ignore</code> - If <code>"true"</code> (default) exceptions encountered when appending events are logged; otherwise they
+<dd><code>ignoreExceptions</code> - If <code>"true"</code> (default) exceptions encountered when appending events are logged; otherwise they
             are propagated to the caller.</dd>
 <dt>Returns:</dt>
 <dd>The ConsoleAppender.</dd>
