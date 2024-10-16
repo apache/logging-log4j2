@@ -4,5 +4,9 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="LOG4J2-3160" link="https://issues.apache.org/jira/browse/LOG4J2-3160"/>
-  <description format="asciidoc">Fix documentation on how to toggle log4j2.debug system property.</description>
+  <description format="asciidoc">
+    Fix documentation on how to toggle
+    xref:manual/status-logger.adoc#log4j2.debug[`log4j2.debug`]
+    system property.
+  </description>
 </entry>
