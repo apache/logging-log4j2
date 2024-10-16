@@ -208,6 +208,7 @@ final class ThrowableProxyHelper {
             try {
                 clazz = lastLoader.loadClass(className);
                 if (clazz != null) {
+                    className2ClassMap.put(className, clazz);
                     return clazz;
                 }
             } catch (final Throwable ignore) {
@@ -217,10 +218,11 @@ final class ThrowableProxyHelper {
         try {
             clazz = LoaderUtil.loadClass(className);
         } catch (final ClassNotFoundException | NoClassDefFoundError e) {
-            return loadClass(className);
+            clazz = loadClass(className);
         } catch (final SecurityException e) {
             return null;
         }
+        className2ClassMap.put(className, clazz);
         return clazz;
     }
 
