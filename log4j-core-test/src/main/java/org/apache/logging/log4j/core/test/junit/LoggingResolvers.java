@@ -48,11 +48,13 @@ import org.junit.platform.commons.support.ReflectionSupport;
 @Inherited
 @Documented
 @Log4jTest
-@ExtendWith(LoggerContextResolver.class)
-@ExtendWith(ConfigurationResolver.class)
-@ExtendWith(AppenderResolver.class)
-@ExtendWith(AppenderManagerResolver.class)
-@ExtendWith(LoggerResolver.class)
+@ExtendWith({
+    LoggerContextResolver.class,
+    ConfigurationResolver.class,
+    AppenderResolver.class,
+    AppenderManagerResolver.class,
+    LoggerResolver.class
+})
 public @interface LoggingResolvers {}
 
 /**
