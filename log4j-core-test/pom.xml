@@ -307,12 +307,6 @@
       <version>${slf4j2.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.graalvm.truffle</groupId>
-      <artifactId>truffle-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Used for testing HTTP Watcher -->
     <dependency>
       <groupId>org.wiremock</groupId>
