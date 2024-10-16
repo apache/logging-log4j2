@@ -216,7 +216,7 @@ They are documented in separate pages based on their target resource:
 === Console Appender
 
 As one might expect, the Console Appender writes its output to either the standard output or standard error output.
-The appender supports four different ways to access the output streams:
+The appender supports three different ways to access the output streams:
 
 `direct`::
 This mode gives the best performance.
@@ -234,39 +234,6 @@ It can be enabled by setting the <<ConsoleAppender-attr-follow,`follow`>> attrib
 ====
 This setting might be useful in multi-application environments.
 Some application servers modify `System.out` and `System.err` to always point to the currently running application.
-====
-
-`JANSI`::
-If the application is running on Windows and the
-https://fusesource.github.io/jansi/[JANSI library]
-is available, the Console appender will use JANSI to emulate ANSI sequence support.
-This mode can be disabled by setting the
-xref:manual/systemproperties.adoc#log4j2.skipJansi[`log4j2.skipJansi`]
-configuration attribute to `true`.
-+
-Additional runtime dependencies are required to use JANSI:
-+
-[tabs]
-====
-Maven::
-+
-[source,xml,subs="+attributes"]
-----
-<dependency>
-  <groupId>org.fusesource.jansi</groupId>
-  <artifactId>jansi</artifactId>
-  <version>{jansi-version}</version>
-</dependency>
-
-----
-
-Gradle::
-+
-[source,groovy,subs="+attributes"]
-----
-runtimeOnly 'org.fusesource.jansi:jansi:{jansi-version}'
-----
-
 ====
 
 [#ConsoleAppender-attributes]
@@ -311,9 +278,7 @@ If other logging backends or the application itself uses `System.out/System.err`
 ====
 
 This setting is incompatible with the
-<<ConsoleAppender-attr-follow,`follow` attribute>>
-and
-xref:manual/systemproperties.adoc#log4j2.skipJansi[JANSI support].
+<<ConsoleAppender-attr-follow,`follow` attribute>>.
 
 | [[ConsoleAppender-attr-follow]]
 follow
@@ -328,9 +293,7 @@ https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#setOut-java.io.P
 Otherwise, the value of `System.out` (resp. `System.err`) at configuration time will be used.
 
 This setting is incompatible with the
-<<ConsoleAppender-attr-direct,`direct` attribute>>
-and
-xref:manual/systemproperties.adoc#log4j2.skipJansi[JANSI support].
+<<ConsoleAppender-attr-direct,`direct` attribute>>.
 
 | [[ConsoleAppender-attr-ignoreExceptions]]
 ignoreExceptions

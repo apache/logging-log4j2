@@ -23,9 +23,7 @@ import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -290,17 +288,11 @@ public final class ThrowableFormatOptions {
                         || option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
                 } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
-                    if (Loader.isJansiAvailable()) {
-                        final String styleMapStr = option.equals("ansi")
-                                ? Strings.EMPTY
-                                : option.substring("ansi(".length(), option.length() - 1);
-                        ansiRenderer = new JAnsiTextRenderer(
-                                new String[] {null, styleMapStr}, JAnsiTextRenderer.DefaultExceptionStyleMap);
-                    } else {
-                        StatusLogger.getLogger()
-                                .warn(
-                                        "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
-                    }
+                    final String styleMapStr = option.equals("ansi")
+                            ? Strings.EMPTY
+                            : option.substring("ansi(".length(), option.length() - 1);
+                    ansiRenderer = new JAnsiTextRenderer(
+                            new String[] {null, styleMapStr}, JAnsiTextRenderer.DefaultExceptionStyleMap);
                 } else if (option.startsWith("S(") && option.endsWith(")")) {
                     suffix = option.substring("S(".length(), option.length() - 1);
                 } else if (option.startsWith("suffix(") && option.endsWith(")")) {

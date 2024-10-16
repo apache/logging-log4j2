@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.Configurator;
  * </p>
  *
  * <pre>
- * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes;%HOME%\.m2\repository\org\fusesource\jansi\jansi\1.14\jansi-1.14.jar; org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
+ * java -classpath log4j-core\target\test-classes;log4j-core\target\classes;log4j-api\target\classes org.apache.logging.log4j.core.appender.ConsoleAppenderNoAnsiStyleLayoutMain log4j-core/target/test-classes/log4j2-console-style-ansi.xml
  * </pre>
  */
 public class ConsoleAppenderDefaultSuppressedThrowable {
@@ -41,12 +41,11 @@ public class ConsoleAppenderDefaultSuppressedThrowable {
     public static void main(final String[] args) {
         final String config =
                 args.length == 0 ? "target/test-classes/log4j2-console-default-suppressed-throwable.xml" : args[0];
-        test(args, config);
+        test(config);
     }
 
-    static void test(final String[] args, final String config) {
-        // System.out.println(System.getProperty("java.class.path"));
-        try (final LoggerContext ctx =
+    static void test(final String config) {
+        try (final LoggerContext ignored =
                 Configurator.initialize(ConsoleAppenderDefaultSuppressedThrowable.class.getName(), config)) {
             final IOException ioEx = new IOException("test suppressed");
             ioEx.addSuppressed(new IOException("test suppressed 1", new IOException("test 1")));
@@ -55,8 +54,6 @@ public class ConsoleAppenderDefaultSuppressedThrowable {
             ioEx.addSuppressed(new IOException("test suppressed 2", ioEx2));
             final IOException e = new IOException("test", ioEx);
             LOG.error("Error message {}, suppressed?", "Hi", e);
-            System.out.println("printStackTrace");
-            e.printStackTrace();
         }
     }
 }

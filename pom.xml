@@ -345,7 +345,6 @@
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
     <site-jackson.version>2.18.0</site-jackson.version>
-    <site-jansi.version>1.18</site-jansi.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
@@ -767,12 +766,6 @@
             <artifactId>jackson-bom</artifactId>
             <version>${site-jackson.version}</version>
             <type>pom</type>
-          </dependency>
-
-          <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>${site-jansi.version}</version>
           </dependency>
 
           <dependency>

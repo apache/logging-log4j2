@@ -242,13 +242,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
       <groupId>javax.jms</groupId>
