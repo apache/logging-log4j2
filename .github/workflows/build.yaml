@@ -83,8 +83,6 @@ jobs:
     uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@feature/reproducibility-check
     with:
       nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || needs.deploy-snapshot.outputs.nexus-url }}
-      # Checkout the repository by branch name, since the deployment job might add commits to the branch
-      ref: ${{ github.ref_name }}
       # Encode the `runs-on` input as JSON array
       runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
 
