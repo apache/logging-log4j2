@@ -19,6 +19,31 @@
 
 The Log4j 2 distribution contains the following artifacts:
 
+[#jul-to-log4j]
+== `jul-to-log4j`
+
+|===
+| JPMS module
+| `org.apache.logging.jul.tolog4j`
+|===
+
+The `jul-to-log4j` artifact contains a bridge from
+https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html[`java.util.logging`]
+to the xref:manual/api.adoc[].
+
+See
+xref:manual/installation.adoc#impl-core-bridge-jul[Installing the JUL-to-Log4j API bridge]
+on how to install it or
+xref:log4j-jul.adoc#bridge-logmanager[Using `j.u.l.LogManager`]
+for more details.
+
+[IMPORTANT]
+====
+Don't deploy this artifact together with <<log4j-to-jul>>.
+====
+
+include::partial$components/jul-to-log4j.adoc[]
+
 [#log4j-bom]
 == `log4j-bom`
 
@@ -322,11 +347,11 @@ include::partial$components/log4j-jpl.adoc[]
 | `org.apache.logging.log4j.jul`
 |===
 
-The `log4j-jul` artifact contains a bridge from
+The `log4j-jul` artifact contains an alternative bridge from
 https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html[`java.util.logging`]
 to the xref:manual/api.adoc[].
 
-See xref:manual/installation.adoc#impl-core-bridge-jul[Installing the JUL-to-Log4j API bridge] for more details.
+See xref:log4j-jul.adoc#bridge-handler[Using `j.u.l.Handler`] for more details.
 
 [IMPORTANT]
 ====

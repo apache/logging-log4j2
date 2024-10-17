@@ -24,9 +24,23 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-jul</artifactId>
-  <name>Apache Log4j JUL Handler</name>
-  <description>A `java.util.logging` Handler that forwards events to the Log4j API.</description>
+  <artifactId>jul-to-log4j</artifactId>
+  <name>Apache Log4j JUL LogManager</name>
+  <description>A `java.util.logging` LogManager that forwards events to the Log4j API.</description>
+
+  <properties>
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!-- Optional annotations -->
+      org.jspecify.*;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional modules can not be `transitive` -->
+      org.jspecify;transitive=false
+    </bnd-extra-module-options>
+  </properties>
 
   <dependencies>
 
@@ -37,12 +51,7 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>jul-to-log4j</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-kit</artifactId>
     </dependency>
 
     <dependency>
@@ -52,19 +61,57 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-async-logger</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+        </configuration>
+        <dependencies>
+          <!-- The `surefire-junit-platform` provider initializes JUL before tests start -->
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>${surefire.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>default-test</id>
@@ -73,17 +120,14 @@
             </goals>
             <phase>test</phase>
             <configuration>
-              <excludes>
-                <exclude>Log4jBridgeHandlerTest.java</exclude>
-              </excludes>
+              <!-- Use custom `j.u.l.LogManager` -->
               <systemPropertyVariables>
-                <java.util.logging.config.file>${project.basedir}/src/test/resources/logging-test.properties</java.util.logging.config.file>
+                <java.util.logging.manager>org.apache.logging.jul.tolog4j.LogManager</java.util.logging.manager>
               </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 </project>
