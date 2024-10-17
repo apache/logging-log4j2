@@ -79,7 +79,7 @@ jobs:
   verify-reproducibility:
     needs: [ deploy-snapshot, deploy-release ]
     if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
-    name: "Verify reproducibility (`${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }}`)"
+    name: "verify-reproducibility (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
     uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@feature/reproducibility-check
     with:
       nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || needs.deploy-snapshot.outputs.nexus-url }}
@@ -90,7 +90,7 @@ jobs:
   integration-test:
     needs: [ deploy-snapshot, deploy-release ]
     if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
-    name: "Integration tests (`${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }}`)"
+    name: "integration-test (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
     uses: apache/logging-log4j-samples/.github/workflows/integration-test.yaml@main
     with:
       log4j-version: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }}
