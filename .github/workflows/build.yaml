@@ -35,7 +35,7 @@ jobs:
       DV_ACCESS_TOKEN: ${{ startsWith(github.ref_name, 'release/') && '' || secrets.GE_ACCESS_TOKEN }}
     with:
       site-enabled: true
-      reproducibility-check-enabled: ${{ startsWith(github.ref_name, 'release/') }}
+      reproducibility-check-enabled: false
       develocity-enabled: ${{ ! startsWith(github.ref_name, 'release/') }}
 
   deploy-snapshot:
@@ -63,3 +63,14 @@ jobs:
       contents: write
     with:
       project-id: log4j
+
+  verify-reproducibility:
+    needs: [ deploy-snapshot, deploy-release ]
+    if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
+    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@rel/12.0.0
+    with:
+      nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || needs.deploy-snapshot.outputs.nexus-url }}
+      # Checkout the repository by branch name, since the deployment job might add commits to the branch
+      ref: ${{ github.ref_name }}
+      # Encode the `runs-on` input as JSON array
+      runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
