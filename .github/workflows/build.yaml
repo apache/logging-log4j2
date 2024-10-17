@@ -45,7 +45,7 @@ jobs:
     needs: build
     # FIXME: Restore `2.x` before merging
     # if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == 'feature/2.x/run-integration-tests'
+    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/pull/3105/merge'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@feature/reproducibility-check
     # Secrets for deployments
     secrets:
