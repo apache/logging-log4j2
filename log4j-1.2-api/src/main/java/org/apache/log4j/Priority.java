@@ -16,6 +16,8 @@
  */
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.OptionConverter;
+
 /**
  * <em style="color:#A44">Refrain from using this class directly, use
  * the {@link Level} class instead.</em>
@@ -64,31 +66,31 @@ public class Priority {
      * @deprecated Use {@link Level#FATAL} instead.
      */
     @Deprecated
-    public static final Priority FATAL = new Level(FATAL_INT, "FATAL", 0);
+    public static final Priority FATAL = new Priority(FATAL_INT, "FATAL", 0, org.apache.logging.log4j.Level.FATAL);
 
     /**
      * @deprecated Use {@link Level#ERROR} instead.
      */
     @Deprecated
-    public static final Priority ERROR = new Level(ERROR_INT, "ERROR", 3);
+    public static final Priority ERROR = new Priority(ERROR_INT, "ERROR", 3, org.apache.logging.log4j.Level.ERROR);
 
     /**
      * @deprecated Use {@link Level#WARN} instead.
      */
     @Deprecated
-    public static final Priority WARN = new Level(WARN_INT, "WARN", 4);
+    public static final Priority WARN = new Priority(WARN_INT, "WARN", 4, org.apache.logging.log4j.Level.WARN);
 
     /**
      * @deprecated Use {@link Level#INFO} instead.
      */
     @Deprecated
-    public static final Priority INFO = new Level(INFO_INT, "INFO", 6);
+    public static final Priority INFO = new Priority(INFO_INT, "INFO", 6, org.apache.logging.log4j.Level.INFO);
 
     /**
      * @deprecated Use {@link Level#DEBUG} instead.
      */
     @Deprecated
-    public static final Priority DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
+    public static final Priority DEBUG = new Priority(DEBUG_INT, "DEBUG", 7, org.apache.logging.log4j.Level.DEBUG);
 
     /*
      * These variables should be private but were not in Log4j 1.2 so are left the same way here.
@@ -102,9 +104,7 @@ public class Priority {
      * Default constructor for deserialization.
      */
     protected Priority() {
-        level = DEBUG_INT;
-        levelStr = "DEBUG";
-        syslogEquivalent = 7;
+        this(DEBUG_INT, "DEBUG", 7, org.apache.logging.log4j.Level.DEBUG);
     }
 
     /**
@@ -114,9 +114,18 @@ public class Priority {
      * @param syslogEquivalent The equivalent syslog value.
      */
     protected Priority(final int level, final String levelStr, final int syslogEquivalent) {
+        this(level, levelStr, syslogEquivalent, null);
+    }
+
+    Priority(
+            final int level,
+            final String levelStr,
+            final int syslogEquivalent,
+            final org.apache.logging.log4j.Level version2Equivalent) {
         this.level = level;
         this.levelStr = levelStr;
         this.syslogEquivalent = syslogEquivalent;
+        this.version2Level = version2Equivalent != null ? version2Equivalent : OptionConverter.createLevel(this);
     }
 
     /**
@@ -229,7 +238,8 @@ public class Priority {
      */
     @Deprecated
     public static Priority toPriority(final int val, final Priority defaultPriority) {
-        return Level.toLevel(val, (Level) defaultPriority);
+        Level result = Level.toLevel(val, null);
+        return result == null ? defaultPriority : result;
     }
 
     /**
@@ -240,6 +250,7 @@ public class Priority {
      */
     @Deprecated
     public static Priority toPriority(final String sArg, final Priority defaultPriority) {
-        return Level.toLevel(sArg, (Level) defaultPriority);
+        Level result = Level.toLevel(sArg, null);
+        return result == null ? defaultPriority : result;
     }
 }
