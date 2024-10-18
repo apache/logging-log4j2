@@ -49,7 +49,7 @@
          2. The Docker image version of the ELK-stack
 
          As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
-    <elastic.version>8.15.2</elastic.version>
+    <elastic.version>8.15.3</elastic.version>
 
   </properties>
 
