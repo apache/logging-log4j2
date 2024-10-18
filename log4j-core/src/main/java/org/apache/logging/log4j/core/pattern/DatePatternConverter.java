@@ -16,21 +16,23 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.core.util.internal.InstantFormatter;
+import org.apache.logging.log4j.core.util.internal.InstantNumberFormatter;
+import org.apache.logging.log4j.core.util.internal.InstantPatternFormatter;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
@@ -38,16 +40,22 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")
+@NullMarked
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
-    private abstract static class Formatter {
-        long previousTime; // for ThreadLocal caching mode
-        int nanos;
+    private static final String CLASS_NAME = DatePatternConverter.class.getSimpleName();
 
-        abstract String format(final Instant instant);
+    private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
-        abstract void formatToBuffer(final Instant instant, StringBuilder destination);
+    private abstract static class Formatter<F extends InstantFormatter> {
 
+        final F delegate;
+
+        private Formatter(final F delegate) {
+            this.delegate = delegate;
+        }
+
+        @Nullable
         public String toPattern() {
             return null;
         }
@@ -57,159 +65,91 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
-    private static final class PatternFormatter extends Formatter {
-        private final FastDateFormat fastDateFormat;
+    private static final class PatternFormatter extends Formatter<InstantPatternFormatter> {
 
-        // this field is only used in ThreadLocal caching mode
-        private final StringBuilder cachedBuffer = new StringBuilder(64);
-
-        PatternFormatter(final FastDateFormat fastDateFormat) {
-            this.fastDateFormat = fastDateFormat;
-        }
-
-        @Override
-        String format(final Instant instant) {
-            return fastDateFormat.format(instant.getEpochMillisecond());
-        }
-
-        @Override
-        void formatToBuffer(final Instant instant, final StringBuilder destination) {
-            final long timeMillis = instant.getEpochMillisecond();
-            if (previousTime != timeMillis) {
-                cachedBuffer.setLength(0);
-                fastDateFormat.format(timeMillis, cachedBuffer);
-            }
-            destination.append(cachedBuffer);
+        private PatternFormatter(final InstantPatternFormatter delegate) {
+            super(delegate);
         }
 
         @Override
         public String toPattern() {
-            return fastDateFormat.getPattern();
+            return delegate.getPattern();
         }
 
         @Override
         public TimeZone getTimeZone() {
-            return fastDateFormat.getTimeZone();
+            return delegate.getTimeZone();
         }
     }
 
-    private static final class FixedFormatter extends Formatter {
-        private final FixedDateFormat fixedDateFormat;
+    private static final class NumberFormatter extends Formatter<InstantNumberFormatter> {
 
-        // below fields are only used in ThreadLocal caching mode
-        private final char[] cachedBuffer = new char[70]; // max length of formatted date-time in any format < 70
-        private int length = 0;
-
-        FixedFormatter(final FixedDateFormat fixedDateFormat) {
-            this.fixedDateFormat = fixedDateFormat;
-        }
-
-        @Override
-        String format(final Instant instant) {
-            return fixedDateFormat.formatInstant(instant);
-        }
-
-        @Override
-        void formatToBuffer(final Instant instant, final StringBuilder destination) {
-            final long epochSecond = instant.getEpochSecond();
-            final int nanoOfSecond = instant.getNanoOfSecond();
-            if (!fixedDateFormat.isEquivalent(previousTime, nanos, epochSecond, nanoOfSecond)) {
-                length = fixedDateFormat.formatInstant(instant, cachedBuffer, 0);
-                previousTime = epochSecond;
-                nanos = nanoOfSecond;
-            }
-            destination.append(cachedBuffer, 0, length);
-        }
-
-        @Override
-        public String toPattern() {
-            return fixedDateFormat.getFormat();
-        }
-
-        @Override
-        public TimeZone getTimeZone() {
-            return fixedDateFormat.getTimeZone();
+        private NumberFormatter(final InstantNumberFormatter delegate) {
+            super(delegate);
         }
     }
 
-    private static final class UnixFormatter extends Formatter {
+    private final Formatter<?> formatter;
 
-        @Override
-        String format(final Instant instant) {
-            return Long.toString(instant.getEpochSecond());
-        }
-
-        @Override
-        void formatToBuffer(final Instant instant, final StringBuilder destination) {
-            destination.append(instant.getEpochSecond()); // no need for caching
-        }
-    }
-
-    private static final class UnixMillisFormatter extends Formatter {
-
-        @Override
-        String format(final Instant instant) {
-            return Long.toString(instant.getEpochMillisecond());
-        }
-
-        @Override
-        void formatToBuffer(final Instant instant, final StringBuilder destination) {
-            destination.append(instant.getEpochMillisecond()); // no need for caching
-        }
-    }
-
-    private final class CachedTime {
-        public long epochSecond;
-        public int nanoOfSecond;
-        public String formatted;
-
-        public CachedTime(final Instant instant) {
-            this.epochSecond = instant.getEpochSecond();
-            this.nanoOfSecond = instant.getNanoOfSecond();
-            this.formatted = formatter.format(instant);
-        }
-    }
-
-    /**
-     * UNIX formatter in seconds (standard).
-     */
-    private static final String UNIX_FORMAT = "UNIX";
-
-    /**
-     * UNIX formatter in milliseconds
-     */
-    private static final String UNIX_MILLIS_FORMAT = "UNIX_MILLIS";
-
-    private final String[] options;
-    private final ThreadLocal<MutableInstant> threadLocalMutableInstant = new ThreadLocal<>();
-    private final ThreadLocal<Formatter> threadLocalFormatter = new ThreadLocal<>();
-    private final AtomicReference<CachedTime> cachedTime;
-    private final Formatter formatter;
-
-    /**
-     * Private constructor.
-     *
-     * @param options options, may be null.
-     */
-    private DatePatternConverter(final String[] options) {
+    private DatePatternConverter(@Nullable final String[] options) {
         super("Date", "date");
-        this.options = options == null ? null : Arrays.copyOf(options, options.length);
         this.formatter = createFormatter(options);
-        cachedTime = new AtomicReference<>(fromEpochMillis(System.currentTimeMillis()));
     }
 
-    private CachedTime fromEpochMillis(final long epochMillis) {
-        final MutableInstant temp = new MutableInstant();
-        temp.initFromEpochMilli(epochMillis, 0);
-        return new CachedTime(temp);
-    }
-
-    private Formatter createFormatter(final String[] options) {
-        final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(options);
-        if (fixedDateFormat != null) {
-            return createFixedFormatter(fixedDateFormat);
+    private static Formatter<?> createFormatter(@Nullable final String[] options) {
+        try {
+            return createFormatterUnsafely(options);
+        } catch (final Exception error) {
+            if (LOGGER.isWarnEnabled()) {
+                final String quotedOptions =
+                        Arrays.stream(options).map(option -> '`' + option + '`').collect(Collectors.joining(", "));
+                LOGGER.warn(
+                        "[{}] failed for options: {}, falling back to the default instance",
+                        CLASS_NAME,
+                        quotedOptions,
+                        error);
+            }
         }
-        return createNonFixedFormatter(options);
+        final InstantPatternFormatter delegateFormatter =
+                InstantPatternFormatter.newBuilder().setPattern(DEFAULT_PATTERN).build();
+        return new PatternFormatter(delegateFormatter);
+    }
+
+    private static Formatter<?> createFormatterUnsafely(@Nullable final String[] options) {
+
+        // Read options
+        final String pattern = readPattern(options);
+        final TimeZone timeZone = readTimeZone(options);
+        final Locale locale = readLocale(options);
+
+        // Is it epoch seconds?
+        if ("UNIX".equals(pattern)) {
+            return new NumberFormatter(InstantNumberFormatter.EPOCH_SECONDS_ROUNDED);
+        }
+
+        // Is it epoch milliseconds?
+        if ("UNIX_MILLIS".equals(pattern)) {
+            return new NumberFormatter(InstantNumberFormatter.EPOCH_MILLIS_ROUNDED);
+        }
+
+        final InstantPatternFormatter delegateFormatter = InstantPatternFormatter.newBuilder()
+                .setPattern(pattern)
+                .setTimeZone(timeZone)
+                .setLocale(locale)
+                .build();
+        return new PatternFormatter(delegateFormatter);
+    }
+
+    private static String readPattern(@Nullable final String[] options) {
+        return options != null && options.length > 0 ? options[0] : DEFAULT_PATTERN;
+    }
+
+    private static TimeZone readTimeZone(@Nullable final String[] options) {
+        return options != null && options.length > 1 ? TimeZone.getTimeZone(options[1]) : TimeZone.getDefault();
+    }
+
+    private static Locale readLocale(@Nullable final String[] options) {
+        return options != null && options.length > 2 ? Locale.forLanguageTag(options[2]) : Locale.getDefault();
     }
 
     /**
@@ -222,153 +162,92 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         return new DatePatternConverter(options);
     }
 
-    private static Formatter createFixedFormatter(final FixedDateFormat fixedDateFormat) {
-        return new FixedFormatter(fixedDateFormat);
-    }
-
-    private static Formatter createNonFixedFormatter(final String[] options) {
-        // if we get here, options is a non-null array with at least one element (first of which non-null)
-        Objects.requireNonNull(options);
-        if (options.length == 0) {
-            throw new IllegalArgumentException("Options array must have at least one element");
-        }
-        Objects.requireNonNull(options[0]);
-        final String patternOption = options[0];
-        if (UNIX_FORMAT.equals(patternOption)) {
-            return new UnixFormatter();
-        }
-        if (UNIX_MILLIS_FORMAT.equals(patternOption)) {
-            return new UnixMillisFormatter();
-        }
-        // LOG4J2-1149: patternOption may be a name (if a time zone was specified)
-        final FixedDateFormat.FixedFormat fixedFormat = FixedDateFormat.FixedFormat.lookup(patternOption);
-        final String pattern = fixedFormat == null ? patternOption : fixedFormat.getPattern();
-
-        // if the option list contains a TZ option, then set it.
-        TimeZone tz = null;
-        if (options.length > 1 && options[1] != null) {
-            tz = TimeZone.getTimeZone(options[1]);
-        }
-
-        Locale locale = null;
-        if (options.length > 2 && options[2] != null) {
-            locale = Locale.forLanguageTag(options[2]);
-        }
-
-        try {
-            final FastDateFormat tempFormat = FastDateFormat.getInstance(pattern, tz, locale);
-            return new PatternFormatter(tempFormat);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.warn("Could not instantiate FastDateFormat with pattern " + pattern, e);
-
-            // default to the DEFAULT format
-            return createFixedFormatter(FixedDateFormat.create(FixedFormat.DEFAULT, tz));
-        }
-    }
-
     /**
-     * Appends formatted date to string buffer.
+     * Formats the given date to the provided buffer.
      *
-     * @param date date
-     * @param toAppendTo buffer to which formatted date is appended.
+     * @param date a date
+     * @param buffer a buffer to append to
+     * @deprecated Starting with version {@code 2.25.0}, this method is deprecated and planned to be removed in the next major release.
      */
-    public void format(final Date date, final StringBuilder toAppendTo) {
-        format(date.getTime(), toAppendTo);
+    @Deprecated
+    public void format(final Date date, final StringBuilder buffer) {
+        format(date.getTime(), buffer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
         format(event.getInstant(), output);
     }
 
-    public void format(final long epochMilli, final StringBuilder output) {
-        final MutableInstant instant = getMutableInstant();
-        instant.initFromEpochMilli(epochMilli, 0);
-        format(instant, output);
-    }
-
-    private MutableInstant getMutableInstant() {
-        if (Constants.ENABLE_THREADLOCALS) {
-            MutableInstant result = threadLocalMutableInstant.get();
-            if (result == null) {
-                result = new MutableInstant();
-                threadLocalMutableInstant.set(result);
-            }
-            return result;
-        }
-        return new MutableInstant();
-    }
-
-    public void format(final Instant instant, final StringBuilder output) {
-        if (Constants.ENABLE_THREADLOCALS) {
-            formatWithoutAllocation(instant, output);
-        } else {
-            formatWithoutThreadLocals(instant, output);
-        }
-    }
-
-    private void formatWithoutAllocation(final Instant instant, final StringBuilder output) {
-        getThreadLocalFormatter().formatToBuffer(instant, output);
-    }
-
-    private Formatter getThreadLocalFormatter() {
-        Formatter result = threadLocalFormatter.get();
-        if (result == null) {
-            result = createFormatter(options);
-            threadLocalFormatter.set(result);
-        }
-        return result;
-    }
-
-    private void formatWithoutThreadLocals(final Instant instant, final StringBuilder output) {
-        final CachedTime effective;
-        final CachedTime cached = cachedTime.get();
-        if (instant.getEpochSecond() != cached.epochSecond || instant.getNanoOfSecond() != cached.nanoOfSecond) {
-            effective = new CachedTime(instant);
-            cachedTime.compareAndSet(cached, effective);
-        } else {
-            effective = cached;
-        }
-        output.append(effective.formatted);
-    }
-
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void format(final Object obj, final StringBuilder output) {
-        if (obj instanceof Date) {
-            format((Date) obj, output);
-        }
-        super.format(obj, output);
-    }
-
-    @Override
-    public void format(final StringBuilder toAppendTo, final Object... objects) {
-        for (final Object obj : objects) {
-            if (obj instanceof Date) {
-                format(obj, toAppendTo);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Gets the pattern string describing this date format.
+     * Formats the given epoch milliseconds to the provided buffer.
      *
-     * @return the pattern string describing this date format or {@code  null} if the format does not have a pattern.
+     * @param epochMillis epoch milliseconds
+     * @param buffer a buffer to append to
+     * @deprecated Starting with version {@code 2.25.0}, this method is deprecated and planned to be removed in the next major release.
+     */
+    @Deprecated
+    public void format(final long epochMillis, final StringBuilder buffer) {
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(epochMillis, 0);
+        format(instant, buffer);
+    }
+
+    /**
+     * Formats the given instant to the provided buffer.
+     *
+     * @param instant an instant
+     * @param buffer a buffer to append to
+     * @deprecated Starting with version {@code 2.25.0}, this method is deprecated and planned to be removed in the next major release.
+     */
+    @Deprecated
+    public void format(final Instant instant, final StringBuilder buffer) {
+        formatter.delegate.formatTo(buffer, instant);
+    }
+
+    @Override
+    public void format(@Nullable final Object object, final StringBuilder buffer) {
+        requireNonNull(buffer, "buffer");
+        if (object == null) {
+            return;
+        }
+        if (object instanceof LogEvent) {
+            format((LogEvent) object, buffer);
+        } else if (object instanceof Date) {
+            format((Date) object, buffer);
+        } else if (object instanceof Instant) {
+            format((Instant) object, buffer);
+        } else if (object instanceof Long) {
+            format((long) object, buffer);
+        }
+        LOGGER.warn(
+                "[{}]: unsupported object type `{}`",
+                CLASS_NAME,
+                object.getClass().getCanonicalName());
+    }
+
+    @Override
+    public void format(final StringBuilder buffer, @Nullable final Object... objects) {
+        requireNonNull(buffer, "buffer");
+        if (objects != null) {
+            for (final Object object : objects) {
+                if (object instanceof Date) {
+                    format((Date) object, buffer);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @return the pattern string describing this date format or {@code null} if the format does not have a pattern.
      */
     public String getPattern() {
         return formatter.toPattern();
     }
 
     /**
-     * Gets the timezone used by this date format.
-     *
-     * @return the timezone used by this date format.
+     * @return the time zone used by this date format
      */
     public TimeZone getTimeZone() {
         return formatter.getTimeZone();

@@ -69,7 +69,9 @@ import java.util.TimeZone;
  * </p>
  *
  * @since Apache Commons Lang 2.0
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be moved to an internal package in the next major release.
  */
+@Deprecated
 public class FastDateFormat extends Format implements DatePrinter {
 
     /**

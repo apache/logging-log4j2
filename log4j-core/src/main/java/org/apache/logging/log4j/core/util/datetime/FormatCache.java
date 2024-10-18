@@ -32,8 +32,10 @@ import java.util.concurrent.ConcurrentMap;
  * </p>
  *
  * @since Apache Commons Lang 3.0
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be moved to an internal package in the next major release.
  */
 // TODO: Before making public move from getDateTimeInstance(Integer,...) to int; or some other approach.
+@Deprecated
 abstract class FormatCache<F extends Format> {
 
     /**

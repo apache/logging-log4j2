@@ -21,9 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDatePrinter;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
@@ -33,84 +35,137 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 /**
- * Compares {@link MutableInstant} formatting efficiency of
- * {@link FastDatePrinter}, {@link FixedDateFormat}, and {@link DateTimeFormatter}.
+ * Compares {@link MutableInstant} formatting efficiency of {@link FastDatePrinter}, {@link FixedDateFormat}, and {@link DateTimeFormatter}.
  * <p>
- * The major formatting efficiency is mostly provided by caching, i.e.,
- * reusing the earlier formatter output if timestamps match. We deliberately
- * exclude this optimization, since it is applicable to all formatters. This
- * benchmark rather focuses on only and only the formatting efficiency.
+ * The major formatting efficiency is mostly provided by caching, i.e., reusing the earlier formatter output if timestamps match.
+ * We deliberately exclude this optimization, since it is applicable to all formatters.
+ * This benchmark rather focuses on only and only the formatting efficiency.
+ * </p>
+ *
+ * @see DateTimeFormatImpactBenchmark for the performance impact of different date & time formatters on a typical layout
  */
 @State(Scope.Thread)
 public class DateTimeFormatBenchmark {
 
-    /**
-     * The pattern to be tested.
-     * <p>
-     * Note that neither {@link FastDatePrinter}, nor {@link FixedDateFormat}
-     * supports nanosecond precision.
-     */
-    private static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    static final Locale LOCALE = Locale.US;
 
-    private static final Locale LOCALE = Locale.US;
+    static final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");
 
-    private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");
+    private static final MutableInstant[] INSTANTS = createInstants();
 
-    private static final Instant INIT_INSTANT = Instant.parse("2020-05-14T10:44:23.901Z");
+    private static MutableInstant[] createInstants() {
+        final Instant initInstant = Instant.parse("2020-05-14T10:44:23.901Z");
+        MutableInstant[] instants = IntStream.range(0, 1_000)
+                .mapToObj((final int index) -> {
+                    final MutableInstant instant = new MutableInstant();
+                    instant.initFromEpochSecond(
+                            Math.addExact(initInstant.getEpochSecond(), index),
+                            Math.addExact(initInstant.getNano(), index));
+                    return instant;
+                })
+                .toArray(MutableInstant[]::new);
+        validateEpochMillisForFixedDateFormatCache(
+                () -> Arrays.stream(instants).mapToLong(MutableInstant::getEpochMillisecond));
+        return instants;
+    }
 
-    private static final MutableInstant[] INSTANTS = IntStream.range(0, 1_000)
-            .mapToObj((final int index) -> {
-                final MutableInstant instant = new MutableInstant();
-                instant.initFromEpochSecond(
-                        Math.addExact(INIT_INSTANT.getEpochSecond(), index),
-                        Math.addExact(INIT_INSTANT.getNano(), index));
-                return instant;
-            })
-            .toArray(MutableInstant[]::new);
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    static void validateEpochMillisForFixedDateFormatCache(final Supplier<LongStream> millisStreamSupplier) {
+        final long minMillis = millisStreamSupplier.get().min().getAsLong();
+        final long maxMillis = millisStreamSupplier.get().max().getAsLong();
+        final long offMillis = maxMillis - minMillis;
+        if (TimeUnit.DAYS.toMillis(1) <= offMillis) {
+            throw new IllegalStateException(
+                    "instant samples must be of the same day to exploit the `FixedDateTime` caching");
+        }
+    }
 
-    private static final Calendar[] CALENDARS = Arrays.stream(INSTANTS)
-            .map((final MutableInstant instant) -> {
-                final Calendar calendar = Calendar.getInstance(TIME_ZONE, LOCALE);
-                calendar.setTimeInMillis(instant.getEpochMillisecond());
-                return calendar;
-            })
-            .toArray(Calendar[]::new);
+    private static final Formatters DATE_TIME_FORMATTERS = new Formatters("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    private static final FastDatePrinter FAST_DATE_PRINTER = new FastDatePrinter(PATTERN, TIME_ZONE, LOCALE) {};
+    private static final Formatters TIME_FORMATTERS = new Formatters("HH:mm:ss.SSS");
 
-    private static final FixedDateFormat FIXED_DATE_FORMAT = Objects.requireNonNull(
-            FixedDateFormat.createIfSupported(PATTERN, TIME_ZONE.getID()),
-            "couldn't create FixedDateTime for pattern " + PATTERN + " and time zone " + TIME_ZONE.getID());
+    static final class Formatters {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern(PATTERN).withZone(TIME_ZONE.toZoneId()).withLocale(LOCALE);
+        private final String pattern;
 
-    private final StringBuilder stringBuilder = new StringBuilder(PATTERN.length() * 2);
+        final FastDatePrinter fastFormatter;
+
+        final FixedDateFormat fixedFormatter;
+
+        final DateTimeFormatter javaFormatter;
+
+        Formatters(final String pattern) {
+            this.pattern = pattern;
+            this.fastFormatter = new FastDatePrinter(pattern, TIME_ZONE, LOCALE) {};
+            this.fixedFormatter = FixedDateFormat.createIfSupported(pattern, TIME_ZONE.getID());
+            if (fixedFormatter == null) {
+                final String message = String.format(
+                        "couldn't create `%s` for pattern `%s` and time zone `%s`",
+                        FixedDateFormat.class.getSimpleName(), pattern, TIME_ZONE.getID());
+            }
+            this.javaFormatter = DateTimeFormatter.ofPattern(pattern)
+                    .withZone(TIME_ZONE.toZoneId())
+                    .withLocale(LOCALE);
+        }
+    }
+
+    private final StringBuilder stringBuilder =
+            new StringBuilder(Math.max(DATE_TIME_FORMATTERS.pattern.length(), TIME_FORMATTERS.pattern.length()) * 2);
 
     private final char[] charBuffer = new char[stringBuilder.capacity()];
 
+    private final Calendar calendar = Calendar.getInstance(TIME_ZONE, LOCALE);
+
     @Benchmark
-    public void fastDatePrinter(final Blackhole blackhole) {
-        for (final Calendar calendar : CALENDARS) {
+    public void fastFormatter_dateTime(final Blackhole blackhole) {
+        fastFormatter(blackhole, DATE_TIME_FORMATTERS.fastFormatter);
+    }
+
+    @Benchmark
+    public void fastFormatter_time(final Blackhole blackhole) {
+        fastFormatter(blackhole, TIME_FORMATTERS.fastFormatter);
+    }
+
+    private void fastFormatter(final Blackhole blackhole, final FastDatePrinter formatter) {
+        for (final MutableInstant instant : INSTANTS) {
             stringBuilder.setLength(0);
-            FAST_DATE_PRINTER.format(calendar, stringBuilder);
+            calendar.setTimeInMillis(instant.getEpochMillisecond());
+            formatter.format(calendar, stringBuilder);
             blackhole.consume(stringBuilder.length());
         }
     }
 
     @Benchmark
-    public void fixedDateFormat(final Blackhole blackhole) {
+    public void fixedFormatter_dateTime(final Blackhole blackhole) {
+        fixedFormatter(blackhole, DATE_TIME_FORMATTERS.fixedFormatter);
+    }
+
+    @Benchmark
+    public void fixedFormatter_time(final Blackhole blackhole) {
+        fixedFormatter(blackhole, DATE_TIME_FORMATTERS.fixedFormatter);
+    }
+
+    private void fixedFormatter(final Blackhole blackhole, final FixedDateFormat formatter) {
         for (final MutableInstant instant : INSTANTS) {
-            final int length = FIXED_DATE_FORMAT.formatInstant(instant, charBuffer, 0);
+            final int length = formatter.formatInstant(instant, charBuffer, 0);
             blackhole.consume(length);
         }
     }
 
     @Benchmark
-    public void dateTimeFormatter(final Blackhole blackhole) {
+    public void javaFormatter_dateTime(final Blackhole blackhole) {
+        javaFormatter(blackhole, DATE_TIME_FORMATTERS.javaFormatter);
+    }
+
+    @Benchmark
+    public void javaFormatter_time(final Blackhole blackhole) {
+        javaFormatter(blackhole, TIME_FORMATTERS.javaFormatter);
+    }
+
+    private void javaFormatter(final Blackhole blackhole, final DateTimeFormatter formatter) {
         for (final MutableInstant instant : INSTANTS) {
             stringBuilder.setLength(0);
-            DATE_TIME_FORMATTER.formatTo(instant, stringBuilder);
+            formatter.formatTo(instant, stringBuilder);
             blackhole.consume(stringBuilder.length());
         }
     }
