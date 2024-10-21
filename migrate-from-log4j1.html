@@ -1122,8 +1122,8 @@ If an exact backward compatibility is required, you need to <a href="#log4j-1-2-
 <div class="sect2">
 <h3 id="ConfigurationCompatibility"><a class="anchor" href="#ConfigurationCompatibility"></a>Use Log4j 1 to Log4j 2 bridge</h3>
 <div class="paragraph">
-<p>If you can not convert your configuration files from Log4j 1 to Log4j 2, the Log4j 1 to Log4j 2 bridge can convert your configuration files at runtime.
-In order to use this feature you need to <a href="#log4j-1-2-api-installation">Install the Log4j 1 to Log4j 2 bridge</a> and set one of the following configuration properties:</p>
+<p>If you cannot convert your configuration files from Log4j 1 to Log4j 2, the Log4j 1 to Log4j 2 bridge can convert your configuration files at runtime.
+To use this feature, you need to <a href="#log4j-1-2-api-installation">Install the Log4j 1 to Log4j 2 bridge</a> and set one of the following configuration properties:</p>
 </div>
 <div class="sect3">
 <h4 id="log4j1.compatibility"><a class="anchor" href="#log4j1.compatibility"></a><code>log4j1.compatibility</code></h4>
@@ -1148,8 +1148,12 @@ In order to use this feature you need to <a href="#log4j-1-2-api-installation">I
 </tbody>
 </table>
 <div class="paragraph">
-<p>If set to <code>true</code>, Log4j 2 will scan the classpath to find Log4j 1 configuration files in the following standard locations:</p>
+<p>If set to <code>true</code>, Log4j 2 will:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scan the classpath to find Log4j 1 configuration files in the following standard locations:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1163,6 +1167,12 @@ In order to use this feature you need to <a href="#log4j-1-2-api-installation">I
 </li>
 <li>
 <p><code>log4j.xml</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(since <code>2.24.0</code>) Enable the usage of the <code>o.a.log4j.PropertyConfigurator</code> and <code>o.a.log4j.xml.DOMConfigurator</code> classes in your code.</p>
 </li>
 </ul>
 </div>
@@ -1321,22 +1331,26 @@ components:</p>
 <h2 id="option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"><a class="anchor" href="#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api"></a><a id="Log4j12Bridge"></a>Log4j 1 to Log4j 2 bridge</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
-The bridge can fulfill three separate functions:</p>
+<p>To help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
+The bridge can fulfill four separate functions:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>it forwards all <a href="#log4j-1-api-methods">Log4j 1 API</a> method calls to the corresponding Log4j 2 API calls,</p>
+<p>It forwards all <a href="#log4j-1-api-methods">Log4j 1 API</a> method calls to the Log4j 2 API.
+See <a href="#api-use-bridge">how to use the bridge for Log4j 1 API migration</a> for more details.</p>
 </li>
 <li>
-<p>since version 2.17.2 is supports the usage of some components written for Log4j 1 inside Log4j 2 Core,</p>
+<p>Since version 2.17.2 the bridge supports the usage of some components written for Log4j 1 inside Log4j 2 Core.
+See <a href="#migrate-custom-components">how to use the bridge for Log4j 1 Backend migration</a> for more details.</p>
 </li>
 <li>
-<p>it provides a limited support for programmatic configuration of Log4j 2 Core, using Log4j 1 method calls,</p>
+<p>It provides limited support for programmatic configuration of Log4j 2 Core, using Log4j 1 method calls.
+This functionality requires the <a href="#log4j1.compatibility"><code>log4j1.compatibility</code> configuration property</a> to be set to <code>true</code>.</p>
 </li>
 <li>
-<p>it provides a limited support for Log4j 1 configuration file formats.</p>
+<p>It provides a limited support for Log4j 1 configuration file formats.
+See <a href="#ConfigurationCompatibility">how to use the bridge for Log4j 1 Configuration file migration</a> for more details.</p>
 </li>
 </ul>
 </div>

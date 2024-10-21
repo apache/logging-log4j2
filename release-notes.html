@@ -486,7 +486,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2975">2975</a>)</p>
 </li>
 <li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3024">3024</a>)</p>
+<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3109">3109</a>)</p>
 </li>
 <li>
 <p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3027">3027</a>)</p>
@@ -650,7 +650,12 @@ Check your configuration for typos.</p>
 <h3 id="_bridges"><a class="anchor" href="#_bridges"></a>Bridges</h3>
 <div class="paragraph">
 <p>The JUL-to-Log4j API and Log4j 1-to-Log4j API will no longer be able to modify the configuration of Log4j Core by default.
-If such a functionality is required, it must be explicitly enabled.</p>
+If such a functionality is required, it must be explicitly enabled.
+See the documentation of the
+<a href="migrate-from-log4j1.html#log4j1.compatibility" class="xref page"><code>log4j1.compatibility</code></a>
+and
+<a href="log4j-jul.html#log4j2.julLoggerAdapter" class="xref page"><code>log4j2.julLoggerAdapter</code></a>
+configuration properties for more details.</p>
 </div>
 </div>
 <div class="sect2">
