@@ -35,8 +35,6 @@ public class PropertiesRollingWithPropertiesTest {
 
     @BeforeAll
     public static void setupSystemProperties() {
-        // final File file = new File(tempDir, TEST_DIR);
-
         // Set system properties as a replacement for SystemPropertyTestRule
         System.setProperty("test.directory", TEST_DIR);
         System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");

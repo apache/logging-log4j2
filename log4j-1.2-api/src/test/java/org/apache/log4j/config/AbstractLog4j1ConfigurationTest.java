@@ -473,11 +473,16 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertNull(filter.getNext(), "found chain of Log4j 1.x filters");
         return count;
     }
-    // TODO Appender, loggerContext
+// #### tempDir ######### /tmp/junit-8800472835944933796
+//  ######### folder         /tmp/junit12627114905753561837/junit16127502666327035264
+
     @Test
-    // @LoggerContextSource("log4j-multipleFilters.xml")
     public void testMultipleFilters() throws Exception {
-        System.setProperty("test.tmpDir", tempDir.getCanonicalPath());
+        // Create a subdirectory inside the tempDir
+        File nestedDir = new File(tempDir, "junit" + System.nanoTime());
+        System.out.println("#############" + nestedDir.getCanonicalPath());
+
+        System.setProperty("test.tmpDir", nestedDir.getCanonicalPath());
 
         try (final LoggerContext loggerContext = configure("log4j-multipleFilters")) {
             final Configuration configuration = loggerContext.getConfiguration();
