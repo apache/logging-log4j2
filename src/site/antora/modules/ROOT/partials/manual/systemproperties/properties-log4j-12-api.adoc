@@ -24,12 +24,16 @@
 | Default value | `false`
 |===
 
-If set to `true`, Log4j 2 will scan the classpath to find Log4j 1 configuration files in the following standard locations:
+If set to `true`, Log4j 2 will:
 
-* `log4j-test.properties`,
-* `log4j-test.xml`,
-* `log4j.properties`,
-* `log4j.xml`.
+* Scan the classpath to find Log4j 1 configuration files in the following standard locations:
+
+** `log4j-test.properties`,
+** `log4j-test.xml`,
+** `log4j.properties`,
+** `log4j.xml`.
+
+* (since `2.24.0`) Enable the usage of the `o.a.log4j.PropertyConfigurator` and `o.a.log4j.xml.DOMConfigurator` classes in your code.
 
 [id=log4j.configuration]
 == `log4j.configuration`

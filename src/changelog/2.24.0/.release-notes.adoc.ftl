@@ -40,6 +40,11 @@ The xref:index.adoc[Apache Log4j 2] website has been almost entirely rewritten t
 
 The JUL-to-Log4j API and Log4j 1-to-Log4j API will no longer be able to modify the configuration of Log4j Core by default.
 If such a functionality is required, it must be explicitly enabled.
+See the documentation of the
+xref:migrate-from-log4j1.adoc#log4j1.compatibility[`log4j1.compatibility`]
+and
+xref:log4j-jul.adoc#log4j2.julLoggerAdapter[`log4j2.julLoggerAdapter`]
+configuration properties for more details.
 
 === Modules
 
