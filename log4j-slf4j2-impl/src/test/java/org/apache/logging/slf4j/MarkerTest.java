@@ -18,6 +18,7 @@ package org.apache.logging.slf4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -59,7 +60,7 @@ public class MarkerTest {
         final Marker log4jParent = MarkerManager.getMarker(parentMarkerName);
         final Marker log4jMarker = MarkerManager.getMarker(childMakerName);
 
-        assertTrue(slf4jMarker instanceof Log4jMarker, "Incorrect Marker class");
+        assertInstanceOf(Log4jMarker.class, slf4jMarker, "Incorrect Marker class");
         assertTrue(
                 log4jMarker.isInstanceOf(log4jParent),
                 String.format(
