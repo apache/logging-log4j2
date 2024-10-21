@@ -30,17 +30,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.BiFunction;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Convenience class to be used as an {@link ExtendedLogger} registry by {@code LoggerContext} implementations.
  */
-@NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
 
     private final Map<String, Map<MessageFactory, WeakReference<T>>> loggerRefByMessageFactoryByName = new HashMap<>();
@@ -55,9 +50,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Data structure contract for the internal storage of admitted loggers.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
-    @Deprecated
     public interface MapFactory<T extends ExtendedLogger> {
 
         Map<String, T> createInnerMap();
@@ -71,9 +64,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link ConcurrentHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
-    @Deprecated
     public static class ConcurrentMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
 
         @Override
@@ -96,9 +87,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link WeakHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
-    @Deprecated
     public static class WeakMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
 
         @Override
@@ -123,10 +112,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Constructs an instance <b>ignoring</b> the given the map factory.
      *
      * @param mapFactory a map factory
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
-    @Deprecated
-    public LoggerRegistry(@Nullable final MapFactory<T> mapFactory) {
+    public LoggerRegistry(final MapFactory<T> mapFactory) {
         this();
     }
 
@@ -139,10 +126,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return the logger associated with the name
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
-     * Use {@link #getLogger(String, MessageFactory)} instead.
      */
-    @Deprecated
     public T getLogger(final String name) {
         requireNonNull(name, "name");
         return getLogger(name, null);
@@ -160,7 +144,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @param messageFactory a message factory
      * @return the logger associated with the given name and message factory
      */
-    public T getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public T getLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         readLock.lock();
         try {
@@ -209,10 +193,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return {@code true}, if the logger exists; {@code false} otherwise.
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
-     * Use {@link #hasLogger(String, MessageFactory)} instead.
      */
-    @Deprecated
     public boolean hasLogger(final String name) {
         requireNonNull(name, "name");
         final T logger = getLogger(name);
@@ -232,7 +213,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @return {@code true}, if the logger exists; {@code false} otherwise.
      * @since 2.5
      */
-    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         final T logger = getLogger(name, messageFactory);
         return logger != null;
@@ -265,12 +246,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @param name ignored – kept for backward compatibility
      * @param messageFactory ignored – kept for backward compatibility
      * @param logger a logger instance
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
-     * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
      */
-    @Deprecated
-    public void putIfAbsent(
-            @Nullable final String name, @Nullable final MessageFactory messageFactory, final T logger) {
+    public void putIfAbsent(final String name, final MessageFactory messageFactory, final T logger) {
 
         // Check arguments
         requireNonNull(logger, "logger");
@@ -278,69 +255,14 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         // Insert the logger
         writeLock.lock();
         try {
-            final String loggerName = logger.getName();
             final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
                     loggerRefByMessageFactoryByName.computeIfAbsent(
-                            loggerName, this::createLoggerRefByMessageFactoryMap);
+                            logger.getName(), this::createLoggerRefByMessageFactoryMap);
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
             final WeakReference<T> loggerRef = loggerRefByMessageFactory.get(loggerMessageFactory);
             if (loggerRef == null || loggerRef.get() == null) {
                 loggerRefByMessageFactory.put(loggerMessageFactory, new WeakReference<>(logger));
             }
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    public T computeIfAbsent(
-            final String name,
-            final MessageFactory messageFactory,
-            final BiFunction<String, MessageFactory, T> loggerSupplier) {
-
-        // Check arguments
-        requireNonNull(name, "name");
-        requireNonNull(messageFactory, "messageFactory");
-        requireNonNull(loggerSupplier, "loggerSupplier");
-
-        // Read lock fast path: See if logger already exists
-        T logger = getLogger(name, messageFactory);
-        if (logger != null) {
-            return logger;
-        }
-
-        // Write lock slow path: Insert the logger
-        writeLock.lock();
-        try {
-
-            // See if the logger is created by another thread in the meantime
-            final Map<MessageFactory, WeakReference<T>> loggerRefByMessageFactory =
-                    loggerRefByMessageFactoryByName.computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap);
-            final WeakReference<T> loggerRef;
-            if ((loggerRef = loggerRefByMessageFactory.get(messageFactory)) != null
-                    && (logger = loggerRef.get()) != null) {
-                return logger;
-            }
-
-            // Create the logger
-            logger = loggerSupplier.apply(name, messageFactory);
-
-            // Report message factory mismatches, if there is any
-            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-            if (!loggerMessageFactory.equals(messageFactory)) {
-                StatusLogger.getLogger()
-                        .error(
-                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different message factory: `{}`.\n"
-                                        + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
-                                        + "This generally hints a problem at the logger context implementation.\n"
-                                        + "Please report this using the Log4j project issue tracker.",
-                                name,
-                                loggerMessageFactory,
-                                messageFactory);
-            }
-
-            // Insert the logger
-            loggerRefByMessageFactory.put(loggerMessageFactory, new WeakReference<>(logger));
-            return logger;
         } finally {
             writeLock.unlock();
         }

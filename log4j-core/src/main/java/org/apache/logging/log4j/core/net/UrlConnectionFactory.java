@@ -102,8 +102,7 @@ public class UrlConnectionFactory {
                 httpURLConnection.setIfModifiedSince(lastModifiedMillis);
             }
             if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
-                ((HttpsURLConnection) httpURLConnection)
-                        .setSSLSocketFactory(sslConfiguration.getSslContext().getSocketFactory());
+                ((HttpsURLConnection) httpURLConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                 if (!sslConfiguration.isVerifyHostName()) {
                     ((HttpsURLConnection) httpURLConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
                 }

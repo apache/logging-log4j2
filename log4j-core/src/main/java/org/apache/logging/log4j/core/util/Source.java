@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static java.util.Objects.requireNonNull;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +30,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Represents the source for the logging configuration as an immutable object.
  */
-@NullMarked
 public class Source {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -50,9 +45,9 @@ public class Source {
         }
     }
 
-    private static @Nullable File toFile(Path path) {
+    private static File toFile(final Path path) {
         try {
-            return requireNonNull(path, "path").toFile();
+            return Objects.requireNonNull(path, "path").toFile();
         } catch (final UnsupportedOperationException e) {
             return null;
         }
@@ -62,9 +57,9 @@ public class Source {
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
             justification = "The URI should be specified in a configuration file.")
-    private static @Nullable File toFile(URI uri) {
+    private static File toFile(final URI uri) {
         try {
-            final String scheme = requireNonNull(uri, "uri").getScheme();
+            final String scheme = Objects.requireNonNull(uri, "uri").getScheme();
             if (Strings.isBlank(scheme) || scheme.equals("file")) {
                 return new File(uri.getPath());
             } else {
@@ -72,20 +67,20 @@ public class Source {
                 return null;
             }
         } catch (final Exception e) {
-            LOGGER.debug("uri is malformed: " + uri);
+            LOGGER.debug("uri is malformed: " + uri.toString());
             return null;
         }
     }
 
     private static URI toURI(final URL url) {
         try {
-            return requireNonNull(url, "url").toURI();
+            return Objects.requireNonNull(url, "url").toURI();
         } catch (final URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private final @Nullable File file;
+    private final File file;
     private final URI uri;
     private final String location;
 
@@ -93,23 +88,21 @@ public class Source {
      * Constructs a Source from a ConfigurationSource.
      *
      * @param source The ConfigurationSource.
-     * @throws NullPointerException if {@code source} is {@code null}.
      */
     public Source(final ConfigurationSource source) {
         this.file = source.getFile();
-        this.uri = requireNonNull(source.getURI());
-        this.location = requireNonNull(source.getLocation());
+        this.uri = source.getURI();
+        this.location = source.getLocation();
     }
 
     /**
      * Constructs a new {@code Source} with the specified file.
      * file.
      *
-     * @param file the file where the input stream originated.
-     * @throws NullPointerException if {@code file} is {@code null}.
+     * @param file the file where the input stream originated
      */
     public Source(final File file) {
-        this.file = requireNonNull(file, "file");
+        this.file = Objects.requireNonNull(file, "file");
         this.location = normalize(file);
         this.uri = file.toURI();
     }
@@ -118,10 +111,9 @@ public class Source {
      * Constructs a new {@code Source} from the specified Path.
      *
      * @param path the Path where the input stream originated
-     * @throws NullPointerException if {@code path} is {@code null}.
      */
     public Source(final Path path) {
-        final Path normPath = requireNonNull(path, "path").normalize();
+        final Path normPath = Objects.requireNonNull(path, "path").normalize();
         this.file = toFile(normPath);
         this.uri = normPath.toUri();
         this.location = normPath.toString();
@@ -131,10 +123,9 @@ public class Source {
      * Constructs a new {@code Source} from the specified URI.
      *
      * @param uri the URI where the input stream originated
-     * @throws NullPointerException if {@code uri} is {@code null}.
      */
     public Source(final URI uri) {
-        final URI normUri = requireNonNull(uri, "uri").normalize();
+        final URI normUri = Objects.requireNonNull(uri, "uri").normalize();
         this.uri = normUri;
         this.location = normUri.toString();
         this.file = toFile(normUri);
@@ -144,12 +135,11 @@ public class Source {
      * Constructs a new {@code Source} from the specified URI.
      *
      * @param uri the URI where the input stream originated
-     * @param ignored Not used.
+     * @param lastModified Not used.
      * @deprecated Use {@link Source#Source(URI)}.
-     * @throws NullPointerException if {@code uri} is {@code null}.
      */
     @Deprecated
-    public Source(URI uri, long ignored) {
+    public Source(final URI uri, final long lastModified) {
         this(uri);
     }
 
@@ -157,7 +147,6 @@ public class Source {
      * Constructs a new {@code Source} from the specified URL.
      *
      * @param url the URL where the input stream originated
-     * @throws NullPointerException if this URL is {@code null}.
      * @throws IllegalArgumentException if this URL is not formatted strictly according to RFC2396 and cannot be
      *         converted to a URI.
      */
@@ -185,7 +174,7 @@ public class Source {
      *
      * @return the configuration source file, or {@code null}
      */
-    public @Nullable File getFile() {
+    public File getFile() {
         return file;
     }
 
@@ -208,7 +197,7 @@ public class Source {
             value = "PATH_TRAVERSAL_IN",
             justification = "The `file`, `uri` and `location` fields come from Log4j properties.")
     public Path getPath() {
-        return file != null ? file.toPath() : Paths.get(uri);
+        return file != null ? file.toPath() : uri != null ? Paths.get(uri) : Paths.get(location);
     }
 
     /**

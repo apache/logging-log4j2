@@ -22,7 +22,6 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Implementation of Log4j {@link LoggerContext} SPI.
@@ -49,13 +48,19 @@ class JULLoggerContext implements LoggerContext {
     }
 
     @Override
-    public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, JULLoggerContext::createLogger);
+        final ExtendedLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (oldLogger != null) {
+            return oldLogger;
+        }
+        final ExtendedLogger newLogger = createLogger(name, effectiveMessageFactory);
+        loggerRegistry.putIfAbsent(name, effectiveMessageFactory, newLogger);
+        return loggerRegistry.getLogger(name, effectiveMessageFactory);
     }
 
-    private static ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    private static ExtendedLogger createLogger(final String name, final MessageFactory messageFactory) {
         final Logger logger = Logger.getLogger(name);
         return new JULLogger(name, messageFactory, logger);
     }
@@ -66,7 +71,7 @@ class JULLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         return loggerRegistry.hasLogger(name, effectiveMessageFactory);

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.util.Strings;
 public class SslConfigurationFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final SslConfiguration sslConfiguration = createSslConfiguration(PropertiesUtil.getProperties());
 
     private static final String trustStorelocation = "log4j2.trustStoreLocation";
     private static final String trustStorePassword = "log4j2.trustStorePassword";
@@ -110,6 +111,6 @@ public class SslConfigurationFactory {
     }
 
     public static SslConfiguration getSslConfiguration() {
-        return createSslConfiguration(PropertiesUtil.getProperties());
+        return sslConfiguration;
     }
 }

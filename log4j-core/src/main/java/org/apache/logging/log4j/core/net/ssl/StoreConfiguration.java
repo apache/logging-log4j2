@@ -58,7 +58,7 @@ public class StoreConfiguration<T> {
      */
     public void clearSecrets() {
         this.location = null;
-        this.passwordProvider = new MemoryPasswordProvider(new char[0]);
+        this.passwordProvider = null;
     }
 
     public String getLocation() {

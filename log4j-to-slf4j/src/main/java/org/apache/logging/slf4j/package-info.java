@@ -18,7 +18,7 @@
  * SLF4J support.
  */
 @Export
-@Version("2.25.0")
+@Version("2.24.1")
 package org.apache.logging.slf4j;
 
 import org.osgi.annotation.bundle.Export;

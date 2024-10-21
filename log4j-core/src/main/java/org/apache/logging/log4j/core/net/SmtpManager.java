@@ -308,8 +308,7 @@ public class SmtpManager extends MailManager {
             if (smtpProtocol.equals("smtps")) {
                 final SslConfiguration sslConfiguration = data.getSslConfiguration();
                 if (sslConfiguration != null) {
-                    final SSLSocketFactory sslSocketFactory =
-                            sslConfiguration.getSslContext().getSocketFactory();
+                    final SSLSocketFactory sslSocketFactory = sslConfiguration.getSslSocketFactory();
                     properties.put(prefix + ".ssl.socketFactory", sslSocketFactory);
                     properties.setProperty(
                             prefix + ".ssl.checkserveridentity", Boolean.toString(sslConfiguration.isVerifyHostName()));

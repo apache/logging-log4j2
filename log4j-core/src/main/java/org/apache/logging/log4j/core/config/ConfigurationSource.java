@@ -142,7 +142,7 @@ public class ConfigurationSource {
      * @param stream the input stream, the caller is responsible for closing this resource.
      * @throws IOException if an exception occurred reading from the specified stream
      */
-    public ConfigurationSource(InputStream stream) throws IOException {
+    public ConfigurationSource(final InputStream stream) throws IOException {
         this(toByteArray(stream), null, 0);
     }
 
@@ -298,13 +298,12 @@ public class ConfigurationSource {
 
     @Override
     public String toString() {
-        if (source != null) {
-            return source.getLocation();
+        if (isLocation()) {
+            return getLocation();
         }
         if (this == NULL_SOURCE) {
             return "NULL_SOURCE";
         }
-        byte[] data = this.data;
         final int length = data == null ? -1 : data.length;
         return "stream (" + length + " bytes, unknown location)";
     }
@@ -312,7 +311,7 @@ public class ConfigurationSource {
     /**
      * Loads the configuration from a URI.
      * @param configLocation A URI representing the location of the configuration.
-     * @return The ConfigurationSource for the configuration or {@code null}.
+     * @return The ConfigurationSource for the configuration.
      */
     public static /*@Nullable*/ ConfigurationSource fromUri(final URI configLocation) {
         final File configFile = FileUtils.fileFromUri(configLocation);

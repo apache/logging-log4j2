@@ -161,7 +161,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * Extension Reference Guide for information about these names.
      * @return a new KeyStoreConfiguration
      * @throws StoreConfigurationException Thrown if this call cannot load the KeyStore.
-     * @deprecated Use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
+     * @deprecated Use createKeyStoreConfiguration(String, char[], String, String)
      */
     @Deprecated
     public static KeyStoreConfiguration createKeyStoreConfiguration(
@@ -176,10 +176,6 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 location, (password == null ? null : password.toCharArray()), keyStoreType, keyManagerFactoryAlgorithm);
     }
 
-    /**
-     * @deprecated Planned to be removed in the next major release
-     */
-    @Deprecated
     public KeyManagerFactory initKeyManagerFactory()
             throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
         final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);

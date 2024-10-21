@@ -21,7 +21,6 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,13 +41,19 @@ public class SLF4JLoggerContext implements LoggerContext {
     }
 
     @Override
-    public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, SLF4JLoggerContext::createLogger);
+        final ExtendedLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (oldLogger != null) {
+            return oldLogger;
+        }
+        final ExtendedLogger newLogger = createLogger(name, effectiveMessageFactory);
+        loggerRegistry.putIfAbsent(name, effectiveMessageFactory, newLogger);
+        return loggerRegistry.getLogger(name, effectiveMessageFactory);
     }
 
-    private static ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    private static ExtendedLogger createLogger(final String name, final MessageFactory messageFactory) {
         final Logger logger = LoggerFactory.getLogger(name);
         return new SLF4JLogger(name, messageFactory, logger);
     }
@@ -59,7 +64,7 @@ public class SLF4JLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         return loggerRegistry.hasLogger(name, effectiveMessageFactory);

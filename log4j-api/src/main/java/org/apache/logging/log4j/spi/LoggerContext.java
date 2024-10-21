@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Anchor point for logging implementations.
@@ -55,7 +54,7 @@ public interface LoggerContext {
      * @return The logger.
      * @since 2.14.0
      */
-    default ExtendedLogger getLogger(Class<?> cls, @Nullable MessageFactory messageFactory) {
+    default ExtendedLogger getLogger(Class<?> cls, MessageFactory messageFactory) {
         final String canonicalName = cls.getCanonicalName();
         return getLogger(canonicalName != null ? canonicalName : cls.getName(), messageFactory);
     }
@@ -74,7 +73,7 @@ public interface LoggerContext {
      *                       the logger but will log a warning if mismatched.
      * @return The logger with the specified name.
      */
-    ExtendedLogger getLogger(String name, @Nullable MessageFactory messageFactory);
+    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
 
     /**
      * Gets the LoggerRegistry.
@@ -119,7 +118,7 @@ public interface LoggerContext {
      * @return true if the Logger exists, false otherwise.
      * @since 2.5
      */
-    boolean hasLogger(String name, @Nullable MessageFactory messageFactory);
+    boolean hasLogger(String name, MessageFactory messageFactory);
 
     /**
      * Associates an object into the LoggerContext by name for later use.

@@ -23,7 +23,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Load resources (or images) from various sources.
@@ -85,9 +84,9 @@ public final class Loader {
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
-     * @return A URL to the resource or {@code null}.
+     * @return A URL to the resource.
      */
-    public static @Nullable URL getResource(final String resource, final ClassLoader defaultLoader) {
+    public static URL getResource(final String resource, final ClassLoader defaultLoader) {
         try {
             ClassLoader classLoader = getThreadContextClassLoader();
             if (classLoader != null) {

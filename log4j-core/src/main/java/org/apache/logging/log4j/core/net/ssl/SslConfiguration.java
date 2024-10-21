@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.util.Objects;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -31,42 +34,29 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.NullUnmarked;
-import org.jspecify.annotations.Nullable;
 
 /**
  *  SSL Configuration
  */
-@NullMarked
 @Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
 public class SslConfiguration {
-
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-
+    private final KeyStoreConfiguration keyStoreConfig;
+    private final TrustStoreConfiguration trustStoreConfig;
+    private final SSLContext sslContext;
     private final String protocol;
-
     private final boolean verifyHostName;
 
-    @Nullable
-    private final KeyStoreConfiguration keyStoreConfig;
-
-    @Nullable
-    private final TrustStoreConfiguration trustStoreConfig;
-
-    private final transient SSLContext sslContext;
-
     private SslConfiguration(
-            @Nullable final String protocol,
-            final boolean verifyHostName,
-            @Nullable final KeyStoreConfiguration keyStoreConfig,
-            @Nullable final TrustStoreConfiguration trustStoreConfig) {
+            final String protocol,
+            final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig,
+            final boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
-        final String effectiveProtocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
-        this.protocol = effectiveProtocol;
+        this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
+        this.sslContext = this.createSslContext();
         this.verifyHostName = verifyHostName;
-        this.sslContext = createSslContext(effectiveProtocol, keyStoreConfig, trustStoreConfig);
     }
 
     /**
@@ -81,96 +71,157 @@ public class SslConfiguration {
         }
     }
 
-    /**
-     * Gets the SSL socket factory of the configured SSL context.
-     *
-     * @return the SSL socket factory of the configured SSL context
-     * @deprecated Use {@link SSLContext#getSocketFactory()} on {@link #getSslContext()}
-     */
-    @Deprecated
     public SSLSocketFactory getSslSocketFactory() {
         return sslContext.getSocketFactory();
     }
 
-    /**
-     * Gets the SSL server socket factory of the configured SSL context.
-     *
-     * @return the SSL server socket factory of the configured SSL context
-     * @deprecated Use {@link SSLContext#getServerSocketFactory()} on {@link #getSslContext()}
-     */
-    @Deprecated
     public SSLServerSocketFactory getSslServerSocketFactory() {
         return sslContext.getServerSocketFactory();
     }
 
-    private static SSLContext createDefaultSslContext(final String protocol) {
+    private SSLContext createSslContext() {
+        SSLContext context = null;
+
+        try {
+            context = createSslContextBasedOnConfiguration();
+            LOGGER.debug("Creating SSLContext with the given parameters");
+        } catch (final TrustStoreConfigurationException e) {
+            context = createSslContextWithTrustStoreFailure();
+        } catch (final KeyStoreConfigurationException e) {
+            context = createSslContextWithKeyStoreFailure();
+        }
+        return context;
+    }
+
+    private SSLContext createSslContextWithTrustStoreFailure() {
+        SSLContext context;
+
+        try {
+            context = createSslContextWithDefaultTrustManagerFactory();
+            LOGGER.debug("Creating SSLContext with default truststore");
+        } catch (final KeyStoreConfigurationException e) {
+            context = createDefaultSslContext();
+            LOGGER.debug("Creating SSLContext with default configuration");
+        }
+        return context;
+    }
+
+    private SSLContext createSslContextWithKeyStoreFailure() {
+        SSLContext context;
+
+        try {
+            context = createSslContextWithDefaultKeyManagerFactory();
+            LOGGER.debug("Creating SSLContext with default keystore");
+        } catch (final TrustStoreConfigurationException e) {
+            context = createDefaultSslContext();
+            LOGGER.debug("Creating SSLContext with default configuration");
+        }
+        return context;
+    }
+
+    private SSLContext createSslContextBasedOnConfiguration()
+            throws KeyStoreConfigurationException, TrustStoreConfigurationException {
+        return createSslContext(false, false);
+    }
+
+    private SSLContext createSslContextWithDefaultKeyManagerFactory() throws TrustStoreConfigurationException {
+        try {
+            return createSslContext(true, false);
+        } catch (final KeyStoreConfigurationException dummy) {
+            LOGGER.debug("Exception occurred while using default keystore. This should be a BUG");
+            return null;
+        }
+    }
+
+    private SSLContext createSslContextWithDefaultTrustManagerFactory() throws KeyStoreConfigurationException {
+        try {
+            return createSslContext(false, true);
+        } catch (final TrustStoreConfigurationException dummy) {
+            LOGGER.debug("Exception occurred while using default truststore. This should be a BUG");
+            return null;
+        }
+    }
+
+    private SSLContext createDefaultSslContext() {
         try {
             return SSLContext.getDefault();
-        } catch (final NoSuchAlgorithmException defaultContextError) {
-            LOGGER.error(
-                    "Failed to create an `SSLContext` using the default configuration, falling back to creating an empty one",
-                    defaultContextError);
-            try {
-                final SSLContext emptyContext = SSLContext.getInstance(protocol);
-                emptyContext.init(new KeyManager[0], new TrustManager[0], null);
-                return emptyContext;
-            } catch (final Exception emptyContextError) {
-                LOGGER.error("Failed to create an empty `SSLContext`", emptyContextError);
-                return null;
+        } catch (final NoSuchAlgorithmException e) {
+            LOGGER.error("Failed to create an SSLContext with default configuration", e);
+            return null;
+        }
+    }
+
+    private SSLContext createSslContext(
+            final boolean loadDefaultKeyManagerFactory, final boolean loadDefaultTrustManagerFactory)
+            throws KeyStoreConfigurationException, TrustStoreConfigurationException {
+        try {
+            KeyManager[] kManagers = null;
+            TrustManager[] tManagers = null;
+
+            final SSLContext newSslContext = SSLContext.getInstance(this.protocol);
+            if (!loadDefaultKeyManagerFactory) {
+                final KeyManagerFactory kmFactory = loadKeyManagerFactory();
+                kManagers = kmFactory.getKeyManagers();
             }
+            if (!loadDefaultTrustManagerFactory) {
+                final TrustManagerFactory tmFactory = loadTrustManagerFactory();
+                tManagers = tmFactory.getTrustManagers();
+            }
+
+            newSslContext.init(kManagers, tManagers, null);
+            return newSslContext;
+        } catch (final NoSuchAlgorithmException e) {
+            LOGGER.error("No Provider supports a TrustManagerFactorySpi implementation for the specified protocol", e);
+            throw new TrustStoreConfigurationException(e);
+        } catch (final KeyManagementException e) {
+            LOGGER.error("Failed to initialize the SSLContext", e);
+            throw new KeyStoreConfigurationException(e);
         }
     }
 
-    private static SSLContext createSslContext(
-            final String protocol,
-            @Nullable final KeyStoreConfiguration keyStoreConfig,
-            @Nullable final TrustStoreConfiguration trustStoreConfig) {
+    private TrustManagerFactory loadTrustManagerFactory() throws TrustStoreConfigurationException {
+        if (trustStoreConfig == null) {
+            throw new TrustStoreConfigurationException(new Exception("The trustStoreConfiguration is null"));
+        }
+
         try {
-            final SSLContext sslContext = SSLContext.getInstance(protocol);
-            final KeyManager[] keyManagers = loadKeyManagers(keyStoreConfig);
-            final TrustManager[] trustManagers = loadTrustManagers(trustStoreConfig);
-            sslContext.init(keyManagers, trustManagers, null);
-            return sslContext;
-        } catch (final Exception error) {
-            LOGGER.error(
-                    "Failed to create an `SSLContext` using the provided configuration, falling back to a default instance",
-                    error);
-            return createDefaultSslContext(protocol);
+            return trustStoreConfig.initTrustManagerFactory();
+        } catch (final NoSuchAlgorithmException e) {
+            LOGGER.error("The specified algorithm is not available from the specified provider", e);
+            throw new TrustStoreConfigurationException(e);
+        } catch (final KeyStoreException e) {
+            LOGGER.error("Failed to initialize the TrustManagerFactory", e);
+            throw new TrustStoreConfigurationException(e);
         }
     }
 
-    private static KeyManager[] loadKeyManagers(@Nullable final KeyStoreConfiguration config) throws Exception {
-        if (config == null) {
-            return new KeyManager[0];
+    private KeyManagerFactory loadKeyManagerFactory() throws KeyStoreConfigurationException {
+        if (keyStoreConfig == null) {
+            throw new KeyStoreConfigurationException(new Exception("The keyStoreConfiguration is null"));
         }
-        final KeyManagerFactory factory = KeyManagerFactory.getInstance(config.getKeyManagerFactoryAlgorithm());
-        final char[] password = config.getPasswordAsCharArray();
+
         try {
-            factory.init(config.getKeyStore(), password);
-        } finally {
-            config.clearSecrets();
+            return keyStoreConfig.initKeyManagerFactory();
+        } catch (final NoSuchAlgorithmException e) {
+            LOGGER.error("The specified algorithm is not available from the specified provider", e);
+            throw new KeyStoreConfigurationException(e);
+        } catch (final KeyStoreException e) {
+            LOGGER.error("Failed to initialize the TrustManagerFactory", e);
+            throw new KeyStoreConfigurationException(e);
+        } catch (final UnrecoverableKeyException e) {
+            LOGGER.error("The key cannot be recovered (e.g. the given password is wrong)", e);
+            throw new KeyStoreConfigurationException(e);
         }
-        return factory.getKeyManagers();
-    }
-
-    private static TrustManager[] loadTrustManagers(@Nullable final TrustStoreConfiguration config) throws Exception {
-        if (config == null) {
-            return new TrustManager[0];
-        }
-        final TrustManagerFactory factory = TrustManagerFactory.getInstance(config.getTrustManagerFactoryAlgorithm());
-        factory.init(config.getKeyStore());
-        return factory.getTrustManagers();
     }
 
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
      *
-     * @param protocol         The protocol, see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext">SSLContext Algorithms</a>
-     * @param keyStoreConfig   The KeyStoreConfiguration.
+     * @param protocol The protocol, see <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext">SSLContext Algorithms</a>
+     * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @return a new SslConfiguration
      */
-    @NullUnmarked
     @PluginFactory
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
@@ -178,7 +229,7 @@ public class SslConfiguration {
             @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
         // @formatter:on
-        return new SslConfiguration(protocol, false, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
     }
 
     /**
@@ -191,7 +242,6 @@ public class SslConfiguration {
      * @return a new SslConfiguration
      * @since 2.12
      */
-    @NullUnmarked
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
             @PluginAttribute("protocol") final String protocol,
@@ -199,7 +249,7 @@ public class SslConfiguration {
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
             @PluginAttribute("verifyHostName") final boolean verifyHostName) {
         // @formatter:on
-        return new SslConfiguration(protocol, verifyHostName, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }
 
     @Override
@@ -219,27 +269,19 @@ public class SslConfiguration {
             return false;
         }
         final SslConfiguration other = (SslConfiguration) obj;
+        if (!Objects.equals(keyStoreConfig, other.keyStoreConfig)) {
+            return false;
+        }
         if (!Objects.equals(protocol, other.protocol)) {
             return false;
         }
-        if (!Objects.equals(verifyHostName, other.verifyHostName)) {
-            return false;
-        }
-        if (!Objects.equals(keyStoreConfig, other.keyStoreConfig)) {
+        if (!Objects.equals(sslContext, other.sslContext)) {
             return false;
         }
         if (!Objects.equals(trustStoreConfig, other.trustStoreConfig)) {
             return false;
         }
         return true;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public boolean isVerifyHostName() {
-        return verifyHostName;
     }
 
     public KeyStoreConfiguration getKeyStoreConfig() {
@@ -252,5 +294,13 @@ public class SslConfiguration {
 
     public SSLContext getSslContext() {
         return sslContext;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public boolean isVerifyHostName() {
+        return verifyHostName;
     }
 }
