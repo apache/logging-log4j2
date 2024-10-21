@@ -19,8 +19,8 @@ package org.apache.log4j.config;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class Log4j1ConfigurationConverterSparkTest extends AbstractLog4j1ConfigurationConverterTest {
 

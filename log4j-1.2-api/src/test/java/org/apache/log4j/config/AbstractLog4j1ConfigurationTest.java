@@ -65,7 +65,6 @@ import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -199,8 +198,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
         assertTrue(
                 rfa.getManager().getRolloverStrategy() instanceof DefaultRolloverStrategy, "defaultRolloverStrategy");
-        assertFalse(
-                ((DefaultRolloverStrategy) rfa.getManager().getRolloverStrategy()).isUseMax(), "rolloverStrategy");
+        assertFalse(((DefaultRolloverStrategy) rfa.getManager().getRolloverStrategy()).isUseMax(), "rolloverStrategy");
         assertFalse(getAppendProperty(rfa), "append");
         assertEquals(1000, rfa.getManager().getBufferSize(), "bufferSize");
         assertFalse(rfa.getImmediateFlush(), "immediateFlush");
@@ -234,7 +232,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
             final Appender appender = configuration.getAppender("DRFA");
             assertNotNull(appender);
             assertEquals("DRFA", appender.getName());
-            assertTrue(appender instanceof RollingFileAppender, appender.getClass().getName());
+            assertTrue(
+                    appender instanceof RollingFileAppender, appender.getClass().getName());
             final RollingFileAppender rfa = (RollingFileAppender) appender;
             assertFalse(getAppendProperty(rfa), "append");
             assertEquals(1000, rfa.getManager().getBufferSize(), "bufferSize");
@@ -473,8 +472,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertNull(filter.getNext(), "found chain of Log4j 1.x filters");
         return count;
     }
-// #### tempDir ######### /tmp/junit-8800472835944933796
-//  ######### folder         /tmp/junit12627114905753561837/junit16127502666327035264
+    // #### tempDir ######### /tmp/junit-8800472835944933796
+    //  ######### folder         /tmp/junit12627114905753561837/junit16127502666327035264
 
     @Test
     public void testMultipleFilters() throws Exception {

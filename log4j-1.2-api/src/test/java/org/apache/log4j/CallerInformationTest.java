@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 // config from log4j-core test-jar
