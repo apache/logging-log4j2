@@ -241,7 +241,7 @@
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-to-jul.html">Log4j to JUL Adapter</a>
@@ -2797,16 +2797,68 @@ for more details.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.jul.DefaultLevelConverter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j.internal.DefaultLevelConverter</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified name of an alternative <code>org.apache.logging.log4j.jul.LevelConverter</code> implementation.</p>
+<p>Fully qualified name of an alternative <code>org.apache.logging.jul.tolog4j.spi.LevelConverter</code> implementation.</p>
 </div>
-<div class="paragraph">
-<p>See <a href="../log4j-jul.html#default-level-conversions" class="xref page">Default Level Conversions</a> for the default implementation.</p>
+<details>
+<summary class="title">Default level conversions</summary>
+<div class="content">
+<table id="default-level-conversions" class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Java Level</th>
+<th class="tableblock halign-left valign-top">Log4j Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#OFF">OFF</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OFF</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#SEVERE">SEVERE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#WARNING">WARNING</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#INFO">INFO</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#CONFIG">CONFIG</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>CONFIG</code> level with a numeric value of <code>450</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINE">FINE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINER">FINER</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINEST">FINEST</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>FINEST</code> level with a numeric value of <code>700</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#ALL">ALL</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALL</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</details>
 </div>
 <div class="sect3">
 <h4 id="log4j.jul.loggerAdapter"><a class="anchor" href="#log4j.jul.loggerAdapter"></a><code>log4j.jul.loggerAdapter</code></h4>
@@ -2826,29 +2878,15 @@ for more details.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>depends on classpath</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified class name of the <code>org.apache.logging.log4j.jul.AbstractLoggerAdapter</code> implementation to use.</p>
+<p>Fully qualified class name of a custom <code>org.apache.logging.jul.tolog4j.spi.AbstractLoggerAdapter</code> implementation to use, which provides an implementation of the <code>j.u.l.Logger</code> mutator methods (e.g., <code>Logger.setLevel()</code>).</p>
 </div>
 <div class="paragraph">
-<p>This property allows users to choose between two implementation of the logging bridge:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">org.apache.logging.log4j.jul.CoreLoggerAdapter</dt>
-<dd>
-<p>The default if <code>log4j-core</code> is found in the class path.
-It allows users to modify the Log4j Core configuration through the JUL <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html"><code>Logger</code></a> interface.</p>
-</dd>
-<dt class="hdlist1">org.apache.logging.log4j.jul.ApiLoggerAdapter</dt>
-<dd>
-<p>The default if <code>log4j-core</code> cannot be found in the class path.
-It disables the level mutators in the JUL <code>Logger</code> interface.</p>
-</dd>
-</dl>
+<p>By default <code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code> is used and the mutator methods are disabled.</p>
 </div>
 </div>
 </div>

@@ -241,7 +241,7 @@
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
+    <a class="nav-link" href="log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-to-jul.html">Log4j to JUL Adapter</a>
@@ -307,11 +307,46 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="log4j-bom"><a class="anchor" href="#log4j-bom"></a><code>log4j-bom</code></h2>
+<h2 id="jul-to-log4j"><a class="anchor" href="#jul-to-log4j"></a><code>jul-to-log4j</code></h2>
 <div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JPMS module</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j</code></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>A public Bill-of-Materials that manages all the versions of Log4j artifacts.
-You can import the BOM in your build tool of preference:</p>
+<p>The <code>jul-to-log4j</code> artifact contains a bridge from
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html"><code>java.util.logging</code></a>
+to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
+</div>
+<div class="paragraph">
+<p>See
+<a href="manual/installation.html#impl-core-bridge-jul" class="xref page">Installing the JUL-to-Log4j API bridge</a>
+on how to install it or
+<a href="log4j-jul.html#bridge-logmanager" class="xref page">Using <code>j.u.l.LogManager</code></a>
+for more details.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Don&#8217;t deploy this artifact together with <a href="#log4j-to-jul"><code>log4j-to-jul</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -326,6 +361,53 @@ You can import the BOM in your build tool of preference:</p>
 </ul>
 </div>
 <div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="paragraph">
+<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;jul-to-log4j&lt;/artifactId&gt;
+  &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="paragraph">
+<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:jul-to-log4j'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="log4j-bom"><a class="anchor" href="#log4j-bom"></a><code>log4j-bom</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A public Bill-of-Materials that manages all the versions of Log4j artifacts.
+You can import the BOM in your build tool of preference:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencyManagement&gt;
@@ -342,7 +424,7 @@ You can import the BOM in your build tool of preference:</p>
 </div>
 </div>
 </div>
-<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
@@ -399,19 +481,19 @@ Use <a href="#log4j-bom"><code>log4j-bom</code></a> instead.</p>
 <div class="paragraph">
 <p>See <a href="manual/async.html" class="xref page">asynchronous loggers</a> for more details.</p>
 </div>
-<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div id="_tabs_3" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_2_maven" class="tab">
+<li id="_tabs_3_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_2_gradle" class="tab">
+<li id="_tabs_3_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
+<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -425,7 +507,7 @@ Use <a href="#log4j-bom"><code>log4j-bom</code></a> instead.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
+<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -461,19 +543,19 @@ Having this artifact in the classpath makes these automatically accessible to
 See
 <a href="manual/appenders/rolling-file.html#RolloverStrategy-compress-commons" class="xref page">Compressing archived files</a> for more details.</p>
 </div>
-<div id="_tabs_3" class="openblock tabs is-sync is-loading">
+<div id="_tabs_4" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_3_maven" class="tab">
+<li id="_tabs_4_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_3_gradle" class="tab">
+<li id="_tabs_4_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_3_maven--panel" class="tabpanel" aria-labelledby="_tabs_3_maven">
+<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -487,7 +569,7 @@ See
 </div>
 </div>
 </div>
-<div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
+<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -528,19 +610,19 @@ plugins based on
 <div class="paragraph">
 <p>See <a href="manual/extending.html#ConfigurationFactory" class="xref page">Extending <code>ConfigurationFactory</code></a> for more details on how to create your own configuration file formats.</p>
 </div>
-<div id="_tabs_4" class="openblock tabs is-sync is-loading">
+<div id="_tabs_5" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_4_maven" class="tab">
+<li id="_tabs_5_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_4_gradle" class="tab">
+<li id="_tabs_5_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_4_maven--panel" class="tabpanel" aria-labelledby="_tabs_4_maven">
+<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -553,7 +635,7 @@ plugins based on
 </div>
 </div>
 </div>
-<div id="_tabs_4_gradle--panel" class="tabpanel" aria-labelledby="_tabs_4_gradle">
+<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -588,19 +670,19 @@ plugins based on
 <div class="paragraph">
 <p>See <a href="manual/configuration.html#configuration-factories" class="xref page">predefined <code>ConfigurationFactory</code> plugins</a> for more details.</p>
 </div>
-<div id="_tabs_5" class="openblock tabs is-sync is-loading">
+<div id="_tabs_6" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_5_maven" class="tab">
+<li id="_tabs_6_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_5_gradle" class="tab">
+<li id="_tabs_6_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_5_maven--panel" class="tabpanel" aria-labelledby="_tabs_5_maven">
+<div id="_tabs_6_maven--panel" class="tabpanel" aria-labelledby="_tabs_6_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -614,7 +696,7 @@ plugins based on
 </div>
 </div>
 </div>
-<div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
+<div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -649,19 +731,19 @@ plugins based on
 <div class="paragraph">
 <p>See <a href="manual/configuration.html#configuration-factories" class="xref page">predefined <code>ConfigurationFactory</code> plugins</a> for more details.</p>
 </div>
-<div id="_tabs_6" class="openblock tabs is-sync is-loading">
+<div id="_tabs_7" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_6_maven" class="tab">
+<li id="_tabs_7_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_6_gradle" class="tab">
+<li id="_tabs_7_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_6_maven--panel" class="tabpanel" aria-labelledby="_tabs_6_maven">
+<div id="_tabs_7_maven--panel" class="tabpanel" aria-labelledby="_tabs_7_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -675,7 +757,7 @@ plugins based on
 </div>
 </div>
 </div>
-<div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
+<div id="_tabs_7_gradle--panel" class="tabpanel" aria-labelledby="_tabs_7_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -714,19 +796,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/appenders/delegating.html#DisruptorBlockingQueueFactory" class="xref page">Conversant Disruptor Blocking Queue</a> for more details.</p>
 </div>
-<div id="_tabs_7" class="openblock tabs is-sync is-loading">
+<div id="_tabs_8" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_7_maven" class="tab">
+<li id="_tabs_8_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_7_gradle" class="tab">
+<li id="_tabs_8_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_7_maven--panel" class="tabpanel" aria-labelledby="_tabs_7_maven">
+<div id="_tabs_8_maven--panel" class="tabpanel" aria-labelledby="_tabs_8_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -740,7 +822,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_7_gradle--panel" class="tabpanel" aria-labelledby="_tabs_7_gradle">
+<div id="_tabs_8_gradle--panel" class="tabpanel" aria-labelledby="_tabs_8_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -775,19 +857,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/implementation.html" class="xref page">Reference implementation</a> for more details.</p>
 </div>
-<div id="_tabs_8" class="openblock tabs is-sync is-loading">
+<div id="_tabs_9" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_8_maven" class="tab">
+<li id="_tabs_9_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_8_gradle" class="tab">
+<li id="_tabs_9_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_8_maven--panel" class="tabpanel" aria-labelledby="_tabs_8_maven">
+<div id="_tabs_9_maven--panel" class="tabpanel" aria-labelledby="_tabs_9_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -801,7 +883,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_8_gradle--panel" class="tabpanel" aria-labelledby="_tabs_8_gradle">
+<div id="_tabs_9_gradle--panel" class="tabpanel" aria-labelledby="_tabs_9_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -833,19 +915,19 @@ that uses
 <div class="paragraph">
 <p>The <code>log4j-core-test</code> artifact contains test fixtures useful to <a href="manual/extending.html" class="xref page">extend the reference implementation</a>.</p>
 </div>
-<div id="_tabs_9" class="openblock tabs is-sync is-loading">
+<div id="_tabs_10" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_9_maven" class="tab">
+<li id="_tabs_10_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_9_gradle" class="tab">
+<li id="_tabs_10_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_9_maven--panel" class="tabpanel" aria-labelledby="_tabs_9_maven">
+<div id="_tabs_10_maven--panel" class="tabpanel" aria-labelledby="_tabs_10_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -859,7 +941,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_9_gradle--panel" class="tabpanel" aria-labelledby="_tabs_9_gradle">
+<div id="_tabs_10_gradle--panel" class="tabpanel" aria-labelledby="_tabs_10_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -895,19 +977,19 @@ that uses
 </tr>
 </tbody>
 </table>
-<div id="_tabs_10" class="openblock tabs is-sync is-loading">
+<div id="_tabs_11" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_10_maven" class="tab">
+<li id="_tabs_11_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_10_gradle" class="tab">
+<li id="_tabs_11_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_10_maven--panel" class="tabpanel" aria-labelledby="_tabs_10_maven">
+<div id="_tabs_11_maven--panel" class="tabpanel" aria-labelledby="_tabs_11_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -921,7 +1003,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_10_gradle--panel" class="tabpanel" aria-labelledby="_tabs_10_gradle">
+<div id="_tabs_11_gradle--panel" class="tabpanel" aria-labelledby="_tabs_11_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -957,19 +1039,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/lookups.html#DockerLookup" class="xref page">Docker lookup</a> for more information.</p>
 </div>
-<div id="_tabs_11" class="openblock tabs is-sync is-loading">
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_11_maven" class="tab">
+<li id="_tabs_12_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_11_gradle" class="tab">
+<li id="_tabs_12_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_11_maven--panel" class="tabpanel" aria-labelledby="_tabs_11_maven">
+<div id="_tabs_12_maven--panel" class="tabpanel" aria-labelledby="_tabs_12_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -983,7 +1065,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_11_gradle--panel" class="tabpanel" aria-labelledby="_tabs_11_gradle">
+<div id="_tabs_12_gradle--panel" class="tabpanel" aria-labelledby="_tabs_12_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1022,19 +1104,19 @@ log data collection service.</p>
 <a href="manual/appenders/message-queue.html#FlumeAppender" class="xref page">Flume Appender</a>
 for more information.</p>
 </div>
-<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_12_maven" class="tab">
+<li id="_tabs_13_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_12_gradle" class="tab">
+<li id="_tabs_13_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_12_maven--panel" class="tabpanel" aria-labelledby="_tabs_12_maven">
+<div id="_tabs_13_maven--panel" class="tabpanel" aria-labelledby="_tabs_13_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1048,7 +1130,7 @@ for more information.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_12_gradle--panel" class="tabpanel" aria-labelledby="_tabs_12_gradle">
+<div id="_tabs_13_gradle--panel" class="tabpanel" aria-labelledby="_tabs_13_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1087,19 +1169,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/appenders/delegating.html#JCToolsBlockingQueueFactory" class="xref page">JCTools Blocking Queue</a> for more details.</p>
 </div>
-<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_13_maven" class="tab">
+<li id="_tabs_14_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_13_gradle" class="tab">
+<li id="_tabs_14_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_13_maven--panel" class="tabpanel" aria-labelledby="_tabs_13_maven">
+<div id="_tabs_14_maven--panel" class="tabpanel" aria-labelledby="_tabs_14_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1113,7 +1195,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_13_gradle--panel" class="tabpanel" aria-labelledby="_tabs_13_gradle">
+<div id="_tabs_14_gradle--panel" class="tabpanel" aria-labelledby="_tabs_14_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1149,19 +1231,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/appenders/database.html#JdbcAppender" class="xref page">JDBC Appender</a> for more details.</p>
 </div>
-<div id="_tabs_14" class="openblock tabs is-sync is-loading">
+<div id="_tabs_15" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_14_maven" class="tab">
+<li id="_tabs_15_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_14_gradle" class="tab">
+<li id="_tabs_15_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_14_maven--panel" class="tabpanel" aria-labelledby="_tabs_14_maven">
+<div id="_tabs_15_maven--panel" class="tabpanel" aria-labelledby="_tabs_15_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1175,7 +1257,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_14_gradle--panel" class="tabpanel" aria-labelledby="_tabs_14_gradle">
+<div id="_tabs_15_gradle--panel" class="tabpanel" aria-labelledby="_tabs_15_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1214,19 +1296,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/appenders/database.html#DataSourceConnectionSource" class="xref page"><code>DataSource</code> connection source</a> for more details.</p>
 </div>
-<div id="_tabs_15" class="openblock tabs is-sync is-loading">
+<div id="_tabs_16" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_15_maven" class="tab">
+<li id="_tabs_16_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_15_gradle" class="tab">
+<li id="_tabs_16_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_15_maven--panel" class="tabpanel" aria-labelledby="_tabs_15_maven">
+<div id="_tabs_16_maven--panel" class="tabpanel" aria-labelledby="_tabs_16_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1240,7 +1322,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_15_gradle--panel" class="tabpanel" aria-labelledby="_tabs_15_gradle">
+<div id="_tabs_16_gradle--panel" class="tabpanel" aria-labelledby="_tabs_16_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1279,19 +1361,19 @@ that uses
 <div class="paragraph">
 <p>See <a href="manual/appenders/database.html#PoolingDriverConnectionSource" class="xref page"><code>PoolingDriver</code> connection source</a> for more details.</p>
 </div>
-<div id="_tabs_16" class="openblock tabs is-sync is-loading">
+<div id="_tabs_17" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_16_maven" class="tab">
+<li id="_tabs_17_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_16_gradle" class="tab">
+<li id="_tabs_17_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_16_maven--panel" class="tabpanel" aria-labelledby="_tabs_16_maven">
+<div id="_tabs_17_maven--panel" class="tabpanel" aria-labelledby="_tabs_17_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1305,7 +1387,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_16_gradle--panel" class="tabpanel" aria-labelledby="_tabs_16_gradle">
+<div id="_tabs_17_gradle--panel" class="tabpanel" aria-labelledby="_tabs_17_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1354,19 +1436,19 @@ that uses
 </li>
 </ul>
 </div>
-<div id="_tabs_17" class="openblock tabs is-sync is-loading">
+<div id="_tabs_18" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_17_maven" class="tab">
+<li id="_tabs_18_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_17_gradle" class="tab">
+<li id="_tabs_18_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_17_maven--panel" class="tabpanel" aria-labelledby="_tabs_17_maven">
+<div id="_tabs_18_maven--panel" class="tabpanel" aria-labelledby="_tabs_18_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1380,7 +1462,7 @@ that uses
 </div>
 </div>
 </div>
-<div id="_tabs_17_gradle--panel" class="tabpanel" aria-labelledby="_tabs_17_gradle">
+<div id="_tabs_18_gradle--panel" class="tabpanel" aria-labelledby="_tabs_18_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1418,19 +1500,19 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 <div class="paragraph">
 <p>See <a href="manual/installation.html#impl-core-bridge-jpl" class="xref page">Installing the JPL-to-Log4j API bridge</a> for more details.</p>
 </div>
-<div id="_tabs_18" class="openblock tabs is-sync is-loading">
+<div id="_tabs_19" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_18_maven" class="tab">
+<li id="_tabs_19_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_18_gradle" class="tab">
+<li id="_tabs_19_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_18_maven--panel" class="tabpanel" aria-labelledby="_tabs_18_maven">
+<div id="_tabs_19_maven--panel" class="tabpanel" aria-labelledby="_tabs_19_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1444,7 +1526,7 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_18_gradle--panel" class="tabpanel" aria-labelledby="_tabs_18_gradle">
+<div id="_tabs_19_gradle--panel" class="tabpanel" aria-labelledby="_tabs_19_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1475,12 +1557,12 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <code>log4j-jul</code> artifact contains a bridge from
+<p>The <code>log4j-jul</code> artifact contains an alternative bridge from
 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html"><code>java.util.logging</code></a>
 to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="manual/installation.html#impl-core-bridge-jul" class="xref page">Installing the JUL-to-Log4j API bridge</a> for more details.</p>
+<p>See <a href="log4j-jul.html#bridge-handler" class="xref page">Using <code>j.u.l.Handler</code></a> for more details.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1496,19 +1578,19 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </tr>
 </table>
 </div>
-<div id="_tabs_19" class="openblock tabs is-sync is-loading">
+<div id="_tabs_20" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_19_maven" class="tab">
+<li id="_tabs_20_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_19_gradle" class="tab">
+<li id="_tabs_20_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_19_maven--panel" class="tabpanel" aria-labelledby="_tabs_19_maven">
+<div id="_tabs_20_maven--panel" class="tabpanel" aria-labelledby="_tabs_20_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1522,7 +1604,7 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_19_gradle--panel" class="tabpanel" aria-labelledby="_tabs_19_gradle">
+<div id="_tabs_20_gradle--panel" class="tabpanel" aria-labelledby="_tabs_20_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1559,19 +1641,19 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 <div class="paragraph">
 <p><a href="#log4j-core">Log4j Core 3</a> is based on this artifact.</p>
 </div>
-<div id="_tabs_20" class="openblock tabs is-sync is-loading">
+<div id="_tabs_21" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_20_maven" class="tab">
+<li id="_tabs_21_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_20_gradle" class="tab">
+<li id="_tabs_21_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_20_maven--panel" class="tabpanel" aria-labelledby="_tabs_20_maven">
+<div id="_tabs_21_maven--panel" class="tabpanel" aria-labelledby="_tabs_21_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1585,7 +1667,7 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_20_gradle--panel" class="tabpanel" aria-labelledby="_tabs_20_gradle">
+<div id="_tabs_21_gradle--panel" class="tabpanel" aria-labelledby="_tabs_21_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1623,19 +1705,19 @@ to format log events as JSON.</p>
 <div class="paragraph">
 <p>See <a href="manual/json-template-layout.html" class="xref page">JSON Template Layout</a> for details.</p>
 </div>
-<div id="_tabs_21" class="openblock tabs is-sync is-loading">
+<div id="_tabs_22" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_21_maven" class="tab">
+<li id="_tabs_22_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_21_gradle" class="tab">
+<li id="_tabs_22_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_21_maven--panel" class="tabpanel" aria-labelledby="_tabs_21_maven">
+<div id="_tabs_22_maven--panel" class="tabpanel" aria-labelledby="_tabs_22_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1649,7 +1731,7 @@ to format log events as JSON.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_21_gradle--panel" class="tabpanel" aria-labelledby="_tabs_21_gradle">
+<div id="_tabs_22_gradle--panel" class="tabpanel" aria-labelledby="_tabs_22_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1691,19 +1773,19 @@ It is based on the latest version of the Java driver.</p>
 <a href="manual/appenders/database.html#MongoDbProvider" class="xref page">MongoDb provider</a>
 for more information.</p>
 </div>
-<div id="_tabs_22" class="openblock tabs is-sync is-loading">
+<div id="_tabs_23" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_22_maven" class="tab">
+<li id="_tabs_23_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_22_gradle" class="tab">
+<li id="_tabs_23_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_22_maven--panel" class="tabpanel" aria-labelledby="_tabs_22_maven">
+<div id="_tabs_23_maven--panel" class="tabpanel" aria-labelledby="_tabs_23_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1717,7 +1799,7 @@ for more information.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_22_gradle--panel" class="tabpanel" aria-labelledby="_tabs_22_gradle">
+<div id="_tabs_23_gradle--panel" class="tabpanel" aria-labelledby="_tabs_23_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1755,19 +1837,19 @@ used to compile <a href="manual/plugins.html" class="xref page">Log4j plugins</a
 <div class="paragraph">
 <p>See <a href="manual/extending.html" class="xref page">Extending Log4j</a> for more details.</p>
 </div>
-<div id="_tabs_23" class="openblock tabs is-sync is-loading">
+<div id="_tabs_24" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_23_maven" class="tab">
+<li id="_tabs_24_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_23_gradle" class="tab">
+<li id="_tabs_24_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_23_maven--panel" class="tabpanel" aria-labelledby="_tabs_23_maven">
+<div id="_tabs_24_maven--panel" class="tabpanel" aria-labelledby="_tabs_24_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1781,7 +1863,7 @@ used to compile <a href="manual/plugins.html" class="xref page">Log4j plugins</a
 </div>
 </div>
 </div>
-<div id="_tabs_23_gradle--panel" class="tabpanel" aria-labelledby="_tabs_23_gradle">
+<div id="_tabs_24_gradle--panel" class="tabpanel" aria-labelledby="_tabs_24_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1818,19 +1900,19 @@ used to compile <a href="manual/plugins.html" class="xref page">Log4j plugins</a
 <div class="paragraph">
 <p>See <a href="manual/architecture.html" class="xref page">Architecture</a> for more details.</p>
 </div>
-<div id="_tabs_24" class="openblock tabs is-sync is-loading">
+<div id="_tabs_25" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_24_maven" class="tab">
+<li id="_tabs_25_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_24_gradle" class="tab">
+<li id="_tabs_25_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_24_maven--panel" class="tabpanel" aria-labelledby="_tabs_24_maven">
+<div id="_tabs_25_maven--panel" class="tabpanel" aria-labelledby="_tabs_25_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1844,7 +1926,7 @@ used to compile <a href="manual/plugins.html" class="xref page">Log4j plugins</a
 </div>
 </div>
 </div>
-<div id="_tabs_24_gradle--panel" class="tabpanel" aria-labelledby="_tabs_24_gradle">
+<div id="_tabs_25_gradle--panel" class="tabpanel" aria-labelledby="_tabs_25_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1894,19 +1976,19 @@ It is required by:</p>
 <div class="paragraph">
 <p>See <a href="manual/scripts.html" class="xref page">Scripts</a> for more details.</p>
 </div>
-<div id="_tabs_25" class="openblock tabs is-sync is-loading">
+<div id="_tabs_26" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_25_maven" class="tab">
+<li id="_tabs_26_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_25_gradle" class="tab">
+<li id="_tabs_26_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_25_maven--panel" class="tabpanel" aria-labelledby="_tabs_25_maven">
+<div id="_tabs_26_maven--panel" class="tabpanel" aria-labelledby="_tabs_26_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1920,7 +2002,7 @@ It is required by:</p>
 </div>
 </div>
 </div>
-<div id="_tabs_25_gradle--panel" class="tabpanel" aria-labelledby="_tabs_25_gradle">
+<div id="_tabs_26_gradle--panel" class="tabpanel" aria-labelledby="_tabs_26_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1971,19 +2053,19 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </tr>
 </table>
 </div>
-<div id="_tabs_26" class="openblock tabs is-sync is-loading">
+<div id="_tabs_27" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_26_maven" class="tab">
+<li id="_tabs_27_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_26_gradle" class="tab">
+<li id="_tabs_27_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_26_maven--panel" class="tabpanel" aria-labelledby="_tabs_26_maven">
+<div id="_tabs_27_maven--panel" class="tabpanel" aria-labelledby="_tabs_27_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1997,7 +2079,7 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_26_gradle--panel" class="tabpanel" aria-labelledby="_tabs_26_gradle">
+<div id="_tabs_27_gradle--panel" class="tabpanel" aria-labelledby="_tabs_27_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2048,19 +2130,19 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </tr>
 </table>
 </div>
-<div id="_tabs_27" class="openblock tabs is-sync is-loading">
+<div id="_tabs_28" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_27_maven" class="tab">
+<li id="_tabs_28_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_27_gradle" class="tab">
+<li id="_tabs_28_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_27_maven--panel" class="tabpanel" aria-labelledby="_tabs_27_maven">
+<div id="_tabs_28_maven--panel" class="tabpanel" aria-labelledby="_tabs_28_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2074,7 +2156,7 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_27_gradle--panel" class="tabpanel" aria-labelledby="_tabs_27_gradle">
+<div id="_tabs_28_gradle--panel" class="tabpanel" aria-labelledby="_tabs_28_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2111,19 +2193,19 @@ or earlier versions.</p>
 <div class="paragraph">
 <p>See <a href="log4j-spring-cloud-config-client.html" class="xref page">Log4j Spring Cloud Configuration</a> for more details.</p>
 </div>
-<div id="_tabs_28" class="openblock tabs is-sync is-loading">
+<div id="_tabs_29" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_28_maven" class="tab">
+<li id="_tabs_29_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_28_gradle" class="tab">
+<li id="_tabs_29_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_28_maven--panel" class="tabpanel" aria-labelledby="_tabs_28_maven">
+<div id="_tabs_29_maven--panel" class="tabpanel" aria-labelledby="_tabs_29_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2137,7 +2219,7 @@ or earlier versions.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_28_gradle--panel" class="tabpanel" aria-labelledby="_tabs_28_gradle">
+<div id="_tabs_29_gradle--panel" class="tabpanel" aria-labelledby="_tabs_29_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2190,19 +2272,19 @@ that logs to
 </tr>
 </table>
 </div>
-<div id="_tabs_29" class="openblock tabs is-sync is-loading">
+<div id="_tabs_30" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_29_maven" class="tab">
+<li id="_tabs_30_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_29_gradle" class="tab">
+<li id="_tabs_30_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_29_maven--panel" class="tabpanel" aria-labelledby="_tabs_29_maven">
+<div id="_tabs_30_maven--panel" class="tabpanel" aria-labelledby="_tabs_30_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2216,7 +2298,7 @@ that logs to
 </div>
 </div>
 </div>
-<div id="_tabs_29_gradle--panel" class="tabpanel" aria-labelledby="_tabs_29_gradle">
+<div id="_tabs_30_gradle--panel" class="tabpanel" aria-labelledby="_tabs_30_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2269,19 +2351,19 @@ that logs to
 </tr>
 </table>
 </div>
-<div id="_tabs_30" class="openblock tabs is-sync is-loading">
+<div id="_tabs_31" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_30_maven" class="tab">
+<li id="_tabs_31_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_30_gradle" class="tab">
+<li id="_tabs_31_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_30_maven--panel" class="tabpanel" aria-labelledby="_tabs_30_maven">
+<div id="_tabs_31_maven--panel" class="tabpanel" aria-labelledby="_tabs_31_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2295,7 +2377,7 @@ that logs to
 </div>
 </div>
 </div>
-<div id="_tabs_30_gradle--panel" class="tabpanel" aria-labelledby="_tabs_30_gradle">
+<div id="_tabs_31_gradle--panel" class="tabpanel" aria-labelledby="_tabs_31_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>

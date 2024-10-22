@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j JDK Logging Adapter :: Apache Log4j</title>
+    <title>JUL-to-Log4j bridge :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/log4j-jul.html">
     <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="./_/css/site.css">
@@ -241,7 +241,7 @@
     <a class="nav-link" href="log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="log4j-jul.html">Log4j JDK Logging Adapter</a>
+    <a class="nav-link" href="log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-to-jul.html">Log4j to JUL Adapter</a>
@@ -289,7 +289,7 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="components.html">Components</a></li>
-    <li><a href="log4j-jul.html">Log4j JDK Logging Adapter</a></li>
+    <li><a href="log4j-jul.html">JUL-to-Log4j bridge</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/main/src/site/antora/modules/ROOT/pages/log4j-jul.adoc">Edit this Page</a></div>
@@ -299,72 +299,393 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j JDK Logging Adapter</h1>
+<h1 class="page">JUL-to-Log4j bridge</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The JDK Logging Adapter is a custom implementation of
-<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/LogManager.html"><code>java.util.logging.LogManager</code></a>
-that uses <a href="javadoc/log4j-core/index.html">Log4j</a>.
-This adapter can be used with either the Log4j API or Log4j Core.
-When used with the API, there are a couple features of JUL that aren&#8217;t supported.
-However, this does allow any other Log4j Provider besides the Core provider to be used with JUL.</p>
+<p>The JUL-to-Log4j bridge provides components that allow application and library that use
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html"><code>java.util.logging.Logger</code></a>
+(JUL) to log to the Log4j API instead.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This chapter covers advanced usage scenarios of the JUL-to-Log4j bridge.
+For the installation procedure and basic configuration see
+<a href="manual/installation.html#impl-core-bridge-jul" class="xref page">Using JUL-to-Log4j</a>
+section of our
+<a href="manual/installation.html" class="xref page">Installation guide</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_requirements"><a class="anchor" href="#_requirements"></a>Requirements</h2>
+<h2 id="configuration"><a class="anchor" href="#configuration"></a>Configuration</h2>
 <div class="sectionbody">
+<details>
+<summary class="title">Struggling with the logging API, implementation, and bridge concepts? Click for an introduction.</summary>
+<div class="content">
+<div id="logging-api" class="dlist">
+<dl>
+<dt class="hdlist1">Logging API</dt>
+<dd>
+<p>A logging API is an interface your code or your dependencies directly logs against.
+It is required at compile-time.
+It is implementation agnostic to ensure that your application can write logs, but is not tied to a specific logging implementation.
+Log4j API, <a href="https://www.slf4j.org">SLF4J</a>, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://commons.apache.org/proper/commons-logging/">JCL (Apache Commons Logging)</a>, <a href="https://openjdk.org/jeps/264">JPL (Java Platform Logging)</a> and <a href="https://github.com/jboss-logging/jboss-logging">JBoss Logging</a> are major logging APIs.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-impl" class="dlist">
+<dl>
+<dt class="hdlist1">Logging implementation</dt>
+<dd>
+<p>A logging implementation is only required at runtime and can be changed without the need to recompile your software.
+Log4j Core, <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>, <a href="https://logback.qos.ch">Logback</a> are the most well-known logging implementations.</p>
+</dd>
+</dl>
+</div>
+<div id="logging-bridge" class="dlist">
+<dl>
+<dt class="hdlist1">Logging bridge</dt>
+<dd>
+<p>Logging implementations accept input from a single logging API of their preference; Log4j Core from Log4j API, Logback from SLF4J, etc.
+A logging bridge is a simple logging implementation of a logging API that forwards all messages to a foreign logging API.
+Logging bridges allow a logging implementation to accept input from other logging APIs that are not their primary logging API.
+For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log4 API and effectively enables Log4j Core to accept input from SLF4J.</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p>The JDK Logging Adapter is dependent on the Log4j API and optionally Log4j Core.</p>
+<p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
+</div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>The <code>java.util.logging</code> logging API, available since JRE 1.4, shares many similarities with other logging API, such as SLF4J or Log4j API.
+Similarly to other APIs, it allows users to change the underlying
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/LogManager.html"><code>LogManager</code></a>
+implementation, but unlike other APIs, it has two big limitations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>it is part of JRE, which means that each JVM can contain only one instance of the <code>LogManager</code> class and all the applications of an application server must use the same <code>LogManager</code> implementation,</p>
+</li>
+<li>
+<p>it does not support auto-detection of the logging backend through <code>ServiceLoader</code> or a similar mechanim (see
+<a href="https://bugs.openjdk.org/browse/JDK-8262741">JDK-8262741</a>
+).
+In order to switch to an alternate <code>LogManager</code> implementation you must be able to set the <code>java.util.logging.manager</code> system property <strong>before</strong> the first logging call.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To work around the limitations of JUL, the JUL-to-Log4j bridge offers two installation options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you are able to modify the <code>java.util.logging.manager</code> system property very early in the JVM startup process, you can replace the default <code>LogManager</code> implementation with a Log4j-specific one.
+This option gives the best performance.
+See <a href="#bridge-logmanager">Using <code>LogManager</code></a> for details.</p>
+</li>
+<li>
+<p>If JUL initializes <strong>before</strong> your application does, which is a typical behavior in application servers, you can still configure JUL to use Log4j as appender.
+See <a href="#bridge-handler">Using <code>Log4jBridgeHandler</code></a> for details.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h2>
+<h2 id="bridge-logmanager"><a class="anchor" href="#bridge-logmanager"></a>Using <code>LogManager</code></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To use the JDK Logging Adapter, you must set the system property <code>java.util.logging.manager</code> to <code>org.apache.logging.log4j.jul.LogManager</code>.</p>
+<p>The best way to install the JUL-to-Log4j bridge on your system is to set the value of the <code>java.util.logging.manager</code> Java system property to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>org.apache.logging.jul.tolog4j.LogManager</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>This must be done either through the command line (i.e., using the <code>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager</code> argument) or by using <code>System.setProperty()</code> before any calls are made to <code>LogManager</code> or <code>Logger</code>.</p>
+<p>This property must be set very early in an application initialization process, e.g. using the <code>-D&lt;property&gt;=&lt;value&gt;</code> command line option of the <code>java</code> executable or by adding:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">static {
+  if (System.getProperty("java.util.logging.manager") == null) {
+    System.setProperty("java.util.logging.manager", "org.apache.logging.jul.tolog4j.LogManager");
+  }
+}</code></pre>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_compatibility"><a class="anchor" href="#_compatibility"></a>Compatibility</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The use of a
-<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Filter.html"><code>java.util.logging.Filter</code></a>
-is supported on a
-per-<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html"><code>Logger</code></a>
-basis.
-However, it is recommended to use the standard <a href="manual/filters.html" class="xref page">filters</a> feature in Log4j instead.</p>
 </div>
 <div class="paragraph">
-<p>The use of
-<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Handler.html"><code>java.util.logging.Handler</code></a>
-classes is
-<em>NOT</em> supported.
-Custom Handlers should instead use an appropriate
-<a href="manual/appenders.html" class="xref page">Appender</a>
-or code their own
-<a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html"><code>Appender</code></a>
-plugin.</p>
+<p>at the top of your main class.</p>
 </div>
 <div class="paragraph">
-<p>Java logging levels are translated into Log4j logging levels dynamically.
-The following table lists the conversions between a Java logging level and its equivalent Log4j level.
-Custom levels should be implemented as an implementation of <code>LevelConverter</code>, and the Log4j property
-<a href="manual/systemproperties.html#log4j.jul.levelConverter" class="xref page"><code>log4j.jul.levelConverter</code></a>
-must be set to your custom class name.
-Using the default <code>LevelConverter</code> implementation, custom logging levels are mapped to whatever the current level of the <code>Logger</code> being logged to is using.</p>
+<p>Setting this property will replace the default JUL <code>LogManager</code> implementation with a custom implementation that translates JUL <code>Logger</code> method calls into Log4j <code>Logger</code> calls with a <strong>minimal</strong> overhead.</p>
 </div>
 <div class="sect2">
-<h3 id="default-level-conversions"><a class="anchor" href="#default-level-conversions"></a>Default Level Conversions</h3>
+<h3 id="bridge-logmanager-features"><a class="anchor" href="#bridge-logmanager-features"></a><code>LogManager</code>-specific features</h3>
+<div class="paragraph">
+<p>The use of the following <code>j.u.l.Logger</code> methods is <strong>not</strong> supported by the default <code>AbstractLoggerAdapter</code> implementation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#setFilter(java.util.logging.Filter)"><code>Logger.setFilter(j.u.l.Filter)</code></a>,</p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#setLevel(java.util.logging.Level)"><code>Logger.setLevel(j.u.l.Level)</code></a>,</p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#setParent(java.util.logging.Logger)"><code>Logger.setParent(j.u.l.Logger)</code></a>,</p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#setUseParentHandlers(boolean)"><code>Logger.setUseParentHandlers(boolean)</code></a>,</p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#addHandler(java.util.logging.Handler)"><code>Logger.addHandler(j.u.l.Handler)</code></a>,</p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Logger.html#removeHandler(java.util.logging.Handler)"><code>Logger.removeHandler(j.u.l.Handler)</code></a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The implementation of these methods depends upon the specific Log4j API implementation used.
+If you need to modify the configuration of the logging backend programmatically:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>either modify the logging backend configuration directly.
+See <a href="manual/customconfig.html" class="xref page">Programmatic Configuration</a> if you are using the <a href="manual/implementation.html" class="xref page">Log4j Core implementation</a>.</p>
+</li>
+<li>
+<p>or provide a custom <code>AbstractLoggerAdapter</code> that provides an implementation for these methods.
+See <a href="#log4j.jul.loggerAdapter"><code>log4j.jul.loggerAdapter</code></a> for details about custom adapters.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bridge-handler"><a class="anchor" href="#bridge-handler"></a>Using <code>Log4jBridgeHandler</code></h2>
+<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Are you a Spring Boot user?</div>
+<div class="paragraph">
+<p>Spring Boot will automatically configure <code>Log4jBridgeHandler</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If setting the <code>java.util.logging.manager</code> system property is not possible, the JUL-to-Log4j bridge offers an implementation of
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Handler.html"><code>j.u.l.Handler</code></a>
+abstract class, which redirects all log events to Log4j Core:
+<code>org.apache.logging.log4j.jul.Log4jBridgeHandler</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>Log4jBridgeHandler</code> requires Log4j Core as logging implementation and will fail with other Log4j API implementations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to use <code>Log4jBridgeHandler</code> you can either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>modify the default JUL configuration file <code>logging.properties</code> to only contain:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties"># Set Log4jBridgeHandler as only handler for all JUL loggers
+handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/LogManager.html">JRE documentation</a>
+for details about the format and location of the <code>logging.properties</code> file.</p>
+</div>
+</li>
+<li>
+<p>or call the <code>Log4jBridgeHandler.install()</code> method in your code.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Usage of <code>Log4jBridgeHandler</code> introduces a considerably higher overhead, since logging events need to traverse the entire JUL logging pipeline followed by the logging pipeline of the Log4j API implementation.</p>
+</div>
+<div class="paragraph">
+<p>Consider setting <a href="#bridge-handler-propagateLevels"><code>propagateLevels</code></a> to <code>true</code> to reduce the overhead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="bridge-handler-propagator"><a class="anchor" href="#bridge-handler-propagator"></a>Level propagators</h3>
+
+</div>
+<div class="sect2">
+<h3 id="bridge-handler-config"><a class="anchor" href="#bridge-handler-config"></a><code>Log4jBridgeHandler</code> configuration options</h3>
+<div class="paragraph">
+<p>You can tune the behavior of <code>Log4jBridgeHandler</code> by adding the following properties to the <code>logging.properties</code> configuration file, which are also available as parameters to the <code>install()</code> method call:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bridge-handler-appendSuffix"><a class="anchor" href="#bridge-handler-appendSuffix"></a><code>appendSuffix</code></h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. JUL to Log4j level conversion</caption>
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.jul.Log4jBridgeHandler.appendSuffix</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock"><code>install()</code> parameter</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>suffixToAppend</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Specifies the suffix to append to the name of all JUL loggers, which allows to differentiate JUL log messages from native Log4j API messages.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bridge-handler-propagateLevels"><a class="anchor" href="#bridge-handler-propagateLevels"></a><code>propagateLevels</code></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Property name</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock"><code>install()</code> parameter</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>propagateLevels</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The additional overhead of <code>Log4jBridgeHandler</code> can be especially heavy for <strong>disabled</strong> log statements.
+This is why you must ensure that log event filtering of the Log4j implementation and JUL are aligned.
+You can do it by either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>configuring JUL loggers with the same levels as the Log4j loggers,</p>
+</li>
+<li>
+<p>or setting this property to <code>true</code>, which will perform the synchronization automatically.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="common-configuration"><a class="anchor" href="#common-configuration"></a>Common configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Independently of the way you install the JUL-to-Log4j bridge, you can finely tune the behavior of the bridge using the following configuration properties.
+See <a href="manual/systemproperties.html" class="xref page">Configuration properties</a> for more details.</p>
+</div>
+<div class="sect3">
+<h4 id="log4j.jul.levelConverter"><a class="anchor" href="#log4j.jul.levelConverter"></a><code>log4j.jul.levelConverter</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JUL_LEVEL_CONVERTER</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;? extends LevelConverter&gt;</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j.internal.DefaultLevelConverter</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fully qualified name of an alternative <code>org.apache.logging.jul.tolog4j.spi.LevelConverter</code> implementation.</p>
+</div>
+<details>
+<summary class="title">Default level conversions</summary>
+<div class="content">
+<table id="default-level-conversions" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -377,101 +698,74 @@ Using the default <code>LevelConverter</code> implementation, custom logging lev
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#OFF"><code>OFF</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#OFF"><code>OFF</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#OFF">OFF</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OFF</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#SEVERE"><code>SEVERE</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ERROR"><code>ERROR</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#SEVERE">SEVERE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ERROR</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#WARNING"><code>WARNING</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN"><code>WARN</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#WARNING">WARNING</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WARN</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#OFF"><code>OFF</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#INFO"><code>INFO</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#INFO">INFO</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INFO</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#CONFIG"><code>CONFIG</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>CONFIG</code> level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#CONFIG">CONFIG</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>CONFIG</code> level with a numeric value of <code>450</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINE"><code>FINE</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#DEBUG"><code>DEBUG</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINE">FINE</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEBUG</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINER"><code>FINER</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#TRACE"><code>TRACE</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINER">FINER</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TRACE</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINEST"><code>FINEST</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>FINEST</code> level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#FINEST">FINEST</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom <code>FINEST</code> level with a numeric value of <code>700</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#ALL"><code>ALL</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#ALL"><code>ALL</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/Level.html#ALL">ALL</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ALL</code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</details>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_log4j_jdk_logging_bridge_handler"><a class="anchor" href="#_log4j_jdk_logging_bridge_handler"></a>Log4j JDK Logging Bridge Handler</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The LogManager is not always useable because you have to set a JVM wide effective system property - e.g.
-in web servers this is not possible if you are not the administrator.</p>
-</div>
-<div class="paragraph">
-<p>The <code>Log4jBridgeHandler</code> is an alternative that can be declaratively used via <code>logging.properties</code>.</p>
-</div>
-<div class="paragraph">
-<p>It is less performant than the LogManager but still okay to use: the LogManager replaces the JDK implementation, so your logging code (using JDK syntax) effectively directly uses log4j.
-When using the BridgeHandler the original JDK implementation along with its configuration (e.g.
-log levels) is still fully working but the log events are "written" via this handler to log4j as if you would have called log4j.Logger.debug() etc.;
-it is like a FileHandler but instead of writing to a file, it "writes" to log4j Loggers - thus there is some overhead compared to using LogManager.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_usage_2"><a class="anchor" href="#_usage_2"></a>Usage</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The JUL configuration file <code>logging.properties</code> needs the line</p>
-</div>
-<div class="paragraph">
-<p><code>handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler</code></p>
-</div>
-<div class="paragraph">
-<p>and JUL logs go to log4j2.
-Additionally, you typically want to use to following:</p>
-</div>
-<div class="paragraph">
-<p><code>org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels = true</code></p>
-</div>
-<div class="paragraph">
-<p>In a webapp on Tomcat (and maybe other servers, too), you may simply create a <code>WEB-INF/classes/logging.properties</code> file with above content.
-The bridge and the log levels defined in this file are only valid for your webapp and do <em>not</em> have any impact on the other webapps on the same Tomcat instance.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively you may call <code>Log4jBridgeHandler.install()</code> inside your webapp&#8217;s initialization code, e.g.
-inside <code>ServletContextListener</code> or a <code>ServletFilter</code> static-class-init.
-or <code>contextInitialized()</code>.</p>
-</div>
-<div class="admonitionblock important">
-<table>
+<div class="sect3">
+<h4 id="log4j.jul.loggerAdapter"><a class="anchor" href="#log4j.jul.loggerAdapter"></a><code>log4j.jul.loggerAdapter</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
 <tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Log levels of JDK should match the ones of log4j.
-You may do this manually or use the automatic level propagation via <code>Log4jBridgeHandler.propagateLevels = true</code>.
-</td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JUL_LOGGER_ADAPTER</code></p></td>
 </tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Class&lt;? extends AbstractLoggerAdapter&gt;</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code></p></td>
+</tr>
+</tbody>
 </table>
+<div class="paragraph">
+<p>Fully qualified class name of a custom <code>org.apache.logging.jul.tolog4j.spi.AbstractLoggerAdapter</code> implementation to use, which provides an implementation of the <code>j.u.l.Logger</code> mutator methods (e.g., <code>Logger.setLevel()</code>).</p>
+</div>
+<div class="paragraph">
+<p>By default <code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code> is used and the mutator methods are disabled.</p>
+</div>
 </div>
 </div>
 </div>

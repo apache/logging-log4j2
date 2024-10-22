@@ -241,7 +241,7 @@
     <a class="nav-link" href="../log4j-spring-cloud-config-client.html">Log4j Spring Cloud Configuration</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../log4j-jul.html">Log4j JDK Logging Adapter</a>
+    <a class="nav-link" href="../log4j-jul.html">JUL-to-Log4j bridge</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../log4j-to-jul.html">Log4j to JUL Adapter</a>
@@ -872,7 +872,7 @@ And if so, which ones?</strong></p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-jul&lt;/artifactId&gt;
+  &lt;artifactId&gt;jul-to-log4j&lt;/artifactId&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -884,7 +884,7 @@ And if so, which ones?</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-jul'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:jul-to-log4j'</code></pre>
 </div>
 </div>
 </div>
@@ -895,7 +895,7 @@ And if so, which ones?</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">-Djava.util.logging.manager=org.apache.logging.jul.tolog4j.LogManager</code></pre>
 </div>
 </div>
 <div class="paragraph">
