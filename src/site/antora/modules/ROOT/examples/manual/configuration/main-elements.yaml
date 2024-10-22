@@ -35,8 +35,8 @@ Configuration:
         - ref: "CONSOLE"
           level: "WARN"
         - ref: "MAIN"
-      Logger: # <5>
-        name: "org.example"
-        level: "DEBUG"
-        AppenderRef:
-          ref: "DEBUG_LOG"
+    Logger: # <5>
+      name: "org.example"
+      level: "DEBUG"
+      AppenderRef:
+        ref: "DEBUG_LOG"
