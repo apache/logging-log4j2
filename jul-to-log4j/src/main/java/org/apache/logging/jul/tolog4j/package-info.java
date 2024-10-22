@@ -16,7 +16,7 @@
  */
 @Export
 @Version("3.0.0")
-package org.apache.logging.log4j.jul;
+package org.apache.logging.jul.tolog4j;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

@@ -232,6 +232,7 @@
 
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
+    <module>jul-to-log4j</module>
     <module>log4j-async-logger</module>
     <module>log4j-compress</module>
     <module>log4j-config-jackson</module>
@@ -376,6 +377,12 @@
       <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
            Modules that are not used anywhere (e.g., `log4j-core-its`, `log4j-osgi-test`) should not be placed here.
            Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>jul-to-log4j</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -572,12 +579,6 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-web</artifactId>
         <version>${project.version}</version>
       </dependency>
 
