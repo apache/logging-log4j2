@@ -64,7 +64,7 @@
 
     <!-- Dependency versions -->
     <slf4j2.version>2.0.16</slf4j2.version>
-    <wiremock.version>3.9.1</wiremock.version>
+    <wiremock.version>3.9.2</wiremock.version>
   </properties>
 
   <dependencyManagement>
