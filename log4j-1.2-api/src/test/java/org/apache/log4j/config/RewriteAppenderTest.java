@@ -16,9 +16,9 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -32,22 +32,22 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test RewriteAppender
  */
 public class RewriteAppenderTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-rewrite.xml");
     }
 
-    @After
+    @AfterEach
     public void after() {
         ThreadContext.clearMap();
     }
@@ -68,13 +68,12 @@ public class RewriteAppenderTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
+        assertNotNull(eventAppender, "No Event Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
-        assertNotNull("No properties in the event", events.get(0).getProperties());
-        assertTrue("Key was not inserted", events.get(0).getProperties().containsKey("key2"));
-        assertEquals(
-                "Key value is incorrect", "Log4j", events.get(0).getProperties().get("key2"));
-        assertTrue("Timestamp is before point of logging", events.get(0).getTimeStamp() >= logTime);
+        assertTrue(events != null && events.size() > 0, "No events");
+        assertNotNull(events.get(0).getProperties(), "No properties in the event");
+        assertTrue(events.get(0).getProperties().containsKey("key2"), "Key was not inserted");
+        assertEquals("Log4j", events.get(0).getProperties().get("key2"), "Key value is incorrect");
+        assertTrue(events.get(0).getTimeStamp() >= logTime, "Timestamp is before point of logging");
     }
 }

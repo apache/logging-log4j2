@@ -16,8 +16,8 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests Jira3410.
@@ -58,23 +58,23 @@ public class LoggerJira3410Test {
                     listAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
                 }
             }
-            assertNotNull("No Message Appender", listAppender);
+            assertNotNull(listAppender, "No Message Appender");
             final List<String> messages = listAppender.getMessages();
-            assertTrue("No messages", messages != null && !messages.isEmpty());
+            assertTrue(messages != null && !messages.isEmpty(), "No messages");
             final String msg0 = messages.get(0);
             final String msg1 = messages.get(1);
             final String msg2 = messages.get(2);
             // TODO Should be 1, not "1".
             // TODO Where are the {} characters?
-            assertTrue(msg0, msg0.trim().endsWith(Long.MAX_VALUE + "=\"1\""));
+            assertTrue(msg0.trim().endsWith(Long.MAX_VALUE + "=\"1\""), msg0);
             //
             // TODO Should be 1, not "1".
             // TODO Should be null, not "null".
             // TODO Where are the {} characters?
             // TODO Where is the , characters?
-            assertTrue(msg1, msg1.trim().endsWith("null=\"null\" " + Long.MAX_VALUE + "=\"1\""));
+            assertTrue(msg1.trim().endsWith("null=\"null\" " + Long.MAX_VALUE + "=\"1\""), msg1);
             //
-            assertTrue(msg2, msg2.trim().endsWith("{null=null, " + Long.MAX_VALUE + "=1}"));
+            assertTrue(msg2.trim().endsWith("{null=null, " + Long.MAX_VALUE + "=1}"), msg2);
         }
     }
 }
