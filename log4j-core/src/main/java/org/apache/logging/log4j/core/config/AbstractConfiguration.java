@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -778,8 +776,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
-        final Layout<? extends Serializable> layout = DefaultConfiguration.createDefaultLayout();
-        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
+        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(DefaultLayout.INSTANCE);
         appender.start();
         addAppender(appender);
         final LoggerConfig rootLoggerConfig = getRootLogger();
