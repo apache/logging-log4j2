@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.layout.AbstractLayout;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
  * logging level by setting the system property "org.apache.logging.log4j.level" to a level name. If you do not
@@ -49,4 +61,60 @@ public class DefaultConfiguration extends AbstractConfiguration {
 
     @Override
     protected void doConfigure() {}
+
+    static Layout<? extends String> createDefaultLayout() {
+        return new DefaultLayout();
+    }
+
+    /**
+     * A simple layout used only by {@link DefaultConfiguration}
+     * <p>
+     *   This layout allows to create applications that don't contain {@link org.apache.logging.log4j.core.layout.PatternLayout}
+     *   and all its patterns, e.g. GraalVM applications.
+     * </p>
+     */
+    private static final class DefaultLayout extends AbstractLayout<String> {
+
+        private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+        private final FixedDateFormat dateFormat = FixedDateFormat.create(FixedFormat.ABSOLUTE);
+
+        private DefaultLayout() {
+            super(null, EMPTY_BYTE_ARRAY, EMPTY_BYTE_ARRAY);
+        }
+
+        @Override
+        public String toSerializable(LogEvent event) {
+            try (Writer sw = new StringBuilderWriter();
+                    PrintWriter pw = new PrintWriter(sw)) {
+                pw.append(dateFormat.format(event.getTimeMillis()))
+                        .append(" [")
+                        .append(event.getThreadName())
+                        .append("] ")
+                        .append(event.getLevel().toString())
+                        .append(" ")
+                        .append(event.getLoggerName())
+                        .append(" - ")
+                        .append(event.getMessage().getFormattedMessage())
+                        .append("\n");
+                Throwable throwable = event.getThrown();
+                if (throwable != null) {
+                    throwable.printStackTrace(pw);
+                }
+                return sw.toString();
+            } catch (IOException e) {
+                throw new LoggingException(e);
+            }
+        }
+
+        @Override
+        public byte[] toByteArray(LogEvent event) {
+            return toSerializable(event).getBytes(Charset.defaultCharset());
+        }
+
+        @Override
+        public String getContentType() {
+            return "text/plain";
+        }
+    }
 }
