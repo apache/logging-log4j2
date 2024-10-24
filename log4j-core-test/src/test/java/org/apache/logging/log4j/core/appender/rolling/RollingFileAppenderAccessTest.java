@@ -21,8 +21,8 @@ import java.io.IOException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class RollingFileAppenderAccessTest {
 
@@ -49,8 +49,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            Assertions.assertNotNull(manager.getRolloverStrategy());
+            Assertions.assertNotNull(manager.getTriggeringPolicy());
         }
     }
 
@@ -84,8 +84,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            Assertions.assertNotNull(manager.getRolloverStrategy());
+            Assertions.assertNotNull(manager.getTriggeringPolicy());
         }
     }
 }

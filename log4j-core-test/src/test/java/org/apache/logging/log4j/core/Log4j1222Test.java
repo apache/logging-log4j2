@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +50,9 @@ public class Log4j1222Test {
 
         private void trigger() {
             Holder.LOGGER.info("Attempt to trigger");
-            assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof TestLogger);
+            assertTrue(
+                    Holder.LOGGER instanceof TestLogger,
+                    "Logger is of type " + Holder.LOGGER.getClass().getName());
             if (((TestLogger) Holder.LOGGER).getEntries().isEmpty()) {
                 System.out.println("Logger contains no messages");
             }

@@ -20,8 +20,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
 
@@ -40,7 +40,7 @@ public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
                 .build();
         // @formatter:on
         try (final Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
+            Assertions.assertFalse(conn.isClosed());
         }
     }
 
@@ -54,7 +54,7 @@ public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
                 .build();
         // @formatter:on
         try (final Connection conn = source.getConnection()) {
-            Assert.assertFalse(conn.isClosed());
+            Assertions.assertFalse(conn.isClosed());
         }
     }
 }
