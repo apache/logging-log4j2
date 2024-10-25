@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+@NullMarked
+package org.apache.logging.log4j.core.util.internal.instant;
 
-/**
- * Log4j date and time formatting classes.
- *
- * @deprecated Starting with version {@code 2.25.0}, these classes are assumed to be internal and planned to be moved to an internal package in the next major release.
- */
-@Deprecated
-@Export
-@Version("2.21.2")
-package org.apache.logging.log4j.core.util.datetime;
-
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import org.jspecify.annotations.NullMarked;

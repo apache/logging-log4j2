@@ -6,7 +6,7 @@
   <issue id="2322" link="https://github.com/apache/logging-log4j2/pull/2322"/>
   <description format="asciidoc">
     Add
-    xref:manual/statusLogger.adoc#log4j2.statusLoggerDateFormatZone[`log4j2.statusLoggerDateFormatZone`]
+    xref:manual/status-logger.adoc#log4j2.statusLoggerDateFormatZone[`log4j2.statusLoggerDateFormatZone`]
     system property to set the time-zone `StatusLogger` uses to format `java.time.Instant`.
     Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures.
   </description>

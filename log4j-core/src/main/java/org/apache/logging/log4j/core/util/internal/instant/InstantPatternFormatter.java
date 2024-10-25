@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util.internal;
+package org.apache.logging.log4j.core.util.internal.instant;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.TimeZone;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Contract for formatting {@link Instant}s using a date & time formatting pattern.
@@ -30,6 +32,8 @@ import org.apache.logging.log4j.core.util.Constants;
  * @since 2.25.0
  */
 public interface InstantPatternFormatter extends InstantFormatter {
+
+    boolean LEGACY_FORMATTERS_ENABLED = "legacy".equalsIgnoreCase(PropertiesUtil.getProperties().getStringProperty("log4j2.instant.formatter"));
 
     String getPattern();
 
@@ -50,6 +54,8 @@ public interface InstantPatternFormatter extends InstantFormatter {
         private TimeZone timeZone = TimeZone.getDefault();
 
         private boolean cachingEnabled = Constants.ENABLE_THREADLOCALS;
+
+        private boolean legacyFormattersEnabled = LEGACY_FORMATTERS_ENABLED;
 
         private Builder() {}
 
@@ -89,13 +95,39 @@ public interface InstantPatternFormatter extends InstantFormatter {
             return this;
         }
 
+        public boolean isLegacyFormattersEnabled() {
+            return legacyFormattersEnabled;
+        }
+
+        public Builder setLegacyFormattersEnabled(boolean legacyFormattersEnabled) {
+            this.legacyFormattersEnabled = legacyFormattersEnabled;
+            return this;
+        }
+
         public InstantPatternFormatter build() {
-            validate();
+
+            // Validate arguments
+            requireNonNull(locale, "locale");
+            requireNonNull(timeZone, "timeZone");
+
+            // Return a literal formatter if the pattern is blank
+            if (isBlank(pattern)) {
+                return createLiteralFormatter(pattern, locale, timeZone);
+            }
+
+            // Return legacy formatters, if requested
+            if (legacyFormattersEnabled) {
+                return new InstantPatternLegacyFormatter(pattern, locale, timeZone);
+            }
+
+            // Create the formatter, and return it, if caching is disabled
             final InstantPatternDynamicFormatter formatter =
                     new InstantPatternDynamicFormatter(pattern, locale, timeZone);
             if (!cachingEnabled) {
                 return formatter;
             }
+
+            // Wrap the formatter with caching, if necessary
             switch (formatter.getPrecision()) {
 
                     // It is not worth caching when a precision equal to or higher than microsecond is requested
@@ -113,12 +145,35 @@ public interface InstantPatternFormatter extends InstantFormatter {
             }
         }
 
-        private void validate() {
-            if (isBlank(pattern)) {
-                throw new IllegalArgumentException("blank pattern");
-            }
-            requireNonNull(locale, "locale");
-            requireNonNull(timeZone, "timeZone");
+        private static InstantPatternFormatter createLiteralFormatter(
+                final String literal, final Locale locale, final TimeZone timeZone) {
+            return new InstantPatternFormatter() {
+
+                @Override
+                public String getPattern() {
+                    return literal;
+                }
+
+                @Override
+                public Locale getLocale() {
+                    return locale;
+                }
+
+                @Override
+                public TimeZone getTimeZone() {
+                    return timeZone;
+                }
+
+                @Override
+                public ChronoUnit getPrecision() {
+                    return ChronoUnit.FOREVER;
+                }
+
+                @Override
+                public void formatTo(final StringBuilder buffer, final Instant instant) {
+                    buffer.append(literal);
+                }
+            };
         }
     }
 }

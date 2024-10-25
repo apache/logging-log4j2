@@ -16,10 +16,8 @@
  */
 package org.apache.logging.log4j.core.util.datetime;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +28,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
  * in {@link FixedFormat}. For any other date patterns use {@link FastDateFormat}.
  *
- * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be moved to an internal package in the next major release.
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be removed in the next major release.
  */
 @Deprecated
 @ProviderType
@@ -49,13 +47,13 @@ public class FixedDateFormat {
          */
         ABSOLUTE("HH:mm:ss,SSS", null, 0, ':', 1, ',', 1, 3, null),
         /**
-         * ABSOLUTE time format with microsecond precision: {@code "HH:mm:ss,SSSSSS"}.
+         * ABSOLUTE time format with microsecond precision: {@code "HH:mm:ss,nnnnnn"}.
          */
-        ABSOLUTE_MICROS("HH:mm:ss,SSSSSS", null, 0, ':', 1, ',', 1, 6, null),
+        ABSOLUTE_MICROS("HH:mm:ss,nnnnnn", null, 0, ':', 1, ',', 1, 6, null),
         /**
-         * ABSOLUTE time format with nanosecond precision: {@code "HH:mm:ss,SSSSSSSSS"}.
+         * ABSOLUTE time format with nanosecond precision: {@code "HH:mm:ss,nnnnnnnnn"}.
          */
-        ABSOLUTE_NANOS("HH:mm:ss,SSSSSSSSS", null, 0, ':', 1, ',', 1, 9, null),
+        ABSOLUTE_NANOS("HH:mm:ss,nnnnnnnnn", null, 0, ':', 1, ',', 1, 9, null),
 
         /**
          * ABSOLUTE time format variation with period separator: {@code "HH:mm:ss.SSS"}.
@@ -82,13 +80,13 @@ public class FixedDateFormat {
          */
         DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 3, null),
         /**
-         * DEFAULT time format with microsecond precision: {@code "yyyy-MM-dd HH:mm:ss,SSSSSS"}.
+         * DEFAULT time format with microsecond precision: {@code "yyyy-MM-dd HH:mm:ss,nnnnnn"}.
          */
-        DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,SSSSSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 6, null),
+        DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,nnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 6, null),
         /**
-         * DEFAULT time format with nanosecond precision: {@code "yyyy-MM-dd HH:mm:ss,SSSSSSSSS"}.
+         * DEFAULT time format with nanosecond precision: {@code "yyyy-MM-dd HH:mm:ss,nnnnnnnnn"}.
          */
-        DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,SSSSSSSSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 9, null),
+        DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,nnnnnnnnn", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 9, null),
 
         /**
          * DEFAULT time format variation with period separator: {@code "yyyy-MM-dd HH:mm:ss.SSS"}.
@@ -143,9 +141,9 @@ public class FixedDateFormat {
         ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 3, null),
 
         /**
-         * ISO8601 time format with support for microsecond precision: {@code "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"}.
+         * ISO8601 time format with support for microsecond precision: {@code "yyyy-MM-dd'T'HH:mm:ss.nnnnnn"}.
          */
-        ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 6, null),
+        ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.nnnnnn", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 6, null),
 
         /**
          * American date/time format with 2-digit year: {@code "dd/MM/yy HH:mm:ss.SSS"}.
@@ -159,7 +157,7 @@ public class FixedDateFormat {
 
         private static final String DEFAULT_SECOND_FRACTION_PATTERN = "SSS";
         private static final int MILLI_FRACTION_DIGITS = DEFAULT_SECOND_FRACTION_PATTERN.length();
-        private static final char SECOND_FRACTION_PATTERN = 'S';
+        private static final char SECOND_FRACTION_PATTERN = 'n';
 
         private final String pattern;
         private final String datePattern;
@@ -573,22 +571,22 @@ public class FixedDateFormat {
     }
 
     private long calcMidnightMillis(final long time, final int addDays) {
-        final ZoneId zoneId = timeZone.toZoneId();
-        final ZonedDateTime zonedInstant = java.time.Instant.ofEpochMilli(time).atZone(zoneId);
-        return LocalDate.from(zonedInstant)
-                .atStartOfDay()
-                .plusDays(addDays)
-                .atZone(zoneId)
-                .toInstant()
-                .toEpochMilli();
+        final Calendar cal = Calendar.getInstance(timeZone);
+        cal.setTimeInMillis(time);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DATE, addDays);
+        return cal.getTimeInMillis();
     }
 
     private void updateDaylightSavingTime() {
         Arrays.fill(dstOffsets, 0);
-        final long oneHourMillis = TimeUnit.HOURS.toMillis(1);
-        if (timeZone.getOffset(midnightToday) != timeZone.getOffset(midnightToday + 23 * oneHourMillis)) {
+        final int ONE_HOUR = (int) TimeUnit.HOURS.toMillis(1);
+        if (timeZone.getOffset(midnightToday) != timeZone.getOffset(midnightToday + 23 * ONE_HOUR)) {
             for (int i = 0; i < dstOffsets.length; i++) {
-                final long time = midnightToday + i * oneHourMillis;
+                final long time = midnightToday + i * ONE_HOUR;
                 dstOffsets[i] = timeZone.getOffset(time) - timeZone.getRawOffset();
             }
             if (dstOffsets[0] > dstOffsets[23]) { // clock is moved backwards.

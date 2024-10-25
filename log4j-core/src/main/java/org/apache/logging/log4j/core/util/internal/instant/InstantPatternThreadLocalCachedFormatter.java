@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util.internal;
+package org.apache.logging.log4j.core.util.internal.instant;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,14 +23,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.function.Function;
 import org.apache.logging.log4j.core.time.Instant;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * An {@link InstantFormatter} wrapper caching the last formatted output in a {@link ThreadLocal} and trying to reuse it.
  *
  * @since 2.25.0
  */
-@NullMarked
 final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFormatter {
 
     private final InstantPatternFormatter formatter;

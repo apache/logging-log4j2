@@ -251,6 +251,20 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.ht
 implementation to be used by all loggers.
 // end::flow-tracing[]
 
+[id=log4j2.instant.formatter]
+== `log4j2.instant.formatter`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_INSTANT_FORMATTER`
+| Type          | `String`
+|===
+
+Configures the date & time formatter used for log event instants.
+The following values are accepted:
+
+`legacy`:: Enables the usage of legacy formatters (i.e., link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html[`FixedDateFormat`] and link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html[`FastDateFormat`])
+
 [id=log4j2.loggerContextStacktraceOnStart]
 == `log4j2.loggerContextStacktraceOnStart`
 

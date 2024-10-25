@@ -20,9 +20,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.util.internal.InstantFormatter;
-import org.apache.logging.log4j.core.util.internal.InstantNumberFormatter;
-import org.apache.logging.log4j.core.util.internal.InstantPatternFormatter;
+import org.apache.logging.log4j.core.util.internal.instant.InstantFormatter;
+import org.apache.logging.log4j.core.util.internal.instant.InstantNumberFormatter;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
