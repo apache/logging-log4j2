@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamic
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DynamicPatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -253,13 +254,17 @@ public class InstantPatternDynamicFormatterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-            strings = {
+    @MethodSource("hourPrecisionPatterns")
+    void should_recognize_patterns_of_hour_precision(final String pattern) {
+        assertPatternPrecision(pattern, ChronoUnit.HOURS);
+    }
+
+    static List<String> hourPrecisionPatterns() {
+        final List<String> java8Patterns = new ArrayList<>(asList(
                 // Basics
                 "H",
                 "HH",
                 "a",
-                "B",
                 "h",
                 "K",
                 "k",
@@ -269,7 +274,6 @@ public class InstantPatternDynamicFormatterTest {
                 "X",
                 "O",
                 "z",
-                "v",
                 "VV",
                 // Mixed with other stuff
                 "yyyy-MM-dd HH",
@@ -279,10 +283,12 @@ public class InstantPatternDynamicFormatterTest {
                 "ddHH",
                 // Single-quoted text containing nanosecond and millisecond directives
                 "yyyy-MM-dd'S'HH",
-                "yyyy-MM-dd'n'HH"
-            })
-    void should_recognize_patterns_of_hour_precision(final String pattern) {
-        assertPatternPrecision(pattern, ChronoUnit.HOURS);
+                "yyyy-MM-dd'n'HH"));
+        if (Constants.JAVA_MAJOR_VERSION > 8) {
+            java8Patterns.add("B");
+            java8Patterns.add("v");
+        }
+        return java8Patterns;
     }
 
     private static void assertPatternPrecision(final String pattern, final ChronoUnit expectedPrecision) {
