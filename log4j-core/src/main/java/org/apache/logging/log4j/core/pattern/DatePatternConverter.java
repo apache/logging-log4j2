@@ -51,67 +51,23 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
-    private abstract static class Formatter<F extends InstantFormatter> {
-
-        final F delegate;
-
-        private Formatter(final F delegate) {
-            this.delegate = delegate;
-        }
-
-        @Nullable
-        public String toPattern() {
-            return null;
-        }
-
-        public TimeZone getTimeZone() {
-            return TimeZone.getDefault();
-        }
-    }
-
-    private static final class PatternFormatter extends Formatter<InstantPatternFormatter> {
-
-        private PatternFormatter(final InstantPatternFormatter delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public String toPattern() {
-            return delegate.getPattern();
-        }
-
-        @Override
-        public TimeZone getTimeZone() {
-            return delegate.getTimeZone();
-        }
-    }
-
-    private static final class NumberFormatter extends Formatter<InstantNumberFormatter> {
-
-        private NumberFormatter(final InstantNumberFormatter delegate) {
-            super(delegate);
-        }
-    }
-
-    private final Formatter<?> formatter;
+    private final InstantFormatter formatter;
 
     private DatePatternConverter(@Nullable final String[] options) {
         super("Date", "date");
         this.formatter = createFormatter(options);
     }
 
-    private static Formatter<?> createFormatter(@Nullable final String[] options) {
+    private static InstantFormatter createFormatter(@Nullable final String[] options) {
         try {
             return createFormatterUnsafely(options);
         } catch (final Exception error) {
             logOptionReadFailure(options, error, "failed for options: {}, falling back to the default instance");
         }
-        final InstantPatternFormatter delegateFormatter =
-                InstantPatternFormatter.newBuilder().setPattern(DEFAULT_PATTERN).build();
-        return new PatternFormatter(delegateFormatter);
+        return InstantPatternFormatter.newBuilder().setPattern(DEFAULT_PATTERN).build();
     }
 
-    private static Formatter<?> createFormatterUnsafely(@Nullable final String[] options) {
+    private static InstantFormatter createFormatterUnsafely(@Nullable final String[] options) {
 
         // Read options
         final String pattern = readPattern(options);
@@ -120,20 +76,19 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         // Is it epoch seconds?
         if ("UNIX".equals(pattern)) {
-            return new NumberFormatter(InstantNumberFormatter.EPOCH_SECONDS_ROUNDED);
+            return InstantNumberFormatter.EPOCH_SECONDS_ROUNDED;
         }
 
         // Is it epoch milliseconds?
         if ("UNIX_MILLIS".equals(pattern)) {
-            return new NumberFormatter(InstantNumberFormatter.EPOCH_MILLIS_ROUNDED);
+            return InstantNumberFormatter.EPOCH_MILLIS_ROUNDED;
         }
 
-        final InstantPatternFormatter delegateFormatter = InstantPatternFormatter.newBuilder()
+        return InstantPatternFormatter.newBuilder()
                 .setPattern(pattern)
                 .setTimeZone(timeZone)
                 .setLocale(locale)
                 .build();
-        return new PatternFormatter(delegateFormatter);
     }
 
     private static String readPattern(@Nullable final String[] options) {
@@ -320,7 +275,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     @Deprecated
     public void format(final Instant instant, final StringBuilder buffer) {
-        formatter.delegate.formatTo(buffer, instant);
+        formatter.formatTo(buffer, instant);
     }
 
     @Override
@@ -361,13 +316,17 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @return the pattern string describing this date format or {@code null} if the format does not have a pattern.
      */
     public String getPattern() {
-        return formatter.toPattern();
+        return (formatter instanceof InstantPatternFormatter)
+                ? ((InstantPatternFormatter) formatter).getPattern()
+                : null;
     }
 
     /**
      * @return the time zone used by this date format
      */
     public TimeZone getTimeZone() {
-        return formatter.getTimeZone();
+        return (formatter instanceof InstantPatternFormatter)
+                ? ((InstantPatternFormatter) formatter).getTimeZone()
+                : null;
     }
 }
