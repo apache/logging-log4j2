@@ -43,7 +43,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -54,7 +53,6 @@ import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.CoreProperties.ConfigurationProperties;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
@@ -790,11 +788,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
-        final Layout layout = PatternLayout.newBuilder()
-                .setPattern(DefaultConfiguration.DEFAULT_PATTERN)
-                .setConfiguration(this)
-                .build();
-        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
+        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(DefaultLayout.INSTANCE);
         appender.start();
         addAppender(appender);
         final LoggerConfig rootLoggerConfig = getRootLogger();
