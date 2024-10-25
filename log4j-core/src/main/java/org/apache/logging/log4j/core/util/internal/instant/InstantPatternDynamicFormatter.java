@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * An {@link InstantPatternFormatter} that uses {@link DateTimeFormatter} under the hood.
- * The pattern is analyzed and parts that are <b>not</b> of {@value InstantPatternDynamicFormatter#PRECISION_THRESHOLD} precision are precomputed, cached, and updated once every {@value InstantPatternDynamicFormatter#PRECISION_THRESHOLD}.
+ * The pattern is analyzed and parts that require a precision lower than or equal to {@value InstantPatternDynamicFormatter#PRECISION_THRESHOLD} are precomputed, cached, and updated once every {@value InstantPatternDynamicFormatter#PRECISION_THRESHOLD}.
  * The rest is computed dynamically.
  * <p>
  * For instance, given the pattern {@code yyyy-MM-dd'T'HH:mm:ss.SSSX}, the generated formatter will
