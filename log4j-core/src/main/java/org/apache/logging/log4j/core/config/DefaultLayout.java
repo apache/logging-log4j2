@@ -30,6 +30,8 @@ import org.apache.logging.log4j.status.StatusData;
  *   This layout allows to create applications that don't contain {@link org.apache.logging.log4j.core.layout.PatternLayout}
  *   and all its patterns, e.g. GraalVM applications.
  * </p>
+ *
+ * @since 2.25.0
  */
 final class DefaultLayout implements StringLayout {
 
