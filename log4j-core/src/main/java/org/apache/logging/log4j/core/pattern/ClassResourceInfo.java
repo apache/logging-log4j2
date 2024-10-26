@@ -26,7 +26,11 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final String text;
+    private final String exactnessPrefix;
+
+    private final String location;
+
+    private final String version;
 
     final Class<?> clazz;
 
@@ -34,7 +38,9 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.text = "~[?:?]";
+        this.exactnessPrefix = "~";
+        this.location = "?";
+        this.version = "?";
         this.clazz = null;
     }
 
@@ -44,14 +50,9 @@ final class ClassResourceInfo {
      */
     ClassResourceInfo(final Class<?> clazz, final boolean exact) {
         this.clazz = clazz;
-        this.text = getText(clazz, exact);
-    }
-
-    private static String getText(final Class<?> clazz, final boolean exact) {
-        final String exactnessPrefix = exact ? "" : "~";
-        final String location = getLocation(clazz);
-        final String version = getVersion(clazz);
-        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
+        this.exactnessPrefix = exact ? "" : "~";
+        this.location = getLocation(clazz);
+        this.version = getVersion(clazz);
     }
 
     private static String getLocation(final Class<?> clazz) {
@@ -87,6 +88,6 @@ final class ClassResourceInfo {
 
     @Override
     public String toString() {
-        return text;
+        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
     }
 }

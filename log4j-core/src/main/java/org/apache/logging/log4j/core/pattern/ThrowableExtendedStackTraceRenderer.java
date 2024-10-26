@@ -16,18 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
 import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * {@link ThrowableStackTraceRenderer} variant where the rendered {@link StackTraceElement}s are enriched with the enclosing JAR file and its version information, if available.
@@ -105,12 +107,8 @@ final class ThrowableExtendedStackTraceRenderer
             // But we need the associated `Class<?>` to extract its resource information, i.e., JAR file and version.
             // We are capturing the current stack to find suitable class loaders.
             // We will use this as a bootstrap to go from a class name in a stack trace to a `Class<?>`.
-            final Map<String, ClassResourceInfo> classResourceInfoByName =
-                    StackLocatorUtil.getCurrentStackTrace().stream()
-                            .collect(Collectors.toMap(
-                                    Class::getName,
-                                    clazz -> new ClassResourceInfo(clazz, true),
-                                    (classResourceInfo1, classResourceInfo2) -> classResourceInfo1));
+            final Deque<Class<?>> rootStackTrace = StackLocatorUtil.getCurrentStackTrace();
+            final Map<String, ClassResourceInfo> classResourceInfoByName = new HashMap<>();
 
             // Walk over the causal chain
             final Set<Throwable> visitedThrowables = new HashSet<>();
@@ -130,7 +128,9 @@ final class ThrowableExtendedStackTraceRenderer
                     continue;
                 }
 
+                Class<?> clazz = rootStackTrace.isEmpty() ? null : rootStackTrace.peekLast();
                 ClassLoader lastLoader = null;
+                ClassResourceInfo classResourceInfo;
                 final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
                 for (int throwableStackIndex = metadata.stackLength - 1;
                         throwableStackIndex >= 0;
@@ -139,20 +139,29 @@ final class ThrowableExtendedStackTraceRenderer
                     // Skip if the current class name is either known, or already visited and is unknown
                     final StackTraceElement stackTraceElement = stackTraceElements[throwableStackIndex];
                     final String stackTraceElementClassName = stackTraceElement.getClassName();
-                    ClassResourceInfo classResourceInfo = classResourceInfoByName.get(stackTraceElementClassName);
-                    if (classResourceInfo != null) {
-                        if (classResourceInfo.clazz != null) {
-                            lastLoader = classResourceInfo.clazz.getClassLoader();
+                    if (clazz != null && stackTraceElementClassName.equals(clazz.getName())) {
+                        classResourceInfo = new ClassResourceInfo(clazz, true);
+                        classResourceInfoByName.put(clazz.getName(), classResourceInfo);
+                        lastLoader = classResourceInfo.clazz.getClassLoader();
+                        rootStackTrace.pollLast();
+                        clazz = rootStackTrace.peekLast();
+                    } else {
+                        classResourceInfo = classResourceInfoByName.get(stackTraceElementClassName);
+                        if (classResourceInfo != null) {
+                            if (classResourceInfo.clazz != null) {
+                                lastLoader = classResourceInfo.clazz.getClassLoader();
+                            }
+                        } else {
+                            final Class<?> stackTraceElementClass = loadClass(lastLoader, stackTraceElementClassName);
+                            classResourceInfo = stackTraceElementClass != null
+                                    ? new ClassResourceInfo(stackTraceElementClass, false)
+                                    : ClassResourceInfo.UNKNOWN;
+                            classResourceInfoByName.put(stackTraceElementClassName, classResourceInfo);
+                            if (classResourceInfo.clazz != null) {
+                                lastLoader = classResourceInfo.clazz.getClassLoader();
+                            }
                         }
-                        continue;
                     }
-
-                    // Try to determine the stack trace element class, and register the result to the lookup table
-                    final Class<?> stackTraceElementClass = loadClass(lastLoader, stackTraceElementClassName);
-                    classResourceInfo = stackTraceElementClass != null
-                            ? new ClassResourceInfo(stackTraceElementClass, false)
-                            : ClassResourceInfo.UNKNOWN;
-                    classResourceInfoByName.put(stackTraceElementClassName, classResourceInfo);
                 }
             }
             return classResourceInfoByName;
