@@ -50,7 +50,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @since 2.25.0
  */
-public final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
+final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
     static final ChronoUnit PRECISION_THRESHOLD = ChronoUnit.MINUTES;
 

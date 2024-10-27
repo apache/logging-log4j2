@@ -29,7 +29,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 /**
  * Compares {@link DateTimeFormatter} efficiency for formatting the {@code ss.SSS} singleton versus formatting the {@code ss}, {@code .}, and {@code SSS} sequence.
- * This comparison is influential on the sequence merging strategies of {@link org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter}.
+ * This comparison is influential on the sequence merging strategies of {@code InstantPatternDynamicFormatter}.
  */
 @State(Scope.Thread)
 public class InstantPatternDynamicFormatterSequencingBenchmark {

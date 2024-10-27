@@ -29,7 +29,6 @@ import java.util.stream.LongStream;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDatePrinter;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -92,7 +91,7 @@ public class InstantPatternFormatterBenchmark {
         if (TimeUnit.MINUTES.toMillis(1) <= offMillis) {
             final String message = String.format(
                     "instant samples must be of the same week to exploit the `%s` caching",
-                    InstantPatternDynamicFormatter.class.getSimpleName());
+                    InstantPatternFormatter.class.getSimpleName());
             throw new IllegalStateException(message);
         }
     }
