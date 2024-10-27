@@ -82,9 +82,14 @@ public class ApiLogger extends Logger {
 
     @Override
     public Level getLevel() {
-        // Returns the effective level instead of the configured one.
-        // The configured level is not accessible through Log4j API.
-        return LevelTranslator.toJavaLevel(logger.getLevel());
+        // The configured level is NOT available through the Log4j API.
+        // Some libraries, however, rely on the following assertion:
+        //
+        // logger.setLevel(level);
+        // assert level.equals(logger.getLevel());
+        //
+        // See https://github.com/apache/logging-log4j2/issues/3119 for more details.
+        return super.getLevel();
     }
 
     @Override
@@ -93,12 +98,20 @@ public class ApiLogger extends Logger {
                 .error(
                         "Cannot set JUL log level through log4j-api: " + "ignoring call to Logger.setLevel({})",
                         newLevel);
+        // Some libraries rely on the following assertion:
+        //
+        // logger.setLevel(level);
+        // assert level.equals(logger.getLevel());
+        //
+        // See https://github.com/apache/logging-log4j2/issues/3119 for more details.
+        doSetLevel(newLevel);
     }
 
     /**
-     * Provides access to {@link Logger#setLevel(java.util.logging.Level)}. This method should only be used by child
-     * classes.
-     *
+     * Provides access to {@link Logger#setLevel(java.util.logging.Level)}.
+     * <p>
+     *   This method should be called by all {@link #setLevel} implementations to check permissions.
+     * </p>
      * @see Logger#setLevel(java.util.logging.Level)
      */
     protected void doSetLevel(final Level newLevel) throws SecurityException {

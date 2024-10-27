@@ -33,18 +33,40 @@ import org.junit.Test;
  */
 public abstract class AbstractLoggerTest {
     public static final String LOGGER_NAME = "Test";
+
+    static final java.util.logging.Level[] LEVELS = new java.util.logging.Level[] {
+        java.util.logging.Level.ALL,
+        java.util.logging.Level.FINEST,
+        java.util.logging.Level.FINER,
+        java.util.logging.Level.FINE,
+        java.util.logging.Level.CONFIG,
+        java.util.logging.Level.INFO,
+        java.util.logging.Level.WARNING,
+        java.util.logging.Level.SEVERE,
+        java.util.logging.Level.OFF
+    };
+
+    static java.util.logging.Level getEffectiveLevel(final Logger logger) {
+        for (final java.util.logging.Level level : LEVELS) {
+            if (logger.isLoggable(level)) {
+                return level;
+            }
+        }
+        throw new RuntimeException("No level is enabled.");
+    }
+
     protected Logger logger;
     protected ListAppender eventAppender;
     protected ListAppender flowAppender;
     protected ListAppender stringAppender;
 
     @Test
-    public void testGetName() throws Exception {
+    public void testGetName() {
         assertThat(logger.getName()).isEqualTo(LOGGER_NAME);
     }
 
     @Test
-    public void testGlobalLogger() throws Exception {
+    public void testGlobalLogger() {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         root.info("Test info message");
         root.config("Test info message");
@@ -58,18 +80,18 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testGlobalLoggerName() throws Exception {
+    public void testGlobalLoggerName() {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         assertThat(root.getName()).isEqualTo(Logger.GLOBAL_LOGGER_NAME);
     }
 
     @Test
-    public void testIsLoggable() throws Exception {
+    public void testIsLoggable() {
         assertThat(logger.isLoggable(java.util.logging.Level.SEVERE)).isTrue();
     }
 
     @Test
-    public void testLog() throws Exception {
+    public void testLog() {
         logger.info("Informative message here.");
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
@@ -82,7 +104,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogFilter() throws Exception {
+    public void testLogFilter() {
         logger.setFilter(record -> false);
         logger.severe("Informative message here.");
         logger.warning("Informative message here.");
@@ -96,7 +118,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testAlteringLogFilter() throws Exception {
+    public void testAlteringLogFilter() {
         logger.setFilter(record -> {
             record.setMessage("This is not the message you are looking for.");
             return true;
@@ -121,7 +143,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogUsingCustomLevel() throws Exception {
+    public void testLogUsingCustomLevel() {
         logger.config("Config level");
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
@@ -130,7 +152,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogWithCallingClass() throws Exception {
+    public void testLogWithCallingClass() {
         final Logger log = Logger.getLogger("Test.CallerClass");
         log.config("Calling from LoggerTest");
         final List<String> messages = stringAppender.getMessages();
@@ -199,6 +221,23 @@ public abstract class AbstractLoggerTest {
     @Test
     public void testLambdasPercentAndCurlyBraces() {
         testLambdaMessages("message{%s}");
+    }
+
+    /**
+     * This assertion must be true, even if {@code setLevel} has no effect on the logging implementation.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/3119">GH issue #3119</a>
+     */
+    @Test
+    public void testSetAndGetLevel() {
+        final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetAndGetLevel");
+        // The logger under test should have no explicit configuration
+        assertThat(logger.getLevel()).isNull();
+
+        for (java.util.logging.Level level : LEVELS) {
+            logger.setLevel(level);
+            assertThat(logger.getLevel()).as("Level set using `setLevel()`").isEqualTo(level);
+        }
     }
 
     private void testLambdaMessages(final String string) {
