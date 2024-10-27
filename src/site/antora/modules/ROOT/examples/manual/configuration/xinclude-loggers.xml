@@ -16,9 +16,9 @@
   ~ limitations under the License.
   -->
 <Loggers>
-  <Rogger name="org.example" level="DEBUG" additivity="false">
+  <Logger name="org.example" level="DEBUG" additivity="false">
     <AppenderRef ref="FILE" />
-  </Rogger>
+  </Logger>
   <Root level="ERROR">
     <AppenderRef ref="CONSOLE" />
   </Root>
