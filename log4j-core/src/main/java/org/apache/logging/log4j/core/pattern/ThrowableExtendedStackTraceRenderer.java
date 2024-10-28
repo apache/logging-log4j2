@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
@@ -30,6 +27,8 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * {@link ThrowableStackTraceRenderer} variant where the rendered {@link StackTraceElement}s are enriched with the enclosing JAR file and its version information, if available.

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.net.URL;
 import java.security.CodeSource;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Resource information (i.e., the enclosing JAR file and its version) of a class.
@@ -26,11 +27,7 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final String exactnessPrefix;
-
-    private final String location;
-
-    private final String version;
+    private final Lazy<String> text;
 
     final Class<?> clazz;
 
@@ -38,9 +35,7 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.exactnessPrefix = "~";
-        this.location = "?";
-        this.version = "?";
+        this.text = Lazy.value("~[?:?]");
         this.clazz = null;
     }
 
@@ -50,9 +45,14 @@ final class ClassResourceInfo {
      */
     ClassResourceInfo(final Class<?> clazz, final boolean exact) {
         this.clazz = clazz;
-        this.exactnessPrefix = exact ? "" : "~";
-        this.location = getLocation(clazz);
-        this.version = getVersion(clazz);
+        this.text = Lazy.lazy(() -> getText(clazz, exact));
+    }
+
+    private static String getText(final Class<?> clazz, final boolean exact) {
+        final String exactnessPrefix = exact ? "" : "~";
+        final String location = getLocation(clazz);
+        final String version = getVersion(clazz);
+        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
     }
 
     private static String getLocation(final Class<?> clazz) {
@@ -88,6 +88,6 @@ final class ClassResourceInfo {
 
     @Override
     public String toString() {
-        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
+        return text.get();
     }
 }
