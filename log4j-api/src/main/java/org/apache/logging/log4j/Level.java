@@ -18,7 +18,6 @@ package org.apache.logging.log4j;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,7 +74,6 @@ import org.apache.logging.log4j.util.Strings;
  * used in logging configurations.
  * </p>
  */
-@BaselineIgnore("2.22.0")
 public final class Level implements Comparable<Level>, Serializable {
 
     private static final Level[] EMPTY_ARRAY = {};

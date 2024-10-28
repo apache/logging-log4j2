@@ -21,11 +21,9 @@
  */
 @Export
 @Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
-@Version("2.23.0")
-@BaselineIgnore("2.23.0")
+@Version("2.23.1")
 package org.apache.logging.slf4j;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.bundle.Header;
 import org.osgi.annotation.versioning.Version;

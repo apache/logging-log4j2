@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import static java.util.Objects.requireNonNull;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +49,6 @@ import org.apache.logging.log4j.Logger;
  * </ol>
  */
 @InternalApi
-@BaselineIgnore("2.24.0")
 public final class ServiceLoaderUtil {
 
     private static final int MAX_BROKEN_SERVICES = 8;
