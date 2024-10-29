@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Contract for formatting {@link Instant}s using a date & time formatting pattern.
+ * Contract for formatting {@link Instant}s using a date and time formatting pattern.
  * <h2>Internal usage only!</h2>
  * <p>
  * This class is intended only for internal Log4j usage.
