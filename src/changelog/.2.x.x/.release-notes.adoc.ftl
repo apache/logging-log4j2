@@ -41,9 +41,9 @@ The support for the `\{ansi}` option in exception converters is removed too.
 [#release-notes-2-25-0-instant-format]
 === Date & time formatting
 
-Historically, Log4j contains some date & time formatting utilities for performance reasons, in particular, link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html[`FixedDateFormat`] and link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html[`FastDateFormat`].
+Historically, Log4j contains custom date & time formatting utilities for performance reasons, i.e., link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html[`FixedDateFormat`] and link:javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html[`FastDateFormat`].
 These have been deprecated for removal in favor of Java's https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
-After upgrading, if you experience any date & time formatting problems, please {logging-services-url}/support.html#issues[submit an issue ticket] – as a temporary workaround, you can set xref:manual/systemproperties.adoc#log4j2.instant.formatter[the `log4j2.instant.formatter` property] to `legacy` to switch to the old behaviour.
+After upgrading, if you experience any date & time formatting problems (in particular, related with the usage of `n` and `x` directives), please {logging-services-url}/support.html#issues[submit an issue ticket] – as a temporary workaround, you can set xref:manual/systemproperties.adoc#log4j2.instant.formatter[the `log4j2.instant.formatter` property] to `legacy` to switch to the old behaviour.
 
 === ANSI support on Windows
 
