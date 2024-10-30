@@ -47,6 +47,30 @@ import org.jspecify.annotations.Nullable;
  * <li>Precompute and cache the output for parts that are of precision lower than or equal to {@value InstantPatternDynamicFormatter#PRECISION_THRESHOLD} (i.e., {@code yyyy-MM-dd'T'HH:mm:} and {@code X}) and cache it</li>
  * <li>Upon a formatting request, combine the cached outputs with the dynamic parts (i.e., {@code ss.SSS})</li>
  * </ol>
+ * <h2>Implementation note</h2>
+ * <p>
+ * Formatting can actually even be made faster and garbage-free by manually formatting sub-minute precision directives as follows:
+ * </p>
+ * <pre>{@code
+ * int offsetMillis = timeZone.getOffset(mutableInstant.getEpochMillisecond());
+ * long adjustedEpochSeconds = (instant.getEpochMillisecond() + offsetMillis) / 1000;
+ * int local_s = (int) (adjustedEpochSeconds % 60);
+ * int local_S = instant.getNanoOfSecond() / 100000000;
+ * int local_SS = instant.getNanoOfSecond() / 10000000;
+ * int local_SSS = instant.getNanoOfSecond() / 1000000;
+ * int local_SSSS = instant.getNanoOfSecond() / 100000;
+ * int local_SSSSS = instant.getNanoOfSecond() / 10000;
+ * int local_SSSSSS = instant.getNanoOfSecond() / 1000;
+ * int local_SSSSSSS = instant.getNanoOfSecond() / 100;
+ * int local_SSSSSSSS = instant.getNanoOfSecond() / 10;
+ * int local_SSSSSSSSS = instant.getNanoOfSecond();
+ * int local_n = instant.getNanoOfSecond();
+ * }</pre>
+ * <p>
+ * Though this will require more hardcoded formatting and a change in the sequence merging strategies.
+ * Hence, this optimization is intentionally shelved off due to involved complexity.
+ * See {@code verify_manually_computed_sub_minute_precision_values()} in {@code InstantPatternDynamicFormatterTest} for a demonstration of this optimization.
+ * </p>
  *
  * @since 2.25.0
  */

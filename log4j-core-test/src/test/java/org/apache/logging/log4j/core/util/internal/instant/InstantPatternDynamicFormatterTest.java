@@ -21,7 +21,6 @@ import static java.util.Collections.singletonList;
 import static org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.sequencePattern;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamic
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
 import org.apache.logging.log4j.util.Constants;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -379,27 +377,48 @@ public class InstantPatternDynamicFormatterTest {
         return buffer.toString();
     }
 
-    @Test
-    void f() {
-        final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-        final Locale LOCALE = Locale.US;
-        final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");
-        final InstantPatternFormatter formatter = InstantPatternFormatter.newBuilder()
-                .setPattern(pattern)
-                .setLocale(LOCALE)
-                .setTimeZone(TIME_ZONE)
-                .setCachingEnabled(false)
-                .build();
-        final StringBuilder buffer = new StringBuilder();
-        final MutableInstant mutableInstant = new MutableInstant();
-
-        final Instant instant1 = Instant.now();
-        mutableInstant.initFromEpochSecond(instant1.getEpochSecond(), instant1.getNano());
-        formatter.formatTo(buffer, mutableInstant);
-
-        buffer.setLength(0);
-        final Instant instant2 = instant1.plusMillis(1);
-        mutableInstant.initFromEpochSecond(instant2.getEpochSecond(), instant2.getNano());
-        formatter.formatTo(buffer, mutableInstant);
+    @ParameterizedTest
+    @MethodSource("formatterInputs")
+    void verify_manually_computed_sub_minute_precision_values(
+            final String ignoredPattern,
+            final Locale ignoredLocale,
+            final TimeZone timeZone,
+            final MutableInstant instant) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+                        "HH:mm:ss.S-SS-SSS-SSSS-SSSSS-SSSSSS-SSSSSSS-SSSSSSSS-SSSSSSSSS|n")
+                .withZone(timeZone.toZoneId());
+        final String formatterOutput = formatter.format(instant);
+        final int offsetMillis = timeZone.getOffset(instant.getEpochMillisecond());
+        final long adjustedEpochSeconds = (instant.getEpochMillisecond() + offsetMillis) / 1000;
+        // 86400 seconds per day, 3600 seconds per hour
+        final int local_H = (int) ((adjustedEpochSeconds % 86400L) / 3600L);
+        final int local_m = (int) ((adjustedEpochSeconds / 60) % 60);
+        final int local_s = (int) (adjustedEpochSeconds % 60);
+        final int local_S = instant.getNanoOfSecond() / 100000000;
+        final int local_SS = instant.getNanoOfSecond() / 10000000;
+        final int local_SSS = instant.getNanoOfSecond() / 1000000;
+        final int local_SSSS = instant.getNanoOfSecond() / 100000;
+        final int local_SSSSS = instant.getNanoOfSecond() / 10000;
+        final int local_SSSSSS = instant.getNanoOfSecond() / 1000;
+        final int local_SSSSSSS = instant.getNanoOfSecond() / 100;
+        final int local_SSSSSSSS = instant.getNanoOfSecond() / 10;
+        final int local_SSSSSSSSS = instant.getNanoOfSecond();
+        final int local_n = instant.getNanoOfSecond();
+        final String output = String.format(
+                "%02d:%02d:%02d.%d-%d-%d-%d-%d-%d-%d-%d-%d|%d",
+                local_H,
+                local_m,
+                local_s,
+                local_S,
+                local_SS,
+                local_SSS,
+                local_SSSS,
+                local_SSSSS,
+                local_SSSSSS,
+                local_SSSSSSS,
+                local_SSSSSSSS,
+                local_SSSSSSSSS,
+                local_n);
+        assertThat(output).isEqualTo(formatterOutput);
     }
 }
