@@ -36,7 +36,9 @@ import java.util.TimeZone;
  * </p>
  *
  * @since Apache Commons Lang 3.2
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be removed in the next major release.
  */
+@Deprecated
 public interface DatePrinter {
 
     /**

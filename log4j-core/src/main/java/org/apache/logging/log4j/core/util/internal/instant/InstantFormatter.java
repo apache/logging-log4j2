@@ -14,9 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Export
-@Version("2.20.1")
-package org.apache.logging.log4j.layout.template.json;
+package org.apache.logging.log4j.core.util.internal.instant;
 
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import static java.util.Objects.requireNonNull;
+
+import java.time.temporal.ChronoUnit;
+import org.apache.logging.log4j.core.time.Instant;
+
+/**
+ * Contract for formatting {@link Instant}s.
+ *
+ * @since 2.25.0
+ */
+public interface InstantFormatter {
+
+    /**
+     * @return the time precision of the formatted output
+     */
+    ChronoUnit getPrecision();
+
+    default String format(final Instant instant) {
+        requireNonNull(instant, "instant");
+        final StringBuilder buffer = new StringBuilder();
+        formatTo(buffer, instant);
+        return buffer.toString();
+    }
+
+    void formatTo(StringBuilder buffer, Instant instant);
+}

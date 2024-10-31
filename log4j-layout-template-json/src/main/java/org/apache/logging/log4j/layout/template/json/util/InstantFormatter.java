@@ -37,7 +37,10 @@ import org.apache.logging.log4j.util.Strings;
  * Note that {@link FixedDateFormat} and {@link FastDateFormat} only support
  * millisecond precision. If the pattern asks for a higher precision,
  * {@link DateTimeFormatter} will be employed, which is significantly slower.
+ * </p>
+ * @deprecated Starting with version {@code 2.25.0}, this class is planned to be removed in the next major release.
  */
+@Deprecated
 public final class InstantFormatter {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();

@@ -385,7 +385,7 @@ See xref:manual/layouts.adoc#LocationInformation[this section of the layouts pag
 [#converter-date]
 ==== Date
 
-Outputs the date of the log event
+Outputs the instant of the log event
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
 [source,text]
@@ -394,7 +394,7 @@ d{pattern}[{timezone}]
 date{pattern}[{timezone}]
 ----
 
-The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
+The date conversion specifier may be followed by a set of braces containing a date and time formatting pattern per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
 The predefined _named_ formats are:
 
 [%header,cols="2m,3m"]
@@ -448,8 +448,8 @@ The predefined _named_ formats are:
 |1351866842781
 |===
 
-You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
-If no date format specifier is given then the `DEFAULT` format is used.
+You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone#getTimeZone(String)`].
+If no date format specifier is given, then the `DEFAULT` format is used.
 
 You can also define custom date formats, see following examples:
 
@@ -461,36 +461,19 @@ You can also define custom date formats, see following examples:
 |%d{HH:mm:ss,SSS}
 |14:34:02,123
 
-|%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}
-|14:34:02,1234 to 14:34:02,123456789
-
-|%d{dd MMM yyyy HH:mm:ss,SSS}
-|02 Nov 2012 14:34:02,123
-
-|%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}
-|02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789
-
-|%d{HH:mm:ss}{GMT+0}
-|18:34:02
+|%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
+|2012-11-02T14:34:02.123Z
 |===
 
-`%d\{UNIX}` outputs the UNIX time in seconds.
-`%d\{UNIX_MILLIS}` outputs the UNIX time in milliseconds.
-The `UNIX` time is the difference – in seconds for `UNIX` and in milliseconds for `UNIX_MILLIS` – between the current time and 1970-01-01 00:00:00 (UTC).
-While the time unit is milliseconds, the granularity depends on the platform.
-This is an efficient way to output the event time because only a conversion from `long` to `String` takes place, there is no `Date` formatting involved.
+`%d\{UNIX}` outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).
+`%d\{UNIX_MILLIS}` outputs the epoch time in milliseconds.
 
-There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`]
-formats are supported.
-Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
-
+Note that the granularity of the sub-second formatters depends on the platform.
 Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
-Only named date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free.
+Except `UNIX` and `UNIX_MILLIS` named patterns, the rest of the date & time formatters are not garbage-free.
 ====
 
 [#converter-encode]

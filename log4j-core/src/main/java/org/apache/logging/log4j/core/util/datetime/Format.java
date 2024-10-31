@@ -20,7 +20,10 @@ import java.text.FieldPosition;
 
 /**
  * The basic methods for performing date formatting.
+ *
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be removed in the next major release.
  */
+@Deprecated
 public abstract class Format {
 
     public final String format(final Object obj) {

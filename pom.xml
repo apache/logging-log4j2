@@ -344,12 +344,12 @@
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jackson.version>2.18.0</site-jackson.version>
+    <site-jackson.version>2.18.1</site-jackson.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
-    <site-kafka.version>3.8.0</site-kafka.version>
+    <site-kafka.version>3.8.1</site-kafka.version>
     <site-logback.version>1.5.5</site-logback.version>
     <site-slf4j.version>2.0.16</site-slf4j.version>
 

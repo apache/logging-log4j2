@@ -14,16 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 /**
- * Log4j date and time formatting classes.
+ * Utilities for formatting log event {@link org.apache.logging.log4j.core.time.Instant}s.
+ * <h2>Internal usage only!</h2>
+ * <p>
+ * This package is intended only for internal Log4j usage.
+ * <b>Log4j users should not use this package!</b>
+ * This package is not subject to any backward compatibility concerns.
+ * </p>
  *
- * @deprecated Starting with version {@code 2.25.0}, these classes are assumed to be internal and planned to be moved to an internal package in the next major release.
+ * @since 2.25.0
  */
-@Deprecated
 @Export
-@Version("2.21.2")
-package org.apache.logging.log4j.core.util.datetime;
+@ExportTo("org.apache.logging.log4j.layout.template.json")
+@Version("2.25.0")
+@NullMarked
+package org.apache.logging.log4j.core.util.internal.instant;
 
+import aQute.bnd.annotation.jpms.ExportTo;
+import org.jspecify.annotations.NullMarked;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
