@@ -182,7 +182,7 @@ public class StatusData implements Serializable {
             effectiveThrowable = throwable;
         }
         if (effectiveThrowable != null) {
-            sb.append(SPACE);
+            sb.append(System.lineSeparator());
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             effectiveThrowable.printStackTrace(new PrintStream(baos));
             /*
