@@ -81,9 +81,13 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></code>, <code><a href="DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">FastDatePrinter</span>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">FastDatePrinter</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
+</div>
 <div class="block"><p>FastDatePrinter is a fast and thread-safe version of
  <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html" title="class or interface in java.text" class="external-link"><code>SimpleDateFormat</code></a>.</p>
 
@@ -152,21 +156,25 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#FULL" class="member-name-link">FULL</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">FULL locale dependent date or time style.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#LONG" class="member-name-link">LONG</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">LONG locale dependent date or time style.</div>
 </div>
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#MEDIUM" class="member-name-link">MEDIUM</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">MEDIUM locale dependent date or time style.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#SHORT" class="member-name-link">SHORT</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">SHORT locale dependent date or time style.</div>
 </div>
 </div>
@@ -186,6 +194,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Constructs a new FastDatePrinter.</div>
 </div>
 </div>
@@ -210,20 +219,23 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="deprecation-comment">use <a href="#format(java.util.Calendar)"><code>format(Calendar)</code></a> or <a href="#format(java.util.Calendar,B)"><code>format(Calendar, Appendable)</code></a></div>
 </div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compares two objects for equality.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;millis)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;millis)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a millisecond <code>long</code> value.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long,B)" class="member-name-link">format</a><wbr>(long&nbsp;millis,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long,B)" class="member-name-link">format</a><wbr>(long&nbsp;millis,
  B&nbsp;buf)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a millisecond <code>long</code> value into the
  supplied <code>Appendable</code>.</div>
 </div>
@@ -236,75 +248,88 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="deprecation-comment">Use {<a href="#format(java.util.Date)"><code>format(Date)</code></a>, {<a href="#format(java.util.Calendar)"><code>format(Calendar)</code></a>, {<a href="#format(long)"><code>format(long)</code></a>, or {<code>format(Object)</code></div>
 </div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Calendar)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Calendar)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Calendar</code> object.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Calendar,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Calendar,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
  B&nbsp;buf)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Calendar</code> object into the supplied <code>Appendable</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Date)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Date)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Date</code> object using a <code>GregorianCalendar</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Date,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Date,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
  B&nbsp;buf)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Date</code> object into the
  supplied <code>Appendable</code> using a <code>GregorianCalendar</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLocale()" class="member-name-link">getLocale</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getLocale()" class="member-name-link">getLocale</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the locale used by this printer.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxLengthEstimate()" class="member-name-link">getMaxLengthEstimate</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getMaxLengthEstimate()" class="member-name-link">getMaxLengthEstimate</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets an estimate for the maximum string length that the
  formatter will produce.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the pattern used by this printer.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the time zone used by this printer.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a hash code compatible with equals.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;org.apache.logging.log4j.core.util.datetime.FastDatePrinter.Rule&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#parsePattern()" class="member-name-link">parsePattern</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;org.apache.logging.log4j.core.util.datetime.FastDatePrinter.Rule&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#parsePattern()" class="member-name-link">parsePattern</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a list of Rules given a pattern.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#parseToken(java.lang.String,int%5B%5D)" class="member-name-link">parseToken</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#parseToken(java.lang.String,int%5B%5D)" class="member-name-link">parseToken</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  int[]&nbsp;indexRef)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Performs the parsing of tokens.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected org.apache.logging.log4j.core.util.datetime.FastDatePrinter.NumberRule</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#selectNumberRule(int,int)" class="member-name-link">selectNumberRule</a><wbr>(int&nbsp;field,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected org.apache.logging.log4j.core.util.datetime.FastDatePrinter.NumberRule</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#selectNumberRule(int,int)" class="member-name-link">selectNumberRule</a><wbr>(int&nbsp;field,
  int&nbsp;padding)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets an appropriate rule for the padding required.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a debugging string version of this formatter.</div>
 </div>
 </div>
@@ -328,6 +353,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="FULL">
 <h3>FULL</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">FULL</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">FULL locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -343,6 +369,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="LONG">
 <h3>LONG</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">LONG</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">LONG locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -358,6 +385,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="MEDIUM">
 <h3>MEDIUM</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MEDIUM</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">MEDIUM locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -373,6 +401,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="SHORT">
 <h3>SHORT</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">SHORT</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">SHORT locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -398,6 +427,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">FastDatePrinter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Constructs a new FastDatePrinter.</p>
  Use <a href="FastDateFormat.html#getInstance(java.lang.String,java.util.TimeZone,java.util.Locale)"><code>FastDateFormat.getInstance(String, TimeZone, Locale)</code></a>  or another variation of the
  factory methods of <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime"><code>FastDateFormat</code></a> to get a cached FastDatePrinter instance.</div>
@@ -423,6 +453,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="parsePattern()">
 <h3>parsePattern</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;org.apache.logging.log4j.core.util.datetime.FastDatePrinter.Rule&gt;</span>&nbsp;<span class="element-name">parsePattern</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Returns a list of Rules given a pattern.</p></div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -437,6 +468,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>parseToken</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">parseToken</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  int[]&nbsp;indexRef)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Performs the parsing of tokens.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -452,6 +484,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>selectNumberRule</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">org.apache.logging.log4j.core.util.datetime.FastDatePrinter.NumberRule</span>&nbsp;<span class="element-name">selectNumberRule</span><wbr><span class="parameters">(int&nbsp;field,
  int&nbsp;padding)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets an appropriate rule for the padding required.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -496,6 +529,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(long)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;millis)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(long)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a millisecond <code>long</code> value.</p></div>
 <dl class="notes">
@@ -512,6 +546,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(java.util.Date)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(java.util.Date)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a <code>Date</code> object using a <code>GregorianCalendar</code>.</p></div>
 <dl class="notes">
@@ -528,6 +563,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(java.util.Calendar)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(java.util.Calendar)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a <code>Calendar</code> object.</p>
  The TimeZone set on the Calendar is only used to adjust the time offset.
@@ -548,6 +584,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(long,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;millis,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(long,B)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a millisecond <code>long</code> value into the
  supplied <code>Appendable</code>.</p></div>
@@ -569,6 +606,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(java.util.Date,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(java.util.Date,B)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a <code>Date</code> object into the
  supplied <code>Appendable</code> using a <code>GregorianCalendar</code>.</p></div>
@@ -590,6 +628,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(java.util.Calendar,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#format(java.util.Calendar,B)">DatePrinter</a></code></span></div>
 <div class="block"><p>Formats a <code>Calendar</code> object into the supplied <code>Appendable</code>.</p>
  The TimeZone set on the Calendar is only used to adjust the time offset.
@@ -632,6 +671,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getPattern()">
 <h3>getPattern</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPattern</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#getPattern()">DatePrinter</a></code></span></div>
 <div class="block"><p>Gets the pattern used by this printer.</p></div>
 <dl class="notes">
@@ -646,6 +686,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getTimeZone()">
 <h3>getTimeZone</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></span>&nbsp;<span class="element-name">getTimeZone</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#getTimeZone()">DatePrinter</a></code></span></div>
 <div class="block"><p>Gets the time zone used by this printer.</p>
 
@@ -662,6 +703,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getLocale()">
 <h3>getLocale</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></span>&nbsp;<span class="element-name">getLocale</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="DatePrinter.html#getLocale()">DatePrinter</a></code></span></div>
 <div class="block"><p>Gets the locale used by this printer.</p></div>
 <dl class="notes">
@@ -676,6 +718,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getMaxLengthEstimate()">
 <h3>getMaxLengthEstimate</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaxLengthEstimate</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets an estimate for the maximum string length that the
  formatter will produce.</p>
 
@@ -691,6 +734,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="equals(java.lang.Object)">
 <h3>equals</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">equals</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Compares two objects for equality.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>
@@ -706,6 +750,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="hashCode()">
 <h3>hashCode</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">hashCode</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Returns a hash code compatible with equals.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>
@@ -719,6 +764,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="toString()">
 <h3>toString</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">toString</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a debugging string version of this formatter.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>

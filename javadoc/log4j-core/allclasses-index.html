@@ -800,9 +800,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Converts and formats the event's date in a StringBuilder.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
-<div class="block">DatePrinter is the "missing" interface for the format methods of
- <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DateFormat.html" title="class or interface in java.text" class="external-link"><code>DateFormat</code></a>.</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">Deprecated.
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/config/plugins/convert/DateTypeConverter.html" title="class in org.apache.logging.log4j.core.config.plugins.convert">DateTypeConverter</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
@@ -1017,14 +1016,12 @@ loadScripts(document, 'script');</script>
 <div class="block">The array of failover Appenders.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">FastDateFormat is a fast and thread-safe version of
- <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html" title="class or interface in java.text" class="external-link"><code>SimpleDateFormat</code></a>.</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">Deprecated.
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/datetime/FastDatePrinter.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDatePrinter</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">FastDatePrinter is a fast and thread-safe version of
- <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html" title="class or interface in java.text" class="external-link"><code>SimpleDateFormat</code></a>.</div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">Deprecated.
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/appender/FileAppender.html" title="class in org.apache.logging.log4j.core.appender">FileAppender</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
@@ -1087,8 +1084,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Assembler for constructing Filter Components.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
-<div class="block">Custom time formatter that trades flexibility for performance.</div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">Deprecated.
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="org/apache/logging/log4j/core/util/datetime/FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab3">
@@ -1099,8 +1096,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Fixed time zone formats.</div>
 </div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/datetime/Format.html" title="class in org.apache.logging.log4j.core.util.datetime">Format</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
-<div class="block">The basic methods for performing date formatting.</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">Deprecated.
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html" title="class in org.apache.logging.log4j.core.pattern">FormattingInfo</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
@@ -1216,6 +1213,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
 <div class="block">Models a point in time, suitable for event timestamps.</div>
 </div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="block">Contract for formatting <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="block">Formats an <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a> numerically; e.g., formats its epoch<sup>1</sup> seconds.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="block">Contract for formatting <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s using a date and time formatting pattern.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">&nbsp;</div>
 <div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="org/apache/logging/log4j/core/pattern/IntegerPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">IntegerPatternConverter</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Formats an integer.</div>

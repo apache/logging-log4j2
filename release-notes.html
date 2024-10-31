@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Release Notes :: Apache Log4j</title>
+    <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
     <meta name="generator" content="Antora 3.2.0-alpha.6">
 <link rel="stylesheet" href="./_/css/site.css">
@@ -71,7 +71,7 @@
     <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="release-notes.html">Release Notes</a>
+    <a class="nav-link" href="release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -340,7 +340,7 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="download.html">Download</a></li>
-    <li><a href="release-notes.html">Release Notes</a></li>
+    <li><a href="release-notes.html">Release notes</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/release-notes.adoc">Edit this Page</a></div>
@@ -350,7 +350,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Release Notes</h1>
+<h1 class="page">Release notes</h1>
 <div class="sect1">
 <h2 id="release-notes-2-x-x"><a class="anchor" href="#release-notes-2-x-x"></a>2.x.x</h2>
 <div class="sectionbody">
@@ -373,6 +373,14 @@ See our <a href="graalvm.html" class="xref page">GraalVM guide</a> for details.<
 This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
 Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
 The support for the <code>{ansi}</code> option in exception converters is removed too.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-instant-format"><a class="anchor" href="#release-notes-2-25-0-instant-format"></a>Date &amp; time formatting</h3>
+<div class="paragraph">
+<p>Historically, Log4j contains custom date &amp; time formatting utilities for performance reasons, i.e., <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html"><code>FixedDateFormat</code></a> and <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html"><code>FastDateFormat</code></a>.
+These have been deprecated for removal in favor of Java&#8217;s <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>.
+After upgrading, if you experience any date &amp; time formatting problems (in particular, related with the usage of <code>n</code> and <code>x</code> directives), please <a href="https://logging.apache.org/support.html#issues">submit an issue ticket</a> – as a temporary workaround, you can set <a href="manual/systemproperties.html#log4j2.instant.formatter" class="xref page">the <code>log4j2.instant.formatter</code> property</a> to <code>legacy</code> to switch to the old behaviour.</p>
 </div>
 </div>
 <div class="sect2">
@@ -415,6 +423,9 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <li>
 <p>Changes the layout used by the <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration">default configuration</a>. (<a href="https://github.com/apache/logging-log4j2/pull/3118">3118</a>)</p>
 </li>
+<li>
+<p>Switch to using Java&#8217;s <code>DateTimeFormatter</code> for date &amp; time formatting of log event instants (<a href="https://github.com/apache/logging-log4j2/pull/3121">3121</a>, <a href="https://github.com/apache/logging-log4j2/issues/2943">2943</a>)</p>
+</li>
 </ul>
 </div>
 </div>
@@ -426,7 +437,10 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Deprecate <code>ThrowableProxy</code> and all its usages (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
 </li>
 <li>
-<p>Deprecate <code>AbstractLogger.checkMessageFactory()</code>, since all created <code>Logger`s are already `MessageFactory</code>-namespaced (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+<p>Deprecate <code>AbstractLogger.checkMessageFactory()</code>, since all created <code>Logger</code>s are already <code>MessageFactory</code>-namespaced (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+<li>
+<p>Deprecated <code>FixedDateTime</code>, <code>FastDateTime</code>, and supporting classes (<a href="https://github.com/apache/logging-log4j2/pull/3121">3121</a>)</p>
 </li>
 </ul>
 </div>
@@ -517,6 +531,12 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </li>
 <li>
 <p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.23</code> (<a href="https://github.com/apache/logging-log4j2/pull/3000">3000</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.8.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3142">3142</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.logging.log4j:log4j-transform-maven-shade-plugin-extensions</code> to version <code>0.2.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3147">3147</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
@@ -955,7 +975,7 @@ system property.</p>
 <p>Fix <code>StatusLogger</code> log level filtering when debug mode is enabled (<a href="https://github.com/apache/logging-log4j2/issues/2337">2337</a>)</p>
 </li>
 <li>
-<p>Add <a href="#manual/statusLogger.adoc#log4j2.statusLoggerDateFormatZone" class="xref unresolved"><code>log4j2.statusLoggerDateFormatZone</code></a> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
+<p>Add <a href="manual/status-logger.html#log4j2.statusLoggerDateFormatZone" class="xref page"><code>log4j2.statusLoggerDateFormatZone</code></a> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
 </li>
 <li>
 <p>Fix <code>StatusLogger</code> to correctly read <code>log4j2.StatusLogger.properties</code> resource (<a href="https://github.com/apache/logging-log4j2/pull/2354">2354</a>)</p>

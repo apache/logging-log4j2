@@ -83,9 +83,13 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">FastDateFormat</span>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">FastDateFormat</span>
 <span class="extends-implements">extends <a href="Format.html" title="class in org.apache.logging.log4j.core.util.datetime">Format</a>
 implements <a href="DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
+</div>
 <div class="block"><p>FastDateFormat is a fast and thread-safe version of
  <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html" title="class or interface in java.text" class="external-link"><code>SimpleDateFormat</code></a>.</p>
 
@@ -148,21 +152,25 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#FULL" class="member-name-link">FULL</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">FULL locale dependent date or time style.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#LONG" class="member-name-link">LONG</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">LONG locale dependent date or time style.</div>
 </div>
 <div class="col-first even-row-color"><code>static final int</code></div>
 <div class="col-second even-row-color"><code><a href="#MEDIUM" class="member-name-link">MEDIUM</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">MEDIUM locale dependent date or time style.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final int</code></div>
 <div class="col-second odd-row-color"><code><a href="#SHORT" class="member-name-link">SHORT</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">SHORT locale dependent date or time style.</div>
 </div>
 </div>
@@ -182,6 +190,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Constructs a new FastDateFormat.</div>
 </div>
 <div class="col-first odd-row-color"><code>protected </code></div>
@@ -190,6 +199,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;centuryStart)</code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Constructs a new FastDateFormat.</div>
 </div>
 </div>
@@ -200,212 +210,243 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compares two objects for equality.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;millis)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;millis)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a millisecond <code>long</code> value.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long,B)" class="member-name-link">format</a><wbr>(long&nbsp;millis,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long,B)" class="member-name-link">format</a><wbr>(long&nbsp;millis,
  B&nbsp;buf)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a millisecond <code>long</code> value into the
  supplied <code>StringBuffer</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/text/FieldPosition.html" title="class or interface in java.text" class="external-link">FieldPosition</a>&nbsp;pos)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Date</code>, <code>Calendar</code> or
  <code>Long</code> (milliseconds) object.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Calendar)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Calendar)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Calendar</code> object.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Calendar,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Calendar,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
  B&nbsp;buf)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Calendar</code> object into the
  supplied <code>StringBuffer</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Date)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Date)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Date</code> object using a <code>GregorianCalendar</code>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.util.Date,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;<br>B</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(java.util.Date,B)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
  B&nbsp;buf)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Formats a <code>Date</code> object into the
  supplied <code>StringBuffer</code> using a <code>GregorianCalendar</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateInstance(int)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateInstance(int)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date formatter instance using the specified style in the
  default time zone and locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateInstance(int,java.util.Locale)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateInstance(int,java.util.Locale)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date formatter instance using the specified style and
  locale in the default time zone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateInstance(int,java.util.TimeZone)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateInstance(int,java.util.TimeZone)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date formatter instance using the specified style and
  time zone in the default locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date formatter instance using the specified style, time
  zone and locale.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateTimeInstance(int,int)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateTimeInstance(int,int)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
  int&nbsp;timeStyle)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date/time formatter instance using the specified style
  in the default time zone and locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateTimeInstance(int,int,java.util.Locale)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateTimeInstance(int,int,java.util.Locale)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date/time formatter instance using the specified style and
  locale in the default time zone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateTimeInstance(int,int,java.util.TimeZone)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateTimeInstance(int,int,java.util.TimeZone)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date/time formatter instance using the specified style and
  time zone in the default locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDateTimeInstance(int,int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDateTimeInstance(int,int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateTimeInstance</a><wbr>(int&nbsp;dateStyle,
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a date/time formatter instance using the specified style,
  time zone and locale.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a formatter instance using the default pattern in the
  default locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance(java.lang.String)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getInstance(java.lang.String)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a formatter instance using the specified pattern in the
  default locale.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance(java.lang.String,java.util.Locale)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getInstance(java.lang.String,java.util.Locale)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a formatter instance using the specified pattern and
  locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance(java.lang.String,java.util.TimeZone)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getInstance(java.lang.String,java.util.TimeZone)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a formatter instance using the specified pattern and
  time zone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance(java.lang.String,java.util.TimeZone,java.util.Locale)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getInstance(java.lang.String,java.util.TimeZone,java.util.Locale)" class="member-name-link">getInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a formatter instance using the specified pattern, time zone
  and locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLocale()" class="member-name-link">getLocale</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getLocale()" class="member-name-link">getLocale</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the locale used by this formatter.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxLengthEstimate()" class="member-name-link">getMaxLengthEstimate</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getMaxLengthEstimate()" class="member-name-link">getMaxLengthEstimate</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets an estimate for the maximum string length that the
  formatter will produce.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the pattern used by this formatter.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTimeInstance(int)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeInstance(int)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a time formatter instance using the specified style in the
  default time zone and locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTimeInstance(int,java.util.Locale)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeInstance(int,java.util.Locale)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a time formatter instance using the specified style and
  locale in the default time zone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTimeInstance(int,java.util.TimeZone)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeInstance(int,java.util.TimeZone)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a time formatter instance using the specified style and
  time zone in the default locale.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getTimeInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getTimeInstance</a><wbr>(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a time formatter instance using the specified style, time
  zone and locale.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets the time zone used by this formatter.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#hashCode()" class="member-name-link">hashCode</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a hash code compatible with equals.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a debugging string version of this formatter.</div>
 </div>
 </div>
@@ -432,6 +473,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="FULL">
 <h3>FULL</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">FULL</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">FULL locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -447,6 +489,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="LONG">
 <h3>LONG</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">LONG</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">LONG locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -462,6 +505,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="MEDIUM">
 <h3>MEDIUM</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">MEDIUM</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">MEDIUM locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -477,6 +521,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="SHORT">
 <h3>SHORT</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">SHORT</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">SHORT locale dependent date or time style.</div>
 <dl class="notes">
 <dt>See Also:</dt>
@@ -502,6 +547,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">FastDateFormat</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Constructs a new FastDateFormat.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -520,6 +566,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;centuryStart)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Constructs a new FastDateFormat.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -544,6 +591,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getInstance()">
 <h3>getInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getInstance</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a formatter instance using the default pattern in the
  default locale.</p></div>
 <dl class="notes">
@@ -556,6 +604,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getInstance(java.lang.String)">
 <h3>getInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a formatter instance using the specified pattern in the
  default locale.</p></div>
 <dl class="notes">
@@ -574,6 +623,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a formatter instance using the specified pattern and
  time zone.</p></div>
 <dl class="notes">
@@ -594,6 +644,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a formatter instance using the specified pattern and
  locale.</p></div>
 <dl class="notes">
@@ -614,6 +665,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a formatter instance using the specified pattern, time zone
  and locale.</p></div>
 <dl class="notes">
@@ -635,6 +687,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getDateInstance(int)">
 <h3>getDateInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateInstance</span><wbr><span class="parameters">(int&nbsp;style)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date formatter instance using the specified style in the
  default time zone and locale.</p></div>
 <dl class="notes">
@@ -655,6 +708,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getDateInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date formatter instance using the specified style and
  locale in the default time zone.</p></div>
 <dl class="notes">
@@ -676,6 +730,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getDateInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date formatter instance using the specified style and
  time zone in the default locale.</p></div>
 <dl class="notes">
@@ -699,6 +754,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date formatter instance using the specified style, time
  zone and locale.</p></div>
 <dl class="notes">
@@ -719,6 +775,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getTimeInstance(int)">
 <h3>getTimeInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getTimeInstance</span><wbr><span class="parameters">(int&nbsp;style)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a time formatter instance using the specified style in the
  default time zone and locale.</p></div>
 <dl class="notes">
@@ -739,6 +796,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getTimeInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getTimeInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a time formatter instance using the specified style and
  locale in the default time zone.</p></div>
 <dl class="notes">
@@ -760,6 +818,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getTimeInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getTimeInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a time formatter instance using the specified style and
  time zone in the default locale.</p></div>
 <dl class="notes">
@@ -783,6 +842,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getTimeInstance</span><wbr><span class="parameters">(int&nbsp;style,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a time formatter instance using the specified style, time
  zone and locale.</p></div>
 <dl class="notes">
@@ -804,6 +864,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3>getDateTimeInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateTimeInstance</span><wbr><span class="parameters">(int&nbsp;dateStyle,
  int&nbsp;timeStyle)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date/time formatter instance using the specified style
  in the default time zone and locale.</p></div>
 <dl class="notes">
@@ -826,6 +887,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateTimeInstance</span><wbr><span class="parameters">(int&nbsp;dateStyle,
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date/time formatter instance using the specified style and
  locale in the default time zone.</p></div>
 <dl class="notes">
@@ -849,6 +911,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></span>&nbsp;<span class="element-name">getDateTimeInstance</span><wbr><span class="parameters">(int&nbsp;dateStyle,
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date/time formatter instance using the specified style and
  time zone in the default locale.</p></div>
 <dl class="notes">
@@ -874,6 +937,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
  int&nbsp;timeStyle,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;timeZone,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a>&nbsp;locale)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a date/time formatter instance using the specified style,
  time zone and locale.</p></div>
 <dl class="notes">
@@ -897,6 +961,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/text/FieldPosition.html" title="class or interface in java.text" class="external-link">FieldPosition</a>&nbsp;pos)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a <code>Date</code>, <code>Calendar</code> or
  <code>Long</code> (milliseconds) object.</p>
  This method is an implementation of <a href="Format.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)"><code>Format.format(Object, StringBuilder, FieldPosition)</code></a></div>
@@ -924,6 +989,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(long)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;millis)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a millisecond <code>long</code> value.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -941,6 +1007,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(java.util.Date)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a <code>Date</code> object using a <code>GregorianCalendar</code>.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -956,6 +1023,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="format(java.util.Calendar)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a <code>Calendar</code> object.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -972,6 +1040,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(long,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;millis,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a millisecond <code>long</code> value into the
  supplied <code>StringBuffer</code>.</p></div>
 <dl class="notes">
@@ -994,6 +1063,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(java.util.Date,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html" title="class or interface in java.util" class="external-link">Date</a>&nbsp;date,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a <code>Date</code> object into the
  supplied <code>StringBuffer</code> using a <code>GregorianCalendar</code>.</p></div>
 <dl class="notes">
@@ -1016,6 +1086,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <h3 id="format(java.util.Calendar,java.lang.Appendable)">format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;B extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Appendable.html" title="class or interface in java.lang" class="external-link">Appendable</a>&gt;</span>&nbsp;<span class="return-type">B</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html" title="class or interface in java.util" class="external-link">Calendar</a>&nbsp;calendar,
  B&nbsp;buf)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Formats a <code>Calendar</code> object into the
  supplied <code>StringBuffer</code>.</p></div>
 <dl class="notes">
@@ -1037,6 +1108,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getPattern()">
 <h3>getPattern</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPattern</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets the pattern used by this formatter.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -1050,6 +1122,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getTimeZone()">
 <h3>getTimeZone</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></span>&nbsp;<span class="element-name">getTimeZone</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets the time zone used by this formatter.</p>
 
  <p>This zone is always used for <code>Date</code> formatting. </p></div>
@@ -1065,6 +1138,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getLocale()">
 <h3>getLocale</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html" title="class or interface in java.util" class="external-link">Locale</a></span>&nbsp;<span class="element-name">getLocale</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets the locale used by this formatter.</p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -1078,6 +1152,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="getMaxLengthEstimate()">
 <h3>getMaxLengthEstimate</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaxLengthEstimate</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets an estimate for the maximum string length that the
  formatter will produce.</p>
 
@@ -1093,6 +1168,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="equals(java.lang.Object)">
 <h3>equals</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">equals</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Compares two objects for equality.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>
@@ -1108,6 +1184,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="hashCode()">
 <h3>hashCode</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">hashCode</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Returns a hash code compatible with equals.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>
@@ -1121,6 +1198,7 @@ implements <a href="DatePrinter.html" title="interface in org.apache.logging.log
 <section class="detail" id="toString()">
 <h3>toString</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">toString</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Gets a debugging string version of this formatter.</p></div>
 <dl class="notes">
 <dt>Overrides:</dt>

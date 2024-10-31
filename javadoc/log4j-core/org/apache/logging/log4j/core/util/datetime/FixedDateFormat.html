@@ -77,15 +77,15 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="annotations">@ProviderType
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+@ProviderType
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">FixedDateFormat</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Starting with version <code>2.25.0</code>, this class is assumed to be internal and planned to be removed in the next major release.</div>
+</div>
 <div class="block">Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
- in <a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime"><code>FixedDateFormat.FixedFormat</code></a>. For any other date patterns use <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime"><code>FastDateFormat</code></a>.
- <p>
- Related benchmarks: /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
- /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
- </p></div>
+ in <a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime"><code>FixedDateFormat.FixedFormat</code></a>. For any other date patterns use <a href="FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime"><code>FastDateFormat</code></a>.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -101,11 +101,13 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static enum&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="FixedDateFormat.FixedFormat.html" class="type-name-link" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a></code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Enumeration over the supported date/time format patterns.</div>
 </div>
 <div class="col-first odd-row-color"><code>static enum&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="FixedDateFormat.FixedTimeZoneFormat.html" class="type-name-link" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedTimeZoneFormat</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Fixed time zone formats.</div>
 </div>
 </div>
@@ -116,69 +118,86 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat)" class="member-name-link">create</a><wbr>(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#create(org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat)" class="member-name-link">create</a><wbr>(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a new <code>FixedDateFormat</code> object for the specified <code>FixedFormat</code> and a <code>TimeZone.getDefault()</code> TimeZone.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat,java.util.TimeZone)" class="member-name-link">create</a><wbr>(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#create(org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat,java.util.TimeZone)" class="member-name-link">create</a><wbr>(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;tz)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a new <code>FixedDateFormat</code> object for the specified <code>FixedFormat</code> and TimeZone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createIfSupported(java.lang.String...)" class="member-name-link">createIfSupported</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>...&nbsp;options)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;epochMillis)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(long,char%5B%5D,int)" class="member-name-link">format</a><wbr>(long&nbsp;epochMillis,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createIfSupported(java.lang.String...)" class="member-name-link">createIfSupported</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>...&nbsp;options)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long)" class="member-name-link">format</a><wbr>(long&nbsp;epochMillis)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#format(long,char%5B%5D,int)" class="member-name-link">format</a><wbr>(long&nbsp;epochMillis,
  char[]&nbsp;buffer,
  int&nbsp;startPos)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#formatInstant(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatInstant</a><wbr>(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#formatInstant(org.apache.logging.log4j.core.time.Instant,char%5B%5D,int)" class="member-name-link">formatInstant</a><wbr>(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant,
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#formatInstant(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatInstant</a><wbr>(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#formatInstant(org.apache.logging.log4j.core.time.Instant,char%5B%5D,int)" class="member-name-link">formatInstant</a><wbr>(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant,
  char[]&nbsp;buffer,
  int&nbsp;startPos)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFormat()" class="member-name-link">getFormat</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getFormat()" class="member-name-link">getFormat</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the full pattern of the selected fixed format.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLength()" class="member-name-link">getLength</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>final int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getLength()" class="member-name-link">getLength</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the length of the resulting formatted date and time strings.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the time zone.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isEquivalent(long,int,long,int)" class="member-name-link">isEquivalent</a><wbr>(long&nbsp;oldEpochSecond,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#isEquivalent(long,int,long,int)" class="member-name-link">isEquivalent</a><wbr>(long&nbsp;oldEpochSecond,
  int&nbsp;oldNanoOfSecond,
  long&nbsp;epochSecond,
  int&nbsp;nanoOfSecond)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns <code>true</code> if the old and new date values will result in the same formatted output, <code>false</code>
  if results <i>may</i> differ.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#millisSinceMidnight(long)" class="member-name-link">millisSinceMidnight</a><wbr>(long&nbsp;currentTime)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#millisSinceMidnight(long)" class="member-name-link">millisSinceMidnight</a><wbr>(long&nbsp;currentTime)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the number of milliseconds since midnight in the time zone that this <code>FixedDateFormat</code>
  was constructed with for the specified currentTime.</div>
 </div>
@@ -203,12 +222,14 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="createIfSupported(java.lang.String...)">
 <h3>createIfSupported</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></span>&nbsp;<span class="element-name">createIfSupported</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>...&nbsp;options)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="create(org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat)">
 <h3>create</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a new <code>FixedDateFormat</code> object for the specified <code>FixedFormat</code> and a <code>TimeZone.getDefault()</code> TimeZone.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -223,6 +244,7 @@ loadScripts(document, 'script');</script>
 <h3>create</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="FixedDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FixedDateFormat</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="FixedDateFormat.FixedFormat.html" title="enum in org.apache.logging.log4j.core.util.datetime">FixedDateFormat.FixedFormat</a>&nbsp;format,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a>&nbsp;tz)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a new <code>FixedDateFormat</code> object for the specified <code>FixedFormat</code> and TimeZone.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -237,6 +259,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getFormat()">
 <h3>getFormat</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getFormat</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the full pattern of the selected fixed format.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -248,6 +271,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getLength()">
 <h3>getLength</h3>
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getLength</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the length of the resulting formatted date and time strings.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -259,6 +283,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getTimeZone()">
 <h3>getTimeZone</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></span>&nbsp;<span class="element-name">getTimeZone</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the time zone.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -270,6 +295,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="millisSinceMidnight(long)">
 <h3>millisSinceMidnight</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">long</span>&nbsp;<span class="element-name">millisSinceMidnight</span><wbr><span class="parameters">(long&nbsp;currentTime)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><p>Returns the number of milliseconds since midnight in the time zone that this <code>FixedDateFormat</code>
  was constructed with for the specified currentTime.</p>
  <p>As a side effect, this method updates the cached formatted date and the cached date demarcation timestamps
@@ -287,6 +313,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="formatInstant(org.apache.logging.log4j.core.time.Instant)">
 <h3>formatInstant</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">formatInstant</span><wbr><span class="parameters">(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
@@ -295,12 +322,14 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">formatInstant</span><wbr><span class="parameters">(<a href="../../time/Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant,
  char[]&nbsp;buffer,
  int&nbsp;startPos)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="format(long)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;epochMillis)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
@@ -309,6 +338,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(long&nbsp;epochMillis,
  char[]&nbsp;buffer,
  int&nbsp;startPos)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
@@ -318,6 +348,7 @@ loadScripts(document, 'script');</script>
  int&nbsp;oldNanoOfSecond,
  long&nbsp;epochSecond,
  int&nbsp;nanoOfSecond)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns <code>true</code> if the old and new date values will result in the same formatted output, <code>false</code>
  if results <i>may</i> differ.</div>
 </section>

@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -3032,6 +3032,37 @@ implementation that will be used by loggers if no explicit factory was specified
 <p>Fully qualified class name of a
 <a href="../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.html"><code>FlowMessageFactory</code></a>
 implementation to be used by all loggers.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="log4j2.instant.formatter"><a class="anchor" href="#log4j2.instant.formatter"></a><code>log4j2.instant.formatter</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_INSTANT_FORMATTER</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Configures the date &amp; time formatter used for log event instants.
+The following values are accepted:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>legacy</code></dt>
+<dd>
+<p>Enables the usage of legacy formatters (i.e., <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html"><code>FixedDateFormat</code></a> and <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html"><code>FastDateFormat</code></a>)</p>
+</dd>
+</dl>
 </div>
 </div>
 <div class="sect3">

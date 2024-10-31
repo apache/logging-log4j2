@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -1035,7 +1035,7 @@ See <a href="layouts.html#LocationInformation" class="xref page">this section of
 <div class="sect3">
 <h4 id="converter-date"><a class="anchor" href="#converter-date"></a>Date</h4>
 <div class="paragraph">
-<p>Outputs the date of the log event</p>
+<p>Outputs the instant of the log event</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html"><code>DatePatternConverter</code></a> specifier grammar</div>
@@ -1045,7 +1045,7 @@ date{pattern}[{timezone}]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The date conversion specifier may be followed by a set of braces containing a date and time pattern string per <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>SimpleDateFormat</code></a>.
+<p>The date conversion specifier may be followed by a set of braces containing a date and time formatting pattern per <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>.
 The predefined <em>named</em> formats are:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1123,8 +1123,8 @@ The predefined <em>named</em> formats are:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>You can also use a set of braces containing a time zone id per <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>java.util.TimeZone#getTimeZone(String)</code></a>.
-If no date format specifier is given then the <code>DEFAULT</code> format is used.</p>
+<p>You can also use a set of braces containing a time zone id per <a href="https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)"><code>TimeZone#getTimeZone(String)</code></a>.
+If no date format specifier is given, then the <code>DEFAULT</code> format is used.</p>
 </div>
 <div class="paragraph">
 <p>You can also define custom date formats, see following examples:</p>
@@ -1146,39 +1146,18 @@ If no date format specifier is given then the <code>DEFAULT</code> format is use
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>14:34:02,123</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>14:34:02,1234 to 14:34:02,123456789</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{dd MMM yyyy HH:mm:ss,SSS}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>02 Nov 2012 14:34:02,123</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{HH:mm:ss}{GMT+0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>18:34:02</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{yyyy-mm-dd&#8217;T&#8217;HH:mm:ss.SSS&#8217;Z'}{UTC}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2012-11-02T14:34:02.123Z</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p><code>%d{UNIX}</code> outputs the UNIX time in seconds.
-<code>%d{UNIX_MILLIS}</code> outputs the UNIX time in milliseconds.
-The <code>UNIX</code> time is the difference – in seconds for <code>UNIX</code> and in milliseconds for <code>UNIX_MILLIS</code> – between the current time and 1970-01-01 00:00:00 (UTC).
-While the time unit is milliseconds, the granularity depends on the platform.
-This is an efficient way to output the event time because only a conversion from <code>long</code> to <code>String</code> takes place, there is no <code>Date</code> formatting involved.</p>
+<p><code>%d{UNIX}</code> outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).
+<code>%d{UNIX_MILLIS}</code> outputs the epoch time in milliseconds.</p>
 </div>
 <div class="paragraph">
-<p>There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all
-<a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>
-formats are supported.
-Only timestamps in the formats mentioned in the table above may use the <em>nano-of-second</em> pattern letter <code>n</code> instead of the <em>fraction-of-second</em> pattern letter <code>S</code>.</p>
-</div>
-<div class="paragraph">
-<p>Users may revert to a millisecond-precision clock when running on Java 9 by setting <a href="systemproperties.html#log4j2.clock" class="xref page">the <code>log4j2.clock</code> system property</a> to <code>SystemMillisClock</code>.</p>
+<p>Note that the granularity of the sub-second formatters depends on the platform.
+Users may revert to a millisecond-precision clock when running on Java 9 by setting <a href="systemproperties.html#log4j2.clock" class="xref page">the <code>log4j2.clock</code> system property</a> to <code>SystemMillisClock</code>.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1188,7 +1167,7 @@ Only timestamps in the formats mentioned in the table above may use the <em>nano
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Only named date formats (<code>DEFAULT</code>, <code>ISO8601</code>, <code>UNIX</code>, <code>UNIX_MILLIS</code>, etc.) are garbage-free.</p>
+<p>Except <code>UNIX</code> and <code>UNIX_MILLIS</code> named patterns, the rest of the date &amp; time formatters are not garbage-free.</p>
 </div>
 </td>
 </tr>

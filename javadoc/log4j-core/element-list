@@ -47,3 +47,4 @@ org.apache.logging.log4j.core.time
 org.apache.logging.log4j.core.tools
 org.apache.logging.log4j.core.util
 org.apache.logging.log4j.core.util.datetime
+org.apache.logging.log4j.core.util.internal.instant
