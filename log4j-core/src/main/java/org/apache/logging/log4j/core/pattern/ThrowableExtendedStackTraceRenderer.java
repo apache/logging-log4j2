@@ -103,10 +103,14 @@ final class ThrowableExtendedStackTraceRenderer
                 final Throwable rootThrowable, final Map<Throwable, Metadata> metadataByThrowable) {
 
             // Stack trace elements of a `Throwable` only contain the class name.
-            // But we need the associated `Class<?>` to extract its resource information, i.e., JAR file and version.
+            // But we need the associated `Class` to extract its resource information, i.e., JAR file and version.
             // We are capturing the current stack to find suitable class loaders.
-            // We will use this as a bootstrap to go from a class name in a stack trace to a `Class<?>`.
-            final Deque<Class<?>> rootStackTrace = StackLocatorUtil.getCurrentStackTrace();
+            // We will use this as a bootstrap to go from a class name in a stack trace to a `Class`.
+            final Deque<Class<?>> executionStackTrace = StackLocatorUtil.getCurrentStackTrace();
+
+            // Mapping a class name to a `ClassResourceInfo` is an expensive operation.
+            // Next to `ClassResourceInfo` allocation, it requires extraction of the associated `Class`.
+            // We will use this lookup table to speed things up.
             final Map<String, ClassResourceInfo> classResourceInfoByName = new HashMap<>();
 
             // Walk over the causal chain
@@ -127,39 +131,45 @@ final class ThrowableExtendedStackTraceRenderer
                     continue;
                 }
 
-                Class<?> clazz = rootStackTrace.isEmpty() ? null : rootStackTrace.peekLast();
+                Class<?> executionStackTraceElementClass =
+                        executionStackTrace.isEmpty() ? null : executionStackTrace.peekLast();
                 ClassLoader lastLoader = null;
-                ClassResourceInfo classResourceInfo;
                 final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
                 for (int throwableStackIndex = metadata.stackLength - 1;
                         throwableStackIndex >= 0;
                         --throwableStackIndex) {
 
-                    // Skip if the current class name is either known, or already visited and is unknown
-                    final StackTraceElement stackTraceElement = stackTraceElements[throwableStackIndex];
-                    final String stackTraceElementClassName = stackTraceElement.getClassName();
-                    if (clazz != null && stackTraceElementClassName.equals(clazz.getName())) {
-                        classResourceInfo = new ClassResourceInfo(clazz, true);
-                        classResourceInfoByName.put(clazz.getName(), classResourceInfo);
-                        lastLoader = classResourceInfo.clazz.getClassLoader();
-                        rootStackTrace.pollLast();
-                        clazz = rootStackTrace.peekLast();
-                    } else {
-                        classResourceInfo = classResourceInfoByName.get(stackTraceElementClassName);
-                        if (classResourceInfo != null) {
-                            if (classResourceInfo.clazz != null) {
-                                lastLoader = classResourceInfo.clazz.getClassLoader();
-                            }
-                        } else {
-                            final Class<?> stackTraceElementClass = loadClass(lastLoader, stackTraceElementClassName);
-                            classResourceInfo = stackTraceElementClass != null
-                                    ? new ClassResourceInfo(stackTraceElementClass, false)
-                                    : ClassResourceInfo.UNKNOWN;
-                            classResourceInfoByName.put(stackTraceElementClassName, classResourceInfo);
-                            if (classResourceInfo.clazz != null) {
-                                lastLoader = classResourceInfo.clazz.getClassLoader();
-                            }
+                    // Get the exception's stack trace element
+                    final StackTraceElement throwableStackTraceElement = stackTraceElements[throwableStackIndex];
+                    final String throwableStackTraceElementClassName = throwableStackTraceElement.getClassName();
+
+                    // Skip if the current class name is already registered
+                    ClassResourceInfo classResourceInfo =
+                            classResourceInfoByName.get(throwableStackTraceElementClassName);
+                    if (classResourceInfo != null) {
+                        if (classResourceInfo.clazz != null) {
+                            lastLoader = classResourceInfo.clazz.getClassLoader();
                         }
+                    }
+
+                    // See if we get a match from the execution stack trace
+                    else if (executionStackTraceElementClass != null
+                            && throwableStackTraceElementClassName.equals(executionStackTraceElementClass.getName())) {
+                        classResourceInfo = new ClassResourceInfo(executionStackTraceElementClass, true);
+                        classResourceInfoByName.put(throwableStackTraceElementClassName, classResourceInfo);
+                        lastLoader = classResourceInfo.clazz.getClassLoader();
+                        executionStackTrace.pollLast();
+                        executionStackTraceElementClass = executionStackTrace.peekLast();
+                    }
+
+                    // We don't know this class name, try to load it using the last found loader
+                    else {
+                        final Class<?> stackTraceElementClass =
+                                loadClass(lastLoader, throwableStackTraceElementClassName);
+                        classResourceInfo = stackTraceElementClass != null
+                                ? new ClassResourceInfo(stackTraceElementClass, false)
+                                : ClassResourceInfo.UNKNOWN;
+                        classResourceInfoByName.put(throwableStackTraceElementClassName, classResourceInfo);
                     }
                 }
             }

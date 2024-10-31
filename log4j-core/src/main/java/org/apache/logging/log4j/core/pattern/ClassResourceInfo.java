@@ -27,7 +27,7 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final Lazy<String> text;
+    private final Lazy<String> textRef;
 
     final Class<?> clazz;
 
@@ -35,7 +35,7 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.text = Lazy.value("~[?:?]");
+        this.textRef = Lazy.value("~[?:?]");
         this.clazz = null;
     }
 
@@ -45,7 +45,7 @@ final class ClassResourceInfo {
      */
     ClassResourceInfo(final Class<?> clazz, final boolean exact) {
         this.clazz = clazz;
-        this.text = Lazy.lazy(() -> getText(clazz, exact));
+        this.textRef = Lazy.lazy(() -> getText(clazz, exact));
     }
 
     private static String getText(final Class<?> clazz, final boolean exact) {
@@ -88,6 +88,6 @@ final class ClassResourceInfo {
 
     @Override
     public String toString() {
-        return text.get();
+        return textRef.get();
     }
 }
