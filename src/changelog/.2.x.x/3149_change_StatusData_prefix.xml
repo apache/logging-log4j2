@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="3045" link="https://github.com/apache/logging-log4j2/pull/3045"/>
-  <description format="asciidoc">Switch prefixing stack traces in Pattern Layout from whitespace to newline</description>
+  <issue id="3149" link="https://github.com/apache/logging-log4j2/pull/3149"/>
+  <description format="asciidoc">Switch prefixing stack traces in Status Logger from whitespace to newline</description>
 </entry>
