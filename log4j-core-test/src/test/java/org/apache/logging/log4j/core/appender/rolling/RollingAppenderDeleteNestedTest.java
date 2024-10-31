@@ -35,8 +35,6 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -76,9 +74,7 @@ public class RollingAppenderDeleteNestedTest {
         assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
             final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            System.out.println(file + " (" + fileAttributes.size() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE)
-                            .format(fileAttributes.lastModifiedTime().toMillis()));
+            System.out.println(file + " (" + fileAttributes.size() + "B) " + fileAttributes.lastModifiedTime());
         }
 
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");

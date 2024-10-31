@@ -14,19 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util.datetime;
+package org.apache.logging.log4j.core.util.internal.instant;
 
-import java.text.FieldPosition;
+import static java.util.Objects.requireNonNull;
+
+import java.time.temporal.ChronoUnit;
+import org.apache.logging.log4j.core.time.Instant;
 
 /**
- * Use {@link org.apache.logging.log4j.core.time.internal.format.Format}.
+ * Contract for formatting {@link Instant}s.
+ *
+ * @since 2.25.0
  */
-@Deprecated
-public abstract class Format {
+public interface InstantFormatter {
 
-    public final String format(final Object obj) {
-        return format(obj, new StringBuilder(), new FieldPosition(0)).toString();
+    /**
+     * @return the time precision of the formatted output
+     */
+    ChronoUnit getPrecision();
+
+    default String format(final Instant instant) {
+        requireNonNull(instant, "instant");
+        final StringBuilder buffer = new StringBuilder();
+        formatTo(buffer, instant);
+        return buffer.toString();
     }
 
-    public abstract StringBuilder format(Object obj, StringBuilder toAppendTo, FieldPosition pos);
+    void formatTo(StringBuilder buffer, Instant instant);
 }

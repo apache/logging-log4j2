@@ -27,8 +27,6 @@ import java.util.Arrays;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -61,9 +59,7 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
             final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            System.out.println(file + " (" + fileAttributes.size() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE)
-                            .format(fileAttributes.lastModifiedTime().toMillis()));
+            System.out.println(file + " (" + fileAttributes.size() + "B) " + fileAttributes.lastModifiedTime());
         }
         assertEquals(4, files.length, Arrays.toString(files));
         long total = 0;

@@ -35,7 +35,8 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -46,7 +47,8 @@ public class OnStartupTriggeringPolicyTest {
 
     private static final String TARGET_PATTERN = "/test1-%d{MM-dd-yyyy}-%i.log";
     private static final String TEST_DATA = "Hello world!";
-    private static final FastDateFormat formatter = FastDateFormat.getInstance("MM-dd-yyyy");
+    private static final InstantPatternFormatter formatter =
+            InstantPatternFormatter.newBuilder().setPattern("MM-dd-yyyy").build();
 
     @TempDir
     Path tempDir;
@@ -56,7 +58,9 @@ public class OnStartupTriggeringPolicyTest {
         final Configuration configuration = new DefaultConfiguration();
         final Path target = tempDir.resolve("testfile");
         final long timeStamp = Instant.now().minus(Duration.ofDays(1)).toEpochMilli();
-        final String expectedDate = formatter.format(timeStamp);
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(timeStamp, 0);
+        final String expectedDate = formatter.format(instant);
         final Path rolled = tempDir.resolve("test1-" + expectedDate + "-1.log");
         final long copied;
         try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes(StandardCharsets.UTF_8))) {
