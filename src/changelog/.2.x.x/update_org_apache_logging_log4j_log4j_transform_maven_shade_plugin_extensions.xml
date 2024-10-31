@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="updated">
+  <issue id="3147" link="https://github.com/apache/logging-log4j2/pull/3147"/>
+  <description format="asciidoc">Update `org.apache.logging.log4j:log4j-transform-maven-shade-plugin-extensions` to version `0.2.0`</description>
+</entry>
