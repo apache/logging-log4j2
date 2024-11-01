@@ -35,9 +35,9 @@ public class CompositeFilterTest {
         assertNotEquals(a, c);
         assertNotEquals(b, c);
         final Filter[] expected = new Filter[] {a, b, c};
-        final CompositeFilter singleA = CompositeFilter.createFilters(new Filter[] {a});
-        final CompositeFilter singleB = CompositeFilter.createFilters(new Filter[] {b});
-        final CompositeFilter singleC = CompositeFilter.createFilters(new Filter[] {c});
+        final CompositeFilter singleA = CompositeFilter.createFilters(a);
+        final CompositeFilter singleB = CompositeFilter.createFilters(b);
+        final CompositeFilter singleC = CompositeFilter.createFilters(c);
         // Concatenating one at a time
         final CompositeFilter concat1 = singleA.addFilter(b).addFilter(c);
         assertArrayEquals(expected, concat1.getFiltersArray());

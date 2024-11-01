@@ -684,7 +684,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
      * @return The CompositeFilter.
      */
     @PluginFactory
-    public static CompositeFilter createFilters(@PluginElement("Filters") final Filter[] filters) {
+    public static CompositeFilter createFilters(@PluginElement("Filters") final Filter... filters) {
         return new CompositeFilter(filters);
     }
 }
