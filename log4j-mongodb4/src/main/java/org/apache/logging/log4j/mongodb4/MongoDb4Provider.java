@@ -42,6 +42,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
     static final String PLUGIN_NAME = "MongoDb4";
 
+    /**
+     * Builds new {@link MongoDb4Provider} instance.
+     *
+     * @param <B> the builder type.
+     */
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<MongoDb4Provider> {
 
@@ -58,26 +63,54 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         @Override
         public MongoDb4Provider build() {
             StatusLogger.getLogger().warn("The {} Appender is deprecated, use the MongoDb Appender.", PLUGIN_NAME);
+            return newMongoDb4Provider();
+        }
+
+        protected MongoDb4Provider newMongoDb4Provider() {
             return new MongoDb4Provider(connectionStringSource, capped, collectionSize);
         }
 
+        /**
+         * Sets the MongoDB connection string.
+         *
+         * @param connectionStringSource the MongoDB connection string.
+         * @return this instance.
+         */
         public B setConnectionStringSource(final String connectionStringSource) {
             this.connectionStringSource = connectionStringSource;
             return asBuilder();
         }
 
+        /**
+         * Sets whether the MongoDB collection is capped.
+         *
+         * @param isCapped whether the MongoDB collection is capped.
+         * @return this instance.
+         */
         public B setCapped(final boolean isCapped) {
             this.capped = isCapped;
             return asBuilder();
         }
 
-        public B setCollectionSize(final int collectionSize) {
-            this.collectionSize = collectionSize;
+        /**
+         * Sets the maximum size in bytes of a capped collection.
+         *
+         * @param sizeInBytes the maximum size in bytes of a capped collection.
+         * @return this instance.
+         */
+        public B setCollectionSize(final int sizeInBytes) {
+            this.collectionSize = sizeInBytes;
             return asBuilder();
         }
 
-        public B setCollectionSize(final long collectionSize) {
-            this.collectionSize = collectionSize;
+        /**
+         * Sets the maximum size in bytes of a capped collection.
+         *
+         * @param sizeInBytes the maximum size in bytes of a capped collection.
+         * @return this instance.
+         */
+        public B setCollectionSize(final long sizeInBytes) {
+            this.collectionSize = sizeInBytes;
             return asBuilder();
         }
     }
@@ -94,6 +127,12 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     // TODO Where does this number come from?
     private static final long DEFAULT_COLLECTION_SIZE = 536_870_912;
 
+    /**
+     * Creates a new builder.
+     *
+     * @param <B> The builder type.
+     * @return a new builder.
+     */
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();

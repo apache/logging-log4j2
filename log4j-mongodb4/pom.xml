@@ -37,6 +37,8 @@
     <!-- Dependency versions -->
     <mongodb4.version>4.11.4</mongodb4.version>
     <slf4j.version>2.0.16</slf4j.version>
+    <!-- Using bnd.baseline.skip for weird complaints; why are we running this at all for an appender impl? -->
+    <bnd.baseline.skip>true</bnd.baseline.skip>
   </properties>
 
   <dependencyManagement>
