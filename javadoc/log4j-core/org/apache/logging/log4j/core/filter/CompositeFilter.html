@@ -132,7 +132,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addFilter(org.apache.logging.log4j.core.Filter)" class="member-name-link">addFilter</a><wbr>(<a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>&nbsp;filter)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CompositeFilter.html" title="class in org.apache.logging.log4j.core.filter">CompositeFilter</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createFilters(org.apache.logging.log4j.core.Filter%5B%5D)" class="member-name-link">createFilters</a><wbr>(<a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>[]&nbsp;filters)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createFilters(org.apache.logging.log4j.core.Filter...)" class="member-name-link">createFilters</a><wbr>(<a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>...&nbsp;filters)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a CompositeFilter.</div>
 </div>
@@ -913,11 +913,11 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 </section>
 </li>
 <li>
-<section class="detail" id="createFilters(org.apache.logging.log4j.core.Filter[])">
+<section class="detail" id="createFilters(org.apache.logging.log4j.core.Filter...)">
 <h3>createFilters</h3>
 <div class="member-signature"><span class="annotations"><a href="../config/plugins/PluginFactory.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginFactory</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="CompositeFilter.html" title="class in org.apache.logging.log4j.core.filter">CompositeFilter</a></span>&nbsp;<span class="element-name">createFilters</span><wbr><span class="parameters">(<a href="../config/plugins/PluginElement.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginElement</a>("Filters")
- <a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>[]&nbsp;filters)</span></div>
+ <a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a>...&nbsp;filters)</span></div>
 <div class="block">Creates a CompositeFilter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
