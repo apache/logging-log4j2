@@ -20,7 +20,7 @@
  */
 @Export
 @Open("org.apache.logging.log4j.core")
-@Version("2.21.0")
+@Version("2.25.0")
 package org.apache.logging.log4j.mongodb4;
 
 import aQute.bnd.annotation.jpms.Open;
