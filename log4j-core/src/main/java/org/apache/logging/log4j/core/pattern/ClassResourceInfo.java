@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.net.URL;
 import java.security.CodeSource;
-import org.apache.logging.log4j.util.Lazy;
+import java.util.function.Consumer;
 
 /**
  * Resource information (i.e., the enclosing JAR file and its version) of a class.
@@ -27,7 +27,7 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final Lazy<String> textRef;
+    private final Consumer<StringBuilder> consumer;
 
     final Class<?> clazz;
 
@@ -35,8 +35,8 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.textRef = Lazy.value("~[?:?]");
-        this.clazz = null;
+        this.consumer = (buffer) -> buffer.append("~[?:?]");
+        clazz = null;
     }
 
     /**
@@ -44,15 +44,18 @@ final class ClassResourceInfo {
      * @param exact {@code true}, if the class was obtained via reflection; {@code false}, otherwise
      */
     ClassResourceInfo(final Class<?> clazz, final boolean exact) {
-        this.clazz = clazz;
-        this.textRef = Lazy.lazy(() -> getText(clazz, exact));
-    }
-
-    private static String getText(final Class<?> clazz, final boolean exact) {
         final String exactnessPrefix = exact ? "" : "~";
         final String location = getLocation(clazz);
         final String version = getVersion(clazz);
-        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
+        this.consumer = (buffer) -> {
+            buffer.append(exactnessPrefix);
+            buffer.append("[");
+            buffer.append(location);
+            buffer.append(":");
+            buffer.append(version);
+            buffer.append("]");
+        };
+        this.clazz = clazz;
     }
 
     private static String getLocation(final Class<?> clazz) {
@@ -86,8 +89,7 @@ final class ClassResourceInfo {
         return "?";
     }
 
-    @Override
-    public String toString() {
-        return textRef.get();
+    public void render(final StringBuilder buffer) {
+        this.consumer.accept(buffer);
     }
 }

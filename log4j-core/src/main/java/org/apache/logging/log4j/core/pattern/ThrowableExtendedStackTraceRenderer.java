@@ -75,7 +75,7 @@ final class ThrowableExtendedStackTraceRenderer
                 context.classResourceInfoByName.get(stackTraceElement.getClassName());
         if (classResourceInfo != null) {
             buffer.append(' ');
-            buffer.append(classResourceInfo);
+            classResourceInfo.render(buffer);
         }
         buffer.append(lineSeparator);
     }
