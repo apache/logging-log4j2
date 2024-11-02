@@ -163,7 +163,6 @@ public class MapRewritePolicyTest {
         assertThat("wrong size", updatedMap, hasSize(2));
     }
 
-    @SuppressWarnings("deprecation")
     private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
         // Ensure that everything but the Mapped Data is still the same
         assertEquals(orig.getLoggerName(), changed.getLoggerName(), "LoggerName changed");
@@ -171,8 +170,8 @@ public class MapRewritePolicyTest {
         assertEquals(orig.getLoggerFqcn(), changed.getLoggerFqcn(), "FQCN changed");
         assertEquals(orig.getLevel(), changed.getLevel(), "Level changed");
         assertArrayEquals(
-                orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
-                changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace(),
+                orig.getThrown() == null ? null : orig.getThrown().getStackTrace(),
+                changed.getThrown() == null ? null : changed.getThrown().getStackTrace(),
                 "Throwable changed");
         assertEquals(orig.getContextData(), changed.getContextData(), "ContextData changed");
         assertEquals(orig.getContextStack(), changed.getContextStack(), "ContextStack changed");
