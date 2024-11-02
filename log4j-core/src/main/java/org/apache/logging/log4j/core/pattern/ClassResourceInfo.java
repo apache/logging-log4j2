@@ -27,7 +27,7 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final Consumer<StringBuilder> consumer;
+    private final Consumer<StringBuilder> renderer;
 
     final Class<?> clazz;
 
@@ -35,7 +35,7 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.consumer = (buffer) -> buffer.append("~[?:?]");
+        this.renderer = (buffer) -> buffer.append("~[?:?]");
         clazz = null;
     }
 
@@ -47,7 +47,7 @@ final class ClassResourceInfo {
         final String exactnessPrefix = exact ? "" : "~";
         final String location = getLocation(clazz);
         final String version = getVersion(clazz);
-        this.consumer = (buffer) -> {
+        this.renderer = (buffer) -> {
             buffer.append(exactnessPrefix);
             buffer.append("[");
             buffer.append(location);
@@ -89,7 +89,7 @@ final class ClassResourceInfo {
         return "?";
     }
 
-    public void render(final StringBuilder buffer) {
-        this.consumer.accept(buffer);
+    void render(final StringBuilder buffer) {
+        renderer.accept(buffer);
     }
 }

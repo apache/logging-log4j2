@@ -176,36 +176,34 @@ final class ThrowableExtendedStackTraceRenderer
             return classResourceInfoByName;
         }
 
-        @FunctionalInterface
-        private interface ThrowingSupplier<V> {
-
-            V supply() throws Exception;
-        }
-
         private static Class<?> loadClass(final ClassLoader loader, final String className) {
-            return Stream.<ThrowingSupplier<Class<?>>>of(
-                            // 1. Try the passed class loader
-                            () -> loader != null ? loader.loadClass(className) : null,
-                            // 2. Try the `LoaderUtil` magic
-                            () -> LoaderUtil.loadClass(className),
-                            // 3. Try the current class loader
-                            () -> ThrowableExtendedStackTraceRenderer.class
-                                    .getClassLoader()
-                                    .loadClass(className))
-                    .map(provider -> {
-                        try {
-                            final Class<?> clazz = provider.supply();
-                            if (clazz != null) {
-                                return clazz;
-                            }
-                        } catch (final Exception ignored) {
-                            // Do nothing
-                        }
-                        return null;
-                    })
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
+            for (final ClassLoadingStrategy strategy : CLASS_LOADING_STRATEGIES) {
+                try {
+                    final Class<?> clazz = strategy.run(loader, className);
+                    if (clazz != null) {
+                        return clazz;
+                    }
+                } catch (final Exception ignored) {
+                    // Do nothing
+                }
+            }
+            return null;
         }
     }
+
+        private static final ClassLoadingStrategy[] CLASS_LOADING_STRATEGIES = {
+                // 1. Try the passed class loader
+                (loader, className) -> loader != null ? loader.loadClass(className) : null,
+                // 2. Try the `LoaderUtil` magic
+                (loader, className) -> LoaderUtil.loadClass(className),
+                // 3. Try the current class loader
+                (loader, className) -> ThrowableExtendedStackTraceRenderer.class
+                        .getClassLoader()
+                        .loadClass(className)
+        };
+
+        private interface ClassLoadingStrategy {
+
+            Class<?> run(final ClassLoader loader, final String className) throws Exception;
+        }
 }
