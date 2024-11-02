@@ -3,7 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="2691" link="https://github.com/apache/logging-log4j2/pull/2691"/>
   <issue id="3123" link="https://github.com/apache/logging-log4j2/pull/3123"/>
-  <description format="asciidoc">Consolidate exception rendering logic and improve circular reference support in Pattern Layout</description>
+  <description format="asciidoc">Switch the default exception converter from xref:manual/pattern-layout.adoc#converter-exception-extended[the extended exception converter] to xref:manual/pattern-layout.adoc#converter-exception[the plain exception converter]</description>
 </entry>
