@@ -35,8 +35,11 @@ See our xref:graalvm.adoc[GraalVM guide] for details.
 
 Exception handling in xref:manual/pattern-layout.adoc[Pattern Layout] went through a major rewrite.
 This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
-Additionally, rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
-The support for the `\{ansi}` option in exception converters is removed too.
+Some important highlights from this rewrite:
+
+* Rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.
+* Switched the default exception converter from xref:manual/pattern-layout.adoc#converter-exception-extended[the extended exception converter] to xref:manual/pattern-layout.adoc#converter-exception[the plain exception converter], which is more performant.
+* The support for the `\{ansi}` option in exception converters is removed.
 
 [#release-notes-2-25-0-instant-format]
 === Date & time formatting
