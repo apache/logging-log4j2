@@ -53,12 +53,19 @@ public abstract class MongoDbProvider implements NoSqlProvider<MongoDb4Connectio
     }
 
     /**
-     * Creates a new builder.
-     *
-     * @return a new builder.
+     * @deprecated since 2.25.0 use the typesafe {@link #newMongoDbBuilder()} method.
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public static <B extends MongoDb4Provider.Builder<B>> B newBuilder() {
+        return (B) newMongoDbBuilder();
+    }
+
+    /**
+     * Creates a builder for the MongoDB plugin
      */
     @PluginBuilderFactory
-    public static Builder newBuilder() {
+    public static Builder newMongoDbBuilder() {
         return new Builder();
     }
 }
