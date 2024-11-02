@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
@@ -191,19 +189,18 @@ final class ThrowableExtendedStackTraceRenderer
         }
     }
 
-        private static final ClassLoadingStrategy[] CLASS_LOADING_STRATEGIES = {
-                // 1. Try the passed class loader
-                (loader, className) -> loader != null ? loader.loadClass(className) : null,
-                // 2. Try the `LoaderUtil` magic
-                (loader, className) -> LoaderUtil.loadClass(className),
-                // 3. Try the current class loader
-                (loader, className) -> ThrowableExtendedStackTraceRenderer.class
-                        .getClassLoader()
-                        .loadClass(className)
-        };
+    private static final ClassLoadingStrategy[] CLASS_LOADING_STRATEGIES = {
+        // 1. Try the passed class loader
+        (loader, className) -> loader != null ? loader.loadClass(className) : null,
+        // 2. Try the `LoaderUtil` magic
+        (loader, className) -> LoaderUtil.loadClass(className),
+        // 3. Try the current class loader
+        (loader, className) ->
+                ThrowableExtendedStackTraceRenderer.class.getClassLoader().loadClass(className)
+    };
 
-        private interface ClassLoadingStrategy {
+    private interface ClassLoadingStrategy {
 
-            Class<?> run(final ClassLoader loader, final String className) throws Exception;
-        }
+        Class<?> run(final ClassLoader loader, final String className) throws Exception;
+    }
 }
