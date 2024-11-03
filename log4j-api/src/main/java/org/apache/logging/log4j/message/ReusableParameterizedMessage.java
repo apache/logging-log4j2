@@ -114,7 +114,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public Message memento() {
-        return new ParameterizedMessage(messagePattern, getTrimmedParams());
+        Message message = new ParameterizedMessage(messagePattern, getTrimmedParams());
+        message.getFormattedMessage();
+        return message;
     }
 
     private void init(final String messagePattern, final int argCount, final Object[] args) {

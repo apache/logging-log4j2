@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.awaitility.Awaitility;
 
@@ -121,12 +120,7 @@ public class ListAppender extends AbstractAppender {
     public void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
-            if (event instanceof MutableLogEvent) {
-                // must take snapshot or subsequent calls to logger.log() will modify this event
-                events.add(((MutableLogEvent) event).createMemento());
-            } else {
-                events.add(event);
-            }
+            events.add(event.toImmutable());
         } else if (layout instanceof SerializedLayout) {
             final byte[] header = layout.getHeader();
             final byte[] content = layout.toByteArray(event);

@@ -183,7 +183,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
     private void populateLazilyInitializedFields(final LogEvent event) {
         event.getSource();
+        event.getThreadId();
         event.getThreadName();
+        event.getThreadPriority();
     }
 
     void logInBackgroundThread(final LogEvent event) {

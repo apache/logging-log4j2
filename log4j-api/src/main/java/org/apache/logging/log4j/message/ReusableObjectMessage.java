@@ -128,7 +128,9 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
 
     @Override
     public Message memento() {
-        return new ObjectMessage(obj);
+        Message message = new ObjectMessage(obj);
+        message.getFormattedMessage();
+        return message;
     }
 
     @Override

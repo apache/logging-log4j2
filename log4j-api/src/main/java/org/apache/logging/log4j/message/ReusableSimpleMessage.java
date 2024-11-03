@@ -85,7 +85,9 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
 
     @Override
     public Message memento() {
-        return new SimpleMessage(charSequence);
+        SimpleMessage message = new SimpleMessage(charSequence);
+        message.getFormattedMessage();
+        return message;
     }
 
     // CharSequence impl
