@@ -29,12 +29,15 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * This filter returns the onMatch result if the level in the LogEvent is the same or more specific
- * than the configured level and the onMismatch value otherwise. For example, if the ThresholdFilter
- * is configured with Level ERROR and the LogEvent contains Level DEBUG then the onMismatch value will
- * be returned since ERROR events are more specific than DEBUG.
+ * This filter returns the onMatch result if the level in the {@link LogEvent} is the same or more specific
+ * than the configured level and the {@code onMismatch} value otherwise. For example, if the ThresholdFilter
+ * is configured with Level {@code ERROR} and the LogEvent contains Level {@code DEBUG} then the {@code onMismatch} value will
+ * be returned since {@code ERROR} events are more specific than {@code DEBUG}.
+ * <p>
+ * The default Level is {@code ERROR}.
+ * </p>
  *
- * The default Level is ERROR.
+ * @see Level#isMoreSpecificThan(Level)
  */
 @Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
 @Plugin
