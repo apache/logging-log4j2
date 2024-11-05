@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -833,7 +834,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     @Override
     protected void writeInternal(final LogEvent event) {
-        StringReader reader = null;
+        // Don't close StringReaders because of (1) batching, (2) resources are not allocated, and (3) they'll be GC'd
+        // away.
+        // See https://github.com/apache/logging-log4j2/issues/3127 where closing StringReaders too soon can cause
+        // problems.
         try {
             if (!this.isRunning() || isClosed(this.connection) || isClosed(this.statement)) {
                 throw new AppenderLoggingException(
@@ -879,7 +883,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                 if (column.isEventTimestamp()) {
                     this.statement.setTimestamp(j++, new Timestamp(event.getTimeMillis()));
                 } else if (column.isClob()) {
-                    reader = new StringReader(column.getLayout().toSerializable(event));
+                    final Reader reader = new StringReader(column.getLayout().toSerializable(event));
                     if (column.isUnicode()) {
                         this.statement.setNClob(j++, reader);
                     } else {
@@ -929,7 +933,6 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             } catch (final SQLException e) {
                 // Ignore
             }
-            Closer.closeSilently(reader);
         }
     }
 
