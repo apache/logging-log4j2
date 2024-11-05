@@ -454,6 +454,30 @@ public final class GelfLayout extends AbstractStringLayout {
             }
             return asBuilder();
         }
+
+        /**
+         * @since 2.25.0
+         */
+        public B setThreadContextIncludes(String threadContextIncludes) {
+            this.threadContextIncludes = threadContextIncludes;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.25.0
+         */
+        public B setThreadContextExcludes(String threadContextExcludes) {
+            this.threadContextExcludes = threadContextExcludes;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.25.0
+         */
+        public B setOmitEmptyFields(boolean omitEmptyFields) {
+            this.omitEmptyFields = omitEmptyFields;
+            return asBuilder();
+        }
     }
 
     /**

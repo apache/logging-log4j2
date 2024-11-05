@@ -243,11 +243,22 @@ public final class StringMatchFilter extends AbstractFilter {
         private String text;
 
         /**
+         * @deprecated since 2.25.0, use {@link #setText} instead.
+         */
+        @Deprecated
+        public StringMatchFilter.Builder setMatchString(final String text) {
+            this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be null or empty.");
+            return this;
+        }
+
+        /**
          * Sets the text to search in event messages.
+         *
          * @param text the text to search in event messages.
          * @return this instance.
+         * @since 2.25.0
          */
-        public StringMatchFilter.Builder setMatchString(final String text) {
+        public StringMatchFilter.Builder setText(final String text) {
             this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be null or empty.");
             return this;
         }
