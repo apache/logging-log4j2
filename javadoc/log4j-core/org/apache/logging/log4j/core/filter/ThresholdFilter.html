@@ -90,12 +90,21 @@ loadScripts(document, 'script');</script>
 <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">ThresholdFilter</span>
 <span class="extends-implements">extends <a href="AbstractFilter.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter</a></span></div>
-<div class="block">This filter returns the onMatch result if the level in the LogEvent is the same or more specific
- than the configured level and the onMismatch value otherwise. For example, if the ThresholdFilter
- is configured with Level ERROR and the LogEvent contains Level DEBUG then the onMismatch value will
- be returned since ERROR events are more specific than DEBUG.
-
- The default Level is ERROR.</div>
+<div class="block">This filter returns the onMatch result if the level in the <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> is the same or more specific
+ than the configured level and the <code>onMismatch</code> value otherwise. For example, if the ThresholdFilter
+ is configured with Level <code>ERROR</code> and the LogEvent contains Level <code>DEBUG</code> then the <code>onMismatch</code> value will
+ be returned since <code>ERROR</code> events are more specific than <code>DEBUG</code>.
+ <p>
+ The default Level is <code>ERROR</code>.
+ </p></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><code>Level.isMoreSpecificThan(Level)</code></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section class="summary">
 <ul class="summary-list">
