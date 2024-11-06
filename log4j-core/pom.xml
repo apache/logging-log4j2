@@ -43,10 +43,8 @@
     <bnd-extra-package-options>
       <!-- Annotations only -->
       org.jspecify.*;resolution:=optional,
-      <!-- External optional dependencies -->
-      org.fusesource.jansi;resolution:=optional,
       <!-- Optional Java modules -->
-      <!-- java.management -->
+      <!-- java.management: used by ProcessIdPatternConverter -->
       java.lang.management;resolution:=optional,
       javax.management.*;resolution:=optional,
       <!-- java.sql -->
@@ -64,7 +62,6 @@
       java.sql;transitive=false,
       java.xml;transitive=false,
       jdk.unsupported;transitive=false,
-      org.fusesource.jansi;transitive=false,
       org.jspecify;transitive=false
     </bnd-extra-module-options>
 
@@ -99,13 +96,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
-    </dependency>
-
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <!-- The dependency on the plugin processor is only required to ensure the processor is built before core. We

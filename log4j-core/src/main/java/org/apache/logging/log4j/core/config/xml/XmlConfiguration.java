@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +176,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      *
      * @param xIncludeAware enabled XInclude
      * @return a new DocumentBuilder
-     * @throws ParserConfigurationException
+     * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
      */
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -217,14 +218,16 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      */
     private static void enableXInclude(final DocumentBuilderFactory factory) {
         try {
-            // Alternative: We set if a system property on the command line is set, for example:
-            // -DLog4j.XInclude=true
             factory.setXIncludeAware(true);
             // LOG4J2-3531: Xerces only checks if the feature is supported when creating a factory. To reproduce:
             // -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11NonValidatingConfiguration
-            factory.newDocumentBuilder();
-        } catch (final UnsupportedOperationException | ParserConfigurationException e) {
-            factory.setXIncludeAware(false);
+            try {
+                factory.newDocumentBuilder();
+            } catch (final ParserConfigurationException e) {
+                factory.setXIncludeAware(false);
+                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
+            }
+        } catch (final UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
         } catch (final AbstractMethodError | NoSuchMethodError err) {
             LOGGER.warn(
@@ -241,7 +244,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             return;
         }
         constructHierarchy(rootNode, rootElement);
-        if (status.size() > 0) {
+        if (!status.isEmpty()) {
             for (final Status s : status) {
                 LOGGER.error("Error processing element {} ({}): {}", s.name, s.element, s.errorType);
             }
@@ -295,7 +298,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
 
         final String text = buffer.toString().trim();
-        if (text.length() > 0 || (!node.hasChildren() && !node.isRoot())) {
+        if (!text.isEmpty() || (!node.hasChildren() && !node.isRoot())) {
             node.setValue(text);
         }
     }
@@ -337,7 +340,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
+        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
+                + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
     }
 
     /**

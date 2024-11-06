@@ -57,7 +57,6 @@ public class MementoLogEvent implements LogEvent {
     private final long threadId;
     private final int threadPriority;
     private final Throwable thrown;
-    private final ThrowableProxy thrownProxy;
 
     public MementoLogEvent(final LogEvent event) {
         loggerFqcn = event.getLoggerFqcn();
@@ -80,7 +79,6 @@ public class MementoLogEvent implements LogEvent {
         threadId = event.getThreadId();
         threadPriority = event.getThreadPriority();
         thrown = event.getThrown();
-        thrownProxy = event.getThrownProxy();
     }
 
     private static ReadOnlyStringMap mementoOfContextData(final ReadOnlyStringMap readOnlyMap) {
@@ -187,11 +185,6 @@ public class MementoLogEvent implements LogEvent {
     }
 
     @Override
-    public ThrowableProxy getThrownProxy() {
-        return thrownProxy;
-    }
-
-    @Override
     public boolean isEndOfBatch() {
         return endOfBatch;
     }
@@ -236,8 +229,7 @@ public class MementoLogEvent implements LogEvent {
                 && Objects.equals(contextStack, that.contextStack)
                 && Objects.equals(source, that.source)
                 && Objects.equals(threadName, that.threadName)
-                && Objects.equals(thrown, that.thrown)
-                && Objects.equals(thrownProxy, that.thrownProxy);
+                && Objects.equals(thrown, that.thrown);
     }
 
     @Override
@@ -258,8 +250,7 @@ public class MementoLogEvent implements LogEvent {
                 threadName,
                 threadId,
                 threadPriority,
-                thrown,
-                thrownProxy);
+                thrown);
     }
 
     @Override

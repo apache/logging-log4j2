@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -82,7 +81,6 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
     private StringBuilder messageText;
     private Object[] parameters;
     private Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
@@ -116,7 +114,6 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
         initTime(clock);
         this.nanoTime = nanoClock.nanoTime();
         this.thrown = aThrowable;
-        this.thrownProxy = null;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
@@ -354,29 +351,12 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
 
     @Override
     public Throwable getThrown() {
-        // after deserialization, thrown is null but thrownProxy may be non-null
-        if (thrown == null) {
-            if (thrownProxy != null) {
-                thrown = thrownProxy.getThrowable();
-            }
-        }
         return thrown;
     }
 
     @Override
     public void setThrown(final Throwable thrown) {
         this.thrown = thrown;
-    }
-
-    @Override
-    public ThrowableProxy getThrownProxy() {
-        // lazily instantiate the (expensive) ThrowableProxy
-        if (thrownProxy == null) {
-            if (thrown != null) {
-                thrownProxy = new ThrowableProxy(thrown);
-            }
-        }
-        return this.thrownProxy;
     }
 
     @Override
@@ -487,7 +467,6 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
         this.loggerName = null;
         clearMessage();
         this.thrown = null;
-        this.thrownProxy = null;
         clearContextData();
         this.marker = null;
         this.fqcn = null;
@@ -546,8 +525,7 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
                 .setThreadId(threadId) //
                 .setThreadName(threadName) //
                 .setThreadPriority(threadPriority) //
-                .setThrown(getThrown()) // may deserialize from thrownProxy
-                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
+                .setThrown(getThrown()) //
                 .setInstant(instant) //
         ;
     }

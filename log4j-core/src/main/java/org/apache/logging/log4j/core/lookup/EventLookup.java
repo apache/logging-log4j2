@@ -57,9 +57,6 @@ public class EventLookup extends AbstractLookup {
                 if (event.getThrown() != null) {
                     return event.getThrown().getClass().getSimpleName();
                 }
-                if (event.getThrownProxy() != null) {
-                    return event.getThrownProxy().getName();
-                }
                 return null;
             }
             case "Logger": {

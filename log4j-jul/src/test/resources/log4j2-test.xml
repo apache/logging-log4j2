@@ -15,32 +15,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="LoggerTest" status="OFF">
-  <Appenders>
-    <List name="TestAppender"/>
-    <List name="FlowAppender"/>
-    <List name="StringAppender">
-      <PatternLayout pattern="%class"/>
-    </List>
-    <Console name="Console" target="SYSTEM_ERR">
-      <PatternLayout pattern="%highlight{%p - %m%n}"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Logger name="TestFlow" level="ALL" additivity="false">
-      <AppenderRef ref="FlowAppender"/>
-    </Logger>
-    <Logger name="Test" level="DEBUG" additivity="false">
-      <AppenderRef ref="TestAppender"/>
-    </Logger>
-    <Logger name="Test.CallerClass" level="DEBUG" additivity="false">
-      <AppenderRef ref="StringAppender"/>
-    </Logger>
-    <Logger name="global" level="DEBUG" additivity="false">
-      <AppenderRef ref="TestAppender"/>
-    </Logger>
-    <Root level="ERROR">
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
+<Configuration xmlns="https://logging.apache.org/xml/ns">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_ERR" follow="true">
+            <PatternLayout
+                    pattern="log4j2: %d{HH:mm:ss.SSS} %5level - [%thread][%logger: %class/%method/%line] - %message%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="TRACE"/>
+        <Logger name="foo" level="WARN"/>
+        <Logger name="foo.bar" level="INFO"/>
+    </Loggers>
 </Configuration>

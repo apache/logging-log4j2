@@ -18,6 +18,12 @@ package org.apache.logging.log4j.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +37,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -42,107 +49,111 @@ import org.junit.jupiter.api.condition.OS;
  */
 @DisabledOnOs(OS.WINDOWS)
 @EnabledIfSystemProperty(named = "WatchManagerTest.forceRun", matches = "true")
-@Tag("sleepy")
-public class WatchManagerTest {
+class WatchManagerTest {
 
     private final String testFile = "target/testWatchFile";
     private final String originalFile = "target/test-classes/log4j-test1.xml";
     private final String newFile = "target/test-classes/log4j-test1.yaml";
 
-    @Test
-    public void testWatchManager() throws Exception {
-        final ConfigurationScheduler scheduler = new ConfigurationScheduler();
+    private ConfigurationScheduler scheduler;
+    private WatchManager watchManager;
+
+    @BeforeEach
+    void setUp() {
+        scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
+        watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
         watchManager.setIntervalSeconds(1);
         scheduler.start();
         watchManager.start();
-        try {
-            final File sourceFile = new File(originalFile);
-            Path source = Paths.get(sourceFile.toURI());
-            try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
-                Files.copy(source, targetStream);
-            }
-            final File updateFile = new File(newFile);
-            final File targetFile = new File(testFile);
-            final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
-            watchManager.watchFile(targetFile, new TestWatcher(queue));
-            Thread.sleep(1000);
-            source = Paths.get(updateFile.toURI());
-            Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-            Thread.sleep(1000);
-            final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNotNull(f, "File change not detected");
-        } finally {
-            watchManager.stop();
-            scheduler.stop();
-        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        watchManager.stop();
+        scheduler.stop();
+        watchManager = null;
+        scheduler = null;
     }
 
     @Test
-    public void testWatchManagerReset() throws Exception {
-        final ConfigurationScheduler scheduler = new ConfigurationScheduler();
-        scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
-        watchManager.setIntervalSeconds(1);
-        scheduler.start();
-        watchManager.start();
-        try {
-            final File sourceFile = new File(originalFile);
-            Path source = Paths.get(sourceFile.toURI());
-            try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
-                Files.copy(source, targetStream);
-            }
-            final File updateFile = new File(newFile);
-            final File targetFile = new File(testFile);
-            final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
-            watchManager.watchFile(targetFile, new TestWatcher(queue));
-            watchManager.stop();
-            Thread.sleep(1000);
-            source = Paths.get(updateFile.toURI());
-            Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-            watchManager.reset();
-            watchManager.start();
-            Thread.sleep(1000);
-            final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull(f, "File change detected");
-        } finally {
-            watchManager.stop();
-            scheduler.stop();
+    void testWatchManager() throws Exception {
+        final File sourceFile = new File(originalFile);
+        Path source = Paths.get(sourceFile.toURI());
+        try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
+            Files.copy(source, targetStream);
         }
+        final File updateFile = new File(newFile);
+        final File targetFile = new File(testFile);
+        final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
+        watchManager.watchFile(targetFile, new TestWatcher(queue));
+        Thread.sleep(1000);
+        source = Paths.get(updateFile.toURI());
+        Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
+        Thread.sleep(1000);
+        final File f = queue.poll(1, TimeUnit.SECONDS);
+        assertNotNull(f, "File change not detected");
     }
 
     @Test
-    public void testWatchManagerResetFile() throws Exception {
-        final ConfigurationScheduler scheduler = new ConfigurationScheduler();
-        scheduler.incrementScheduledItems();
-        final WatchManager watchManager = new WatchManager(scheduler, StatusLogger.getLogger());
-        watchManager.setIntervalSeconds(1);
-        scheduler.start();
-        watchManager.start();
-        try {
-            final File sourceFile = new File(originalFile);
-            Path source = Paths.get(sourceFile.toURI());
-            try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
-                Files.copy(source, targetStream);
-            }
-            final File updateFile = new File(newFile);
-            final File targetFile = new File(testFile);
-            final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
-            watchManager.watchFile(targetFile, new TestWatcher(queue));
-            watchManager.stop();
-            Thread.sleep(1000);
-            source = Paths.get(updateFile.toURI());
-            Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-            watchManager.reset(targetFile);
-            watchManager.start();
-            Thread.sleep(1000);
-            final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull(f, "File change detected");
-        } finally {
-            watchManager.stop();
-            scheduler.stop();
+    void testWatchManagerReset() throws Exception {
+        final File sourceFile = new File(originalFile);
+        Path source = Paths.get(sourceFile.toURI());
+        try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
+            Files.copy(source, targetStream);
         }
+        final File updateFile = new File(newFile);
+        final File targetFile = new File(testFile);
+        final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
+        watchManager.watchFile(targetFile, new TestWatcher(queue));
+        watchManager.stop();
+        Thread.sleep(1000);
+        source = Paths.get(updateFile.toURI());
+        Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
+        watchManager.reset();
+        watchManager.start();
+        Thread.sleep(1000);
+        final File f = queue.poll(1, TimeUnit.SECONDS);
+        assertNull(f, "File change detected");
+    }
+
+    @Test
+    void testWatchManagerResetFile() throws Exception {
+        final File sourceFile = new File(originalFile);
+        Path source = Paths.get(sourceFile.toURI());
+        try (final FileOutputStream targetStream = new FileOutputStream(testFile)) {
+            Files.copy(source, targetStream);
+        }
+        final File updateFile = new File(newFile);
+        final File targetFile = new File(testFile);
+        final BlockingQueue<File> queue = new LinkedBlockingQueue<>();
+        watchManager.watchFile(targetFile, new TestWatcher(queue));
+        watchManager.stop();
+        Thread.sleep(1000);
+        source = Paths.get(updateFile.toURI());
+        Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
+        watchManager.reset(targetFile);
+        watchManager.start();
+        Thread.sleep(1000);
+        final File f = queue.poll(1, TimeUnit.SECONDS);
+        assertNull(f, "File change detected");
+    }
+
+    /**
+     * Verify the
+     */
+    @Test
+    void testWatchManagerCallsWatcher() {
+        Source source = mock(Source.class);
+        Watcher watcher = mock(Watcher.class);
+        when(watcher.isModified()).thenReturn(false);
+        watchManager.watch(source, watcher);
+        verify(watcher, timeout(2000)).isModified();
+        verify(watcher, never()).modified();
+        when(watcher.isModified()).thenReturn(true);
+        clearInvocations(watcher);
+        verify(watcher, timeout(2000)).isModified();
+        verify(watcher).modified();
     }
 
     private static class TestWatcher implements FileWatcher {

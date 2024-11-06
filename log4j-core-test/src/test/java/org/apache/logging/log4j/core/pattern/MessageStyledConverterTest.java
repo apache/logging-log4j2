@@ -47,7 +47,7 @@ public class MessageStyledConverterTest {
 
     @Test
     public void testReplacement() {
-        // See org.fusesource.jansi.AnsiRenderer
+        // See https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html
         logger.error("@|WarningStyle Warning!|@ Pants on @|WarningStyle fire!|@");
 
         final List<String> msgs = app.getMessages();

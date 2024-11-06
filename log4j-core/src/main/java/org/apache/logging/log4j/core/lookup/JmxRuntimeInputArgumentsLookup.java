@@ -17,11 +17,13 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.lang.management.ManagementFactory;
-import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 
 /**
@@ -34,21 +36,15 @@ import org.apache.logging.log4j.util.Lazy;
 @Plugin("jvmrunargs")
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
     private static final Lazy<JmxRuntimeInputArgumentsLookup> INSTANCE = Lazy.lazy(() -> {
-        final List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();
-        return new JmxRuntimeInputArgumentsLookup(MapLookup.toMap(argsList));
+        return new JmxRuntimeInputArgumentsLookup(getMapFromJmx());
     });
 
     @PluginFactory
     public static JmxRuntimeInputArgumentsLookup getInstance() {
         return INSTANCE.get();
-    }
-
-    /**
-     * Constructor when used directly as a plugin.
-     */
-    public JmxRuntimeInputArgumentsLookup() {
-        super();
     }
 
     public JmxRuntimeInputArgumentsLookup(final Map<String, String> map) {
@@ -62,5 +58,16 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
         }
         final Map<String, String> map = getMap();
         return map == null ? null : map.get(key);
+    }
+
+    private static Map<String, String> getMapFromJmx() {
+        if (!SystemUtils.isOsAndroid()) {
+            try {
+                return MapLookup.toMap(ManagementFactory.getRuntimeMXBean().getInputArguments());
+            } catch (LinkageError e) {
+                LOGGER.warn("Failed to get JMX arguments from JVM.", e);
+            }
+        }
+        return Map.of();
     }
 }

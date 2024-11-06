@@ -61,9 +61,41 @@
       java.allocation.instrumenter;substitute="java-allocation-instrumenter",
       spring.test;substitute="spring-test"
     </bnd-extra-module-options>
+
+    <!-- Dependency versions -->
+    <slf4j2.version>2.0.16</slf4j2.version>
+    <wiremock.version>3.9.2</wiremock.version>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Transitive dependency of `wiremock` -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j2.version}</version>
+      </dependency>
+
+      <!-- Pinned transitive dependencies with CVEs -->
+
+      <!-- Transitive dependency of `log4j2-custom-layout` -->
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Used for OSGi bundle support -->
     <dependency>
@@ -147,13 +179,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <!-- Required for console color support in Windows -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
 
@@ -275,16 +300,18 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Switch to `slf4j-simple` to enable HTTP logging -->
     <dependency>
-      <groupId>org.graalvm.truffle</groupId>
-      <artifactId>truffle-api</artifactId>
-      <scope>test</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${slf4j2.version}</version>
     </dependency>
 
     <!-- Used for testing HTTP Watcher -->
     <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock-jre8</artifactId>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -325,6 +352,8 @@
           <runOrder>random</runOrder>
           <systemPropertyVariables>
             <Web.isWebApp>false</Web.isWebApp>
+            <!-- Enables logging of HTTP requests, if `slf4j-nop` is replaced by `slf4j-simple` above-->
+            <org.slf4j.simpleLogger.log.org.eclipse.jetty.server.HttpChannel>DEBUG</org.slf4j.simpleLogger.log.org.eclipse.jetty.server.HttpChannel>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
         </configuration>

@@ -19,12 +19,10 @@ package org.apache.logging.log4j.core.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
+import org.apache.logging.log4j.core.pattern.AnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -188,7 +186,7 @@ public final class ThrowableFormatOptions {
      * @return The number of lines to print.
      */
     public int minLines(final int maxLines) {
-        return this.lines > maxLines ? maxLines : this.lines;
+        return Math.min(this.lines, maxLines);
     }
 
     /**
@@ -266,13 +264,13 @@ public final class ThrowableFormatOptions {
                     separator = option.substring("separator(".length(), option.length() - 1);
                 } else if (option.startsWith("filters(") && option.endsWith(")")) {
                     final String filterStr = option.substring("filters(".length(), option.length() - 1);
-                    if (filterStr.length() > 0) {
+                    if (!filterStr.isEmpty()) {
                         final String[] array = filterStr.split(Patterns.COMMA_SEPARATOR);
                         if (array.length > 0) {
                             packages = new ArrayList<>(array.length);
                             for (String token : array) {
                                 token = token.trim();
-                                if (token.length() > 0) {
+                                if (!token.isEmpty()) {
                                     packages.add(token);
                                 }
                             }
@@ -289,17 +287,11 @@ public final class ThrowableFormatOptions {
                         || option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
                 } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
-                    if (Loader.isJansiAvailable()) {
-                        final String styleMapStr = option.equals("ansi")
-                                ? Strings.EMPTY
-                                : option.substring("ansi(".length(), option.length() - 1);
-                        ansiRenderer = new JAnsiTextRenderer(
-                                new String[] {null, styleMapStr}, JAnsiTextRenderer.DefaultExceptionStyleMap);
-                    } else {
-                        StatusLogger.getLogger()
-                                .warn(
-                                        "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
-                    }
+                    final String styleMapStr = option.equals("ansi")
+                            ? Strings.EMPTY
+                            : option.substring("ansi(".length(), option.length() - 1);
+                    ansiRenderer = new AnsiTextRenderer(
+                            new String[] {null, styleMapStr}, AnsiTextRenderer.DEFAULT_EXCEPTION_STYLE_MAP);
                 } else if (option.startsWith("S(") && option.endsWith(")")) {
                     suffix = option.substring("S(".length(), option.length() - 1);
                 } else if (option.startsWith("suffix(") && option.endsWith(")")) {

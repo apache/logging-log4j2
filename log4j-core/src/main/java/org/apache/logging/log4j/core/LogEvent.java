@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.impl.MementoLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -33,10 +32,7 @@ import org.jspecify.annotations.Nullable;
  * {@link org.apache.logging.log4j.Marker} was used, then it is included here. The contents of the
  * {@link org.apache.logging.log4j.ThreadContext} at the time of the log call are provided via
  * {@link #getContextData()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
- * call, then it is provided via {@link #getThrown()}. When this class is
- * {@linkplain org.apache.logging.log4j.core.layout.Encoder encoded}, the attached Throwable will
- * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely encoded
- * and decoded properly without requiring the same exception classes to be present on all ends.
+ * call, then it is provided via {@link #getThrown()}.
  */
 public interface LogEvent {
 
@@ -182,18 +178,9 @@ public interface LogEvent {
     /**
      * Gets throwable associated with logging request.
      *
-     * <p>Convenience method for {@code ThrowableProxy.getThrowable();}</p>
-     *
      * @return throwable, may be null.
      */
     Throwable getThrown();
-
-    /**
-     * Gets throwable proxy associated with logging request.
-     *
-     * @return throwable, may be null.
-     */
-    ThrowableProxy getThrownProxy();
 
     /**
      * Returns {@code true} if this event is the last one in a batch, {@code false} otherwise. Used by asynchronous

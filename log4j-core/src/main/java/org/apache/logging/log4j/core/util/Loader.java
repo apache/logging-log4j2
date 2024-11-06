@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.impl.CoreProperties.LoaderProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Load resources (or images) from various sources.
@@ -81,9 +82,9 @@ public final class Loader {
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
-     * @return A URL to the resource.
+     * @return A URL to the resource or {@code null}.
      */
-    public static URL getResource(final String resource, final ClassLoader defaultLoader) {
+    public static @Nullable URL getResource(final String resource, final ClassLoader defaultLoader) {
         try {
             ClassLoader classLoader = getThreadContextClassLoader();
             if (classLoader != null) {
@@ -272,26 +273,6 @@ public final class Loader {
             // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
             return clazz.newInstance();
         }
-    }
-
-    /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    public static boolean isClassAvailable(final String className) {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.isClassAvailable(className);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-        }
-    }
-
-    public static boolean isJansiAvailable() {
-        return isClassAvailable("org.fusesource.jansi.AnsiRenderer");
     }
 
     /**

@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 @Export
-@Version("2.20.2")
+@Version("3.0.0")
 package org.apache.logging.log4j.jul;
 
 import org.osgi.annotation.bundle.Export;

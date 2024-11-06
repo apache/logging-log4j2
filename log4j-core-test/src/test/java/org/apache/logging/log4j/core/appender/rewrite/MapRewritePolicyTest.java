@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rewrite;
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -170,10 +169,7 @@ public class MapRewritePolicyTest {
         assertEquals(orig.getMarker(), changed.getMarker(), "Marker changed");
         assertEquals(orig.getLoggerFqcn(), changed.getLoggerFqcn(), "FQCN changed");
         assertEquals(orig.getLevel(), changed.getLevel(), "Level changed");
-        assertArrayEquals(
-                orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
-                changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace(),
-                "Throwable changed");
+        assertEquals(orig.getThrown(), changed.getThrown(), "Throwable changed");
         assertEquals(orig.getContextData(), changed.getContextData(), "ContextData changed");
         assertEquals(orig.getContextStack(), changed.getContextStack(), "ContextStack changed");
         assertEquals(orig.getThreadName(), changed.getThreadName(), "ThreadName changed");

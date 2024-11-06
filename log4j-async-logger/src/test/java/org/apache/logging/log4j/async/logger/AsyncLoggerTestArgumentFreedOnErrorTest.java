@@ -16,61 +16,53 @@
  */
 package org.apache.logging.log4j.async.logger;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.logging.log4j.core.test.internal.GcHelper.awaitGarbageCollection;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.GarbageCollectionHelper;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.TestConstants;
-import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 @Tag("async")
-@SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
-@SetTestProperty(key = TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
-@ContextSelectorType(AsyncLoggerContextSelector.class)
-public class AsyncLoggerTestArgumentFreedOnErrorTest {
+class AsyncLoggerArgumentFreedOnErrorTest {
 
-    // LOG4J2-2725: events are cleared even after failure
+    /**
+     * Tests events are cleared even after failure.
+     *
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2725">LOG4J2-2725</a>
+     */
     @Test
-    public void testMessageIsGarbageCollected() throws Exception {
-        final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
-        final CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
-        log.fatal(new ThrowingMessage(garbageCollectionLatch));
-        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
-            gcHelper.run();
-            assertTrue(
-                    garbageCollectionLatch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
-        }
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+    @SetTestProperty(key = TestConstants.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+    @SetTestProperty(key = TestConstants.ASYNC_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
+    void parameters_throwing_exception_should_be_garbage_collected(final TestInfo testInfo) throws Exception {
+        awaitGarbageCollection(() -> {
+            final String loggerContextName = String.format("%s-LC", testInfo.getDisplayName());
+            try (final LoggerContext loggerContext =
+                    new AsyncLoggerContext(loggerContextName, null, null, DI.createInitializedFactory())) {
+                loggerContext.start();
+                final Logger logger = loggerContext.getRootLogger();
+                final ThrowingMessage parameter = new ThrowingMessage();
+                logger.fatal(parameter);
+                return parameter;
+            }
+        });
     }
 
     private static class ThrowingMessage implements Message, StringBuilderFormattable {
 
-        private final CountDownLatch latch;
-
-        ThrowingMessage(final CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            latch.countDown();
-            super.finalize();
-        }
+        private ThrowingMessage() {}
 
         @Override
         public String getFormattedMessage() {
             throw new Error("Expected");
-        }
-
-        @Override
-        public String getFormat() {
-            return "";
         }
 
         @Override
