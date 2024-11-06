@@ -342,7 +342,7 @@ for more details.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with <a href="#log4j-to-jul"><code>log4j-to-jul</code></a>.</p>
+<p>Don&#8217;t deploy this artifact together with <a href="#log4j-to-jul">[log4j-to-jul]</a>.</p>
 </div>
 </td>
 </tr>
@@ -1572,7 +1572,8 @@ to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with <a href="#log4j-to-jul"><code>log4j-to-jul</code></a>.</p>
+<p>Don&#8217;t deploy this artifact together with
+<a href="https://logging.apache.org/log4j/2.x/components.html#log4j-to-jul"><code>log4j-to-jul</code></a>.</p>
 </div>
 </td>
 </tr>
@@ -2017,160 +2018,6 @@ It is required by:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="log4j-slf4j2-impl"><a class="anchor" href="#log4j-slf4j2-impl"></a><code>log4j-slf4j2-impl</code></h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">JPMS module</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.slf4j2.impl</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The <code>log4j-slf4j2-impl</code> artifact contains a bridge from
-<a href="https://www.slf4j.org/">SLF4J 2 API</a>
-to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="manual/installation.html#impl-core-bridge-slf4j" class="xref page">Installing the SLF4J-to-Log4j API bridge</a> for more details.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with either <a href="#log4j-slf4j-impl"><code>log4j-slf4j-impl</code></a> or <a href="#log4j-to-slf4j"><code>log4j-to-slf4j</code></a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div id="_tabs_27" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_27_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_27_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_27_maven--panel" class="tabpanel" aria-labelledby="_tabs_27_maven">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-slf4j2-impl&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_27_gradle--panel" class="tabpanel" aria-labelledby="_tabs_27_gradle">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="log4j-slf4j-impl"><a class="anchor" href="#log4j-slf4j-impl"></a><code>log4j-slf4j-impl</code></h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 83.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">JPMS module</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.slf4j.impl</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The <code>log4j-slf4j-impl</code> artifact contains a bridge from
-<a href="https://www.slf4j.org/">SLF4J 1 API</a>
-to the <a href="manual/api.html" class="xref page">Log4j API</a>.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="manual/installation.html#impl-core-bridge-slf4j" class="xref page">Installing the SLF4J-to-Log4j API bridge</a> for more details.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with either <a href="#log4j-slf4j2-impl"><code>log4j-slf4j2-impl</code></a> or <a href="#log4j-to-slf4j"><code>log4j-to-slf4j</code></a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div id="_tabs_28" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_28_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_28_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_28_maven--panel" class="tabpanel" aria-labelledby="_tabs_28_maven">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-slf4j-impl&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_28_gradle--panel" class="tabpanel" aria-labelledby="_tabs_28_gradle">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="log4j-spring-cloud-config-client"><a class="anchor" href="#log4j-spring-cloud-config-client"></a><code>log4j-spring-cloud-config-client</code></h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
@@ -2193,19 +2040,19 @@ or earlier versions.</p>
 <div class="paragraph">
 <p>See <a href="log4j-spring-cloud-config-client.html" class="xref page">Log4j Spring Cloud Configuration</a> for more details.</p>
 </div>
-<div id="_tabs_29" class="openblock tabs is-sync is-loading">
+<div id="_tabs_27" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_29_maven" class="tab">
+<li id="_tabs_27_maven" class="tab">
 <p>Maven</p>
 </li>
-<li id="_tabs_29_gradle" class="tab">
+<li id="_tabs_27_gradle" class="tab">
 <p>Gradle</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_29_maven--panel" class="tabpanel" aria-labelledby="_tabs_29_maven">
+<div id="_tabs_27_maven--panel" class="tabpanel" aria-labelledby="_tabs_27_maven">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -2219,171 +2066,13 @@ or earlier versions.</p>
 </div>
 </div>
 </div>
-<div id="_tabs_29_gradle--panel" class="tabpanel" aria-labelledby="_tabs_29_gradle">
+<div id="_tabs_27_gradle--panel" class="tabpanel" aria-labelledby="_tabs_27_gradle">
 <div class="paragraph">
 <p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-spring-cloud-config-client'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="log4j-to-jul"><a class="anchor" href="#log4j-to-jul"></a><code>log4j-to-jul</code></h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JPMS module</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.to.jul</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The <code>log4j-jul</code> artifact contains an implementation of the
-<a href="manual/api.html" class="xref page">Log4j API</a>
-that logs to
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html"><code>java.util.logging</code></a>.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="manual/installation.html#impl-jul" class="xref page">Installing JUL</a> for more details.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with <a href="#log4j-jul"><code>log4j-jul</code></a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div id="_tabs_30" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_30_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_30_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_30_maven--panel" class="tabpanel" aria-labelledby="_tabs_30_maven">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-to-jul&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_30_gradle--panel" class="tabpanel" aria-labelledby="_tabs_30_gradle">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-to-jul'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="log4j-to-slf4j"><a class="anchor" href="#log4j-to-slf4j"></a><code>log4j-to-slf4j</code></h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JPMS module</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.to.slf4j</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The <code>log4j-jul</code> artifact contains an implementation of the
-<a href="manual/api.html" class="xref page">Log4j API</a>
-that logs to
-<a href="https://www.slf4j.org/">SLF4J API</a>.</p>
-</div>
-<div class="paragraph">
-<p>See <a href="manual/installation.html#impl-logback" class="xref page">Installing Logback</a> for more details.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Don&#8217;t deploy this artifact together with either <a href="#log4j-slf4j-impl"><code>log4j-slf4j-impl</code></a> or <a href="#log4j-slf4j2-impl"><code>log4j-slf4j2-impl</code></a>.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div id="_tabs_31" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_31_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_31_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
-</div>
-<div id="_tabs_31_maven--panel" class="tabpanel" aria-labelledby="_tabs_31_maven">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-  &lt;artifactId&gt;log4j-to-slf4j&lt;/artifactId&gt;
-  &lt;scope&gt;runtime&lt;/scope&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-<div id="_tabs_31_gradle--panel" class="tabpanel" aria-labelledby="_tabs_31_gradle">
-<div class="paragraph">
-<p>We assume you use <a href="#log4j-bom"><code>log4j-bom</code></a> for dependency management.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j'</code></pre>
 </div>
 </div>
 </div>
