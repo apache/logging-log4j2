@@ -101,7 +101,6 @@
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
     <commons-io.version>2.17.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
-    <commons-logging.version>1.3.4</commons-logging.version>
     <disruptor.version>4.0.0</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
@@ -122,10 +121,8 @@
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.11.3</junit-jupiter.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
-    <log4j.version>1.2.17</log4j.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
-    <logback.version>1.5.12</logback.version>
     <maven.version>3.9.9</maven.version>
     <mockito.version>5.14.2</mockito.version>
     <nashorn.version>15.4</nashorn.version>
@@ -277,12 +274,6 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons-logging.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
@@ -413,12 +404,6 @@
         <version>${junit-pioneer.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
-      </dependency>
-
       <!-- Tested as a legacy 2.x plugin: -->
       <dependency>
         <groupId>com.github.ivandzf</groupId>
@@ -437,32 +422,6 @@
         <groupId>com.vlkan.log4j2</groupId>
         <artifactId>log4j2-logstash-layout</artifactId>
         <version>${log4j2-logstash-layout.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-        <type>test-jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-        <type>test-jar</type>
       </dependency>
 
       <dependency>

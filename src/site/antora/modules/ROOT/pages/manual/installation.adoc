@@ -231,14 +231,14 @@ The following sections explain the installation of Log4j-provided bridges.
 
 You can translate {slf4j-url}[SLF4J] calls to Log4j API using the `log4j-slf4j2-impl` artifact:
 
-include::partial$components/log4j-slf4j2-impl.adoc[]
+include::partial$features/log4j-slf4j2-impl.adoc[]
 
 .Are you still using SLF4J 1.x?
 [%collapsible]
 =====
 Add this example instead:
 
-include::partial$components/log4j-slf4j-impl.adoc[]
+include::partial$features/log4j-slf4j-impl.adoc[]
 =====
 
 [#impl-core-bridge-jul]
@@ -465,6 +465,8 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 
 Maven::
 +
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
 [source,xml,subs="+attributes"]
 ----
 <dependencies>
@@ -491,6 +493,8 @@ Maven::
 
 Gradle::
 +
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
 [source,groovy,subs="+attributes"]
 ----
 runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
@@ -510,6 +514,8 @@ To install {logback-url}[Logback] as the logging implementation, you only need t
 ====
 
 Maven::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,xml]
 ----
@@ -534,6 +540,8 @@ Maven::
 ----
 
 Gradle::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
 +
 [source,groovy,subs="+attributes"]
 ----

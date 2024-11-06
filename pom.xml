@@ -232,7 +232,6 @@
 
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
-    <module>jul-to-log4j</module>
     <module>log4j-async-logger</module>
     <module>log4j-compress</module>
     <module>log4j-config-jackson</module>
@@ -250,7 +249,6 @@
     <module>log4j-jdbc-jndi</module>
     <module>log4j-jndi</module>
     <module>log4j-jndi-test</module>
-    <module>log4j-jpl</module>
     <module>log4j-jul</module>
     <module>log4j-kit</module>
     <module>log4j-layout-template-json</module>
@@ -262,11 +260,7 @@
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>
     <module>log4j-script</module>
-    <module>log4j-slf4j2-impl</module>
-    <module>log4j-slf4j-impl</module>
     <module>log4j-spring-cloud-config-client</module>
-    <module>log4j-to-jul</module>
-    <module>log4j-to-slf4j</module>
 
   </modules>
 
@@ -377,12 +371,6 @@
       <!-- List of managed dependencies (in alphabetical order) that are intended for public consumption.
            Modules that are not used anywhere (e.g., `log4j-core-its`, `log4j-osgi-test`) should not be placed here.
            Modules that are used only internally (e.g., `log4j-layout-template-json-test`) should be added to `dependencyManagement > dependencies` in `log4j-parent/pom.xml`. -->
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>jul-to-log4j</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -501,7 +489,7 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jpl</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
@@ -555,13 +543,13 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j2-impl</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
@@ -573,13 +561,13 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-jul</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
-        <version>${project.version}</version>
+        <version>${log4j-api.version}</version>
       </dependency>
 
     </dependencies>

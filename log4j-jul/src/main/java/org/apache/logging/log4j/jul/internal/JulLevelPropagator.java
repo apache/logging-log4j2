@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.logging.jul.tolog4j.LevelTranslator;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -82,7 +81,7 @@ public class JulLevelPropagator implements LevelChangePropagator, Consumer<Confi
             final java.util.logging.Logger julLog =
                     java.util.logging.Logger.getLogger(loggerConfig.getName()); // this also fits for root = ""
             final java.util.logging.Level julLevel =
-                    LevelTranslator.toJavaLevel(loggerConfig.getLevel()); // loggerConfig.getLevel() never returns null
+                    LevelConverter.toJulLevel(loggerConfig.getLevel()); // loggerConfig.getLevel() never returns null
             julLog.setLevel(julLevel);
             julLoggerRefs.add(julLog);
         }
