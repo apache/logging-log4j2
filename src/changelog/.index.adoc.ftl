@@ -37,7 +37,7 @@
 :page-toclevels: 1
 
 [#release-notes]
-= Release Notes
+= Release notes
 <#list releases as release><#if release.changelogEntryCount gt 0>
 
 include::_release-notes/${release.version}.adoc[]

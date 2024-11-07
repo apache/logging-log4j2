@@ -188,7 +188,7 @@ public class PatternParserTest {
         final String str = buf.toString();
 
         // eats all characters until the closing '}' character
-        final String expected = "[2001-02-03 04:05:06,789] - Hello, world";
+        final String expected = "[2001-02-03 04:05:06.789] - Hello, world";
         assertTrue(str.startsWith(expected), "Expected to start with: " + expected + ". Actual: " + str);
     }
 

@@ -131,7 +131,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         this.headerSize = headerSize;
         this.datePatternConverter = DEFAULT_DATE_PATTERN.equals(datePattern)
                 ? null
-                : DatePatternConverter.newInstance(configuration, new String[] {datePattern, timezone});
+                : DatePatternConverter.newInstance(new String[] {datePattern, timezone});
     }
 
     /**

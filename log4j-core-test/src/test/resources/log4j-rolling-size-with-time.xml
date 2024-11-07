@@ -23,7 +23,7 @@
 
   <Appenders>
     <RollingFile name="RollingFile" fileName="${filename}"
-                 filePattern="target/rolling-size-test/rollingtest-%d{yyyy-MM-DD'T'HH-mm-ss-SSS}.log">
+                 filePattern="target/rolling-size-test/rollingtest-%d{yyyy-MM-dd'T'HH-mm-ss-SSS}.log">
       <PatternLayout>
         <Pattern>%m%n</Pattern>
       </PatternLayout>
