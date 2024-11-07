@@ -87,6 +87,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="annotations"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Namespace</a>("Converter")
 <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html" title="class or interface in org.apache.logging.log4j.plugins" class="external-link">@Plugin</a>("DatePatternConverter")
+@NullMarked
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">DatePatternConverter</span>
 <span class="extends-implements">extends <a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a>
 implements <a href="ArrayPatternConverter.html" title="interface in org.apache.logging.log4j.core.pattern">ArrayPatternConverter</a></span></div>
@@ -118,36 +119,31 @@ implements <a href="ArrayPatternConverter.html" title="interface in org.apache.l
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.lang.Object,java.lang.StringBuilder)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;output)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.lang.Object,java.lang.StringBuilder)" class="member-name-link">format</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;object,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Formats an object into a string buffer.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;objects)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;objects)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Formats an array of Objects.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;output)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Formats an event into a string buffer.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the pattern string describing this date format.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTimeZone()" class="member-name-link">getTimeZone</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the timezone used by this date format.</div>
-</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Obtains an instance of pattern converter.</div>
 </div>
@@ -178,10 +174,9 @@ implements <a href="ArrayPatternConverter.html" title="interface in org.apache.l
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String[])">
+<section class="detail" id="newInstance(java.lang.String[])">
 <h3>newInstance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
 <div class="block">Obtains an instance of pattern converter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -195,22 +190,24 @@ implements <a href="ArrayPatternConverter.html" title="interface in org.apache.l
 <section class="detail" id="format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;output)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="LogEventPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">LogEventPatternConverter</a></code></span></div>
 <div class="block">Formats an event into a string buffer.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="LogEventPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)">format</a></code>&nbsp;in class&nbsp;<code><a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>event</code> - event to format, may not be null.</dd>
-<dd><code>output</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
+<dd><code>buffer</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="format(java.lang.Object,java.lang.StringBuilder)">
 <h3>format</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;output)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;object,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">LogEventPatternConverter</a></code></span></div>
 <div class="block">Formats an object into a string buffer.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -218,23 +215,23 @@ implements <a href="ArrayPatternConverter.html" title="interface in org.apache.l
 <dt>Overrides:</dt>
 <dd><code><a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a></code>&nbsp;in class&nbsp;<code><a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></code></dd>
 <dt>Parameters:</dt>
-<dd><code>obj</code> - event to format, may not be null.</dd>
-<dd><code>output</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
+<dd><code>object</code> - event to format, may not be null.</dd>
+<dd><code>buffer</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="format(java.lang.StringBuilder,java.lang.Object...)">
 <h3>format</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;toAppendTo,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;objects)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;objects)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="ArrayPatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)">ArrayPatternConverter</a></code></span></div>
 <div class="block">Formats an array of Objects.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="ArrayPatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)">format</a></code>&nbsp;in interface&nbsp;<code><a href="ArrayPatternConverter.html" title="interface in org.apache.logging.log4j.core.pattern">ArrayPatternConverter</a></code></dd>
 <dt>Parameters:</dt>
-<dd><code>toAppendTo</code> - The StringBuilder to add the content to.</dd>
+<dd><code>buffer</code> - The StringBuilder to add the content to.</dd>
 <dd><code>objects</code> - The Object array.</dd>
 </dl>
 </section>
@@ -242,22 +239,20 @@ implements <a href="ArrayPatternConverter.html" title="interface in org.apache.l
 <li>
 <section class="detail" id="getPattern()">
 <h3>getPattern</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPattern</span>()</div>
-<div class="block">Gets the pattern string describing this date format.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getPattern</span>()</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>the pattern string describing this date format.</dd>
+<dd>the pattern string describing this date format or <code>null</code> if the format does not have a pattern.</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getTimeZone()">
 <h3>getTimeZone</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></span>&nbsp;<span class="element-name">getTimeZone</span>()</div>
-<div class="block">Gets the timezone used by this date format.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TimeZone.html" title="class or interface in java.util" class="external-link">TimeZone</a></span>&nbsp;<span class="element-name">getTimeZone</span>()</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>the timezone used by this date format.</dd>
+<dd>the time zone used by this date format</dd>
 </dl>
 </section>
 </li>

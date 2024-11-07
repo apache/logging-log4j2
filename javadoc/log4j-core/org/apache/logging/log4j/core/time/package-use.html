@@ -81,6 +81,10 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="#org.apache.logging.log4j.core.time">org.apache.logging.log4j.core.time</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.apache.logging.log4j.core.util.internal.instant">org.apache.logging.log4j.core.util.internal.instant</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Utilities for formatting log event <a href="Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s.</div>
+</div>
 </div>
 <section class="package-uses">
 <ul class="block-list">
@@ -188,12 +192,6 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Models a point in time, suitable for event timestamps.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/InstantFormatter.html#org.apache.logging.log4j.core.time">InstantFormatter</a></div>
-<div class="col-last even-row-color">
-<div class="block">A composite <a href="Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a> formatter trying to employ either <code>FixedDateFormat</code>, <code>FastDateFormat</code>, or <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html" title="class or interface in java.time.format" class="external-link"><code>DateTimeFormatter</code></a> in the given order due to performance reasons.</div>
-</div>
-<div class="col-first odd-row-color"><a href="class-use/InstantFormatter.Builder.html#org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="class-use/MutableInstant.html#org.apache.logging.log4j.core.time">MutableInstant</a></div>
 <div class="col-last even-row-color">
 <div class="block">An instantaneous point on the timeline, used for high-precision log event timestamps.</div>
@@ -201,6 +199,19 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><a href="class-use/NanoClock.html#org.apache.logging.log4j.core.time">NanoClock</a></div>
 <div class="col-last odd-row-color">
 <div class="block">Provides the <a href="../LogEvent.html#getNanoTime()"><code>high-resolution time stamp</code></a> used in log events.</div>
+</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.apache.logging.log4j.core.util.internal.instant">
+<div class="caption"><span>Classes in <a href="package-summary.html">org.apache.logging.log4j.core.time</a> used by <a href="../util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><a href="class-use/Instant.html#org.apache.logging.log4j.core.util.internal.instant">Instant</a></div>
+<div class="col-last even-row-color">
+<div class="block">Models a point in time, suitable for event timestamps.</div>
 </div>
 </div>
 </section>

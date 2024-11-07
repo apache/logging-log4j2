@@ -84,7 +84,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/apache/logging/log4j/core/selector/package-tree.html">org.apache.logging.log4j.core.selector</a>, </li>
 <li><a href="org/apache/logging/log4j/core/time/package-tree.html">org.apache.logging.log4j.core.time</a>, </li>
 <li><a href="org/apache/logging/log4j/core/util/package-tree.html">org.apache.logging.log4j.core.util</a>, </li>
-<li><a href="org/apache/logging/log4j/core/util/datetime/package-tree.html">org.apache.logging.log4j.core.util.datetime</a></li>
+<li><a href="org/apache/logging/log4j/core/util/internal/instant/package-tree.html">org.apache.logging.log4j.core.util.internal.instant</a></li>
 </ul>
 </div>
 <section class="hierarchy">
@@ -544,11 +544,6 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a> (implements org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/ArrayPatternConverter.html" title="interface in org.apache.logging.log4j.core.pattern">ArrayPatternConverter</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/FileSize.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling">FileSize</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileUtils.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">FileUtils</a></li>
-<li class="circle">org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/Format.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.datetime">Format</a>
-<ul>
-<li class="circle">org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a> (implements org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a>)</li>
-</ul>
-</li>
 <li class="circle">org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">FormattingInfo</a></li>
 <li class="circle">org.apache.logging.log4j.core.config.plugins.convert.<a href="org/apache/logging/log4j/core/config/plugins/convert/HexConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.config.plugins.convert">HexConverter</a></li>
 <li class="circle">org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.layout">HtmlLayout.Builder</a> (implements org.apache.logging.log4j.plugins.util.<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-plugins/org/apache/logging/log4j/plugins/util/Builder.html" title="class or interface in org.apache.logging.log4j.plugins.util" class="external-link">Builder</a>&lt;T&gt;)</li>
@@ -561,8 +556,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfLastModified.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified</a> (implements org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfLastModified.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfLastModified.Builder</a> (implements java.util.function.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;)</li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfNot.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfNot</a> (implements org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>)</li>
-<li class="circle">org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></li>
-<li class="circle">org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></li>
+<li class="circle">org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Integers.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Integers</a></li>
 <li class="circle">org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/InternalAsyncUtil.html" class="type-name-link" title="class in org.apache.logging.log4j.core.async">InternalAsyncUtil</a></li>
 <li class="circle">org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/JdkMapAdapterStringMap.html" class="type-name-link" title="class in org.apache.logging.log4j.core.impl">JdkMapAdapterStringMap</a> (implements org.apache.logging.log4j.util.StringMap)</li>
@@ -835,7 +829,6 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.selector.<a href="org/apache/logging/log4j/core/selector/NamedContextSelector.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.selector">NamedContextSelector</a></li>
 </ul>
 </li>
-<li class="circle">org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectFileRolloverStrategy.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.appender.rolling">DirectFileRolloverStrategy</a></li>
 <li class="circle">org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Encoder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.layout">Encoder</a>&lt;T&gt;
 <ul>
@@ -848,6 +841,11 @@ loadScripts(document, 'script');</script>
 </li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/ErrorHandler.html" class="type-name-link" title="interface in org.apache.logging.log4j.core">ErrorHandler</a></li>
 <li class="circle">org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/FileWatcher.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util">FileWatcher</a></li>
+<li class="circle">org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a>
+<ul>
+<li class="circle">org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></li>
+</ul>
+</li>
 <li class="circle">org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/InterpolatorFactory.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.lookup">InterpolatorFactory</a></li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LifeCycle.html" class="type-name-link" title="interface in org.apache.logging.log4j.core">LifeCycle</a>
 <ul>
@@ -987,6 +985,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/Facility.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.net">Facility</a></li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/Filter.Result.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core">Filter.Result</a></li>
 <li class="circle">org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.FontSize.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.layout">HtmlLayout.FontSize</a></li>
+<li class="circle">org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a> (implements org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a>)</li>
 <li class="circle">org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LifeCycle.State.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core">LifeCycle.State</a></li>
 <li class="circle">org.apache.logging.log4j.core.appender.rewrite.<a href="org/apache/logging/log4j/core/appender/rewrite/MapRewritePolicy.Mode.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.appender.rewrite">MapRewritePolicy.Mode</a></li>
 <li class="circle">org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/Protocol.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.net">Protocol</a></li>

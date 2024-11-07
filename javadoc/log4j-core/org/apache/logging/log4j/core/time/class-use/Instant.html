@@ -65,6 +65,10 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><a href="#org.apache.logging.log4j.core.time">org.apache.logging.log4j.core.time</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.apache.logging.log4j.core.util.internal.instant">org.apache.logging.log4j.core.util.internal.instant</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Utilities for formatting log event <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s.</div>
+</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -149,22 +153,31 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InstantFormatter.</span><code><a href="../InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">format</a><wbr>(<a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">InstantFormatter.</span><code><a href="../InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant,java.lang.StringBuilder)" class="member-name-link">format</a><wbr>(<a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;stringBuilder)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">MutableInstant.</span><code><a href="../MutableInstant.html#initFrom(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">initFrom</a><wbr>(<a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;other)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">InstantFormatter.</span><code><a href="../InstantFormatter.html#isInstantMatching(org.apache.logging.log4j.core.time.Instant,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">isInstantMatching</a><wbr>(<a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant1,
- <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant2)</code></div>
-<div class="col-last odd-row-color">
-<div class="block">Checks if the given <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s are equal from the point of view of the employed formatter.</div>
 </div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.apache.logging.log4j.core.util.internal.instant">
+<h2>Uses of <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a> in <a href="../../util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></h2>
+<div class="caption"><span>Methods in <a href="../../util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a> with parameters of type <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">InstantFormatter.</span><code><a href="../../util/internal/instant/InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">format</a><wbr>(<a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">InstantFormatter.</span><code><a href="../../util/internal/instant/InstantFormatter.html#formatTo(java.lang.StringBuilder,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatTo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer,
+ <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">InstantNumberFormatter.</span><code><a href="../../util/internal/instant/InstantNumberFormatter.html#formatTo(java.lang.StringBuilder,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatTo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/StringBuilder.html" title="class or interface in java.lang" class="external-link">StringBuilder</a>&nbsp;buffer,
+ <a href="../Instant.html" title="interface in org.apache.logging.log4j.core.time">Instant</a>&nbsp;instant)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

@@ -1245,13 +1245,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketPerformancePreferences.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketPerformancePreferences.html" title="class in org.apache.logging.log4j.core.net">SocketPerformancePreferences</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Builder.html#build()" class="member-name-link">build()</a> - Method in interface org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Builds the object after all configuration has been set.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#build()" class="member-name-link">build()</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html#build(boolean)" class="member-name-link">build(boolean)</a> - Method in interface org.apache.logging.log4j.core.config.builder.api.<a href="org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a></dt>
 <dd>
 <div class="block">Build the configuration and optionally initialize it.</div>
@@ -2582,10 +2582,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Converts and formats the event's date in a StringBuilder.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a> - Interface in <a href="org/apache/logging/log4j/core/util/datetime/package-summary.html">org.apache.logging.log4j.core.util.datetime</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/db/DbAppenderLoggingException.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.db">DbAppenderLoggingException</a> - Exception in <a href="org/apache/logging/log4j/core/appender/db/package-summary.html">org.apache.logging.log4j.core.appender.db</a></dt>
 <dd>
 <div class="block">Wraps a database exception like a JDBC SQLException.</div>
@@ -3162,6 +3158,34 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/EnvironmentLookup.html#%3Cinit%3E()" class="member-name-link">EnvironmentLookup()</a> - Constructor for class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/EnvironmentLookup.html" title="class in org.apache.logging.log4j.core.lookup">EnvironmentLookup</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_MILLIS" class="member-name-link">EPOCH_MILLIS</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats milliseconds since epoch, including the nanosecond fraction; e.g., <code>1581082727982.123456</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_MILLIS_NANOS" class="member-name-link">EPOCH_MILLIS_NANOS</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats the nanosecond fraction of milliseconds since epoch; e.g., <code>123456</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_MILLIS_ROUNDED" class="member-name-link">EPOCH_MILLIS_ROUNDED</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats milliseconds since epoch, excluding the nanosecond fraction; e.g., <code>1581082727982</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_NANOS" class="member-name-link">EPOCH_NANOS</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats nanoseconds since epoch; e.g., <code>1581082727982123456</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_SECONDS" class="member-name-link">EPOCH_SECONDS</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats seconds since epoch, including the nanosecond fraction; e.g., <code>1581082727.982123456</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_SECONDS_NANOS" class="member-name-link">EPOCH_SECONDS_NANOS</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats the nanosecond fraction of seconds since epoch; e.g., <code>982123456</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#EPOCH_SECONDS_ROUNDED" class="member-name-link">EPOCH_SECONDS_ROUNDED</a> - Enum constant in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Formats seconds since epoch, excluding the nanosecond fraction; e.g., <code>1581082727</code>.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/TlsSyslogFrame.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/TlsSyslogFrame.html" title="class in org.apache.logging.log4j.core.appender">TlsSyslogFrame</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AppenderControl.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AppenderControl.html" title="class in org.apache.logging.log4j.core.config">AppenderControl</a></dt>
@@ -3268,10 +3292,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/time/MutableInstant.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/KeyValuePair.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Source.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Source.html" title="class in org.apache.logging.log4j.core.util">Source</a></dt>
@@ -3471,20 +3491,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The array of failover Appenders.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a> - Class in <a href="org/apache/logging/log4j/core/util/datetime/package-summary.html">org.apache.logging.log4j.core.util.datetime</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <code>FastDateFormat</code></div>
-</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#%3Cinit%3E(java.lang.String,java.util.TimeZone,java.util.Locale)" class="member-name-link">FastDateFormat(String, TimeZone, Locale)</a> - Constructor for class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#%3Cinit%3E(java.lang.String,java.util.TimeZone,java.util.Locale,java.util.Date)" class="member-name-link">FastDateFormat(String, TimeZone, Locale, Date)</a> - Constructor for class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/AnsiEscape.html#FG_BLACK" class="member-name-link">FG_BLACK</a> - Enum constant in enum class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AnsiEscape.html" title="enum class in org.apache.logging.log4j.core.pattern">AnsiEscape</a></dt>
 <dd>
 <div class="block">Black foreground color.</div>
@@ -4274,33 +4280,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Adjust the content of the buffer based on the specified lengths and alignment.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(long)" class="member-name-link">format(long)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a millisecond <code>long</code> value.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(long)" class="member-name-link">format(long)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(long,B)" class="member-name-link">format(long, B)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a millisecond <code>long</code> value into the
- supplied <code>Appendable</code>.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(long,B)" class="member-name-link">format(long, B)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/Format.html#format(java.lang.Object)" class="member-name-link">format(Object)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/Format.html" title="class in org.apache.logging.log4j.core.util.datetime">Format</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)" class="member-name-link">format(Object, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>
-<div class="block">Formats an object into a string buffer.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)" class="member-name-link">format(Object, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/IntegerPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)" class="member-name-link">format(Object, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/IntegerPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">IntegerPatternConverter</a></dt>
@@ -4327,30 +4308,16 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Adds the repeated String to the buffer.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)" class="member-name-link">format(Object, StringBuilder, FieldPosition)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a <code>Date</code>, <code>Calendar</code> or
- <code>Long</code> (milliseconds) object.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)" class="member-name-link">format(Object, StringBuilder, FieldPosition)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/Format.html#format(java.lang.Object,java.lang.StringBuilder,java.text.FieldPosition)" class="member-name-link">format(Object, StringBuilder, FieldPosition)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/Format.html" title="class in org.apache.logging.log4j.core.util.datetime">Format</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/RegexReplacement.html#format(java.lang.String)" class="member-name-link">format(String)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a></dt>
 <dd>
 <div class="block">Perform the replacement.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format(StringBuilder, Object...)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/ArrayPatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format(StringBuilder, Object...)</a> - Method in interface org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/ArrayPatternConverter.html" title="interface in org.apache.logging.log4j.core.pattern">ArrayPatternConverter</a></dt>
 <dd>
 <div class="block">Formats an array of Objects.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format(StringBuilder, Object...)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format(StringBuilder, Object...)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/IntegerPatternConverter.html#format(java.lang.StringBuilder,java.lang.Object...)" class="member-name-link">format(StringBuilder, Object...)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/IntegerPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">IntegerPatternConverter</a></dt>
@@ -4359,43 +4326,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats an array of Objects.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(java.util.Calendar)" class="member-name-link">format(Calendar)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a <code>Calendar</code> object.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(java.util.Calendar)" class="member-name-link">format(Calendar)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(java.util.Calendar,B)" class="member-name-link">format(Calendar, B)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a <code>Calendar</code> object into the supplied <code>Appendable</code>.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(java.util.Calendar,B)" class="member-name-link">format(Calendar, B)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(java.util.Date)" class="member-name-link">format(Date)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a <code>Date</code> object using a <code>GregorianCalendar</code>.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(java.util.Date)" class="member-name-link">format(Date)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#format(java.util.Date,B)" class="member-name-link">format(Date, B)</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Formats a <code>Date</code> object into the
- supplied <code>Appendable</code> using a <code>GregorianCalendar</code>.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#format(java.util.Date,B)" class="member-name-link">format(Date, B)</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractStyleNameConverter</a></dt>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
@@ -4405,9 +4335,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Format a logging event.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>
-<div class="block">Formats an event into a string buffer.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/EncodingPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/EncodingPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">EncodingPatternConverter</a></dt>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
@@ -4540,18 +4468,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">format(Instant)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant)" class="member-name-link">format(Instant)</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html#format(org.apache.logging.log4j.core.time.Instant,java.lang.StringBuilder)" class="member-name-link">format(Instant, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/Format.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.datetime">Format</a> - Class in <a href="org/apache/logging/log4j/core/util/datetime/package-summary.html">org.apache.logging.log4j.core.util.datetime</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/Format.html#%3Cinit%3E()" class="member-name-link">Format()</a> - Constructor for class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/Format.html" title="class in org.apache.logging.log4j.core.util.datetime">Format</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Constants.html#FORMAT_MESSAGES_IN_BACKGROUND" class="member-name-link">FORMAT_MESSAGES_IN_BACKGROUND</a> - Static variable in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Constants.html" title="class in org.apache.logging.log4j.core.util">Constants</a></dt>
 <dd>
 <div class="block">Supports user request LOG4J2-898 to have the option to format a message in the background thread.</div>
@@ -4599,6 +4517,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#formatTo(java.lang.StringBuilder)" class="member-name-link">formatTo(StringBuilder)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/time/MutableInstant.html#formatTo(java.lang.StringBuilder)" class="member-name-link">formatTo(StringBuilder)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html#formatTo(java.lang.StringBuilder,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatTo(StringBuilder, Instant)</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#formatTo(java.lang.StringBuilder,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">formatTo(StringBuilder, Instant)</a> - Method in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html#formatXml(javax.xml.transform.Source,javax.xml.transform.Result)" class="member-name-link">formatXml(Source, Result)</a> - Static method in class org.apache.logging.log4j.core.config.builder.impl.<a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html" title="class in org.apache.logging.log4j.core.config.builder.impl">DefaultConfigurationBuilder</a></dt>
 <dd>&nbsp;</dd>
@@ -5219,38 +5141,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns a list of the <code>CustomLevelConfig</code> objects created during configuration.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateInstance(int)" class="member-name-link">getDateInstance(int)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateInstance(int,java.util.Locale)" class="member-name-link">getDateInstance(int, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateInstance(int,java.util.TimeZone)" class="member-name-link">getDateInstance(int, TimeZone)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateInstance(int, TimeZone, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateTimeInstance(int,int)" class="member-name-link">getDateTimeInstance(int, int)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateTimeInstance(int,int,java.util.Locale)" class="member-name-link">getDateTimeInstance(int, int, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateTimeInstance(int,int,java.util.TimeZone)" class="member-name-link">getDateTimeInstance(int, int, TimeZone)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getDateTimeInstance(int,int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getDateTimeInstance(int, int, TimeZone, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html#getDefault()" class="member-name-link">getDefault()</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FormattingInfo.html" title="class in org.apache.logging.log4j.core.pattern">FormattingInfo</a></dt>
 <dd>
 <div class="block">Gets default instance.</div>
@@ -5713,26 +5603,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html#getInstance()" class="member-name-link">getInstance()</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/PlainTextRenderer.html" title="class in org.apache.logging.log4j.core.pattern">PlainTextRenderer</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getInstance()" class="member-name-link">getInstance()</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getInstance(java.lang.String)" class="member-name-link">getInstance(String)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getInstance(java.lang.String,java.util.Locale)" class="member-name-link">getInstance(String, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getInstance(java.lang.String,java.util.TimeZone)" class="member-name-link">getInstance(String, TimeZone)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getInstance(java.lang.String,java.util.TimeZone,java.util.Locale)" class="member-name-link">getInstance(String, TimeZone, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#getInstanceFactory()" class="member-name-link">getInstanceFactory()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/LoggerContext.html#getInstanceFactory()" class="member-name-link">getInstanceFactory()</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></dt>
@@ -5753,8 +5623,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the Instant when the message was logged.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html#getInternalImplementationClass()" class="member-name-link">getInternalImplementationClass()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html#getInterval()" class="member-name-link">getInterval()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.html#getInterval()" class="member-name-link">getInterval()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy</a></dt>
@@ -5902,17 +5770,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Accessible through the Lookup key <code>locale</code>.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#getLocale()" class="member-name-link">getLocale()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#getLocale()" class="member-name-link">getLocale()</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#getLocale()" class="member-name-link">getLocale()</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Gets the locale used by this printer.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getLocale()" class="member-name-link">getLocale()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html#getLocale()" class="member-name-link">getLocale()</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/NetUtils.html#getLocalHostname()" class="member-name-link">getLocalHostname()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/NetUtils.html" title="class in org.apache.logging.log4j.core.util">NetUtils</a></dt>
 <dd>
 <div class="block">This method gets the network name of the machine we are running on.</div>
@@ -6120,10 +5981,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get maximum length.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getMaxLengthEstimate()" class="member-name-link">getMaxLengthEstimate()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/LevelRangeFilter.html#getMaxLevel()" class="member-name-link">getMaxLevel()</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/LevelRangeFilter.html" title="class in org.apache.logging.log4j.core.filter">LevelRangeFilter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html#getMaxRandomDelay()" class="member-name-link">getMaxRandomDelay()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></dt>
@@ -6388,22 +6245,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the pattern.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#getPattern()" class="member-name-link">getPattern()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>
-<div class="block">Gets the pattern string describing this date format.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#getPattern()" class="member-name-link">getPattern()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#getPattern()" class="member-name-link">getPattern()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#getPattern()" class="member-name-link">getPattern()</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#getPattern()" class="member-name-link">getPattern()</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Gets the pattern used by this printer.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getPattern()" class="member-name-link">getPattern()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html#getPattern()" class="member-name-link">getPattern()</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/routing/Routes.html#getPattern(org.apache.logging.log4j.core.LogEvent,java.util.concurrent.ConcurrentMap)" class="member-name-link">getPattern(LogEvent, ConcurrentMap&lt;Object, Object&gt;)</a> - Method in class org.apache.logging.log4j.core.appender.routing.<a href="org/apache/logging/log4j/core/appender/routing/Routes.html" title="class in org.apache.logging.log4j.core.appender.routing">Routes</a></dt>
 <dd>
 <div class="block">Returns the pattern.</div>
@@ -6435,6 +6283,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the port.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketAddress.html#getPort()" class="member-name-link">getPort()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketAddress.html" title="class in org.apache.logging.log4j.core.net">SocketAddress</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html#getPrecision()" class="member-name-link">getPrecision()</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#getPrecision()" class="member-name-link">getPrecision()</a> - Method in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html#getPrevFileTime()" class="member-name-link">getPrevFileTime()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></dt>
 <dd>&nbsp;</dd>
@@ -6925,22 +6777,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generates Type 1 UUID.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getTimeInstance(int)" class="member-name-link">getTimeInstance(int)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getTimeInstance(int,java.util.Locale)" class="member-name-link">getTimeInstance(int, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getTimeInstance(int,java.util.TimeZone)" class="member-name-link">getTimeInstance(int, TimeZone)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getTimeInstance(int,java.util.TimeZone,java.util.Locale)" class="member-name-link">getTimeInstance(int, TimeZone, Locale)</a> - Static method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/AbstractLogEvent.html#getTimeMillis()" class="member-name-link">getTimeMillis()</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/AbstractLogEvent.html" title="class in org.apache.logging.log4j.core">AbstractLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getTimeMillis()" class="member-name-link">getTimeMillis()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
@@ -6956,27 +6792,18 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets event time in milliseconds since midnight, January 1, 1970 UTC.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>
-<div class="block">Gets the timezone used by this date format.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/CronExpression.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/CronExpression.html" title="class in org.apache.logging.log4j.core.util">CronExpression</a></dt>
 <dd>
 <div class="block">Returns the time zone for which this <code>CronExpression</code>
  will be resolved.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in interface org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/DatePrinter.html" title="interface in org.apache.logging.log4j.core.util.datetime">DatePrinter</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-<div class="block">Gets the time zone used by this printer.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html#getTimeZone()" class="member-name-link">getTimeZone()</a> - Method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/HtmlLayout.html#getTitle()" class="member-name-link">getTitle()</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.html" title="class in org.apache.logging.log4j.core.layout">HtmlLayout</a></dt>
 <dd>
 <div class="block">For testing purposes.</div>
@@ -7244,10 +7071,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/time/MutableInstant.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/KeyValuePair.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Source.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Source.html" title="class in org.apache.logging.log4j.core.util">Source</a></dt>
@@ -7619,13 +7442,21 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Models a point in time, suitable for event timestamps.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a> - Class in <a href="org/apache/logging/log4j/core/time/package-summary.html">org.apache.logging.log4j.core.time</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantFormatter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantFormatter</a> - Interface in <a href="org/apache/logging/log4j/core/util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></dt>
 <dd>
-<div class="block">A composite <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a> formatter trying to employ either <code>FixedDateFormat</code>, <code>FastDateFormat</code>, or <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/format/DateTimeFormatter.html" title="class or interface in java.time.format" class="external-link"><code>DateTimeFormatter</code></a> in the given order due to performance reasons.</div>
+<div class="block">Contract for formatting <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a> - Class in <a href="org/apache/logging/log4j/core/time/package-summary.html">org.apache.logging.log4j.core.time</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/WatcherFactory.html#instantiate(java.lang.String,java.lang.Class,org.apache.logging.log4j.core.config.Configuration,org.apache.logging.log4j.core.config.Reconfigurable,java.util.List,long)" class="member-name-link">instantiate(String, Class&lt;T&gt;, Configuration, Reconfigurable, List&lt;Consumer&lt;Reconfigurable&gt;&gt;, long)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/WatcherFactory.html" title="class in org.apache.logging.log4j.core.util">WatcherFactory</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" class="type-name-link" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a> - Enum Class in <a href="org/apache/logging/log4j/core/util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></dt>
+<dd>
+<div class="block">Formats an <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a> numerically; e.g., formats its epoch<sup>1</sup> seconds.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a> - Interface in <a href="org/apache/logging/log4j/core/util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></dt>
+<dd>
+<div class="block">Contract for formatting <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s using a date and time formatting pattern.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a> - Class in <a href="org/apache/logging/log4j/core/util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/time/MutableInstant.html#instantToMillisAndNanos(long,int,long%5B%5D)" class="member-name-link">instantToMillisAndNanos(long, int, long[])</a> - Static method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a></dt>
 <dd>
@@ -7708,6 +7539,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/db/AbstractDatabaseManager.html#isBuffered()" class="member-name-link">isBuffered()</a> - Method in class org.apache.logging.log4j.core.appender.db.<a href="org/apache/logging/log4j/core/appender/db/AbstractDatabaseManager.html" title="class in org.apache.logging.log4j.core.appender.db">AbstractDatabaseManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/AbstractOutputStreamAppender.Builder.html#isBufferedIo()" class="member-name-link">isBufferedIo()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/AbstractOutputStreamAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">AbstractOutputStreamAppender.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#isCachingEnabled()" class="member-name-link">isCachingEnabled()</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html#isCancelled()" class="member-name-link">isCancelled()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html" title="class in org.apache.logging.log4j.core.config">CronScheduledFuture</a></dt>
 <dd>&nbsp;</dd>
@@ -7908,10 +7741,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/AbstractLifeCycle.html#isInitialized()" class="member-name-link">isInitialized()</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/AbstractLifeCycle.html" title="class in org.apache.logging.log4j.core">AbstractLifeCycle</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html#isInstantMatching(org.apache.logging.log4j.core.time.Instant,org.apache.logging.log4j.core.time.Instant)" class="member-name-link">isInstantMatching(Instant, Instant)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></dt>
-<dd>
-<div class="block">Checks if the given <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s are equal from the point of view of the employed formatter.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractAction.html#isInterrupted()" class="member-name-link">isInterrupted()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/AbstractAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">AbstractAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketOptions.html#isKeepAlive()" class="member-name-link">isKeepAlive()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketOptions.html" title="class in org.apache.logging.log4j.core.net">SocketOptions</a></dt>
@@ -9554,7 +9383,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/selector/AbstractContextSelector.html#newBuilder()" class="member-name-link">newBuilder()</a> - Method in class org.apache.logging.log4j.core.selector.<a href="org/apache/logging/log4j/core/selector/AbstractContextSelector.html" title="class in org.apache.logging.log4j.core.selector">AbstractContextSelector</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html#newBuilder()" class="member-name-link">newBuilder()</a> - Static method in interface org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.html" title="interface in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Loader.html#newCheckedInstanceOf(java.lang.String,java.lang.Class)" class="member-name-link">newCheckedInstanceOf(String, Class&lt;T&gt;)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Loader.html" title="class in org.apache.logging.log4j.core.util">Loader</a></dt>
 <dd>
@@ -9628,9 +9457,17 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets an instance of ClassNamePatternConverter.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
+<dd>
+<div class="block">Obtains an instance of pattern converter.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">EndOfBatchPatternConverter</a></dt>
 <dd>
 <div class="block">Obtains an instance of EndOfBatchPatternConverter.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
+<dd>
+<div class="block">Obtains an instance of pattern converter.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/FileLocationPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileLocationPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileLocationPatternConverter</a></dt>
 <dd>
@@ -9756,10 +9593,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets an instance of the class (called via reflection).</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/DatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">DatePatternConverter</a></dt>
-<dd>
-<div class="block">Obtains an instance of pattern converter.</div>
-</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/EncodingPatternConverter.html#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/EncodingPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">EncodingPatternConverter</a></dt>
 <dd>
 <div class="block">Creates an EncodingPatternConverter using a pattern string and an optional escape format.</div>
@@ -9771,10 +9604,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/pattern/EqualsReplacementConverter.html#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/EqualsReplacementConverter.html" title="class in org.apache.logging.log4j.core.pattern">EqualsReplacementConverter</a></dt>
 <dd>
 <div class="block">Gets an instance of the class.</div>
-</dd>
-<dt><a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/FileDatePatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">FileDatePatternConverter</a></dt>
-<dd>
-<div class="block">Obtains an instance of pattern converter.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/HighlightConverter.html#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance(Configuration, String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/HighlightConverter.html" title="class in org.apache.logging.log4j.core.pattern">HighlightConverter</a></dt>
 <dd>
@@ -10206,9 +10035,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Log4j 2 helper classes.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/package-summary.html">org.apache.logging.log4j.core.util.datetime</a> - package org.apache.logging.log4j.core.util.datetime</dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/package-summary.html">org.apache.logging.log4j.core.util.internal.instant</a> - package org.apache.logging.log4j.core.util.internal.instant</dt>
 <dd>
-<div class="block">Log4j 2 date formatting classes.</div>
+<div class="block">Utilities for formatting log event <a href="org/apache/logging/log4j/core/time/Instant.html" title="interface in org.apache.logging.log4j.core.time"><code>Instant</code></a>s.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/OutputStreamAppender.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender">OutputStreamAppender</a> - Class in <a href="org/apache/logging/log4j/core/appender/package-summary.html">org.apache.logging.log4j.core.appender</a></dt>
 <dd>
@@ -11603,6 +11432,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sets the buffer size.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#setCachingEnabled(boolean)" class="member-name-link">setCachingEnabled(boolean)</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/AbstractLayout.Builder.html#setCharset(java.nio.charset.Charset)" class="member-name-link">setCharset(Charset)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/AbstractLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">AbstractLayout.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/HtmlLayout.Builder.html#setCharset(java.nio.charset.Charset)" class="member-name-link">setCharset(Charset)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">HtmlLayout.Builder</a></dt>
@@ -12101,7 +11932,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/LoggerContext.Builder.html#setLoader(java.lang.ClassLoader)" class="member-name-link">setLoader(ClassLoader)</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LoggerContext.Builder.html" title="class in org.apache.logging.log4j.core">LoggerContext.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#setLocale(java.util.Locale)" class="member-name-link">setLocale(Locale)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#setLocale(java.util.Locale)" class="member-name-link">setLocale(Locale)</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html#setLocation(java.lang.String)" class="member-name-link">setLocation(String)</a> - Method in class org.apache.logging.log4j.core.net.ssl.<a href="org/apache/logging/log4j/core/net/ssl/StoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">StoreConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -12322,7 +12153,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/PatternMatch.Builder.html#setPattern(java.lang.String)" class="member-name-link">setPattern(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/PatternMatch.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternMatch.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#setPattern(java.lang.String)" class="member-name-link">setPattern(String)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#setPattern(java.lang.String)" class="member-name-link">setPattern(String)</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html#setPatternProcessor(org.apache.logging.log4j.core.appender.rolling.PatternProcessor)" class="member-name-link">setPatternProcessor(PatternProcessor)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a></dt>
 <dd>&nbsp;</dd>
@@ -12565,13 +12396,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/TimeFilter.Builder.html#setTimezone(java.time.ZoneId)" class="member-name-link">setTimezone(ZoneId)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/TimeFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">TimeFilter.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html#setTimeZone(java.util.TimeZone)" class="member-name-link">setTimeZone(TimeZone)</a> - Method in class org.apache.logging.log4j.core.time.<a href="org/apache/logging/log4j/core/time/InstantFormatter.Builder.html" title="class in org.apache.logging.log4j.core.time">InstantFormatter.Builder</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/CronExpression.html#setTimeZone(java.util.TimeZone)" class="member-name-link">setTimeZone(TimeZone)</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/CronExpression.html" title="class in org.apache.logging.log4j.core.util">CronExpression</a></dt>
 <dd>
 <div class="block">Sets the time zone for which  this <code>CronExpression</code>
  will be resolved.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html#setTimeZone(java.util.TimeZone)" class="member-name-link">setTimeZone(TimeZone)</a> - Method in class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantPatternFormatter.Builder.html" title="class in org.apache.logging.log4j.core.util.internal.instant">InstantPatternFormatter.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/HtmlLayout.Builder.html#setTitle(java.lang.String)" class="member-name-link">setTitle(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/HtmlLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">HtmlLayout.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#setToDefault()" class="member-name-link">setToDefault()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
@@ -13769,10 +13600,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the string representation of the <CODE>CronExpression</CODE></div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.util.datetime.<a href="org/apache/logging/log4j/core/util/datetime/FastDateFormat.html" title="class in org.apache.logging.log4j.core.util.datetime">FastDateFormat</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/KeyValuePair.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util">KeyValuePair</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Source.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/Source.html" title="class in org.apache.logging.log4j.core.util">Source</a></dt>
@@ -14083,6 +13910,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html#values()" class="member-name-link">values()</a> - Static method in enum class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/ConsoleAppender.Target.html" title="enum class in org.apache.logging.log4j.core.appender">ConsoleAppender.Target</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
@@ -14149,6 +13980,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html#values()" class="member-name-link">values()</a> - Static method in enum class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/ExtensionLanguageMapping.html" title="enum class in org.apache.logging.log4j.core.util">ExtensionLanguageMapping</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html#values()" class="member-name-link">values()</a> - Static method in enum class org.apache.logging.log4j.core.util.internal.instant.<a href="org/apache/logging/log4j/core/util/internal/instant/InstantNumberFormatter.html" title="enum class in org.apache.logging.log4j.core.util.internal.instant">InstantNumberFormatter</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
