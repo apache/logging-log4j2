@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3016" link="https://github.com/apache/logging-log4j2/pull/3016"/>
-  <description format="asciidoc">Update `org.mongodb:bson` to version `5.2.0`</description>
+  <issue id="3179" link="https://github.com/apache/logging-log4j2/pull/3179"/>
+  <description format="asciidoc">Update `org.mongodb:bson` to version `5.2.1`</description>
 </entry>
