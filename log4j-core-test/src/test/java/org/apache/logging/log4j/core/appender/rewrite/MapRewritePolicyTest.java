@@ -162,7 +162,6 @@ public class MapRewritePolicyTest {
         assertThat("wrong size", updatedMap, hasSize(2));
     }
 
-    @SuppressWarnings("deprecation")
     private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
         // Ensure that everything but the Mapped Data is still the same
         assertEquals(orig.getLoggerName(), changed.getLoggerName(), "LoggerName changed");

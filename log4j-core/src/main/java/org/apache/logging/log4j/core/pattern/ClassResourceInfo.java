@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.function.Consumer;
 
 /**
  * Resource information (i.e., the enclosing JAR file and its version) of a class.
@@ -26,7 +27,7 @@ final class ClassResourceInfo {
 
     static final ClassResourceInfo UNKNOWN = new ClassResourceInfo();
 
-    private final String text;
+    private final Consumer<StringBuilder> renderer;
 
     final Class<?> clazz;
 
@@ -34,8 +35,8 @@ final class ClassResourceInfo {
      * Constructs an instance modelling an unknown class resource.
      */
     private ClassResourceInfo() {
-        this.text = "~[?:?]";
-        this.clazz = null;
+        this.renderer = (buffer) -> buffer.append("~[?:?]");
+        clazz = null;
     }
 
     /**
@@ -43,15 +44,18 @@ final class ClassResourceInfo {
      * @param exact {@code true}, if the class was obtained via reflection; {@code false}, otherwise
      */
     ClassResourceInfo(final Class<?> clazz, final boolean exact) {
-        this.clazz = clazz;
-        this.text = getText(clazz, exact);
-    }
-
-    private static String getText(final Class<?> clazz, final boolean exact) {
         final String exactnessPrefix = exact ? "" : "~";
         final String location = getLocation(clazz);
         final String version = getVersion(clazz);
-        return String.format("%s[%s:%s]", exactnessPrefix, location, version);
+        this.renderer = (buffer) -> {
+            buffer.append(exactnessPrefix);
+            buffer.append("[");
+            buffer.append(location);
+            buffer.append(":");
+            buffer.append(version);
+            buffer.append("]");
+        };
+        this.clazz = clazz;
     }
 
     private static String getLocation(final Class<?> clazz) {
@@ -85,8 +89,7 @@ final class ClassResourceInfo {
         return "?";
     }
 
-    @Override
-    public String toString() {
-        return text;
+    void render(final StringBuilder buffer) {
+        renderer.accept(buffer);
     }
 }

@@ -588,7 +588,7 @@ If this mode is employed without any configuration, the output will be identical
 
 `none`:: Suppress the output of the converter
 
-`short`:: Outputs the first line of the stack trace (analogous to `%ex\{1}`)
+`short`:: Outputs the first two lines of the stack trace (analogous to `%ex\{2}`)
 
 `depth`:: Outputs the first `depth` lines of the stack trace (`%ex\{0}` is analogous to `%ex\{none}`)
 
