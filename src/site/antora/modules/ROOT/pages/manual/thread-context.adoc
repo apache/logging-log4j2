@@ -104,8 +104,8 @@ List<String> ndc = ThreadContext.getImmutableStack().asList(); // <1>
 
 executor.submit(() -> {
     try (CloseableThreadContext.Instance ignored = CloseableThreadContext
-            .putAll(values) // <2>
-            .pushAll(messages)) { // <2>
+            .putAll(mdc) // <2>
+            .pushAll(ndc)) { // <2>
 
         LOGGER.debug("Processing for user started");
         // ...
