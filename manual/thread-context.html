@@ -483,8 +483,8 @@ List&lt;String&gt; ndc = ThreadContext.getImmutableStack().asList(); <i class="c
 
 executor.submit(() -&gt; {
     try (CloseableThreadContext.Instance ignored = CloseableThreadContext
-            .putAll(values) <i class="conum" data-value="2"></i><b>(2)</b>
-            .pushAll(messages)) { <i class="conum" data-value="2"></i><b>(2)</b>
+            .putAll(mdc) <i class="conum" data-value="2"></i><b>(2)</b>
+            .pushAll(ndc)) { <i class="conum" data-value="2"></i><b>(2)</b>
 
         LOGGER.debug("Processing for user started");
         // ...
