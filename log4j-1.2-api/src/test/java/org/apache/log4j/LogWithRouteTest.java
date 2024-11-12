@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,7 +42,7 @@ public class LogWithRouteTest {
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
             assertNotNull(msgs, "No messages received");
-            assertTrue(msgs.size() == 1);
+            assertEquals(msgs.size(), 1);
             assertTrue(msgs.get(0).contains("Type=Service"), "Type is missing");
             assertTrue(msgs.get(0).contains("Name=John Smith"), "Name is missing");
         } finally {

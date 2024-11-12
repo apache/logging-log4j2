@@ -190,7 +190,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityString() {
-        assertTrue(Priority.toPriority("DEBUG") == Level.DEBUG);
+        assertEquals(Priority.toPriority("DEBUG"), Level.DEBUG);
     }
 
     /**
@@ -199,7 +199,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityInt() {
-        assertTrue(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG);
+        assertEquals(Priority.toPriority(Priority.DEBUG_INT), Level.DEBUG);
     }
 
     /**
@@ -208,7 +208,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityStringPriority() {
-        assertTrue(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG);
+        assertEquals(Priority.toPriority("foo", Priority.DEBUG), Priority.DEBUG);
     }
 
     /**
@@ -217,7 +217,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityIntPriority() {
-        assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
+        assertEquals(Priority.toPriority(17, Priority.DEBUG), Priority.DEBUG);
     }
 
     /**

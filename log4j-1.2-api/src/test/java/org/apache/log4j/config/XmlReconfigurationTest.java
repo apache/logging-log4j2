@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -65,7 +66,7 @@ public class XmlReconfigurationTest {
             fail("Reconfiguration interupted");
         }
         final Configuration updated = context.getConfiguration();
-        assertTrue(original != updated, "Configurations are the same");
+        assertNotEquals(original, updated, "Configurations are the same");
     }
 
     private class TestListener implements ConfigurationListener {

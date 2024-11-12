@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,7 +42,7 @@ public class LogWithMDCTest {
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
             assertNotNull(msgs, "No messages received");
-            assertTrue(msgs.size() == 1);
+            assertEquals(msgs.size(), 1);
             assertTrue(msgs.get(0).contains("Key1=John"), "Key1 is missing");
             assertTrue(msgs.get(0).contains("Key2=Smith"), "Key2 is missing");
         } finally {

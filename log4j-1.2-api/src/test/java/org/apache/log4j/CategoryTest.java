@@ -98,7 +98,7 @@ public class CategoryTest {
         category.info("Hello, World");
         List<LogEvent> list = appender.getEvents();
         int events = list.size();
-        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        assertEquals(events, 1, "Number of events");
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
         assertNotNull(msg, "No message");
@@ -110,7 +110,7 @@ public class CategoryTest {
         category.info(Collections.singletonMap("hello", "world"));
         list = appender.getEvents();
         events = list.size();
-        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        assertEquals(events, 1, "Number of events");
         event = list.get(0);
         msg = event.getMessage();
         assertNotNull(msg, "No message");
@@ -122,7 +122,7 @@ public class CategoryTest {
         category.info(Collections.singletonMap(1234L, "world"));
         list = appender.getEvents();
         events = list.size();
-        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        assertEquals(events, 1, "Number of events");
         event = list.get(0);
         msg = event.getMessage();
         assertNotNull(msg, "No message");
@@ -135,7 +135,7 @@ public class CategoryTest {
         category.info(obj);
         list = appender.getEvents();
         events = list.size();
-        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        assertEquals(events, 1, "Number of events");
         event = list.get(0);
         msg = event.getMessage();
         assertNotNull(msg, "No message");
@@ -147,7 +147,7 @@ public class CategoryTest {
         category.log(Priority.INFO, "Hello, World");
         list = appender.getEvents();
         events = list.size();
-        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        assertEquals(events, 1, "Number of events");
         event = list.get(0);
         msg = event.getMessage();
         assertNotNull(msg, "No message");
@@ -164,7 +164,7 @@ public class CategoryTest {
     @Test
     public void testGetChainedPriorityReturnType() throws Exception {
         final Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
-        assertTrue(method.getReturnType() == Priority.class);
+        assertEquals(method.getReturnType(), Priority.class);
     }
 
     /**
@@ -245,7 +245,7 @@ public class CategoryTest {
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.error("Test Message");
         final List<String> msgs = appender.getMessages();
-        assertTrue(msgs.size() == 1, "Incorrect number of messages. Expected 1 got " + msgs.size());
+        assertEquals(msgs.size(), 1, "Incorrect number of messages. Expected 1 got " + msgs.size());
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();

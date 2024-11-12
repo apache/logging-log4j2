@@ -327,7 +327,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertEquals(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -347,7 +347,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertEquals(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -488,7 +488,7 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertTrue(msgs.size() == 3, "Incorrect number of messages");
+            assertEquals(msgs.size(), 3, "Incorrect number of messages");
             final String msg = msgs.get(0);
             assertTrue(msg.contains(LoggerTest.class.getName()), "Message contains incorrect class name: " + msg);
             appender.stop();
