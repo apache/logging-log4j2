@@ -762,20 +762,8 @@
 
           <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${site-log4j-core.version}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jakarta-web</artifactId>
             <version>${site-log4j-jakarta.version}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-layout-template-json</artifactId>
-            <version>${site-log4j-layout-template-json.version}</version>
           </dependency>
 
           <!-- Other dependencies -->
