@@ -307,7 +307,79 @@
 <p>This release contains&#8230;&#8203;</p>
 </div>
 <div class="sect2">
-<h3 id="release-notes-3-x-x-added"><a class="anchor" href="#release-notes-3-x-x-added"></a>Added</h3>
+<h3 id="release-notes-3-x-x-updated"><a class="anchor" href="#release-notes-3-x-x-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.24</code> (<a href="https://github.com/apache/logging-log4j2/pull/3192">3192</a>)</p>
+</li>
+<li>
+<p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3193">3193</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-notes-3-0-0-beta3"><a class="anchor" href="#release-notes-3-0-0-beta3"></a>3.0.0-beta3</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2024-11-09</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This release terminates the modularization process of Log4j Core, by moving all the code that uses optional <code>log4j-core</code> dependencies into new modules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Support for the JAnsi library has been removed since recent Windows OSes support ANSI escape sequences.
+See
+<a href="manual/pattern-layout.html#ansi-windows" class="xref page">ANSI styling on Windows</a>
+for more details.</p>
+</li>
+<li>
+<p>The
+<a href="manual/appenders/delegating.html#DisruptorBlockingQueueFactory" class="xref page"><code>DisruptorBlockinQueue</code> queue factory</a>
+has been moved to a new
+<a href="components.html#log4j-conversant" class="xref page"><code>log4j-conversant</code> artifact</a>.</p>
+</li>
+<li>
+<p>Support for
+<a href="manual/appenders/rolling-file.html#RolloverStrategy-compress" class="xref page">advanced compression algorithms</a>
+has been moved to a new
+<a href="components.html#log4j-compress" class="xref page"><code>log4j-compress</code> artifact</a>.
+The Gzip and Zip formats are still supported out-of-the-box.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_separate_lifecycle"><a class="anchor" href="#_separate_lifecycle"></a>Separate lifecycle</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The
+<a href="manual/appenders/message-queue.html#FlumeAppender" class="xref page">Flume Appender</a>
+releases will follow its own lifecycle.</p>
+</li>
+<li>
+<p>All the
+<a href="manual/installation.html#impl-core-bridges" class="xref page">logging bridges</a>
+from and to Log4j API have been removed from the Log4j Core 3.x release.
+Please manage your dependencies with
+<a href="components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a>
+to always use the compatible version of the logging bridges.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-3-0-0-beta3-added"><a class="anchor" href="#release-notes-3-0-0-beta3-added"></a>Added</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -320,13 +392,13 @@
 <p>Add <em>"Plugin Reference"</em> to the website. It is a Javadoc-on-steroids focusing on Log4j plugins. (<a href="https://github.com/apache/logging-log4j2/issues/1954">1954</a>)</p>
 </li>
 <li>
-<p>Split extended compression algorithm support to new <code>log4j-compress</code> module.</p>
+<p>Split extended compression algorithm support to new <code>log4j-compress</code> module. (<a href="https://github.com/apache/logging-log4j2/pull/2921">2921</a>)</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-3-x-x-changed"><a class="anchor" href="#release-notes-3-x-x-changed"></a>Changed</h3>
+<h3 id="release-notes-3-0-0-beta3-changed"><a class="anchor" href="#release-notes-3-0-0-beta3-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -342,7 +414,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-3-x-x-fixed"><a class="anchor" href="#release-notes-3-x-x-fixed"></a>Fixed</h3>
+<h3 id="release-notes-3-0-0-beta3-fixed"><a class="anchor" href="#release-notes-3-0-0-beta3-fixed"></a>Fixed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -364,7 +436,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-3-x-x-removed"><a class="anchor" href="#release-notes-3-x-x-removed"></a>Removed</h3>
+<h3 id="release-notes-3-0-0-beta3-removed"><a class="anchor" href="#release-notes-3-0-0-beta3-removed"></a>Removed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -395,7 +467,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-3-x-x-updated"><a class="anchor" href="#release-notes-3-x-x-updated"></a>Updated</h3>
+<h3 id="release-notes-3-0-0-beta3-updated"><a class="anchor" href="#release-notes-3-0-0-beta3-updated"></a>Updated</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -405,64 +477,10 @@
 <p>Update <code>apache/logging-parent</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/2598">2598</a>)</p>
 </li>
 <li>
-<p>Update <code>ch.qos.logback:logback-classic</code> to version <code>1.5.12</code> (<a href="https://github.com/apache/logging-log4j2/pull/3180">3180</a>)</p>
-</li>
-<li>
-<p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.5.12</code> (<a href="https://github.com/apache/logging-log4j2/pull/3145">3145</a>)</p>
-</li>
-<li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.15.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3107">3107</a>)</p>
-</li>
-<li>
-<p>Update <code>co.elastic.logging:log4j2-ecs-layout</code> to version <code>1.6.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2303">2303</a>)</p>
-</li>
-<li>
 <p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.18.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3136">3136</a>)</p>
 </li>
 <li>
-<p>Update <code>com.github.luben:zstd-jni</code> to version <code>1.5.6-7</code> (<a href="https://github.com/apache/logging-log4j2/pull/3132">3132</a>)</p>
-</li>
-<li>
-<p>Update <code>com.github.tomakehurst:wiremock-jre8</code> to version <code>2.35.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/2305">2305</a>)</p>
-</li>
-<li>
-<p>Update <code>com.google.guava:guava</code> to version <code>33.3.1-jre</code> (<a href="https://github.com/apache/logging-log4j2/pull/3008">3008</a>)</p>
-</li>
-<li>
-<p>Update <code>com.gradle:develocity-maven-extension</code> to version <code>1.21.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/2643">2643</a>)</p>
-</li>
-<li>
-<p>Update <code>com.h2database:h2</code> to version <code>2.3.232</code> (<a href="https://github.com/apache/logging-log4j2/pull/2837">2837</a>)</p>
-</li>
-<li>
-<p>Update <code>commons-codec:commons-codec</code> to version <code>1.17.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2743">2743</a>)</p>
-</li>
-<li>
-<p>Update <code>commons-io:commons-io</code> to version <code>2.17.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2979">2979</a>)</p>
-</li>
-<li>
-<p>Update <code>commons-logging:commons-logging</code> to version <code>1.3.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/2865">2865</a>)</p>
-</li>
-<li>
-<p>Update <code>de.flapdoodle.embed:de.flapdoodle.embed.mongo</code> to version <code>4.13.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2757">2757</a>)</p>
-</li>
-<li>
-<p>Update <code>de.flapdoodle.reverse:de.flapdoodle.reverse</code> to version <code>1.8.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2886">2886</a>)</p>
-</li>
-<li>
 <p>Update <code>io.fabric8:docker-maven-plugin</code> to version <code>0.45.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3036">3036</a>)</p>
-</li>
-<li>
-<p>Update <code>io.netty:netty-bom</code> to version <code>4.1.112.Final</code> (<a href="https://github.com/apache/logging-log4j2/pull/2763">2763</a>)</p>
-</li>
-<li>
-<p>Update <code>net.bytebuddy:byte-buddy</code> to version <code>1.15.10</code> (<a href="https://github.com/apache/logging-log4j2/pull/3166">3166</a>)</p>
-</li>
-<li>
-<p>Update <code>net.java.dev.jna:jna</code> to version <code>5.15.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2957">2957</a>)</p>
-</li>
-<li>
-<p>Update <code>net.javacrumbs.json-unit:json-unit</code> to version <code>3.5.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3168">3168</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-compress</code> to version <code>1.27.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/2870">2870</a>)</p>
@@ -474,97 +492,16 @@
 <p>Update <code>org.apache.commons:commons-dbcp2</code> to version <code>2.12.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2342">2342</a>)</p>
 </li>
 <li>
-<p>Update <code>org.apache.commons:commons-lang3</code> to version <code>3.16.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2811">2811</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.23</code> (<a href="https://github.com/apache/logging-log4j2/pull/2947">2947</a>)</p>
-</li>
-<li>
 <p>Update <code>org.apache.logging.log4j:log4j-api</code> to version <code>2.24.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3035">3035</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.logging.log4j:log4j-docgen-maven-plugin</code> to version <code>0.9.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2579">2579</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.logging:logging-parent</code> to version <code>11.3.0</code></p>
-</li>
-<li>
-<p>Update <code>org.apache.maven:maven-core</code> to version <code>3.9.9</code> (<a href="https://github.com/apache/logging-log4j2/pull/2857">2857</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.maven.surefire:surefire-junit47</code> to version <code>3.5.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3167">3167</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.tomcat:tomcat-juli</code> to version <code>10.1.30</code> (<a href="https://github.com/apache/logging-log4j2/pull/2964">2964</a>)</p>
-</li>
-<li>
-<p>Update <code>org.assertj:assertj-core</code> to version <code>3.26.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/2728">2728</a>)</p>
-</li>
-<li>
-<p>Update <code>org.awaitility:awaitility</code> to version <code>4.2.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/2801">2801</a>)</p>
-</li>
-<li>
-<p>Update <code>org.codehaus.mojo:build-helper-maven-plugin</code> to version <code>3.6.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2684">2684</a>)</p>
-</li>
-<li>
-<p>Update <code>org.eclipse.jetty:jetty-bom</code> to version <code>9.4.55.v20240627</code> (<a href="https://github.com/apache/logging-log4j2/pull/2706">2706</a>)</p>
-</li>
-<li>
-<p>Update <code>org.eclipse.platform:org.eclipse.osgi</code> to version <code>3.21.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2938">2938</a>)</p>
-</li>
-<li>
-<p>Update <code>org.elasticsearch.client:elasticsearch-rest-high-level-client</code> to version <code>7.17.24</code> (<a href="https://github.com/apache/logging-log4j2/pull/2939">2939</a>)</p>
-</li>
-<li>
-<p>Update <code>org.graalvm.truffle:truffle-api</code> to version <code>24.1.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2965">2965</a>)</p>
-</li>
-<li>
-<p>Update <code>org.hamcrest:hamcrest</code> to version <code>3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2787">2787</a>)</p>
-</li>
-<li>
-<p>Update <code>org.hdrhistogram:HdrHistogram</code> to version <code>2.2.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/2629">2629</a>)</p>
-</li>
-<li>
-<p>Update <code>org.hsqldb:hsqldb</code> to version <code>2.7.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/3165">3165</a>)</p>
-</li>
-<li>
-<p>Update <code>org.javassist:javassist</code> to version <code>3.30.2-GA</code> (<a href="https://github.com/apache/logging-log4j2/pull/2432">2432</a>)</p>
 </li>
 <li>
 <p>Update <code>org.jctools:jctools-core</code> to version <code>4.0.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/2638">2638</a>)</p>
 </li>
 <li>
-<p>Update <code>org.jmdns:jmdns</code> to version <code>3.5.12</code> (<a href="https://github.com/apache/logging-log4j2/pull/2885">2885</a>)</p>
-</li>
-<li>
 <p>Update <code>org.jspecify:jspecify</code> to version <code>1.0.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2750">2750</a>)</p>
 </li>
 <li>
-<p>Update <code>org.junit:junit-bom</code> to version <code>5.11.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3113">3113</a>)</p>
-</li>
-<li>
-<p>Update <code>org.junit-pioneer:junit-pioneer</code> to version <code>2.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3063">3063</a>)</p>
-</li>
-<li>
-<p>Update <code>org.mockito:mockito-bom</code> to version <code>5.14.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3096">3096</a>)</p>
-</li>
-<li>
 <p>Update <code>org.mongodb:bson</code> to version <code>5.2.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3179">3179</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.maven:rewrite-maven-plugin</code> to version <code>5.15.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2993">2993</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.recipe:rewrite-logging-frameworks</code> to version <code>2.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2992">2992</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.recipe:rewrite-migrate-java</code> to version <code>2.5.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2990">2990</a>)</p>
-</li>
-<li>
-<p>Update <code>org.slf4j:slf4j-api</code> to version <code>2.0.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/2828">2828</a>)</p>
-</li>
-<li>
-<p>Update <code>org.slf4j:slf4j-nop</code> to version <code>2.0.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/2959">2959</a>)</p>
 </li>
 <li>
 <p>Update <code>org.springframework.boot:spring-boot-autoconfigure</code> to version <code>3.3.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/3120">3120</a>)</p>
@@ -574,18 +511,6 @@
 </li>
 <li>
 <p>Update <code>org.springframework:spring-framework-bom</code> to version <code>6.1.14</code> (<a href="https://github.com/apache/logging-log4j2/pull/3102">3102</a>)</p>
-</li>
-<li>
-<p>Update <code>org.tukaani:xz</code> to version <code>1.10</code> (<a href="https://github.com/apache/logging-log4j2/pull/2780">2780</a>)</p>
-</li>
-<li>
-<p>Update <code>org.wiremock:wiremock</code> to version <code>3.9.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3115">3115</a>)</p>
-</li>
-<li>
-<p>Update <code>org.xmlunit:xmlunit-core</code> to version <code>2.10.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/2545">2545</a>)</p>
-</li>
-<li>
-<p>Update <code>uk.org.webcompere:system-stubs-core</code> to version <code>2.1.7</code> (<a href="https://github.com/apache/logging-log4j2/pull/3022">3022</a>)</p>
 </li>
 </ul>
 </div>
@@ -622,7 +547,8 @@ The async appender is still available by default in <code>log4j-core</code>.</p>
 <p>Jetty 9.x users are encouraged to migrate to Jetty 10.x or later and replace <code>log4j-appserver</code> with <code>log4j-slf4j2-impl</code>.</p>
 </li>
 <li>
-<p>Tomcat JULI support will be available from a third-party (cf. <a href="https://github.com/copernik-eu/log4j-plugins/pull/102">copernik-eu/log4j-plugins</a>).</p>
+<p>Tomcat JULI support is available from a third-party project (cf.
+<a href="https://oss.copernik.eu/tomcat/3.x/components/tomcat-juli-to-log4j"><code>tomcat-juli-to-log4j</code></a>).</p>
 </li>
 <li>
 <p>Apache Commons Logging users are encouraged to upgrade <code>commons-logging</code> to version 1.3.0 or later and remove <code>log4j-jcl</code>.</p>
