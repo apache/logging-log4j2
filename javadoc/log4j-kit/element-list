@@ -1,0 +1,8 @@
+org.apache.logging.log4j.kit.env
+org.apache.logging.log4j.kit.env.internal
+org.apache.logging.log4j.kit.env.support
+org.apache.logging.log4j.kit.json
+org.apache.logging.log4j.kit.logger
+org.apache.logging.log4j.kit.message
+org.apache.logging.log4j.kit.recycler
+org.apache.logging.log4j.kit.recycler.support
