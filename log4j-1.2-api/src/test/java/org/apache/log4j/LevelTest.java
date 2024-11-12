@@ -60,7 +60,7 @@ public class LevelTest {
         //
         //  JDK 1.1 doesn't support readResolve necessary for the assertion
         if (!System.getProperty("java.version").startsWith("1.1.")) {
-            assertTrue(obj == Level.INFO);
+            assertEquals(obj, Level.INFO);
         }
     }
 

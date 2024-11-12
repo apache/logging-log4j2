@@ -16,18 +16,15 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test configuration from Properties.
@@ -36,13 +33,11 @@ public class XmlRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/" + XmlRollingWithPropertiesTest.class.getSimpleName();
 
-    @ClassRule
-    public static TestRule SP_RULE = RuleChain.emptyRuleChain()
-            // @formatter:off
-            .around(SystemPropertyTestRule.create("test.directory", TEST_DIR))
-            .around(SystemPropertyTestRule.create(
-                    "log4j.configuration", "target/test-classes/log4j1-rolling-properties.xml"));
-    // @formatter:on
+    @BeforeAll
+    public static void setupSystemProperties() {
+        System.setProperty("test.directory", TEST_DIR);
+        System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.xml");
+    }
 
     @Test
     public void testProperties() throws Exception {
@@ -51,7 +46,7 @@ public class XmlRollingWithPropertiesTest {
         Files.deleteIfExists(path);
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        assertTrue("Log file was not created " + path, Files.exists(path));
-        assertTrue("Log file is empty " + path, Files.size(path) > 0);
+        assertTrue(Files.exists(path), "Log file was not created " + path);
+        assertTrue(Files.size(path) > 0, "Log file is empty " + path);
     }
 }

@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,7 +83,7 @@ public final class SerializationTestHelper {
                 if ((skipIndex < skip.length) && (skip[skipIndex] == i)) {
                     skipIndex++;
                 } else if (expected[i] != actual[i]) {
-                    assertEquals("Difference at offset " + i, expected[i], actual[i]);
+                    assertEquals(expected[i], actual[i], "Difference at offset " + i);
                 }
             }
         } else {

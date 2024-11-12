@@ -19,18 +19,22 @@ package org.apache.log4j.config;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class Log4j1ConfigurationConverterSparkTest extends AbstractLog4j1ConfigurationConverterTest {
 
-    @Parameterized.Parameters(name = "{0}")
     public static List<Path> data() throws IOException {
         return getPaths("src/test/resources/config-1.2/spark");
     }
 
-    public Log4j1ConfigurationConverterSparkTest(final Path path) {
-        super(path);
+    public Log4j1ConfigurationConverterSparkTest() {
+        super();
+    }
+
+    @ParameterizedTest
+    @MethodSource("data")
+    public void test(Path path) throws Exception {
+        super.test(path);
     }
 }
