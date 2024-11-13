@@ -257,7 +257,6 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
      */
-    @Deprecated
     public void putIfAbsent(
             @Nullable final String name, @Nullable final MessageFactory messageFactory, final T logger) {
 
@@ -277,6 +276,15 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         }
     }
 
+    /**
+     * Returns an existent logger or creates a new one.
+     *
+     * @param name The logger name.
+     * @param messageFactory The message factory to use.
+     * @param loggerSupplier Used to create the logger if it does not exist already
+     * @return A logger
+     * @since 2.25.0
+     */
     public T computeIfAbsent(
             final String name,
             final MessageFactory messageFactory,
