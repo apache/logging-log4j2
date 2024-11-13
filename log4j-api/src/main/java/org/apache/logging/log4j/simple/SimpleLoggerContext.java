@@ -102,7 +102,12 @@ public class SimpleLoggerContext implements LoggerContext {
     public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+        ExtendedLogger logger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (logger == null) {
+            logger = createLogger(name, effectiveMessageFactory);
+            loggerRegistry.putIfAbsent(name, effectiveMessageFactory, logger);
+        }
+        return logger;
     }
 
     private ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {

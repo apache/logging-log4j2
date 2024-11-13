@@ -73,7 +73,12 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     public Log4jTaglibLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+        Log4jTaglibLogger logger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (logger == null) {
+            logger = createLogger(name, effectiveMessageFactory);
+            loggerRegistry.putIfAbsent(name, effectiveMessageFactory, logger);
+        }
+        return logger;
     }
 
     private Log4jTaglibLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {

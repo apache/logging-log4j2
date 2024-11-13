@@ -28,10 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.BiFunction;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -254,8 +252,6 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @param name ignored – kept for backward compatibility
      * @param messageFactory ignored – kept for backward compatibility
      * @param logger a logger instance
-     * @deprecated As of version {@code 2.25.0}, planned to be removed!
-     * Use {@link #computeIfAbsent(String, MessageFactory, BiFunction)} instead.
      */
     public void putIfAbsent(
             @Nullable final String name, @Nullable final MessageFactory messageFactory, final T logger) {
@@ -271,68 +267,6 @@ public class LoggerRegistry<T extends ExtendedLogger> {
             loggerByNameByMessageFactory
                     .computeIfAbsent(loggerMessageFactory, ignored -> new HashMap<>())
                     .putIfAbsent(loggerName, logger);
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    /**
-     * Returns an existent logger or creates a new one.
-     *
-     * @param name The logger name.
-     * @param messageFactory The message factory to use.
-     * @param loggerSupplier Used to create the logger if it does not exist already
-     * @return A logger
-     * @since 2.25.0
-     */
-    public T computeIfAbsent(
-            final String name,
-            final MessageFactory messageFactory,
-            final BiFunction<String, MessageFactory, T> loggerSupplier) {
-
-        // Check arguments
-        requireNonNull(name, "name");
-        requireNonNull(messageFactory, "messageFactory");
-        requireNonNull(loggerSupplier, "loggerSupplier");
-
-        // Read lock fast path: See if logger already exists
-        @Nullable T logger = getLogger(name, messageFactory);
-        if (logger != null) {
-            return logger;
-        }
-
-        // Write lock slow path: Insert the logger
-        writeLock.lock();
-        try {
-
-            // See if the logger is created by another thread in the meantime
-            final Map<String, T> loggerByName =
-                    loggerByNameByMessageFactory.computeIfAbsent(messageFactory, ignored -> new HashMap<>());
-            logger = loggerByName.get(name);
-            if (logger != null) {
-                return logger;
-            }
-
-            // Create the logger
-            logger = loggerSupplier.apply(name, messageFactory);
-
-            // Report message factory mismatches, if there is any
-            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-            if (!loggerMessageFactory.equals(messageFactory)) {
-                StatusLogger.getLogger()
-                        .error(
-                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different message factory: `{}`.\n"
-                                        + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
-                                        + "This generally hints a problem at the logger context implementation.\n"
-                                        + "Please report this using the Log4j project issue tracker.",
-                                name,
-                                loggerMessageFactory,
-                                messageFactory);
-            }
-
-            // Insert the logger
-            loggerByName.put(name, logger);
-            return logger;
         } finally {
             writeLock.unlock();
         }
