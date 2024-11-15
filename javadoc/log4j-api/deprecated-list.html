@@ -200,43 +200,38 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
  Use <a href="org/apache/logging/log4j/spi/LoggerRegistry.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerRegistry.hasLogger(String, MessageFactory)</code></a> instead.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerRegistry.html#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)">org.apache.logging.log4j.spi.LoggerRegistry.putIfAbsent<wbr>(String, MessageFactory, T)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#getUrl()">org.apache.logging.log4j.spi.Provider.getUrl()</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
- Use <a href="org/apache/logging/log4j/spi/LoggerRegistry.html#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)"><code>LoggerRegistry.computeIfAbsent(String, MessageFactory, BiFunction)</code></a> instead.</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#getUrl()">org.apache.logging.log4j.spi.Provider.getUrl()</a></div>
-<div class="col-last even-row-color">
 <div class="deprecation-comment">since 2.24.0, without replacement.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setFilters(java.lang.String...)">org.apache.logging.log4j.status.StatusConsoleListener.setFilters<wbr>(String...)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setFilters(java.lang.String...)">org.apache.logging.log4j.status.StatusConsoleListener.setFilters<wbr>(String...)</a></div>
+<div class="col-last even-row-color">
 <div class="deprecation-comment">This method is ineffective and only kept for binary backward compatibility.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusData.html#getTimestamp()">org.apache.logging.log4j.status.StatusData.getTimestamp()</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusData.html#getTimestamp()">org.apache.logging.log4j.status.StatusData.getTimestamp()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#clear()">org.apache.logging.log4j.status.StatusLogger.clear()</a></div>
-<div class="col-last odd-row-color">
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
-</div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#getStatusData()">org.apache.logging.log4j.status.StatusLogger.getStatusData()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#clear()">org.apache.logging.log4j.status.StatusLogger.clear()</a></div>
 <div class="col-last even-row-color">
 <div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#setLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.setLevel<wbr>(Level)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#getStatusData()">org.apache.logging.log4j.status.StatusLogger.getStatusData()</a></div>
+<div class="col-last odd-row-color">
+<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#setLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.setLevel<wbr>(Level)</a></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#updateListenerLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.updateListenerLevel<wbr>(Level)</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#updateListenerLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.updateListenerLevel<wbr>(Level)</a></div>
-<div class="col-last even-row-color">
-<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
-</div>
-<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/util/Base64Util.html#encode(java.lang.String)">org.apache.logging.log4j.util.Base64Util.encode<wbr>(String)</a></div>
-<div class="col-last odd-row-color"></div>
-<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/util/PropertiesUtil.html#reload()">org.apache.logging.log4j.util.PropertiesUtil.reload()</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/util/Base64Util.html#encode(java.lang.String)">org.apache.logging.log4j.util.Base64Util.encode<wbr>(String)</a></div>
+<div class="col-last even-row-color"></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/util/PropertiesUtil.html#reload()">org.apache.logging.log4j.util.PropertiesUtil.reload()</a></div>
+<div class="col-last odd-row-color">
 <div class="deprecation-comment">since 2.24.0 caching of property values is disabled.</div>
 </div>
 </div>

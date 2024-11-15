@@ -307,56 +307,48 @@ loadScripts(document, 'script');</script>
  Instead, in <a href="../../spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)"><code>LoggerContext.getLogger(String, MessageFactory)</code></a> implementations, namespace loggers with message factories.</div>
 </div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)" class="member-name-link">computeIfAbsent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html" title="class or interface in java.util.function" class="external-link">BiFunction</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>,<wbr><a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&gt;&nbsp;loggerSupplier)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerContextKey.</span><code><a href="../../spi/LoggerContextKey.html#create(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerContextKey.</span><code><a href="../../spi/LoggerContextKey.html#create(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</div>
-<div class="col-first odd-row-color"><code>default <a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#getLogger(java.lang.Class,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;cls,
+<div class="col-first even-row-color"><code>default <a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#getLogger(java.lang.Class,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;cls,
  @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first odd-row-color"><code><a href="../../spi/ExtendedLogger.html" title="interface in org.apache.logging.log4j.spi">ExtendedLogger</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">Gets an ExtendedLogger.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first even-row-color"><code>@Nullable <a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#getLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">getLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Returns the logger associated with the given name and message factory.</div>
 </div>
-<div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Tests if a Logger with the specified name and MessageFactory exists.</div>
-</div>
 <div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
 <div class="col-last odd-row-color">
+<div class="block">Tests if a Logger with the specified name and MessageFactory exists.</div>
+</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#hasLogger(java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Checks if a logger associated with the given name and message factory exists.</div>
 </div>
-<div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)" class="member-name-link">putIfAbsent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#putIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,T)" class="member-name-link">putIfAbsent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @Nullable <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
  <a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&nbsp;logger)</code></div>
-<div class="col-last even-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">As of version <code>2.25.0</code>, planned to be removed!
- Use <a href="../../spi/LoggerRegistry.html#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)"><code>LoggerRegistry.computeIfAbsent(String, MessageFactory, BiFunction)</code></a> instead.</div>
-</div>
+<div class="col-last odd-row-color">
+<div class="block">Registers the provided logger.</div>
 </div>
 </div>
 <div class="caption"><span>Method parameters in <a href="../../spi/package-summary.html">org.apache.logging.log4j.spi</a> with type arguments of type <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a></span></div>
@@ -364,27 +356,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#computeIfAbsent(java.lang.String,org.apache.logging.log4j.message.MessageFactory,java.util.function.BiFunction)" class="member-name-link">computeIfAbsent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/BiFunction.html" title="class or interface in java.util.function" class="external-link">BiFunction</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>,<wbr><a href="../../spi/LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&gt;&nbsp;loggerSupplier)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerContextKey.</span><code><a href="../../spi/LoggerContextKey.html#create(java.lang.String,java.lang.Class)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
-<div class="col-last odd-row-color">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
-&nbsp;</div>
-<div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerContextKey.</span><code><a href="../../spi/LoggerContextKey.html#create(java.lang.String,java.lang.Class)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Tests if a Logger with the specified name and MessageFactory type exists.</div>
-</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
 <div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerContext.</span><code><a href="../../spi/LoggerContext.html#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
 <div class="col-last odd-row-color">
+<div class="block">Tests if a Logger with the specified name and MessageFactory type exists.</div>
+</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerRegistry.</span><code><a href="../../spi/LoggerRegistry.html#hasLogger(java.lang.String,java.lang.Class)" class="member-name-link">hasLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&gt;&nbsp;messageFactoryClass)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Checks if a logger associated with the given name and message factory type exists.</div>
 </div>
 </div>
