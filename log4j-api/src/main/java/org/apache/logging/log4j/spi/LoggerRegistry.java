@@ -20,9 +20,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -39,7 +39,7 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
 
-    private final Map<MessageFactory, Map<String, T>> loggerByNameByMessageFactory = new WeakHashMap<>();
+    private final Map<String, Map<MessageFactory, T>> loggerByMessageFactoryByName = new HashMap<>();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -160,12 +160,10 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(name, "name");
         readLock.lock();
         try {
+            final @Nullable Map<MessageFactory, T> loggerByMessageFactory = loggerByMessageFactoryByName.get(name);
             final MessageFactory effectiveMessageFactory =
                     messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
-            return Optional.of(loggerByNameByMessageFactory)
-                    .map(loggerByNameByMessageFactory -> loggerByNameByMessageFactory.get(effectiveMessageFactory))
-                    .map(loggerByName -> loggerByName.get(name))
-                    .orElse(null);
+            return loggerByMessageFactory == null ? null : loggerByMessageFactory.get(effectiveMessageFactory);
         } finally {
             readLock.unlock();
         }
@@ -179,8 +177,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(destination, "destination");
         readLock.lock();
         try {
-            loggerByNameByMessageFactory.values().stream()
-                    .flatMap(loggerByName -> loggerByName.values().stream())
+            loggerByMessageFactoryByName.values().stream()
+                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
                     .forEach(destination::add);
         } finally {
             readLock.unlock();
@@ -203,7 +201,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     @Deprecated
     public boolean hasLogger(final String name) {
         requireNonNull(name, "name");
-        return getLogger(name) != null;
+        final @Nullable T logger = getLogger(name);
+        return logger != null;
     }
 
     /**
@@ -221,7 +220,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      */
     public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
         requireNonNull(name, "name");
-        return getLogger(name, messageFactory) != null;
+        final @Nullable T logger = getLogger(name, messageFactory);
+        return logger != null;
     }
 
     /**
@@ -237,9 +237,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         requireNonNull(messageFactoryClass, "messageFactoryClass");
         readLock.lock();
         try {
-            return loggerByNameByMessageFactory.entrySet().stream()
-                    .filter(entry -> messageFactoryClass.equals(entry.getKey().getClass()))
-                    .anyMatch(entry -> entry.getValue().containsKey(name));
+            return loggerByMessageFactoryByName.getOrDefault(name, Collections.emptyMap()).keySet().stream()
+                    .anyMatch(messageFactory -> messageFactoryClass.equals(messageFactory.getClass()));
         } finally {
             readLock.unlock();
         }
@@ -249,26 +248,30 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Registers the provided logger.
      * <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.
      *
-     * @param name ignored – kept for backward compatibility
-     * @param messageFactory ignored – kept for backward compatibility
+     * @param name a logger name
+     * @param messageFactory a message factory
      * @param logger a logger instance
      */
-    public void putIfAbsent(
-            @Nullable final String name, @Nullable final MessageFactory messageFactory, final T logger) {
+    public void putIfAbsent(final String name, @Nullable final MessageFactory messageFactory, final T logger) {
 
         // Check arguments
+        requireNonNull(name, "name");
         requireNonNull(logger, "logger");
 
         // Insert the logger
         writeLock.lock();
         try {
-            final String loggerName = logger.getName();
-            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-            loggerByNameByMessageFactory
-                    .computeIfAbsent(loggerMessageFactory, ignored -> new HashMap<>())
-                    .putIfAbsent(loggerName, logger);
+            final MessageFactory effectiveMessageFactory =
+                    messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
+            loggerByMessageFactoryByName
+                    .computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap)
+                    .putIfAbsent(effectiveMessageFactory, logger);
         } finally {
             writeLock.unlock();
         }
+    }
+
+    private Map<MessageFactory, T> createLoggerRefByMessageFactoryMap(final String ignored) {
+        return new WeakHashMap<>();
     }
 }

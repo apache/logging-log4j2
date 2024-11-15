@@ -102,12 +102,13 @@ public class SimpleLoggerContext implements LoggerContext {
     public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        ExtendedLogger logger = loggerRegistry.getLogger(name, effectiveMessageFactory);
-        if (logger == null) {
-            logger = createLogger(name, effectiveMessageFactory);
-            loggerRegistry.putIfAbsent(name, effectiveMessageFactory, logger);
+        final ExtendedLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (oldLogger != null) {
+            return oldLogger;
         }
-        return logger;
+        final ExtendedLogger newLogger = createLogger(name, effectiveMessageFactory);
+        loggerRegistry.putIfAbsent(name, effectiveMessageFactory, newLogger);
+        return loggerRegistry.getLogger(name, effectiveMessageFactory);
     }
 
     private ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
