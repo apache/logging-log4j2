@@ -33,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -47,11 +48,11 @@ import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.core.util.internal.InternalLoggerRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
-import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -83,7 +84,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private static final MessageFactory DEFAULT_MESSAGE_FACTORY = Logger.getEffectiveMessageFactory(null);
 
-    private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
+    private final InternalLoggerRegistry loggerRegistry = new InternalLoggerRegistry();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
 
@@ -513,7 +514,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return a collection of the current loggers.
      */
     public Collection<Logger> getLoggers() {
-        return loggerRegistry.getLoggers();
+        return loggerRegistry.getLoggers().collect(Collectors.toList());
     }
 
     /**
@@ -535,9 +536,14 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @return the LoggerRegistry.
      * @since 2.17.2
+     * @deprecated since 2.25.0 without a replacement.
      */
-    public LoggerRegistry<Logger> getLoggerRegistry() {
-        return loggerRegistry;
+    @Deprecated
+    public org.apache.logging.log4j.spi.LoggerRegistry<Logger> getLoggerRegistry() {
+        org.apache.logging.log4j.spi.LoggerRegistry<Logger> result =
+                new org.apache.logging.log4j.spi.LoggerRegistry<>();
+        loggerRegistry.getLoggers().forEach(l -> result.putIfAbsent(l.getName(), l.getMessageFactory(), l));
+        return result;
     }
 
     /**
@@ -770,9 +776,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public void updateLoggers(final Configuration config) {
         final Configuration old = this.configuration;
-        for (final Logger logger : loggerRegistry.getLoggers()) {
-            logger.updateConfiguration(config);
-        }
+        loggerRegistry.getLoggers().forEach(logger -> logger.updateConfiguration(config));
         firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, old, config));
     }
 

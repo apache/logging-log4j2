@@ -45,7 +45,13 @@ public class SLF4JLoggerContext implements LoggerContext {
     public ExtendedLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, SLF4JLoggerContext::createLogger);
+        final ExtendedLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (oldLogger != null) {
+            return oldLogger;
+        }
+        final ExtendedLogger newLogger = createLogger(name, effectiveMessageFactory);
+        loggerRegistry.putIfAbsent(name, effectiveMessageFactory, newLogger);
+        return loggerRegistry.getLogger(name, effectiveMessageFactory);
     }
 
     private static ExtendedLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {

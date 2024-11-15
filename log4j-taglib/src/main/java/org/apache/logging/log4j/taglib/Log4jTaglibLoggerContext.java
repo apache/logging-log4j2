@@ -73,10 +73,16 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     public Log4jTaglibLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
-        return loggerRegistry.computeIfAbsent(name, effectiveMessageFactory, this::createLogger);
+        final Log4jTaglibLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
+        if (oldLogger != null) {
+            return oldLogger;
+        }
+        final Log4jTaglibLogger newLogger = createLogger(name, effectiveMessageFactory);
+        loggerRegistry.putIfAbsent(name, effectiveMessageFactory, newLogger);
+        return loggerRegistry.getLogger(name, effectiveMessageFactory);
     }
 
-    private Log4jTaglibLogger createLogger(final String name, @Nullable final MessageFactory messageFactory) {
+    private Log4jTaglibLogger createLogger(final String name, final MessageFactory messageFactory) {
         final LoggerContext loggerContext = LogManager.getContext(false);
         final ExtendedLogger delegateLogger = loggerContext.getLogger(name, messageFactory);
         return new Log4jTaglibLogger(delegateLogger, name, delegateLogger.getMessageFactory());
