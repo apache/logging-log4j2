@@ -144,6 +144,11 @@
       <artifactId>mockito-inline</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Used by ServiceLoaderUtilTest -->
     <dependency>
       <groupId>org.osgi</groupId>
