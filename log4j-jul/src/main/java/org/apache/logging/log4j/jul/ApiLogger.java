@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.jul;
 
+import java.util.ResourceBundle;
 import java.util.logging.Filter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -40,6 +42,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.1
  */
 public class ApiLogger extends Logger {
+
+    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final String MUTATOR_DISABLED =
+            "Ignoring call to `j.ul.Logger.{}({})`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
+                    + "To modify the configuration using JUL, use an `AbstractLoggerAdapter` appropriate for your logging implementation.\n"
+                    + "See https://logging.apache.org/log4j/3.x/log4j-jul.html#log4j.jul.loggerAdapter for more information.";
 
     private final WrappedLogger logger;
     private static final String FQCN = ApiLogger.class.getName();
@@ -94,10 +102,7 @@ public class ApiLogger extends Logger {
 
     @Override
     public void setLevel(final Level newLevel) throws SecurityException {
-        StatusLogger.getLogger()
-                .error(
-                        "Cannot set JUL log level through log4j-api: " + "ignoring call to Logger.setLevel({})",
-                        newLevel);
+        LOGGER.warn(MUTATOR_DISABLED, "setLevel", newLevel);
         // Some libraries rely on the following assertion:
         //
         // logger.setLevel(level);
@@ -116,6 +121,32 @@ public class ApiLogger extends Logger {
      */
     protected void doSetLevel(final Level newLevel) throws SecurityException {
         super.setLevel(newLevel);
+    }
+
+    @Override
+    public void setUseParentHandlers(boolean useParentHandlers) {
+        LOGGER.warn(MUTATOR_DISABLED, "setLevel", useParentHandlers);
+        super.setUseParentHandlers(useParentHandlers);
+    }
+
+    @Override
+    public void addHandler(Handler handler) throws SecurityException {
+        LOGGER.warn(MUTATOR_DISABLED, "addHandler", handler);
+        super.addHandler(handler);
+    }
+
+    @Override
+    public void removeHandler(Handler handler) throws SecurityException {
+        LOGGER.warn(MUTATOR_DISABLED, "removeHandler", handler);
+        super.removeHandler(handler);
+    }
+
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        LOGGER.warn(
+                "Ignoring call to `j.u.l.Logger.setResourceBundle({})`, since `o.a.l.l.jul.LogManager` currently does not support resource bundles.",
+                bundle);
+        super.setResourceBundle(bundle);
     }
 
     /**

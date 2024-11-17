@@ -19,6 +19,9 @@ package org.apache.logging.log4j.jul.test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Filter;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
@@ -238,6 +241,67 @@ public abstract class AbstractLoggerTest {
             logger.setLevel(level);
             assertThat(logger.getLevel()).as("Level set using `setLevel()`").isEqualTo(level);
         }
+    }
+
+    /**
+     * The value of `useParentHandlers` should be recorded even if it is not effective.
+     */
+    @Test
+    public void testSetUseParentHandlers() {
+        final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetUseParentHandlers");
+
+        for (boolean useParentHandlers : new boolean[] {false, true}) {
+            logger.setUseParentHandlers(useParentHandlers);
+            assertThat(logger.getUseParentHandlers()).isEqualTo(useParentHandlers);
+        }
+    }
+
+    /**
+     * The programmatically configured handlers should be recorded, even if they are not used.
+     */
+    @Test
+    public void testAddAndRemoveHandlers() {
+        final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testAddAndRemoveHandlers");
+
+        assertThat(logger.getHandlers()).isEmpty();
+        // Add a handler
+        ConsoleHandler handler = new ConsoleHandler();
+        logger.addHandler(handler);
+        assertThat(logger.getHandlers()).hasSize(1).containsExactly(handler);
+        // Remove handler
+        logger.removeHandler(handler);
+        assertThat(logger.getHandlers()).isEmpty();
+    }
+
+    /**
+     * The programmatically configured filters should be recorded, even if they are not used.
+     */
+    @Test
+    public void testSetFilter() {
+        final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetFilter");
+
+        assertThat(logger.getFilter()).isNull();
+        // Set filter
+        Filter denyAllFilter = record -> false;
+        logger.setFilter(denyAllFilter);
+        assertThat(logger.getFilter()).isEqualTo(denyAllFilter);
+        // Remove filter
+        logger.setFilter(null);
+        assertThat(logger.getFilter()).isNull();
+    }
+
+    /**
+     * The programmatically configured resource bundles should be recorded, even if they are not used.
+     */
+    @Test
+    public void testSetResourceBundle() {
+        final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetResourceBundle");
+
+        assertThat(logger.getResourceBundle()).isNull();
+        // Set resource bundle
+        ResourceBundle bundle = ResourceBundle.getBundle("testResourceBundle");
+        logger.setResourceBundle(bundle);
+        assertThat(logger.getResourceBundle()).isSameAs(bundle);
     }
 
     private void testLambdaMessages(final String string) {
