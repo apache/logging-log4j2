@@ -15406,6 +15406,8 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">Use <a href="org/apache/logging/log4j/core/appender/SyslogAppender.Builder.html#setEnterpriseNumber(java.lang.String)"><code>SyslogAppender.Builder.setEnterpriseNumber(String)</code></a> instead</div>
 </div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html#setEnterpriseNumber(java.lang.Integer)" class="member-name-link">setEnterpriseNumber(Integer)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/Rfc5424Layout.Rfc5424LayoutBuilder.html" title="class in org.apache.logging.log4j.core.layout">Rfc5424Layout.Rfc5424LayoutBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/SyslogAppender.Builder.html#setEnterpriseNumber(java.lang.String)" class="member-name-link">setEnterpriseNumber(String)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/SyslogAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">SyslogAppender.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/AsyncAppender.Builder.html#setErrorRef(java.lang.String)" class="member-name-link">setErrorRef(String)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/AsyncAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">AsyncAppender.Builder</a></dt>
@@ -15745,7 +15747,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/StringMatchFilter.Builder.html#setMatchString(java.lang.String)" class="member-name-link">setMatchString(String)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/StringMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></dt>
 <dd>
-<div class="block">Sets the text to search in event messages.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.25.0, use <a href="org/apache/logging/log4j/core/filter/StringMatchFilter.Builder.html#setText(java.lang.String)"><code>StringMatchFilter.Builder.setText(java.lang.String)</code></a> instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/filter/BurstFilter.Builder.html#setMaxBurst(long)" class="member-name-link">setMaxBurst(long)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/BurstFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">BurstFilter.Builder</a></dt>
 <dd>
@@ -15856,6 +15860,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/config/Node.html#setObject(java.lang.Object)" class="member-name-link">setObject(Object)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/Node.html" title="class in org.apache.logging.log4j.core.config">Node</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/JsonLayout.Builder.html#setObjectMessageAsJsonObject(boolean)" class="member-name-link">setObjectMessageAsJsonObject(boolean)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/JsonLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">JsonLayout.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html#setOmitEmptyFields(boolean)" class="member-name-link">setOmitEmptyFields(boolean)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">GelfLayout.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/filter/AbstractFilter.AbstractFilterBuilder.html#setOnMatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMatch(Filter.Result)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/AbstractFilter.AbstractFilterBuilder.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter.AbstractFilterBuilder</a></dt>
 <dd>
@@ -16180,6 +16186,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html#setTcpNoDelay-boolean-" title="class or interface in java.net" class="external-link"><code>Socket.setTcpNoDelay(boolean)</code></a>.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/filter/StringMatchFilter.Builder.html#setText(java.lang.String)" class="member-name-link">setText(String)</a> - Method in class org.apache.logging.log4j.core.filter.<a href="org/apache/logging/log4j/core/filter/StringMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></dt>
+<dd>
+<div class="block">Sets the text to search in event messages.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html#setThreadContextExcludes(java.lang.String)" class="member-name-link">setThreadContextExcludes(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">GelfLayout.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html#setThreadContextIncludes(java.lang.String)" class="member-name-link">setThreadContextIncludes(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">GelfLayout.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html#setThreadContextPrefix(java.lang.String)" class="member-name-link">setThreadContextPrefix(String)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">GelfLayout.Builder</a></dt>
 <dd>
 <div class="block">The String to prefix the ThreadContext attributes.</div>

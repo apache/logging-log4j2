@@ -224,13 +224,22 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <div class="block">The pattern to use to format the message.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)" class="member-name-link">setPatternSelector</a><wbr>(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setOmitEmptyFields(boolean)" class="member-name-link">setOmitEmptyFields</a><wbr>(boolean&nbsp;omitEmptyFields)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)" class="member-name-link">setPatternSelector</a><wbr>(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The PatternSelector to use to format the message.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setThreadContextExcludes(java.lang.String)" class="member-name-link">setThreadContextExcludes</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadContextExcludes)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setThreadContextPrefix(java.lang.String)" class="member-name-link">setThreadContextPrefix</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;prefix)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setThreadContextIncludes(java.lang.String)" class="member-name-link">setThreadContextIncludes</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadContextIncludes)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setThreadContextPrefix(java.lang.String)" class="member-name-link">setThreadContextPrefix</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;prefix)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The String to prefix the ThreadContext attributes.</div>
 </div>
 </div>
@@ -538,6 +547,36 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <dd><code>prefix</code> - The prefix value. Null values will be ignored.</dd>
 <dt>Returns:</dt>
 <dd>this builder.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setThreadContextIncludes(java.lang.String)">
+<h3>setThreadContextIncludes</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></span>&nbsp;<span class="element-name">setThreadContextIncludes</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadContextIncludes)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.25.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setThreadContextExcludes(java.lang.String)">
+<h3>setThreadContextExcludes</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></span>&nbsp;<span class="element-name">setThreadContextExcludes</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;threadContextExcludes)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.25.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setOmitEmptyFields(boolean)">
+<h3>setOmitEmptyFields</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GelfLayout.Builder.html" title="type parameter in GelfLayout.Builder">B</a></span>&nbsp;<span class="element-name">setOmitEmptyFields</span><wbr><span class="parameters">(boolean&nbsp;omitEmptyFields)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.25.0</dd>
 </dl>
 </section>
 </li>
