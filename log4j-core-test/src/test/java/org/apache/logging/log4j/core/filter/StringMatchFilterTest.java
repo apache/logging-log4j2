@@ -47,7 +47,7 @@ public class StringMatchFilterTest {
     @Test
     void testFilterBuilderFailsWithExceptionOnNullText() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
-                .setMatchString(null));
+                .setText(null));
     }
 
     /**
@@ -56,7 +56,7 @@ public class StringMatchFilterTest {
     @Test
     void testFilterBuilderFailsWithExceptionOnEmptyText() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
-                .setMatchString(""));
+                .setText(""));
     }
 
     /**
