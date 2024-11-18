@@ -14,11 +14,20 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-
+<#-- @ftlvariable name="release.date" type="java.lang.String" -->
+<#-- @ftlvariable name="release.version" type="java.lang.String" -->
 [#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
 == ${release.version}
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
+
+[WARNING]
+====
+Due to a critical bug affecting this release (see
+https://github.com/apache/logging-log4j2/issues/3143[#3143])
+users are encouraged to upgrade to
+${'<<release-notes-2-24-2, version `2.24.2`>>'}.
+====
 
 This release contains mainly bug fixes of problems encountered with the thread context map, logger registry and configuration reloading.
 
