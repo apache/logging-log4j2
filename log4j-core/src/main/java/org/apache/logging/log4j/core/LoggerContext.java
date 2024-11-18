@@ -535,9 +535,7 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @return the LoggerRegistry.
      * @since 2.17.2
-     * @deprecated since 2.25.0 without a replacement.
      */
-    @Deprecated
     public org.apache.logging.log4j.spi.LoggerRegistry<Logger> getLoggerRegistry() {
         org.apache.logging.log4j.spi.LoggerRegistry<Logger> result =
                 new org.apache.logging.log4j.spi.LoggerRegistry<>();
