@@ -45,7 +45,7 @@ public class ApiLogger extends Logger {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private static final String MUTATOR_DISABLED =
-            "Ignoring call to `j.ul.Logger.{}({})`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
+            "Ignoring call to `j.u.l.Logger.{}({})`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
                     + "To modify the configuration using JUL, use an `AbstractLoggerAdapter` appropriate for your logging implementation.\n"
                     + "See https://logging.apache.org/log4j/3.x/log4j-jul.html#log4j.jul.loggerAdapter for more information.";
 
