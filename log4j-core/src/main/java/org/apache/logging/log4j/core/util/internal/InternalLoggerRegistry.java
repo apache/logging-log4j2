@@ -156,18 +156,24 @@ public final class InternalLoggerRegistry {
             // Create the logger
             logger = loggerSupplier.apply(name, messageFactory);
 
-            // Report message factory mismatches, if there is any
+            // Report name and message factory mismatch if there are any
+            final String loggerName = logger.getName();
             final MessageFactory loggerMessageFactory = logger.getMessageFactory();
             if (!loggerMessageFactory.equals(messageFactory)) {
                 StatusLogger.getLogger()
                         .error(
-                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different message factory: `{}`.\n"
+                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different name `{}` or message factory `{}`.\n"
                                         + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
                                         + "This generally hints a problem at the logger context implementation.\n"
                                         + "Please report this using the Log4j project issue tracker.",
-                                name,
+                                loggerName,
                                 loggerMessageFactory,
+                                name,
                                 messageFactory);
+                // Register logger under alternative keys
+                loggerRefByNameByMessageFactory
+                        .computeIfAbsent(loggerMessageFactory, ignored -> new HashMap<>())
+                        .putIfAbsent(loggerName, new WeakReference<>(logger));
             }
 
             // Insert the logger

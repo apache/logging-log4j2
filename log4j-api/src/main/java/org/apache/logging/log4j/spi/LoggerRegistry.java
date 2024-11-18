@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.jspecify.annotations.Nullable;
@@ -230,7 +231,10 @@ public class LoggerRegistry<T extends ExtendedLogger> {
 
     /**
      * Registers the provided logger.
-     * <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.
+     * <p>
+     *   The logger will be registered using the keys provided by the {@code name} and {@code messageFactory} parameters
+     *   and the values of {@link Logger#getName()} and {@link Logger#getMessageFactory()}.
+     * </p>
      *
      * @param name a logger name
      * @param messageFactory a message factory
@@ -247,9 +251,16 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         try {
             final MessageFactory effectiveMessageFactory =
                     messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
+            // Register using the keys provided by the caller
             loggerByMessageFactoryByName
                     .computeIfAbsent(name, this::createLoggerRefByMessageFactoryMap)
                     .putIfAbsent(effectiveMessageFactory, logger);
+            // Also register using the values extracted from `logger`
+            if (!name.equals(logger.getName()) || !effectiveMessageFactory.equals(logger.getMessageFactory())) {
+                loggerByMessageFactoryByName
+                        .computeIfAbsent(logger.getName(), this::createLoggerRefByMessageFactoryMap)
+                        .putIfAbsent(logger.getMessageFactory(), logger);
+            }
         } finally {
             writeLock.unlock();
         }
