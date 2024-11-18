@@ -119,7 +119,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
         for (; ; ) {
 
             // Find the next label start, if present.
-            final int labeledLineStartIndex = findLabeledLineStartIndex(srcWriter, startIndex, srcWriter.length());
+            final int labeledLineStartIndex = findLabeledLineStartIndex(srcWriter, startIndex);
             final int endIndex = labeledLineStartIndex >= 0 ? labeledLineStartIndex : srcWriter.length();
 
             // Copy up to the truncation point, if it matches.
@@ -195,26 +195,27 @@ final class StackTraceStringResolver implements StackTraceResolver {
         return -1;
     }
 
-    private static int findLabeledLineStartIndex(final CharSequence buffer, final int startIndex, final int endIndex) {
+    private static int findLabeledLineStartIndex(final CharSequence buffer, final int startIndex) {
         // Note that the index arithmetic in this method is not guarded.
         // That is, there are no `Math.addExact()` or `Math.subtractExact()` usages.
         // Since we know a priori that we are already operating within buffer limits.
-        for (int bufferIndex = startIndex; bufferIndex < endIndex; ) {
+        final int bufferLength = buffer.length();
+        for (int bufferIndex = startIndex; bufferIndex < bufferLength; ) {
 
             // Find the next line start, if exists.
-            final int lineStartIndex = findLineStartIndex(buffer, bufferIndex, endIndex);
+            final int lineStartIndex = findLineStartIndex(buffer, bufferIndex);
             if (lineStartIndex < 0) {
                 break;
             }
             bufferIndex = lineStartIndex;
 
             // Skip tabs.
-            while (bufferIndex < endIndex && '\t' == buffer.charAt(bufferIndex)) {
+            while (bufferIndex < bufferLength && '\t' == buffer.charAt(bufferIndex)) {
                 bufferIndex++;
             }
 
             // Search for the `Caused by: ` occurrence.
-            if (bufferIndex < (endIndex - 11)
+            if (bufferIndex < (bufferLength - 11)
                     && buffer.charAt(bufferIndex) == 'C'
                     && buffer.charAt(bufferIndex + 1) == 'a'
                     && buffer.charAt(bufferIndex + 2) == 'u'
@@ -230,7 +231,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
             }
 
             // Search for the `Suppressed: ` occurrence.
-            else if (bufferIndex < (endIndex - 12)
+            else if (bufferIndex < (bufferLength - 12)
                     && buffer.charAt(bufferIndex) == 'S'
                     && buffer.charAt(bufferIndex + 1) == 'u'
                     && buffer.charAt(bufferIndex + 2) == 'p'
@@ -249,13 +250,11 @@ final class StackTraceStringResolver implements StackTraceResolver {
         return -1;
     }
 
-    private static int findLineStartIndex(final CharSequence buffer, final int startIndex, final int endIndex) {
-        char prevChar = '-';
-        for (int i = startIndex; i <= endIndex; i++) {
-            if (prevChar == '\n') {
-                return i;
+    private static int findLineStartIndex(final CharSequence buffer, final int startIndex) {
+        for (int bufferIndex = startIndex; bufferIndex < buffer.length(); bufferIndex++) {
+            if (buffer.charAt(bufferIndex) == '\n' && (bufferIndex + 1) < buffer.length()) {
+                return bufferIndex + 1;
             }
-            prevChar = buffer.charAt(i);
         }
         return -1;
     }
