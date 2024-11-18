@@ -253,13 +253,14 @@ final class StackTraceStringResolver implements StackTraceResolver {
 
     private static int findLineStartIndex(final CharSequence buffer, final int startIndex, final int endIndex) {
         char prevChar = '-';
-        for (int i = startIndex; i <= endIndex; i++) {
+        int i = startIndex;
+        for (; i < endIndex; i++) {
             if (prevChar == '\n') {
                 return i;
             }
             prevChar = buffer.charAt(i);
         }
-        return -1;
+        return prevChar == '\n' ? i : -1;
     }
 
     private static int findMatchingIndex(
