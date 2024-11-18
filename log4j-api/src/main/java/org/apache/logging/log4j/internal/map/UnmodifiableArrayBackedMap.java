@@ -350,82 +350,64 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
     }
 
     /**
-     * Creates a new instance that contains the same entries as this map, minus all
-     * of the keys passed in the arguments.
-     *
-     * @param key
-     * @param value
-     * @return
+     * Creates a new instance where the entries of provided keys are removed.
      */
     public UnmodifiableArrayBackedMap copyAndRemoveAll(Iterable<String> keysToRemoveIterable) {
+
+        // Short-circuit if the map is empty
         if (isEmpty()) {
-            // shortcut: if this map is empty, the result will continue to be empty
             return EMPTY_MAP;
         }
 
-        // now we build a Set of keys to remove
-        Set<String> keysToRemoveSet;
+        // Collect distinct keys to remove
+        final Set<String> keysToRemove;
         if (keysToRemoveIterable instanceof Set) {
-            // we already have a set, let's cast it and reuse it
-            keysToRemoveSet = (Set<String>) keysToRemoveIterable;
+            keysToRemove = (Set<String>) keysToRemoveIterable;
         } else {
-            // iterate through the keys and build a set
-            keysToRemoveSet = new HashSet<>();
-            for (String key : keysToRemoveIterable) {
-                keysToRemoveSet.add(key);
+            keysToRemove = new HashSet<>();
+            for (final String key : keysToRemoveIterable) {
+                keysToRemove.add(key);
             }
         }
 
-        int firstIndexToKeep = -1;
-        int lastIndexToKeep = -1;
-        int destinationIndex = 0;
-        int numEntriesKept = 0;
-        // build the new map
-        UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(numEntries);
-        for (int indexInCurrentMap = 0; indexInCurrentMap < numEntries; indexInCurrentMap++) {
-            // for each key in this map, check whether it's in the set we built above
-            Object key = backingArray[getArrayIndexForKey(indexInCurrentMap)];
-            if (!keysToRemoveSet.contains(key)) {
-                // this key should be kept
-                if (firstIndexToKeep == -1) {
-                    firstIndexToKeep = indexInCurrentMap;
-                }
-                lastIndexToKeep = indexInCurrentMap;
-            } else if (lastIndexToKeep > 0) {
-                // we hit a remove, copy any keys that are known ready
-                int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
-                System.arraycopy(
-                        backingArray,
-                        getArrayIndexForKey(firstIndexToKeep),
-                        newMap.backingArray,
-                        getArrayIndexForKey(destinationIndex),
-                        numEntriesToCopy * 2);
-                firstIndexToKeep = -1;
-                lastIndexToKeep = -1;
-                destinationIndex += numEntriesToCopy;
-                numEntriesKept += numEntriesToCopy;
+        // Create the new map
+        final UnmodifiableArrayBackedMap oldMap = this;
+        final int oldMapEntryCount = oldMap.numEntries;
+        final UnmodifiableArrayBackedMap newMap = new UnmodifiableArrayBackedMap(oldMapEntryCount);
+
+        // Short-circuit if there is nothing to remove
+        if (keysToRemove.isEmpty()) {
+            System.arraycopy(oldMap.backingArray, 0, newMap.backingArray, 0, oldMapEntryCount * 2);
+            newMap.numEntries = oldMapEntryCount;
+            return this;
+        }
+
+        // Iterate over old map entries
+        int newMapEntryIndex = 0;
+        for (int oldMapEntryIndex = 0; oldMapEntryIndex < oldMapEntryCount; oldMapEntryIndex++) {
+            final int oldMapKeyIndex = getArrayIndexForKey(oldMapEntryIndex);
+            final Object key = oldMap.backingArray[oldMapKeyIndex];
+
+            // Skip entries of removed keys
+            @SuppressWarnings("SuspiciousMethodCalls")
+            final boolean removed = keysToRemove.contains(key);
+            if (removed) {
+                continue;
             }
+
+            // Copy the entry
+            final int oldMapValueIndex = getArrayIndexForValue(oldMapEntryIndex);
+            final Object value = oldMap.backingArray[oldMapValueIndex];
+            final int newMapKeyIndex = getArrayIndexForKey(newMapEntryIndex);
+            final int newMapValueIndex = getArrayIndexForValue(newMapEntryIndex);
+            newMap.backingArray[newMapKeyIndex] = key;
+            newMap.backingArray[newMapValueIndex] = value;
+            newMapEntryIndex++;
         }
 
-        if (lastIndexToKeep > -1) {
-            // at least one key still requires copying
-            int numEntriesToCopy = lastIndexToKeep - firstIndexToKeep + 1;
-            System.arraycopy(
-                    backingArray,
-                    getArrayIndexForKey(firstIndexToKeep),
-                    newMap.backingArray,
-                    getArrayIndexForKey(destinationIndex),
-                    numEntriesToCopy * 2);
-            numEntriesKept += numEntriesToCopy;
-        }
-
-        if (numEntriesKept == 0) {
-            return EMPTY_MAP;
-        }
-
-        newMap.numEntries = numEntriesKept;
+        // Cap and return the new map
+        newMap.numEntries = newMapEntryIndex;
         newMap.updateNumEntriesInArray();
-
         return newMap;
     }
 

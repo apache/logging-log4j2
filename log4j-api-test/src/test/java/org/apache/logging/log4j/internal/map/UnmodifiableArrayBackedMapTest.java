@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class UnmodifiableArrayBackedMapTest {
@@ -372,5 +373,24 @@ public class UnmodifiableArrayBackedMapTest {
         UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test", "test");
         // verify same instance, not just equals()
         assertTrue(map == map.toMap());
+    }
+
+    @Test
+    void copyAndRemoveAll_should_work() {
+
+        // Create the actual map
+        UnmodifiableArrayBackedMap actualMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
+        actualMap = actualMap.copyAndPut("outer", "two");
+        actualMap = actualMap.copyAndPut("inner", "one");
+        actualMap = actualMap.copyAndPut("not-in-closeable", "true");
+
+        // Create the expected map
+        UnmodifiableArrayBackedMap expectedMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
+        expectedMap = expectedMap.copyAndPut("outer", "two");
+        expectedMap = expectedMap.copyAndPut("not-in-closeable", "true");
+
+        // Remove the key and verify
+        actualMap = actualMap.copyAndRemoveAll(Collections.singleton("inner"));
+        Assertions.assertThat(actualMap).isEqualTo(expectedMap);
     }
 }
