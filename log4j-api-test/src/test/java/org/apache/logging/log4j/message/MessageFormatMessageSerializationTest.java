@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.io.Serializable;
 import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
