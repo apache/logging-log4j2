@@ -30,16 +30,16 @@ import org.junit.jupiter.api.Test;
 
 @UsingThreadContextStack
 @Tag("Appenders.Jpa")
-public class ContextStackJsonAttributeConverterTest {
+class ContextStackJsonAttributeConverterTest {
     private ContextStackJsonAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new ContextStackJsonAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("value1", "another2"));
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
@@ -53,7 +53,7 @@ public class ContextStackJsonAttributeConverterTest {
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("key1", "value2", "my3"));
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
@@ -67,12 +67,12 @@ public class ContextStackJsonAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

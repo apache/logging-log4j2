@@ -23,9 +23,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests that process ID succeeds.
  */
-public class ProcessIdPatternConverterTest {
+class ProcessIdPatternConverterTest {
     @Test
-    public void getProcessId() {
+    void getProcessId() {
         final String[] defaultValue = {"???"};
         final String actual =
                 ProcessIdPatternConverter.newInstance(defaultValue).getProcessId();

@@ -26,13 +26,13 @@ import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 
-public class ConsoleAppenderBuilderTest {
+class ConsoleAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1620
      */
     @Test
-    public void testDefaultImmediateFlush() {
+    void testDefaultImmediateFlush() {
         assertTrue(ConsoleAppender.newBuilder().isImmediateFlush());
     }
 
@@ -42,7 +42,7 @@ public class ConsoleAppenderBuilderTest {
      * Tested with Oracle 7 and 8 and IBM Java 8.
      */
     @Test
-    public void testDefaultLayoutDefaultCharset() {
+    void testDefaultLayoutDefaultCharset() {
         final ConsoleAppender appender =
                 ConsoleAppender.newBuilder().setName("test").build();
         final PatternLayout layout = (PatternLayout) appender.getLayout();
@@ -56,7 +56,7 @@ public class ConsoleAppenderBuilderTest {
      * Tests https://issues.apache.org/jira/browse/LOG4J2-2441
      */
     @Test
-    public void testSetNullErrorHandlerIsNotAllowed() {
+    void testSetNullErrorHandlerIsNotAllowed() {
         final ConsoleAppender appender =
                 ConsoleAppender.newBuilder().setName("test").build();
         final ErrorHandler handler = appender.getHandler();

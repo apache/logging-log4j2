@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @LoggerContextSource("log4j2-config.xml")
-public class Log4jEventBuilderTest {
+class Log4jEventBuilderTest {
 
     private final Logger logger;
     private final ListAppender appender;
@@ -41,12 +41,12 @@ public class Log4jEventBuilderTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         appender.clear();
     }
 
     @Test
-    public void testKeyValuePairs() {
+    void testKeyValuePairs() {
         logger.atDebug().addKeyValue("testKeyValuePairs", "ok").log();
         final List<LogEvent> events = appender.getEvents();
         assertThat(events).hasSize(1);
@@ -54,7 +54,7 @@ public class Log4jEventBuilderTest {
     }
 
     @Test
-    public void testArguments() {
+    void testArguments() {
         logger.atDebug().setMessage("{}-{}").addArgument("a").addArgument("b").log();
         logger.atDebug().log("{}-{}", "a", "b");
         logger.atDebug().addArgument("a").log("{}-{}", "b");

@@ -60,7 +60,7 @@ public class RoutingAppenderWithPurgingTest {
             IDLE_LOG_FILE1, IDLE_LOG_FILE2, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE2, MANUAL_LOG_FILE3);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.app = this.loggerContextRule.getListAppender("List");
         this.routingAppenderIdle =
                 this.loggerContextRule.getRequiredAppender("RoutingPurgeIdle", RoutingAppender.class);
@@ -71,7 +71,7 @@ public class RoutingAppenderWithPurgingTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.app.clear();
         this.loggerContextRule.getLoggerContext().stop();
     }
@@ -82,7 +82,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, got " + list.size(), 1, list.size());
         msg = new StructuredDataMessage("2", "This is a test 2", "Service");
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");

@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
  * Test passing MDC values to the Routing appender.
  */
 @LoggerContextSource("log-RouteWithMDC.xml")
-public class LogWithRouteTest {
+class LogWithRouteTest {
 
     @Test
-    public void testMDC(@Named("List") final ListAppender listApp) {
+    void testMDC(@Named("List") final ListAppender listApp) {
         MDC.put("Type", "Service");
         MDC.put("Name", "John Smith");
         try {
@@ -42,7 +42,7 @@ public class LogWithRouteTest {
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
             assertNotNull(msgs, "No messages received");
-            assertEquals(msgs.size(), 1);
+            assertEquals(1, msgs.size());
             assertTrue(msgs.get(0).contains("Type=Service"), "Type is missing");
             assertTrue(msgs.get(0).contains("Name=John Smith"), "Name is missing");
         } finally {

@@ -16,30 +16,32 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TypeConverterRegistryTest {
+class TypeConverterRegistryTest {
 
-    @Test(expected = NullPointerException.class)
-    public void testFindNullConverter() {
-        TypeConverterRegistry.getInstance().findCompatibleConverter(null);
+    @Test
+    void testFindNullConverter() {
+        assertThrows(NullPointerException.class, () -> TypeConverterRegistry.getInstance()
+                .findCompatibleConverter(null));
     }
 
     @Test
-    public void testFindBooleanConverter() throws Exception {
+    void testFindBooleanConverter() throws Exception {
         final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.class);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("TRUE"));
     }
 
     @Test
-    public void testFindPrimitiveBooleanConverter() throws Exception {
+    void testFindPrimitiveBooleanConverter() throws Exception {
         final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.TYPE);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("tRUe"));
@@ -47,7 +49,7 @@ public class TypeConverterRegistryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testFindCharSequenceConverterUsingStringConverter() throws Exception {
+    void testFindCharSequenceConverterUsingStringConverter() throws Exception {
         final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
                 TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
         assertNotNull(converter);
@@ -59,7 +61,7 @@ public class TypeConverterRegistryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testFindNumberConverter() throws Exception {
+    void testFindNumberConverter() {
         final TypeConverter<Number> numberTypeConverter =
                 (TypeConverter<Number>) TypeConverterRegistry.getInstance().findCompatibleConverter(Number.class);
         assertNotNull(numberTypeConverter);
@@ -74,7 +76,7 @@ public class TypeConverterRegistryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testFindEnumConverter() throws Exception {
+    void testFindEnumConverter() throws Exception {
         final TypeConverter<Foo> fooTypeConverter =
                 (TypeConverter<Foo>) TypeConverterRegistry.getInstance().findCompatibleConverter(Foo.class);
         assertNotNull(fooTypeConverter);

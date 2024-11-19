@@ -66,7 +66,7 @@ public class ThreadContextDataInjectorTest {
     }
 
     @Before
-    public void before() throws ReflectiveOperationException {
+    public void before() {
         System.setProperty("log4j2.threadContextMap", threadContextMapClassName);
     }
 

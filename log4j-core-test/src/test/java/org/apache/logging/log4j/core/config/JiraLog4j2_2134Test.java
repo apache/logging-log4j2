@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 
 @Tag("yaml")
 @LoggerContextSource("log4j2-2134.yaml")
-public class JiraLog4j2_2134Test {
+class JiraLog4j2_2134Test {
 
     @Test
-    public void testRefresh() {
+    void testRefresh() {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -69,7 +69,7 @@ public class JiraLog4j2_2134Test {
     }
 
     @Test
-    public void testRefreshMinimalCodeStart() {
+    void testRefreshMinimalCodeStart() {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -79,7 +79,7 @@ public class JiraLog4j2_2134Test {
     }
 
     @Test
-    public void testRefreshMinimalCodeStopStart() {
+    void testRefreshMinimalCodeStopStart() {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.stop();
@@ -89,7 +89,7 @@ public class JiraLog4j2_2134Test {
     }
 
     @Test
-    public void testRefreshMinimalCodeStopStartConfig() {
+    void testRefreshMinimalCodeStopStartConfig() {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -101,7 +101,7 @@ public class JiraLog4j2_2134Test {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testRefreshDeprecatedApis() {
+    void testRefreshDeprecatedApis() {
         final Logger log = LogManager.getLogger(this.getClass());
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();

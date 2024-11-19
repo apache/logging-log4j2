@@ -149,27 +149,27 @@ public class CsvLogEventLayoutTest {
     }
 
     @Test
-    public void testLayoutDefault() throws Exception {
+    public void testLayoutDefault() {
         testLayout(CSVFormat.DEFAULT);
     }
 
     @Test
-    public void testLayoutExcel() throws Exception {
+    public void testLayoutExcel() {
         testLayout(CSVFormat.EXCEL);
     }
 
     @Test
-    public void testLayoutMySQL() throws Exception {
+    public void testLayoutMySQL() {
         testLayout(CSVFormat.MYSQL);
     }
 
     @Test
-    public void testLayoutRFC4180() throws Exception {
+    public void testLayoutRFC4180() {
         testLayout(CSVFormat.RFC4180);
     }
 
     @Test
-    public void testLayoutTab() throws Exception {
+    public void testLayoutTab() {
         testLayout(CSVFormat.TDF);
     }
 }

@@ -29,10 +29,10 @@ import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LoggingEventBuilder;
 
 @LoggerContextSource("log4j2-calling-class.xml")
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
-    public void testClassLogger(@Named("Class") final ListAppender app) throws Exception {
+    void testClassLogger(@Named("Class") final ListAppender app) {
         app.clear();
         final Logger logger = LoggerFactory.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
@@ -49,7 +49,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger(@Named("Method") final ListAppender app) throws Exception {
+    void testMethodLogger(@Named("Method") final ListAppender app) {
         app.clear();
         final Logger logger = LoggerFactory.getLogger("MethodLogger");
         logger.info("More messages.");
@@ -70,7 +70,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testFqcnLogger(@Named("Fqcn") final ListAppender app) throws Exception {
+    void testFqcnLogger(@Named("Fqcn") final ListAppender app) {
         app.clear();
         final Logger logger = LoggerFactory.getLogger("FqcnLogger");
         LoggingEventBuilder loggingEventBuilder = logger.atInfo();

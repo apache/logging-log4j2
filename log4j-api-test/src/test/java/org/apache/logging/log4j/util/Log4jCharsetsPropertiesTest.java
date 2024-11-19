@@ -24,13 +24,13 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 
-public class Log4jCharsetsPropertiesTest {
+class Log4jCharsetsPropertiesTest {
 
     /**
      * Tests that we can load all mappings.
      */
     @Test
-    public void testLoadAll() {
+    void testLoadAll() {
         final ResourceBundle resourceBundle = PropertiesUtil.getCharsetsResourceBundle();
         final Enumeration<String> keys = resourceBundle.getKeys();
         while (keys.hasMoreElements()) {

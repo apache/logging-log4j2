@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 /**
  *
  */
-public class PropertyTest {
+class PropertyTest {
 
     @Test
-    public void testShutdownHookDisabled() {
+    void testShutdownHookDisabled() {
         assertFalse(
                 ((Log4jContextFactory) LogManager.getFactory()).isShutdownHookEnabled(),
                 "Shutdown hook should be disabled by default in web applications");
     }
 
     @Test
-    public void testIsWebApp() {
+    void testIsWebApp() {
         assertTrue(Constants.IS_WEB_APP, "When servlet classes are available IS_WEB_APP should default to true");
     }
 }

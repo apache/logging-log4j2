@@ -20,11 +20,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 
-@Category(Appenders.Jpa.class)
-public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
+@Tag("Appenders.Jpa")
+class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
     private static final String PASSWORD = "123";
 

@@ -25,42 +25,42 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the Duration class.
  */
-public class DurationTest {
+class DurationTest {
 
     @Test
-    public void testParseFailsIfNullText() {
+    void testParseFailsIfNullText() {
         assertThrows(NullPointerException.class, () -> Duration.parse(null));
     }
 
     @Test
-    public void testParseFailsIfInvalidPattern() {
+    void testParseFailsIfInvalidPattern() {
         assertThrows(IllegalArgumentException.class, () -> Duration.parse("abc"));
     }
 
     @Test
-    public void testParseFailsIfSectionsOutOfOrder() {
+    void testParseFailsIfSectionsOutOfOrder() {
         assertThrows(IllegalArgumentException.class, () -> Duration.parse("P4DT2M1S3H"));
     }
 
     @Test
-    public void testParseFailsIfTButMissingTime() {
+    void testParseFailsIfTButMissingTime() {
         assertThrows(IllegalArgumentException.class, () -> Duration.parse("P1dT"));
     }
 
     @Test
-    public void testParseIsCaseInsensitive() {
+    void testParseIsCaseInsensitive() {
         assertEquals("P4DT3H2M1S", Duration.parse("p4dt3h2m1s").toString());
     }
 
     @Test
-    public void testParseAllowsOverflows() {
+    void testParseAllowsOverflows() {
         assertEquals(1000 * 70, Duration.parse("PT70S").toMillis());
         assertEquals(1000 * 70 * 60, Duration.parse("PT70M").toMillis());
         assertEquals(1000 * 25 * 60 * 60, Duration.parse("PT25H").toMillis());
     }
 
     @Test
-    public void testToMillis() {
+    void testToMillis() {
         assertEquals(0, Duration.ZERO.toMillis());
         assertEquals(1000, Duration.parse("PT1S").toMillis());
         assertEquals(1000 * 2 * 60, Duration.parse("PT2M").toMillis());
@@ -71,7 +71,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("PT0S", Duration.ZERO.toString());
         assertEquals("PT1S", Duration.parse("PT1S").toString());
         assertEquals("PT2M1S", Duration.parse("PT2M1S").toString());
@@ -80,7 +80,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testPrefixPNotRequired() {
+    void testPrefixPNotRequired() {
         assertEquals("PT1S", Duration.parse("T1S").toString());
         assertEquals("PT2M1S", Duration.parse("T2M1S").toString());
         assertEquals("PT3H2M1S", Duration.parse("T3H2M1S").toString());
@@ -88,7 +88,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testInfixTNotRequired() {
+    void testInfixTNotRequired() {
         assertEquals("PT1S", Duration.parse("P1S").toString());
         assertEquals("PT2M1S", Duration.parse("P2M1S").toString());
         assertEquals("PT3H2M1S", Duration.parse("P3H2M1S").toString());
@@ -96,7 +96,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testPrefixPAndInfixTNotRequired() {
+    void testPrefixPAndInfixTNotRequired() {
         assertEquals("PT1S", Duration.parse("1S").toString());
         assertEquals("PT2M1S", Duration.parse("2M1S").toString());
         assertEquals("PT3H2M1S", Duration.parse("3H2M1S").toString());
@@ -104,7 +104,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testCompareTo() {
+    void testCompareTo() {
         assertEquals(-1, Duration.parse("PT1S").compareTo(Duration.parse("PT2S")));
         assertEquals(-1, Duration.parse("PT1M").compareTo(Duration.parse("PT2M")));
         assertEquals(-1, Duration.parse("PT1H").compareTo(Duration.parse("PT2H")));
@@ -128,7 +128,7 @@ public class DurationTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertNotEquals(Duration.parse("PT1S"), (Duration.parse("PT2S")));
         assertNotEquals(Duration.parse("PT1M"), (Duration.parse("PT2M")));
         assertNotEquals(Duration.parse("PT1H"), (Duration.parse("PT2H")));

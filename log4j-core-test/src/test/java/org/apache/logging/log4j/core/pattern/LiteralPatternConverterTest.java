@@ -23,17 +23,17 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the LiteralPatternConverter.
  */
-public class LiteralPatternConverterTest {
+class LiteralPatternConverterTest {
 
     @Test
-    public void testConvertBackslashes() {
+    void testConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LiteralPatternConverter converter = new LiteralPatternConverter(null, literal, true);
         assertEquals("ABC\tDEF\nGHI\rJKL\'MNO\f \b \\DROPPED:x", converter.getLiteral());
     }
 
     @Test
-    public void testDontConvertBackslashes() {
+    void testDontConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LiteralPatternConverter converter = new LiteralPatternConverter(null, literal, false);
         assertEquals(literal, converter.getLiteral());

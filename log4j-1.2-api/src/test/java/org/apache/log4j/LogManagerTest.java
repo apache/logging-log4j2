@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link LogManager}.
  */
-public class LogManagerTest {
+class LogManagerTest {
 
     private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
 
@@ -38,7 +38,7 @@ public class LogManagerTest {
     }
 
     @Test
-    public void testGetCurrentLoggers() {
+    void testGetCurrentLoggers() {
         Logger.getLogger(SIMPLE_NAME);
         Logger.getLogger(SIMPLE_NAME + ".foo");
         Logger.getLogger(SIMPLE_NAME + ".foo.bar");

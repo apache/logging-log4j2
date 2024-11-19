@@ -30,10 +30,10 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("GelfLayout2Test.xml")
-public class GelfLayout2Test {
+class GelfLayout2Test {
 
     @Test
-    public void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
+    void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
         list.clear();
         final Logger logger = context.getLogger(getClass());
         logger.info("Message");

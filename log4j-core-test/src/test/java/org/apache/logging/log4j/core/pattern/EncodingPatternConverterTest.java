@@ -30,10 +30,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class EncodingPatternConverterTest {
+class EncodingPatternConverterTest {
 
     @Test
-    public void testReplacement() {
+    void testReplacement() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
@@ -52,7 +52,7 @@ public class EncodingPatternConverterTest {
     }
 
     @Test
-    public void testJsonEscaping() {
+    void testJsonEscaping() {
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName(getClass().getName())
                 .setLevel(Level.DEBUG)
@@ -74,7 +74,7 @@ public class EncodingPatternConverterTest {
     }
 
     @Test
-    public void testCrlfEscaping() {
+    void testCrlfEscaping() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
@@ -92,7 +92,7 @@ public class EncodingPatternConverterTest {
     }
 
     @Test
-    public void testXmlEscaping() {
+    void testXmlEscaping() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
@@ -111,7 +111,7 @@ public class EncodingPatternConverterTest {
     }
 
     @Test
-    public void testHandlesThrowable() {
+    void testHandlesThrowable() {
         final Configuration configuration = new DefaultConfiguration();
         assertFalse(EncodingPatternConverter.newInstance(configuration, new String[] {"%msg", "XML"})
                 .handlesThrowable());

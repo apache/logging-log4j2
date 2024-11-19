@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link JndiManager}.
  */
-public class JndiManagerTest {
+class JndiManagerTest {
 
     private static final String TRUE = "true";
 
     @Test
-    public void testIsJndiContextSelectorEnabled() {
+    void testIsJndiContextSelectorEnabled() {
         assertFalse(JndiManager.isJndiContextSelectorEnabled());
         try {
             System.setProperty("log4j2.enableJndiContextSelector", TRUE);
@@ -42,7 +42,7 @@ public class JndiManagerTest {
     }
 
     @Test
-    public void testIsJndiEnabled() {
+    void testIsJndiEnabled() {
         assertFalse(JndiManager.isJndiEnabled());
         try {
             System.setProperty("log4j2.enableJndiJms", TRUE);
@@ -53,7 +53,7 @@ public class JndiManagerTest {
     }
 
     @Test
-    public void testIsJndiJdbcEnabled() {
+    void testIsJndiJdbcEnabled() {
         assertFalse(JndiManager.isJndiJdbcEnabled());
         try {
             System.setProperty("log4j2.enableJndiJdbc", TRUE);
@@ -64,7 +64,7 @@ public class JndiManagerTest {
     }
 
     @Test
-    public void testIsJndiJmsEnabled() {
+    void testIsJndiJmsEnabled() {
         assertFalse(JndiManager.isJndiJmsEnabled());
         try {
             System.setProperty("log4j2.enableJndiJms", TRUE);
@@ -75,12 +75,12 @@ public class JndiManagerTest {
     }
 
     @Test
-    public void testIsJndiLookupEnabled() {
+    void testIsJndiLookupEnabled() {
         assertFalse(JndiManager.isJndiLookupEnabled());
     }
 
     @Test
-    public void testNoInstanceByDefault() {
+    void testNoInstanceByDefault() {
         assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager());
         assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager(null));
         assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager("A"));

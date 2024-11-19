@@ -53,19 +53,19 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Tests {@link FileAppender}.
  */
 @CleanUpDirectories(FileAppenderPermissionsTest.DIR)
-public class FileAppenderPermissionsTest {
+class FileAppenderPermissionsTest {
 
     static final String DIR = "target/permissions1";
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty("log4j2.debug", "true");
         assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
     }
 
     @ParameterizedTest
     @CsvSource({"rwxrwxrwx,true,2", "rw-r--r--,false,3", "rw-------,true,4", "rw-rw----,false,5"})
-    public void testFilePermissionsAPI(final String filePermissions, final boolean createOnDemand, final int fileIndex)
+    void testFilePermissionsAPI(final String filePermissions, final boolean createOnDemand, final int fileIndex)
             throws Exception {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
         final Path path = file.toPath();
@@ -91,7 +91,7 @@ public class FileAppenderPermissionsTest {
             assertNotEquals(createOnDemand, Files.exists(path));
             long curLen = file.length();
             long prevLen = curLen;
-            assertEquals(curLen, 0, "File length: " + curLen);
+            assertEquals(0, curLen, "File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder()
                         .setLoggerName("TestLogger") //
@@ -121,7 +121,7 @@ public class FileAppenderPermissionsTest {
 
     @ParameterizedTest
     @CsvSource({"rwxrwxrwx,2", "rw-r--r--,3", "rw-------,4", "rw-rw----,5"})
-    public void testFileUserGroupAPI(final String filePermissions, final int fileIndex) throws Exception {
+    void testFileUserGroupAPI(final String filePermissions, final int fileIndex) throws Exception {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");
         final Path path = file.toPath();
         final String user = findAUser();
@@ -151,7 +151,7 @@ public class FileAppenderPermissionsTest {
             assertTrue(appender.isStarted(), "Appender did not start");
             long curLen = file.length();
             long prevLen = curLen;
-            assertEquals(curLen, 0, file + " File length: " + curLen);
+            assertEquals(0, curLen, file + " File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
                 final LogEvent event = Log4jLogEvent.newBuilder()
                         .setLoggerName("TestLogger") //
@@ -209,7 +209,7 @@ public class FileAppenderPermissionsTest {
         }
     }
 
-    private static String findAUser() throws IOException {
+    private static String findAUser() {
         // On jenkins build within ubuntu, it is not possible to chmod to another user
         return System.getProperty("user.name");
     }

@@ -57,7 +57,7 @@ public class RollingAppenderSizeCompressPermissionsTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingAppenderSizeCompressPermissionsTest.class.getName());
     }
 

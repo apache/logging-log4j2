@@ -45,10 +45,10 @@ public class RoutingAppender2767Test {
     public RuleChain rules = loggerContextRule.withCleanFilesRule(ACTIVITY_LOG_FILE);
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() {}
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.loggerContextRule.getLoggerContext().stop();
     }
 

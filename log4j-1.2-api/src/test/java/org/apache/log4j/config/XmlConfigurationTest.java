@@ -17,13 +17,13 @@
 package org.apache.log4j.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.ListAppender;
@@ -46,12 +46,12 @@ import org.junit.jupiter.api.Test;
 /**
  * Test configuration from XML.
  */
-public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
+class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".xml";
 
     @Override
-    Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
+    Configuration getConfiguration(final String configResourcePrefix) throws IOException {
         final String configResource = configResourcePrefix + SUFFIX;
         final InputStream inputStream = getResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
@@ -63,7 +63,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     }
 
     @Test
-    public void testListAppender() throws Exception {
+    void testListAppender() throws Exception {
         final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.xml");
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
@@ -81,13 +81,13 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertNotNull(eventAppender, "No Event Appender");
         assertNotNull(messageAppender, "No Message Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue(events != null && events.size() > 0, "No events");
+        assertTrue(events != null && !events.isEmpty(), "No events");
         final List<String> messages = messageAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages");
     }
 
     @Test
-    public void testXML() throws Exception {
+    void testXML() throws Exception {
         TestConfigurator.configure("target/test-classes/log4j1-file.xml");
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
@@ -184,20 +184,20 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     }
 
     @Test
-    public void testEnhancedRollingFileAppender() throws Exception {
+    void testEnhancedRollingFileAppender() throws Exception {
         try (final LoggerContext ctx = configure("config-1.2/log4j-EnhancedRollingFileAppender")) {
             final Configuration configuration = ctx.getConfiguration();
             assertNotNull(configuration);
             testEnhancedRollingFileAppender(configuration);
             // Only supported through XML configuration
             final Appender appender = configuration.getAppender("MIXED");
-            assertTrue(appender instanceof RollingFileAppender, "is RollingFileAppender");
+            assertInstanceOf(RollingFileAppender.class, appender, "is RollingFileAppender");
             final TriggeringPolicy policy = ((RollingFileAppender) appender).getTriggeringPolicy();
-            assertTrue(policy instanceof CompositeTriggeringPolicy, "is CompositeTriggeringPolicy");
+            assertInstanceOf(CompositeTriggeringPolicy.class, policy, "is CompositeTriggeringPolicy");
             final TriggeringPolicy[] policies = ((CompositeTriggeringPolicy) policy).getTriggeringPolicies();
             assertEquals(2, policies.length);
-            assertTrue(policies[0] instanceof TimeBasedTriggeringPolicy, "is TimeBasedTriggeringPolicy");
-            assertTrue(policies[1] instanceof SizeBasedTriggeringPolicy, "is SizeBasedTriggeringPolicy");
+            assertInstanceOf(TimeBasedTriggeringPolicy.class, policies[0], "is TimeBasedTriggeringPolicy");
+            assertInstanceOf(SizeBasedTriggeringPolicy.class, policies[1], "is SizeBasedTriggeringPolicy");
         }
     }
 

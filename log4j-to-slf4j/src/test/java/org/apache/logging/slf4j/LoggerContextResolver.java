@@ -42,7 +42,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext>
     private static final Object KEY = LoggerContextHolder.class;
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) throws Exception {
+    public void beforeEach(ExtensionContext extensionContext) {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final LoggerContextHolder holder =
@@ -77,7 +77,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext>
     }
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(ExtensionContext extensionContext) {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class).ifPresent(testSource -> {
             final LoggerContextHolder holder = new LoggerContextHolder(testSource, extensionContext);

@@ -51,7 +51,7 @@ import org.slf4j.MDC;
 
 @UsingStatusListener
 @LoggerContextSource
-public class LoggerTest {
+class LoggerTest {
 
     private static final Object OBJ = new Object();
     // Log4j objects
@@ -61,7 +61,7 @@ public class LoggerTest {
     private StringListAppender<ILoggingEvent> list;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final org.slf4j.Logger slf4jLogger = context.getLogger(getClass());
         logger = LogManager.getLogger();
         assertThat(slf4jLogger, is(theInstance(((SLF4JLogger) logger).getLogger())));
@@ -74,41 +74,41 @@ public class LoggerTest {
     }
 
     @Test
-    public void basicFlow() {
+    void basicFlow() {
         logger.traceEntry();
         logger.traceExit();
         assertThat(list.strList, hasSize(2));
     }
 
     @Test
-    public void basicFlowDepreacted() {
+    void basicFlowDepreacted() {
         logger.entry();
         logger.exit();
         assertThat(list.strList, hasSize(2));
     }
 
     @Test
-    public void simpleFlowDeprecated() {
+    void simpleFlowDeprecated() {
         logger.entry(OBJ);
         logger.exit(0);
         assertThat(list.strList, hasSize(2));
     }
 
     @Test
-    public void simpleFlow() {
+    void simpleFlow() {
         logger.entry(OBJ);
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }
 
     @Test
-    public void throwing() {
+    void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertThat(list.strList, hasSize(1));
     }
 
     @Test
-    public void catching() {
+    void catching() {
         try {
             throw new NullPointerException();
         } catch (final Exception e) {
@@ -118,13 +118,13 @@ public class LoggerTest {
     }
 
     @Test
-    public void debug() {
+    void debug() {
         logger.debug("Debug message");
         assertThat(list.strList, hasSize(1));
     }
 
     @Test
-    public void getLogger_String_MessageFactoryMismatch() {
+    void getLogger_String_MessageFactoryMismatch() {
         final Logger testLogger = testMessageFactoryMismatch(
                 "getLogger_String_MessageFactoryMismatch",
                 StringFormatterMessageFactory.INSTANCE,
@@ -135,7 +135,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_MessageFactoryMismatchNull() {
+    void getLogger_String_MessageFactoryMismatchNull() {
         final Logger testLogger = testMessageFactoryMismatch(
                 "getLogger_String_MessageFactoryMismatchNull", StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
@@ -168,13 +168,13 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugObject() {
+    void debugObject() {
         logger.debug(new Date());
         assertThat(list.strList, hasSize(1));
     }
 
     @Test
-    public void debugWithParms() {
+    void debugWithParms() {
         logger.debug("Hello, {}", "World");
         assertThat(list.strList, hasSize(1));
         final String message = list.strList.get(0);
@@ -182,7 +182,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void paramIncludesSubstitutionMarker_locationAware() {
+    void paramIncludesSubstitutionMarker_locationAware() {
         logger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
         final String message = list.strList.get(0);
@@ -190,7 +190,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void paramIncludesSubstitutionMarker_nonLocationAware() {
+    void paramIncludesSubstitutionMarker_nonLocationAware() {
         final org.slf4j.Logger slf4jLogger = context.getLogger(getClass());
         final Logger nonLocationAwareLogger =
                 new SLF4JLogger(slf4jLogger.getName(), (org.slf4j.Logger) Proxy.newProxyInstance(
@@ -208,7 +208,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void testImpliedThrowable() {
+    void testImpliedThrowable() {
         logger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = list.strList;
         assertThat(msgs, hasSize(1));
@@ -218,7 +218,7 @@ public class LoggerTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void mdc() {
+    void mdc() {
         ThreadContext.put("TestYear", Integer.toString(2010));
         logger.debug("Debug message");
         ThreadContext.clearMap();
@@ -228,25 +228,25 @@ public class LoggerTest {
     }
 
     @Test
-    public void mdcNullBackedIsEmpty() {
+    void mdcNullBackedIsEmpty() {
         assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertTrue(ThreadContext.isEmpty());
     }
 
     @Test
-    public void mdcNullBackedContainsKey() {
+    void mdcNullBackedContainsKey() {
         assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertFalse(ThreadContext.containsKey("something"));
     }
 
     @Test
-    public void mdcNullBackedContainsNullKey() {
+    void mdcNullBackedContainsNullKey() {
         assertNull(MDC.getCopyOfContextMap(), "Setup wrong");
         assertFalse(ThreadContext.containsKey(null));
     }
 
     @Test
-    public void mdcContainsNullKey() {
+    void mdcContainsNullKey() {
         try {
             ThreadContext.put("some", "thing");
             assertNotNull(MDC.getCopyOfContextMap(), "Setup wrong");
@@ -257,7 +257,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void mdcCannotContainNullKey() {
+    void mdcCannotContainNullKey() {
         try {
             ThreadContext.put(null, "something");
             fail("should throw");

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class FormattedMessageTest {
+class FormattedMessageTest {
 
     private static final String SPACE = Constants.JAVA_MAJOR_VERSION < 9 ? " " : "\u00a0";
 
@@ -41,7 +41,7 @@ public class FormattedMessageTest {
     String[] array = new String[LOOP_CNT];
 
     @Test
-    public void testStringNoArgs() {
+    void testStringNoArgs() {
         final String testMsg = "Test message %1s";
         FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -54,7 +54,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneStringArg() {
+    void tesStringOneStringArg() {
         final String testMsg = "Test message %1s";
         final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
@@ -63,7 +63,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneArgLocaleFrance_StringFormattedMessage() {
+    void tesStringOneArgLocaleFrance_StringFormattedMessage() {
         final String testMsg = "Test message e = %+10.4f";
         final FormattedMessage msg = new FormattedMessage(Locale.FRANCE, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
@@ -72,7 +72,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneArgLocaleFrance_MessageFormatMessage() {
+    void tesStringOneArgLocaleFrance_MessageFormatMessage() {
         final String testMsg = "Test message {0,number,currency}";
         final FormattedMessage msg = new FormattedMessage(Locale.FRANCE, testMsg, 12);
         final String result = msg.getFormattedMessage();
@@ -81,7 +81,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneArgLocaleUs_MessageFormatMessage() {
+    void tesStringOneArgLocaleUs_MessageFormatMessage() {
         final String testMsg = "Test message {0,number,currency}";
         final FormattedMessage msg = new FormattedMessage(Locale.US, testMsg, 12);
         final String result = msg.getFormattedMessage();
@@ -90,7 +90,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void tesStringOneArgLocaleUs() {
+    void tesStringOneArgLocaleUs() {
         final String testMsg = "Test message e = %+10.4f";
         final FormattedMessage msg = new FormattedMessage(Locale.US, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
@@ -99,7 +99,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         final String testMsg = "Test message {0}";
         FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -112,7 +112,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testOneArg() {
+    void testOneArg() {
         final String testMsg = "Test message {0}";
         final FormattedMessage msg = new FormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
@@ -121,7 +121,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testParamNoArgs() {
+    void testParamNoArgs() {
         final String testMsg = "Test message {}";
         FormattedMessage msg = new FormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -133,7 +133,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testUnsafeWithMutableParams() { // LOG4J2-763
+    void testUnsafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final FormattedMessage msg = new FormattedMessage(testMsg, param);
@@ -145,7 +145,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+    void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final FormattedMessage msg = new FormattedMessage(testMsg, param);
@@ -158,7 +158,7 @@ public class FormattedMessageTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    void testSerialization() throws IOException, ClassNotFoundException {
         final FormattedMessage expected = new FormattedMessage("Msg", "a", "b", "c");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {

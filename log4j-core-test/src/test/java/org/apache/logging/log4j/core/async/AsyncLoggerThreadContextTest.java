@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 @Tag(Tags.ASYNC_LOGGERS)
 @UsingTestProperties
 @UsingStatusListener
-public class AsyncLoggerThreadContextTest {
+class AsyncLoggerThreadContextTest {
 
     private static TestProperties props;
 
@@ -47,13 +47,13 @@ public class AsyncLoggerThreadContextTest {
     private static Path loggingPath;
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         props.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
     }
 
     @Test
     @LoggerContextSource("AsyncLoggerThreadContextTest.xml")
-    public void testAsyncLogWritesToLog() throws Exception {
+    void testAsyncLogWritesToLog() throws Exception {
         final Path file = loggingPath.resolve("AsyncLoggerTest.log");
 
         ThreadContext.push("stackvalue");

@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test getEligibleFiles method.
  */
-public class RolloverFilePatternTest {
+class RolloverFilePatternTest {
 
     @Test
-    public void testFilePatternWithoutPadding() throws Exception {
+    void testFilePatternWithoutPadding() {
         final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%i.log.gz");
         assertTrue(matcher.find());
         assertNull(matcher.group("ZEROPAD"));
@@ -38,7 +38,7 @@ public class RolloverFilePatternTest {
     }
 
     @Test
-    public void testFilePatternWithSpacePadding() throws Exception {
+    void testFilePatternWithSpacePadding() {
         final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%3i.log.gz");
         assertTrue(matcher.find());
         assertNull(matcher.group("ZEROPAD"));
@@ -46,7 +46,7 @@ public class RolloverFilePatternTest {
     }
 
     @Test
-    public void testFilePatternWithZeroPadding() throws Exception {
+    void testFilePatternWithZeroPadding() {
         final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%03i.log.gz");
         assertTrue(matcher.find());
         assertEquals("0", matcher.group("ZEROPAD"));
@@ -54,7 +54,7 @@ public class RolloverFilePatternTest {
     }
 
     @Test
-    public void testFilePatternUnmatched() throws Exception {
+    void testFilePatternUnmatched() {
         final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%n.log.gz");
         assertFalse(matcher.find());
     }

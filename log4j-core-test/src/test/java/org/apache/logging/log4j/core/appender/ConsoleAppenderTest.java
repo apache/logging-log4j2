@@ -44,17 +44,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ConsoleAppenderTest {
+class ConsoleAppenderTest {
 
     private static final String LOG4J_SKIP_JANSI = "log4j.skipJansi";
 
     @AfterAll
-    public static void afterClass() {
+    static void afterClass() {
         System.clearProperty(LOG4J_SKIP_JANSI);
     }
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
     }
 
@@ -64,7 +64,7 @@ public class ConsoleAppenderTest {
     PrintStream psMock;
 
     @BeforeEach
-    public void before() {
+    void before() {
         System.setProperty(LOG4J_SKIP_JANSI, "true");
         baos = new ByteArrayOutputStream();
     }
@@ -120,12 +120,12 @@ public class ConsoleAppenderTest {
     }
 
     @Test
-    public void testFollowSystemErr() {
+    void testFollowSystemErr() {
         testFollowSystemPrintStream(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
 
     @Test
-    public void testFollowSystemOut() {
+    void testFollowSystemOut() {
         testFollowSystemPrintStream(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 
@@ -164,12 +164,12 @@ public class ConsoleAppenderTest {
     }
 
     @Test
-    public void testSystemErrStreamManagerDoesNotClose() {
+    void testSystemErrStreamManagerDoesNotClose() {
         testConsoleStreamManagerDoesNotClose(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
 
     @Test
-    public void testSystemOutStreamManagerDoesNotClose() {
+    void testSystemOutStreamManagerDoesNotClose() {
         testConsoleStreamManagerDoesNotClose(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
     }
 }

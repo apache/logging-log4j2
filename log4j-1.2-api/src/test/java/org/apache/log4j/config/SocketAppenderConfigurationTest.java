@@ -17,6 +17,7 @@
 package org.apache.log4j.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests configuring a Syslog appender.
  */
-public class SocketAppenderConfigurationTest {
+class SocketAppenderConfigurationTest {
 
     private SocketAppender check(final Protocol expected, final Configuration configuration) {
         final Map<String, Appender> appenders = configuration.getAppenders();
@@ -71,19 +72,19 @@ public class SocketAppenderConfigurationTest {
     }
 
     @Test
-    public void testProperties() throws Exception {
+    void testProperties() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket.properties");
     }
 
     @Test
-    public void testPropertiesXmlLayout() throws Exception {
+    void testPropertiesXmlLayout() throws Exception {
         final SocketAppender socketAppender =
                 checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
-        assertTrue(socketAppender.getLayout() instanceof Log4j1XmlLayout);
+        assertInstanceOf(Log4j1XmlLayout.class, socketAppender.getLayout());
     }
 
     @Test
-    public void testXml() throws Exception {
+    void testXml() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket.xml");
     }
 }

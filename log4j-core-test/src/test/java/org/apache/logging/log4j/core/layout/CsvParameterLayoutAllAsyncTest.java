@@ -21,47 +21,46 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link AbstractCsvLayout} with all loggers async.
  *
  * @since 2.6
  */
-@Category(Layouts.Csv.class)
-public class CsvParameterLayoutAllAsyncTest {
+@Tag("Layouts.Csv")
+class CsvParameterLayoutAllAsyncTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerTest.xml");
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
     @Test
-    public void testLayoutDefaultNormal() throws Exception {
+    void testLayoutDefaultNormal() throws Exception {
         final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), false);
     }
 
     @Test
-    public void testLayoutDefaultObjectArrayMessage() throws Exception {
+    void testLayoutDefaultObjectArrayMessage() throws Exception {
         final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createDefaultLayout(), true);
     }
 
     @Test
-    public void testLayoutTab() throws Exception {
+    void testLayoutTab() throws Exception {
         final Logger root = (Logger) LogManager.getRootLogger();
         CsvParameterLayoutTest.testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
     }

@@ -23,13 +23,13 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 @UsingTestProperties
-public class TestPropertySourceTest {
+class TestPropertySourceTest {
 
     private static TestProperties staticProperties;
     private TestProperties instanceProperties;
 
     @Test
-    public void testInjectedFields() {
+    void testInjectedFields() {
         assertThat(staticProperties).isNotNull();
         assertThat(instanceProperties).isNotNull();
 
@@ -43,13 +43,13 @@ public class TestPropertySourceTest {
     }
 
     @Test
-    public void testInjectedParameter(final TestProperties paramProperties) {
+    void testInjectedParameter(final TestProperties paramProperties) {
         assertThat(paramProperties).isEqualTo(instanceProperties);
     }
 
     @Test
     @SetTestProperty(key = "log4j2.testSetTestProperty", value = "true")
-    public void testSetTestProperty() {
+    void testSetTestProperty() {
         final PropertiesUtil env = PropertiesUtil.getProperties();
         assertThat(env.getBooleanProperty("log4j2.testSetTestProperty")).isTrue();
     }

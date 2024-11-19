@@ -45,7 +45,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 class IfLastModifiedTest {
 
     @Test
-    public void testAcceptsIfFileAgeEqualToDuration() {
+    void testAcceptsIfFileAgeEqualToDuration() {
         final IfLastModified filter =
                 IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).build();
         final DummyFileAttributes attrs = new DummyFileAttributes();
@@ -55,7 +55,7 @@ class IfLastModifiedTest {
     }
 
     @Test
-    public void testAcceptsIfFileAgeExceedsDuration() {
+    void testAcceptsIfFileAgeExceedsDuration() {
         final IfLastModified filter =
                 IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).build();
         final DummyFileAttributes attrs = new DummyFileAttributes();
@@ -65,7 +65,7 @@ class IfLastModifiedTest {
     }
 
     @Test
-    public void testDoesNotAcceptIfFileAgeLessThanDuration() {
+    void testDoesNotAcceptIfFileAgeLessThanDuration() {
         final IfLastModified filter =
                 IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).build();
         final DummyFileAttributes attrs = new DummyFileAttributes();
@@ -75,7 +75,7 @@ class IfLastModifiedTest {
     }
 
     @Test
-    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
+    void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
         final IfLastModified filter = IfLastModified.newBuilder()
                 .setAge(Duration.parse("PT33S"))
@@ -103,7 +103,7 @@ class IfLastModifiedTest {
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfLastModified filter = IfLastModified.newBuilder()
                 .setAge(Duration.parse("PT33S"))
@@ -114,7 +114,7 @@ class IfLastModifiedTest {
     }
 
     @Test
-    public void testCreateAgeConditionCalledProgrammaticallyThrowsNPEWhenAgeIsNotSpecified() {
+    void testCreateAgeConditionCalledProgrammaticallyThrowsNPEWhenAgeIsNotSpecified() {
         Duration age = null;
         assertThrows(
                 NullPointerException.class, () -> IfLastModified.newBuilder().setAge(age));
@@ -122,7 +122,7 @@ class IfLastModifiedTest {
 
     @ParameterizedTest
     @ValueSource(strings = "No age provided for IfLastModified")
-    public void testCreateAgeConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenAgeIsNotSpecified(
+    void testCreateAgeConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenAgeIsNotSpecified(
             final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfLastModified> type = new PluginType<>(nullEntry, IfLastModified.class, "Dummy");

@@ -48,37 +48,37 @@ public class FailoverAppenderTest {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    void tearDown() {
         app.clear();
     }
 
     @Test
-    public void testFailover() {
+    void testFailover() {
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertEquals(events.size(), 1, "Incorrect number of events. Should be 1 is " + events.size());
+        assertEquals(1, events.size(), "Incorrect number of events. Should be 1 is " + events.size());
         app.clear();
         logger.error("This is a test");
         events = app.getEvents();
         assertNotNull(events);
-        assertEquals(events.size(), 1, "Incorrect number of events. Should be 1 is " + events.size());
+        assertEquals(1, events.size(), "Incorrect number of events. Should be 1 is " + events.size());
     }
 
     @Test
-    public void testRecovery() throws Exception {
+    void testRecovery() throws Exception {
         onceLogger.error("Fail once");
         onceLogger.error("Fail again");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertEquals(events.size(), 2, "Incorrect number of events. Should be 2 is " + events.size());
+        assertEquals(2, events.size(), "Incorrect number of events. Should be 2 is " + events.size());
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         onceLogger.error("Second log message");
         events = app.getEvents();
-        assertEquals(events.size(), 0, "Did not recover");
+        assertEquals(0, events.size(), "Did not recover");
         events = foApp.drainEvents();
-        assertEquals(events.size(), 2, "Incorrect number of events in primary appender");
+        assertEquals(2, events.size(), "Incorrect number of events in primary appender");
     }
 }

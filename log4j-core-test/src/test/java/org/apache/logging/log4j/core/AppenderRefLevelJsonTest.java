@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("json")
 @LoggerContextSource("log4j-reference-level.json")
-public class AppenderRefLevelJsonTest {
+class AppenderRefLevelJsonTest {
 
     private final ListAppender app1;
     private final ListAppender app2;
@@ -51,7 +51,7 @@ public class AppenderRefLevelJsonTest {
     }
 
     @Test
-    public void logger1() {
+    void logger1() {
         logger1.traceEntry();
         logger1.debug("debug message");
         logger1.error("Test Message");
@@ -63,7 +63,7 @@ public class AppenderRefLevelJsonTest {
     }
 
     @Test
-    public void logger2() {
+    void logger2() {
         logger2.traceEntry();
         logger2.debug("debug message");
         logger2.error("Test Message");
@@ -75,7 +75,7 @@ public class AppenderRefLevelJsonTest {
     }
 
     @Test
-    public void logger3() {
+    void logger3() {
         logger3.traceEntry();
         logger3.debug(testMarker, "debug message");
         logger3.error("Test Message");

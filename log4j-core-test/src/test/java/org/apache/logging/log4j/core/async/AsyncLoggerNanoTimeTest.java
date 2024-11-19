@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,39 +28,39 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.SystemNanoClock;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerNanoTimeTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerNanoTimeTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "NanoTimeToFileTest.xml");
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
     @Test
-    public void testAsyncLogUsesNanoTimeClock() throws Exception {
+    void testAsyncLogUsesNanoTimeClock() throws Exception {
         final File file = new File("target", "NanoTimeToFileTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
         final long before = System.nanoTime();
         log.info("Use actual System.nanoTime()");
-        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof SystemNanoClock);
+        assertInstanceOf(SystemNanoClock.class, log.getNanoClock(), "using SystemNanoClock");
 
         final long DUMMYNANOTIME = -53;
         log.getContext().getConfiguration().setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
@@ -69,7 +70,7 @@ public class AsyncLoggerNanoTimeTest {
         log.updateConfiguration(log.getContext().getConfiguration());
 
         log.info("Use dummy nano clock");
-        assertTrue("using SystemNanoClock", log.getNanoClock() instanceof DummyNanoClock);
+        assertInstanceOf(DummyNanoClock.class, log.getNanoClock(), "using SystemNanoClock");
 
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
@@ -81,13 +82,13 @@ public class AsyncLoggerNanoTimeTest {
         reader.close();
         file.delete();
 
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
+        assertNotNull(line1, "line1");
+        assertNotNull(line2, "line2");
         final String[] line1Parts = line1.split(" AND ");
         assertEquals("Use actual System.nanoTime()", line1Parts[2]);
         assertEquals(line1Parts[0], line1Parts[1]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
-        assertTrue("used system nano time", loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1));
+        assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
 
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);

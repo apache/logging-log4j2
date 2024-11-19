@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the IfAccumulatedFileSize class.
  */
-public class IfAccumulatedFileSizeTest {
+class IfAccumulatedFileSizeTest {
 
     @Test
-    public void testGetThresholdBytes() {
+    void testGetThresholdBytes() {
         assertEquals(2, create("2B").getThresholdBytes());
         assertEquals(3, create("3 B").getThresholdBytes());
         assertEquals(2 * 1024, create("2KB").getThresholdBytes());
@@ -47,7 +47,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testNotAcceptOnExactMatch() {
+    void testNotAcceptOnExactMatch() {
         final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
@@ -58,7 +58,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testAcceptIfExceedThreshold() {
+    void testAcceptIfExceedThreshold() {
         final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
@@ -69,7 +69,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testNotAcceptIfBelowThreshold() {
+    void testNotAcceptIfBelowThreshold() {
         final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
@@ -80,7 +80,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testAcceptOnceThresholdExceeded() {
+    void testAcceptOnceThresholdExceeded() {
         final DummyFileAttributes attribs = new DummyFileAttributes();
         final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
@@ -96,7 +96,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
+    void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition("2KB", counter);
         final DummyFileAttributes attribs = new DummyFileAttributes();
@@ -123,7 +123,7 @@ public class IfAccumulatedFileSizeTest {
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAccumulatedFileSize filter =
                 IfAccumulatedFileSize.createFileSizeCondition("2GB", counter, counter, counter);

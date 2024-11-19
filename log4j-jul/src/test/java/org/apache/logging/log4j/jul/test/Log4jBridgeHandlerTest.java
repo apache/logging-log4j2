@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-// note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,11 +32,12 @@ import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test the Log4jBridgeHandler.
@@ -60,8 +60,8 @@ import org.junit.Test;
  * The code also contains evaluation/test code for development time. It is not used for the unit tests
  * but kept here for reference and info. See field DEVTEST.
  */
-@FixMethodOrder(org.junit.runners.MethodSorters.NAME_ASCENDING) // is nicer for manually checking console output
-public class Log4jBridgeHandlerTest {
+@TestMethodOrder(MethodOrderer.MethodName.class) // is nicer for manually checking console output
+class Log4jBridgeHandlerTest {
     /** Perform developer tests? */
     private static final boolean DEVTEST = false;
 
@@ -81,8 +81,8 @@ public class Log4jBridgeHandlerTest {
     private static final ByteArrayOutputStream sysoutBytes = new ByteArrayOutputStream(1024);
     private static PrintStream prevSysErrStream;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         // debug output to easily recognize misconfig.:
         // System.out.println("sys-props:\n" + System.getProperties());
         System.out.println("sysout:  logging-cfg-file:  " + System.getProperty("java.util.logging.config.file"));
@@ -96,15 +96,15 @@ public class Log4jBridgeHandlerTest {
         System.setErr(new PrintStream(sysoutBytes, true));
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         // reset sysout/err to original value
         System.setErr(prevSysErrStream);
         System.err.println("^^^--- END capturing output of stderr ---^^^");
     }
 
-    @Before
-    public void beforeTest() {
+    @BeforeEach
+    void beforeTest() {
         // reset sysout collector
         sysoutBytes.reset();
     }
@@ -116,7 +116,7 @@ public class Log4jBridgeHandlerTest {
         if (OUTPUT_CAPTURED) prevSysErrStream.print(logOutput);
         logOutput = logOutput.replace("\r\n", "\n");
         regex = regex + "(.|\\n)*"; // allow any text with NL afterwards
-        assertTrue("Unmatching output:\n" + logOutput + "\n-- vs: --\n" + regex + "\n----", logOutput.matches(regex));
+        assertTrue(logOutput.matches(regex), "Unmatching output:\n" + logOutput + "\n-- vs: --\n" + regex + "\n----");
     }
 
     /** Get regex for a JUL console output. Must match JUL-Console-Formatter! */
@@ -144,7 +144,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test1SimpleLoggings1Jul() {
+    void test1SimpleLoggings1Jul() {
         julLog.info("Test-'Info'-Log with JUL");
         julLog.fine("Test-'Fine'-Log with JUL");
         julLog.finest("Test-'Finest'-Log with JUL"); // should not be logged because JUL-level is FINER
@@ -160,7 +160,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test1SimpleLoggings2Log4jDirect() {
+    void test1SimpleLoggings2Log4jDirect() {
         log4jLog.info("Test-'Info'-Log with log4j2");
         log4jLog.debug("Test-'Debug'-Log with log4j2");
         log4jLog.trace("Test-'Trace'-Log with log4j2");
@@ -171,7 +171,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test2SubMethod() {
+    void test2SubMethod() {
         subMethodWithLogs(); // location info is sub method now
         final String methodRE = "subMethodWithLogs";
         assertSysoutMatches(
@@ -191,7 +191,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test3JulFlow1() {
+    void test3JulFlow1() {
         // note: manually given source information get lost in log4j!
         julLog.entering("enteringExampleClassParam", "enteringExampleMethodParam");
         final String methodRE = "JulFlow";
@@ -204,7 +204,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test3JulFlow2() {
+    void test3JulFlow2() {
         // note: manually given source information get lost in log4j!
         julLog.entering("enteringExampleClassParam", "enteringExampleMethodParam_withParams", new Object[] {
             "with some", "parameters", 42
@@ -220,7 +220,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test3JulFlow3() {
+    void test3JulFlow3() {
         // note: manually given source information get lost in log4j!
         julLog.exiting(
                 "exitingExampleClassParam",
@@ -241,7 +241,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test3JulFlow4() {
+    void test3JulFlow4() {
         // note: manually given source information get lost in log4j!
         julLog.throwing(
                 "throwingExampleClassParam",
@@ -262,7 +262,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test4JulSpecials1() {
+    void test4JulSpecials1() {
         julLog.log(
                 java.util.logging.Level.WARNING,
                 "JUL-Test via log() as warning with exception",
@@ -282,7 +282,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test4JulSpecials2() {
+    void test4JulSpecials2() {
         // test with MessageFormat
         julLog.log(
                 java.util.logging.Level.INFO,
@@ -308,11 +308,11 @@ public class Log4jBridgeHandlerTest {
     private void assertLogLevel(final String loggerName, final java.util.logging.Level julLevel) {
         final java.util.logging.Logger lg =
                 java.util.logging.LogManager.getLogManager().getLogger(loggerName);
-        assertEquals("Logger '" + loggerName + "'", julLevel, (lg == null ? null : lg.getLevel()));
+        assertEquals(julLevel, (lg == null ? null : lg.getLevel()), "Logger '" + loggerName + "'");
     }
 
     @Test
-    public void test5LevelPropFromConfigFile() {
+    void test5LevelPropFromConfigFile() {
         // JUL levels are set from config files and the initial propagation
         assertLogLevel("", java.util.logging.Level.FINE);
         assertLogLevel("log4j.Log4jBridgeHandlerTest.propagate1", java.util.logging.Level.FINE);
@@ -330,7 +330,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test5LevelPropSetLevel() {
+    void test5LevelPropSetLevel() {
         String name = "log4j.test.new_logger_level_set";
         Configurator.setLevel(name, org.apache.logging.log4j.Level.DEBUG);
         assertLogLevel(name, java.util.logging.Level.FINE);
@@ -348,7 +348,7 @@ public class Log4jBridgeHandlerTest {
     }
 
     @Test
-    public void test5LevelPropGC() {
+    void test5LevelPropGC() {
         // this test will fail if you comment out "julLoggerRefs.add(julLog);" in propagateLogLevels()
         test5LevelPropFromConfigFile(); // at start, all should be fine
         final java.util.logging.Logger julLogRef =

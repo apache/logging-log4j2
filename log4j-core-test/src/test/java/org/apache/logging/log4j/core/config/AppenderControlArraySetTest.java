@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the AppenderControlArraySet class..
  */
-public class AppenderControlArraySetTest {
+class AppenderControlArraySetTest {
 
     @Test
-    public void testInitiallyEmpty() throws Exception {
+    void testInitiallyEmpty() {
         assertTrue(new AppenderControlArraySet().isEmpty());
         assertEquals(0, new AppenderControlArraySet().get().length);
     }
@@ -46,7 +46,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testAddMakesNonEmpty() throws Exception {
+    void testAddMakesNonEmpty() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         assertTrue(set.isEmpty());
         set.add(createControl("A"));
@@ -54,7 +54,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testAddReturnsTrueIfSuccessfullyAdded() throws Exception {
+    void testAddReturnsTrueIfSuccessfullyAdded() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         assertTrue(set.add(createControl("A")));
         assertTrue(set.add(createControl("B")));
@@ -62,7 +62,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testAddDoesNotAppendersWithSameName() throws Exception {
+    void testAddDoesNotAppendersWithSameName() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls = new AppenderControl[] {
             createControl("A"), createControl("B"), createControl("B"), createControl("B"), createControl("A")
@@ -76,7 +76,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testAddReturnsFalseIfAlreadyInSet() throws Exception {
+    void testAddReturnsFalseIfAlreadyInSet() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         assertTrue(set.add(createControl("A")));
         assertTrue(set.add(createControl("B")));
@@ -87,7 +87,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testRemoveRemovesItemFromSet() throws Exception {
+    void testRemoveRemovesItemFromSet() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         set.add(createControl("A"));
         set.add(createControl("B"));
@@ -118,7 +118,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testRemoveReturnsRemovedItem() throws Exception {
+    void testRemoveReturnsRemovedItem() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls =
                 new AppenderControl[] {createControl("A"), createControl("B"), createControl("C"), createControl("D")};
@@ -135,7 +135,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testAsMap() throws Exception {
+    void testAsMap() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls =
                 new AppenderControl[] {createControl("A"), createControl("B"), createControl("C"), createControl("D")};
@@ -150,7 +150,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testClearRemovesAllItems() throws Exception {
+    void testClearRemovesAllItems() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         set.add(createControl("A"));
         set.add(createControl("B"));
@@ -162,7 +162,7 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testClearReturnsAllItems() throws Exception {
+    void testClearReturnsAllItems() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls =
                 new AppenderControl[] {createControl("A"), createControl("B"), createControl("C")};
@@ -175,14 +175,14 @@ public class AppenderControlArraySetTest {
     }
 
     @Test
-    public void testIsEmptyMeansZeroLengthArray() throws Exception {
+    void testIsEmptyMeansZeroLengthArray() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         assertTrue(set.isEmpty());
         assertEquals(0, set.get().length);
     }
 
     @Test
-    public void testGetReturnsAddedItems() throws Exception {
+    void testGetReturnsAddedItems() {
         final AppenderControlArraySet set = new AppenderControlArraySet();
         final AppenderControl[] controls =
                 new AppenderControl[] {createControl("A"), createControl("B"), createControl("C")};

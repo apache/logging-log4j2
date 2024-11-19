@@ -28,7 +28,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class LoggerTest {
+class LoggerTest {
 
     // Save levels so that we can reset them @After clearLogs()
     private static final java.util.logging.Logger globalLogger = java.util.logging.Logger.getGlobal();
@@ -44,7 +44,7 @@ public class LoggerTest {
     private TestLogHandler handler;
 
     @BeforeEach
-    public void setupLogCapture() {
+    void setupLogCapture() {
         handler = new TestLogHandler();
         // Beware, the order here should not be changed!
         // Let the bridge do whatever it does BEFORE we create a JUL Logger (which SHOULD be the same)
@@ -62,7 +62,7 @@ public class LoggerTest {
     }
 
     @AfterEach
-    public void clearLogs() {
+    void clearLogs() {
         julLogger.removeHandler(handler);
         // Reset all Levels what any tests set anymore
         julLogger.setLevel(julLoggerDefaultLevel);
@@ -71,7 +71,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void infoAtInfo() {
+    void infoAtInfo() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, world");
 
@@ -88,7 +88,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void infoAtInfoWithParameters() {
+    void infoAtInfoWithParameters() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {}", "world");
 
@@ -101,7 +101,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void errorAtSevereWithException() {
+    void errorAtSevereWithException() {
         julLogger.setLevel(Level.SEVERE);
         log4jLogger.error("hello, {}", "world", new IOException("Testing, testing"));
 
@@ -114,77 +114,77 @@ public class LoggerTest {
     }
 
     @Test
-    public void infoAtInfoWithLogBuilder() {
+    void infoAtInfoWithLogBuilder() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.atInfo().log("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void infoAtInfoOnParent() {
+    void infoAtInfoOnParent() {
         julLogger.getParent().setLevel(Level.INFO);
         log4jLogger.info("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void infoWithoutAnyLevel() {
+    void infoWithoutAnyLevel() {
         // We're not setting any level.
         log4jLogger.info("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void debugAtInfo() {
+    void debugAtInfo() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.debug("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
     @Test
-    public void debugAtFiner() {
+    void debugAtFiner() {
         julLogger.setLevel(Level.FINER);
         log4jLogger.debug("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void traceAtFine() {
+    void traceAtFine() {
         julLogger.setLevel(Level.FINE);
         log4jLogger.trace("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
     @Test
-    public void traceAtAllOnParent() {
+    void traceAtAllOnParent() {
         julLogger.getParent().setLevel(Level.ALL);
         log4jLogger.trace("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void fatalAtOff() {
+    void fatalAtOff() {
         julLogger.getParent().setLevel(Level.OFF);
         log4jLogger.fatal("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
     @Test
-    public void fatalAtSevere() {
+    void fatalAtSevere() {
         julLogger.getParent().setLevel(Level.SEVERE);
         log4jLogger.atFatal().log("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 
     @Test
-    public void warnAtFatal() {
+    void warnAtFatal() {
         julLogger.getParent().setLevel(Level.SEVERE);
         log4jLogger.atWarn().log("hello, world");
         assertThat(handler.getStoredLogRecords()).isEmpty();
     }
 
     @Test
-    public void customLevelJustUnderWarning() {
+    void customLevelJustUnderWarning() {
         julLogger.getParent().setLevel(new CustomLevel("Just under Warning", Level.WARNING.intValue() - 1));
 
         log4jLogger.info("hello, world");
@@ -198,7 +198,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void customLevelJustAboveWarning() {
+    void customLevelJustAboveWarning() {
         julLogger.getParent().setLevel(new CustomLevel("Just above Warning", Level.WARNING.intValue() + 1));
 
         log4jLogger.info("hello, world");
@@ -223,7 +223,7 @@ public class LoggerTest {
      * also works as expected if the logging happened in a class that we have called (indirect), not in the test method itself.
      */
     @Test
-    public void indirectSource() {
+    void indirectSource() {
         java.util.logging.Logger.getLogger(Another.class.getName()).setLevel(Level.INFO);
         new Another(handler);
         final List<LogRecord> logs = handler.getStoredLogRecords();
@@ -245,7 +245,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void placeholdersInFormat() {
+    void placeholdersInFormat() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {0} {}", "world");
 
@@ -257,7 +257,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void placeholdersInFormattedMessage() {
+    void placeholdersInFormattedMessage() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {}", "{0} world");
 

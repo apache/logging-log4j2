@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -25,7 +28,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.bson.Document;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @UsingMongoDb4
@@ -42,14 +44,14 @@ class MongoDb4MapMessageIT {
         mapMessage.with("SomeInt", 1);
         logger.info(mapMessage);
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
-        Assertions.assertNotNull(database);
+        assertNotNull(database);
         final MongoCollection<Document> collection =
                 database.getCollection(getClass().getSimpleName());
-        Assertions.assertNotNull(collection);
+        assertNotNull(collection);
         final Document first = collection.find().first();
-        Assertions.assertNotNull(first);
+        assertNotNull(first);
         final String firstJson = first.toJson();
-        Assertions.assertEquals("SomeValue", first.getString("SomeName"), firstJson);
-        Assertions.assertEquals(Integer.valueOf(1), first.getInteger("SomeInt"), firstJson);
+        assertEquals("SomeValue", first.getString("SomeName"), firstJson);
+        assertEquals(Integer.valueOf(1), first.getInteger("SomeInt"), firstJson);
     }
 }

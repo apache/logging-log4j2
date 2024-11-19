@@ -16,27 +16,16 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.Level;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class TagLevelTest {
 
-    private final Class<? extends LoggingMessageTagSupport> cls;
-    private final Level level;
-
-    public TagLevelTest(final Class<? extends LoggingMessageTagSupport> cls, final Level level) {
-        this.cls = cls;
-        this.level = level;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {DebugTag.class, Level.DEBUG},
@@ -48,8 +37,9 @@ public class TagLevelTest {
         });
     }
 
-    @Test
-    public void testGetLevel() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testGetLevel(final Class<? extends LoggingMessageTagSupport> cls, final Level level) throws Exception {
         assertEquals(level, cls.newInstance().getLevel());
     }
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,7 +36,7 @@ import org.slf4j.MarkerFactory;
  *
  */
 @LoggerContextSource(value = "log4j-test1.xml")
-public class OptionalTest {
+class OptionalTest {
 
     Logger logger = LoggerFactory.getLogger("EventLogger");
     Marker marker = MarkerFactory.getMarker("EVENT");
@@ -48,7 +47,7 @@ public class OptionalTest {
     }
 
     @Test
-    public void testEventLogger() {
+    void testEventLogger() {
         logger.info(marker, "This is a test");
         MDC.clear();
         verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Strings.LINE_SEPARATOR);
@@ -57,14 +56,14 @@ public class OptionalTest {
     private void verify(final String name, final String expected) {
         final ListAppender listApp = CTX.getConfiguration().getAppender(name);
         final List<String> events = listApp.getMessages();
-        assertTrue(events.size() == 1, "Incorrect number of messages. Expected 1 Actual " + events.size());
+        assertEquals(1, events.size(), "Incorrect number of messages. Expected 1 Actual " + events.size());
         final String actual = events.get(0);
         assertEquals(expected, actual, "Incorrect message. Expected " + expected + ". Actual " + actual);
         listApp.clear();
     }
 
     @BeforeEach
-    public void cleanup(@Named("List") final ListAppender list, @Named("EventLogger") final ListAppender eventLogger) {
+    void cleanup(@Named("List") final ListAppender list, @Named("EventLogger") final ListAppender eventLogger) {
         list.clear();
         eventLogger.clear();
     }

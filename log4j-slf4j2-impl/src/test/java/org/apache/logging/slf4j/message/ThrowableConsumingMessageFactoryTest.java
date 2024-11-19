@@ -22,7 +22,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory2;
 import org.junit.jupiter.api.Test;
 
-public class ThrowableConsumingMessageFactoryTest {
+class ThrowableConsumingMessageFactoryTest {
 
     private static final String MESSAGE = "MESSAGE";
     private static final Object P0 = new Object();

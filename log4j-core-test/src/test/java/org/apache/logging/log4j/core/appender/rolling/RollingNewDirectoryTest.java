@@ -44,7 +44,7 @@ public class RollingNewDirectoryTest {
     private Logger logger;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingNewDirectoryTest.class.getName());
     }
 

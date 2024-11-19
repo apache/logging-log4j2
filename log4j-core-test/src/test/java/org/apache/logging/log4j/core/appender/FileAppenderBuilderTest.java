@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
@@ -29,13 +29,13 @@ import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 
-public class FileAppenderBuilderTest {
+class FileAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1620
      */
     @Test
-    public void testDefaultImmediateFlush() {
+    void testDefaultImmediateFlush() {
         assertTrue(FileAppender.newBuilder().isImmediateFlush());
     }
 
@@ -44,12 +44,12 @@ public class FileAppenderBuilderTest {
      * {@code null}.
      */
     @Test
-    public void testConstraints() {
+    void testConstraints() {
         final AtomicInteger counter = new AtomicInteger();
         final StatusListener listener = new StatusListener() {
 
             @Override
-            public void close() throws IOException {}
+            public void close() {}
 
             @Override
             public void log(final StatusData data) {
@@ -79,7 +79,7 @@ public class FileAppenderBuilderTest {
                     .withFileName("target/FileAppenderBuilderTest.log")
                     .build();
             assertNotNull(appender);
-            assertTrue(counter.get() == 0);
+            assertEquals(0, counter.get());
         } catch (NullPointerException e) {
             // thrown if no filename is provided
             fail(e);

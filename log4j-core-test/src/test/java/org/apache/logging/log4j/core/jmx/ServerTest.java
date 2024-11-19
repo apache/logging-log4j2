@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for the Server class.
  */
-public class ServerTest {
+class ServerTest {
 
     @Test
-    public void testEscapeQuotesButDoesNotEscapeEquals() throws Exception {
+    void testEscapeQuotesButDoesNotEscapeEquals() throws Exception {
         final String ctx = "WebAppClassLoader=1320771902@4eb9613e"; // LOG4J2-492
         final String ctxName = Server.escape(ctx);
         assertEquals("\"WebAppClassLoader=1320771902@4eb9613e\"", ctxName);
@@ -36,7 +36,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesButDoesNotEscapeComma() throws Exception {
+    void testEscapeQuotesButDoesNotEscapeComma() throws Exception {
         final String ctx = "a,b,c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a,b,c\"", ctxName);
@@ -45,7 +45,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesButDoesNotEscapeColon() throws Exception {
+    void testEscapeQuotesButDoesNotEscapeColon() throws Exception {
         final String ctx = "a:b:c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a:b:c\"", ctxName);
@@ -54,7 +54,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesAndEscapesQuestion() throws Exception {
+    void testEscapeQuotesAndEscapesQuestion() throws Exception {
         final String ctx = "a?c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\?c\"", ctxName);
@@ -63,7 +63,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesAndEscapesStar() throws Exception {
+    void testEscapeQuotesAndEscapesStar() throws Exception {
         final String ctx = "a*c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\*c\"", ctxName);
@@ -72,7 +72,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesAndEscapesBackslash() throws Exception {
+    void testEscapeQuotesAndEscapesBackslash() throws Exception {
         final String ctx = "a\\c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\\\c\"", ctxName);
@@ -81,7 +81,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeQuotesAndEscapesQuote() throws Exception {
+    void testEscapeQuotesAndEscapesQuote() throws Exception {
         final String ctx = "a\"c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\\"c\"", ctxName);
@@ -90,7 +90,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeIgnoresSpaces() throws Exception {
+    void testEscapeIgnoresSpaces() throws Exception {
         final String ctx = "a c";
         final String ctxName = Server.escape(ctx);
         assertEquals("a c", ctxName);
@@ -99,7 +99,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeEscapesLineFeed() throws Exception {
+    void testEscapeEscapesLineFeed() throws Exception {
         final String ctx = "a\rc";
         final String ctxName = Server.escape(ctx);
         assertEquals("ac", ctxName);
@@ -108,7 +108,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testEscapeEscapesCarriageReturn() throws Exception {
+    void testEscapeEscapesCarriageReturn() throws Exception {
         final String ctx = "a\nc";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\nc\"", ctxName);

@@ -36,10 +36,10 @@ import org.springframework.boot.test.context.SpringBootTest;
         key = "log4j2.loggerContextFactory",
         value = "org.apache.logging.log4j.core.impl.Log4jContextFactory")
 @SpringBootTest
-public class Log4j2SpringBootInitTest {
+class Log4j2SpringBootInitTest {
 
     @Test
-    public void testEnvironment() {
+    void testEnvironment() {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         final ListAppender app = context.getConfiguration().getAppender("Out");
         assertNotNull(app);
@@ -56,7 +56,7 @@ public class Log4j2SpringBootInitTest {
         }
 
         @Override
-        public void run(final ApplicationArguments args) throws Exception {
+        public void run(final ApplicationArguments args) {
             final LoggerContext context = (LoggerContext) LogManager.getContext(false);
             final SpringLookup lookup = new SpringLookup();
             lookup.setLoggerContext(context);

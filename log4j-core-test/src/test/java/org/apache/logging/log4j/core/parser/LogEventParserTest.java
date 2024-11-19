@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.parser;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
@@ -45,8 +45,8 @@ public abstract class LogEventParserTest {
         assertThat(logEvent.getThrownProxy().getExtendedStackTrace()[0].getClassName(), equalTo("logtest.Main"));
         assertThat(logEvent.getLoggerFqcn(), equalTo("org.apache.logging.log4j.spi.AbstractLogger"));
         assertThat(logEvent.getContextStack().asList(), equalTo(Arrays.asList("one", "two")));
-        assertThat((String) logEvent.getContextData().getValue("foo"), equalTo("FOO"));
-        assertThat((String) logEvent.getContextData().getValue("bar"), equalTo("BAR"));
+        assertThat(logEvent.getContextData().getValue("foo"), equalTo("FOO"));
+        assertThat(logEvent.getContextData().getValue("bar"), equalTo("BAR"));
         assertThat(logEvent.getSource().getClassName(), equalTo("logtest.Main"));
     }
 }

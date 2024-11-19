@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +34,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.FailOnceAppender;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -74,18 +77,18 @@ class AsyncAppenderExceptionHandlingTest {
             // Stop the AsyncAppender to drain the queued events.
             final Configuration configuration = loggerContext.getConfiguration();
             final AsyncAppender asyncAppender = configuration.getAppender("Async");
-            Assertions.assertNotNull(asyncAppender, "couldn't obtain the FailOnceAppender");
+            assertNotNull(asyncAppender, "couldn't obtain the FailOnceAppender");
             asyncAppender.stop();
 
             // Verify the logged message.
             final FailOnceAppender failOnceAppender = configuration.getAppender("FailOnce");
-            Assertions.assertNotNull(failOnceAppender, "couldn't obtain the FailOnceAppender");
-            Assertions.assertTrue(failOnceAppender.isFailed(), "FailOnceAppender hasn't failed yet");
+            assertNotNull(failOnceAppender, "couldn't obtain the FailOnceAppender");
+            assertTrue(failOnceAppender.isFailed(), "FailOnceAppender hasn't failed yet");
             final List<String> accumulatedMessages = failOnceAppender.drainEvents().stream()
                     .map(LogEvent::getMessage)
                     .map(Message::getFormattedMessage)
                     .collect(Collectors.toList());
-            Assertions.assertEquals(Collections.singletonList(lastLogMessage), accumulatedMessages);
+            assertEquals(Collections.singletonList(lastLogMessage), accumulatedMessages);
 
         } finally {
             System.setProperty(throwableClassNamePropertyName, Strings.EMPTY);

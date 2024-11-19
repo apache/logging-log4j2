@@ -20,16 +20,16 @@ import static org.apache.logging.log4j.core.GcHelper.awaitGarbageCollection;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-@Category(AsyncLoggers.class)
+@Tag(Tags.ASYNC_LOGGERS)
 class AsyncLoggerArgumentFreedOnErrorTest {
 
     /**

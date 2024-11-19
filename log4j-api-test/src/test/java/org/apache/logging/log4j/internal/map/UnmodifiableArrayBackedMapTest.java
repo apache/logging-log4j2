@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UnmodifiableArrayBackedMapTest {
+class UnmodifiableArrayBackedMapTest {
     private static final int TEST_DATA_SIZE = 5;
 
     private HashMap<String, String> getTestParameters() {
@@ -54,25 +55,25 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testCopyAndPut() {
+    void testCopyAndPut() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
         testMap = testMap.copyAndPut("6", "value6");
         assertTrue(testMap.containsKey("6"));
-        assertEquals(testMap.get("6"), "value6");
+        assertEquals("value6", testMap.get("6"));
 
         testMap = testMap.copyAndPut("6", "another value");
         assertTrue(testMap.containsKey("6"));
-        assertEquals(testMap.get("6"), "another value");
+        assertEquals("another value", testMap.get("6"));
 
         HashMap<String, String> newValues = getTestParameters();
         testMap = testMap.copyAndPutAll(newValues);
-        assertEquals(testMap.get("1"), "value1");
-        assertEquals(testMap.get("4"), "value4");
-        assertEquals(testMap.get("6"), "another value");
+        assertEquals("value1", testMap.get("1"));
+        assertEquals("value4", testMap.get("4"));
+        assertEquals("another value", testMap.get("6"));
     }
 
     @Test
-    public void testCopyAndRemove() {
+    void testCopyAndRemove() {
         // general removing from well-populated set
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
@@ -104,7 +105,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testCopyAndRemoveAll() {
+    void testCopyAndRemoveAll() {
         HashMap<String, String> initialMapContents = getTestParameters(15);
         initialMapContents.put("extra_key", "extra_value");
 
@@ -138,23 +139,23 @@ public class UnmodifiableArrayBackedMapTest {
         assertEquals(testMapWithSetRemoval, testMapWithArrayListRemoval);
 
         testMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
-        assertEquals(testMap.copyAndRemoveAll(initialMapContents.keySet()).size(), 0);
+        assertEquals(0, testMap.copyAndRemoveAll(initialMapContents.keySet()).size());
 
         testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test", "test");
-        assertEquals(testMap.copyAndRemoveAll(initialMapContents.keySet()).size(), 1);
+        assertEquals(1, testMap.copyAndRemoveAll(initialMapContents.keySet()).size());
         testMap = testMap.copyAndRemoveAll(Collections.singleton("not found"));
-        assertEquals(testMap.copyAndRemoveAll(testMap.keySet()).size(), 0);
+        assertEquals(0, testMap.copyAndRemoveAll(testMap.keySet()).size());
         testMap = testMap.copyAndRemoveAll(Collections.singleton("test"));
-        assertEquals(testMap.copyAndRemoveAll(testMap.keySet()).size(), 0);
+        assertEquals(0, testMap.copyAndRemoveAll(testMap.keySet()).size());
     }
 
     @Test
-    public void testEmptyMap() {
+    void testEmptyMap() {
         assertNull(UnmodifiableArrayBackedMap.EMPTY_MAP.get("test"));
     }
 
     @Test
-    public void testEntrySetIteratorAndSize() {
+    void testEntrySetIteratorAndSize() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         Set<Map.Entry<String, String>> entrySet = testMap.entrySet();
         int numEntriesFound = 0;
@@ -167,7 +168,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testEntrySetMutatorsBlocked() {
+    void testEntrySetMutatorsBlocked() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         Set<Map.Entry<String, String>> entrySet = testMap.entrySet();
         for (Map.Entry<String, String> entry : entrySet) {
@@ -199,7 +200,7 @@ public class UnmodifiableArrayBackedMapTest {
      * as well as UnmodifiableArrayBackedMap.equals(HashMap).
      */
     @Test
-    public void testEqualsHashCodeWithIdenticalContent() {
+    void testEqualsHashCodeWithIdenticalContent() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         assertEquals(params, testMap);
@@ -208,18 +209,18 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testEqualsHashCodeWithOneEmptyMap() {
+    void testEqualsHashCodeWithOneEmptyMap() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         // verify empty maps are not equal to non-empty maps
-        assertNotEquals(params, UnmodifiableArrayBackedMap.EMPTY_MAP);
+        assertNotEquals(UnmodifiableArrayBackedMap.EMPTY_MAP, params);
         assertNotEquals(new HashMap<>(), testMap);
         assertNotEquals(UnmodifiableArrayBackedMap.EMPTY_MAP, params);
-        assertNotEquals(testMap, new HashMap<>());
+        assertNotEquals(new HashMap<>(), testMap);
     }
 
     @Test
-    public void testEqualsHashCodeWithOneKeyRemoved() {
+    void testEqualsHashCodeWithOneKeyRemoved() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
 
@@ -233,7 +234,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testEqualsWhenOneValueDiffers() {
+    void testEqualsWhenOneValueDiffers() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         assertNotEquals(params, testMap.copyAndPut("1", "different value"));
@@ -241,7 +242,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testForEachBiConsumer_JavaUtil() {
+    void testForEachBiConsumer_JavaUtil() {
         final Map<String, String> map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         final Collection<String> keys = new HashSet<>();
         map.forEach((key, value) -> keys.add(key));
@@ -249,7 +250,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testForEachBiConsumer_Log4jUtil() {
+    void testForEachBiConsumer_Log4jUtil() {
         final ReadOnlyStringMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         final Collection<String> keys = new HashSet<>();
         map.forEach((key, value) -> keys.add(key));
@@ -257,7 +258,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testForEachTriConsumer() {
+    void testForEachTriConsumer() {
         UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         HashMap<String, String> iterationResultMap = new HashMap<>();
         TriConsumer<String, String, Map<String, String>> triConsumer =
@@ -272,7 +273,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testImmutability() {
+    void testImmutability() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap originalMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         UnmodifiableArrayBackedMap modifiedMap = originalMap.copyAndPutAll(getTestParameters());
@@ -285,7 +286,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testInstanceCopy() {
+    void testInstanceCopy() {
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
 
@@ -294,7 +295,7 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testMutatorsBlocked() {
+    void testMutatorsBlocked() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(getTestParameters());
         try {
             testMap.put("a", "a");
@@ -322,18 +323,18 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testNullValue() {
+    void testNullValue() {
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
         testMap = testMap.copyAndPut("key", null);
         assertTrue(testMap.containsKey("key"));
         assertTrue(testMap.containsValue(null));
-        assertTrue(testMap.size() == 1);
-        assertEquals(testMap.get("key"), null);
+        assertEquals(1, testMap.size());
+        assertNull(testMap.get("key"));
     }
 
     @Test
-    public void testReads() {
-        assertEquals(UnmodifiableArrayBackedMap.EMPTY_MAP.get("test"), null);
+    void testReads() {
+        assertNull(UnmodifiableArrayBackedMap.EMPTY_MAP.get("test"));
         HashMap<String, String> params = getTestParameters();
         UnmodifiableArrayBackedMap testMap = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPutAll(params);
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -345,11 +346,11 @@ public class UnmodifiableArrayBackedMapTest {
         }
         assertFalse(testMap.containsKey("not_present"));
         assertFalse(testMap.containsValue("not_present"));
-        assertEquals(null, testMap.get("not_present"));
+        assertNull(testMap.get("not_present"));
     }
 
     @Test
-    public void testState() {
+    void testState() {
         UnmodifiableArrayBackedMap originalMap;
         UnmodifiableArrayBackedMap newMap;
 
@@ -369,10 +370,10 @@ public class UnmodifiableArrayBackedMapTest {
     }
 
     @Test
-    public void testToMap() {
+    void testToMap() {
         UnmodifiableArrayBackedMap map = UnmodifiableArrayBackedMap.EMPTY_MAP.copyAndPut("test", "test");
         // verify same instance, not just equals()
-        assertTrue(map == map.toMap());
+        assertSame(map, map.toMap());
     }
 
     @Test

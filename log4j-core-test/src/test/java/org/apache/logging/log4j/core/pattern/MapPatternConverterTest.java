@@ -26,10 +26,10 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Test;
 
-public class MapPatternConverterTest {
+class MapPatternConverterTest {
 
     @Test
-    public void testConverter() {
+    void testConverter() {
 
         final StringMapMessage msg = new StringMapMessage();
         msg.put("subject", "I");
@@ -55,7 +55,7 @@ public class MapPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKey() {
+    void testConverterWithKey() {
 
         final StringMapMessage msg = new StringMapMessage();
         msg.put("subject", "I");
@@ -75,7 +75,7 @@ public class MapPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithJavaFormat() {
+    void testConverterWithJavaFormat() {
 
         final StringMapMessage msg = new StringMapMessage();
         msg.put("subject", "I");

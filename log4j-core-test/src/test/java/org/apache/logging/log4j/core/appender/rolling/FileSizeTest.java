@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Tests {@link FileSize}.
  */
-public class FileSizeTest {
+class FileSizeTest {
 
     @ParameterizedTest(name = "[{index}] \"{0}\" -> {1}")
     @CsvSource(

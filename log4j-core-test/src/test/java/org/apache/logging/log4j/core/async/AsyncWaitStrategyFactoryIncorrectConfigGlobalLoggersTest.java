@@ -17,38 +17,38 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(
                 ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml");
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test
-    public void testIncorrectConfigWaitStrategyFactory() throws Exception {
+    void testIncorrectConfigWaitStrategyFactory() throws Exception {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 

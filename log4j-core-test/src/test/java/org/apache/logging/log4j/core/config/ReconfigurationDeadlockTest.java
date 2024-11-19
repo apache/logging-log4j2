@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -40,7 +43,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
@@ -51,26 +53,26 @@ import org.junit.jupiter.api.RepeatedTest;
  * @see TestAppender
  */
 @LoggerContextSource("reconfiguration-deadlock.xml")
-public class ReconfigurationDeadlockTest {
+class ReconfigurationDeadlockTest {
 
     private static final int WORKER_COUNT = 100;
 
     private ExecutorService executor;
 
     @BeforeEach
-    public void startExecutor() {
+    void startExecutor() {
         executor = Executors.newFixedThreadPool(WORKER_COUNT);
     }
 
     @AfterEach
-    public void stopExecutor() throws InterruptedException {
+    void stopExecutor() throws InterruptedException {
         executor.shutdownNow();
         final boolean terminated = executor.awaitTermination(30, TimeUnit.SECONDS);
-        Assertions.assertTrue(terminated, "couldn't terminate the executor");
+        assertTrue(terminated, "couldn't terminate the executor");
     }
 
     @RepeatedTest(100)
-    public void reconfiguration_should_not_cause_deadlock_for_ongoing_logging() throws Exception {
+    void reconfiguration_should_not_cause_deadlock_for_ongoing_logging() throws Exception {
 
         // Try to update the config file to ensure that we can indeed update it.
         updateConfigFileModTime();
@@ -88,7 +90,7 @@ public class ReconfigurationDeadlockTest {
             final Future<?> workerFuture = workerFutures.get(workerIndex);
             try {
                 final Object workerResult = workerFuture.get(30, TimeUnit.SECONDS);
-                Assertions.assertNull(workerResult);
+                assertNull(workerResult);
             } catch (final Throwable failure) {
                 final String message =
                         String.format("check for worker %02d/%02d has failed", (workerIndex + 1), WORKER_COUNT);
@@ -100,7 +102,7 @@ public class ReconfigurationDeadlockTest {
     private static void updateConfigFileModTime() {
         final File file = new File("target/test-classes/reconfiguration-deadlock.xml");
         final boolean fileModified = file.setLastModified(System.currentTimeMillis());
-        Assertions.assertTrue(fileModified, "couldn't update file modification time");
+        assertTrue(fileModified, "couldn't update file modification time");
     }
 
     @SuppressWarnings("SameParameterValue")

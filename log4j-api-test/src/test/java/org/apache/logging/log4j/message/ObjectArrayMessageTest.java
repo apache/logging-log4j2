@@ -24,18 +24,18 @@ import org.junit.jupiter.api.Test;
 /**
  * @since 2.4
  */
-public class ObjectArrayMessageTest {
+class ObjectArrayMessageTest {
 
     private static final Object[] ARRAY = {"A", "B", "C"};
     private static final ObjectArrayMessage OBJECT_ARRAY_MESSAGE = new ObjectArrayMessage(ARRAY);
 
     @Test
-    public void testGetParameters() {
+    void testGetParameters() {
         assertArrayEquals(ARRAY, OBJECT_ARRAY_MESSAGE.getParameters());
     }
 
     @Test
-    public void testGetThrowable() {
+    void testGetThrowable() {
         assertNull(OBJECT_ARRAY_MESSAGE.getThrowable());
     }
 }

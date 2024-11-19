@@ -29,14 +29,14 @@ import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class RequiredValidatorTest {
+class RequiredValidatorTest {
 
     private PluginType<ValidatingPlugin> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
@@ -45,7 +45,7 @@ public class RequiredValidatorTest {
     }
 
     @Test
-    public void testNullDefaultValue() throws Exception {
+    void testNullDefaultValue() {
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
                 .withConfiguration(new NullConfiguration())
                 .withConfigurationNode(node)
@@ -54,7 +54,7 @@ public class RequiredValidatorTest {
     }
 
     @Test
-    public void testNonNullValue() throws Exception {
+    void testNonNullValue() {
         node.getAttributes().put("name", "foo");
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
                 .withConfiguration(new NullConfiguration())

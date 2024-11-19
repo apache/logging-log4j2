@@ -59,7 +59,7 @@ public class RollingAppenderDirectWriteStartupSizeTest {
     }
 
     @Test
-    public void testRollingFileAppenderWithReconfigure() throws Exception {
+    public void testRollingFileAppenderWithReconfigure() {
         final RollingFileAppender rfAppender =
                 loggerContextRule.getRequiredAppender("RollingFile", RollingFileAppender.class);
         final RollingFileManager manager = rfAppender.getManager();

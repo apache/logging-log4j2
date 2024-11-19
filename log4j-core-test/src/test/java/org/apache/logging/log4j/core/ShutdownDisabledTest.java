@@ -23,10 +23,10 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-test3.xml")
-public class ShutdownDisabledTest {
+class ShutdownDisabledTest {
 
     @Test
-    public void testShutdownFlag(final Configuration config) {
+    void testShutdownFlag(final Configuration config) {
         assertFalse(config.isShutdownHookEnabled(), "Shutdown hook is enabled");
     }
 }

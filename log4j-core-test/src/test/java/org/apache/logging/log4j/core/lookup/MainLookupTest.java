@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests MainLookup.
  */
-public class MainLookupTest {
+class MainLookupTest {
 
     @Test
-    public void testMainArgs() {
+    void testMainArgs() {
         MainMapLookup.setMainArguments("--file", "foo.txt", "--verbose", "-x", "bar");
         final String str =
                 "${key} ${main:-1} ${main:0} ${main:1} ${main:2} ${main:3} ${main:4} ${main:\\--file} ${main:foo.txt} ${main:\\--verbose} ${main:\\-x} ${main:bar} ${main:\\--quiet:-true}";

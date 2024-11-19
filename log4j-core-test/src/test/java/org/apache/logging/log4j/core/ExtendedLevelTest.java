@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevel.xml")
-public class ExtendedLevelTest {
+class ExtendedLevelTest {
 
     private final ListAppender list1;
     private final ListAppender list2;
@@ -41,7 +41,7 @@ public class ExtendedLevelTest {
     }
 
     @Test
-    public void testLevelLogging(final LoggerContext context) {
+    void testLevelLogging(final LoggerContext context) {
         org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.logging.log4j.test1");
         logger.log(ExtendedLevels.DETAIL, "Detail message");
         logger.log(Level.DEBUG, "Debug message");

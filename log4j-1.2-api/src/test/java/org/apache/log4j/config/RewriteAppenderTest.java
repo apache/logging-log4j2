@@ -39,21 +39,21 @@ import org.junit.jupiter.api.Test;
 /**
  * Test RewriteAppender
  */
-public class RewriteAppenderTest {
+class RewriteAppenderTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-rewrite.xml");
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         ThreadContext.clearMap();
     }
 
     @Test
-    public void testRewrite() {
+    void testRewrite() {
         final Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");
@@ -70,7 +70,7 @@ public class RewriteAppenderTest {
         }
         assertNotNull(eventAppender, "No Event Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue(events != null && events.size() > 0, "No events");
+        assertTrue(events != null && !events.isEmpty(), "No events");
         assertNotNull(events.get(0).getProperties(), "No properties in the event");
         assertTrue(events.get(0).getProperties().containsKey("key2"), "Key was not inserted");
         assertEquals("Log4j", events.get(0).getProperties().get("key2"), "Key value is incorrect");

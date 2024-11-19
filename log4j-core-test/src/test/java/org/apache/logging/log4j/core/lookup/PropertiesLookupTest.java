@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link PropertiesLookup}.
  */
-public class PropertiesLookupTest {
+class PropertiesLookupTest {
 
     @Test
-    public void testLookupContextProperty() {
+    void testLookupContextProperty() {
         final StrLookup propertiesLookup =
                 new PropertiesLookup(Property.EMPTY_ARRAY, Collections.singletonMap("A", "1"));
         assertEquals("1", propertiesLookup.lookup("A"));
@@ -43,7 +43,7 @@ public class PropertiesLookupTest {
     }
 
     @Test
-    public void testLookupConfigProperty() {
+    void testLookupConfigProperty() {
         final StrLookup propertiesLookup =
                 new PropertiesLookup(new Property[] {Property.createProperty("A", "1")}, Collections.emptyMap());
         assertEquals("1", propertiesLookup.lookup("A"));
@@ -53,7 +53,7 @@ public class PropertiesLookupTest {
     }
 
     @Test
-    public void testConfigPropertiesPreferredOverContextProperties() {
+    void testConfigPropertiesPreferredOverContextProperties() {
         final StrLookup propertiesLookup = new PropertiesLookup(
                 new Property[] {Property.createProperty("A", "1")}, Collections.singletonMap("A", "2"));
         assertEquals("1", propertiesLookup.lookup("A"));
@@ -63,25 +63,25 @@ public class PropertiesLookupTest {
     }
 
     @Test
-    public void testEvaluateResultsSupportRecursiveEvaluation() {
+    void testEvaluateResultsSupportRecursiveEvaluation() {
         final PropertiesLookup lookup = new PropertiesLookup(Collections.singletonMap("key", "value"));
         assertFalse(lookup.evaluate("key").isLookupEvaluationAllowedInValue());
     }
 
     @Test
-    public void testEvaluateReturnsNullWhenKeyIsNotFound() {
+    void testEvaluateReturnsNullWhenKeyIsNotFound() {
         final PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
         assertNull(lookup.evaluate("key"));
     }
 
     @Test
-    public void testEvaluateReturnsNullWhenKeyIsNull() {
+    void testEvaluateReturnsNullWhenKeyIsNull() {
         final PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
         assertNull(lookup.evaluate(null));
     }
 
     @Test
-    public void testContextPropertiesAreMutable() {
+    void testContextPropertiesAreMutable() {
         final Map<String, String> contextProperties = new HashMap<>();
         final PropertiesLookup lookup = new PropertiesLookup(Property.EMPTY_ARRAY, contextProperties);
         assertNull(lookup.evaluate("key"));

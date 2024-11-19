@@ -22,7 +22,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class LegacyPropertiesCompatibilityTest {
+class LegacyPropertiesCompatibilityTest {
 
     public static Object[][] data() {
         return new Object[][] {
@@ -84,7 +84,7 @@ public class LegacyPropertiesCompatibilityTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void compareNewWithOldName(final String newName, final String oldName) {
+    void compareNewWithOldName(final String newName, final String oldName) {
         final List<CharSequence> newTokens = PropertySource.Util.tokenize(newName);
         final List<CharSequence> oldTokens = PropertySource.Util.tokenize(oldName);
         assertEquals(oldTokens, newTokens);

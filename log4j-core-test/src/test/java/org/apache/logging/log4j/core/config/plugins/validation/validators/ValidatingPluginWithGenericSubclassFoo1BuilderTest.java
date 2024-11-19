@@ -29,14 +29,14 @@ import org.apache.logging.log4j.core.config.plugins.validation.PluginWithGeneric
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
+class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
 
     private PluginType<PluginWithGenericSubclassFoo1Builder> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<PluginWithGenericSubclassFoo1Builder>)
@@ -46,7 +46,7 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     }
 
     @Test
-    public void testNullDefaultValue() throws Exception {
+    void testNullDefaultValue() {
         final PluginWithGenericSubclassFoo1Builder validatingPlugin =
                 (PluginWithGenericSubclassFoo1Builder) new PluginBuilder(plugin)
                         .withConfiguration(new NullConfiguration())
@@ -56,7 +56,7 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     }
 
     @Test
-    public void testNonNullValue() throws Exception {
+    void testNonNullValue() {
         node.getAttributes().put("thing", "thing1");
         node.getAttributes().put("foo1", "foo1");
         final PluginWithGenericSubclassFoo1Builder validatingPlugin =

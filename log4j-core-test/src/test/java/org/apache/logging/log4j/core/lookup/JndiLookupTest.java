@@ -71,7 +71,7 @@ public class JndiLookupTest {
     }
 
     @Test
-    public void testNonStringLookup() throws Exception {
+    public void testNonStringLookup() {
         // LOG4J2-1310
         final StrLookup lookup = new JndiLookup();
         final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);

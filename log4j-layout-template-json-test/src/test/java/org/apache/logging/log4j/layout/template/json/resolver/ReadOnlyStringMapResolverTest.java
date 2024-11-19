@@ -141,7 +141,7 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    public void test_map_key_access() {
+    void test_map_key_access() {
 
         // Create the log event.
         final String directlyAccessedKey = "mapKey1";
@@ -210,7 +210,7 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    public void test_map_pattern() {
+    void test_map_pattern() {
 
         // Create the log event.
         final String patternMatchedKey = "mapKey1";
@@ -280,7 +280,7 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    public void test_map_flatten() {
+    void test_map_flatten() {
 
         // Create the log event.
         final String patternMatchedKey = "mapKey1";

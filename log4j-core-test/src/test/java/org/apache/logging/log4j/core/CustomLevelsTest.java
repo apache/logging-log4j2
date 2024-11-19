@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevels.xml")
-public class CustomLevelsTest {
+class CustomLevelsTest {
 
     private final ListAppender listAppender;
     private final Level diagLevel;
@@ -45,21 +45,21 @@ public class CustomLevelsTest {
     }
 
     @Test
-    public void testCustomLevelInts() {
+    void testCustomLevelInts() {
         assertEquals(350, diagLevel.intLevel());
         assertEquals(450, noticeLevel.intLevel());
         assertEquals(550, verboseLevel.intLevel());
     }
 
     @Test
-    public void testCustomLevelPresence() {
+    void testCustomLevelPresence() {
         assertNotNull(diagLevel);
         assertNotNull(noticeLevel);
         assertNotNull(verboseLevel);
     }
 
     @Test
-    public void testLog() {
+    void testLog() {
         assertThat(listAppender.getEvents(), hasSize(0));
         logger.debug("Hello, {}", "World");
         assertThat(listAppender.getEvents(), hasSize(1));

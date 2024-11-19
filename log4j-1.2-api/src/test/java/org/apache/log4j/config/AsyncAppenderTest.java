@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test configuration from XML.
  */
 @UsingStatusListener
-public class AsyncAppenderTest {
+class AsyncAppenderTest {
 
     private static long DEFAULT_TIMEOUT_MS = 500;
 
@@ -51,7 +51,7 @@ public class AsyncAppenderTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testAsyncAppender(final String configLocation) throws Exception {
+    void testAsyncAppender(final String configLocation) throws Exception {
         try (final LoggerContext loggerContext = TestConfigurator.configure(configLocation)) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");

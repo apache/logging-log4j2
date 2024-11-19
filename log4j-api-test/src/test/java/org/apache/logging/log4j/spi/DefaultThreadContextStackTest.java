@@ -33,10 +33,10 @@ import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class DefaultThreadContextStackTest {
+class DefaultThreadContextStackTest {
 
     @Test
-    public void testEqualsVsSameKind() {
+    void testEqualsVsSameKind() {
         final DefaultThreadContextStack stack1 = createStack();
         final DefaultThreadContextStack stack2 = createStack();
         assertEquals(stack1, stack1);
@@ -46,7 +46,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testEqualsVsMutable() {
+    void testEqualsVsMutable() {
         final ThreadContextStack stack1 = createStack();
         final ThreadContextStack stack2 = MutableThreadContextStackTest.createStack();
         assertEquals(stack1, stack1);
@@ -56,21 +56,21 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testHashCodeVsSameKind() {
+    void testHashCodeVsSameKind() {
         final DefaultThreadContextStack stack1 = createStack();
         final DefaultThreadContextStack stack2 = createStack();
         assertEquals(stack1.hashCode(), stack2.hashCode());
     }
 
     @Test
-    public void testImmutableOrNullReturnsNullIfUseStackIsFalse() {
+    void testImmutableOrNullReturnsNullIfUseStackIsFalse() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(false);
         stack.clear();
         assertNull(stack.getImmutableStackOrNull());
     }
 
     @Test
-    public void testImmutableOrNullReturnsNullIfStackIsEmpty() {
+    void testImmutableOrNullReturnsNullIfStackIsEmpty() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -78,7 +78,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testImmutableOrNullReturnsCopyOfContents() {
+    void testImmutableOrNullReturnsCopyOfContents() {
         final DefaultThreadContextStack stack = createStack();
         assertFalse(stack.isEmpty());
         final ContextStack actual = stack.getImmutableStackOrNull();
@@ -87,7 +87,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testModifyingImmutableOrNullThrowsException() {
+    void testModifyingImmutableOrNullThrowsException() {
         final DefaultThreadContextStack stack = createStack();
         final int originalSize = stack.size();
         assertTrue(originalSize > 0);
@@ -98,7 +98,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testDoesNothingIfConstructedWithUseStackIsFalse() {
+    void testDoesNothingIfConstructedWithUseStackIsFalse() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(false);
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -110,7 +110,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testPushAndAddIncreaseStack() {
+    void testPushAndAddIncreaseStack() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -121,7 +121,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testPeekReturnsLastAddedItem() {
+    void testPeekReturnsLastAddedItem() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -136,7 +136,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testPopRemovesLastAddedItem() {
+    void testPopRemovesLastAddedItem() {
         final DefaultThreadContextStack stack = createStack();
         assertEquals(3, stack.getDepth());
 
@@ -154,7 +154,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -166,7 +166,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testTrim() {
+    void testTrim() {
         final DefaultThreadContextStack stack = createStack();
 
         stack.trim(1);
@@ -175,7 +175,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testCopy() {
+    void testCopy() {
         final DefaultThreadContextStack stack = createStack();
 
         final ThreadContextStack copy = stack.copy();
@@ -205,7 +205,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testClear() {
+    void testClear() {
         final DefaultThreadContextStack stack = createStack();
 
         stack.clear();
@@ -227,7 +227,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testContains() {
+    void testContains() {
         final DefaultThreadContextStack stack = createStack();
 
         assertTrue(stack.contains("msg1"));
@@ -236,7 +236,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testIteratorReturnsInListOrderNotStackOrder() {
+    void testIteratorReturnsInListOrderNotStackOrder() {
         final DefaultThreadContextStack stack = createStack();
 
         final Iterator<String> iter = stack.iterator();
@@ -250,7 +250,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testToArray() {
+    void testToArray() {
         final DefaultThreadContextStack stack = createStack();
 
         final String[] expecteds = {"msg1", "msg2", "msg3"};
@@ -258,7 +258,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testToArrayTArray() {
+    void testToArrayTArray() {
         final DefaultThreadContextStack stack = createStack();
 
         final String[] expecteds = {"msg1", "msg2", "msg3"};
@@ -268,7 +268,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         final DefaultThreadContextStack stack = createStack();
         assertTrue(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
 
@@ -284,14 +284,14 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testContainsAll() {
+    void testContainsAll() {
         final DefaultThreadContextStack stack = createStack();
 
         assertTrue(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
     }
 
     @Test
-    public void testAddAll() {
+    void testAddAll() {
         final DefaultThreadContextStack stack = createStack();
 
         stack.addAll(Arrays.asList("msg4", "msg5"));
@@ -304,7 +304,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testRemoveAll() {
+    void testRemoveAll() {
         final DefaultThreadContextStack stack = createStack();
 
         stack.removeAll(Arrays.asList("msg1", "msg3"));
@@ -315,7 +315,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testRetainAll() {
+    void testRetainAll() {
         final DefaultThreadContextStack stack = createStack();
 
         stack.retainAll(Arrays.asList("msg1", "msg3"));
@@ -326,7 +326,7 @@ public class DefaultThreadContextStackTest {
     }
 
     @Test
-    public void testToStringShowsListContents() {
+    void testToStringShowsListContents() {
         final DefaultThreadContextStack stack = new DefaultThreadContextStack(true);
         stack.clear();
         assertEquals("[]", stack.toString());

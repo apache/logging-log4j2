@@ -24,12 +24,12 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource(value = "log4j2-jdbc-dbcp2.xml", timeout = 10)
-public class PoolableConnectionFactoryTest {
+class PoolableConnectionFactoryTest {
 
     private static final String REL_PATH = "src/test/resources/log4j2-jdbc-dbcp2.xml";
 
     @Test
-    public void test(@Named("databaseAppender") final Appender appender) {
+    void test(@Named("databaseAppender") final Appender appender) {
         assertNotNull(appender, "Problem loading configuration from " + REL_PATH);
     }
 }

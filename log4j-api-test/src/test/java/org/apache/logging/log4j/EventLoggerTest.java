@@ -27,18 +27,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @ResourceLock("log4j2.TestLogger")
-public class EventLoggerTest {
+class EventLoggerTest {
 
     TestLogger logger = (TestLogger) LogManager.getLogger("EventLogger");
     List<String> results = logger.getEntries();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         results.clear();
     }
 
     @Test
-    public void structuredData() {
+    void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName(Locale.US));

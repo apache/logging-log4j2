@@ -16,56 +16,56 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerThreadNameStrategyTest {
-    @After
-    public void after() {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerThreadNameStrategyTest {
+    @AfterEach
+    void after() {
         System.clearProperty("AsyncLogger.ThreadNameStrategy");
     }
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         System.clearProperty("AsyncLogger.ThreadNameStrategy");
     }
 
     @Test
-    public void testDefaultIfNotConfigured() throws Exception {
+    void testDefaultIfNotConfigured() {
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.DEFAULT_STRATEGY, tns);
     }
 
     @Test
-    public void testDefaultIfInvalidConfig() throws Exception {
+    void testDefaultIfInvalidConfig() {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "\\%%InValid ");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.DEFAULT_STRATEGY, tns);
     }
 
     @Test
-    public void testUseCachedThreadNameIfConfigured() throws Exception {
+    void testUseCachedThreadNameIfConfigured() {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.CACHED, tns);
     }
 
     @Test
-    public void testUseUncachedThreadNameIfConfigured() throws Exception {
+    void testUseUncachedThreadNameIfConfigured() {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "UNCACHED");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.UNCACHED, tns);
     }
 
     @Test
-    public void testUncachedThreadNameStrategyReturnsCurrentThreadName() throws Exception {
+    void testUncachedThreadNameStrategyReturnsCurrentThreadName() {
         final String name1 = "MODIFIED-THREADNAME1";
         Thread.currentThread().setName(name1);
         assertEquals(name1, ThreadNameCachingStrategy.UNCACHED.getThreadName());
@@ -76,7 +76,7 @@ public class AsyncLoggerThreadNameStrategyTest {
     }
 
     @Test
-    public void testCachedThreadNameStrategyReturnsCachedThreadName() throws Exception {
+    void testCachedThreadNameStrategyReturnsCachedThreadName() {
         final String original = "Original-ThreadName";
         Thread.currentThread().setName(original);
         assertEquals(original, ThreadNameCachingStrategy.CACHED.getThreadName());

@@ -16,36 +16,38 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.logging.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.LogManager;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ApiLoggerTest extends AbstractLoggerTest {
+class ApiLoggerTest extends AbstractLoggerTest {
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         logger = Logger.getLogger(LOGGER_NAME);
         logger.setFilter(null);
-        assertThat(getEffectiveLevel(logger)).isEqualTo(java.util.logging.Level.FINE);
+        assertThat(getEffectiveLevel(logger), equalTo(java.util.logging.Level.FINE));
         eventAppender = ListAppender.getListAppender("TestAppender");
         flowAppender = ListAppender.getListAppender("FlowAppender");
         stringAppender = ListAppender.getListAppender("StringAppender");
@@ -54,8 +56,8 @@ public class ApiLoggerTest extends AbstractLoggerTest {
         assertNotNull(stringAppender);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (eventAppender != null) {
             eventAppender.clear();
         }
@@ -68,18 +70,18 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     }
 
     @Test
-    public void testGetParent() {
+    void testGetParent() {
         final Logger parent = logger.getParent();
-        assertNull("No parent logger should be automatically set up using log4j-api", parent);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testSetParentFails() {
-        logger.setParent(null);
+        assertNull(parent, "No parent logger should be automatically set up using log4j-api");
     }
 
     @Test
-    public void testSetLevelFails() {
+    void testSetParentFails() {
+        assertThrows(UnsupportedOperationException.class, () -> logger.setParent(null));
+    }
+
+    @Test
+    void testSetLevelFails() {
         logger.setLevel(null);
     }
 }

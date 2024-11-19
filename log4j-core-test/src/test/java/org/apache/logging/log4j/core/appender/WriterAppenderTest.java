@@ -39,7 +39,7 @@ import org.junit.jupiter.api.TestInfo;
 /**
  * Tests {@link WriterAppender}.
  */
-public class WriterAppenderTest {
+class WriterAppenderTest {
 
     private static final String TEST_MSG = "FOO ERROR";
 
@@ -83,31 +83,31 @@ public class WriterAppenderTest {
     }
 
     @Test
-    public void testWriterAppenderToCharArrayWriter() {
+    void testWriterAppenderToCharArrayWriter() {
         test(new CharArrayWriter());
     }
 
     @Test
-    public void testWriterAppenderToOutputStreamWriter() {
+    void testWriterAppenderToOutputStreamWriter() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final Writer writer = new OutputStreamWriter(out);
         test(out, writer);
     }
 
     @Test
-    public void testWriterAppenderToPrintWriter() {
+    void testWriterAppenderToPrintWriter() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final Writer writer = new PrintWriter(out);
         test(out, writer);
     }
 
     @Test
-    public void testWriterAppenderToStringWriter() {
+    void testWriterAppenderToStringWriter() {
         test(new StringWriter());
     }
 
     @Test
-    public void testBuilder() {
+    void testBuilder() {
         // This should compile
         WriterAppender.newBuilder()
                 .setTarget(new StringWriter())

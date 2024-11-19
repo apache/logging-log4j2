@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests the SortingVisitor class.
  */
-public class SortingVisitorTest {
+class SortingVisitorTest {
 
     @TempDir
     Path base;
@@ -49,7 +49,7 @@ public class SortingVisitorTest {
     private Path ccc;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         aaa = Files.createFile(base.resolve("aaa"));
         bbb = Files.createFile(base.resolve("bbb"));
         ccc = Files.createFile(base.resolve("ccc"));
@@ -62,7 +62,7 @@ public class SortingVisitorTest {
     }
 
     @Test
-    public void testRecentFirst() throws Exception {
+    void testRecentFirst() throws Exception {
         final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(true));
         final Set<FileVisitOption> options = Collections.emptySet();
         Files.walkFileTree(base, options, 1, visitor);
@@ -76,7 +76,7 @@ public class SortingVisitorTest {
     }
 
     @Test
-    public void testRecentLast() throws Exception {
+    void testRecentLast() throws Exception {
         final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         final Set<FileVisitOption> options = Collections.emptySet();
         Files.walkFileTree(base, options, 1, visitor);
@@ -90,7 +90,7 @@ public class SortingVisitorTest {
     }
 
     @Test
-    public void testNoSuchFileFailure() throws IOException {
+    void testNoSuchFileFailure() throws IOException {
         final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         assertSame(
                 FileVisitResult.CONTINUE,
@@ -98,7 +98,7 @@ public class SortingVisitorTest {
     }
 
     @Test
-    public void testIOException() {
+    void testIOException() {
         final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         final IOException exception = new IOException();
         assertSame(

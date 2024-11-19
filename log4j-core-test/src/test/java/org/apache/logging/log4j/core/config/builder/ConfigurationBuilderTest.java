@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.Test;
 
-public class ConfigurationBuilderTest {
+class ConfigurationBuilderTest {
 
     private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
@@ -112,7 +112,7 @@ public class ConfigurationBuilderTest {
             + EOL;
 
     @Test
-    public void testXmlConstructing() throws Exception {
+    void testXmlConstructing() {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();

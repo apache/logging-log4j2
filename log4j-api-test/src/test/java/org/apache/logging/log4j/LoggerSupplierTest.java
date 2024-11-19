@@ -44,7 +44,7 @@ import org.junit.jupiter.api.parallel.Resources;
  */
 @ResourceLock(Resources.LOCALE)
 @ResourceLock("log4j2.TestLogger")
-public class LoggerSupplierTest {
+class LoggerSupplierTest {
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
 
@@ -53,7 +53,7 @@ public class LoggerSupplierTest {
     Locale defaultLocale;
 
     @Test
-    public void flowTracing_SupplierOfFormattedMessage() {
+    void flowTracing_SupplierOfFormattedMessage() {
         logger.traceEntry(() -> new FormattedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -64,7 +64,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfJsonMessage() {
+    void flowTracing_SupplierOfJsonMessage() {
         final Properties props = new Properties();
         props.setProperty("foo", "bar");
         logger.traceEntry(() -> new JsonMessage(props));
@@ -77,7 +77,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfLocalizedMessage() {
+    void flowTracing_SupplierOfLocalizedMessage() {
         logger.traceEntry(() -> new LocalizedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -88,7 +88,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfLong() {
+    void flowTracing_SupplierOfLong() {
         logger.traceEntry(() -> 1234567890L);
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -99,7 +99,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfMessageFormatMessage() {
+    void flowTracing_SupplierOfMessageFormatMessage() {
         logger.traceEntry(() -> new MessageFormatMessage("int foo={0}", 1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -110,7 +110,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfObjectArrayMessage() {
+    void flowTracing_SupplierOfObjectArrayMessage() {
         logger.traceEntry(() -> new ObjectArrayMessage(1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -121,7 +121,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfObjectMessage() {
+    void flowTracing_SupplierOfObjectMessage() {
         logger.traceEntry(() -> new ObjectMessage(1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -132,7 +132,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfParameterizedMessage() {
+    void flowTracing_SupplierOfParameterizedMessage() {
         logger.traceEntry(() -> new ParameterizedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -143,7 +143,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfSimpleMessage() {
+    void flowTracing_SupplierOfSimpleMessage() {
         logger.traceEntry(() -> new SimpleMessage("1234567890"));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -154,7 +154,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfString() {
+    void flowTracing_SupplierOfString() {
         logger.traceEntry(() -> "1234567890");
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -165,7 +165,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfStringFormattedMessage() {
+    void flowTracing_SupplierOfStringFormattedMessage() {
         logger.traceEntry(() -> new StringFormattedMessage("int foo=%,d", 1234567890));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -176,7 +176,7 @@ public class LoggerSupplierTest {
     }
 
     @Test
-    public void flowTracing_SupplierOfThreadDumpMessage() {
+    void flowTracing_SupplierOfThreadDumpMessage() {
         logger.traceEntry(() -> new ThreadDumpMessage("Title of ..."));
         assertThat(results).hasSize(1);
         final String entry = results.get(0);
@@ -186,14 +186,14 @@ public class LoggerSupplierTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);
     }
 }

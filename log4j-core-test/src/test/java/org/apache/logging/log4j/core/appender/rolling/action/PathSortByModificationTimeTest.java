@@ -29,20 +29,20 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the {@code PathSortByModificationTime} class.
  */
-public class PathSortByModificationTimeTest {
+class PathSortByModificationTimeTest {
 
     /**
      * Test method for
      * {@link org.apache.logging.log4j.core.appender.rolling.action.PathSortByModificationTime#isRecentFirst()}.
      */
     @Test
-    public void testIsRecentFirstReturnsConstructorValue() {
+    void testIsRecentFirstReturnsConstructorValue() {
         assertTrue(((PathSortByModificationTime) PathSortByModificationTime.createSorter(true)).isRecentFirst());
         assertFalse(((PathSortByModificationTime) PathSortByModificationTime.createSorter(false)).isRecentFirst());
     }
 
     @Test
-    public void testCompareRecentFirst() {
+    void testCompareRecentFirst() {
         final PathSorter sorter = PathSortByModificationTime.createSorter(true);
         final Path p1 = Paths.get("aaa");
         final Path p2 = Paths.get("bbb");
@@ -65,7 +65,7 @@ public class PathSortByModificationTimeTest {
     }
 
     @Test
-    public void testCompareRecentLast() {
+    void testCompareRecentLast() {
         final PathSorter sorter = PathSortByModificationTime.createSorter(false);
         final Path p1 = Paths.get("aaa");
         final Path p2 = Paths.get("bbb");

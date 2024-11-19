@@ -23,10 +23,10 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
 
-public class LogEventWrapperTest {
+class LogEventWrapperTest {
 
     @Test
-    public void testThread() {
+    void testThread() {
         final Thread currentThread = Thread.currentThread();
         final String threadName = currentThread.getName();
         final LoggingEvent log4j1Event = new LoggingEvent() {
@@ -42,7 +42,7 @@ public class LogEventWrapperTest {
     }
 
     @Test
-    public void testToImmutable() {
+    void testToImmutable() {
         final LogEventWrapper wrapper = new LogEventWrapper(new LoggingEvent());
         assertSame(wrapper, wrapper.toImmutable());
     }

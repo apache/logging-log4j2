@@ -29,17 +29,17 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link MapLookup}.
  */
-public class MapLookupTest {
+class MapLookupTest {
 
     @Test
-    public void testEmptyMap() {
+    void testEmptyMap() {
         final MapLookup lookup = new MapLookup(new HashMap<String, String>());
         assertNull(lookup.lookup(null));
         assertNull(lookup.lookup("X"));
     }
 
     @Test
-    public void testMap() {
+    void testMap() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);
@@ -48,14 +48,14 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testNullMap() {
+    void testNullMap() {
         final MapLookup lookup = new MapLookup();
         assertNull(lookup.lookup(null));
         assertNull(lookup.lookup("X"));
     }
 
     @Test
-    public void testMainMap() {
+    void testMainMap() {
         MainMapLookup.setMainArguments("--file", "foo.txt");
         final MapLookup lookup = MainMapLookup.MAIN_SINGLETON;
         assertNull(lookup.lookup(null));
@@ -67,7 +67,7 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testEventStringMapMessage() {
+    void testEventStringMapMessage() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final HashMap<String, String> eventMap = new HashMap<>();
@@ -80,7 +80,7 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testEventMapMessage() {
+    void testEventMapMessage() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final HashMap<String, Object> eventMap = new HashMap<>();
@@ -93,7 +93,7 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testLookupMapMessageIsCheckedBeforeDefaultMap() {
+    void testLookupMapMessageIsCheckedBeforeDefaultMap() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "ADefault");
         map.put("B", "BDefault");
@@ -107,7 +107,7 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testNullEvent() {
+    void testNullEvent() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "B");
         final MapLookup lookup = new MapLookup(map);

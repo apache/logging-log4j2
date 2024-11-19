@@ -32,8 +32,7 @@ class LocationPatternConvertersRequireLocationTest {
      */
     @ParameterizedTest
     @CsvSource({"%L", "%l", "%F", "%C", "%M"})
-    void testThatLocationDependentPatternConvertersIndicateLocationRequirement(final String converterKey)
-            throws Exception {
+    void testThatLocationDependentPatternConvertersIndicateLocationRequirement(final String converterKey) {
         final PatternFormatter formatter = createSinglePatternFormatterFromConverterKey(converterKey);
 
         final LocationAware locationAwareFormatter = assertInstanceOf(LocationAware.class, formatter.getConverter());

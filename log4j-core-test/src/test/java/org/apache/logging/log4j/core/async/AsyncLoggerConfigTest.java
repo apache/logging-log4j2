@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag(Tags.ASYNC_LOGGERS)
 @UsingStatusListener
-public class AsyncLoggerConfigTest {
+class AsyncLoggerConfigTest {
 
     private static final String FQCN = AsyncLoggerConfigTest.class.getName();
 
@@ -57,7 +57,7 @@ public class AsyncLoggerConfigTest {
 
     @Test
     @LoggerContextSource
-    public void testAdditivity(final LoggerContext context) throws Exception {
+    void testAdditivity(final LoggerContext context) throws Exception {
         final Path file = loggingPath.resolve("AsyncLoggerConfigTest.log");
         assertThat(file).isEmptyFile();
 
@@ -79,7 +79,7 @@ public class AsyncLoggerConfigTest {
     }
 
     @Test
-    public void testIncludeLocationDefaultsToFalse() {
+    void testIncludeLocationDefaultsToFalse() {
         final Configuration configuration = new NullConfiguration();
         final LoggerConfig rootLoggerConfig =
                 RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
@@ -93,7 +93,7 @@ public class AsyncLoggerConfigTest {
     }
 
     @Test
-    public void testSingleFilterInvocation() {
+    void testSingleFilterInvocation() {
         final Configuration configuration = new NullConfiguration();
         final Filter filter = mock(Filter.class);
         final LoggerConfig config = AsyncLoggerConfig.newAsyncBuilder()

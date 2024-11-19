@@ -35,7 +35,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jLookupWithSpacesTest {
+class Log4jLookupWithSpacesTest {
 
     private static final File EXPECT =
             new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml");
@@ -50,19 +50,19 @@ public class Log4jLookupWithSpacesTest {
     private ConfigurationSource configSrc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         ContextAnchor.THREAD_CONTEXT.set(mockCtx);
         given(config.getConfigurationSource()).willReturn(configSrc);
         given(configSrc.getFile()).willReturn(EXPECT);
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         ContextAnchor.THREAD_CONTEXT.set(null);
     }
 
     @Test
-    public void lookupConfigLocation_withSpaces() {
+    void lookupConfigLocation_withSpaces() {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_LOCATION);
@@ -72,7 +72,7 @@ public class Log4jLookupWithSpacesTest {
     }
 
     @Test
-    public void lookupConfigParentLocation_withSpaces() {
+    void lookupConfigParentLocation_withSpaces() {
         final StrLookup log4jLookup = new Log4jLookup();
         ((ConfigurationAware) log4jLookup).setConfiguration(config);
         final String value = log4jLookup.lookup(KEY_CONFIG_PARENT_LOCATION);

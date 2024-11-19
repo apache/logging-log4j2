@@ -84,7 +84,7 @@ public class SerializedLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    public void testLayout() {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);

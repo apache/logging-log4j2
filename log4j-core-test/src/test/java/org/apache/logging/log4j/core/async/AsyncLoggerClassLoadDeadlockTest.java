@@ -16,31 +16,34 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Test class loading deadlock condition from the LOG4J2-1457
  */
-@Category(AsyncLoggers.class)
-public class AsyncLoggerClassLoadDeadlockTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerClassLoadDeadlockTest {
 
     static final int RING_BUFFER_SIZE = 128;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(RING_BUFFER_SIZE));
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConsoleTest.xml");
     }
 
-    @Test(timeout = 30000)
-    public void testClassLoaderDeadlock() throws Exception {
+    @Test
+    @Timeout(value = 30000, unit = TimeUnit.MILLISECONDS)
+    void testClassLoaderDeadlock() {
         // touch the class so static init will be called
         final AsyncLoggerClassLoadDeadlock temp = new AsyncLoggerClassLoadDeadlock();
         assertNotNull(temp);

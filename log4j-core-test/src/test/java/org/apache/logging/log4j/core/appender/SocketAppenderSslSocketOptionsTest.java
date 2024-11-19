@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 
-public class SocketAppenderSslSocketOptionsTest {
+class SocketAppenderSslSocketOptionsTest {
 
     private static final String APPENDER_NAME = "TestSocket";
 

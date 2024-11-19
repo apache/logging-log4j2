@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
  * Test logging with MDC values.
  */
 @LoggerContextSource("logWithMDC.xml")
-public class LogWithMDCTest {
+class LogWithMDCTest {
 
     @Test
-    public void testMDC(@Named("List") final ListAppender listApp) {
+    void testMDC(@Named("List") final ListAppender listApp) {
         MDC.put("Key1", "John");
         MDC.put("Key2", "Smith");
         try {
@@ -42,7 +42,7 @@ public class LogWithMDCTest {
             assertNotNull(listApp);
             final List<String> msgs = listApp.getMessages();
             assertNotNull(msgs, "No messages received");
-            assertEquals(msgs.size(), 1);
+            assertEquals(1, msgs.size());
             assertTrue(msgs.get(0).contains("Key1=John"), "Key1 is missing");
             assertTrue(msgs.get(0).contains("Key2=Smith"), "Key2 is missing");
         } finally {

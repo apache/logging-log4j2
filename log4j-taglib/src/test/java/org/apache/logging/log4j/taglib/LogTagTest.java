@@ -16,35 +16,35 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class LogTagTest {
+class LogTagTest {
     private LogTag tag;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.tag = new LogTag();
     }
 
     @Test
-    public void testLevel() {
-        assertNull("The level should be null (1).", this.tag.getLevel());
+    void testLevel() {
+        assertNull(this.tag.getLevel(), "The level should be null (1).");
 
         this.tag.setLevel(Level.INFO);
-        assertEquals("The level is not correct (1).", Level.INFO, this.tag.getLevel());
+        assertEquals(Level.INFO, this.tag.getLevel(), "The level is not correct (1).");
 
         this.tag.init();
-        assertNull("The level should be null (2).", this.tag.getLevel());
+        assertNull(this.tag.getLevel(), "The level should be null (2).");
 
         this.tag.setLevel("WARN");
-        assertEquals("The level is not correct (2).", Level.WARN, this.tag.getLevel());
+        assertEquals(Level.WARN, this.tag.getLevel(), "The level is not correct (2).");
     }
 }

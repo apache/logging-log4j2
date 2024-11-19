@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -27,24 +27,24 @@ import org.junit.jupiter.api.Test;
 /**
  * Test getEligibleFiles method.
  */
-public class EligibleFilesTest {
+class EligibleFilesTest {
 
     @Test
-    public void runTest() throws Exception {
+    void runTest() {
         final String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesInPath(path);
-        assertTrue(files.size() > 0, "No files found");
+        assertFalse(files.isEmpty(), "No files found");
         assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
     }
 
     @Test
-    public void runTestWithPlusCharacter() throws Exception {
+    void runTestWithPlusCharacter() {
         final String path =
                 "target/test-classes/rolloverPath/log4j.20211028T194500+0200." + NotANumber.VALUE + ".log.gz";
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesWithPlusInPath(path);
-        assertTrue(files.size() > 0, "No files found");
+        assertFalse(files.isEmpty(), "No files found");
         assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
     }
 

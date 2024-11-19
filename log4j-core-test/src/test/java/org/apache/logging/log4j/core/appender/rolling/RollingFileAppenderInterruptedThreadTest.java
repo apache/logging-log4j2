@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import org.apache.logging.log4j.Level;
@@ -31,7 +33,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.junit.CleanFolders;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,14 +81,14 @@ public class RollingFileAppenderInterruptedThreadTest {
     public void testRolloverInInterruptedThread() {
         final Logger logger = loggerContext.getLogger(getClass().getName());
 
-        Assert.assertThat(logger.getAppenders().values(), hasItem(instanceOf(RollingFileAppender.class)));
+        assertThat(logger.getAppenders().values(), hasItem(instanceOf(RollingFileAppender.class)));
 
         logger.info("Sending logging event 1"); // send first event to initialize rollover system
 
         Thread.currentThread().interrupt(); // mark thread as interrupted
         logger.info("Sending logging event 2"); // send second event to trigger rotation, expecting 2 files in result
 
-        Assert.assertTrue(new File(ROLLING_APPENDER_FILES_DIR, "file-1.log").exists());
-        Assert.assertTrue(new File(ROLLING_APPENDER_FILES_DIR, "file-2.log").exists());
+        assertTrue(new File(ROLLING_APPENDER_FILES_DIR, "file-1.log").exists());
+        assertTrue(new File(ROLLING_APPENDER_FILES_DIR, "file-2.log").exists());
     }
 }

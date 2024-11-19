@@ -28,36 +28,36 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the LambdaUtil class.
  */
-public class LambdaUtilTest {
+class LambdaUtilTest {
 
     @Test
-    public void testGetSupplierResultOfSupplier() {
+    void testGetSupplierResultOfSupplier() {
         final String expected = "result";
         final Object actual = LambdaUtil.get((Supplier<String>) () -> expected);
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetMessageSupplierResultOfSupplier() {
+    void testGetMessageSupplierResultOfSupplier() {
         final Message expected = new SimpleMessage("hi");
         final Message actual = LambdaUtil.get(() -> expected);
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetSupplierReturnsNullIfSupplierNull() {
+    void testGetSupplierReturnsNullIfSupplierNull() {
         final Object actual = LambdaUtil.get((Supplier<?>) null);
         assertNull(actual);
     }
 
     @Test
-    public void testGetMessageSupplierReturnsNullIfSupplierNull() {
-        final Object actual = LambdaUtil.get((MessageSupplier) null);
+    void testGetMessageSupplierReturnsNullIfSupplierNull() {
+        final Object actual = LambdaUtil.get(null);
         assertNull(actual);
     }
 
     @Test
-    public void testGetSupplierExceptionIfSupplierThrowsException() {
+    void testGetSupplierExceptionIfSupplierThrowsException() {
         assertThrows(
                 RuntimeException.class,
                 () -> LambdaUtil.get((Supplier<String>) () -> {
@@ -66,7 +66,7 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
+    void testGetMessageSupplierExceptionIfSupplierThrowsException() {
         assertThrows(
                 RuntimeException.class,
                 () -> LambdaUtil.get(() -> {
@@ -75,7 +75,7 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testGetAllReturnsResultOfSuppliers() {
+    void testGetAllReturnsResultOfSuppliers() {
         final String expected1 = "result1";
         final Supplier<String> function1 = () -> expected1;
         final String expected2 = "result2";
@@ -89,13 +89,13 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testGetAllReturnsNullArrayIfSupplierArrayNull() {
+    void testGetAllReturnsNullArrayIfSupplierArrayNull() {
         final Object[] actual = LambdaUtil.getAll((Supplier<?>[]) null);
         assertNull(actual);
     }
 
     @Test
-    public void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
+    void testGetAllReturnsNullElementsIfSupplierArrayContainsNulls() {
         final Supplier<?>[] functions = new Supplier<?>[3];
         final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
@@ -105,7 +105,7 @@ public class LambdaUtilTest {
     }
 
     @Test
-    public void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
+    void testGetAllThrowsExceptionIfAnyOfTheSuppliersThrowsException() {
         final Supplier<String> function1 = () -> "abc";
         final Supplier<String> function2 = () -> {
             throw new RuntimeException();

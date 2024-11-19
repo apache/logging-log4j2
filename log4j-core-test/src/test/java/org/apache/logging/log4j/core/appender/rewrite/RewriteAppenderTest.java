@@ -41,7 +41,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-rewrite.xml")
-public class RewriteAppenderTest {
+class RewriteAppenderTest {
     private final ListAppender app;
     private final ListAppender app2;
 
@@ -51,7 +51,7 @@ public class RewriteAppenderTest {
     }
 
     @Test
-    public void rewriteTest() {
+    void rewriteTest() {
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         msg.put("Key1", "Value1");
         msg.put("Key2", "Value2");
@@ -70,19 +70,19 @@ public class RewriteAppenderTest {
     }
 
     @Test
-    public void testProperties(final LoggerContext context) {
+    void testProperties(final LoggerContext context) {
         final Logger logger = context.getLogger(RewriteAppenderTest.class);
         logger.debug("Test properties rewrite");
         final List<String> list = app2.getMessages();
         assertThat(list, hasSize(1));
         assertThat(list.get(0), not(containsString("{user.dir}")));
         assertNotNull(list, "No events generated");
-        assertEquals(list.size(), 1, "Incorrect number of events. Expected 1, got " + list.size());
+        assertEquals(1, list.size(), "Incorrect number of events. Expected 1, got " + list.size());
         assertFalse(list.get(0).contains("{user."), "Did not resolve user name");
     }
 
     @Test
-    public void testFilter(final LoggerContext context) {
+    void testFilter(final LoggerContext context) {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         msg.put("Key1", "Value2");
         msg.put("Key2", "Value1");

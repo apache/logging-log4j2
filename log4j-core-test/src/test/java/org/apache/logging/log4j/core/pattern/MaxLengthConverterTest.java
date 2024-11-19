@@ -25,12 +25,12 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class MaxLengthConverterTest {
+class MaxLengthConverterTest {
 
     private static final MaxLengthConverter converter = MaxLengthConverter.newInstance(null, new String[] {"%m", "10"});
 
     @Test
-    public void testUnderMaxLength() {
+    void testUnderMaxLength() {
         final Message message = new SimpleMessage("0123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")
@@ -43,7 +43,7 @@ public class MaxLengthConverterTest {
     }
 
     @Test
-    public void testOverMaxLength() {
+    void testOverMaxLength() {
         final Message message = new SimpleMessage("01234567890123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")
@@ -56,7 +56,7 @@ public class MaxLengthConverterTest {
     }
 
     @Test
-    public void testOverMaxLength21WithEllipsis() {
+    void testOverMaxLength21WithEllipsis() {
         final Message message = new SimpleMessage("012345678901234567890123456789");
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName("MyLogger")

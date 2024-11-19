@@ -33,22 +33,20 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class RegexFilterTest {
+class RegexFilterTest {
     @BeforeAll
-    public static void before() {
+    static void before() {
         StatusLogger.getLogger().setLevel(Level.OFF);
     }
 
     @Test
-    public void testThresholds() throws Exception {
+    void testThresholds() throws Exception {
         RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(
-                Filter.Result.NEUTRAL,
-                filter.filter(null, Level.DEBUG, null, (Object) "This is a test message", (Throwable) null));
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test", (Throwable)
-                null));
+                Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) "This is a test message", null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test", null));
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Another test message")) //
@@ -64,29 +62,29 @@ public class RegexFilterTest {
     }
 
     @Test
-    public void testDotAllPattern() throws Exception {
+    void testDotAllPattern() throws Exception {
         final String singleLine = "test single line matches";
         final String multiLine = "test multi line matches\nsome more lines";
         final RegexFilter filter = RegexFilter.createFilter(
                 ".*line.*", new String[] {"DOTALL", "COMMENTS"}, false, Filter.Result.DENY, Filter.Result.ACCEPT);
-        final Result singleLineResult = filter.filter(null, null, null, (Object) singleLine, (Throwable) null);
-        final Result multiLineResult = filter.filter(null, null, null, (Object) multiLine, (Throwable) null);
+        final Result singleLineResult = filter.filter(null, null, null, (Object) singleLine, null);
+        final Result multiLineResult = filter.filter(null, null, null, (Object) multiLine, null);
         assertThat(singleLineResult, equalTo(Result.DENY));
         assertThat(multiLineResult, equalTo(Result.DENY));
     }
 
     @Test
-    public void testNoMsg() throws Exception {
+    void testNoMsg() throws Exception {
         final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
     }
 
     @Test
-    public void testParameterizedMsg() throws Exception {
+    void testParameterizedMsg() throws Exception {
         final String msg = "params {} {}";
         final Object[] params = {"foo", "bar"};
 

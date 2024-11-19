@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,13 +27,13 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-lookup.xml")
-public class LookupTest {
+class LookupTest {
 
     @Test
-    public void testHostname(@Named final ConsoleAppender console) {
+    void testHostname(@Named final ConsoleAppender console) {
         final Layout<?> layout = console.getLayout();
         assertNotNull(layout, "No Layout");
-        assertTrue(layout instanceof PatternLayout, "Layout is not a PatternLayout");
+        assertInstanceOf(PatternLayout.class, layout, "Layout is not a PatternLayout");
         final String pattern = ((PatternLayout) layout).getConversionPattern();
         assertNotNull(pattern, "No conversion pattern");
         assertTrue(

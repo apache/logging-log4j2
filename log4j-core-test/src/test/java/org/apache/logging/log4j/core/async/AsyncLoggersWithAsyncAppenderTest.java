@@ -37,11 +37,11 @@ import org.junit.jupiter.api.Test;
         key = Constants.LOG4J_CONTEXT_SELECTOR,
         value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @UsingStatusListener
-public class AsyncLoggersWithAsyncAppenderTest {
+class AsyncLoggersWithAsyncAppenderTest {
 
     @Test
     @LoggerContextSource
-    public void testLoggingWorks(final LoggerContext ctx) throws Exception {
+    void testLoggingWorks(final LoggerContext ctx) throws Exception {
         final Logger logger = ctx.getLogger(AsyncLoggersWithAsyncAppenderTest.class);
         logger.error("This {} a test", "is");
         logger.warn("Hello {}!", "world");

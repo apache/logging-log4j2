@@ -31,14 +31,14 @@ import org.junit.jupiter.api.Test;
  *
  * @since 2.4
  */
-public class EventLookupTest {
+class EventLookupTest {
 
     private static final String ABSENT_MARKER_NAME = "NONE";
     private final String markerName = "EventLookupTest";
     private final StrLookup strLookup = new EventLookup();
 
     @Test
-    public void testLookupEventMarker() {
+    void testLookupEventMarker() {
         final Marker marker = MarkerManager.getMarker(markerName);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -52,7 +52,7 @@ public class EventLookupTest {
     }
 
     @Test
-    public void testLookupEventMessage() {
+    void testLookupEventMessage() {
         final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -65,7 +65,7 @@ public class EventLookupTest {
     }
 
     @Test
-    public void testLookupEventLevel() {
+    void testLookupEventLevel() {
         final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -78,7 +78,7 @@ public class EventLookupTest {
     }
 
     @Test
-    public void testLookupEventTimestamp() {
+    void testLookupEventTimestamp() {
         final String msg = "Hello, world!";
         final long now = System.currentTimeMillis();
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -93,7 +93,7 @@ public class EventLookupTest {
     }
 
     @Test
-    public void testLookupEventLogger() {
+    void testLookupEventLogger() {
         final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -106,7 +106,7 @@ public class EventLookupTest {
     }
 
     @Test
-    public void testLookupEventThreadName() {
+    void testLookupEventThreadName() {
         final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //

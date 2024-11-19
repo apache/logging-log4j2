@@ -18,11 +18,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class RollingAppenderCronAndSizeTest {
     private Logger logger;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingAppenderCronAndSizeTest.class.getName());
     }
 

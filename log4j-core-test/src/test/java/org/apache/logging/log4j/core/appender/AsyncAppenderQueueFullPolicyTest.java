@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * </pre>
  */
 @LoggerContextSource("log4j-asynch-queue-full.xml")
-public class AsyncAppenderQueueFullPolicyTest {
+class AsyncAppenderQueueFullPolicyTest {
 
     private final BlockingAppender blockingAppender;
     private final AsyncAppender asyncAppender;
@@ -61,13 +61,13 @@ public class AsyncAppenderQueueFullPolicyTest {
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         blockingAppender.running = false;
         policy.queueFull.set(0L);
     }
 
     @Test
-    public void testRouter() throws Exception {
+    void testRouter() {
         final Logger logger = LogManager.getLogger(AsyncAppenderQueueFullPolicyTest.class);
 
         assertEquals(4, asyncAppender.getQueueCapacity());
