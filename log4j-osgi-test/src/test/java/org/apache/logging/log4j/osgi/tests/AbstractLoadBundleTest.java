@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -41,14 +41,14 @@ abstract class AbstractLoadBundleTest {
 
     private BundleContext bundleContext;
 
-    @Rule
-    public final OsgiRule osgi;
+    @RegisterExtension
+    public final OsgiExt osgi;
 
     AbstractLoadBundleTest(final FrameworkFactory frameworkFactory) {
-        this.osgi = new OsgiRule(frameworkFactory);
+        this.osgi = new OsgiExt(frameworkFactory);
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         bundleContext = osgi.getFramework().getBundleContext();
     }
@@ -83,9 +83,8 @@ abstract class AbstractLoadBundleTest {
 
         final Bundle api = getApiBundle();
         final Bundle core = getCoreBundle();
-
-        Assert.assertEquals("api is not in INSTALLED state", Bundle.INSTALLED, api.getState());
-        Assert.assertEquals("core is not in INSTALLED state", Bundle.INSTALLED, core.getState());
+        assertEquals(Bundle.INSTALLED, api.getState(), "api is not in INSTALLED state");
+        assertEquals(Bundle.INSTALLED, core.getState(), "core is not in INSTALLED state");
 
         // 1st start-stop
         doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
@@ -125,7 +124,7 @@ abstract class AbstractLoadBundleTest {
                 throw error0;
             }
         }
-        assertEquals(String.format("`%s` bundle state mismatch", core), Bundle.ACTIVE, core.getState());
+        assertEquals(Bundle.ACTIVE, core.getState(), String.format("`%s` bundle state mismatch", core));
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, api);
@@ -148,14 +147,14 @@ abstract class AbstractLoadBundleTest {
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
         final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
 
-        Assert.assertEquals(
-                "expected 1.2 API Level to have the same class loader as Core",
+        assertEquals(
                 levelClassFrom12API.getClassLoader(),
-                coreClassFromCore.getClassLoader());
-        Assert.assertNotEquals(
-                "expected 1.2 API Level NOT to have the same class loader as API Level",
+                coreClassFromCore.getClassLoader(),
+                "expected 1.2 API Level to have the same class loader as Core");
+        assertNotEquals(
                 levelClassFrom12API.getClassLoader(),
-                levelClassFromAPI.getClassLoader());
+                levelClassFromAPI.getClassLoader(),
+                "expected 1.2 API Level NOT to have the same class loader as API Level");
 
         doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
         doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, api);
@@ -171,8 +170,7 @@ abstract class AbstractLoadBundleTest {
         final Bundle apiTests = getApiTestsBundle();
 
         final Class<?> osgiServiceLocator = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocator");
-        assertTrue("OsgiServiceLocator is active", (boolean)
-                osgiServiceLocator.getMethod("isAvailable").invoke(null));
+        assertTrue((boolean) osgiServiceLocator.getMethod("isAvailable").invoke(null), "OsgiServiceLocator is active");
 
         doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core, apiTests);
 
@@ -202,7 +200,7 @@ abstract class AbstractLoadBundleTest {
                 final String message = String.format("operation failure for bundle `%s`", bundle);
                 throw new RuntimeException(message, error);
             }
-            assertEquals(String.format("`%s` bundle state mismatch", bundle), expectedState, bundle.getState());
+            assertEquals(expectedState, bundle.getState(), String.format("`%s` bundle state mismatch", bundle));
         }
     }
 }
