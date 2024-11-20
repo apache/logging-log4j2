@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -78,11 +79,25 @@ class AsyncWaitStrategyFactoryConfigTest {
                 (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
         final AsyncLoggerConfigDisruptor delegate =
                 (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
-        assertEquals(
-                TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertThat(
-                "waitstrategy is TimeoutBlockingWaitStrategy",
-                delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
+
+        if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 3) {
+            assertEquals(
+                    org.apache.logging.log4j.core.async.TimeoutBlockingWaitStrategy.class,
+                    delegate.getWaitStrategy().getClass());
+            assertThat(
+                    "waitstrategy is TimeoutBlockingWaitStrategy",
+                    delegate.getWaitStrategy()
+                            instanceof org.apache.logging.log4j.core.async.TimeoutBlockingWaitStrategy);
+        } else if (DisruptorUtil.DISRUPTOR_MAJOR_VERSION == 4) {
+            assertEquals(
+                    com.lmax.disruptor.TimeoutBlockingWaitStrategy.class,
+                    delegate.getWaitStrategy().getClass());
+            assertThat(
+                    "waitstrategy is TimeoutBlockingWaitStrategy",
+                    delegate.getWaitStrategy() instanceof com.lmax.disruptor.TimeoutBlockingWaitStrategy);
+        } else {
+            fail("Unhandled Disruptor version " + DisruptorUtil.DISRUPTOR_MAJOR_VERSION);
+        }
     }
 
     public static class YieldingWaitStrategyFactory implements AsyncWaitStrategyFactory {
