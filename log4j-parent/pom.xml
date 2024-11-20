@@ -99,7 +99,7 @@
     <commons-codec.version>1.17.1</commons-codec.version>
     <commons-csv.version>1.12.0</commons-csv.version>
     <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
-    <commons-io.version>2.17.0</commons-io.version>
+    <commons-io.version>2.18.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <disruptor.version>4.0.0</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
