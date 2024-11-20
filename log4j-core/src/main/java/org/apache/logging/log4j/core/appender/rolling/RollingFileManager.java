@@ -506,9 +506,16 @@ public class RollingFileManager extends FileManager {
 
             if (rollover(rolloverStrategy)) {
                 try {
-                    size = 0;
-                    initialTime = System.currentTimeMillis();
                     createFileAfterRollover();
+                    final File file = new File(getFileName());
+                    size = file.length();
+                    try {
+                        final FileTime creationTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
+                        initialTime = creationTime.toMillis();
+                    } catch (Exception ex) {
+                        LOGGER.warn("Unable to get current file time for {}", file);
+                        initialTime = System.currentTimeMillis();
+                    }
                 } catch (final IOException e) {
                     logError("Failed to create file after rollover", e);
                 }
@@ -636,7 +643,7 @@ public class RollingFileManager extends FileManager {
                     asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
                     releaseRequired = false;
                 }
-                return success;
+                return true;
             }
             return false;
         } finally {
