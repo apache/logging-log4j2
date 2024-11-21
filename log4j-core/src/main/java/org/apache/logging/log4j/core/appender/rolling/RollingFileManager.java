@@ -506,16 +506,9 @@ public class RollingFileManager extends FileManager {
 
             if (rollover(rolloverStrategy)) {
                 try {
+                    size = 0;
+                    initialTime = System.currentTimeMillis();
                     createFileAfterRollover();
-                    final File file = new File(getFileName());
-                    size = file.length();
-                    try {
-                        final FileTime creationTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
-                        initialTime = creationTime.toMillis();
-                    } catch (Exception ex) {
-                        LOGGER.warn("Unable to get current file time for {}", file);
-                        initialTime = System.currentTimeMillis();
-                    }
                 } catch (final IOException e) {
                     logError("Failed to create file after rollover", e);
                 }
@@ -611,43 +604,43 @@ public class RollingFileManager extends FileManager {
 
     private boolean rollover(final RolloverStrategy strategy) {
 
-        boolean releaseRequired = false;
+        boolean outputStreamClosed = false;
         try {
             // Block until the asynchronous operation is completed.
             semaphore.acquire();
-            releaseRequired = true;
         } catch (final InterruptedException e) {
             logError("Thread interrupted while attempting to check rollover", e);
-            return false;
+            return outputStreamClosed;
         }
 
-        boolean success = true;
+        boolean asyncActionStarted = true;
 
         try {
             final RolloverDescription descriptor = strategy.rollover(this);
             if (descriptor != null) {
                 writeFooter();
                 closeOutputStream();
+                outputStreamClosed = true;
+                boolean syncActionSuccess = true;
                 if (descriptor.getSynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing synchronous {}", descriptor.getSynchronous());
                     try {
-                        success = descriptor.getSynchronous().execute();
+                        syncActionSuccess = descriptor.getSynchronous().execute();
                     } catch (final Exception ex) {
-                        success = false;
+                        syncActionSuccess = false;
                         logError("Caught error in synchronous task", ex);
                     }
                 }
 
-                if (success && descriptor.getAsynchronous() != null) {
+                if (syncActionSuccess && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
                     asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
-                    releaseRequired = false;
+                    asyncActionStarted = false;
                 }
-                return true;
             }
-            return false;
+            return outputStreamClosed;
         } finally {
-            if (releaseRequired) {
+            if (asyncActionStarted) {
                 semaphore.release();
             }
         }
