@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -46,7 +45,7 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     public void setUp() {
         logger = Logger.getLogger(LOGGER_NAME);
         logger.setFilter(null);
-        assertThat(logger.getLevel(), equalTo(java.util.logging.Level.FINE));
+        assertThat(getEffectiveLevel(logger)).isEqualTo(java.util.logging.Level.FINE);
         eventAppender = ListAppender.getListAppender("TestAppender");
         flowAppender = ListAppender.getListAppender("FlowAppender");
         stringAppender = ListAppender.getListAppender("StringAppender");

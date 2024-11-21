@@ -34,27 +34,6 @@ import org.junit.Test;
 
 public class CoreLoggerTest extends AbstractLoggerTest {
 
-    private static final Level[] LEVELS = new Level[] {
-        Level.ALL,
-        Level.FINEST,
-        Level.FINER,
-        Level.FINE,
-        Level.CONFIG,
-        Level.INFO,
-        Level.WARNING,
-        Level.SEVERE,
-        Level.OFF
-    };
-
-    private static Level getEffectiveLevel(final Logger logger) {
-        for (final Level level : LEVELS) {
-            if (logger.isLoggable(level)) {
-                return level;
-            }
-        }
-        throw new RuntimeException("No level is enabled.");
-    }
-
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
