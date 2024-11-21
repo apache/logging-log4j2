@@ -362,7 +362,10 @@ loadScripts(document, 'script');</script>
  @Nullable <a href="../message/MessageFactory.html" title="interface in org.apache.logging.log4j.message">MessageFactory</a>&nbsp;messageFactory,
  <a href="LoggerRegistry.html" title="type parameter in LoggerRegistry">T</a>&nbsp;logger)</span></div>
 <div class="block">Registers the provided logger.
- <b>Logger name and message factory parameters are ignored</b>, those will be obtained from the logger instead.</div>
+ <p>
+   The logger will be registered using the keys provided by the <code>name</code> and <code>messageFactory</code> parameters
+   and the values of <a href="../Logger.html#getName()"><code>Logger.getName()</code></a> and <a href="../Logger.html#getMessageFactory()"><code>Logger.getMessageFactory()</code></a>.
+ </p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>name</code> - a logger name</dd>
