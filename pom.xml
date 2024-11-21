@@ -302,7 +302,7 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.24.2</revision>
+    <revision>2.24.3-SNAPSHOT</revision>
     <!-- Versions used on the site: no snapshots! -->
     <site-log4j-api.version>2.24.2</site-log4j-api.version>
     <site-log4j-core.version>2.24.2</site-log4j-core.version>
