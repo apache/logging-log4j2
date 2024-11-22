@@ -17,17 +17,21 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
@@ -138,9 +142,6 @@ public class RollingFileManagerTest {
         assertNotNull(manager);
         manager.initialize();
 
-        // Get the initialTime of this original log file
-        final long initialTime = manager.getFileTime();
-
         // Log something to ensure that the existing file size is > 0
         final String testContent = "Test";
         manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
@@ -148,11 +149,11 @@ public class RollingFileManagerTest {
         // Trigger rollover that will fail
         manager.rollover();
 
-        // If the rollover fails, then the size should not be reset
-        assertNotEquals(0, manager.getFileSize());
+        // If the rollover fails, then the log file should be unchanged
+        assertEquals(file.getAbsolutePath(), manager.getFileName());
 
-        // The initialTime should not have changed
-        assertEquals(initialTime, manager.getFileTime());
+        // The logged content should be unchanged
+        assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
     }
 
     @Test
@@ -187,5 +188,40 @@ public class RollingFileManagerTest {
         } finally {
             manager.close();
         }
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/2592")
+    public void testRolloverOfDeletedFile() throws IOException {
+        final File file = File.createTempFile("testRolloverOfDeletedFile", "log");
+        file.deleteOnExit();
+        final String testContent = "Test";
+        try (final OutputStream os =
+                        new ByteArrayOutputStream(); // use a dummy OutputStream so that the real file can be deleted
+                final RollingFileManager manager = new RollingFileManager(
+                        null,
+                        file.getAbsolutePath(),
+                        "testRolloverOfDeletedFile.log.%d{yyyy-MM-dd}",
+                        os,
+                        true,
+                        false,
+                        0,
+                        System.currentTimeMillis(),
+                        OnStartupTriggeringPolicy.createPolicy(1),
+                        DefaultRolloverStrategy.newBuilder().build(),
+                        file.getName(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        false,
+                        ByteBuffer.allocate(256))) {
+            assertTrue(file.delete());
+            manager.setRenameEmptyFiles(true);
+            manager.rollover();
+            assertEquals(file.getAbsolutePath(), manager.getFileName());
+            manager.writeBytes(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
+        }
+        assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
     }
 }
