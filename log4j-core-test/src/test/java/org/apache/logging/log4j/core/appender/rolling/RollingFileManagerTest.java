@@ -17,13 +17,17 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -184,5 +188,41 @@ public class RollingFileManagerTest {
         } finally {
             manager.close();
         }
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/2592")
+    public void testRolloverOfDeletedFile() throws IOException {
+        final File file = File.createTempFile("testRolloverOfDeletedFile", "log");
+        file.deleteOnExit();
+        final String testContent = "Test";
+        try (final OutputStream os =
+                        new ByteArrayOutputStream(); // use a dummy OutputStream so that the real file can be deleted
+                final RollingFileManager manager = new RollingFileManager(
+                        null,
+                        null,
+                        file.getAbsolutePath(),
+                        "testRolloverOfDeletedFile.log.%d{yyyy-MM-dd}",
+                        os,
+                        true,
+                        false,
+                        0,
+                        System.currentTimeMillis(),
+                        OnStartupTriggeringPolicy.createPolicy(1),
+                        DefaultRolloverStrategy.newBuilder().build(),
+                        file.getName(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        false,
+                        ByteBuffer.allocate(256))) {
+            assertTrue(file.delete());
+            manager.setRenameEmptyFiles(true);
+            manager.rollover();
+            assertEquals(file.getAbsolutePath(), manager.getFileName());
+            manager.writeBytes(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
+        }
+        assertEquals(testContent, Files.readString(file.toPath(), StandardCharsets.US_ASCII));
     }
 }
