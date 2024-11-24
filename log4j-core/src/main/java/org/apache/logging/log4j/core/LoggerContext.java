@@ -33,7 +33,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -513,7 +512,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return a collection of the current loggers.
      */
     public Collection<Logger> getLoggers() {
-        return loggerRegistry.getLoggers().collect(Collectors.toList());
+        return loggerRegistry.getLoggers();
     }
 
     /**
