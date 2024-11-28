@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.internal.map;
 
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -57,7 +56,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * </ul>
  *
  */
-public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
+public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements ReadOnlyStringMap {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
