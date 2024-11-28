@@ -311,10 +311,34 @@
 <div class="ulist">
 <ul>
 <li>
+<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.16.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3230">3230</a>)</p>
+</li>
+<li>
+<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.18.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3245">3245</a>)</p>
+</li>
+<li>
+<p>Update <code>commons-io:commons-io</code> to version <code>2.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3222">3222</a>)</p>
+</li>
+<li>
+<p>Update <code>net.javacrumbs.json-unit:json-unit</code> to version <code>4.0.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3213">3213</a>)</p>
+</li>
+<li>
 <p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.24</code> (<a href="https://github.com/apache/logging-log4j2/pull/3192">3192</a>)</p>
 </li>
 <li>
+<p>Update <code>org.apache.logging.log4j:log4j-api</code> to version <code>2.24.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3229">3229</a>)</p>
+</li>
+<li>
 <p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3193">3193</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework.boot:spring-boot-autoconfigure</code> to version <code>3.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3231">3231</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.1.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/3241">3241</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework:spring-framework-bom</code> to version <code>6.2.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3208">3208</a>)</p>
 </li>
 </ul>
 </div>
@@ -333,8 +357,23 @@
 </dl>
 </div>
 <div class="paragraph">
-<p>This release terminates the modularization process of Log4j Core, by moving all the code that uses optional <code>log4j-core</code> dependencies into new modules:</p>
+<p>This release terminates the modularization process of Log4j Core by:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Moving all the code that uses optional <code>log4j-core</code> dependencies into new modules.
+See <a href="#release-notes-3-0-0-beta3-modularization">Modularization</a>.</p>
+</li>
+<li>
+<p>Moving some modules to their own lifecycle.
+This includes the Flume Appender and all the modules that don&#8217;t depend on <code>log4j-core</code>.
+See <a href="#release-notes-3-0-0-beta3-separate-lifecycle">Separate Lifecycle</a>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="release-notes-3-0-0-beta3-modularization"><a class="anchor" href="#release-notes-3-0-0-beta3-modularization"></a>Modularization</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -358,14 +397,15 @@ The Gzip and Zip formats are still supported out-of-the-box.</p>
 </li>
 </ul>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_separate_lifecycle"><a class="anchor" href="#_separate_lifecycle"></a>Separate lifecycle</h3>
+<h3 id="release-notes-3-0-0-beta3-separate-lifecycle"><a class="anchor" href="#release-notes-3-0-0-beta3-separate-lifecycle"></a>Separate lifecycle</h3>
 <div class="ulist">
 <ul>
 <li>
 <p>The
 <a href="manual/appenders/message-queue.html#FlumeAppender" class="xref page">Flume Appender</a>
-releases will follow its own lifecycle.</p>
+releases will follow their own lifecycle.</p>
 </li>
 <li>
 <p>All the
