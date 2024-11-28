@@ -20,7 +20,16 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This release terminates the modularization process of Log4j Core, by moving all the code that uses optional `log4j-core` dependencies into new modules:
+This release terminates the modularization process of Log4j Core by:
+
+* Moving all the code that uses optional `log4j-core` dependencies into new modules.
+  See ${'<<release-notes-3-0-0-beta3-modularization,Modularization>>'}.
+* Moving some modules to their own lifecycle.
+  This includes the Flume Appender and all the modules that don't depend on `log4j-core`.
+  See ${'<<release-notes-3-0-0-beta3-separate-lifecycle,Separate Lifecycle>>'}.
+
+[#release-notes-3-0-0-beta3-modularization]
+=== Modularization
 
 * Support for the JAnsi library has been removed since recent Windows OSes support ANSI escape sequences.
 See
@@ -36,11 +45,12 @@ has been moved to a new
 xref:components.adoc#log4j-compress[`log4j-compress` artifact].
 The Gzip and Zip formats are still supported out-of-the-box.
 
+[#release-notes-3-0-0-beta3-separate-lifecycle]
 === Separate lifecycle
 
 * The
 xref:manual/appenders/message-queue.adoc#FlumeAppender[Flume Appender]
-releases will follow its own lifecycle.
+releases will follow their own lifecycle.
 * All the
 xref:manual/installation.adoc#impl-core-bridges[logging bridges]
 from and to Log4j API have been removed from the Log4j Core 3.x release.
