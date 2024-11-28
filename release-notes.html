@@ -312,8 +312,23 @@
 </dl>
 </div>
 <div class="paragraph">
-<p>This release terminates the modularization process of Log4j Core, by moving all the code that uses optional <code>log4j-core</code> dependencies into new modules:</p>
+<p>This release terminates the modularization process of Log4j Core by:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Moving all the code that uses optional <code>log4j-core</code> dependencies into new modules.
+See <a href="#release-notes-3-0-0-beta3-modularization">Modularization</a>.</p>
+</li>
+<li>
+<p>Moving some modules to their own lifecycle.
+This includes the Flume Appender and all the modules that don&#8217;t depend on <code>log4j-core</code>.
+See <a href="#release-notes-3-0-0-beta3-separate-lifecycle">Separate Lifecycle</a>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="release-notes-3-0-0-beta3-modularization"><a class="anchor" href="#release-notes-3-0-0-beta3-modularization"></a>Modularization</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -337,14 +352,15 @@ The Gzip and Zip formats are still supported out-of-the-box.</p>
 </li>
 </ul>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_separate_lifecycle"><a class="anchor" href="#_separate_lifecycle"></a>Separate lifecycle</h3>
+<h3 id="release-notes-3-0-0-beta3-separate-lifecycle"><a class="anchor" href="#release-notes-3-0-0-beta3-separate-lifecycle"></a>Separate lifecycle</h3>
 <div class="ulist">
 <ul>
 <li>
 <p>The
 <a href="manual/appenders/message-queue.html#FlumeAppender" class="xref page">Flume Appender</a>
-releases will follow its own lifecycle.</p>
+releases will follow their own lifecycle.</p>
 </li>
 <li>
 <p>All the
