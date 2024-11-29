@@ -32,26 +32,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
  */
-@RunWith(Parameterized.class)
-public class DefaultRouteScriptAppenderTest {
-
-    @Parameterized.Parameters(name = "{0} {1}")
-    public static Object[][] getParameters() {
-        // @formatter:off
-        return new Object[][] {
-            {"log4j-routing-default-route-script-groovy.xml", false},
-            {"log4j-routing-default-route-script-javascript.xml", false},
-            {"log4j-routing-script-staticvars-javascript.xml", true},
-            {"log4j-routing-script-staticvars-groovy.xml", true},
-        };
-        // @formatter:on
-    }
+public abstract class DefaultRouteScriptAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
