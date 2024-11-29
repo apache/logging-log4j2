@@ -16,8 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+
+@LoggerContextSource("log4j-routing-default-route-script-javascript.xml")
 public class DefaultRouteScriptJavaScriptAppenderTest extends DefaultRouteScriptAppenderTest {
-    public DefaultRouteScriptJavaScriptAppenderTest() {
-        super("log4j-routing-default-route-script-javascript.xml", false);
+    public DefaultRouteScriptJavaScriptAppenderTest(LoggerContext context) {
+        super(context, false);
     }
 }
