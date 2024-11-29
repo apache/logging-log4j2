@@ -65,6 +65,7 @@ class GraalVmProcessorTest {
             "fields",
             asList(
                     asMap("name", "attribute"),
+                    asMap("name", "attributeWithoutPublicSetterButWithSuppressAnnotation"),
                     asMap("name", "config"),
                     asMap("name", "layout"),
                     asMap("name", "loggerContext"),

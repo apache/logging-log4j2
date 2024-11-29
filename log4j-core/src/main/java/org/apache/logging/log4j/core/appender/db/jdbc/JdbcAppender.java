@@ -60,6 +60,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
         private ConnectionSource connectionSource;
 
         @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter")
         private boolean immediateFail;
 
         @PluginBuilderAttribute
@@ -80,6 +81,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
         // TODO Consider moving up to AbstractDatabaseAppender.Builder.
         @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter")
         private long reconnectIntervalMillis = DEFAULT_RECONNECT_INTERVAL_MILLIS;
 
         @Override

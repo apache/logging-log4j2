@@ -37,13 +37,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginValue;
  */
 @Plugin(name = "Fake", category = "Test")
 @PluginAliases({"AnotherFake", "StillFake"})
-public class FakePlugin {
+public class FakePluginPublicSetter {
 
     @Plugin(name = "Nested", category = "Test")
     public static class Nested {}
 
     @PluginFactory
-    public static FakePlugin newPlugin(
+    public static FakePluginPublicSetter newPlugin(
             @PluginAttribute("attribute") int attribute,
             @PluginElement("layout") Layout<? extends Serializable> layout,
             @PluginConfiguration Configuration config,
@@ -57,10 +57,9 @@ public class FakePlugin {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<FakePlugin> {
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<FakePluginPublicSetter> {
 
         @PluginBuilderAttribute
-        @SuppressWarnings("log4j.public.setter")
         private int attribute;
 
         @PluginBuilderAttribute
@@ -83,7 +82,7 @@ public class FakePlugin {
         private String value;
 
         @Override
-        public FakePlugin build() {
+        public FakePluginPublicSetter build() {
             return null;
         }
     }

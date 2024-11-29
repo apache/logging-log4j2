@@ -40,6 +40,7 @@ public final class ServletAppender extends AbstractAppender {
             implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
 
         @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter") // The setter is not assignable.
         private boolean logThrowables;
 
         @Override
