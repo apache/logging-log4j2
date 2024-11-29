@@ -18,6 +18,8 @@ package org.apache.logging.log4j.jctools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -26,6 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.jupiter.api.Test;
 
+@ServiceConsumer(value = RecyclerFactoryProvider.class, cardinality = Cardinality.MULTIPLE)
 class JCToolsRecyclerFactoryProviderTest {
 
     @Test

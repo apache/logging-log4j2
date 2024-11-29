@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,6 +38,7 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
  * {@link ConfigurableInstanceFactory} using bindings registered before and after standard
  * {@link ConfigurableInstanceFactoryPostProcessor} service provider classes are invoked.
  */
+@ServiceConsumer(value = ConfigurableInstanceFactoryPostProcessor.class, cardinality = Cardinality.MULTIPLE)
 public final class DI {
     private DI() {
         throw new IllegalStateException("Utility class");
