@@ -173,4 +173,11 @@ public class AsyncAppenderTest {
         context.getLogger("Logger").info("This is a test");
         context.stop();
     }
+
+    @Test
+    @LoggerContextSource("log4j-asynch-location.xml")
+    public void testRequiresLocation(final LoggerContext context) {
+        final AsyncAppender appender = context.getConfiguration().getAppender("Async");
+        assertTrue(appender.requiresLocation());
+    }
 }
