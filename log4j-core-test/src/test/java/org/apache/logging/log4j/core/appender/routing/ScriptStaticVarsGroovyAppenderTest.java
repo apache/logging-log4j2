@@ -18,8 +18,9 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 
-@LoggerContextSource("log4j-routing-script-staticvars-groovy.xml")
+@LoggerContextSource(value = "log4j-routing-script-staticvars-groovy.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class ScriptStaticVarsGroovyAppenderTest extends DefaultRouteScriptAppenderTest {
     public ScriptStaticVarsGroovyAppenderTest(LoggerContext context) {
         super(context, true);
