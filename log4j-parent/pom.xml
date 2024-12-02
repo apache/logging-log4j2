@@ -128,7 +128,7 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.1</plexus-utils.version>
     <spring-boot.version>2.7.18</spring-boot.version>
-    <spring-framework.version>5.3.39</spring-framework.version>
+    <spring-framework.version>6.1.14</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
