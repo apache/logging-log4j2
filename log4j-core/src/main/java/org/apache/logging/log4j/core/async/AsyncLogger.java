@@ -85,17 +85,17 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
-     *
-     * @param context context of this logger
-     * @param name name of this logger
-     * @param messageFactory message factory of this logger
-     * @param loggerDisruptor helper class that logging can be delegated to. This object owns the Disruptor.
+     * <p>
+     *     This method is effectively package-private, since {@link AsyncLoggerDisruptor} is package-private.
+     * </p>
+     * @param context The {@link LoggerContext} this logger is associated with, never {@code null}.
+     * @param name The logger name, never {@code null}.
+     * @param messageFactory The message factory to be used.
+     *                       Passing a {@code null} value is deprecated, but supported for backward compatibility.
+     * @param loggerDisruptor Helper class that logging can be delegated to. This object owns the Disruptor.
      */
     public AsyncLogger(
-            final LoggerContext context,
-            final String name,
-            final MessageFactory messageFactory,
-            final AsyncLoggerDisruptor loggerDisruptor) {
+            LoggerContext context, String name, MessageFactory messageFactory, AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
         includeLocation = privateConfig.loggerConfig.isIncludeLocation();

@@ -24,34 +24,36 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+@SetSystemProperty(
+        key = "log4j2.messageFactory",
+        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestMessageFactory")
+@SetSystemProperty(
+        key = "log4j2.flowMessageFactory",
+        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestFlowMessageFactory")
 class LoggerMessageFactoryCustomizationTest {
 
     @Test
-    @ClearSystemProperty(key = "log4j2.messageFactory")
-    @ClearSystemProperty(key = "log4j2.flowMessageFactory")
     void arguments_should_be_honored() {
-        final LoggerContext loggerContext =
-                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName());
-        final Logger logger = new Logger(
-                loggerContext, "arguments_should_be_honored", new TestMessageFactory(), new TestFlowMessageFactory());
-        assertTestMessageFactories(logger);
+        try (LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName())) {
+            Logger logger = new Logger(
+                    loggerContext,
+                    "arguments_should_be_honored",
+                    new TestMessageFactory(),
+                    new TestFlowMessageFactory());
+            assertTestMessageFactories(logger);
+        }
     }
 
     @Test
-    @SetSystemProperty(
-            key = "log4j2.messageFactory",
-            value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestMessageFactory")
-    @SetSystemProperty(
-            key = "log4j2.flowMessageFactory",
-            value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestFlowMessageFactory")
     void properties_should_be_honored() {
-        final LoggerContext loggerContext =
-                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName());
-        final Logger logger = new Logger(loggerContext, "properties_should_be_honored", null, null);
-        assertTestMessageFactories(logger);
+        try (LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName())) {
+            Logger logger = loggerContext.getLogger("properties_should_be_honored");
+            assertTestMessageFactories(logger);
+        }
     }
 
     private static void assertTestMessageFactories(Logger logger) {

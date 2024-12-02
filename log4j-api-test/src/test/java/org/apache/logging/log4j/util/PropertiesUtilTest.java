@@ -193,7 +193,7 @@ class PropertiesUtilTest {
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     @Issue("https://github.com/spring-projects/spring-boot/issues/33450")
-    void testBadPropertySource() {
+    void testErrorPropertySource() {
         final String key = "testKey";
         final Properties props = new Properties();
         props.put(key, "test");
@@ -203,6 +203,28 @@ class PropertiesUtilTest {
         try {
             assertEquals("test", util.getStringProperty(key));
             assertTrue(source.exceptionThrown);
+        } finally {
+            util.removePropertySource(source);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+    @Issue("https://github.com/apache/logging-log4j2/issues/3252")
+    void testRecursivePropertySource() {
+        final String key = "testKey";
+        final Properties props = new Properties();
+        props.put(key, "test");
+        final PropertiesUtil util = new PropertiesUtil(props);
+        final PropertySource source = new RecursivePropertySource(util);
+        util.addPropertySource(source);
+        try {
+            // We ignore the recursive source
+            assertThat(util.getStringProperty(key)).isEqualTo("test");
+            assertThat(util.hasProperty(key)).isTrue();
+            // We check that the source is recursive
+            assertThat(source.getProperty(key)).isEqualTo("test");
+            assertThat(source.containsProperty(key)).isTrue();
         } finally {
             util.removePropertySource(source);
         }
@@ -287,6 +309,30 @@ class PropertiesUtilTest {
         public boolean containsProperty(final String key) {
             exceptionThrown = true;
             throw new IllegalStateException("Test");
+        }
+    }
+
+    private static class RecursivePropertySource implements PropertySource {
+
+        private final PropertiesUtil propertiesUtil;
+
+        private RecursivePropertySource(PropertiesUtil propertiesUtil) {
+            this.propertiesUtil = propertiesUtil;
+        }
+
+        @Override
+        public int getPriority() {
+            return Integer.MIN_VALUE;
+        }
+
+        @Override
+        public String getProperty(String key) {
+            return propertiesUtil.getStringProperty(key);
+        }
+
+        @Override
+        public boolean containsProperty(String key) {
+            return propertiesUtil.hasProperty(key);
         }
     }
 }
