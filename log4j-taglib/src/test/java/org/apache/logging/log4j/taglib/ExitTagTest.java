@@ -16,31 +16,34 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockPageContext;
 
 /**
  *
  */
+@LoggerContextSource("log4j-test1.xml")
 public class ExitTagTest {
     private static final String CONFIG = "log4j-test1.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    private final Logger logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    private final LoggerContext context;
+    private final Logger logger;
     private ExitTag tag;
 
-    @Before
+    public ExitTagTest(final LoggerContext context) {
+        this.context = context;
+        this.logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    }
+
+    @BeforeEach
     public void setUp() {
         this.tag = new ExitTag();
         this.tag.setPageContext(new MockPageContext());
@@ -49,7 +52,7 @@ public class ExitTagTest {
 
     @Test
     public void testDoEndTag() throws Exception {
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Exit TRACE M-EXIT[ FLOW ] E");
     }
 
@@ -57,7 +60,7 @@ public class ExitTagTest {
     public void testDoEndTagResult01() throws Exception {
         this.tag.setResult(CONFIG);
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Exit with(log4j-test1.xml) TRACE M-EXIT[ FLOW ] E");
     }
 
@@ -65,16 +68,16 @@ public class ExitTagTest {
     public void testDoEndTagResult02() throws Exception {
         this.tag.setResult(5792);
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Exit with(5792) TRACE M-EXIT[ FLOW ] E");
     }
 
     private void verify(final String expected) {
-        final ListAppender listApp = context.getListAppender("List");
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         try {
-            assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.ExitTagTest " + expected, events.get(0));
+            assertEquals(1, events.size(), "Incorrect number of messages.");
+            assertEquals("o.a.l.l.t.ExitTagTest " + expected, events.get(0), "Incorrect message.");
         } finally {
             listApp.clear();
         }

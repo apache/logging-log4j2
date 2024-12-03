@@ -19,41 +19,31 @@ package org.apache.logging.log4j.taglib;
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class TagUtilsLevelTest {
 
-    private final Level level;
-    private final String levelName;
-
-    public TagUtilsLevelTest(final Level level, final String levelName) {
-        this.level = level;
-        this.levelName = levelName;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        final Collection<Object[]> params = new ArrayList<>();
-        // this is perhaps the laziest way to test all the known levels
+    static Stream<Arguments> data() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
         for (final Level level : Level.values()) {
-            params.add(new Object[] {level, toRootLowerCase(level.name())});
+            builder.add(Arguments.of(level, toRootLowerCase(level.name())));
         }
-        return params;
+        return builder.build();
     }
 
-    @Test
-    public void testResolveLevelName() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testResolveLevelName(final Level level, final String levelName) throws Exception {
         assertEquals(level, TagUtils.resolveLevel(levelName));
     }
 
-    @Test
-    public void testResolveLevelEnum() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testResolveLevelEnum(final Level level) throws Exception {
         assertEquals(level, TagUtils.resolveLevel(level));
     }
 }

@@ -16,39 +16,28 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import javax.servlet.jsp.PageContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class TagUtilsScopeTest {
 
-    private final int scope;
-    private final String scopeName;
-
-    public TagUtilsScopeTest(final int scope, final String scopeName) {
-        this.scope = scope;
-        this.scopeName = scopeName;
+    public static Stream<Arguments> testGetScope() {
+        return Stream.of(
+                Arguments.of(PageContext.APPLICATION_SCOPE, "application"),
+                Arguments.of(PageContext.PAGE_SCOPE, "page"),
+                Arguments.of(PageContext.REQUEST_SCOPE, "request"),
+                Arguments.of(PageContext.SESSION_SCOPE, "session"),
+                Arguments.of(PageContext.PAGE_SCOPE, "insert random garbage here"));
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            {PageContext.APPLICATION_SCOPE, "application"},
-            {PageContext.PAGE_SCOPE, "page"},
-            {PageContext.REQUEST_SCOPE, "request"},
-            {PageContext.SESSION_SCOPE, "session"},
-            {PageContext.PAGE_SCOPE, "insert random garbage here"}
-        });
-    }
-
-    @Test
-    public void testGetScope() throws Exception {
-        assertEquals("The scope is not correct.", scope, TagUtils.getScope(scopeName));
+    @ParameterizedTest
+    @MethodSource()
+    public void testGetScope(final int scope, final String scopeName) throws Exception {
+        assertEquals(scope, TagUtils.getScope(scopeName), "The scope is not correct.");
     }
 }

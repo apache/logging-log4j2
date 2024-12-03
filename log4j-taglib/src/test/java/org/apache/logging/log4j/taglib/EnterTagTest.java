@@ -16,31 +16,35 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockPageContext;
 
 /**
  *
  */
+@LoggerContextSource("log4j-test1.xml")
 public class EnterTagTest {
+
+    private final LoggerContext context;
+    private final Logger logger;
+    private EntryTag tag;
     private static final String CONFIG = "log4j-test1.xml";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+    public EnterTagTest(final LoggerContext context) {
+        this.context = context;
+        this.logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    }
 
-    private final Logger logger = context.getLogger("LoggingMessageTagSupportTestLogger");
-    private EntryTag tag;
-
-    @Before
+    @BeforeEach
     public void setUp() {
         this.tag = new EntryTag();
         this.tag.setPageContext(new MockPageContext());
@@ -49,7 +53,7 @@ public class EnterTagTest {
 
     @Test
     public void testDoEndTag() throws Exception {
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Enter TRACE M-ENTER[ FLOW ] E");
     }
 
@@ -58,16 +62,16 @@ public class EnterTagTest {
         this.tag.setDynamicAttribute(null, null, CONFIG);
         this.tag.setDynamicAttribute(null, null, 5792);
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Enter params(log4j-test1.xml, 5792) TRACE M-ENTER[ FLOW ] E");
     }
 
     private void verify(final String expected) {
-        final ListAppender listApp = context.getListAppender("List");
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         try {
-            assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.EnterTagTest " + expected, events.get(0));
+            assertEquals(1, events.size(), "Incorrect number of messages.");
+            assertEquals("o.a.l.l.t.EnterTagTest " + expected, events.get(0), "Incorrect message.");
         } finally {
             listApp.clear();
         }

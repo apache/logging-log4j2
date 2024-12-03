@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.taglib;
 
 import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.Writer;
 import java.util.List;
@@ -28,26 +28,28 @@ import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockBodyContent;
 import org.springframework.mock.web.MockPageContext;
 
 /**
  *
  */
+@LoggerContextSource("log4j-test1.xml")
 public class LoggingMessageTagSupportTest {
 
-    private static final String CONFIG = "log4j-test1.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    private final Logger logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    private final LoggerContext context;
+    private final Logger logger;
     private LoggingMessageTagSupport tag;
+
+    LoggingMessageTagSupportTest(final LoggerContext context) {
+        this.context = context;
+        this.logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    }
 
     private void setUp(final Level level) {
         this.tag = new LoggingMessageTagSupport() {
@@ -66,7 +68,7 @@ public class LoggingMessageTagSupportTest {
     public void testDoStartTag() {
         this.setUp(null);
 
-        assertEquals("The return value is not correct.", BodyTag.EVAL_BODY_BUFFERED, this.tag.doStartTag());
+        assertEquals(BodyTag.EVAL_BODY_BUFFERED, this.tag.doStartTag(), "The return value is not correct");
     }
 
     @Test
@@ -75,7 +77,7 @@ public class LoggingMessageTagSupportTest {
 
         this.tag.setMessage("This is my message 01.");
 
-        assertEquals("The message is not correct.", "This is my message 01.", this.tag.getMessage());
+        assertEquals("This is my message 01.", this.tag.getMessage(), "The message is not correct.");
     }
 
     @Test
@@ -85,7 +87,7 @@ public class LoggingMessageTagSupportTest {
         final Object message = new Object();
         this.tag.setMessage(message);
 
-        assertSame("The message is not correct.", message, this.tag.getMessage());
+        assertSame(message, this.tag.getMessage(), "The message is not correct.");
     }
 
     @Test
@@ -95,7 +97,7 @@ public class LoggingMessageTagSupportTest {
         final MockBodyContent content = new MockBodyContent("This is the body content 01.", (Writer) null);
         this.tag.setBodyContent(content);
 
-        assertEquals("The message is not correct.", "This is the body content 01.", this.tag.getMessage());
+        assertEquals("This is the body content 01.", this.tag.getMessage(), "The message is not correct.");
     }
 
     @Test
@@ -106,7 +108,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setBodyContent(content);
         this.tag.setMessage("This is another message 02.");
 
-        assertEquals("The message is not correct.", "This is another message 02.", this.tag.getMessage());
+        assertEquals("This is another message 02.", this.tag.getMessage(), "The message is not correct.");
     }
 
     @Test
@@ -115,7 +117,7 @@ public class LoggingMessageTagSupportTest {
 
         this.tag.setMessage("Hello message for testDoEndTagStringMessageNoMarkerNoException");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Hello message for testDoEndTagStringMessageNoMarkerNoException WARN M- E");
     }
 
@@ -126,7 +128,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMarker(MarkerManager.getMarker("E01"));
         this.tag.setMessage("Goodbye message for testDoEndTagStringMessageMarkerNoException");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Goodbye message for testDoEndTagStringMessageMarkerNoException INFO M-E01 E");
     }
 
@@ -137,7 +139,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setException(new Exception("This is a test"));
         this.tag.setMessage("Another message for testDoEndTagStringMessageNoMarkerException");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Another message for testDoEndTagStringMessageNoMarkerException ERROR M- E" + LINE_SEPARATOR
                 + "java.lang.Exception: This is a test" + LINE_SEPARATOR);
     }
@@ -150,7 +152,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMarker(MarkerManager.getMarker("F02"));
         this.tag.setMessage("Final message for testDoEndTagStringMessageMarkerException");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Final message for testDoEndTagStringMessageMarkerException TRACE M-F02 E" + LINE_SEPARATOR
                 + "java.lang.RuntimeException: This is another test" + Strings.LINE_SEPARATOR);
     }
@@ -163,7 +165,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setDynamicAttribute(null, null, TimeUnit.HOURS);
         this.tag.setMessage("Test message with [{}] parameter of [{}]");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Test message with [A] parameter of [HOURS] FATAL M- E");
     }
 
@@ -177,7 +179,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setDynamicAttribute(null, null, TimeUnit.SECONDS);
         this.tag.setMessage("Final message with [{}] parameter of [{}]");
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Final message with [Z] parameter of [SECONDS] DEBUG M-N03 E" + LINE_SEPARATOR
                 + "java.lang.Error: This is the last test" + LINE_SEPARATOR);
     }
@@ -189,7 +191,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMessage(
                 logger.getMessageFactory().newMessage("First message for testDoEndTagMessageNoMarkerNoException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("First message for testDoEndTagMessageNoMarkerNoException INFO M- E");
     }
 
@@ -201,7 +203,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMessage(
                 logger.getMessageFactory().newMessage("Another message for testDoEndTagMessageMarkerNoException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Another message for testDoEndTagMessageMarkerNoException WARN M-E01 E");
     }
 
@@ -213,7 +215,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMessage(
                 logger.getMessageFactory().newMessage("Third message for testDoEndTagMessageNoMarkerException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Third message for testDoEndTagMessageNoMarkerException TRACE M- E" + LINE_SEPARATOR
                 + "java.lang.Exception: This is a test" + LINE_SEPARATOR);
     }
@@ -227,7 +229,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMessage(
                 logger.getMessageFactory().newMessage("Final message for testDoEndTagMessageMarkerException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Final message for testDoEndTagMessageMarkerException ERROR M-F02 E" + LINE_SEPARATOR
                 + "java.lang.RuntimeException: " + "This is another test" + LINE_SEPARATOR);
     }
@@ -238,7 +240,7 @@ public class LoggingMessageTagSupportTest {
 
         this.tag.setMessage(new MyMessage("First message for testDoEndTagObjectNoMarkerNoException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("First message for testDoEndTagObjectNoMarkerNoException INFO M- E");
     }
 
@@ -249,7 +251,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMarker(MarkerManager.getMarker("E01"));
         this.tag.setMessage(new MyMessage("Another message for testDoEndTagObjectMarkerNoException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Another message for testDoEndTagObjectMarkerNoException WARN M-E01 E");
     }
 
@@ -260,7 +262,7 @@ public class LoggingMessageTagSupportTest {
         this.tag.setException(new Exception("This is a test"));
         this.tag.setMessage(new MyMessage("Third message for testDoEndTagObjectNoMarkerException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Third message for testDoEndTagObjectNoMarkerException TRACE M- E" + LINE_SEPARATOR
                 + "java.lang.Exception: This is a test" + LINE_SEPARATOR);
     }
@@ -273,17 +275,17 @@ public class LoggingMessageTagSupportTest {
         this.tag.setMarker(MarkerManager.getMarker("F02"));
         this.tag.setMessage(new MyMessage("Final message for testDoEndTagObjectMarkerException"));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
         verify("Final message for testDoEndTagObjectMarkerException ERROR M-F02 E" + LINE_SEPARATOR
                 + "java.lang.RuntimeException: " + "This is another test" + LINE_SEPARATOR);
     }
 
     private void verify(final String expected) {
-        final ListAppender listApp = context.getListAppender("List");
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         try {
-            assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.LoggingMessageTagSupportTest " + expected, events.get(0));
+            assertEquals(1, events.size(), "Incorrect number of messages.");
+            assertEquals("o.a.l.l.t.LoggingMessageTagSupportTest " + expected, events.get(0), "Incorrect message.");
         } finally {
             listApp.clear();
         }
