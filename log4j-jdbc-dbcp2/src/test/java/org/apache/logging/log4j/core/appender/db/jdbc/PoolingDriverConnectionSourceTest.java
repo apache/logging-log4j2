@@ -25,6 +25,9 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests {@link PoolingDriverConnectionSource}.
+ */
 public class PoolingDriverConnectionSourceTest {
 
     @Test

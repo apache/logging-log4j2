@@ -19,7 +19,9 @@ package org.apache.logging.log4j;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,5 +245,71 @@ public class CloseableThreadContextTest {
             assertEquals(key, ThreadContext.peek());
         }
         assertEquals("", ThreadContext.peek());
+    }
+
+    /**
+     * User provided test stressing nesting using {@link CloseableThreadContext#put(String, String)}.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/2946#issuecomment-2382935426">#2946</a>
+     */
+    @Test
+    void testAutoCloseableThreadContextPut() {
+        try (final CloseableThreadContext.Instance ctc1 = CloseableThreadContext.put("outer", "one")) {
+            try (final CloseableThreadContext.Instance ctc2 = CloseableThreadContext.put("outer", "two")) {
+                assertEquals("two", ThreadContext.get("outer"));
+
+                try (final CloseableThreadContext.Instance ctc3 = CloseableThreadContext.put("inner", "one")) {
+                    assertEquals("one", ThreadContext.get("inner"));
+
+                    ThreadContext.put(
+                            "not-in-closeable", "true"); // Remove this line, and closing context behaves as expected
+                    assertEquals("two", ThreadContext.get("outer"));
+                }
+
+                assertEquals("two", ThreadContext.get("outer"));
+                assertNull(ThreadContext.get("inner")); // Test fails here
+            }
+
+            assertEquals("one", ThreadContext.get("outer"));
+            assertNull(ThreadContext.get("inner"));
+        }
+        assertEquals("true", ThreadContext.get("not-in-closeable"));
+
+        assertNull(ThreadContext.get("inner"));
+        assertNull(ThreadContext.get("outer"));
+    }
+
+    /**
+     * User provided test stressing nesting using {@link CloseableThreadContext#putAll(Map)}.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/2946#issuecomment-2382935426">#2946</a>
+     */
+    @Test
+    void testAutoCloseableThreadContextPutAll() {
+        try (final CloseableThreadContext.Instance ctc1 = CloseableThreadContext.put("outer", "one")) {
+            try (final CloseableThreadContext.Instance ctc2 = CloseableThreadContext.put("outer", "two")) {
+                assertEquals("two", ThreadContext.get("outer"));
+
+                try (final CloseableThreadContext.Instance ctc3 = CloseableThreadContext.put("inner", "one")) {
+                    assertEquals("one", ThreadContext.get("inner"));
+
+                    ThreadContext.put(
+                            "not-in-closeable", "true"); // Remove this line, and closing context behaves as expected
+                    ThreadContext.putAll(Collections.singletonMap("inner", "two")); // But this is not a problem
+                    assertEquals("two", ThreadContext.get("inner"));
+                    assertEquals("two", ThreadContext.get("outer"));
+                }
+
+                assertEquals("two", ThreadContext.get("outer"));
+                assertNull(ThreadContext.get("inner")); // This is where the test fails
+            }
+
+            assertEquals("one", ThreadContext.get("outer"));
+            assertNull(ThreadContext.get("inner"));
+        }
+        assertEquals("true", ThreadContext.get("not-in-closeable"));
+
+        assertNull(ThreadContext.get("inner"));
+        assertNull(ThreadContext.get("outer"));
     }
 }

@@ -16,28 +16,31 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.core.pattern.AnsiEscape.BG_RED;
+import static org.apache.logging.log4j.core.pattern.AnsiEscape.BOLD;
+import static org.apache.logging.log4j.core.pattern.AnsiEscape.RED;
+import static org.apache.logging.log4j.core.pattern.AnsiEscape.WHITE;
+import static org.apache.logging.log4j.core.pattern.AnsiEscape.YELLOW;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
-import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
-import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
-import static org.fusesource.jansi.AnsiRenderer.Code.RED;
-import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
-import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiRenderer;
-import org.fusesource.jansi.AnsiRenderer.Code;
 
 /**
  * Renders an input as ANSI escaped output.
- *
- * Uses the JAnsi rendering syntax as the default to render a message into an ANSI escaped string.
- *
+ * <p>
+ * Uses the
+ * <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JLine AnsiRenderer syntax</a>
+ * to render a message into an ANSI escaped string.
+ * </p>
+ * <p>
  * The default syntax for embedded ANSI codes is:
- *
+ * </p>
  * <pre>
  *   &#64;|<em>code</em>(,<em>code</em>)* <em>text</em>|@
  * </pre>
@@ -72,279 +75,245 @@ import org.fusesource.jansi.AnsiRenderer.Code;
  * logger.info("@|KeyStyle {}|@ = @|ValueStyle {}|@", entry.getKey(), entry.getValue());
  * </pre>
  *
- * Note: This class originally copied and then heavily modified code from JAnsi's AnsiRenderer (which is licensed as
- * Apache 2.0.)
- *
- * @see AnsiRenderer
+ * <p>
+ *     <strong>Note:</strong> this class was originally copied and then heavily modified from
+ *     <a href="https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html">JAnsi/JLine AnsiRenderer</a>,
+ *     licensed under an Apache Software License, version 2.0.
+ * </p>
  */
 public final class JAnsiTextRenderer implements TextRenderer {
 
-    public static final Map<String, Code[]> DefaultExceptionStyleMap;
-    static final Map<String, Code[]> DefaultMessageStyleMap;
-    private static final Map<String, Map<String, Code[]>> PrefedinedStyleMaps;
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static void put(final Map<String, Code[]> map, final String name, final Code... codes) {
-        map.put(name, codes);
+    public static final Map<String, String> DefaultExceptionStyleMap;
+    static final Map<String, String> DEFAULT_MESSAGE_STYLE_MAP;
+    private static final Map<String, Map<String, String>> PREFEDINED_STYLE_MAPS;
+
+    private static final String BEGIN_TOKEN = "@|";
+    private static final String END_TOKEN = "|@";
+    // The length of AnsiEscape.CSI
+    private static final int CSI_LENGTH = 2;
+
+    private static Map.Entry<String, String> entry(final String name, final AnsiEscape... codes) {
+        final StringBuilder sb = new StringBuilder(AnsiEscape.CSI.getCode());
+        for (final AnsiEscape code : codes) {
+            sb.append(code.getCode());
+        }
+        return new AbstractMap.SimpleImmutableEntry<>(name, sb.toString());
+    }
+
+    @SafeVarargs
+    private static <V> Map<String, V> ofEntries(final Map.Entry<String, V>... entries) {
+        final Map<String, V> map = new HashMap<>(entries.length);
+        for (final Map.Entry<String, V> entry : entries) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return Collections.unmodifiableMap(map);
     }
 
     static {
-        final Map<String, Map<String, Code[]>> tempPreDefs = new HashMap<>();
         // Default style: Spock
-        {
-            // TODO Should the keys be in an enum?
-            final Map<String, Code[]> map = new HashMap<>();
-            put(map, "Prefix", WHITE);
-            put(map, "Name", BG_RED, WHITE);
-            put(map, "NameMessageSeparator", BG_RED, WHITE);
-            put(map, "Message", BG_RED, WHITE, BOLD);
-            put(map, "At", WHITE);
-            put(map, "CauseLabel", WHITE);
-            put(map, "Text", WHITE);
-            put(map, "More", WHITE);
-            put(map, "Suppressed", WHITE);
-            // StackTraceElement
-            put(map, "StackTraceElement.ClassLoaderName", WHITE);
-            put(map, "StackTraceElement.ClassLoaderSeparator", WHITE);
-            put(map, "StackTraceElement.ModuleName", WHITE);
-            put(map, "StackTraceElement.ModuleVersionSeparator", WHITE);
-            put(map, "StackTraceElement.ModuleVersion", WHITE);
-            put(map, "StackTraceElement.ModuleNameSeparator", WHITE);
-            put(map, "StackTraceElement.ClassName", YELLOW);
-            put(map, "StackTraceElement.ClassMethodSeparator", YELLOW);
-            put(map, "StackTraceElement.MethodName", YELLOW);
-            put(map, "StackTraceElement.NativeMethod", YELLOW);
-            put(map, "StackTraceElement.FileName", RED);
-            put(map, "StackTraceElement.LineNumber", RED);
-            put(map, "StackTraceElement.Container", RED);
-            put(map, "StackTraceElement.ContainerSeparator", WHITE);
-            put(map, "StackTraceElement.UnknownSource", RED);
-            // ExtraClassInfo
-            put(map, "ExtraClassInfo.Inexact", YELLOW);
-            put(map, "ExtraClassInfo.Container", YELLOW);
-            put(map, "ExtraClassInfo.ContainerSeparator", YELLOW);
-            put(map, "ExtraClassInfo.Location", YELLOW);
-            put(map, "ExtraClassInfo.Version", YELLOW);
-            // Save
-            DefaultExceptionStyleMap = Collections.unmodifiableMap(map);
-            tempPreDefs.put("Spock", DefaultExceptionStyleMap);
-        }
+        final Map<String, String> spock = ofEntries(
+                entry("Prefix", WHITE),
+                entry("Name", BG_RED, WHITE),
+                entry("NameMessageSeparator", BG_RED, WHITE),
+                entry("Message", BG_RED, WHITE, BOLD),
+                entry("At", WHITE),
+                entry("CauseLabel", WHITE),
+                entry("Text", WHITE),
+                entry("More", WHITE),
+                entry("Suppressed", WHITE),
+                // StackTraceElement
+                entry("StackTraceElement.ClassLoaderName", WHITE),
+                entry("StackTraceElement.ClassLoaderSeparator", WHITE),
+                entry("StackTraceElement.ModuleName", WHITE),
+                entry("StackTraceElement.ModuleVersionSeparator", WHITE),
+                entry("StackTraceElement.ModuleVersion", WHITE),
+                entry("StackTraceElement.ModuleNameSeparator", WHITE),
+                entry("StackTraceElement.ClassName", YELLOW),
+                entry("StackTraceElement.ClassMethodSeparator", YELLOW),
+                entry("StackTraceElement.MethodName", YELLOW),
+                entry("StackTraceElement.NativeMethod", YELLOW),
+                entry("StackTraceElement.FileName", RED),
+                entry("StackTraceElement.LineNumber", RED),
+                entry("StackTraceElement.Container", RED),
+                entry("StackTraceElement.ContainerSeparator", WHITE),
+                entry("StackTraceElement.UnknownSource", RED),
+                // ExtraClassInfo
+                entry("ExtraClassInfo.Inexact", YELLOW),
+                entry("ExtraClassInfo.Container", YELLOW),
+                entry("ExtraClassInfo.ContainerSeparator", YELLOW),
+                entry("ExtraClassInfo.Location", YELLOW),
+                entry("ExtraClassInfo.Version", YELLOW));
+
         // Style: Kirk
-        {
-            // TODO Should the keys be in an enum?
-            final Map<String, Code[]> map = new HashMap<>();
-            put(map, "Prefix", WHITE);
-            put(map, "Name", BG_RED, YELLOW, BOLD);
-            put(map, "NameMessageSeparator", BG_RED, YELLOW);
-            put(map, "Message", BG_RED, WHITE, BOLD);
-            put(map, "At", WHITE);
-            put(map, "CauseLabel", WHITE);
-            put(map, "Text", WHITE);
-            put(map, "More", WHITE);
-            put(map, "Suppressed", WHITE);
-            // StackTraceElement
-            put(map, "StackTraceElement.ClassLoaderName", WHITE);
-            put(map, "StackTraceElement.ClassLoaderSeparator", WHITE);
-            put(map, "StackTraceElement.ModuleName", WHITE);
-            put(map, "StackTraceElement.ModuleVersionSeparator", WHITE);
-            put(map, "StackTraceElement.ModuleVersion", WHITE);
-            put(map, "StackTraceElement.ModuleNameSeparator", WHITE);
-            put(map, "StackTraceElement.ClassName", BG_RED, WHITE);
-            put(map, "StackTraceElement.ClassMethodSeparator", BG_RED, YELLOW);
-            put(map, "StackTraceElement.MethodName", BG_RED, YELLOW);
-            put(map, "StackTraceElement.NativeMethod", BG_RED, YELLOW);
-            put(map, "StackTraceElement.FileName", RED);
-            put(map, "StackTraceElement.LineNumber", RED);
-            put(map, "StackTraceElement.Container", RED);
-            put(map, "StackTraceElement.ContainerSeparator", WHITE);
-            put(map, "StackTraceElement.UnknownSource", RED);
-            // ExtraClassInfo
-            put(map, "ExtraClassInfo.Inexact", YELLOW);
-            put(map, "ExtraClassInfo.Container", WHITE);
-            put(map, "ExtraClassInfo.ContainerSeparator", WHITE);
-            put(map, "ExtraClassInfo.Location", YELLOW);
-            put(map, "ExtraClassInfo.Version", YELLOW);
-            // Save
-            tempPreDefs.put("Kirk", Collections.unmodifiableMap(map));
-        }
-        {
-            final Map<String, Code[]> temp = new HashMap<>();
-            // TODO
-            DefaultMessageStyleMap = Collections.unmodifiableMap(temp);
-        }
-        PrefedinedStyleMaps = Collections.unmodifiableMap(tempPreDefs);
+        final Map<String, String> kirk = ofEntries(
+                entry("Prefix", WHITE),
+                entry("Name", BG_RED, YELLOW, BOLD),
+                entry("NameMessageSeparator", BG_RED, YELLOW),
+                entry("Message", BG_RED, WHITE, BOLD),
+                entry("At", WHITE),
+                entry("CauseLabel", WHITE),
+                entry("Text", WHITE),
+                entry("More", WHITE),
+                entry("Suppressed", WHITE),
+                // StackTraceElement
+                entry("StackTraceElement.ClassLoaderName", WHITE),
+                entry("StackTraceElement.ClassLoaderSeparator", WHITE),
+                entry("StackTraceElement.ModuleName", WHITE),
+                entry("StackTraceElement.ModuleVersionSeparator", WHITE),
+                entry("StackTraceElement.ModuleVersion", WHITE),
+                entry("StackTraceElement.ModuleNameSeparator", WHITE),
+                entry("StackTraceElement.ClassName", BG_RED, WHITE),
+                entry("StackTraceElement.ClassMethodSeparator", BG_RED, YELLOW),
+                entry("StackTraceElement.MethodName", BG_RED, YELLOW),
+                entry("StackTraceElement.NativeMethod", BG_RED, YELLOW),
+                entry("StackTraceElement.FileName", RED),
+                entry("StackTraceElement.LineNumber", RED),
+                entry("StackTraceElement.Container", RED),
+                entry("StackTraceElement.ContainerSeparator", WHITE),
+                entry("StackTraceElement.UnknownSource", RED),
+                // ExtraClassInfo
+                entry("ExtraClassInfo.Inexact", YELLOW),
+                entry("ExtraClassInfo.Container", WHITE),
+                entry("ExtraClassInfo.ContainerSeparator", WHITE),
+                entry("ExtraClassInfo.Location", YELLOW),
+                entry("ExtraClassInfo.Version", YELLOW));
+
+        // Save
+        DefaultExceptionStyleMap = spock;
+        DEFAULT_MESSAGE_STYLE_MAP = Collections.emptyMap();
+        Map<String, Map<String, String>> predefinedStyleMaps = new HashMap<>();
+        predefinedStyleMaps.put("Spock", spock);
+        predefinedStyleMaps.put("Kirk", kirk);
+        PREFEDINED_STYLE_MAPS = Collections.unmodifiableMap(predefinedStyleMaps);
     }
 
     private final String beginToken;
     private final int beginTokenLen;
     private final String endToken;
     private final int endTokenLen;
-    private final Map<String, Code[]> styleMap;
+    private final Map<String, String> styleMap;
 
-    public JAnsiTextRenderer(final String[] formats, final Map<String, Code[]> defaultStyleMap) {
-        String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
-        String tempEndToken = AnsiRenderer.END_TOKEN;
-        final Map<String, Code[]> map;
+    public JAnsiTextRenderer(final String[] formats, final Map<String, String> defaultStyleMap) {
+        // The format string is a list of whitespace-separated expressions:
+        // Key=AnsiEscape(,AnsiEscape)*
         if (formats.length > 1) {
-            final String allStylesStr = formats[1];
-            // Style def split
-            final String[] allStyleAssignmentsArr = allStylesStr.split(" ");
-            map = new HashMap<>(allStyleAssignmentsArr.length + defaultStyleMap.size());
-            map.putAll(defaultStyleMap);
-            for (final String styleAssignmentStr : allStyleAssignmentsArr) {
-                final String[] styleAssignmentArr = styleAssignmentStr.split("=");
-                if (styleAssignmentArr.length != 2) {
-                    StatusLogger.getLogger()
-                            .warn(
-                                    "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
-                                    getClass().getSimpleName(),
-                                    styleAssignmentStr);
+            final String stylesStr = formats[1];
+            final Map<String, String> map = AnsiEscape.createMap(
+                    stylesStr.split("\\s", -1), new String[] {"BeginToken", "EndToken", "Style"}, ",");
+
+            // Handle the special tokens
+            beginToken = Objects.toString(map.remove("BeginToken"), BEGIN_TOKEN);
+            endToken = Objects.toString(map.remove("EndToken"), END_TOKEN);
+            final String predefinedStyle = map.remove("Style");
+
+            // Create style map
+            final Map<String, String> styleMap = new HashMap<>(map.size() + defaultStyleMap.size());
+            defaultStyleMap.forEach((k, v) -> styleMap.put(toRootUpperCase(k), v));
+            if (predefinedStyle != null) {
+                final Map<String, String> predefinedMap = PREFEDINED_STYLE_MAPS.get(predefinedStyle);
+                if (predefinedMap != null) {
+                    map.putAll(predefinedMap);
                 } else {
-                    final String styleName = styleAssignmentArr[0];
-                    final String codeListStr = styleAssignmentArr[1];
-                    final String[] codeNames = codeListStr.split(",");
-                    if (codeNames.length == 0) {
-                        StatusLogger.getLogger()
-                                .warn(
-                                        "{} parsing style \"{}\", expected format: StyleName=Code(,Code)*",
-                                        getClass().getSimpleName(),
-                                        styleAssignmentStr);
-                    } else {
-                        switch (styleName) {
-                            case "BeginToken":
-                                tempBeginToken = codeNames[0];
-                                break;
-                            case "EndToken":
-                                tempEndToken = codeNames[0];
-                                break;
-                            case "StyleMapName":
-                                final String predefinedMapName = codeNames[0];
-                                final Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
-                                if (predefinedMap != null) {
-                                    map.putAll(predefinedMap);
-                                } else {
-                                    StatusLogger.getLogger()
-                                            .warn(
-                                                    "Unknown predefined map name {}, pick one of {}",
-                                                    predefinedMapName,
-                                                    null);
-                                }
-                                break;
-                            default:
-                                final Code[] codes = new Code[codeNames.length];
-                                for (int i = 0; i < codes.length; i++) {
-                                    codes[i] = toCode(codeNames[i]);
-                                }
-                                map.put(styleName, codes);
-                        }
-                    }
+                    LOGGER.warn(
+                            "Unknown predefined map name {}, pick one of {}",
+                            predefinedStyle,
+                            PREFEDINED_STYLE_MAPS.keySet());
                 }
             }
+            styleMap.putAll(map);
+            this.styleMap = Collections.unmodifiableMap(styleMap);
         } else {
-            map = defaultStyleMap;
+            beginToken = BEGIN_TOKEN;
+            endToken = END_TOKEN;
+            this.styleMap = Collections.unmodifiableMap(defaultStyleMap);
         }
-        styleMap = map;
-        beginToken = tempBeginToken;
-        endToken = tempEndToken;
-        beginTokenLen = tempBeginToken.length();
-        endTokenLen = tempEndToken.length();
-    }
-
-    public Map<String, Code[]> getStyleMap() {
-        return styleMap;
-    }
-
-    private void render(final Ansi ansi, final Code code) {
-        if (code.isColor()) {
-            if (code.isBackground()) {
-                ansi.bg(code.getColor());
-            } else {
-                ansi.fg(code.getColor());
-            }
-        } else if (code.isAttribute()) {
-            ansi.a(code.getAttribute());
-        }
-    }
-
-    private void render(final Ansi ansi, final Code... codes) {
-        for (final Code code : codes) {
-            render(ansi, code);
-        }
+        beginTokenLen = beginToken.length();
+        endTokenLen = endToken.length();
     }
 
     /**
-     * Renders the given text with the given names which can be ANSI code names or Log4j style names.
+     * Renders the given input with the given names which can be ANSI code names or Log4j style names.
      *
-     * @param text
-     *            The text to render
-     * @param names
+     * @param input
+     *            The input to render
+     * @param styleNames
      *            ANSI code names or Log4j style names.
-     * @return A rendered string containing ANSI codes.
      */
-    private String render(final String text, final String... names) {
-        final Ansi ansi = Ansi.ansi();
-        for (final String name : names) {
-            final Code[] codes = styleMap.get(name);
-            if (codes != null) {
-                render(ansi, codes);
+    private void render(final String input, final StringBuilder output, final String... styleNames) {
+        boolean first = true;
+        for (final String styleName : styleNames) {
+            final String escape = styleMap.get(toRootUpperCase(styleName));
+            if (escape != null) {
+                merge(escape, output, first);
             } else {
-                render(ansi, toCode(name));
+                merge(AnsiEscape.createSequence(styleName), output, first);
             }
+            first = false;
         }
-        return ansi.a(text).reset().toString();
+        output.append(input).append(AnsiEscape.getDefaultStyle());
+    }
+
+    private static void merge(final String escapeSequence, final StringBuilder output, final boolean first) {
+        if (first) {
+            output.append(escapeSequence);
+        } else {
+            // Delete the trailing AnsiEscape.SUFFIX
+            output.setLength(output.length() - 1);
+            output.append(AnsiEscape.SEPARATOR.getCode());
+            output.append(escapeSequence.substring(CSI_LENGTH));
+        }
     }
 
     // EXACT COPY OF StringBuilder version of the method but typed as String for input
     @Override
     public void render(final String input, final StringBuilder output, final String styleName)
             throws IllegalArgumentException {
-        output.append(render(input, styleName));
+        render(input, output, styleName.split(",", -1));
     }
 
     @Override
     public void render(final StringBuilder input, final StringBuilder output) throws IllegalArgumentException {
-        int i = 0;
-        int j, k;
+        int pos = 0;
+        int beginTokenPos, endTokenPos;
 
         while (true) {
-            j = input.indexOf(beginToken, i);
-            if (j == -1) {
-                if (i == 0) {
-                    output.append(input);
-                    return;
-                }
-                output.append(input.substring(i, input.length()));
+            beginTokenPos = input.indexOf(beginToken, pos);
+            if (beginTokenPos == -1) {
+                output.append(pos == 0 ? input : input.substring(pos, input.length()));
                 return;
             }
-            output.append(input.substring(i, j));
-            k = input.indexOf(endToken, j);
+            output.append(input.substring(pos, beginTokenPos));
+            endTokenPos = input.indexOf(endToken, beginTokenPos);
 
-            if (k == -1) {
-                output.append(input);
+            if (endTokenPos == -1) {
+                LOGGER.warn(
+                        "Missing matching end token {} for token at position {}: '{}'", endToken, beginTokenPos, input);
+                output.append(beginTokenPos == 0 ? input : input.substring(beginTokenPos, input.length()));
                 return;
             }
-            j += beginTokenLen;
-            final String spec = input.substring(j, k);
+            beginTokenPos += beginTokenLen;
+            final String spec = input.substring(beginTokenPos, endTokenPos);
 
-            final String[] items = spec.split(AnsiRenderer.CODE_TEXT_SEPARATOR, 2);
+            final String[] items = spec.split("\\s", 2);
             if (items.length == 1) {
-                output.append(input);
-                return;
+                LOGGER.warn("Missing argument in ANSI escape specification '{}'", spec);
+                output.append(beginToken).append(spec).append(endToken);
+            } else {
+                render(items[1], output, items[0].split(",", -1));
             }
-            final String replacement = render(items[1], items[0].split(","));
-
-            output.append(replacement);
-
-            i = k + endTokenLen;
+            pos = endTokenPos + endTokenLen;
         }
     }
 
-    private Code toCode(final String name) {
-        return Code.valueOf(toRootUpperCase(name));
+    public Map<String, String> getStyleMap() {
+        return styleMap;
     }
 
     @Override
     public String toString() {
-        return "JAnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
+        return "AnsiMessageRenderer [beginToken=" + beginToken + ", beginTokenLen=" + beginTokenLen + ", endToken="
                 + endToken + ", endTokenLen=" + endTokenLen + ", styleMap=" + styleMap + "]";
     }
 }

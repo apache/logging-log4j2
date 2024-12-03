@@ -58,7 +58,7 @@ This behavior is no longer the default and must be enabled by specifying `%msg\{
 
 The Log4j 2.16.0 API, as well as many core components, maintains binary compatibility with previous releases.
 
-Apache Log4j 2.16.0 requires a minimum of Java 8 to build and run.
+Log4j 2.16.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.1 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.
 

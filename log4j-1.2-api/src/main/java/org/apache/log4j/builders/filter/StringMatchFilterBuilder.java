@@ -86,7 +86,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.DENY;
         return FilterWrapper.adapt(StringMatchFilter.newBuilder()
-                .setMatchString(text)
+                .setText(text)
                 .setOnMatch(onMatch)
                 .setOnMismatch(org.apache.logging.log4j.core.Filter.Result.NEUTRAL)
                 .build());

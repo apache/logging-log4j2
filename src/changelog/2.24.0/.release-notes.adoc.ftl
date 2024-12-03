@@ -20,7 +20,7 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This release contains improvements and changes in several areas of Apache Log4j:
+This release contains improvements and changes in several areas of Log4j:
 
 === Log4j API
 
@@ -34,12 +34,17 @@ Check your configuration for typos.
 
 === Documentation
 
-The xref:index.adoc[Apache Log4j 2] website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.
+The project website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.
 
 === Bridges
 
 The JUL-to-Log4j API and Log4j 1-to-Log4j API will no longer be able to modify the configuration of Log4j Core by default.
 If such a functionality is required, it must be explicitly enabled.
+See the documentation of the
+xref:migrate-from-log4j1.adoc#log4j1.compatibility[`log4j1.compatibility`]
+and
+xref:log4j-jul.adoc#log4j2.julLoggerAdapter[`log4j2.julLoggerAdapter`]
+configuration properties for more details.
 
 === Modules
 
@@ -58,6 +63,8 @@ Please migrate to xref:components.adoc#log4j-mongodb[`log4j-mongodb`] (client ve
 
 === JMX changes
 
-Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the `log4j2.disableJmx=false` system property.
+Starting in version 2.24.0, JMX support is disabled by default and can be re-enabled via the
+xref:manual/systemproperties.adoc#log4j2.disableJmx[`log4j2.disableJmx`]
+system property.
 
 <#include "../.changelog.adoc.ftl">

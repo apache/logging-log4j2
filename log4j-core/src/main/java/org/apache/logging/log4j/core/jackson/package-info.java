@@ -19,7 +19,7 @@
  * library.
  */
 @Export
-@Version("2.24.0")
+@Version("2.24.1")
 package org.apache.logging.log4j.core.jackson;
 
 import org.osgi.annotation.bundle.Export;

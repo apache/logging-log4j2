@@ -16,12 +16,15 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.util.SerializationTestHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests of Level.
@@ -57,7 +60,7 @@ public class LevelTest {
         //
         //  JDK 1.1 doesn't support readResolve necessary for the assertion
         if (!System.getProperty("java.version").startsWith("1.1.")) {
-            assertTrue(obj == Level.INFO);
+            assertEquals(obj, Level.INFO);
         }
     }
 
@@ -77,6 +80,7 @@ public class LevelTest {
         assertEquals(Level.INFO.level, clone.level);
         assertEquals(Level.INFO.levelStr, clone.levelStr);
         assertEquals(Level.INFO.syslogEquivalent, clone.syslogEquivalent);
+        assertEquals(OptionConverter.createLevel(custom), clone.version2Level);
     }
 
     /**
@@ -203,6 +207,15 @@ public class LevelTest {
     @Test
     public void testALL() {
         assertTrue(Level.ALL instanceof Level);
+    }
+
+    /**
+     * Tests version2Level.
+     */
+    @ParameterizedTest
+    @MethodSource("org.apache.log4j.helpers.OptionConverterLevelTest#standardLevels")
+    public void testVersion2Level(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
+        assertEquals(log4j2Level, log4j1Level.getVersion2Level());
     }
 
     /**

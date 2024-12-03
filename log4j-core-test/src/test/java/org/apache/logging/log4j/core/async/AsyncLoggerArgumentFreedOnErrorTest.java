@@ -16,67 +16,48 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertTrue;
+import static org.apache.logging.log4j.core.GcHelper.awaitGarbageCollection;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.GarbageCollectionHelper;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 @Category(AsyncLoggers.class)
-public class AsyncLoggerArgumentFreedOnErrorTest {
+class AsyncLoggerArgumentFreedOnErrorTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("log4j2.enableThreadlocals", "true");
-        System.setProperty("log4j2.enableDirectEncoders", "true");
-        System.setProperty("log4j2.formatMsgAsync", "true");
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-    }
-
-    // LOG4J2-2725: events are cleared even after failure
+    /**
+     * Tests events are cleared even after failure.
+     *
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2725">LOG4J2-2725</a>
+     */
     @Test
-    public void testMessageIsGarbageCollected() throws Exception {
-        final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
-        final CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
-        log.fatal(new ThrowingMessage(garbageCollectionLatch));
-        final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
-        gcHelper.run();
-        try {
-            assertTrue(
-                    "Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
-        } finally {
-            gcHelper.close();
-        }
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+    @SetSystemProperty(key = "log4j2.enableDirectEncoders", value = "true")
+    @SetSystemProperty(key = "log4j2.enableThreadLocals", value = "true")
+    @SetSystemProperty(key = "log4j2.formatMsgAsync", value = "true")
+    void parameters_throwing_exception_should_be_garbage_collected(final TestInfo testInfo) throws Exception {
+        awaitGarbageCollection(() -> {
+            final String loggerContextName = String.format("%s-LC", testInfo.getDisplayName());
+            try (final LoggerContext loggerContext = new AsyncLoggerContext(loggerContextName)) {
+                loggerContext.start();
+                final Logger logger = loggerContext.getRootLogger();
+                final ThrowingMessage parameter = new ThrowingMessage();
+                logger.fatal(parameter);
+                return parameter;
+            }
+        });
     }
 
     private static class ThrowingMessage implements Message, StringBuilderFormattable {
 
-        private final CountDownLatch latch;
-
-        ThrowingMessage(final CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            latch.countDown();
-            super.finalize();
-        }
+        private ThrowingMessage() {}
 
         @Override
         public String getFormattedMessage() {
@@ -85,7 +66,7 @@ public class AsyncLoggerArgumentFreedOnErrorTest {
 
         @Override
         public Object[] getParameters() {
-            return org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY;
+            return new Object[0];
         }
 
         @Override

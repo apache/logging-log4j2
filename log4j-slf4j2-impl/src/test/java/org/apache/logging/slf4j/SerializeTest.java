@@ -20,21 +20,16 @@ import static org.apache.logging.log4j.test.SerializableMatchers.serializesRound
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.Serializable;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
+@LoggerContextSource(value = "log4j-test1.xml")
 public class SerializeTest {
-
-    private static final String CONFIG = "log4j-test1.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
 

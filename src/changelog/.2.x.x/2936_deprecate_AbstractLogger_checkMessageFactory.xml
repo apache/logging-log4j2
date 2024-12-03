@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="deprecated">
   <issue id="2936" link="https://github.com/apache/logging-log4j2/pull/2936"/>
-  <description format="asciidoc">Deprecate `AbstractLogger.checkMessageFactory()`, since all created `Logger`s are already `MessageFactory`-namespaced</description>
+  <description format="asciidoc">Deprecate `AbstractLogger.checkMessageFactory()`, since all created ``Logger``s are already `MessageFactory`-namespaced</description>
 </entry>

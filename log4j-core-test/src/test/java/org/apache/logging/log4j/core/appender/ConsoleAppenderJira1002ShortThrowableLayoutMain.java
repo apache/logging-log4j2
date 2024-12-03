@@ -21,7 +21,7 @@ package org.apache.logging.log4j.core.appender;
  */
 public class ConsoleAppenderJira1002ShortThrowableLayoutMain {
 
-    public static void main(final String[] args) {
-        ConsoleAppenderNoAnsiStyleLayoutMain.test(args, "target/test-classes/log4j2-1002.xml");
+    public static void main() {
+        ConsoleAppenderNoAnsiStyleLayoutMain.test("target/test-classes/log4j2-1002.xml");
     }
 }

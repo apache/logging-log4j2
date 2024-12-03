@@ -46,7 +46,7 @@ If a `log4j2.system.properties` file is available on the classpath its contents 
 
 [WARNING]
 ====
-To provide backward compatibility with versions older than 2.10 a certain number of additional property names is also supported using a fuzzy matching algorithm.
+To provide backward compatibility with versions older than 2.10.0 a certain number of additional property names are also supported using a fuzzy matching algorithm.
 
 In case of problems with the properties sub-system, make sure that your application does not use property names with the following case-insensitive prefixes:
 
@@ -148,13 +148,6 @@ include::partial$manual/systemproperties/properties-configuration-factory.adoc[l
 === Garbage Collection
 
 include::partial$manual/systemproperties/properties-garbage-collection.adoc[leveloffset=+2]
-
-[id=properties-jansi]
-=== JANSI
-
-If the https://fusesource.github.io/jansi/[JANSI] library is on the runtime classpath of the application, the following property can be used to control its usage:
-
-include::partial$manual/systemproperties/properties-jansi.adoc[leveloffset=+2]
 
 [id=properties-jmx]
 === JMX

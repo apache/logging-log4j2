@@ -5,6 +5,12 @@
        type="changed">
   <issue id="2517" link="https://github.com/apache/logging-log4j2/pull/2517"/>
   <description format="asciidoc">
-    Prioritize user-defined values of `log4j2.enableThreadLocals`, `log4j2.garbagefreeThreadContextMap` and `log4j2.shutdownHookEnabled` over the value of `log4j.isWebapp`.
+    Prioritize user-defined values of
+    xref:manual/systemproperties.adoc#log4j2.enableThreadlocals[`log4j2.enableThreadlocals`],
+    xref:manual/systemproperties.adoc#log4j2.garbagefreeThreadContextMap[`log4j2.garbagefreeThreadContextMap`]
+    and
+    xref:manual/systemproperties.adoc#log4j2.shutdownHookEnabled[`log4j2.shutdownHookEnabled`]
+    over the value of
+    xref:manual/systemproperties.adoc#log4j2.isWebapp[`log4j2.isWebapp`].
   </description>
 </entry>

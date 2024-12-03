@@ -29,18 +29,24 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
 
-final class LogEventFixture {
+public final class LogEventFixture {
 
     private LogEventFixture() {}
 
     private static final int TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT = 10;
 
-    static List<LogEvent> createLiteLogEvents(final int logEventCount) {
+    public static List<LogEvent> createLiteLogEvents(final int logEventCount) {
+        return createLiteLogEvents(logEventCount, TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT);
+    }
+
+    public static List<LogEvent> createLiteLogEvents(
+            final int logEventCount, final int timeOverlappingConsecutiveEventCount) {
         final List<LogEvent> logEvents = new ArrayList<>(logEventCount);
         final long startTimeMillis = System.currentTimeMillis();
         for (int logEventIndex = 0; logEventIndex < logEventCount; logEventIndex++) {
             final String logEventId = String.valueOf(logEventIndex);
-            final long logEventTimeMillis = createLogEventTimeMillis(startTimeMillis, logEventIndex);
+            final long logEventTimeMillis =
+                    createLogEventTimeMillis(startTimeMillis, logEventIndex, timeOverlappingConsecutiveEventCount);
             final LogEvent logEvent = LogEventFixture.createLiteLogEvent(logEventId, logEventTimeMillis);
             logEvents.add(logEvent);
         }
@@ -63,24 +69,31 @@ final class LogEventFixture {
                 .build();
     }
 
-    static List<LogEvent> createFullLogEvents(final int logEventCount) {
+    public static List<LogEvent> createFullLogEvents(final int logEventCount) {
+        return createFullLogEvents(logEventCount, TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT);
+    }
+
+    public static List<LogEvent> createFullLogEvents(
+            final int logEventCount, final int timeOverlappingConsecutiveEventCount) {
         final List<LogEvent> logEvents = new ArrayList<>(logEventCount);
         final long startTimeMillis = System.currentTimeMillis();
         for (int logEventIndex = 0; logEventIndex < logEventCount; logEventIndex++) {
             final String logEventId = String.valueOf(logEventIndex);
-            final long logEventTimeMillis = createLogEventTimeMillis(startTimeMillis, logEventIndex);
+            final long logEventTimeMillis =
+                    createLogEventTimeMillis(startTimeMillis, logEventIndex, timeOverlappingConsecutiveEventCount);
             final LogEvent logEvent = LogEventFixture.createFullLogEvent(logEventId, logEventTimeMillis);
             logEvents.add(logEvent);
         }
         return logEvents;
     }
 
-    private static long createLogEventTimeMillis(final long startTimeMillis, final int logEventIndex) {
+    private static long createLogEventTimeMillis(
+            final long startTimeMillis, final int logEventIndex, final int timeOverlappingConsecutiveEventCount) {
         // Create event time repeating every certain number of consecutive
         // events. This is better aligned with the real-world use case and
         // gives surface to timestamp formatter caches to perform their
         // magic, which is implemented for almost all layouts.
-        return startTimeMillis + logEventIndex / TIME_OVERLAPPING_CONSECUTIVE_EVENT_COUNT;
+        return startTimeMillis + logEventIndex / timeOverlappingConsecutiveEventCount;
     }
 
     private static LogEvent createFullLogEvent(final String id, final long timeMillis) {

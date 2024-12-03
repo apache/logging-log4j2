@@ -216,14 +216,16 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      */
     private static void enableXInclude(final DocumentBuilderFactory factory) {
         try {
-            // Alternative: We set if a system property on the command line is set, for example:
-            // -DLog4j.XInclude=true
             factory.setXIncludeAware(true);
             // LOG4J2-3531: Xerces only checks if the feature is supported when creating a factory. To reproduce:
             // -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11NonValidatingConfiguration
-            factory.newDocumentBuilder();
-        } catch (final UnsupportedOperationException | ParserConfigurationException e) {
-            factory.setXIncludeAware(false);
+            try {
+                factory.newDocumentBuilder();
+            } catch (final ParserConfigurationException e) {
+                factory.setXIncludeAware(false);
+                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
+            }
+        } catch (final UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
         } catch (final AbstractMethodError | NoSuchMethodError err) {
             LOGGER.warn(

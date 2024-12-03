@@ -16,17 +16,19 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class Log4jMarkerTest {
 
     private static Log4jMarkerFactory markerFactory;
 
-    @BeforeClass
+    @BeforeAll
     public static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
     }
@@ -38,9 +40,9 @@ public class Log4jMarkerTest {
         final Log4jMarker marker1 = new Log4jMarker(markerFactory, markerA);
         final Log4jMarker marker2 = new Log4jMarker(markerFactory, markerA);
         final Log4jMarker marker3 = new Log4jMarker(markerFactory, markerB);
-        Assert.assertEquals(marker1, marker2);
-        Assert.assertNotEquals(marker1, null);
-        Assert.assertNotEquals(null, marker1);
-        Assert.assertNotEquals(marker1, marker3);
+        assertEquals(marker1, marker2);
+        assertNotEquals(marker1, null);
+        assertNotEquals(null, marker1);
+        assertNotEquals(marker1, marker3);
     }
 }

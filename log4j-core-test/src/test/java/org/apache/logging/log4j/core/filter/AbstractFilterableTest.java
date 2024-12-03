@@ -74,7 +74,7 @@ public class AbstractFilterableTest {
     public void testAddCompositeFilter() throws Exception {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
 
         filterable.addFilter(compositeFilter);
         assertSame(compositeFilter, filterable.getFilter());
@@ -85,7 +85,7 @@ public class AbstractFilterableTest {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter3 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2, filter3});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2, filter3);
 
         filterable.addFilter(compositeFilter);
         assertSame(compositeFilter, filterable.getFilter());
@@ -101,7 +101,7 @@ public class AbstractFilterableTest {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter notInCompositeFilterFilter = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
 
         filterable.addFilter(notInCompositeFilterFilter);
         assertSame(notInCompositeFilterFilter, filterable.getFilter());
@@ -117,7 +117,7 @@ public class AbstractFilterableTest {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter notInCompositeFilterFilter = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
 
         filterable.addFilter(compositeFilter);
         assertSame(compositeFilter, filterable.getFilter());
@@ -200,7 +200,7 @@ public class AbstractFilterableTest {
     public void testRemoveSimpleFilterFromCompositeFilter() {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
 
         filterable.addFilter(compositeFilter);
 
@@ -215,7 +215,7 @@ public class AbstractFilterableTest {
     public void testRemoveSimpleFilterFromCompositeAndSimpleFilter() {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
         final Filter anotherFilter = ThresholdFilter.createFilter(Level.WARN, null, null);
 
         filterable.addFilter(compositeFilter);
@@ -231,7 +231,7 @@ public class AbstractFilterableTest {
     public void testRemoveCompositeFilterFromCompositeFilter() {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
 
         filterable.addFilter(compositeFilter);
         filterable.removeFilter(compositeFilter);
@@ -242,7 +242,7 @@ public class AbstractFilterableTest {
     public void testRemoveFiltersFromComposite() {
         final Filter filter1 = ThresholdFilter.createFilter(Level.ERROR, null, null);
         final Filter filter2 = ThresholdFilter.createFilter(Level.ERROR, null, null);
-        final Filter compositeFilter = CompositeFilter.createFilters(new Filter[] {filter1, filter2});
+        final Filter compositeFilter = CompositeFilter.createFilters(filter1, filter2);
         final Filter anotherFilter = ThresholdFilter.createFilter(Level.WARN, null, null);
 
         filterable.addFilter(compositeFilter);

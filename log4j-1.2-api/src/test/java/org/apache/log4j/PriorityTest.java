@@ -16,12 +16,16 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests of Priority.
@@ -85,13 +89,32 @@ public class PriorityTest {
         assertEquals(Integer.MIN_VALUE, Priority.ALL_INT);
     }
 
+    @SuppressWarnings("deprecation")
+    static Stream<Arguments> testVersion2Level() {
+        return Stream.of(
+                Arguments.of(Priority.FATAL, org.apache.logging.log4j.Level.FATAL),
+                Arguments.of(Priority.ERROR, org.apache.logging.log4j.Level.ERROR),
+                Arguments.of(Priority.WARN, org.apache.logging.log4j.Level.WARN),
+                Arguments.of(Priority.INFO, org.apache.logging.log4j.Level.INFO),
+                Arguments.of(Priority.DEBUG, org.apache.logging.log4j.Level.DEBUG));
+    }
+
+    /**
+     * Tests version2Level.
+     */
+    @ParameterizedTest
+    @MethodSource()
+    public void testVersion2Level(final Priority log4j1Priority, final org.apache.logging.log4j.Level log4j2Level) {
+        assertEquals(log4j2Level, log4j1Priority.getVersion2Level());
+    }
+
     /**
      * Tests Priority.FATAL.
      */
     @Test
     @SuppressWarnings("deprecation")
-    public void testFatal() {
-        assertTrue(Priority.FATAL instanceof Level);
+    public void testFATAL() {
+        assertFalse(Priority.FATAL instanceof Level);
     }
 
     /**
@@ -100,7 +123,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testERROR() {
-        assertTrue(Priority.ERROR instanceof Level);
+        assertFalse(Priority.ERROR instanceof Level);
     }
 
     /**
@@ -109,7 +132,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testWARN() {
-        assertTrue(Priority.WARN instanceof Level);
+        assertFalse(Priority.WARN instanceof Level);
     }
 
     /**
@@ -118,7 +141,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testINFO() {
-        assertTrue(Priority.INFO instanceof Level);
+        assertFalse(Priority.INFO instanceof Level);
     }
 
     /**
@@ -127,7 +150,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testDEBUG() {
-        assertTrue(Priority.DEBUG instanceof Level);
+        assertFalse(Priority.DEBUG instanceof Level);
     }
 
     /**
@@ -167,7 +190,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityString() {
-        assertTrue(Priority.toPriority("DEBUG") == Level.DEBUG);
+        assertEquals(Priority.toPriority("DEBUG"), Level.DEBUG);
     }
 
     /**
@@ -176,7 +199,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityInt() {
-        assertTrue(Priority.toPriority(Priority.DEBUG_INT) == Level.DEBUG);
+        assertEquals(Priority.toPriority(Priority.DEBUG_INT), Level.DEBUG);
     }
 
     /**
@@ -185,7 +208,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityStringPriority() {
-        assertTrue(Priority.toPriority("foo", Priority.DEBUG) == Priority.DEBUG);
+        assertEquals(Priority.toPriority("foo", Priority.DEBUG), Priority.DEBUG);
     }
 
     /**
@@ -194,7 +217,7 @@ public class PriorityTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testToPriorityIntPriority() {
-        assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
+        assertEquals(Priority.toPriority(17, Priority.DEBUG), Priority.DEBUG);
     }
 
     /**

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -93,7 +95,7 @@ public final class JsonTemplateLayoutDefaults {
     }
 
     public static String getEventDelimiter() {
-        return PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.eventDelimiter", System.lineSeparator());
+        return PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.eventDelimiter", LINE_SEPARATOR);
     }
 
     public static boolean isNullEventDelimiterEnabled() {

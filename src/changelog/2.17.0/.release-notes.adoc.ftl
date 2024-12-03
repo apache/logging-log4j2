@@ -45,11 +45,15 @@ Recursive evaluation is still allowed while generating the configuration.
 * The `JndiLookup`, `JndiContextSelector`, and `JMSAppender` now require individual system properties to be enabled.
 * Remove LDAP and LDAPS as supported protocols from JNDI.
 
-The single `log4j2.enableJndi` property introduced in Log4j 2.16.0 has been replaced with three individual properties; `log4j2.enableJndiContextSelector`, `log4j2.enableJndiJms`, and `log4j2.enableJndiLookup`.
+The single `log4j2.enableJndi` property introduced in Log4j 2.16.0 has been replaced with three individual properties:
+xref:manual/systemproperties.adoc#log4j2.enableJndiContextSelector[`log4j2.enableJndiContextSelector`],
+xref:manual/systemproperties.adoc#log4j2.enableJndiJms[`log4j2.enableJndiJms`],
+and
+ xref:manual/systemproperties.adoc#log4j2.enableJndiLookup[`log4j2.enableJndiLookup`].
 
 The Log4j 2.17.0 API, as well as many core components, maintains binary compatibility with previous releases.
 
-Apache Log4j 2.17.0 requires a minimum of Java 8 to build and run.
+Log4j 2.17.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.2 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.
 

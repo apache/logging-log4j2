@@ -90,7 +90,6 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String INTERNAL_DEBUG_ATTR = "debug";
     private static final String THRESHOLD_ATTR = "threshold";
     private static final String EMPTY_STR = "";
-    private static final Class<?>[] ONE_STRING_PARAM = new Class[] {String.class};
     private static final String dbfKey = "javax.xml.parsers.DocumentBuilderFactory";
     private static final String THROWABLE_RENDERER_TAG = "throwableRenderer";
 
@@ -504,7 +503,6 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse a filter element.
      * @param filterElement The Filter Element.
-     * @return The Filter.
      */
     public void addFilter(final AtomicReference<Filter> ref, final Element filterElement) {
         final Filter value = parseFilters(filterElement);

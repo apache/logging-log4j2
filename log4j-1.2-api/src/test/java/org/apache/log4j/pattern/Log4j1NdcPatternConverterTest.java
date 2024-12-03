@@ -16,21 +16,18 @@
  */
 package org.apache.log4j.pattern;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
+import org.junit.jupiter.api.Test;
 
+@UsingThreadContextStack
 public class Log4j1NdcPatternConverterTest {
-
-    @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
 
     @Test
     public void testEmpty() {

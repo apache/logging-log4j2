@@ -308,9 +308,9 @@
     <!-- project version -->
     <revision>2.25.0-SNAPSHOT</revision>
     <!-- Versions used on the site: no snapshots! -->
-    <site-log4j-api.version>2.24.1</site-log4j-api.version>
-    <site-log4j-core.version>2.24.1</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.24.1</site-log4j-layout-template-json.version>
+    <site-log4j-api.version>2.24.2</site-log4j-api.version>
+    <site-log4j-core.version>2.24.2</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.24.2</site-log4j-layout-template-json.version>
 
     <!-- =================
          Common properties
@@ -324,7 +324,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2024-09-24T13:33:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-11-18T20:27:38Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
@@ -344,13 +344,12 @@
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jackson.version>2.18.0</site-jackson.version>
-    <site-jansi.version>1.18</site-jansi.version>
+    <site-jackson.version>2.18.2</site-jackson.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
-    <site-kafka.version>3.8.0</site-kafka.version>
+    <site-kafka.version>3.9.0</site-kafka.version>
     <site-logback.version>1.5.5</site-logback.version>
     <site-slf4j.version>2.0.16</site-slf4j.version>
 
@@ -767,12 +766,6 @@
             <artifactId>jackson-bom</artifactId>
             <version>${site-jackson.version}</version>
             <type>pom</type>
-          </dependency>
-
-          <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>${site-jansi.version}</version>
           </dependency>
 
           <dependency>

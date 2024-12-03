@@ -4,5 +4,9 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
   <issue id="LOG4J2-2486" link="https://issues.apache.org/jira/browse/LOG4J2-2486"/>
-  <description format="asciidoc">Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.</description>
+  <description format="asciidoc">
+    Require
+    xref:manual/systemproperties.adoc#log4j2.scriptEnableLanguages[`log4j2.scriptEnableLanguages`]
+    to be specified to enable scripting for specific languages.
+  </description>
 </entry>

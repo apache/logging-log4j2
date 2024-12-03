@@ -487,8 +487,8 @@ If an exact backward compatibility is required, you need to <<log4j-1-2-api-inst
 [#ConfigurationCompatibility]
 === Use Log4j 1 to Log4j 2 bridge
 
-If you can not convert your configuration files from Log4j 1 to Log4j 2, the Log4j 1 to Log4j 2 bridge can convert your configuration files at runtime.
-In order to use this feature you need to <<log4j-1-2-api-installation,Install the Log4j 1 to Log4j 2 bridge>> and set one of the following configuration properties:
+If you cannot convert your configuration files from Log4j 1 to Log4j 2, the Log4j 1 to Log4j 2 bridge can convert your configuration files at runtime.
+To use this feature, you need to <<log4j-1-2-api-installation,Install the Log4j 1 to Log4j 2 bridge>> and set one of the following configuration properties:
 
 include::partial$manual/systemproperties/properties-log4j-12-api.adoc[leveloffset=+2]
 
@@ -540,13 +540,17 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-1-2-api_org-apache-log
 [#option-1-use-the-log4j-1-x-bridge-log4j-1-2-api]
 == [[Log4j12Bridge]]Log4j 1 to Log4j 2 bridge
 
-In order to help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
-The bridge can fulfill three separate functions:
+To help users with the migration process, a Log4j 1 to Log4j 2 bridge is available.
+The bridge can fulfill four separate functions:
 
-* it forwards all <<log4j-1-api-methods,Log4j 1 API>> method calls to the corresponding Log4j 2 API calls,
-* since version 2.17.2 is supports the usage of some components written for Log4j 1 inside Log4j 2 Core,
-* it provides a limited support for programmatic configuration of Log4j 2 Core, using Log4j 1 method calls,
-* it provides a limited support for Log4j 1 configuration file formats.
+* It forwards all <<log4j-1-api-methods,Log4j 1 API>> method calls to the Log4j 2 API.
+See <<api-use-bridge,how to use the bridge for Log4j 1 API migration>> for more details.
+* Since version 2.17.2 the bridge supports the usage of some components written for Log4j 1 inside Log4j 2 Core.
+See <<migrate-custom-components,how to use the bridge for Log4j 1 Backend migration>> for more details.
+* It provides limited support for programmatic configuration of Log4j 2 Core, using Log4j 1 method calls.
+This functionality requires the <<log4j1.compatibility,`log4j1.compatibility` configuration property>> to be set to `true`.
+* It provides a limited support for Log4j 1 configuration file formats.
+See <<ConfigurationCompatibility,how to use the bridge for Log4j 1 Configuration file migration>> for more details.
 
 [#log4j-1-2-api-installation]
 === Installation

@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -652,7 +651,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean disableAnsi = !useAnsiEscapeCodes();
+        private boolean disableAnsi;
 
         @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
@@ -664,13 +663,6 @@ public final class PatternLayout extends AbstractStringLayout {
         private String footer;
 
         private Builder() {}
-
-        private boolean useAnsiEscapeCodes() {
-            final PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
-            final boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
-            final boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
-            return isPlatformSupportsAnsi || isJansiRequested;
-        }
 
         /**
          * @param pattern
@@ -731,8 +723,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         /**
          * @param disableAnsi
-         *        If {@code "true"} (default is value of system property `log4j.skipJansi`, or `true` if undefined),
-         *        do not output ANSI escape codes
+         *        If {@code true}, do not output ANSI escape codes.
          */
         public Builder withDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;

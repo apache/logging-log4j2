@@ -31,7 +31,13 @@ import org.jspecify.annotations.Nullable;
 public final class ExtendedThrowablePatternConverter extends ThrowablePatternConverter {
 
     private ExtendedThrowablePatternConverter(@Nullable final Configuration config, @Nullable final String[] options) {
-        super("ExtendedThrowable", "throwable", options, config, ExtendedThrowablePatternConverter::createRenderer);
+        super(
+                "ExtendedThrowable",
+                "throwable",
+                options,
+                config,
+                ThrowablePropertyRendererFactory.INSTANCE,
+                ThrowableExtendedStackTraceRendererFactory.INSTANCE);
     }
 
     private static ThrowableExtendedStackTraceRenderer createRenderer(final ThrowableFormatOptions options) {

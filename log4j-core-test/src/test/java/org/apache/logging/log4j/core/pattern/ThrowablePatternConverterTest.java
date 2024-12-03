@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import foo.TestFriendlyException;
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -41,15 +43,13 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 public class ThrowablePatternConverterTest {
 
-    private static final String NEWLINE = System.lineSeparator();
+    static final Throwable EXCEPTION = TestFriendlyException.INSTANCE;
 
-    private static final Throwable EXCEPTION = TestFriendlyException.INSTANCE;
-
-    private static final StackTraceElement THROWING_METHOD = EXCEPTION.getStackTrace()[0];
+    static final StackTraceElement THROWING_METHOD = EXCEPTION.getStackTrace()[0];
 
     private static final PatternParser PATTERN_PARSER = PatternLayout.createPatternParser(null);
 
-    private static final Level LEVEL = Level.FATAL;
+    static final Level LEVEL = Level.FATAL;
 
     static final class SeparatorTestCase {
 
@@ -75,10 +75,10 @@ public class ThrowablePatternConverterTest {
                 new SeparatorTestCase("{separator()}", ""),
                 new SeparatorTestCase("{separator(#)}", "#"),
                 // Only suffixes
-                new SeparatorTestCase("{suffix()}", NEWLINE),
-                new SeparatorTestCase("{suffix(~)}", " ~" + NEWLINE),
-                new SeparatorTestCase("{suffix(%level)}", " " + level + NEWLINE),
-                new SeparatorTestCase("{suffix(%rEx)}", NEWLINE),
+                new SeparatorTestCase("{suffix()}", LINE_SEPARATOR),
+                new SeparatorTestCase("{suffix(~)}", " ~" + LINE_SEPARATOR),
+                new SeparatorTestCase("{suffix(%level)}", " " + level + LINE_SEPARATOR),
+                new SeparatorTestCase("{suffix(%rEx)}", LINE_SEPARATOR),
                 // Both separators and suffixes
                 new SeparatorTestCase("{separator()}{suffix()}", ""),
                 new SeparatorTestCase("{separator()}{suffix(~)}", " ~"),
@@ -94,7 +94,7 @@ public class ThrowablePatternConverterTest {
     class PropertyTest extends AbstractPropertyTest {
 
         PropertyTest() {
-            super("%ex");
+            super("%ex", THROWING_METHOD);
         }
     }
 
@@ -102,8 +102,11 @@ public class ThrowablePatternConverterTest {
 
         private final String patternPrefix;
 
-        AbstractPropertyTest(final String patternPrefix) {
+        private final StackTraceElement throwingMethod;
+
+        AbstractPropertyTest(final String patternPrefix, final StackTraceElement throwingMethod) {
             this.patternPrefix = patternPrefix;
+            this.throwingMethod = throwingMethod;
         }
 
         @ParameterizedTest
@@ -121,37 +124,34 @@ public class ThrowablePatternConverterTest {
         @ParameterizedTest
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#separatorTestCases")
         void className_should_be_rendered(final SeparatorTestCase separatorTestCase) {
-            assertConversion(separatorTestCase, "{short.className}", THROWING_METHOD.getClassName());
+            assertConversion(separatorTestCase, "{short.className}", throwingMethod.getClassName());
         }
 
         @ParameterizedTest
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#separatorTestCases")
         void methodName_should_be_rendered(final SeparatorTestCase separatorTestCase) {
-            assertConversion(separatorTestCase, "{short.methodName}", THROWING_METHOD.getMethodName());
+            assertConversion(separatorTestCase, "{short.methodName}", throwingMethod.getMethodName());
         }
 
         @ParameterizedTest
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#separatorTestCases")
         void lineNumber_should_be_rendered(final SeparatorTestCase separatorTestCase) {
-            assertConversion(separatorTestCase, "{short.lineNumber}", THROWING_METHOD.getLineNumber() + "");
+            assertConversion(separatorTestCase, "{short.lineNumber}", throwingMethod.getLineNumber() + "");
         }
 
         @ParameterizedTest
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#separatorTestCases")
         void fileName_should_be_rendered(final SeparatorTestCase separatorTestCase) {
-            assertConversion(separatorTestCase, "{short.fileName}", THROWING_METHOD.getFileName());
+            assertConversion(separatorTestCase, "{short.fileName}", throwingMethod.getFileName());
         }
 
         private void assertConversion(
                 final SeparatorTestCase separatorTestCase, final String pattern, final Object expectedOutput) {
             final String effectivePattern = patternPrefix + pattern + separatorTestCase.patternAddendum;
             final String output = convert(effectivePattern);
-            final String effectiveExpectedOutput = expectedOutput + separatorTestCase.conversionEnding;
             assertThat(output)
-                    .as(
-                            "pattern=`%s`, separatorTestCase=%s, expectedOutput=`%s`",
-                            pattern, separatorTestCase, expectedOutput)
-                    .isEqualTo(effectiveExpectedOutput);
+                    .as("pattern=`%s`, separatorTestCase=%s", pattern, separatorTestCase)
+                    .isEqualTo(expectedOutput);
         }
     }
 
@@ -182,7 +182,7 @@ public class ThrowablePatternConverterTest {
     }
 
     static Stream<String> fullStackTracePatterns() {
-        return Stream.of("", "{}", "{full}", "{" + Integer.MAX_VALUE + "}", "{separator(" + NEWLINE + ")}");
+        return Stream.of("", "{}", "{full}", "{" + Integer.MAX_VALUE + "}", "{separator(" + LINE_SEPARATOR + ")}");
     }
 
     @Nested
@@ -230,8 +230,8 @@ public class ThrowablePatternConverterTest {
             int lineCount = 0;
             int startIndex = 0;
             int newlineIndex;
-            while (lineCount < maxLineCount && (newlineIndex = text.indexOf(NEWLINE, startIndex)) != -1) {
-                final int endIndex = newlineIndex + NEWLINE.length();
+            while (lineCount < maxLineCount && (newlineIndex = text.indexOf(LINE_SEPARATOR, startIndex)) != -1) {
+                final int endIndex = newlineIndex + LINE_SEPARATOR.length();
                 final String line = text.substring(startIndex, endIndex);
                 buffer.append(line);
                 lineCount++;
@@ -266,7 +266,7 @@ public class ThrowablePatternConverterTest {
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
-                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+                            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
@@ -308,7 +308,7 @@ public class ThrowablePatternConverterTest {
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
-                            "	at org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.<clinit>(ThrowablePatternConverterTest.java:0)",
+                            "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
                             "		... suppressed 2 lines",
                             "		... 2 more",
@@ -335,7 +335,7 @@ public class ThrowablePatternConverterTest {
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#depthTestCases")
         void depth_and_package_limited_output_should_match_2(final DepthTestCase depthTestCase) {
             final String pattern = String.format(
-                    "%s{%d}{filters(org.apache)}%s",
+                    "%s{%d}{filters(bar)}%s",
                     patternPrefix, depthTestCase.maxLineCount, depthTestCase.separatorTestCase.patternAddendum);
             assertStackTraceLines(
                     depthTestCase,
@@ -383,6 +383,15 @@ public class ThrowablePatternConverterTest {
             this.patternPrefix = patternPrefix;
         }
 
+        @Test
+        void output_should_be_newline_prefixed() {
+            final String pattern = "%p" + patternPrefix;
+            final String stackTrace = convert(pattern);
+            final String expectedStart =
+                    String.format("%s%n%s", LEVEL, EXCEPTION.getClass().getCanonicalName());
+            assertThat(stackTrace).as("pattern=`%s`", pattern).startsWith(expectedStart);
+        }
+
         @ParameterizedTest
         @MethodSource("org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest#separatorTestCases")
         void none_output_should_be_empty(final SeparatorTestCase separatorTestCase) {
@@ -400,7 +409,7 @@ public class ThrowablePatternConverterTest {
             final String conversionEnding;
             if (depthTestCase == null) {
                 maxLineCount = Integer.MAX_VALUE;
-                conversionEnding = NEWLINE;
+                conversionEnding = LINE_SEPARATOR;
             } else {
                 maxLineCount = depthTestCase.maxLineCount;
                 conversionEnding = depthTestCase.separatorTestCase.conversionEnding;
@@ -426,14 +435,14 @@ public class ThrowablePatternConverterTest {
         }
     }
 
-    private static String convert(final String pattern) {
+    static String convert(final String pattern) {
         final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(pattern, false, true, true);
-        assertThat(patternFormatters).hasSize(1);
-        final PatternFormatter patternFormatter = patternFormatters.get(0);
         final LogEvent logEvent =
                 Log4jLogEvent.newBuilder().setThrown(EXCEPTION).setLevel(LEVEL).build();
         final StringBuilder buffer = new StringBuilder();
-        patternFormatter.format(logEvent, buffer);
+        for (final PatternFormatter patternFormatter : patternFormatters) {
+            patternFormatter.format(logEvent, buffer);
+        }
         return buffer.toString();
     }
 }

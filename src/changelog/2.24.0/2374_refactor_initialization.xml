@@ -4,5 +4,9 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="2374" link="https://github.com/apache/logging-log4j2/pull/2374"/>
-  <description format="asciidoc">Centralize initialization in the `Provider` class and deprecate `log4j2.loggerContextFactory` property.</description>
+  <description format="asciidoc">
+    Centralize initialization in the `Provider` class and deprecate the
+    xref:manual/systemproperties.adoc#log4j2.loggerContextFactory[`log4j2.loggerContextFactory`]
+    property.
+  </description>
 </entry>

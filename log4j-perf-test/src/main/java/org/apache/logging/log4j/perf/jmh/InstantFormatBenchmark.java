@@ -43,6 +43,7 @@ import org.openjdk.jmh.infra.Blackhole;
  * Benchmarks certain {@link Instant} formatters with various patterns and instant collections.
  */
 @State(Scope.Thread)
+@SuppressWarnings("deprecation")
 public class InstantFormatBenchmark {
 
     private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("UTC");

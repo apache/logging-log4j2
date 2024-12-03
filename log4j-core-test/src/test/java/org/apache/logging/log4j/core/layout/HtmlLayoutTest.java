@@ -43,7 +43,6 @@ import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
@@ -284,19 +283,6 @@ public class HtmlLayoutTest {
         final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
                 format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
-
-        final String offset = zonedDateTime.getOffset().toString();
-
-        // Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to
-        // DateTimeFormatter,
-        // One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is
-        // also output, such as '+0130'
-        // ref : https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
-        if (FixedDateFormat.FixedTimeZoneFormat.HH.equals(format.getFixedTimeZoneFormat())
-                && offset.contains(":")
-                && !"00".equals(offset.split(":")[1])) {
-            expected = expected.substring(0, expected.length() - 2);
-        }
 
         assertEquals(
                 "<td>" + expected + "</td>",

@@ -14,14 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 /**
- * Log4j 2 date formatting classes.
+ * Log4j date and time formatting classes.
+ *
+ * @deprecated Starting with version {@code 2.25.0}, these classes are assumed to be internal and planned to be moved to an internal package in the next major release.
  */
+@Deprecated
 @Export
-@Version("2.21.1")
-@BaselineIgnore("2.22.0")
+@Version("2.21.2")
 package org.apache.logging.log4j.core.util.datetime;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
