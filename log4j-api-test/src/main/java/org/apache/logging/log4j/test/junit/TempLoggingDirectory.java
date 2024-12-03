@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -45,8 +44,6 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.ModifierSupport;
 
 public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
-
-    private final AtomicInteger counter = new AtomicInteger();
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -155,8 +152,10 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
                 // Create a temporary directory that uses the simple class name as prefix
                 Path packagePath = basePath.resolve(dir);
                 Files.createDirectories(packagePath);
+                // Use a UNIX timestamp to (roughly) sort directories by execution time.
                 return Files.createTempDirectory(
-                        packagePath, String.format("%s_%02d_", clazz.getSimpleName(), counter.incrementAndGet()));
+                        packagePath,
+                        String.format("%s_%08x_", clazz.getSimpleName(), System.currentTimeMillis() / 1000));
             } catch (final IOException e) {
                 throw new ExtensionContextException("Failed to create temporary directory.", e);
             }
