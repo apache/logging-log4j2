@@ -43,7 +43,7 @@ public class FormattingInfoTest extends TestCase {
         assertNotNull(field);
         assertEquals(3, field.getMinLength());
         assertEquals(6, field.getMaxLength());
-        assertEquals(true, field.isLeftAligned());
+        assertTrue(field.isLeftAligned());
     }
 
     /**
@@ -55,7 +55,7 @@ public class FormattingInfoTest extends TestCase {
         assertNotNull(field);
         assertEquals(0, field.getMinLength());
         assertEquals(Integer.MAX_VALUE, field.getMaxLength());
-        assertEquals(false, field.isLeftAligned());
+        assertFalse(field.isLeftAligned());
     }
 
     /**

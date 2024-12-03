@@ -27,20 +27,20 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-public class EqualsIgnoreCaseReplacementConverterTest {
+class EqualsIgnoreCaseReplacementConverterTest {
 
     @Test
-    public void testMarkerReplacement() {
+    void testMarkerReplacement() {
         testReplacement("%marker", Strings.EMPTY);
     }
 
     @Test
-    public void testMarkerSimpleNameReplacement() {
+    void testMarkerSimpleNameReplacement() {
         testReplacement("%markerSimpleName", Strings.EMPTY);
     }
 
     @Test
-    public void testLoggerNameReplacement() {
+    void testLoggerNameReplacement() {
         testReplacement("%logger", "aaa[" + EqualsIgnoreCaseReplacementConverterTest.class.getName() + "]zzz");
     }
 

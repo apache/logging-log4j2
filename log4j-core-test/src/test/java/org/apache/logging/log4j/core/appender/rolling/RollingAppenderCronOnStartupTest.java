@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,14 +31,14 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class RollingAppenderCronOnStartupTest {
+class RollingAppenderCronOnStartupTest {
 
     private static final String CONFIG = "log4j-rolling-cron-onStartup.xml";
     private static final String DIR = "target/rolling-cron-onStartup";
@@ -48,7 +48,7 @@ public class RollingAppenderCronOnStartupTest {
     private LoggerContext context;
 
     @AfterAll
-    public static void after() {
+    static void after() {
         final File dir = new File(DIR);
         if (dir.exists()) {
             cleanDir(dir);
@@ -57,14 +57,14 @@ public class RollingAppenderCronOnStartupTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         if (context != null) {
             context.stop();
         }
     }
 
     @Test
-    public void testAppender() throws Exception {
+    void testAppender() throws Exception {
         final File dir = new File(DIR);
         if (dir.exists()) {
             cleanDir(dir);
@@ -80,18 +80,18 @@ public class RollingAppenderCronOnStartupTest {
         ps = new PrintStream(new FileOutputStream(rolled));
         ps.println("This is a line 1");
         ps.close();
-        assertTrue("Log file does not exist", file.exists());
-        assertTrue("Log file does not exist", rolled.exists());
+        assertTrue(file.exists(), "Log file does not exist");
+        assertTrue(rolled.exists(), "Log file does not exist");
         final LoggerContext lc = Configurator.initialize("Test", CONFIG);
         final Logger logger = lc.getLogger(RollingAppenderCronOnStartupTest.class);
         logger.info("This is line 3");
         final File[] files = dir.listFiles();
-        assertNotNull("No files", files);
-        assertEquals("Unexpected number of files. Expected 2 but found " + files.length, 2, files.length);
+        assertNotNull(files, "No files");
+        assertEquals(2, files.length, "Unexpected number of files. Expected 2 but found " + files.length);
         List<String> lines = Files.readAllLines(file.toPath());
-        assertEquals("Unexpected number of lines. Expected 2: Actual: " + lines.size(), 2, lines.size());
+        assertEquals(2, lines.size(), "Unexpected number of lines. Expected 2: Actual: " + lines.size());
         lines = Files.readAllLines(rolled.toPath());
-        assertEquals("Unexpected number of lines. Expected 1: Actual: " + lines.size(), 1, lines.size());
+        assertEquals(1, lines.size(), "Unexpected number of lines. Expected 1: Actual: " + lines.size());
     }
 
     private static void cleanDir(final File dir) {

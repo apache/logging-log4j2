@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by Pavel.Sivolobtchik@uxpsystems.com on 2016-10-19.
  */
-public class LoggerAdapterTest {
+class LoggerAdapterTest {
 
     private static class RunnableThreadTest implements Runnable {
         private final AbstractLoggerAdapter<Logger> adapter;
@@ -132,7 +132,7 @@ public class LoggerAdapterTest {
     }
 
     @Test
-    public void testCleanup() throws Exception {
+    void testCleanup() {
         final LoggerContextFactory factory = new TestLoggerContextFactory();
         final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();
         for (int i = 0; i < 5; ++i) {
@@ -151,7 +151,7 @@ public class LoggerAdapterTest {
      * Testing synchronization in the getLoggersInContext() method
      */
     @Test
-    public synchronized void testGetLoggersInContextSynch() throws Exception {
+    synchronized void testGetLoggersInContextSynch() throws Exception {
         final TestLoggerAdapter adapter = new TestLoggerAdapter();
 
         final int num = 500;

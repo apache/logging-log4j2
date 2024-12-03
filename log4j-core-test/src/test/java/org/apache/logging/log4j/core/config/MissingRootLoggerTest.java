@@ -35,10 +35,10 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("missingRootLogger.xml")
-public class MissingRootLoggerTest {
+class MissingRootLoggerTest {
 
     @Test
-    public void testMissingRootLogger(final LoggerContext ctx) throws Exception {
+    void testMissingRootLogger(final LoggerContext ctx) {
         final Logger logger = ctx.getLogger("sample.Logger1");
         assertTrue(logger.isInfoEnabled(), "Logger should have the INFO level enabled");
         assertFalse(logger.isDebugEnabled(), "Logger should have the DEBUG level disabled");

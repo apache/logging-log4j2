@@ -35,7 +35,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @LoggerContextSource("org/apache/logging/log4j/core/test/LogBuilderTest.xml")
-public class LogBuilderTest {
+class LogBuilderTest {
 
     private static final Marker MARKER = MarkerManager.getMarker("TestMarker");
     private static final CharSequence CHAR_SEQUENCE = "CharSequence";
@@ -49,7 +49,7 @@ public class LogBuilderTest {
     private ListAppender appender;
 
     @BeforeEach
-    public void setupAppender(final LoggerContext context, @Named("LIST") final ListAppender appender) {
+    void setupAppender(final LoggerContext context, @Named("LIST") final ListAppender appender) {
         this.logger = context.getLogger(getClass());
         this.appender = appender;
     }

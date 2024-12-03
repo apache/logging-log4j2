@@ -24,16 +24,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-public class FileSizeTest {
+class FileSizeTest {
 
     @Test
-    public void testParse() {
+    void testParse() {
         assertEquals(5 * 1024, FileSize.parse("5k", 0));
     }
 
     @Test
     @ResourceLock(Resources.LOCALE)
-    public void testParseInEurope() {
+    void testParseInEurope() {
         // Caveat: Breaks the ability for this test to run in parallel with other tests :(
         final Locale previousDefault = Locale.getDefault();
         try {

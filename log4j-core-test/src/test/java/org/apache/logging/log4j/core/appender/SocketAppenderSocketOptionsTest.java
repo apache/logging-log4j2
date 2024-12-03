@@ -86,10 +86,10 @@ public class SocketAppenderSocketOptionsTest {
         Assert.assertEquals(12345, socketOptions.getSoLinger().intValue());
         Assert.assertEquals(54321, socketOptions.getSoTimeout().intValue());
         // Test live socket
-        Assert.assertEquals(false, socket.getKeepAlive());
-        Assert.assertEquals(false, socket.getOOBInline());
-        Assert.assertEquals(false, socket.getReuseAddress());
-        Assert.assertEquals(false, socket.getTcpNoDelay());
+        Assert.assertFalse(socket.getKeepAlive());
+        Assert.assertFalse(socket.getOOBInline());
+        Assert.assertFalse(socket.getReuseAddress());
+        Assert.assertFalse(socket.getTcpNoDelay());
         // Assert.assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
         // Assert.assertEquals(8000, socket.getSendBufferSize());

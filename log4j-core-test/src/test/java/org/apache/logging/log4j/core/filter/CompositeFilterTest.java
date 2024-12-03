@@ -23,10 +23,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.junit.jupiter.api.Test;
 
-public class CompositeFilterTest {
+class CompositeFilterTest {
 
     @Test
-    public void testConcatenation() {
+    void testConcatenation() {
         final Filter a = DenyAllFilter.newBuilder().setOnMatch(Result.ACCEPT).build();
         final Filter b = DenyAllFilter.newBuilder().setOnMatch(Result.NEUTRAL).build();
         final Filter c = DenyAllFilter.newBuilder().setOnMatch(Result.DENY).build();

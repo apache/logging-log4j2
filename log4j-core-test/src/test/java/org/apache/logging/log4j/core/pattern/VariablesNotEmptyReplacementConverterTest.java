@@ -27,35 +27,35 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-public class VariablesNotEmptyReplacementConverterTest {
+class VariablesNotEmptyReplacementConverterTest {
 
     @Test
-    public void testMarkerReplacement() {
+    void testMarkerReplacement() {
         testReplacement("%marker", Strings.EMPTY);
     }
 
     @Test
-    public void testMultipleMarkerReplacementEmpty() {
+    void testMultipleMarkerReplacementEmpty() {
         testReplacement("<%marker>Foo</%marker>", Strings.EMPTY);
     }
 
     @Test
-    public void testMultipleMarkerReplacementSomeEmpty() {
+    void testMultipleMarkerReplacementSomeEmpty() {
         testReplacement("<%marker>%msg</%marker>", "[<>This is a test</>]");
     }
 
     @Test
-    public void testMultipleMarkerReplacement() {
+    void testMultipleMarkerReplacement() {
         testReplacement("<%level>%msg</%level>", "[<DEBUG>This is a test</DEBUG>]");
     }
 
     @Test
-    public void testMarkerSimpleNameReplacement() {
+    void testMarkerSimpleNameReplacement() {
         testReplacement("%markerSimpleName", Strings.EMPTY);
     }
 
     @Test
-    public void testLoggerNameReplacement() {
+    void testLoggerNameReplacement() {
         testReplacement("%logger", "[" + VariablesNotEmptyReplacementConverterTest.class.getName() + "]");
     }
 

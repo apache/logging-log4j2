@@ -31,7 +31,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests the RandomAccessFileManager class.
  */
-public class RandomAccessFileManagerTest {
+class RandomAccessFileManagerTest {
 
     @TempDir
     File tempDir;
@@ -41,7 +41,7 @@ public class RandomAccessFileManagerTest {
      * {@link org.apache.logging.log4j.core.appender.RandomAccessFileManager#writeBytes(byte[], int, int)}.
      */
     @Test
-    public void testWrite_multiplesOfBufferSize() throws IOException {
+    void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_multiplesOfBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
@@ -63,7 +63,7 @@ public class RandomAccessFileManagerTest {
      * .
      */
     @Test
-    public void testWrite_dataExceedingBufferSize() throws IOException {
+    void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_dataExceedingBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
@@ -82,7 +82,7 @@ public class RandomAccessFileManagerTest {
     }
 
     @Test
-    public void testConfigurableBufferSize() throws IOException {
+    void testConfigurableBufferSize() throws IOException {
         final File file = new File(tempDir, "testConfigurableBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
@@ -98,7 +98,7 @@ public class RandomAccessFileManagerTest {
     }
 
     @Test
-    public void testWrite_dataExceedingMinBufferSize() throws IOException {
+    void testWrite_dataExceedingMinBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_dataExceedingMinBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
@@ -118,7 +118,7 @@ public class RandomAccessFileManagerTest {
     }
 
     @Test
-    public void testAppendDoesNotOverwriteExistingFile() throws IOException {
+    void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
         final File file = new File(tempDir, "testAppendDoesNotOverwriteExistingFile.bin");
         assertEquals(0, file.length());

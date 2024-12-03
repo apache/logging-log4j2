@@ -19,6 +19,7 @@ package org.apache.logging.log4j.smtp;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,12 +41,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Smtp")
-public class SmtpAppenderTest {
+class SmtpAppenderTest {
 
     private static final String HOST = "localhost";
 
     @Test
-    public void testMessageFactorySetFrom() throws MessagingException {
+    void testMessageFactorySetFrom() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String address = "testing@example.com";
 
@@ -65,7 +66,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetReplyTo() throws MessagingException {
+    void testMessageFactorySetReplyTo() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
@@ -79,7 +80,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetRecipients() throws MessagingException {
+    void testMessageFactorySetRecipients() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
@@ -93,7 +94,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetSubject() throws MessagingException {
+    void testMessageFactorySetSubject() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String subject = "Test Subject";
 
@@ -107,7 +108,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testDelivery() {
+    void testDelivery() {
         final String subjectKey = getClass().getName();
         final String subjectValue = "SubjectValue1";
         ThreadContext.put(subjectKey, subjectValue);
@@ -125,7 +126,7 @@ public class SmtpAppenderTest {
                 .setBufferSize(3)
                 .build();
         assertNotNull(appender);
-        assertTrue(appender.getManager() instanceof SmtpManager);
+        assertInstanceOf(SmtpManager.class, appender.getManager());
         appender.start();
 
         final LoggerContext context = LoggerContext.getContext();
@@ -144,7 +145,7 @@ public class SmtpAppenderTest {
         root.error("Error message #2");
 
         server.stop();
-        assertTrue(server.getReceivedEmailSize() == 2);
+        assertEquals(2, server.getReceivedEmailSize());
         final Iterator<SmtpMessage> messages = server.getReceivedEmail();
         final SmtpMessage email = messages.next();
 

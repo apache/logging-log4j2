@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
  * @since 2.8
  */
 @Tag("concurrency")
-public class ConcurrentLoggingWithGelfLayoutTest {
+class ConcurrentLoggingWithGelfLayoutTest {
     private static final Path PATH = Paths.get("target", "test-gelf-layout.log");
 
     @AfterAll
@@ -55,7 +55,7 @@ public class ConcurrentLoggingWithGelfLayoutTest {
 
     @Test
     @LoggerContextSource("log4j2-gelf-layout.xml")
-    public void testConcurrentLogging(final LoggerContext context) throws Throwable {
+    void testConcurrentLogging(final LoggerContext context) throws Throwable {
         final Logger log = context.getLogger(ConcurrentLoggingWithGelfLayoutTest.class);
         final int threadCount = Runtime.getRuntime().availableProcessors() * 2;
         final CountDownLatch latch = new CountDownLatch(threadCount);

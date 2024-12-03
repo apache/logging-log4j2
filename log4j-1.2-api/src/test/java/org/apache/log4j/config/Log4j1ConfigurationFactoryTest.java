@@ -18,6 +18,7 @@ package org.apache.log4j.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 
-public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
+class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".properties";
 
@@ -71,35 +72,35 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
 
     @Override
     @Test
-    public void testConsoleEnhancedPatternLayout() throws Exception {
+    void testConsoleEnhancedPatternLayout() throws Exception {
         super.testConsoleEnhancedPatternLayout();
     }
 
     @Override
     @Test
-    public void testConsoleHtmlLayout() throws Exception {
+    void testConsoleHtmlLayout() throws Exception {
         super.testConsoleHtmlLayout();
     }
 
     @Test
-    public void testConsolePatternLayout() throws Exception {
+    void testConsolePatternLayout() throws Exception {
         super.testConsolePatternLayout();
     }
 
     @Override
     @Test
-    public void testConsoleSimpleLayout() throws Exception {
+    void testConsoleSimpleLayout() throws Exception {
         super.testConsoleSimpleLayout();
     }
 
     @Override
     @Test
-    public void testConsoleTtccLayout() throws Exception {
+    void testConsoleTtccLayout() throws Exception {
         super.testConsoleTtccLayout();
     }
 
     @Test
-    public void testConsoleXmlLayout() throws Exception {
+    void testConsoleXmlLayout() throws Exception {
         final Log4j1XmlLayout layout = (Log4j1XmlLayout) testConsole("config-1.2/log4j-console-XmlLayout");
         assertTrue(layout.isLocationInfo());
         assertFalse(layout.isProperties());
@@ -107,67 +108,67 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
 
     @Override
     @Test
-    public void testFileSimpleLayout() throws Exception {
+    void testFileSimpleLayout() throws Exception {
         super.testFileSimpleLayout();
     }
 
     @Override
     @Test
-    public void testNullAppender() throws Exception {
+    void testNullAppender() throws Exception {
         super.testNullAppender();
     }
 
     @Override
     @Test
-    public void testRollingFileAppender() throws Exception {
+    void testRollingFileAppender() throws Exception {
         super.testRollingFileAppender();
     }
 
     @Override
     @Test
-    public void testDailyRollingFileAppender() throws Exception {
+    void testDailyRollingFileAppender() throws Exception {
         super.testDailyRollingFileAppender();
     }
 
     @Test
-    public void testRollingFileAppenderWithProperties() throws Exception {
+    void testRollingFileAppenderWithProperties() throws Exception {
         super.testRollingFileAppenderWithProperties();
     }
 
     @Override
     @Test
-    public void testSystemProperties1() throws Exception {
+    void testSystemProperties1() throws Exception {
         super.testSystemProperties1();
     }
 
     @Override
     @Test
-    public void testSystemProperties2() throws Exception {
+    void testSystemProperties2() throws Exception {
         super.testSystemProperties2();
     }
 
     @Override
     @Test
-    public void testConsoleCapitalization() throws Exception {
+    void testConsoleCapitalization() throws Exception {
         super.testConsoleCapitalization();
     }
 
     @Override
     @Test
-    public void testDefaultValues() throws Exception {
+    void testDefaultValues() throws Exception {
         super.testDefaultValues();
     }
 
     @Test
-    public void testUntrimmedValues() throws Exception {
+    void testUntrimmedValues() throws Exception {
         try {
             final Configuration config = getConfiguration("config-1.2/log4j-untrimmed");
             final LoggerConfig rootLogger = config.getRootLogger();
             assertEquals(Level.DEBUG, rootLogger.getLevel());
             final Appender appender = config.getAppender("Console");
-            assertTrue(appender instanceof ConsoleAppender);
+            assertInstanceOf(ConsoleAppender.class, appender);
             final Layout<? extends Serializable> layout = appender.getLayout();
-            assertTrue(layout instanceof PatternLayout);
+            assertInstanceOf(PatternLayout.class, layout);
             assertEquals("%v1Level - %m%n", ((PatternLayout) layout).getConversionPattern());
             // No filter support
             config.start();
@@ -178,11 +179,11 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
     }
 
     @Test
-    public void testGlobalThreshold() throws Exception {
+    void testGlobalThreshold() throws Exception {
         try (final LoggerContext ctx = configure("config-1.2/log4j-global-threshold")) {
             final Configuration config = ctx.getConfiguration();
             final Filter filter = config.getFilter();
-            assertTrue(filter instanceof ThresholdFilter);
+            assertInstanceOf(ThresholdFilter.class, filter);
             final ThresholdFilter thresholdFilter = (ThresholdFilter) filter;
             assertEquals(Level.INFO, thresholdFilter.getLevel());
             assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());

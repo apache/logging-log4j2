@@ -42,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
  */
-public class OnStartupTriggeringPolicyTest {
+class OnStartupTriggeringPolicyTest {
 
     private static final String TARGET_PATTERN = "/test1-%d{MM-dd-yyyy}-%i.log";
     private static final String TEST_DATA = "Hello world!";
@@ -52,7 +52,7 @@ public class OnStartupTriggeringPolicyTest {
     Path tempDir;
 
     @Test
-    public void testPolicy() throws Exception {
+    void testPolicy() throws Exception {
         final Configuration configuration = new DefaultConfiguration();
         final Path target = tempDir.resolve("testfile");
         final long timeStamp = Instant.now().minus(Duration.ofDays(1)).toEpochMilli();
@@ -114,9 +114,9 @@ public class OnStartupTriggeringPolicyTest {
             try (final Stream<Path> contents = Files.list(tempDir)) {
                 files = contents.map(Path::toString).collect(Collectors.joining(", ", "[", "]"));
             }
-            assertTrue(Files.exists(target), target.toString() + ", files = " + files);
+            assertTrue(Files.exists(target), target + ", files = " + files);
             assertEquals(0, Files.size(target), target.toString());
-            assertTrue(Files.exists(rolled), "Missing: " + rolled.toString() + ", files on disk = " + files);
+            assertTrue(Files.exists(rolled), "Missing: " + rolled + ", files on disk = " + files);
             assertEquals(size, Files.size(rolled), rolled.toString());
         }
     }

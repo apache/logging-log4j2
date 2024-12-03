@@ -33,7 +33,7 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class SmtpManagerTest {
+class SmtpManagerTest {
 
     private void testAdd(final LogEvent event) {
         final SmtpAppender appender = SmtpAppender.newBuilder()
@@ -69,7 +69,7 @@ public class SmtpManagerTest {
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
-    public void testAdd_WhereLog4jLogEventWithReusableMessage() {
+    void testAdd_WhereLog4jLogEventWithReusableMessage() {
         final LogEvent event = new Log4jLogEvent.Builder()
                 .setMessage(getReusableMessage("test message"))
                 .build();
@@ -78,14 +78,14 @@ public class SmtpManagerTest {
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
-    public void testAdd_WhereMutableLogEvent() {
+    void testAdd_WhereMutableLogEvent() {
         final MutableLogEvent event = new MutableLogEvent(new StringBuilder("test message"), null);
         testAdd(event);
     }
 
     // LOG4J2-3172
     @Test
-    public void testAdd_WhereRingBufferLogEvent() {
+    void testAdd_WhereRingBufferLogEvent() {
         final RingBufferLogEvent event = new RingBufferLogEvent();
         event.setValues(
                 null,

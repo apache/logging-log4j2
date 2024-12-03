@@ -24,24 +24,24 @@ import org.apache.logging.log4j.MarkerManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class Log4jMarkerTest {
+class Log4jMarkerTest {
 
     private static Log4jMarkerFactory markerFactory;
 
     @BeforeAll
-    public static void startup() {
+    static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         final Marker markerA = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-A");
         final Marker markerB = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-B");
         final Log4jMarker marker1 = new Log4jMarker(markerFactory, markerA);
         final Log4jMarker marker2 = new Log4jMarker(markerFactory, markerA);
         final Log4jMarker marker3 = new Log4jMarker(markerFactory, markerB);
         assertEquals(marker1, marker2);
-        assertNotEquals(marker1, null);
+        assertNotEquals(null, marker1);
         assertNotEquals(null, marker1);
         assertNotEquals(marker1, marker3);
     }

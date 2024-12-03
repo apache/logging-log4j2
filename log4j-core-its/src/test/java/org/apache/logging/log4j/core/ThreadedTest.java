@@ -22,18 +22,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runners.model.Statement;
 
 /**
  *
  */
-@Category(PerformanceTests.class)
+@Tag("PerformanceTests")
 public class ThreadedTest {
     private static final String DIR = "target/threaded";
     private static final String CONFIG = "log4j-threaded.xml";
@@ -61,7 +60,7 @@ public class ThreadedTest {
             .around(context);
 
     @Test
-    public void testDeadlock() throws Exception {
+    void testDeadlock() throws Exception {
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS * 2);
         final State state = new State();
         for (int count = 0; count < THREADS; ++count) {

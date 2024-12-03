@@ -55,7 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
-public class SocketAppenderReconnectTest {
+class SocketAppenderReconnectTest {
 
     private static final String CLASS_NAME = SocketAppenderReconnectTest.class.getSimpleName();
 

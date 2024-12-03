@@ -41,7 +41,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         final String testMsg = "Test message {}";
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         msg.set(testMsg, (Object[]) null);
@@ -58,7 +58,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormat3StringArgs() {
+    void testFormat3StringArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = {"a", "b", "c"};
         final String result =
@@ -67,7 +67,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatNullArgs() {
+    void testFormatNullArgs() {
         final String testMsg = "Test message {} {} {} {} {} {}";
         final String[] args = {"a", null, "c", null, null, null};
         final String result =
@@ -76,7 +76,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsIgnoresSuperfluousArgs() {
+    void testFormatStringArgsIgnoresSuperfluousArgs() {
         final String testMsg = "Test message {}{} {}";
         final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
         final String result =
@@ -85,7 +85,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithEscape() {
+    void testFormatStringArgsWithEscape() {
         final String testMsg = "Test message \\{}{} {}";
         final String[] args = {"a", "b", "c"};
         final String result =
@@ -94,7 +94,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingEscape() {
+    void testFormatStringArgsWithTrailingEscape() {
         final String testMsg = "Test message {}{} {}\\";
         final String[] args = {"a", "b", "c"};
         final String result =
@@ -103,7 +103,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingText() {
+    void testFormatStringArgsWithTrailingText() {
         final String testMsg = "Test message {}{} {}Text";
         final String[] args = {"a", "b", "c"};
         final String result =
@@ -112,7 +112,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithTrailingEscapedEscape() {
+    void testFormatStringArgsWithTrailingEscapedEscape() {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = {"a", "b", "c"};
         final String result =
@@ -121,7 +121,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testFormatStringArgsWithEscapedEscape() {
+    void testFormatStringArgsWithEscapedEscape() {
         final String testMsg = "Test message \\\\{}{} {}";
         final Object[] args = {"a", "b", "c"};
         final String result =
@@ -130,7 +130,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testNotSafeWithMutableParams() {
+    void testNotSafeWithMutableParams() {
         final String testMsg = "Test message {}";
         final Mutable param = new Mutable().set("abc");
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
@@ -148,7 +148,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testThrowable() {
+    void testThrowable() {
         final String testMsg = "Test message {}";
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         final Throwable EXCEPTION1 = new IllegalAccessError("#1");
@@ -161,7 +161,7 @@ public class ReusableParameterizedMessageTest {
     }
 
     @Test
-    public void testParameterConsumer() {
+    void testParameterConsumer() {
         final String testMsg = "Test message {}";
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         final Throwable EXCEPTION1 = new IllegalAccessError("#1");

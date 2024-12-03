@@ -29,17 +29,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @UsingThreadContextMap
-public class MdcPatternConverterTest {
+class MdcPatternConverterTest {
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
         ThreadContext.put("object", "Log4j");
     }
 
     @Test
-    public void testConverter() {
+    void testConverter() {
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -55,7 +55,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithExistingData() {
+    void testConverterWithExistingData() {
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -72,7 +72,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterFullEmpty() {
+    void testConverterFullEmpty() {
         ThreadContext.clearMap();
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
@@ -89,7 +89,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterFullSingle() {
+    void testConverterFullSingle() {
         ThreadContext.clearMap();
         ThreadContext.put("foo", "bar");
         final Message msg = new SimpleMessage("Hello");
@@ -107,7 +107,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKey() {
+    void testConverterWithKey() {
         final Message msg = new SimpleMessage("Hello");
         final String[] options = new String[] {"object"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
@@ -124,7 +124,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKeys() {
+    void testConverterWithKeys() {
         final Message msg = new SimpleMessage("Hello");
         final String[] options = new String[] {"object, subject"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
@@ -141,7 +141,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKeysAndPrefix() {
+    void testConverterWithKeysAndPrefix() {
         final Message msg = new SimpleMessage("Hello");
         final String[] options = new String[] {"object, subject"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
@@ -159,7 +159,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKeysSinglePresent() {
+    void testConverterWithKeysSinglePresent() {
         final Message msg = new SimpleMessage("Hello");
         final String[] options = new String[] {"object, notpresent"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
@@ -176,7 +176,7 @@ public class MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKeysNonePresent() {
+    void testConverterWithKeysNonePresent() {
         ThreadContext.clearMap();
         final Message msg = new SimpleMessage("Hello");
         final String[] options = new String[] {"object, subject"};

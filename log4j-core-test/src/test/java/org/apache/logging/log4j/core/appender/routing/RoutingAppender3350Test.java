@@ -43,7 +43,7 @@ public class RoutingAppender3350Test {
     public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILE);
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.loggerContextRule.getLoggerContext().stop();
     }
 

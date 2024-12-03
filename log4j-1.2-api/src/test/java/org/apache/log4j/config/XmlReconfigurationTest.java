@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test reconfiguring with an XML configuration.
  */
-public class XmlReconfigurationTest {
+class XmlReconfigurationTest {
 
     private static final String CONFIG = "target/test-classes/log4j1-file.xml";
     private static final long FIVE_MINUTES = 5 * 60 * 1000;
@@ -43,7 +43,7 @@ public class XmlReconfigurationTest {
     private final CountDownLatch toggle = new CountDownLatch(1);
 
     @Test
-    public void testReconfiguration() throws Exception {
+    void testReconfiguration() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG);
         assertNotNull(file, "No Config file");

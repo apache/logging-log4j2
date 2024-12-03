@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class Log4jMDCAdapterTest {
+class Log4jMDCAdapterTest {
 
     private static final Log4jMDCAdapter MDC_ADAPTER = new Log4jMDCAdapter();
     private static final String KEY = "Log4j2";
@@ -51,7 +51,7 @@ public class Log4jMDCAdapterTest {
 
     @ParameterizedTest
     @MethodSource("keys")
-    public void testPushPopByKey(final String key) {
+    void testPushPopByKey(final String key) {
         MDC_ADAPTER.clearDequeByKey(key);
         final Deque<String> expectedValues = createDeque(100);
         expectedValues.descendingIterator().forEachRemaining(v -> MDC_ADAPTER.pushByKey(key, v));

@@ -33,32 +33,32 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SmtpAppenderAsyncTest {
+class SmtpAppenderAsyncTest {
 
     private static int PORT;
 
     private SimpleSmtpServer smtpServer;
 
     @BeforeAll
-    public static void setupAll() {
+    static void setupAll() {
         PORT = AvailablePortFinder.getNextAvailable();
         System.setProperty("smtp.port", String.valueOf(PORT));
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         smtpServer = SimpleSmtpServer.start(PORT);
     }
 
     @Test
     @LoggerContextSource("SmtpAppenderAsyncTest.xml")
-    public void testSync(final LoggerContext ctx) {
+    void testSync(final LoggerContext ctx) {
         testSmtpAppender(ctx.getLogger("sync"), ctx);
     }
 
     @Test
     @LoggerContextSource("SmtpAppenderAsyncTest.xml")
-    public void testAsync(final LoggerContext ctx) {
+    void testAsync(final LoggerContext ctx) {
         testSmtpAppender(ctx.getLogger("async"), ctx);
     }
 
@@ -83,14 +83,14 @@ public class SmtpAppenderAsyncTest {
     }
 
     @AfterEach
-    public void teardown() {
+    void teardown() {
         if (smtpServer != null) {
             smtpServer.stop();
         }
     }
 
     @AfterAll
-    public static void teardownAll() {
+    static void teardownAll() {
         System.clearProperty("smtp.port");
     }
 }

@@ -111,7 +111,7 @@ class UrlConnectionFactoryTest {
     @Test
     @SetTestProperty(key = "log4j2.configurationUsername", value = "testUser")
     @SetTestProperty(key = "log4j2.configurationPassword", value = "password")
-    public void withAuthentication(WireMockRuntimeInfo info) throws Exception {
+    void withAuthentication(WireMockRuntimeInfo info) throws Exception {
         WireMock wireMock = info.getWireMock();
         // RFC 1123 format rounds to full seconds
         ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);

@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 
 // config from log4j-core test-jar
 @LoggerContextSource(value = "log4j2-calling-class.xml")
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
-    public void testClassLogger(@Named("Class") final ListAppender app) {
+    void testClassLogger(@Named("Class") final ListAppender app) {
         app.clear();
         final Logger logger = Logger.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
@@ -44,7 +44,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger(@Named("Method") final ListAppender app) {
+    void testMethodLogger(@Named("Method") final ListAppender app) {
         app.clear();
         final Logger logger = Logger.getLogger("MethodLogger");
         logger.info("More messages.");

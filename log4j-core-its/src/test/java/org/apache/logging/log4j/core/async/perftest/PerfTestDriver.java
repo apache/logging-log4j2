@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async.perftest;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,7 +35,7 @@ import org.apache.logging.log4j.core.util.Integers;
 public class PerfTestDriver {
     private static final String DEFAULT_WAIT_STRATEGY = "Block";
 
-    static enum WaitStrategy {
+    enum WaitStrategy {
         Sleep,
         Yield,
         Block;
@@ -203,14 +202,14 @@ public class PerfTestDriver {
         }
     }
 
-    static enum Runner {
+    enum Runner {
         Log4j12(RunLog4j1.class), //
         Log4j2(RunLog4j2.class), //
         Logback(RunLogback.class);
 
         private final Class<? extends IPerfTestRunner> implementationClass;
 
-        private Runner(final Class<? extends IPerfTestRunner> cls) {
+        Runner(final Class<? extends IPerfTestRunner> cls) {
             this.implementationClass = cls;
         }
     }
@@ -306,7 +305,7 @@ public class PerfTestDriver {
     }
 
     private static void runPerfTests(final String[] args, final List<Setup> tests)
-            throws IOException, InterruptedException, FileNotFoundException {
+            throws IOException, InterruptedException {
         final String java = args.length > 0 ? args[0] : "java";
         final int repeat = args.length > 1 ? Integers.parseInt(args[1]) : 5;
         int x = 0;

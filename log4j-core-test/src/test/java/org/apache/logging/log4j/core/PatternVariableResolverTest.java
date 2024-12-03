@@ -46,7 +46,7 @@ public class PatternVariableResolverTest {
         final Logger logger = context.getLogger(PatternVariableResolverTest.class);
         logger.info("This is a test");
         final List<String> messages = listAppender.getMessages();
-        assertTrue("No messages returned", messages != null && messages.size() > 0);
+        assertTrue("No messages returned", messages != null && !messages.isEmpty());
         final String message = messages.get(0);
         System.out.println(message);
     }

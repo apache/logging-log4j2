@@ -29,12 +29,12 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.ApiLogger;
 import org.apache.logging.log4j.jul.LevelTranslator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public abstract class AbstractLoggerTest {
+abstract class AbstractLoggerTest {
     public static final String LOGGER_NAME = "Test";
 
     static final java.util.logging.Level[] LEVELS = new java.util.logging.Level[] {
@@ -64,12 +64,12 @@ public abstract class AbstractLoggerTest {
     protected ListAppender stringAppender;
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertThat(logger.getName()).isEqualTo(LOGGER_NAME);
     }
 
     @Test
-    public void testGlobalLogger() {
+    void testGlobalLogger() {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         root.info("Test info message");
         root.config("Test info message");
@@ -83,18 +83,18 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testGlobalLoggerName() {
+    void testGlobalLoggerName() {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         assertThat(root.getName()).isEqualTo(Logger.GLOBAL_LOGGER_NAME);
     }
 
     @Test
-    public void testIsLoggable() {
+    void testIsLoggable() {
         assertThat(logger.isLoggable(java.util.logging.Level.SEVERE)).isTrue();
     }
 
     @Test
-    public void testLog() {
+    void testLog() {
         logger.info("Informative message here.");
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
@@ -107,7 +107,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogFilter() {
+    void testLogFilter() {
         logger.setFilter(record -> false);
         logger.severe("Informative message here.");
         logger.warning("Informative message here.");
@@ -121,7 +121,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testAlteringLogFilter() {
+    void testAlteringLogFilter() {
         logger.setFilter(record -> {
             record.setMessage("This is not the message you are looking for.");
             return true;
@@ -138,7 +138,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogParamMarkers() {
+    void testLogParamMarkers() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTER {0}", "params");
         final List<LogEvent> events = flowAppender.getEvents();
@@ -146,7 +146,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogUsingCustomLevel() {
+    void testLogUsingCustomLevel() {
         logger.config("Config level");
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
@@ -155,7 +155,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogWithCallingClass() {
+    void testLogWithCallingClass() {
         final Logger log = Logger.getLogger("Test.CallerClass");
         log.config("Calling from LoggerTest");
         final List<String> messages = stringAppender.getMessages();
@@ -165,17 +165,17 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testCurlyBraces() {
+    void testCurlyBraces() {
         testMessage("{message}");
     }
 
     @Test
-    public void testPercent() {
+    void testPercent() {
         testMessage("message%s");
     }
 
     @Test
-    public void testPercentAndCurlyBraces() {
+    void testPercentAndCurlyBraces() {
         testMessage("message{%s}");
     }
 
@@ -193,7 +193,7 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testFlowMessages() {
+    void testFlowMessages() {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.entering("com.example.TestSourceClass1", "testSourceMethod1(String)");
         flowLogger.entering("com.example.TestSourceClass2", "testSourceMethod2(String)", "TestParam");
@@ -207,22 +207,22 @@ public abstract class AbstractLoggerTest {
     }
 
     @Test
-    public void testLambdasGlobalLogger() {
+    void testLambdasGlobalLogger() {
         testLambdaMessages("message");
     }
 
     @Test
-    public void testLambdasCurlyBraces() {
+    void testLambdasCurlyBraces() {
         testLambdaMessages("{message}");
     }
 
     @Test
-    public void testLambdasPercent() {
+    void testLambdasPercent() {
         testLambdaMessages("message%s");
     }
 
     @Test
-    public void testLambdasPercentAndCurlyBraces() {
+    void testLambdasPercentAndCurlyBraces() {
         testLambdaMessages("message{%s}");
     }
 
@@ -232,7 +232,7 @@ public abstract class AbstractLoggerTest {
      * @see <a href="https://github.com/apache/logging-log4j2/issues/3119">GH issue #3119</a>
      */
     @Test
-    public void testSetAndGetLevel() {
+    void testSetAndGetLevel() {
         final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetAndGetLevel");
         // The logger under test should have no explicit configuration
         assertThat(logger.getLevel()).isNull();
@@ -247,7 +247,7 @@ public abstract class AbstractLoggerTest {
      * The value of `useParentHandlers` should be recorded even if it is not effective.
      */
     @Test
-    public void testSetUseParentHandlers() {
+    void testSetUseParentHandlers() {
         final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetUseParentHandlers");
 
         for (boolean useParentHandlers : new boolean[] {false, true}) {
@@ -260,7 +260,7 @@ public abstract class AbstractLoggerTest {
      * The programmatically configured handlers should be recorded, even if they are not used.
      */
     @Test
-    public void testAddAndRemoveHandlers() {
+    void testAddAndRemoveHandlers() {
         final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testAddAndRemoveHandlers");
 
         assertThat(logger.getHandlers()).isEmpty();
@@ -277,7 +277,7 @@ public abstract class AbstractLoggerTest {
      * The programmatically configured filters should be recorded, even if they are not used.
      */
     @Test
-    public void testSetFilter() {
+    void testSetFilter() {
         final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetFilter");
 
         assertThat(logger.getFilter()).isNull();
@@ -294,7 +294,7 @@ public abstract class AbstractLoggerTest {
      * The programmatically configured resource bundles should be recorded, even if they are not used.
      */
     @Test
-    public void testSetResourceBundle() {
+    void testSetResourceBundle() {
         final Logger logger = Logger.getLogger(AbstractLoggerTest.class.getName() + ".testSetResourceBundle");
 
         assertThat(logger.getResourceBundle()).isNull();

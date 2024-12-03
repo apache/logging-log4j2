@@ -26,7 +26,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -74,12 +73,12 @@ public class AbstractDatabaseAppenderTest {
 
         appender.append(event1);
         then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event1), (Serializable) isNull());
+        then(manager).should().writeThrough(same(event1), isNull());
         reset(manager);
 
         appender.append(event2);
         then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event2), (Serializable) isNull());
+        then(manager).should().writeThrough(same(event2), isNull());
         reset(manager);
     }
 

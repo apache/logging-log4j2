@@ -67,14 +67,14 @@ class JsonTemplateLayoutNullEventDelimiterTest {
     }
 
     @AfterAll
-    static void cleanup() throws IOException {
+    static void cleanup() {
         // Stop the TCP server.
         server.close();
     }
 
     @Test
     @LoggerContextSource
-    void test(final @Named("Socket") SocketAppender appender, final LoggerContext ctx) throws Exception {
+    void test(final @Named("Socket") SocketAppender appender, final LoggerContext ctx) {
         assertThat(appender).isNotNull();
         appender.addFilter(new AbstractFilter() {
             @Override

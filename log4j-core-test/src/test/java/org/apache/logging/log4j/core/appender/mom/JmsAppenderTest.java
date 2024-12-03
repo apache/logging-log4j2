@@ -83,12 +83,12 @@ public class JmsAppenderTest {
     public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);
 
     @AfterClass
-    public static void afterClass() throws Exception {
+    public static void afterClass() {
         System.clearProperty("log4j2.enableJndiJms");
     }
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() {
         System.setProperty("log4j2.enableJndiJms", "true");
     }
 

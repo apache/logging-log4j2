@@ -23,21 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-public class MemoryPasswordProviderTest {
+class MemoryPasswordProviderTest {
     @Test
-    public void testConstructorAllowsNull() {
+    void testConstructorAllowsNull() {
         assertNull(new MemoryPasswordProvider(null).getPassword());
     }
 
     @Test
-    public void testConstructorDoesNotModifyOriginalParameterArray() {
+    void testConstructorDoesNotModifyOriginalParameterArray() {
         final char[] initial = "123".toCharArray();
         new MemoryPasswordProvider(initial);
         assertArrayEquals("123".toCharArray(), initial);
     }
 
     @Test
-    public void testGetPasswordReturnsCopyOfConstructorArray() {
+    void testGetPasswordReturnsCopyOfConstructorArray() {
         final char[] initial = "123".toCharArray();
         final MemoryPasswordProvider provider = new MemoryPasswordProvider(initial);
         final char[] actual = provider.getPassword();

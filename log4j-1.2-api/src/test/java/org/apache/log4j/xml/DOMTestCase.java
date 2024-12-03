@@ -53,13 +53,13 @@ class DOMTestCase {
     Logger logger;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         root = Logger.getRootLogger();
         logger = Logger.getLogger(DOMTestCase.class);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         root.getLoggerRepository().resetConfiguration();
     }
 
@@ -110,7 +110,7 @@ class DOMTestCase {
      *
      */
     @Test
-    public void testOverrideSubst() {
+    void testOverrideSubst() {
         final DOMConfigurator configurator = new DOMConfigurator();
         configurator.doConfigure(
                 DOMTestCase.class.getResource("/DOMTestCase/DOMTestCase1.xml"), LogManager.getLoggerRepository());
@@ -131,7 +131,7 @@ class DOMTestCase {
      *
      */
     @Test
-    public void testReset() {
+    void testReset() {
         final VectorAppender appender = new VectorAppender();
         appender.setName("V1");
         Logger.getRootLogger().addAppender(appender);

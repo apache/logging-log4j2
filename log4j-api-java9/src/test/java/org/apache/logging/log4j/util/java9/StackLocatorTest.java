@@ -26,10 +26,10 @@ import java.util.Stack;
 import org.apache.logging.log4j.util.StackLocator;
 import org.junit.jupiter.api.Test;
 
-public class StackLocatorTest {
+class StackLocatorTest {
 
     @Test
-    public void testGetCallerClass() {
+    void testGetCallerClass() {
         final Class<?> expected = StackLocatorTest.class;
         final StackLocator stackLocator = StackLocator.getInstance();
         final Class<?> actual = stackLocator.getCallerClass(1);
@@ -37,14 +37,14 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testGetCallerClassNameViaStackTrace() throws Exception {
+    void testGetCallerClassNameViaStackTrace() throws Exception {
         final Class<?> expected = StackLocatorTest.class;
         final Class<?> actual = Class.forName(new Throwable().getStackTrace()[0].getClassName());
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetCurrentStackTrace() {
+    void testGetCurrentStackTrace() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
@@ -60,12 +60,12 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testGetCallerClassViaName() {
+    void testGetCallerClassViaName() {
         Inner.assertCallerClassViaName();
     }
 
     @Test
-    public void testGetCallerClassViaAnchorClass() {
+    void testGetCallerClassViaAnchorClass() {
         Inner.assertCallerClassViaAnchorClass();
     }
 
@@ -86,7 +86,7 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testLocateClass() {
+    void testLocateClass() {
         final ClassLocator locator = new ClassLocator();
         final Class<?> clazz = locator.locateClass();
         assertNotNull(clazz, "Could not locate class");
@@ -117,7 +117,7 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testCalcLocation() {
+    void testCalcLocation() {
         /*
          * We are setting up a stack trace that looks like:
          *  - org.apache.logging.log4j.util.test.StackLocatorTest#quux(line:118)
@@ -135,14 +135,14 @@ public class StackLocatorTest {
     }
 
     @Test
-    public void testTopElementInStackTrace() {
+    void testTopElementInStackTrace() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
         assertSame(StackLocator.class, classes.getFirst());
     }
 
     @Test
-    public void testCalcLocationWhenNotInTheStack() {
+    void testCalcLocationWhenNotInTheStack() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final StackTraceElement stackTraceElement = stackLocator.calcLocation("java.util.Logger");
         assertNull(stackTraceElement);

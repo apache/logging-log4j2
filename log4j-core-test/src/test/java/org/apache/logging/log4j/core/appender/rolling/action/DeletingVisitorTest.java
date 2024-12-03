@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the {@code DeletingVisitor} class.
  */
-public class DeletingVisitorTest {
+class DeletingVisitorTest {
     /**
      * Modifies {@code DeletingVisitor} for testing: instead of actually deleting a file, it adds the path to a list for
      * later verification.
@@ -51,13 +51,13 @@ public class DeletingVisitorTest {
         }
 
         @Override
-        protected void delete(final Path file) throws IOException {
+        protected void delete(final Path file) {
             deleted.add(file); // overrides and stores path instead of deleting
         }
     }
 
     @Test
-    public void testAcceptedFilesAreDeleted() throws IOException {
+    void testAcceptedFilesAreDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         final DeletingVisitorHelper visitor =
@@ -69,7 +69,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testRejectedFilesAreNotDeleted() throws IOException {
+    void testRejectedFilesAreNotDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition REJECT_ALL = new FixedCondition(false);
         final DeletingVisitorHelper visitor =
@@ -81,7 +81,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testAllFiltersMustAcceptOrFileIsNotDeleted() throws IOException {
+    void testAllFiltersMustAcceptOrFileIsNotDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         final FixedCondition REJECT_ALL = new FixedCondition(false);
@@ -94,7 +94,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testIfAllFiltersAcceptFileIsDeleted() throws IOException {
+    void testIfAllFiltersAcceptFileIsDeleted() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         final List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
@@ -106,7 +106,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testInTestModeFileIsNotDeletedEvenIfAllFiltersAccept() throws IOException {
+    void testInTestModeFileIsNotDeletedEvenIfAllFiltersAccept() throws IOException {
         final Path base = Paths.get("/a/b/c");
         final FixedCondition ACCEPT_ALL = new FixedCondition(true);
         final List<? extends PathCondition> filters = Arrays.asList(ACCEPT_ALL, ACCEPT_ALL, ACCEPT_ALL);
@@ -118,7 +118,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testVisitFileRelativizesAgainstBase() throws IOException {
+    void testVisitFileRelativizesAgainstBase() throws IOException {
 
         final PathCondition filter = new PathCondition() {
 
@@ -140,7 +140,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testNoSuchFileFailure() throws IOException {
+    void testNoSuchFileFailure() throws IOException {
         final DeletingVisitorHelper visitor =
                 new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
         assertEquals(
@@ -149,7 +149,7 @@ public class DeletingVisitorTest {
     }
 
     @Test
-    public void testIOException() {
+    void testIOException() {
         final DeletingVisitorHelper visitor =
                 new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
         final IOException exception = new IOException();

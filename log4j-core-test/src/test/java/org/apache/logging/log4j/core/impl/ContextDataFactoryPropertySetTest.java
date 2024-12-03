@@ -17,31 +17,31 @@
 package org.apache.logging.log4j.core.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ContextDataFactory class.
  */
-public class ContextDataFactoryPropertySetTest {
+class ContextDataFactoryPropertySetTest {
 
     @Test
-    public void noArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
+    void noArgReturnsSpecifiedImplIfPropertySpecified() {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
-        assertTrue(ContextDataFactory.createContextData() instanceof FactoryTestStringMap);
+        assertInstanceOf(FactoryTestStringMap.class, ContextDataFactory.createContextData());
         System.clearProperty("log4j2.ContextData");
     }
 
     @Test
-    public void intArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
+    void intArgReturnsSpecifiedImplIfPropertySpecified() {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
-        assertTrue(ContextDataFactory.createContextData(2) instanceof FactoryTestStringMap);
+        assertInstanceOf(FactoryTestStringMap.class, ContextDataFactory.createContextData(2));
         System.clearProperty("log4j2.ContextData");
     }
 
     @Test
-    public void intArgSetsCapacityIfPropertySpecified() throws Exception {
+    void intArgSetsCapacityIfPropertySpecified() {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
         final FactoryTestStringMap actual = (FactoryTestStringMap) ContextDataFactory.createContextData(2);
         assertEquals(2, actual.initialCapacity);

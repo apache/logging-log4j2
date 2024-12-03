@@ -16,87 +16,87 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class BasicAsyncLoggerContextSelectorTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class BasicAsyncLoggerContextSelectorTest {
 
     private static final String FQCN = BasicAsyncLoggerContextSelectorTest.class.getName();
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BasicAsyncLoggerContextSelector.class.getName());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
     }
 
     @Test
-    public void testContextReturnsAsyncLoggerContext() {
+    void testContextReturnsAsyncLoggerContext() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, context);
     }
 
     @Test
-    public void testContext2ReturnsAsyncLoggerContext() {
+    void testContext2ReturnsAsyncLoggerContext() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false, null);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, context);
     }
 
     @Test
-    public void testLoggerContextsReturnsAsyncLoggerContext() {
+    void testLoggerContextsReturnsAsyncLoggerContext() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
 
         List<LoggerContext> list = selector.getLoggerContexts();
         assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, list.get(0));
 
         selector.getContext(FQCN, null, false);
 
         list = selector.getLoggerContexts();
         assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, list.get(0));
     }
 
     @Test
-    public void testContextNameIsAsyncDefault() {
+    void testContextNameIsAsyncDefault() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
         assertEquals("AsyncDefault", context.getName());
     }
 
     @Test
-    public void testDependentOnClassLoader() {
+    void testDependentOnClassLoader() {
         final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
         assertFalse(selector.isClassLoaderDependent());
     }
 
     @Test
-    public void testFactoryIsNotDependentOnClassLoader() {
+    void testFactoryIsNotDependentOnClassLoader() {
         assertFalse(LogManager.getFactory().isClassLoaderDependent());
     }
 
     @Test
-    public void testLogManagerShutdown() {
+    void testLogManagerShutdown() {
         final LoggerContext context = (LoggerContext) LogManager.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
         LogManager.shutdown();

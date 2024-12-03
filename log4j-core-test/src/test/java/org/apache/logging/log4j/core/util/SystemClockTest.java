@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class SystemClockTest {
+class SystemClockTest {
 
     @Test
-    public void testLessThan2Millis() {
+    void testLessThan2Millis() {
         final long millis1 = new SystemClock().currentTimeMillis();
         final long sysMillis = System.currentTimeMillis();
 
@@ -33,7 +33,7 @@ public class SystemClockTest {
     }
 
     @Test
-    public void testAfterWaitStillLessThan2Millis() throws Exception {
+    void testAfterWaitStillLessThan2Millis() throws Exception {
         Thread.sleep(100);
         final long millis1 = new SystemClock().currentTimeMillis();
         final long sysMillis = System.currentTimeMillis();

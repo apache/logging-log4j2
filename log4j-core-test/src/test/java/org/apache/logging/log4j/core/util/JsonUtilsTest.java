@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
  */
-public class JsonUtilsTest {
+class JsonUtilsTest {
 
     @Test
-    public void testQuoteCharSequenceAsString() throws Exception {
+    void testQuoteCharSequenceAsString() {
         final StringBuilder output = new StringBuilder();
         final StringBuilder builder = new StringBuilder();
         builder.append("foobar");
@@ -41,7 +41,7 @@ public class JsonUtilsTest {
 
     // For [JACKSON-853]
     @Test
-    public void testQuoteLongCharSequenceAsString() throws Exception {
+    void testQuoteLongCharSequenceAsString() {
         final StringBuilder output = new StringBuilder();
         final StringBuilder input = new StringBuilder();
         final StringBuilder sb2 = new StringBuilder();
@@ -57,7 +57,7 @@ public class JsonUtilsTest {
 
     // [JACKSON-884]
     @Test
-    public void testCharSequenceWithCtrlChars() throws Exception {
+    void testCharSequenceWithCtrlChars() {
         final char[] input = new char[] {0, 1, 2, 3, 4};
         final StringBuilder builder = new StringBuilder();
         builder.append(input);

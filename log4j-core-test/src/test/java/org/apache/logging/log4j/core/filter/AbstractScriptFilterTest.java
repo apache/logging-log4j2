@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 public abstract class AbstractScriptFilterTest {
 
     @Test
-    public void testGroovyFilter(final LoggerContext context, @Named("List") final ListAppender app) throws Exception {
+    public void testGroovyFilter(final LoggerContext context, @Named("List") final ListAppender app) {
         final Logger logger = context.getLogger("TestGroovyFilter");
         logger.traceEntry();
         logger.info("This should not be logged");
@@ -44,15 +44,14 @@ public abstract class AbstractScriptFilterTest {
         try {
             final List<String> messages = app.getMessages();
             assertNotNull(messages, "No Messages");
-            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
+            assertEquals(2, messages.size(), "Incorrect number of messages. Expected 2, Actual " + messages.size());
         } finally {
             app.clear();
         }
     }
 
     @Test
-    public void testJavascriptFilter(final LoggerContext context, @Named("List") final ListAppender app)
-            throws Exception {
+    public void testJavascriptFilter(final LoggerContext context, @Named("List") final ListAppender app) {
         final Logger logger = context.getLogger("TestJavaScriptFilter");
         logger.traceEntry();
         logger.info("This should not be logged");
@@ -62,7 +61,7 @@ public abstract class AbstractScriptFilterTest {
         final List<String> messages = app.getMessages();
         try {
             assertNotNull(messages, "No Messages");
-            assertEquals(messages.size(), 2, "Incorrect number of messages. Expected 2, Actual " + messages.size());
+            assertEquals(2, messages.size(), "Incorrect number of messages. Expected 2, Actual " + messages.size());
         } finally {
             app.clear();
         }

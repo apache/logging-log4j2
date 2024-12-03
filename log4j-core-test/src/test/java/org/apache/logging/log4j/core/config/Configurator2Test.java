@@ -28,22 +28,22 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class Configurator2Test {
+class Configurator2Test {
 
     @Test
-    public void testInitializeFromAbsoluteFilePath() {
+    void testInitializeFromAbsoluteFilePath() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         testInitializeFromFilePath(path);
     }
 
     @Test
-    public void testInitializeFromRelativeFilePath() {
+    void testInitializeFromRelativeFilePath() {
         final String path = new File("src/test/resources/log4j-list.xml").toString();
         testInitializeFromFilePath(path);
     }
 
     @Test
-    public void testReconfigure() {
+    void testReconfigure() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         try (final LoggerContext loggerContext =
                 Configurator.initialize(getClass().getName(), null, path)) {
@@ -56,7 +56,7 @@ public class Configurator2Test {
     }
 
     @Test
-    public void testReconfigureFromPath() {
+    void testReconfigureFromPath() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         try (final LoggerContext loggerContext =
                 Configurator.initialize(getClass().getName(), null, path)) {
@@ -80,7 +80,7 @@ public class Configurator2Test {
      * LOG4J2-3631: Configurator uses getName() instead of getCanonicalName().
      */
     @Test
-    public void testSetLevelUsesCanonicalName() {
+    void testSetLevelUsesCanonicalName() {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         try (final LoggerContext loggerContext =
                 Configurator.initialize(getClass().getName(), null, path)) {

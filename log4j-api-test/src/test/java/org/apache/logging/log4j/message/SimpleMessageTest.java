@@ -28,9 +28,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests the SimpleMessage class.
  */
-public class SimpleMessageTest {
+class SimpleMessageTest {
     @Test
-    public void formatTo_usesCachedMessageString() throws Exception {
+    void formatTo_usesCachedMessageString() {
         final StringBuilder charSequence = new StringBuilder("initial value");
         final SimpleMessage message = new SimpleMessage(charSequence);
         assertEquals("initial value", message.getFormattedMessage());

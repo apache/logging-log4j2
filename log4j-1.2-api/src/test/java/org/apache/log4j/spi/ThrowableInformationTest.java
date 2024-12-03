@@ -119,11 +119,11 @@ public class ThrowableInformationTest extends TestCase {
         assertEquals(7, rep.length);
         final StringBuffer buf = new StringBuffer(String.valueOf(true));
         buf.append('a');
-        buf.append(String.valueOf(1));
-        buf.append(String.valueOf(2L));
-        buf.append(String.valueOf(Float.MAX_VALUE));
-        buf.append(String.valueOf(Double.MIN_VALUE));
-        buf.append(String.valueOf(true));
+        buf.append(1);
+        buf.append(2L);
+        buf.append(Float.MAX_VALUE);
+        buf.append(Double.MIN_VALUE);
+        buf.append(true);
         assertEquals(buf.toString(), rep[0]);
         assertEquals("a", rep[1]);
         assertEquals(String.valueOf(1), rep[2]);

@@ -37,14 +37,14 @@ import org.junit.jupiter.api.parallel.Resources;
  */
 @EnabledIfSystemProperty(named = "test", matches = ".*Unbox2ConfigurableTest.*")
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
-public class Unbox2ConfigurableTest {
+class Unbox2ConfigurableTest {
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty("log4j.unbox.ringbuffer.size", "65");
     }
 
     @AfterAll
-    public static void afterClass() throws Exception {
+    static void afterClass() throws Exception {
         System.clearProperty("log4j.unbox.ringbuffer.size");
 
         // ensure subsequent tests (which assume 32 slots) pass
@@ -65,13 +65,13 @@ public class Unbox2ConfigurableTest {
     }
 
     @Test
-    public void testBoxConfiguredTo128Slots() {
+    void testBoxConfiguredTo128Slots() {
         // next power of 2 that is 65 or more
         assertEquals(128, Unbox.getRingbufferSize());
     }
 
     @Test
-    public void testBoxSuccessfullyConfiguredTo128Slots() {
+    void testBoxSuccessfullyConfiguredTo128Slots() {
         final int MAX = 128;
         final StringBuilder[] probe = new StringBuilder[MAX * 3];
         for (int i = 0; i <= probe.length - 8; ) {

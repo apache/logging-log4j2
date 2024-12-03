@@ -36,15 +36,15 @@ import org.junit.jupiter.api.Test;
 /**
  * Test configuration from XML.
  */
-public class AutoConfigTest {
+class AutoConfigTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, "true");
     }
 
     @Test
-    public void testListAppender() {
+    void testListAppender() {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         final LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
@@ -63,8 +63,8 @@ public class AutoConfigTest {
         assertNotNull(eventAppender, "No Event Appender");
         assertNotNull(messageAppender, "No Message Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue(events != null && events.size() > 0, "No events");
+        assertTrue(events != null && !events.isEmpty(), "No events");
         final List<String> messages = messageAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages");
     }
 }

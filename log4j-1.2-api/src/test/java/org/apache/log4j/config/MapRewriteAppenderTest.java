@@ -40,21 +40,21 @@ import org.junit.jupiter.api.Test;
 /**
  * Test RewriteAppender
  */
-public class MapRewriteAppenderTest {
+class MapRewriteAppenderTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-mapRewrite.xml");
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         ThreadContext.clearMap();
     }
 
     @Test
-    public void testRewrite() {
+    void testRewrite() {
         final Logger logger = LogManager.getLogger("test");
         final Map<String, String> map = new HashMap<>();
         map.put("message", "This is a test");
@@ -71,7 +71,7 @@ public class MapRewriteAppenderTest {
         }
         assertNotNull(eventAppender, "No Event Appender");
         final List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue(events != null && events.size() > 0, "No events");
+        assertTrue(events != null && !events.isEmpty(), "No events");
         assertNotNull(events.get(0).getProperties(), "No properties in the event");
         assertTrue(events.get(0).getProperties().containsKey("hello"), "Key was not inserted");
         assertEquals("world", events.get(0).getProperties().get("hello"), "Key value is incorrect");

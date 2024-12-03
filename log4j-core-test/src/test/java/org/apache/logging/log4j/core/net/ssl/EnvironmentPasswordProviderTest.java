@@ -21,15 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-public class EnvironmentPasswordProviderTest {
+class EnvironmentPasswordProviderTest {
 
     @Test
-    public void testConstructorDisallowsNull() {
+    void testConstructorDisallowsNull() {
         assertThrows(NullPointerException.class, () -> new EnvironmentPasswordProvider(null));
     }
 
     @Test
-    public void testGetPasswordReturnsEnvironmentVariableValue() {
+    void testGetPasswordReturnsEnvironmentVariableValue() {
         final String value = System.getenv("PATH");
         if (value == null) {
             return; // we cannot test in this environment

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-test2.xml")
-public class HostNameTest {
+class HostNameTest {
 
     private final ListAppender host;
     private final RollingFileAppender hostFile;
@@ -44,7 +44,7 @@ public class HostNameTest {
     }
 
     @Test
-    public void testHostname(final LoggerContext context) {
+    void testHostname(final LoggerContext context) {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("Hello, {}", "World");
         final List<String> msgs = host.getMessages();

@@ -20,6 +20,7 @@ import static org.apache.logging.log4j.test.junit.SerialUtil.deserialize;
 import static org.apache.logging.log4j.test.junit.SerialUtil.serialize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -69,23 +70,23 @@ public class Log4jLogEventTest {
     }
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
     }
 
     @AfterAll
-    public static void afterClass() throws IllegalAccessException {
+    static void afterClass() throws IllegalAccessException {
         ClockFactoryTest.resetClocks();
     }
 
     @Test
-    public void testToImmutableSame() {
+    void testToImmutableSame() {
         final LogEvent logEvent = new Log4jLogEvent();
         assertSame(logEvent, logEvent.toImmutable());
     }
 
     @Test
-    public void testToImmutableNotSame() {
+    void testToImmutableNotSame() {
         final LogEvent logEvent = new Log4jLogEvent.Builder()
                 .setMessage(new ReusableObjectMessage())
                 .build();
@@ -95,7 +96,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testJavaIoSerializable() throws Exception {
+    void testJavaIoSerializable() {
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
                 .setLoggerName("some.test") //
                 .setLoggerFqcn(Strings.EMPTY) //
@@ -123,7 +124,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testJavaIoSerializableWithThrown() throws Exception {
+    void testJavaIoSerializableWithThrown() {
         final Error thrown = new InternalError("test error");
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
                 .setLoggerName("some.test") //
@@ -164,7 +165,7 @@ public class Log4jLogEventTest {
     // };
 
     @Test
-    public void testJavaIoSerializableWithUnknownThrowable() throws Exception {
+    void testJavaIoSerializableWithUnknownThrowable() {
         final String loggerName = "some.test";
         final Marker marker = null;
         final String loggerFQN = Strings.EMPTY;
@@ -202,7 +203,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testNullLevelReplacedWithOFF() throws Exception {
+    void testNullLevelReplacedWithOFF() {
         final Level NULL_LEVEL = null;
         final Log4jLogEvent evt =
                 Log4jLogEvent.newBuilder().setLevel(NULL_LEVEL).build();
@@ -210,19 +211,19 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testTimestampGeneratedByClock() {
+    void testTimestampGeneratedByClock() {
         final LogEvent evt = Log4jLogEvent.newBuilder().build();
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
     }
 
     @Test
-    public void testInitiallyDummyNanoClock() {
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
+    void testInitiallyDummyNanoClock() {
+        assertInstanceOf(DummyNanoClock.class, Log4jLogEvent.getNanoClock());
         assertEquals(0, Log4jLogEvent.getNanoClock().nanoTime(), "initial dummy nanotime");
     }
 
     @Test
-    public void testNanoTimeGeneratedByNanoClock() {
+    void testNanoTimeGeneratedByNanoClock() {
         Log4jLogEvent.setNanoClock(new DummyNanoClock(123));
         verifyNanoTimeWithAllConstructors(123);
         Log4jLogEvent.setNanoClock(new DummyNanoClock(87654));
@@ -251,7 +252,7 @@ public class Log4jLogEventTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testBuilderCorrectlyCopiesAllEventAttributes() {
+    void testBuilderCorrectlyCopiesAllEventAttributes() {
         final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
@@ -300,7 +301,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testBuilderCorrectlyCopiesAllEventAttributesInclContextData() {
+    void testBuilderCorrectlyCopiesAllEventAttributesInclContextData() {
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
@@ -349,7 +350,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
+    void testBuilderCorrectlyCopiesMutableLogEvent() throws Exception {
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("A", "B");
         final ContextStack contextStack = ThreadContext.getImmutableStack();
@@ -417,7 +418,7 @@ public class Log4jLogEventTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testEquals() {
+    void testEquals() {
         final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("A", "B");
         ThreadContext.push("first");
@@ -536,7 +537,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         // Throws an NPE in 2.6.2
         assertNotNull(new Log4jLogEvent().toString());
     }

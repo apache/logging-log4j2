@@ -31,12 +31,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class NoLanguagesTest {
+class NoLanguagesTest {
 
     private LoggerContext ctx = null;
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (ctx != null) {
             Configurator.shutdown(ctx);
@@ -45,7 +45,7 @@ public class NoLanguagesTest {
     }
 
     @Test
-    public void testBuilderWithScripts() {
+    void testBuilderWithScripts() {
         final String script =
                 "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" + "                return \"NoLocation\";\n"
                         + "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n"

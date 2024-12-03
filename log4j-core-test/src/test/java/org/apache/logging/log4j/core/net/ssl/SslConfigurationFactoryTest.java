@@ -30,8 +30,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
-public class SslConfigurationFactoryTest {
+// Suppresses `StatusLogger` output, unless there is a failure
+@UsingStatusListener
+class SslConfigurationFactoryTest {
 
     private static final String TRUSTSTORE_LOCATION_PROP_NAME = "log4j2.trustStoreLocation";
 
@@ -56,7 +57,7 @@ public class SslConfigurationFactoryTest {
     }
 
     @Test
-    public void testStaticConfiguration() {
+    void testStaticConfiguration() {
 
         // Case 1: Empty configuration
         final Properties props = new Properties();
@@ -104,7 +105,7 @@ public class SslConfigurationFactoryTest {
     @EnabledOnOs(OS.WINDOWS)
     @ParameterizedTest
     @MethodSource("windowsKeystoreConfigs")
-    public void testPasswordLessStores(final String location, final String password) {
+    void testPasswordLessStores(final String location, final String password) {
 
         // Create the configuration
         final Properties props = new Properties();

@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("xml-events.xml")
 @Disabled("TODO")
-public class XmlEvents {
+class XmlEvents {
 
     @Test
-    public void testEvents() {
+    void testEvents() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());

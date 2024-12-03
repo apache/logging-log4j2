@@ -27,16 +27,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class MarkerAttributeConverterTest {
+class MarkerAttributeConverterTest {
     private MarkerAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new MarkerAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final Marker marker = MarkerManager.getMarker("testConvert01");
 
         final String converted = this.converter.convertToDatabaseColumn(marker);
@@ -51,7 +51,7 @@ public class MarkerAttributeConverterTest {
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         Marker marker =
                 MarkerManager.getMarker("anotherConvert02").setParents(MarkerManager.getMarker("finalConvert03"));
         marker = MarkerManager.getMarker("testConvert02").setParents(marker);
@@ -78,12 +78,12 @@ public class MarkerAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * Tests LOG4j2-962.
  */
 @LoggerContextSource(value = "log4j2-962.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
-public class PatternLayoutMainMapLookupTest {
+class PatternLayoutMainMapLookupTest {
 
     static {
         // Must be set before Log4j writes the header to the appenders.
@@ -42,13 +42,13 @@ public class PatternLayoutMainMapLookupTest {
     }
 
     @Test
-    public void testFileName(@Named("File") final FileAppender fileApp) {
+    void testFileName(@Named("File") final FileAppender fileApp) {
         final String name = fileApp.getFileName();
         assertEquals("target/value0.log", name);
     }
 
     @Test
-    public void testHeader(final LoggerContext context, @Named("List") final ListAppender listApp) {
+    void testHeader(final LoggerContext context, @Named("List") final ListAppender listApp) {
         final Logger logger = context.getLogger(getClass());
         logger.info("Hello World");
         final List<String> initialMessages = listApp.getMessages();

@@ -30,17 +30,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests {@link ObjectMessage}.
  */
-public class ObjectMessageTest {
+class ObjectMessageTest {
 
     @Test
-    public void testNull() {
+    void testNull() {
         final ObjectMessage msg = new ObjectMessage(null);
         final String result = msg.getFormattedMessage();
         assertEquals("null", result);
     }
 
     @Test
-    public void testNotNull() {
+    void testNotNull() {
         final String testMsg = "Test message {}";
         final ObjectMessage msg = new ObjectMessage(testMsg);
         final String result = msg.getFormattedMessage();
@@ -48,7 +48,7 @@ public class ObjectMessageTest {
     }
 
     @Test
-    public void testUnsafeWithMutableParams() { // LOG4J2-763
+    void testUnsafeWithMutableParams() { // LOG4J2-763
         final Mutable param = new Mutable().set("abc");
         final ObjectMessage msg = new ObjectMessage(param);
 
@@ -59,7 +59,7 @@ public class ObjectMessageTest {
     }
 
     @Test
-    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+    void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
         final Mutable param = new Mutable().set("abc");
         final ObjectMessage msg = new ObjectMessage(param);
 
@@ -71,7 +71,7 @@ public class ObjectMessageTest {
     }
 
     @Test
-    public void formatTo_usesCachedMessageString() throws Exception {
+    void formatTo_usesCachedMessageString() {
         final StringBuilder charSequence = new StringBuilder("initial value");
         final ObjectMessage message = new ObjectMessage(charSequence);
         assertEquals("initial value", message.getFormattedMessage());

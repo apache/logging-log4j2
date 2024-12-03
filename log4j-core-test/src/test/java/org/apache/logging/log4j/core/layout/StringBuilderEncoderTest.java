@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the {@code TextEncoderHelper} class.
  */
-public class StringBuilderEncoderTest {
+class StringBuilderEncoderTest {
 
     @Test
-    public void testEncodeText_TextFitCharBuff_BytesFitByteBuff() throws Exception {
+    void testEncodeText_TextFitCharBuff_BytesFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
@@ -44,7 +44,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff() throws Exception {
+    void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(14, 15);
@@ -68,7 +68,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff_MultiplePasses() throws Exception {
+    void testEncodeText_TextFitCharBuff_BytesDontFitByteBuff_MultiplePasses() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 16, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(4, 20);
@@ -102,7 +102,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_TextDoesntFitCharBuff_BytesFitByteBuff() throws Exception {
+    void testEncodeText_TextDoesntFitCharBuff_BytesFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(17, 17);
@@ -117,7 +117,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesFitByteBuff() throws Exception {
+    void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
@@ -134,7 +134,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesFitByteBuff() throws Exception {
+    void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesFitByteBuff() {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
         final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
@@ -152,7 +152,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_TextDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
+    void testEncodeText_TextDoesntFitCharBuff_BytesDontFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = createText(15);
         final SpyByteBufferDestination destination = new SpyByteBufferDestination(3, 17);
@@ -170,7 +170,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
+    void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_BytesDontFitByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
@@ -187,8 +187,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff()
-            throws Exception {
+    void testEncodeText_JapaneseTextUtf8DoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(StandardCharsets.UTF_8, 4, 5);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章日本語テスト文章
                 "\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0\u65e5\u672c\u8a9e\u30c6\u30b9\u30c8\u6587\u7ae0");
@@ -205,7 +204,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesDontFitByteBuff() throws Exception {
+    void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_BytesDontFitByteBuff() {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
         final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 8 * 1024);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章
@@ -222,9 +221,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void
-            testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff()
-                    throws Exception {
+    void testEncodeText_JapaneseTextShiftJisDoesntFitCharBuff_DoesntFitTempByteBuff_BytesDontFitDestinationByteBuff() {
         final Charset SHIFT_JIS = Charset.forName("Shift_JIS");
         final StringBuilderEncoder helper = new StringBuilderEncoder(SHIFT_JIS, 4, 5);
         final StringBuilder text = new StringBuilder( // 日本語テスト文章日本語テスト文章
@@ -241,7 +238,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testCopyCopiesAllDataIfSuffientRemainingSpace() throws Exception {
+    void testCopyCopiesAllDataIfSuffientRemainingSpace() {
         final CharBuffer buff = CharBuffer.wrap(new char[16]);
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
@@ -253,7 +250,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testCopyUpToRemainingSpace() throws Exception {
+    void testCopyUpToRemainingSpace() {
         final CharBuffer buff = CharBuffer.wrap(new char[3]);
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
@@ -266,7 +263,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testCopyDoesNotWriteBeyondStringText() throws Exception {
+    void testCopyDoesNotWriteBeyondStringText() {
         final CharBuffer buff = CharBuffer.wrap(new char[5]);
         assertEquals(0, buff.position(), "initial buffer position");
         final StringBuilder text = createText(2);
@@ -282,7 +279,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testCopyStartsAtBufferPosition() throws Exception {
+    void testCopyStartsAtBufferPosition() {
         final CharBuffer buff = CharBuffer.wrap(new char[10]);
         final int START_POSITION = 5;
         buff.position(START_POSITION); // set start position
@@ -296,7 +293,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testEncode_ALotWithoutErrors() throws Exception {
+    void testEncode_ALotWithoutErrors() {
         final StringBuilderEncoder helper = new StringBuilderEncoder(Charset.defaultCharset());
         final StringBuilder text = new StringBuilder(
                 "2016-04-13 21:07:47,487 DEBUG [org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark.log4j2ParameterizedString-jmh-worker-1] FileAppenderBenchmark  - This is a debug [2383178] message\r\n");

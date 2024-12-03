@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 @SetTestProperty(key = "log4j2.disableThreadContext", value = "true")
 @SetTestProperty(key = "log4j2.disableThreadContextMap", value = "true")
 @UsingThreadContextMap
-public class NoopThreadContextTest {
+class NoopThreadContextTest {
 
     @Test
-    public void testNoop() {
+    void testNoop() {
         ThreadContext.put("Test", "Test");
         final String value = ThreadContext.get("Test");
         assertNull(value, "value was saved");

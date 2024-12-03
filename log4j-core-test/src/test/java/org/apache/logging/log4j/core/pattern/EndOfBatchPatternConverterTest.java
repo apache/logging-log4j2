@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-public class EndOfBatchPatternConverterTest {
+class EndOfBatchPatternConverterTest {
 
     @Test
-    public void testConverterTrue() {
+    void testConverterTrue() {
         final LogEvent event = Log4jLogEvent.newBuilder().setEndOfBatch(true).build();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);
@@ -34,7 +34,7 @@ public class EndOfBatchPatternConverterTest {
     }
 
     @Test
-    public void testConverterFalse() {
+    void testConverterFalse() {
         final LogEvent event = Log4jLogEvent.newBuilder().build();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);

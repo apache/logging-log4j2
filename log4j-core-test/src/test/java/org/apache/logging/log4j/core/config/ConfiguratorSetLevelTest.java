@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("functional")
 @LoggerContextSource("log4j-set-level.xml")
-public class ConfiguratorSetLevelTest {
+class ConfiguratorSetLevelTest {
 
     private final ListAppender app1;
     private final LoggerContext loggerContext;
@@ -43,7 +43,7 @@ public class ConfiguratorSetLevelTest {
     }
 
     @Test
-    public void testSetLevel() {
+    void testSetLevel() {
         final Logger logger = loggerContext.getLogger(ConfiguratorSetLevelTest.class);
         Configurator.setLevel(logger, Level.DEBUG);
         final LoggerConfig loggerConfig = ((AbstractConfiguration) loggerContext.getConfiguration())

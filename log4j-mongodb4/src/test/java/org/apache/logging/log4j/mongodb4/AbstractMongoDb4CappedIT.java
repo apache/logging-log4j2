@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bson.Document;
-import org.junit.jupiter.api.Assertions;
 
 abstract class AbstractMongoDb4CappedIT {
 
@@ -30,12 +32,12 @@ abstract class AbstractMongoDb4CappedIT {
         final Logger logger = ctx.getLogger(AbstractMongoDb4CappedIT.class);
         logger.info("Hello log");
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
-        Assertions.assertNotNull(database);
+        assertNotNull(database);
         final MongoCollection<Document> collection =
                 database.getCollection(getClass().getSimpleName());
-        Assertions.assertNotNull(collection);
+        assertNotNull(collection);
         final Document first = collection.find().first();
-        Assertions.assertNotNull(first);
-        Assertions.assertEquals("Hello log", first.getString("message"), first.toJson());
+        assertNotNull(first);
+        assertEquals("Hello log", first.getString("message"), first.toJson());
     }
 }

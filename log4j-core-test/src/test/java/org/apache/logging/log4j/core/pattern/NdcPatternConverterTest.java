@@ -28,28 +28,28 @@ import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.junit.jupiter.api.Test;
 
 @UsingThreadContextStack
-public class NdcPatternConverterTest {
+class NdcPatternConverterTest {
 
     @Test
-    public void testEmpty() {
+    void testEmpty() {
         testConverter("[]");
     }
 
     @Test
-    public void test1() {
+    void test1() {
         ThreadContext.push("foo");
         testConverter("[foo]");
     }
 
     @Test
-    public void test2() {
+    void test2() {
         ThreadContext.push("foo");
         ThreadContext.push("bar");
         testConverter("[foo, bar]");
     }
 
     @Test
-    public void test3() {
+    void test3() {
         ThreadContext.push("foo");
         ThreadContext.push("bar");
         ThreadContext.push("baz");

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -26,19 +26,19 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the ContextDataFactory class.
  */
-public class ContextDataFactoryTest {
+class ContextDataFactoryTest {
     @Test
-    public void noArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData() instanceof SortedArrayStringMap);
+    void noArgReturnsSortedArrayStringMapIfNoPropertySpecified() {
+        assertInstanceOf(SortedArrayStringMap.class, ContextDataFactory.createContextData());
     }
 
     @Test
-    public void intArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+    void intArgReturnsSortedArrayStringMapIfNoPropertySpecified() {
+        assertInstanceOf(SortedArrayStringMap.class, ContextDataFactory.createContextData(2));
     }
 
     @Test
-    public void intArgSetsCapacityIfNoPropertySpecified() throws Exception {
+    void intArgSetsCapacityIfNoPropertySpecified() throws Exception {
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
         final Field thresholdField = SortedArrayStringMap.class.getDeclaredField("threshold");
         thresholdField.setAccessible(true);

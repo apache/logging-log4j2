@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-public class CaseLookupTest {
+class CaseLookupTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final String testStr = "JabberWocky";
         final String lower = "jabberwocky";
         final String upper = "JABBERWOCKY";

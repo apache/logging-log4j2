@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,15 +35,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class RollingAppenderOnStartup2Test {
+class RollingAppenderOnStartup2Test {
 
     private static final String DIR = "target/rollOnStartup";
     private static final String TARGET_FILE = DIR + "/orchestrator.log";
@@ -50,8 +51,8 @@ public class RollingAppenderOnStartup2Test {
     private static final String ROLLED_FILE_SUFFIX = "-1.log.gz";
     private static final String TEST_DATA = "Hello world!";
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
+    @BeforeAll
+    static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/rollOnStartup"))) {
             try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
@@ -64,14 +65,14 @@ public class RollingAppenderOnStartup2Test {
         // System.setProperty("log4j2.StatusLogger.level", "trace");
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
-        Assert.assertFalse(Files.exists(target));
+        assertFalse(Files.exists(target));
         target.toFile().getParentFile().mkdirs();
         final long timeStamp = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
         final String expectedDate = formatter.format(timeStamp);
         final String rolledFileName = ROLLED_FILE_PREFIX + expectedDate + ROLLED_FILE_SUFFIX;
         final Path rolled = Paths.get(rolledFileName);
         final long copied;
-        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes("UTF-8"))) {
+        try (final InputStream is = new ByteArrayInputStream(TEST_DATA.getBytes(StandardCharsets.UTF_8))) {
             copied = Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
         final long size = Files.size(target);
@@ -83,8 +84,8 @@ public class RollingAppenderOnStartup2Test {
         System.setProperty("log4j.configurationFile", "log4j-rollOnStartup.json");
     }
 
-    @AfterClass
-    public static void afterClass() throws Exception {
+    @AfterAll
+    static void afterClass() {
         final long size = 0;
         /* try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
@@ -102,7 +103,7 @@ public class RollingAppenderOnStartup2Test {
     }
 
     @Test
-    public void testAppender() throws Exception {
+    void testAppender() {
         final Logger logger = LogManager.getLogger(RollingAppenderOnStartup2Test.class);
         for (int i = 0; i < 10; ++i) {
             logger.debug("This is test message number " + i);

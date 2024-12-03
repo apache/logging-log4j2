@@ -42,7 +42,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 class IfAnyTest {
 
     @Test
-    public void test() {
+    void test() {
         final PathCondition TRUE = new FixedCondition(true);
         final PathCondition FALSE = new FixedCondition(false);
         assertTrue(IfAny.createOrCondition(TRUE, TRUE).accept(null, null, null));
@@ -52,12 +52,12 @@ class IfAnyTest {
     }
 
     @Test
-    public void testEmptyIsFalse() {
+    void testEmptyIsFalse() {
         assertFalse(IfAny.createOrCondition().accept(null, null, null));
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAny or = IfAny.createOrCondition(counter, counter, counter);
         or.beforeFileTreeWalk();
@@ -65,14 +65,14 @@ class IfAnyTest {
     }
 
     @Test
-    public void testCreateOrConditionCalledProgrammaticallyThrowsNPEWhenComponentsNotSpecified() {
+    void testCreateOrConditionCalledProgrammaticallyThrowsNPEWhenComponentsNotSpecified() {
         PathCondition[] components = null;
         assertThrows(NullPointerException.class, () -> IfAny.createOrCondition(components));
     }
 
     @ParameterizedTest
     @ValueSource(strings = "No components provided for IfAny")
-    public void testCreateOrConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(
+    void testCreateOrConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(
             final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfAny> type = new PluginType<>(nullEntry, IfAny.class, "Dummy");

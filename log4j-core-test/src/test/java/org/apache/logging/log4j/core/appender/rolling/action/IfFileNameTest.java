@@ -25,22 +25,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
-public class IfFileNameTest {
+class IfFileNameTest {
 
     @Test
-    public void testCreateNameConditionFailsIfBothRegexAndPathAreNull() {
+    void testCreateNameConditionFailsIfBothRegexAndPathAreNull() {
         assertThrows(IllegalArgumentException.class, () -> IfFileName.createNameCondition(null, null));
     }
 
     @Test
-    public void testCreateNameConditionAcceptsIfEitherRegexOrPathOrBothAreNonNull() {
+    void testCreateNameConditionAcceptsIfEitherRegexOrPathOrBothAreNonNull() {
         IfFileName.createNameCondition("bar", null);
         IfFileName.createNameCondition(null, "foo");
         IfFileName.createNameCondition("bar", "foo");
     }
 
     @Test
-    public void testGetSyntaxAndPattern() {
+    void testGetSyntaxAndPattern() {
         assertEquals("glob:path", IfFileName.createNameCondition("path", null).getSyntaxAndPattern());
         assertEquals(
                 "glob:path", IfFileName.createNameCondition("glob:path", null).getSyntaxAndPattern());
@@ -50,7 +50,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testAcceptUsesPathPatternIfExists() {
+    void testAcceptUsesPathPatternIfExists() {
         final IfFileName filter = IfFileName.createNameCondition("path", "regex");
         final Path relativePath = Paths.get("path");
         assertTrue(filter.accept(null, relativePath, null));
@@ -60,7 +60,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testAcceptUsesRegexIfNoPathPatternExists() {
+    void testAcceptUsesRegexIfNoPathPatternExists() {
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex");
         final Path pathMatchingRegex = Paths.get("regex");
         assertTrue(regexFilter.accept(null, pathMatchingRegex, null));
@@ -70,7 +70,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testAcceptIgnoresBasePathAndAttributes() {
+    void testAcceptIgnoresBasePathAndAttributes() {
         final IfFileName pathFilter = IfFileName.createNameCondition("path", null);
         final Path relativePath = Paths.get("path");
         assertTrue(pathFilter.accept(null, relativePath, null));
@@ -81,7 +81,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted1() {
+    void testAcceptCallsNestedConditionsOnlyIfPathAccepted1() {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName regexFilter = IfFileName.createNameCondition(null, "regex", counter);
         final Path pathMatchingRegex = Paths.get("regex");
@@ -103,7 +103,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted2() {
+    void testAcceptCallsNestedConditionsOnlyIfPathAccepted2() {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName globFilter = IfFileName.createNameCondition("glob", null, counter);
         final Path pathMatchingGlob = Paths.get("glob");
@@ -125,7 +125,7 @@ public class IfFileNameTest {
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfFileName pathFilter = IfFileName.createNameCondition("path", null, counter, counter, counter);
         pathFilter.beforeFileTreeWalk();

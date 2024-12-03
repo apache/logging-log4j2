@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class ContextDataJsonAttributeConverterTest {
+class ContextDataJsonAttributeConverterTest {
     private ContextDataJsonAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new ContextDataJsonAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
@@ -53,7 +53,7 @@ public class ContextDataJsonAttributeConverterTest {
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
@@ -70,12 +70,12 @@ public class ContextDataJsonAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

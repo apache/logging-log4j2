@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ClassLoaderContextSelectorTest {
+class ClassLoaderContextSelectorTest {
 
     private static final String PKG =
             ClassLoaderContextSelectorTest.class.getPackage().getName();
@@ -33,7 +33,7 @@ public class ClassLoaderContextSelectorTest {
     private ClassLoader loader1, loader2, loader3;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         loader1 = new TestClassLoader();
         loader2 = new TestClassLoader();
         loader3 = new TestClassLoader();
@@ -43,7 +43,7 @@ public class ClassLoaderContextSelectorTest {
     }
 
     @Test
-    public void testMultipleClassLoaders() throws Exception {
+    void testMultipleClassLoaders() throws Exception {
         final Class<?> logging1 = loader1.loadClass(PKG + ".a.Logging1");
         final Field field1 = logging1.getDeclaredField("logger");
         final Logger logger1 = (Logger) ReflectionUtil.getStaticFieldValue(field1);

@@ -18,17 +18,17 @@ package org.apache.logging.log4j.core.lookup;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * JndiDisabledLookupTest
  *
  * Verifies the Lookups are disabled without the log4j2.enableJndiLookup property set to true.
  */
-public class JndiDisabledLookupTest {
+class JndiDisabledLookupTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         assertThrows(IllegalStateException.class, JndiLookup::new);
     }
 }

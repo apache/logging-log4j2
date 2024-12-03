@@ -91,7 +91,7 @@ public class CompositeConfigurationTest {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger.xml,log4j-comp-logger.json");
         final Statement test = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 Map<String, Appender> appendersMap = config.getLogger("cat1").getAppenders();
                 assertEquals(
@@ -102,7 +102,7 @@ public class CompositeConfigurationTest {
 
                 final Filter loggerFilter = config.getLogger("cat1").getFilter();
                 assertTrue(loggerFilter instanceof RegexFilter);
-                assertEquals(loggerFilter.getOnMatch(), Filter.Result.DENY);
+                assertEquals(Filter.Result.DENY, loggerFilter.getOnMatch());
 
                 appendersMap = config.getLogger("cat2").getAppenders();
                 assertEquals(
@@ -129,8 +129,8 @@ public class CompositeConfigurationTest {
                 assertEquals(
                         "Expected COMPOSITE_SOURCE for composite configuration but got "
                                 + config.getConfigurationSource(),
-                        config.getConfigurationSource(),
-                        ConfigurationSource.COMPOSITE_SOURCE);
+                        ConfigurationSource.COMPOSITE_SOURCE,
+                        config.getConfigurationSource());
             }
         };
         runTest(lcr, test);
@@ -142,7 +142,7 @@ public class CompositeConfigurationTest {
                 new LoggerContextRule("classpath:log4j-comp-root-loggers.xml,log4j-comp-logger.json");
         final Statement test = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 try {
                     final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                     Assert.assertNotNull(config);
@@ -160,7 +160,7 @@ public class CompositeConfigurationTest {
                 new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-comp-logger-attr-override.json");
         final Statement test = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 // Test for Root log level override
                 assertEquals(
@@ -197,7 +197,7 @@ public class CompositeConfigurationTest {
                 new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
         final Statement test = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 final AbstractConfiguration config = (AbstractConfiguration) lcr.getConfiguration();
                 assertNotNull("No configuration returned", config);
                 // Test for Root log level override
@@ -220,7 +220,7 @@ public class CompositeConfigurationTest {
                 new LoggerContextRule("classpath:log4j-comp-logger-ref.xml,log4j-comp-logger-ref.json");
         final Statement test = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
 
                 final List<AppenderRef> appenderRefList =

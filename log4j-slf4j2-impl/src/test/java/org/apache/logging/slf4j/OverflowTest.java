@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests StackOverflow when slf4j-impl and to-slf4j are both present.
  */
-public class OverflowTest {
+class OverflowTest {
 
     @Test
-    public void log() {
+    void log() {
         try {
             LoggerFactory.getLogger(OverflowTest.class);
             fail("Failed to detect inclusion of log4j-to-slf4j");

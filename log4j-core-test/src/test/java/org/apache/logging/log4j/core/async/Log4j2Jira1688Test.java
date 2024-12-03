@@ -61,7 +61,7 @@ public class Log4j2Jira1688Test {
     private ListAppender listAppender;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         listAppender = context.getListAppender("List");
     }
 

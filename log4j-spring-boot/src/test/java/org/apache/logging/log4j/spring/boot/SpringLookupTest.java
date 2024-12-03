@@ -27,10 +27,10 @@ import org.springframework.mock.env.MockEnvironment;
 /**
  * Test SpringLookup.
  */
-public class SpringLookupTest {
+class SpringLookupTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final MockEnvironment env = new MockEnvironment();
         env.setActiveProfiles("test");
         env.setDefaultProfiles("one", "two");
@@ -53,7 +53,7 @@ public class SpringLookupTest {
     }
 
     @Test
-    public void testSpringLookupWithDefaultInterpolator() {
+    void testSpringLookupWithDefaultInterpolator() {
         final MockEnvironment env = new MockEnvironment();
         env.setActiveProfiles("test");
         env.setProperty("app.property", "test");

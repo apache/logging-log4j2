@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * LOG4J2-1725.
  */
 @UsingStatusListener
-public class RollingAppenderReconfigureTest {
+class RollingAppenderReconfigureTest {
 
     private static final URL CONFIG =
             RollingAppenderReconfigureTest.class.getResource("RollingAppenderReconfigureTest.xml");
@@ -45,7 +45,7 @@ public class RollingAppenderReconfigureTest {
 
     @Test
     @LoggerContextSource
-    public void testReconfigure(final LoggerContext context) throws Exception {
+    void testReconfigure(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         for (int i = 0; i < 500; ++i) {
             logger.debug("This is test message number {}", i);

@@ -319,7 +319,7 @@ class JsonReaderTest {
 
     @Test
     @SuppressWarnings("DoubleBraceInitialization")
-    public void test_nesting() {
+    void test_nesting() {
         test(
                 "{\"k1\": [true, null, 1e5, {\"k2\": \"v2\", \"k3\": {\"k4\": \"v4\"}}]}",
                 Collections.singletonMap(

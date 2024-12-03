@@ -35,18 +35,18 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
 @SetSystemProperty(key = "sun.security.mscapi.keyStoreCompatibilityMode", value = "false")
-public class KeyStoreConfigurationTest {
+class KeyStoreConfigurationTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void loadEmptyConfigurationDeprecated() {
+    void loadEmptyConfigurationDeprecated() {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(null, SslKeyStoreConstants.NULL_PWD, null, null));
     }
 
     @Test
-    public void loadEmptyConfiguration() {
+    void loadEmptyConfiguration() {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(
@@ -54,7 +54,7 @@ public class KeyStoreConfigurationTest {
     }
 
     @Test
-    public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
+    void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
                 SslKeyStoreConstants.KEYSTORE_LOCATION,
@@ -90,7 +90,7 @@ public class KeyStoreConfigurationTest {
 
     @ParameterizedTest
     @MethodSource("configurations")
-    public void loadNotEmptyConfiguration(
+    void loadNotEmptyConfiguration(
             final String keystoreFile, final Supplier<char[]> password, final String keystoreType)
             throws StoreConfigurationException {
         final KeyStoreConfiguration ksc =
@@ -101,7 +101,7 @@ public class KeyStoreConfigurationTest {
     }
 
     @Test
-    public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
+    void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
         @SuppressWarnings("deprecation")
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
                 SslKeyStoreConstants.KEYSTORE_LOCATION,
@@ -114,7 +114,7 @@ public class KeyStoreConfigurationTest {
     }
 
     @Test
-    public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
+    void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
         final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
                 SslKeyStoreConstants.KEYSTORE_LOCATION,
                 new MemoryPasswordProvider(SslKeyStoreConstants.KEYSTORE_PWD()),
@@ -127,7 +127,7 @@ public class KeyStoreConfigurationTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void wrongPasswordDeprecated() {
+    void wrongPasswordDeprecated() {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(SslKeyStoreConstants.KEYSTORE_LOCATION, "wrongPassword!", null, null));
@@ -162,7 +162,7 @@ public class KeyStoreConfigurationTest {
 
     @ParameterizedTest
     @MethodSource("wrongConfigurations")
-    public void wrongPassword(final String keystoreFile, final Supplier<char[]> password, final String keystoreType) {
+    void wrongPassword(final String keystoreFile, final Supplier<char[]> password, final String keystoreType) {
         assertThrows(
                 StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(

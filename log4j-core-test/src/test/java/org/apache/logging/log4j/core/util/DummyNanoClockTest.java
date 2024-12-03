@@ -23,15 +23,15 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the DummyNanoClock.
  */
-public class DummyNanoClockTest {
+class DummyNanoClockTest {
 
     @Test
-    public void testReturnsZeroByDefault() {
+    void testReturnsZeroByDefault() {
         assertEquals(0, new DummyNanoClock().nanoTime());
     }
 
     @Test
-    public void testReturnsConstructorValue() {
+    void testReturnsConstructorValue() {
         assertEquals(123, new DummyNanoClock(123).nanoTime());
     }
 }

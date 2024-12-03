@@ -26,11 +26,11 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
     @LoggerContextSource("CallerInformationTest.xml")
-    public void testClassLogger(final LoggerContext ctx) {
+    void testClassLogger(final LoggerContext ctx) {
         final ListAppender app = ctx.getConfiguration().getAppender("Class");
         app.clear();
         final Log logger = LogFactory.getLog("ClassLogger");
@@ -43,7 +43,7 @@ public class CallerInformationTest {
 
     @Test
     @LoggerContextSource("CallerInformationTest.xml")
-    public void testMethodLogger(final LoggerContext ctx) {
+    void testMethodLogger(final LoggerContext ctx) {
         final ListAppender app = ctx.getConfiguration().getAppender("Method");
         app.clear();
         final Log logger = LogFactory.getLog("MethodLogger");

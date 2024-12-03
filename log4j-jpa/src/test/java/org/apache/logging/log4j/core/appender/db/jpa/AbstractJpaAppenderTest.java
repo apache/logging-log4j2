@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -68,7 +69,7 @@ public abstract class AbstractJpaAppenderTest {
             final String appenderName = "databaseAppender";
             final Appender appender = context.getConfiguration().getAppender(appenderName);
             assertNotNull(appender, "The appender '" + appenderName + "' should not be null.");
-            assertTrue(appender instanceof JpaAppender, "The appender should be a JpaAppender.");
+            assertInstanceOf(JpaAppender.class, appender, "The appender should be a JpaAppender.");
             ((JpaAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
@@ -76,7 +77,7 @@ public abstract class AbstractJpaAppenderTest {
             StatusLogger.getLogger().reset();
 
             if (this.connection != null) {
-                try (final Statement statement = this.connection.createStatement(); ) {
+                try (final Statement statement = this.connection.createStatement()) {
                     statement.execute("SHUTDOWN");
                 }
                 this.connection.close();

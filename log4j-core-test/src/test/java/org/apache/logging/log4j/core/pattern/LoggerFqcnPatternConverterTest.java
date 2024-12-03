@@ -22,12 +22,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-public class LoggerFqcnPatternConverterTest {
+class LoggerFqcnPatternConverterTest {
 
     private static final String FQCN = "com.acme.TheClass";
 
     @Test
-    public void testConverter() {
+    void testConverter() {
         final LogEvent event = Log4jLogEvent.newBuilder().setLoggerFqcn(FQCN).build();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = LoggerFqcnPatternConverter.newInstance(null);

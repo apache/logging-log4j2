@@ -28,10 +28,10 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-public class RegexReplacementConverterTest {
+class RegexReplacementConverterTest {
 
     @Test
-    public void testReplacement() {
+    void testReplacement() {
         ThreadContext.put("MyKey", "Apache");
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(RegexReplacementConverterTest.class.getName()) //

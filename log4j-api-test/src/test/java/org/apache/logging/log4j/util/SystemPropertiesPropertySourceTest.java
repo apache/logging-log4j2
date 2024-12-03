@@ -31,7 +31,7 @@ import org.junit.jupiter.api.parallel.Resources;
  */
 @Tag("concurrency")
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
-public class SystemPropertiesPropertySourceTest {
+class SystemPropertiesPropertySourceTest {
 
     private static final int ITERATIONS = 10000;
 
@@ -48,7 +48,7 @@ public class SystemPropertiesPropertySourceTest {
      * @throws ExecutionException
      */
     @Test
-    public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
+    void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
         final ExecutorService threadPool = Executors.newSingleThreadExecutor();
         try {
             final Future<?> future = threadPool.submit(() -> {

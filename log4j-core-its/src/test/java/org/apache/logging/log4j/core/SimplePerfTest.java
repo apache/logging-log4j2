@@ -16,24 +16,23 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.util.Timer;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-@Category(PerformanceTests.class)
-public class SimplePerfTest {
+@Tag("PerformanceTests")
+class SimplePerfTest {
 
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimplePerfTest.class.getName());
     private volatile Level lvl = Level.DEBUG;
@@ -44,8 +43,8 @@ public class SimplePerfTest {
     private static int RAND_SIZE = 250;
     private static int[] values = new int[RAND_SIZE];
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeAll
+    static void setupClass() {
 
         final Configuration config = LoggerContext.getContext().getConfiguration();
 
@@ -66,11 +65,11 @@ public class SimplePerfTest {
         timer.stop();
         maxTime = timer.getElapsedNanoTime();
         System.gc();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     @Test
-    public void debugDisabled() throws Exception {
+    void debugDisabled() throws Exception {
         System.gc();
         Thread.sleep(100);
         final Timer timer = new Timer("DebugDisabled", LOOP_CNT);
@@ -79,12 +78,12 @@ public class SimplePerfTest {
             logger.isDebugEnabled();
         }
         timer.stop();
-        System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        System.out.println(timer);
+        assertTrue(maxTime > timer.getElapsedNanoTime(), "Timer exceeded max time of " + maxTime);
     }
 
     @Test
-    public void debugDisabledByLevel() throws Exception {
+    void debugDisabledByLevel() throws Exception {
         System.gc();
         Thread.sleep(100);
         final Timer timer = new Timer("IsEnabled", LOOP_CNT);
@@ -93,12 +92,12 @@ public class SimplePerfTest {
             logger.isEnabled(Level.DEBUG);
         }
         timer.stop();
-        System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        System.out.println(timer);
+        assertTrue(maxTime > timer.getElapsedNanoTime(), "Timer exceeded max time of " + maxTime);
     }
 
     @Test
-    public void debugLogger() throws Exception {
+    void debugLogger() throws Exception {
         System.gc();
         Thread.sleep(100);
         final Timer timer = new Timer("DebugLogger", LOOP_CNT);
@@ -108,8 +107,8 @@ public class SimplePerfTest {
             logger.debug(msg);
         }
         timer.stop();
-        System.out.println(timer.toString());
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > timer.getElapsedNanoTime());
+        System.out.println(timer);
+        assertTrue(maxTime > timer.getElapsedNanoTime(), "Timer exceeded max time of " + maxTime);
     }
     /*
     @Test

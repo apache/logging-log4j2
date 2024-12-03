@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 @SetTestProperty(key = "log4j2.formatMsgAsync", value = "true")
 @SetTestProperty(key = "log4j2.asyncQueueFullPolicy", value = "Discard")
 @Tag(Tags.ASYNC_LOGGERS)
-public class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
+class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
 
     @Override
     protected void checkConfig(final LoggerContext ctx) {
@@ -56,7 +56,7 @@ public class QueueFullAsyncLogger3Test extends QueueFullAbstractTest {
 
     @Test
     @LoggerContextSource
-    public void discarded_messages_should_be_garbage_collected(
+    void discarded_messages_should_be_garbage_collected(
             final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
             throws InterruptedException {
         awaitGarbageCollection(() -> {

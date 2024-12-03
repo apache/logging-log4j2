@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -49,12 +50,12 @@ public class RoutingAppenderTest {
     public RuleChain rules = loggerContextRule.withCleanFilesRule(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.app = this.loggerContextRule.getListAppender("List");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.app.clear();
         this.loggerContextRule.getLoggerContext().stop();
     }
@@ -65,7 +66,7 @@ public class RoutingAppenderTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, got " + list.size(), 1, list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
         File file = new File(ALERT_LOG_FILE);

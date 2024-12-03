@@ -28,9 +28,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests that process ID succeeds.
  */
-public class RepeatPatternConverterTest {
+class RepeatPatternConverterTest {
     @Test
-    public void repeat() {
+    void repeat() {
         final String[] args = {"*", "10"};
         final String expected = "**********";
         final PatternConverter converter = RepeatPatternConverter.newInstance(null, args);

@@ -35,11 +35,11 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-public class LevelRangeFilterBuilderTest {
+class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchTrue(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testAcceptOnMatchTrue(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
@@ -53,7 +53,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchFalse(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testAcceptOnMatchFalse(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, false);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
@@ -67,7 +67,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testAcceptOnMatchNull(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, null);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
@@ -81,7 +81,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testMinLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(null, Level.ERROR, true);
 
         assertResult(Result.ACCEPT, levelRangeFilter, Level.ALL);
@@ -95,7 +95,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, null, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
@@ -109,7 +109,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinMaxLevelSame(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testMinMaxLevelSame(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.INFO, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
@@ -123,7 +123,7 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+    void testMinMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
         final LevelRangeFilter levelRangeFilter = builder.build(null, null, true);
 
         assertResult(Result.ACCEPT, levelRangeFilter, Level.ALL);

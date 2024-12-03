@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogTestUtil;
 import org.junit.jupiter.api.Test;
 
-public class TlsSyslogAppenderTest extends SyslogAppenderTest {
+class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private SSLServerSocketFactory serverSocketFactory;
     private SslConfiguration sslConfiguration;
@@ -44,7 +44,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     @Test
-    public void sendLargeLegacyBsdMessageOverTls() throws IOException, InterruptedException {
+    void sendLargeLegacyBsdMessageOverTls() throws IOException, InterruptedException {
         final String prefix = "BEGIN";
         initTlsTestEnvironment(1, TlsSyslogMessageFormat.LEGACY_BSD);
 
@@ -55,7 +55,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     @Test
-    public void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
+    void sendLegacyBsdMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
         initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.LEGACY_BSD);
         final List<String> generatedMessages =
@@ -64,14 +64,14 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     @Test
-    public void sendStructuredMessageOverTls() throws InterruptedException, IOException {
+    void sendStructuredMessageOverTls() throws InterruptedException, IOException {
         initTlsTestEnvironment(1, TlsSyslogMessageFormat.SYSLOG);
 
         sendAndCheckStructuredMessage();
     }
 
     @Test
-    public void sendStructuredMessagesOverTls() throws IOException, InterruptedException {
+    void sendStructuredMessagesOverTls() throws IOException, InterruptedException {
         final int numberOfMessages = 100;
         initTlsTestEnvironment(numberOfMessages, TlsSyslogMessageFormat.SYSLOG);
         sendAndCheckStructuredMessages(numberOfMessages);

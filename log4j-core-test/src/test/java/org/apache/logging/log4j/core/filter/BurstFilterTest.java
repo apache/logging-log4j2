@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * Unit test for <code>BurstFilter</code>.
  */
 @LoggerContextSource("log4j-burst.xml")
-public class BurstFilterTest {
+class BurstFilterTest {
 
     private final ListAppender app;
     private final BurstFilter filter;
@@ -52,7 +52,7 @@ public class BurstFilterTest {
      * sure the filter allows the appropriate number of messages to be logged.
      */
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         System.nanoTime();
         for (int i = 0; i < 110; i++) {
             if (i % 10 == 0) {

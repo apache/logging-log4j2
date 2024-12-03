@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Test;
 /**
  * Test configuration from XML.
  */
-public class XmlConfigurationFactoryTest {
+class XmlConfigurationFactoryTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-file.xml");
     }
 
     @Test
-    public void testXML() {
+    void testXML() {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");

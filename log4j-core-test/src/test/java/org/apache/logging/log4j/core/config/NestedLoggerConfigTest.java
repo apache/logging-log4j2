@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -25,29 +25,21 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests for LoggerConfig hierarchies.
  */
-@RunWith(Parameterized.class)
-public class NestedLoggerConfigTest {
+class NestedLoggerConfigTest {
 
-    @Parameterized.Parameters(name = "{0}")
-    public static List<String> data() throws IOException {
+    public static List<String> data() {
         return ImmutableList.of("logger-config/LoggerConfig/", "logger-config/AsyncLoggerConfig/");
     }
 
-    private final String prefix;
-
-    public NestedLoggerConfigTest(final String prefix) {
-        this.prefix = prefix;
-    }
-
-    @Test
-    public void testInheritParentDefaultLevel() throws IOException {
+    @MethodSource("data")
+    @ParameterizedTest(name = "{0}")
+    void testInheritParentDefaultLevel(final String prefix) throws IOException {
         final Configuration configuration = loadConfiguration(prefix + "default-level.xml");
         try {
             assertEquals(Level.ERROR, configuration.getLoggerConfig("com.foo").getLevel());
@@ -56,8 +48,9 @@ public class NestedLoggerConfigTest {
         }
     }
 
-    @Test
-    public void testInheritParentLevel() throws IOException {
+    @MethodSource("data")
+    @ParameterizedTest(name = "{0}")
+    void testInheritParentLevel(final String prefix) throws IOException {
         final Configuration configuration = loadConfiguration(prefix + "inherit-level.xml");
         try {
             assertEquals(Level.TRACE, configuration.getLoggerConfig("com.foo").getLevel());

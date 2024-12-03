@@ -75,7 +75,7 @@ public class ContextMapLookupTest {
      * ContextMapLookup can be used in many other ways in a config file.
      */
     @Test
-    public void testFileLog() throws Exception {
+    public void testFileLog() {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello from testFileLog!");
         final File logFile = new File("target", this.getClass().getName() + ".testFileLog.log");

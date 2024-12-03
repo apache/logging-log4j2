@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test reconfiguring with an XML configuration.
  */
-public class PropertiesReconfigurationTest {
+class PropertiesReconfigurationTest {
 
     private class TestListener implements ConfigurationListener {
 
@@ -177,7 +177,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring CUSTOM appenders properly pick up different settings.
      */
     @Test
-    public void testCustomAppenders_TestConfigurator() throws IOException {
+    void testCustomAppenders_TestConfigurator() throws IOException {
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", TestConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_2, false, 2, "B", TestConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", TestConfigurator::configure);
@@ -188,7 +188,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring CUSTOM appenders properly pick up different settings.
      */
     @Test
-    public void testCustomAppenders_PropertyConfigurator() throws IOException {
+    void testCustomAppenders_PropertyConfigurator() throws IOException {
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", PropertyConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_2, false, 2, "B", PropertyConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", PropertyConfigurator::configure);
@@ -199,7 +199,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring STOCK file appenders properly pick up different settings.
      */
     @Test
-    public void testFileAppenders() throws Exception {
+    void testFileAppenders() throws Exception {
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_1, false);
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_2, true);
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_1, false);
@@ -207,7 +207,7 @@ public class PropertiesReconfigurationTest {
     }
 
     @Test
-    public void testTestListener() throws Exception {
+    void testTestListener() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG_FILE_APPENDER_1);
         assertTrue(file.exists(), "No Config file");

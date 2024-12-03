@@ -30,7 +30,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class MessageFormatMessageTest {
+class MessageFormatMessageTest {
 
     private static final char SPACE = ' ';
     private static final char NB_SPACE = '\u00a0';
@@ -40,7 +40,7 @@ public class MessageFormatMessageTest {
     String[] array = new String[LOOP_CNT];
 
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         final String testMsg = "Test message {0}";
         MessageFormatMessage msg = new MessageFormatMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -54,7 +54,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testOneStringArg() {
+    void testOneStringArg() {
         final String testMsg = "Test message {0}";
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
@@ -63,7 +63,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testOneIntArgLocaleUs() {
+    void testOneIntArgLocaleUs() {
         final String testMsg = "Test message {0,number,currency}";
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.US, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
@@ -72,7 +72,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testOneIntArgLocaleFrance() {
+    void testOneIntArgLocaleFrance() {
         final String testMsg = "Test message {0,number,currency}";
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.FRANCE, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
@@ -84,7 +84,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testException() {
+    void testException() {
         final String testMsg = "Test message {0}";
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", new NullPointerException("Null"));
         final String result = msg.getFormattedMessage();
@@ -95,7 +95,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testUnsafeWithMutableParams() { // LOG4J2-763
+    void testUnsafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message {0}";
         final Mutable param = new Mutable().set("abc");
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, param);
@@ -107,7 +107,7 @@ public class MessageFormatMessageTest {
     }
 
     @Test
-    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+    void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
         final String testMsg = "Test message {0}";
         final Mutable param = new Mutable().set("abc");
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, param);

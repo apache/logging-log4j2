@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class PatternLayoutTest {
+class PatternLayoutTest {
     public static class FauxLogger {
         public String formatEvent(final LogEvent event, final Layout<?> layout) {
             return new String(layout.toByteArray(event));
@@ -61,7 +61,7 @@ public class PatternLayoutTest {
     }
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -112,7 +112,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testEqualsEmptyMarker() throws Exception {
+    void testEqualsEmptyMarker() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("[%logger]%equals{[%marker]}{[]}{} %msg")
@@ -142,7 +142,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testHeaderFooterJavaLookup() throws Exception {
+    void testHeaderFooterJavaLookup() {
         // % does not work here.
         final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
         final PatternLayout layout = PatternLayout.newBuilder()
@@ -175,7 +175,7 @@ public class PatternLayoutTest {
      * Tests LOG4J2-962.
      */
     @Test
-    public void testHeaderFooterMainLookup() {
+    void testHeaderFooterMainLookup() {
         MainMapLookup.setMainArguments("value0", "value1", "value2");
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withConfiguration(ctx.getConfiguration())
@@ -194,7 +194,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testHeaderFooterThreadContext() throws Exception {
+    void testHeaderFooterThreadContext() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("%d{UNIX} %m")
                 .withConfiguration(ctx.getConfiguration())
@@ -211,8 +211,7 @@ public class PatternLayoutTest {
                 "expected \"Hello world Header\", actual " + Strings.dquote(new String(header)));
     }
 
-    private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext)
-            throws Exception {
+    private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext) {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern(patternStr)
                 .withConfiguration(ctx.getConfiguration())
@@ -232,37 +231,37 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testMdcPattern0() throws Exception {
+    void testMdcPattern0() throws Exception {
         testMdcPattern("%m : %X", "Hello : {key1=value1, key2=value2}", true);
     }
 
     @Test
-    public void testMdcPattern1() throws Exception {
+    void testMdcPattern1() throws Exception {
         testMdcPattern("%m : %X", "Hello : {}", false);
     }
 
     @Test
-    public void testMdcPattern2() throws Exception {
+    void testMdcPattern2() throws Exception {
         testMdcPattern("%m : %X{key1}", "Hello : value1", true);
     }
 
     @Test
-    public void testMdcPattern3() throws Exception {
+    void testMdcPattern3() throws Exception {
         testMdcPattern("%m : %X{key2}", "Hello : value2", true);
     }
 
     @Test
-    public void testMdcPattern4() throws Exception {
+    void testMdcPattern4() throws Exception {
         testMdcPattern("%m : %X{key3}", "Hello : ", true);
     }
 
     @Test
-    public void testMdcPattern5() throws Exception {
+    void testMdcPattern5() throws Exception {
         testMdcPattern("%m : %X{key1}, %X{key2}, %X{key3}", "Hello : value1, value2, ", true);
     }
 
     @Test
-    public void testPatternSelector() throws Exception {
+    void testPatternSelector() {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
         final PatternSelector selector = MarkerPatternSelector.createSelector(
@@ -295,7 +294,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testRegex() throws Exception {
+    void testRegex() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern(regexPattern)
                 .withConfiguration(ctx.getConfiguration())
@@ -311,7 +310,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testRegexEmptyMarker() throws Exception {
+    void testRegexEmptyMarker() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("[%logger]%replace{[%marker]}{\\[\\]}{} %msg")
@@ -342,7 +341,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testEqualsMarkerWithMessageSubstitution() throws Exception {
+    void testEqualsMarkerWithMessageSubstitution() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
@@ -370,7 +369,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testSpecialChars() throws Exception {
+    void testSpecialChars() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
                 .withConfiguration(ctx.getConfiguration())
@@ -392,7 +391,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testUnixTime() throws Exception {
+    void testUnixTime() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("%d{UNIX} %m")
                 .withConfiguration(ctx.getConfiguration())
@@ -418,7 +417,7 @@ public class PatternLayoutTest {
     }
 
     @SuppressWarnings("unused")
-    private void testUnixTime(final String pattern) throws Exception {
+    private void testUnixTime(final String pattern) {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern(pattern + " %m")
                 .withConfiguration(ctx.getConfiguration())
@@ -444,7 +443,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testUnixTimeMillis() throws Exception {
+    void testUnixTimeMillis() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("%d{UNIX_MILLIS} %m")
                 .withConfiguration(ctx.getConfiguration())
@@ -470,7 +469,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testUsePlatformDefaultIfNoCharset() throws Exception {
+    void testUsePlatformDefaultIfNoCharset() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("%m")
                 .withConfiguration(ctx.getConfiguration())
@@ -479,7 +478,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testUseSpecifiedCharsetIfExists() throws Exception {
+    void testUseSpecifiedCharsetIfExists() {
         final PatternLayout layout = PatternLayout.newBuilder()
                 .withPattern("%m")
                 .withConfiguration(ctx.getConfiguration())
@@ -489,7 +488,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testLoggerNameTruncationByRetainingPartsFromEnd() throws Exception {
+    void testLoggerNameTruncationByRetainingPartsFromEnd() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
                     .withPattern("%c{1} %m")
@@ -544,7 +543,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testCallersFqcnTruncationByRetainingPartsFromEnd() throws Exception {
+    void testCallersFqcnTruncationByRetainingPartsFromEnd() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
                     .withPattern("%C{1} %m")
@@ -637,7 +636,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testLoggerNameTruncationByDroppingPartsFromFront() throws Exception {
+    void testLoggerNameTruncationByDroppingPartsFromFront() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
                     .withPattern("%c{-1} %m")
@@ -710,7 +709,7 @@ public class PatternLayoutTest {
     }
 
     @Test
-    public void testCallersFqcnTruncationByDroppingPartsFromFront() throws Exception {
+    void testCallersFqcnTruncationByDroppingPartsFromFront() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
                     .withPattern("%C{-1} %m")
