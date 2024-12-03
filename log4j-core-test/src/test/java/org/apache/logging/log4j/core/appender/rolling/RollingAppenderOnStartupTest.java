@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.DirectoryStream;
@@ -81,13 +81,14 @@ public class RollingAppenderOnStartupTest {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
                     final List<String> lines = Files.readAllLines(path);
-                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
                     assertTrue(
-                            "Missing message for " + path.toFile().getName(),
-                            lines.get(0).startsWith(PREFIX + "1"));
+                            lines.size() > 0, "No messages in " + path.toFile().getName());
+                    assertTrue(
+                            lines.get(0).startsWith(PREFIX + "1"),
+                            "Missing message for " + path.toFile().getName());
                 }
             }
         }
-        assertTrue("File did not roll", rolled);
+        assertTrue(rolled, "File did not roll");
     }
 }

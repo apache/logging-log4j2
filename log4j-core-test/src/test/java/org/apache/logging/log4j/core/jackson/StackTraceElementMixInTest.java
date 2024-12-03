@@ -22,12 +22,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Layouts.Json.class)
+@Tag("Layouts.Json")
 public class StackTraceElementMixInTest {
 
     @Test
@@ -53,7 +52,7 @@ public class StackTraceElementMixInTest {
                 new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final String s = mapper.writeValueAsString(expected);
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class StackTraceElementMixInTest {
         final String s = this.aposToQuotes(
                 "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -91,6 +90,6 @@ public class StackTraceElementMixInTest {
         final String s = this.aposToQuotes(
                 "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 }

@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,16 +27,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
 public class AsyncLoggerConfigWithAsyncEnabledTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j2.enableThreadlocals", "true");
         System.setProperty("log4j2.contextSelector", AsyncLoggerContextSelector.class.getCanonicalName());
@@ -44,7 +43,7 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty("log4j2.enableThreadlocals");
         System.clearProperty("log4j2.contextSelector");
@@ -53,7 +52,7 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
     @Test
     public void testParametersAreAvailableToLayout() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigTest4.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String format = "Additive logging: {} for the price of {}!";

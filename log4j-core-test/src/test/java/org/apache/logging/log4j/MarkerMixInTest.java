@@ -16,15 +16,18 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
 import org.apache.logging.log4j.MarkerManager.Log4jMarker;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link MarkerMixIn}.
@@ -36,7 +39,7 @@ public abstract class MarkerMixInTest {
     private ObjectReader reader;
     private ObjectWriter writer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final ObjectMapper log4jObjectMapper = newObjectMapper();
         writer = log4jObjectMapper.writer();
@@ -50,9 +53,9 @@ public abstract class MarkerMixInTest {
     public void testNameOnly() throws IOException {
         final Marker expected = MarkerManager.getMarker("A");
         final String str = writeValueAsString(expected);
-        Assert.assertFalse(str.contains("parents"));
+        assertFalse(str.contains("parents"));
         final Marker actual = reader.readValue(str);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -61,9 +64,9 @@ public abstract class MarkerMixInTest {
         final Marker parent = MarkerManager.getMarker("PARENT_MARKER");
         expected.addParents(parent);
         final String str = writeValueAsString(expected);
-        Assert.assertTrue(str.contains("PARENT_MARKER"));
+        assertTrue(str.contains("PARENT_MARKER"));
         final Marker actual = reader.readValue(str);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     /**
@@ -85,9 +88,9 @@ public abstract class MarkerMixInTest {
         expected.addParents(parent1);
         expected.addParents(parent2);
         final String str = writeValueAsString(expected);
-        Assert.assertTrue(str.contains("PARENT_MARKER1"));
-        Assert.assertTrue(str.contains("PARENT_MARKER2"));
+        assertTrue(str.contains("PARENT_MARKER1"));
+        assertTrue(str.contains("PARENT_MARKER2"));
         final Marker actual = reader.readValue(str);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

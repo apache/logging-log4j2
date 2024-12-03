@@ -17,29 +17,29 @@
 package org.apache.logging.log4j.core.config.plugins.processor;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(JUnit4.class)
+@ExtendWith(MockitoExtension.class)
 public class PluginProcessorTest {
 
     private static final PluginCache pluginCache = new PluginCache();
 
     private final Plugin p = FakePlugin.class.getAnnotation(Plugin.class);
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         final Enumeration<URL> resources =
                 PluginProcessor.class.getClassLoader().getResources(PluginProcessor.PLUGIN_CACHE_FILE);
@@ -48,10 +48,10 @@ public class PluginProcessorTest {
 
     @Test
     public void testTestCategoryFound() throws Exception {
-        assertNotNull("No plugin annotation on FakePlugin.", p);
+        assertNotNull(p, "No plugin annotation on FakePlugin.");
         final Map<String, PluginEntry> testCategory = pluginCache.getCategory(p.category());
-        assertNotEquals("No plugins were found.", 0, pluginCache.size());
-        assertNotNull("The category '" + p.category() + "' was not found.", testCategory);
+        assertNotEquals(0, pluginCache.size(), "No plugins were found.");
+        assertNotNull(testCategory, "The category '" + p.category() + "' was not found.");
         assertFalse(testCategory.isEmpty());
     }
 
@@ -71,7 +71,7 @@ public class PluginProcessorTest {
     }
 
     private void verifyFakePluginEntry(final String name, final PluginEntry fake) {
-        assertNotNull("The plugin '" + toRootLowerCase(name) + "' was not found.", fake);
+        assertNotNull(fake, "The plugin '" + toRootLowerCase(name) + "' was not found.");
         assertEquals(FakePlugin.class.getName(), fake.getClassName());
         assertEquals(toRootLowerCase(name), fake.getKey());
         assertEquals(Plugin.EMPTY, p.elementType());
