@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -222,5 +223,21 @@ public final class FailoverAppender extends AbstractAppender {
 
         return new FailoverAppender(
                 name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, null);
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        if (primary != null
+                && primary.getAppender() instanceof LocationAware
+                && ((LocationAware) primary.getAppender()).requiresLocation()) {
+            return true;
+        }
+        for (final AppenderControl control : failoverAppenders) {
+            final Appender appender = control.getAppender();
+            if (appender instanceof LocationAware && ((LocationAware) appender).requiresLocation()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
