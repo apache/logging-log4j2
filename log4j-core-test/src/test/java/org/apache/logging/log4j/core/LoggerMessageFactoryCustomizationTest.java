@@ -20,48 +20,51 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.message.AbstractMessageFactory;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(
         key = "log4j2.messageFactory",
-        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestMessageFactory")
+        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$AlternativeTestMessageFactory")
 @SetSystemProperty(
         key = "log4j2.flowMessageFactory",
-        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$TestFlowMessageFactory")
+        value = "org.apache.logging.log4j.core.LoggerMessageFactoryCustomizationTest$AlternativeTestFlowMessageFactory")
 class LoggerMessageFactoryCustomizationTest {
 
     @Test
-    void arguments_should_be_honored() {
+    void arguments_should_be_honored(TestInfo testInfo) {
         try (LoggerContext loggerContext =
                 new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName())) {
             Logger logger = new Logger(
-                    loggerContext,
-                    "arguments_should_be_honored",
-                    new TestMessageFactory(),
-                    new TestFlowMessageFactory());
-            assertTestMessageFactories(logger);
+                    loggerContext, testInfo.getDisplayName(), new TestMessageFactory(), new TestFlowMessageFactory());
+            assertTestMessageFactories(logger, TestMessageFactory.class, TestFlowMessageFactory.class);
         }
     }
 
     @Test
-    void properties_should_be_honored() {
+    void properties_should_be_honored(TestInfo testInfo) {
         try (LoggerContext loggerContext =
                 new LoggerContext(LoggerMessageFactoryCustomizationTest.class.getSimpleName())) {
-            Logger logger = loggerContext.getLogger("properties_should_be_honored");
-            assertTestMessageFactories(logger);
+            Logger logger = loggerContext.getLogger(testInfo.getDisplayName());
+            assertTestMessageFactories(
+                    logger, AlternativeTestMessageFactory.class, AlternativeTestFlowMessageFactory.class);
         }
     }
 
-    private static void assertTestMessageFactories(Logger logger) {
-        assertThat((MessageFactory) logger.getMessageFactory()).isInstanceOf(TestMessageFactory.class);
-        assertThat(logger.getFlowMessageFactory()).isInstanceOf(TestFlowMessageFactory.class);
+    private static void assertTestMessageFactories(
+            Logger logger,
+            Class<? extends MessageFactory> messageFactoryClass,
+            Class<? extends FlowMessageFactory> flowMessageFactoryClass) {
+        assertThat((MessageFactory) logger.getMessageFactory()).isInstanceOf(messageFactoryClass);
+        assertThat(logger.getFlowMessageFactory()).isInstanceOf(flowMessageFactoryClass);
     }
 
-    public static final class TestMessageFactory extends AbstractMessageFactory {
+    public static class TestMessageFactory extends AbstractMessageFactory {
 
         @Override
         public Message newMessage(final String message, final Object... params) {
@@ -69,5 +72,9 @@ class LoggerMessageFactoryCustomizationTest {
         }
     }
 
-    public static final class TestFlowMessageFactory extends DefaultFlowMessageFactory {}
+    public static class AlternativeTestMessageFactory extends TestMessageFactory {}
+
+    public static class TestFlowMessageFactory extends DefaultFlowMessageFactory {}
+
+    public static class AlternativeTestFlowMessageFactory extends TestFlowMessageFactory {}
 }
