@@ -865,7 +865,7 @@
                 <id>default-testCompile</id>
                 <configuration>
                   <compilerArgs combine.children="append">
-                    <arg>-ApluginPackage=${log4jPluginPackageForTests}</arg>
+                    <arg>-Alog4j.plugin.package=${log4jPluginPackageForTests}</arg>
                   </compilerArgs>
                 </configuration>
               </execution>
