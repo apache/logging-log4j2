@@ -38,6 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -193,7 +196,8 @@ class PropertiesUtilTest {
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     @Issue("https://github.com/spring-projects/spring-boot/issues/33450")
-    void testErrorPropertySource() {
+    @UsingStatusListener
+    void testErrorPropertySource(ListStatusListener statusListener) {
         final String key = "testKey";
         final Properties props = new Properties();
         props.put(key, "test");
@@ -201,8 +205,12 @@ class PropertiesUtilTest {
         final ErrorPropertySource source = new ErrorPropertySource();
         util.addPropertySource(source);
         try {
+            statusListener.clear();
             assertEquals("test", util.getStringProperty(key));
             assertTrue(source.exceptionThrown);
+            assertThat(statusListener.findStatusData(Level.WARN))
+                    .anySatisfy(data ->
+                            assertThat(data.getMessage().getFormattedMessage()).contains("Failed"));
         } finally {
             util.removePropertySource(source);
         }
@@ -211,7 +219,8 @@ class PropertiesUtilTest {
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     @Issue("https://github.com/apache/logging-log4j2/issues/3252")
-    void testRecursivePropertySource() {
+    @UsingStatusListener
+    void testRecursivePropertySource(ListStatusListener statusListener) {
         final String key = "testKey";
         final Properties props = new Properties();
         props.put(key, "test");
@@ -220,8 +229,20 @@ class PropertiesUtilTest {
         util.addPropertySource(source);
         try {
             // We ignore the recursive source
+            statusListener.clear();
             assertThat(util.getStringProperty(key)).isEqualTo("test");
+            assertThat(statusListener.findStatusData(Level.WARN))
+                    .anySatisfy(data -> assertThat(data.getMessage().getFormattedMessage())
+                            .contains("Recursive call", "getProperty"));
+
+            statusListener.clear();
+            // To check for existence, the sources are looked up in a random order.
             assertThat(util.hasProperty(key)).isTrue();
+            // To find a missing key, all the sources must be used.
+            assertThat(util.hasProperty("noSuchKey")).isFalse();
+            assertThat(statusListener.findStatusData(Level.WARN))
+                    .anySatisfy(data -> assertThat(data.getMessage().getFormattedMessage())
+                            .contains("Recursive call", "containsProperty"));
             // We check that the source is recursive
             assertThat(source.getProperty(key)).isEqualTo("test");
             assertThat(source.containsProperty(key)).isTrue();
