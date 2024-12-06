@@ -28,14 +28,15 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 class LoggerMessageFactoryDefaultsTlaEnabledTest {
 
     @Test
-    @SetSystemProperty(key = "log4j2.is.webapp", value = "false")
-    @SetSystemProperty(key = "log4j2.enableThreadLocals", value = "true")
+    @SetSystemProperty(key = "log4j2.isWebapp", value = "false")
+    @SetSystemProperty(key = "log4j2.enableThreadlocals", value = "true")
     void defaults_should_match_when_thread_locals_enabled() {
         assertThat(Constants.ENABLE_THREADLOCALS).isTrue();
-        final LoggerContext loggerContext =
-                new LoggerContext(LoggerMessageFactoryDefaultsTlaEnabledTest.class.getSimpleName());
-        final Logger logger = new Logger(loggerContext, "defaults_should_match_when_thread_locals_enabled", null, null);
-        assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(ReusableMessageFactory.INSTANCE);
-        assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
+        try (LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryDefaultsTlaEnabledTest.class.getSimpleName())) {
+            Logger logger = loggerContext.getLogger("defaults_should_match_when_thread_locals_enabled");
+            assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(ReusableMessageFactory.INSTANCE);
+            assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
+        }
     }
 }
