@@ -59,6 +59,7 @@ updates:
       - "/log4j-docker"
       - "/log4j-fuzz-test"
       - "/log4j-iostreams"
+      - "/log4j-jakarta-jms"
       - "/log4j-jakarta-smtp"
       - "/log4j-jakarta-web"
       - "/log4j-jcl"

@@ -16,13 +16,11 @@
  */
 
 /**
- * Message oriented middleware appenders.
- *
- * @since 2.1
+ * Jakarta-based JMS Appender.
  */
 @Export
 @Version("2.25.0")
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.core.appender.mom.jakarta;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

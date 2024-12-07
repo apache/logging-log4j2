@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.core.appender.mom.jakarta;
 
+import jakarta.jms.JMSException;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import javax.jms.JMSException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.appender.mom.JmsManager.JmsManagerConfiguration;
+import org.apache.logging.log4j.core.appender.mom.jakarta.JmsManager.JmsManagerConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -37,17 +37,12 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.net.JndiManager;
 
 /**
- * Javax JMS Appender plugin. This Appender replaces the previous split classes.
- * Configurations set up for the 2.0 version of the JMS appenders will still work.
- *
- * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsAppender}.
+ * Jakarta JMS Appender plugin for both queues and topics.
  */
-@Deprecated
-@Plugin(name = "JMS-Javax", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
-@PluginAliases({"JMS", "JMSQueue", "JMSTopic"})
-public class JmsAppender extends AbstractAppender {
+@Plugin(name = "JMS-Jakarta", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+public final class JmsAppender extends AbstractAppender {
 
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static final class Builder extends AbstractAppender.Builder<Builder>
             implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
@@ -68,12 +63,12 @@ public class JmsAppender extends AbstractAppender {
         private String securityCredentials;
 
         @PluginBuilderAttribute
-        @Required(message = "A javax.jms.ConnectionFactory JNDI name must be specified")
+        @Required(message = "A jakarta.jms.ConnectionFactory JNDI name must be specified")
         private String factoryBindingName;
 
         @PluginBuilderAttribute
         @PluginAliases({"queueBindingName", "topicBindingName"})
-        @Required(message = "A javax.jms.Destination JNDI name must be specified")
+        @Required(message = "A jakarta.jms.Destination JNDI name must be specified")
         private String destinationBindingName;
 
         @PluginBuilderAttribute
@@ -107,7 +102,7 @@ public class JmsAppender extends AbstractAppender {
                         destinationBindingName,
                         userName,
                         password,
-                        false,
+                        immediateFail,
                         reconnectIntervalMillis);
                 actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);
             }
@@ -159,15 +154,6 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
-        /**
-         * @deprecated Use setPassword(char[])
-         */
-        @Deprecated
-        public Builder setPassword(final String password) {
-            this.password = password == null ? null : password.toCharArray();
-            return this;
-        }
-
         public Builder setProviderUrl(final String providerUrl) {
             this.providerUrl = providerUrl;
             return this;
@@ -190,15 +176,6 @@ public class JmsAppender extends AbstractAppender {
 
         public Builder setUrlPkgPrefixes(final String urlPkgPrefixes) {
             this.urlPkgPrefixes = urlPkgPrefixes;
-            return this;
-        }
-
-        /**
-         * @deprecated Use {@link #setUserName(String)}.
-         */
-        @Deprecated
-        public Builder setUsername(final String username) {
-            this.userName = username;
             return this;
         }
 
@@ -233,7 +210,7 @@ public class JmsAppender extends AbstractAppender {
      *
      * @throws JMSException not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
      */
-    protected JmsAppender(
+    private JmsAppender(
             final String name,
             final Filter filter,
             final Layout<? extends Serializable> layout,
@@ -242,24 +219,6 @@ public class JmsAppender extends AbstractAppender {
             final JmsManager manager)
             throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
-        this.manager = manager;
-    }
-
-    /**
-     * Constructs a new instance.
-     *
-     * @throws JMSException not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0
-     * @deprecated Use {@link #JmsAppender(String, Filter, Layout, boolean, Property[], JmsManager)}.
-     */
-    @Deprecated
-    protected JmsAppender(
-            final String name,
-            final Filter filter,
-            final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions,
-            final JmsManager manager)
-            throws JMSException {
-        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.manager = manager;
     }
 

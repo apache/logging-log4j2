@@ -14,21 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.appender.mom;
+package org.apache.logging.log4j.core.appender.mom.jakarta;
 
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.MapMessage;
+import jakarta.jms.Message;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -42,15 +41,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Consider this class <b>private</b>; it is only <b>public</b> for access by integration tests.
  *
  * <p>
- * JMS connection and destination manager. Uses a MessageProducer to send log events to a JMS Destination.
+ * JMS connection and session manager. Can be used to access MessageProducer, MessageConsumer, and Message objects
+ * involving a configured ConnectionFactory and Destination.
  * </p>
- *
- * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsManager}.
  */
-@Deprecated
-public class JmsManager extends AbstractManager {
+public final class JmsManager extends AbstractManager {
 
-    public static class JmsManagerConfiguration {
+    public static final class JmsManagerConfiguration {
         private final Properties jndiProperties;
         private final String connectionFactoryName;
         private final String destinationName;
@@ -123,7 +120,7 @@ public class JmsManager extends AbstractManager {
         }
     }
 
-    private static class JmsManagerFactory implements ManagerFactory<JmsManager, JmsManagerConfiguration> {
+    private static final class JmsManagerFactory implements ManagerFactory<JmsManager, JmsManagerConfiguration> {
 
         @Override
         public JmsManager createManager(final String name, final JmsManagerConfiguration data) {
@@ -380,29 +377,19 @@ public class JmsManager extends AbstractManager {
      * @return A new JMS message containing the provided object.
      * @throws JMSException if the JMS provider fails to create this message due to some internal error.
      */
-    public Message createMessage(final Serializable object) throws JMSException {
+    private Message createMessage(final Serializable object) throws JMSException {
         if (object instanceof String) {
-            return this.session.createTextMessage((String) object);
+            return session.createTextMessage((String) object);
         } else if (object instanceof org.apache.logging.log4j.message.MapMessage) {
-            return map((org.apache.logging.log4j.message.MapMessage<?, ?>) object, this.session.createMapMessage());
+            return map((org.apache.logging.log4j.message.MapMessage<?, ?>) object, session.createMapMessage());
         }
-        return this.session.createObjectMessage(object);
+        return session.createObjectMessage(object);
     }
 
     private void createMessageAndSend(final LogEvent event, final Serializable serializable) throws JMSException {
         final Message message = createMessage(serializable);
         message.setJMSTimestamp(event.getTimeMillis());
         messageProducer.send(message);
-    }
-
-    /**
-     * Creates a MessageConsumer on this Destination using the current Session.
-     *
-     * @return A MessageConsumer on this Destination.
-     * @throws JMSException if the session fails to create a consumer due to some internal error.
-     */
-    public MessageConsumer createMessageConsumer() throws JMSException {
-        return this.session.createConsumer(this.destination);
     }
 
     /**
@@ -415,7 +402,7 @@ public class JmsManager extends AbstractManager {
      * @return A MessageProducer on this Destination.
      * @throws JMSException if the session fails to create a MessageProducer due to some internal error.
      */
-    public MessageProducer createMessageProducer(final Session session, final Destination destination)
+    private MessageProducer createMessageProducer(final Session session, final Destination destination)
             throws JMSException {
         return session.createProducer(destination);
     }
@@ -440,7 +427,7 @@ public class JmsManager extends AbstractManager {
     }
 
     <T> T lookup(final String destinationName) throws NamingException {
-        return this.jndiManager.lookup(destinationName);
+        return jndiManager.lookup(destinationName);
     }
 
     private MapMessage map(
@@ -472,7 +459,7 @@ public class JmsManager extends AbstractManager {
         closed &= closeMessageProducer();
         closed &= closeSession();
         closed &= closeConnection();
-        return closed && this.jndiManager.stop(timeout, timeUnit);
+        return closed && jndiManager.stop(timeout, timeUnit);
     }
 
     void send(final LogEvent event, final Serializable serializable) {
