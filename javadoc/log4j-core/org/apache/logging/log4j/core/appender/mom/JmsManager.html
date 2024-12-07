@@ -83,13 +83,16 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">JmsManager</span>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">JmsManager</span>
 <span class="extends-implements">extends <a href="../AbstractManager.html" title="class in org.apache.logging.log4j.core.appender">AbstractManager</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <code>org.apache.logging.log4j.core.appender.mom.jakarta.JmsManager</code>.</div>
+</div>
 <div class="block">Consider this class <b>private</b>; it is only <b>public</b> for access by integration tests.
 
  <p>
- JMS connection and session manager. Can be used to access MessageProducer, MessageConsumer, and Message objects
- involving a configured ConnectionFactory and Destination.
+ JMS connection and destination manager. Uses a MessageProducer to send log events to a JMS Destination.
  </p></div>
 </section>
 <section class="summary">
@@ -105,7 +108,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static class&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="JmsManager.JmsManagerConfiguration.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager.JmsManagerConfiguration</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
 </div>
 <div class="inherited-list">
 <h2 id="nested-classes-inherited-from-class-org.apache.logging.log4j.core.appender.AbstractManager">Nested classes/interfaces inherited from class&nbsp;org.apache.logging.log4j.core.appender.<a href="../AbstractManager.html" title="class in org.apache.logging.log4j.core.appender">AbstractManager</a></h2>
@@ -126,30 +131,33 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>javax.jms.Message</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createMessage(java.io.Serializable)" class="member-name-link">createMessage</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;object)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>javax.jms.Message</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createMessage(java.io.Serializable)" class="member-name-link">createMessage</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;object)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a TextMessage, MapMessage, or ObjectMessage from a Serializable object.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>javax.jms.MessageConsumer</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createMessageConsumer()" class="member-name-link">createMessageConsumer</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>javax.jms.MessageConsumer</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createMessageConsumer()" class="member-name-link">createMessageConsumer</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a MessageConsumer on this Destination using the current Session.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>javax.jms.MessageProducer</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createMessageProducer(javax.jms.Session,javax.jms.Destination)" class="member-name-link">createMessageProducer</a><wbr>(javax.jms.Session&nbsp;session,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>javax.jms.MessageProducer</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createMessageProducer(javax.jms.Session,javax.jms.Destination)" class="member-name-link">createMessageProducer</a><wbr>(javax.jms.Session&nbsp;session,
  javax.jms.Destination&nbsp;destination)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a MessageProducer on this Destination using the current Session.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="JmsManager.html" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getJmsManager(java.lang.String,java.util.Properties,java.lang.String,java.lang.String,java.lang.String,char%5B%5D,boolean,long)" class="member-name-link">getJmsManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="JmsManager.html" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getJmsManager(java.lang.String,java.util.Properties,java.lang.String,java.lang.String,java.lang.String,char%5B%5D,boolean,long)" class="member-name-link">getJmsManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html" title="class or interface in java.util" class="external-link">Properties</a>&nbsp;jndiProperties,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;connectionFactoryName,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destinationName,
@@ -157,16 +165,20 @@ loadScripts(document, 'script');</script>
  char[]&nbsp;password,
  boolean&nbsp;immediateFail,
  long&nbsp;reconnectIntervalMillis)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a JmsManager using the specified configuration parameters.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JmsManager.JmsManagerConfiguration.html" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager.JmsManagerConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getJmsManagerConfiguration()" class="member-name-link">getJmsManagerConfiguration</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#releaseSub(long,java.util.concurrent.TimeUnit)" class="member-name-link">releaseSub</a><wbr>(long&nbsp;timeout,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="JmsManager.JmsManagerConfiguration.html" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager.JmsManagerConfiguration</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getJmsManagerConfiguration()" class="member-name-link">getJmsManagerConfiguration</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#releaseSub(long,java.util.concurrent.TimeUnit)" class="member-name-link">releaseSub</a><wbr>(long&nbsp;timeout,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;timeUnit)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">May be overridden by managers to perform processing while the manager is being released and the
  lock is held.</div>
 </div>
@@ -201,6 +213,7 @@ loadScripts(document, 'script');</script>
  char[]&nbsp;password,
  boolean&nbsp;immediateFail,
  long&nbsp;reconnectIntervalMillis)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Gets a JmsManager using the specified configuration parameters.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -223,6 +236,7 @@ loadScripts(document, 'script');</script>
 <h3>createMessage</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">javax.jms.Message</span>&nbsp;<span class="element-name">createMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;object)</span>
                                 throws <span class="exceptions">javax.jms.JMSException</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a TextMessage, MapMessage, or ObjectMessage from a Serializable object.
  <p>
  For instance, when using a text-based <a href="../../Layout.html" title="interface in org.apache.logging.log4j.core"><code>Layout</code></a> such as
@@ -252,6 +266,7 @@ loadScripts(document, 'script');</script>
 <h3>createMessageConsumer</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">javax.jms.MessageConsumer</span>&nbsp;<span class="element-name">createMessageConsumer</span>()
                                                 throws <span class="exceptions">javax.jms.JMSException</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a MessageConsumer on this Destination using the current Session.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -267,6 +282,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">javax.jms.MessageProducer</span>&nbsp;<span class="element-name">createMessageProducer</span><wbr><span class="parameters">(javax.jms.Session&nbsp;session,
  javax.jms.Destination&nbsp;destination)</span>
                                                 throws <span class="exceptions">javax.jms.JMSException</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a MessageProducer on this Destination using the current Session.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -283,6 +299,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getJmsManagerConfiguration()">
 <h3>getJmsManagerConfiguration</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="JmsManager.JmsManagerConfiguration.html" title="class in org.apache.logging.log4j.core.appender.mom">JmsManager.JmsManagerConfiguration</a></span>&nbsp;<span class="element-name">getJmsManagerConfiguration</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </section>
 </li>
 <li>
@@ -290,6 +307,7 @@ loadScripts(document, 'script');</script>
 <h3>releaseSub</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">releaseSub</span><wbr><span class="parameters">(long&nbsp;timeout,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;timeUnit)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="../AbstractManager.html#releaseSub(long,java.util.concurrent.TimeUnit)">AbstractManager</a></code></span></div>
 <div class="block">May be overridden by managers to perform processing while the manager is being released and the
  lock is held. A timeout is passed for implementors to use as they see fit.</div>

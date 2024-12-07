@@ -2062,6 +2062,9 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
 </li>
 <li>
@@ -2262,6 +2265,9 @@ When resources require locking (e.g., through <code>org.apache.logging.log4j.cor
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
@@ -2582,6 +2588,9 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
 </li>
 <li>
@@ -2785,6 +2794,9 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
@@ -3042,6 +3054,9 @@ In most circumstances, implementation classes should store their <code>org.apach
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
@@ -6749,7 +6764,7 @@ This appender can be reconfigured at run time.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender"></a>JMS</h4>
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender"></a>JMS-Javax</h4>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Class</dt>
@@ -6763,33 +6778,33 @@ This appender can be reconfigured at run time.</p>
 </dl>
 </div>
 <div class="paragraph">
-<p>Generic JMS Appender plugin for both queues and topics.</p>
+<p>Javax JMS Appender plugin.</p>
 </div>
 <div class="paragraph">
-<p>This Appender replaces the previous split ones.
-However, configurations set up for the 2.0 version of the JMS appenders will still work.</p>
+<p>This Appender replaces the previous split classes.
+Configurations set up for the 2.0 version of the JMS appenders will still work.</p>
 </div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JMS destinationBindingName=""
-     factoryBindingName=""
-     factoryName=""
-     ignoreExceptions=""
-     immediateFail=""
-     name=""
-     password=""
-     providerUrl=""
-     reconnectIntervalMillis=""
-     securityCredentials=""
-     securityPrincipalName=""
-     urlPkgPrefixes=""
-     userName=""&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JMS-Javax destinationBindingName=""
+           factoryBindingName=""
+           factoryName=""
+           ignoreExceptions=""
+           immediateFail=""
+           name=""
+           password=""
+           providerUrl=""
+           reconnectIntervalMillis=""
+           securityCredentials=""
+           securityPrincipalName=""
+           urlPkgPrefixes=""
+           userName=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;a-Layout-implementation/&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/JMS&gt;</code></pre>
+&lt;/JMS-Javax&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -13165,6 +13180,9 @@ A filter may choose to support being called only from the context or only from a
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
 </li>
 <li>
@@ -13642,6 +13660,9 @@ DENY.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
@@ -14982,6 +15003,9 @@ If not "or" the operation will be an "and".</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-JmsAppender">JmsAppender</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender">JmsAppender</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-mom-jeromq-JeroMqAppender">JeroMqAppender</a></p>
@@ -21954,6 +21978,190 @@ toString(), or to output the value of a specific key within the property bundle 
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;docker/&gt;</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-jakarta-jms"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-jms"></a><code>log4j-jakarta-jms</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender"></a>JMS-Jakarta</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.mom.jakarta.JmsAppender</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jakarta-jms</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Jakarta JMS Appender plugin for both queues and topics.</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JMS-Jakarta destinationBindingName=""
+             factoryBindingName=""
+             factoryName=""
+             ignoreExceptions=""
+             immediateFail=""
+             name=""
+             password=""
+             providerUrl=""
+             reconnectIntervalMillis=""
+             securityCredentials=""
+             securityPrincipalName=""
+             urlPkgPrefixes=""
+             userName=""&gt;
+    &lt;a-Filter-implementation/&gt;
+    &lt;a-Layout-implementation/&gt;
+    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
+&lt;/JMS-Jakarta&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>destinationBindingName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>factoryBindingName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>factoryName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>immediateFail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>providerUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reconnectIntervalMillis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>securityCredentials</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>securityPrincipalName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>urlPkgPrefixes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-jms_org-apache-logging-log4j-core-appender-mom-jakarta-JmsAppender_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

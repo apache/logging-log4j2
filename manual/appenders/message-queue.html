@@ -1084,8 +1084,8 @@ appender.0.secondary.port = 8800</code></pre>
 <h2 id="JmsAppender"><a class="anchor" href="#JmsAppender"></a>JMS Appender</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The JMS Appender sends the formatted log event to a
-<a href="https://jakarta.ee/specifications/messaging/2.0/">Jakarta Messaging API</a>
+<p>The JMS Appender sends a formatted log event to a
+<a href="https://jakarta.ee/specifications/messaging/3.0/">Jakarta</a> or <a href="https://jakarta.ee/specifications/messaging/2.0/">Javax</a> Messaging API
 destination.</p>
 </div>
 <div class="admonitionblock important">
@@ -1100,12 +1100,15 @@ destination.</p>
 <a href="../systemproperties.html#log4j2.enableJndiJms" class="xref page"><code>log4j2.enableJndiJms</code></a>
 configuration property to <code>true</code>.</p>
 </div>
-<div class="paragraph">
-<p>Due to breaking changes in the underlying API, the JMS Appender cannot be used with Jakarta Messaging API 3.0 or later.</p>
-</div>
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>For Jakarta, use the <code>JMS-Jakarta</code> element name in the <code>log4j-jakarta-jms</code> Maven module.</p>
+</div>
+<div class="paragraph">
+<p>For Javax, use the <code>JMS-Javax</code> element name; the names <code>JMS</code>, <code>JMSQueue</code>, and <code>JMSTopic</code> are provided for backward compatibility.</p>
 </div>
 <table id="JmsAppender-attributes" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. JMS Appender configuration attributes</caption>
@@ -1303,6 +1306,9 @@ type.</p>
 </div>
 <div class="sect2">
 <h3 id="JmsAppender-examples"><a class="anchor" href="#JmsAppender-examples"></a>Configuration examples</h3>
+<div class="paragraph">
+<p>In the examples below, to use Jakarta, replace <code>JMS</code> with <code>JMS-Jakarta</code>.</p>
+</div>
 <div class="paragraph">
 <p>Here is a sample JMS Appender configuration:</p>
 </div>
