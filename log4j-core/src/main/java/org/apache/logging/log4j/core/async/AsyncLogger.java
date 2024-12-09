@@ -63,7 +63,9 @@ import org.apache.logging.log4j.util.StringMap;
  * and they will flush to disk at the end of each batch. This means that even with immediateFlush=false, there will
  * never be any items left in the buffer; all log events will all be written to disk in a very efficient manner.
  */
-// This constructor is effectively package-private, since {@link AsyncLoggerDisruptor} is package-private.
+// We changed the constructor from `public` to package-private.
+// The constructor was effectively package-private, since the {@link AsyncLoggerDisruptor} class in its signature is
+// package-private, without any public implementation.
 @BaselineIgnore("2.24.3")
 public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBufferLogEvent> {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!

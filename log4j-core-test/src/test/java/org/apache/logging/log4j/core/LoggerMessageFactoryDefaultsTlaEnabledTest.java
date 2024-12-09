@@ -23,6 +23,7 @@ import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 class LoggerMessageFactoryDefaultsTlaEnabledTest {
@@ -30,11 +31,11 @@ class LoggerMessageFactoryDefaultsTlaEnabledTest {
     @Test
     @SetSystemProperty(key = "log4j2.isWebapp", value = "false")
     @SetSystemProperty(key = "log4j2.enableThreadlocals", value = "true")
-    void defaults_should_match_when_thread_locals_enabled() {
+    void defaults_should_match_when_thread_locals_enabled(TestInfo testInfo) {
         assertThat(Constants.ENABLE_THREADLOCALS).isTrue();
         try (LoggerContext loggerContext =
                 new LoggerContext(LoggerMessageFactoryDefaultsTlaEnabledTest.class.getSimpleName())) {
-            Logger logger = loggerContext.getLogger("defaults_should_match_when_thread_locals_enabled");
+            Logger logger = loggerContext.getLogger(testInfo.getDisplayName());
             assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(ReusableMessageFactory.INSTANCE);
             assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
         }
