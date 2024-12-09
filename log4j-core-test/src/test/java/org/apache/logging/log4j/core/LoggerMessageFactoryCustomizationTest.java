@@ -60,8 +60,8 @@ class LoggerMessageFactoryCustomizationTest {
             Logger logger,
             Class<? extends MessageFactory> messageFactoryClass,
             Class<? extends FlowMessageFactory> flowMessageFactoryClass) {
-        assertThat((MessageFactory) logger.getMessageFactory()).isInstanceOf(messageFactoryClass);
-        assertThat(logger.getFlowMessageFactory()).isInstanceOf(flowMessageFactoryClass);
+        assertThat(logger.getMessageFactory().getClass()).isEqualTo(messageFactoryClass);
+        assertThat(logger.getFlowMessageFactory().getClass()).isEqualTo(flowMessageFactoryClass);
     }
 
     public static class TestMessageFactory extends AbstractMessageFactory {
