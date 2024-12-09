@@ -41,6 +41,15 @@
     <!-- dependency versions -->
     <json.version>20240303</json.version>
 
+    <bnd-extra-package-options>
+      <!-- Annotations only: users are allowed to exclude this dependency -->
+      org.jspecify.*;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Remove `transitive` for optional dependencies -->
+      org.jspecify;transitive=false
+    </bnd-extra-module-options>
+
   </properties>
 
   <dependencies>
@@ -50,10 +59,12 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
 
+    <!--
+      ~ Effectively optional, but included due to its size and the compilation warnings its absence causes.
+      -->
     <dependency>
       <groupId>org.jspecify</groupId>
       <artifactId>jspecify</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
