@@ -47,6 +47,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
@@ -470,5 +471,23 @@ public final class AsyncAppender extends AbstractAppender {
      */
     public int getQueueSize() {
         return queue.size();
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        if (!includeLocation) {
+            return false;
+        }
+        for (final Appender appender : this.getAppenders()) {
+            if (appender instanceof LocationAware && ((LocationAware) appender).requiresLocation()) {
+                return true;
+            }
+        }
+        if (errorAppender != null
+                && errorAppender.getAppender() instanceof LocationAware
+                && ((LocationAware) errorAppender.getAppender()).requiresLocation()) {
+            return true;
+        }
+        return false;
     }
 }
