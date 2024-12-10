@@ -1,0 +1,76 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+RewriteEngine On
+RewriteBase "/log4j/2.x/"
+
+##
+# To simplify the redirection rules, we normalized them:
+#
+# 1. If the request URIs ends in `/` (necessarily a `path-info`), we add `index.html` to it:
+RewriteRule "^(.*)/$" "$1/index.html" [DPI]
+# 2. If the request URI points to a (non-existent) file, we try adding `.html`:
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond $1 "!\.html$"
+RewriteRule "^(.+)$" "$1.html"
+#
+# From this point rules match against the URI to the real file, with "/log4j/2.x/" stripped.
+
+# The content moved between pages
+RewriteRule "^articles\.html$" "manual/index.html" [R=permanent]
+RewriteRule "^log4j-1\.2-api(/index)?\.html$" "manual/migration.html" [R=permanent]
+RewriteRule "^log4j-api/apidocs(.*)$" "javadoc/log4j-api$1" [R=permanent]
+RewriteRule "^log4j-api(/index)?\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^log4j-appserver(/index)?\.html$" "manual/webapp.html#replace" [R=permanent,NE]
+RewriteRule "^log4j-cassandra(/index)?\.html$" "manual/appenders/database.html#CassandraAppender" [R=permanent,NE]
+RewriteRule "^log4j-core/apidocs(.*)$" "javadoc/log4j-core$1" [R=permanent]
+RewriteRule "^log4j-couchdb(/index)?\.html$" "manual/appenders/database.html#CouchDbProvider" [R=permanent,NE]
+RewriteRule "^log4j-docker(/index)?\.html$" "manual/lookups.html#DockerLookup" [R=permanent,NE]
+RewriteRule "^log4j-flume-ng(/index)?\.html$" "manual/appenders/message-queue.html#FlumeAppender" [R=permanent,NE]
+RewriteRule "^log4j(-jakarta)?-web(/index)?\.html$" "manual/webapp.html" [R=permanent]
+RewriteRule "^log4j-jcl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jcl" [R=permanent,NE]
+RewriteRule "^log4j-jmx-gui(/index)?\.html$" "/log4j/jmx-gui/latest/index.html" [R=permanent]
+RewriteRule "^log4j-jpl(/index)?\.html$" "manual/installation.html#impl-core-bridge-jpl" [R=permanent,NE]
+RewriteRule "^log4j-kubernetes(/index)?\.html$" "https://github.com/fabric8io/kubernetes-client/blob/main/doc/KubernetesLog4j.md" [R=permanent]
+RewriteRule "^log4j-mongodb3(/index)?\.html$" "manual/appenders.html#NoSQLProvider-MongoDB" [R=permanent,NE]
+RewriteRule "^log4j-mongodb4(/index)?\.html$" "manual/appenders.html#MongoDb4Provider" [R=permanent,NE]
+RewriteRule "^log4j-slf4j2?-impl(/index)?\.html$" "manual/installation.html#impl-core-bridge-slf4j" [R=permanent,NE]
+RewriteRule "^log4j-spring-cloud-config(/index)?\.html$" "log4j-spring-cloud-config-client.html" [R=permanent]
+RewriteRule "^log4j-taglib(/index)?\.html$" "manual/webapp.html#log4j-taglib" [R=permanent,NE]
+RewriteRule "^manual/api-separation\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/cloud\.html$" "soa.html" [R=permanent]
+RewriteRule "^manual/logsep\.html$" "jakarta.html#log-separation" [R=permanent,NE]
+RewriteRule "^manual/migration\.html$" "migrate-from-log4j1.html" [R=permanent]
+RewriteRule "^manual/scala-api\.html$" "/log4j/scala/latest/index.html" [R=permanent]
+RewriteRule "^manual/usage\.html$" "manual/api.html" [R=permanent]
+RewriteRule "^manual/webapp\.html$" "jakarta.html" [R=permanent]
+RewriteRule "^runtime-dependencies\.html$" "manual/installation.html" [R=permanent]
+RewriteRule "^thanks\.html$" "/support.html#sponsors" [R=permanent,NE]
+
+# These redirects are special, since:
+#
+# 1. `mod_negotiate` is active and it is applied before `mod_rewrite`,
+# 2. we replaced a directory like `log4j-api/` with a file that has the same prefix like `log4j-api.html`,
+#
+# if the URI path is `/log4j/2.x/log4j-api/foo` we must match `log4j-api.html/foo`.
+RewriteRule "^log4j-iostreams\.html/index\.html$" "log4j-iostreams.html" [R=permanent]
+RewriteRule "^log4j-jul\.html/index\.html$" "log4j-jul.html" [R=permanent,NE]
+RewriteRule "^log4j-spring-boot\.html/index\.html$" "log4j-spring-boot.html" [R=permanent]
+RewriteRule "^log4j-spring-cloud-config-client\.html/index\.html$" "log4j-spring-cloud-config-client.html" [R=permanent]
+RewriteRule "^log4j-to-jul\.html/index\.html$" "log4j-to-jul.html" [R=permanent]
+RewriteRule "^release-notes\.html/index\.html$" "release-notes.html" [R=permanent]
