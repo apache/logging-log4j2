@@ -18,28 +18,27 @@ package org.apache.logging.log4j.taglib;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class TagLevelTest {
 
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            {DebugTag.class, Level.DEBUG},
-            {ErrorTag.class, Level.ERROR},
-            {FatalTag.class, Level.FATAL},
-            {InfoTag.class, Level.INFO},
-            {TraceTag.class, Level.TRACE},
-            {WarnTag.class, Level.WARN}
-        });
+    static Stream<Arguments> testGetLevel() {
+        return Stream.of(
+                Arguments.of(DebugTag.class, Level.DEBUG),
+                Arguments.of(ErrorTag.class, Level.ERROR),
+                Arguments.of(FatalTag.class, Level.FATAL),
+                Arguments.of(InfoTag.class, Level.INFO),
+                Arguments.of(TraceTag.class, Level.TRACE),
+                Arguments.of(WarnTag.class, Level.WARN));
     }
 
-    @MethodSource("data")
     @ParameterizedTest
+    @MethodSource()
     void testGetLevel(final Class<? extends LoggingMessageTagSupport> cls, final Level level) throws Exception {
-        assertEquals(level, cls.newInstance().getLevel());
+        assertEquals(level, cls.getDeclaredConstructor().newInstance().getLevel());
     }
 }
