@@ -1,0 +1,14 @@
+staging:
+  profile: ~
+  whoami: release/2.24.3-site-stg-out
+  subdir: content/log4j/2.24.3
+
+
+# INFRA cannot handle change sets bigger than a certain size: https://the-asf.slack.com/archives/CBX4TSBQ8/p1709724983391709
+# This file will be used to push a small commit to help the INFRA to recover.
+#
+# Random values to cause a change:
+#
+# - Seed: 23460
+# - Commit ID: ab499ee0c804b7dbf42d626748423f5eb5d1437a
+# - Timestamp: 2024-12-10T10:24:46Z
