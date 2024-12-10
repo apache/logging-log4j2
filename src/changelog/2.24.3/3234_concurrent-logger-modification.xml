@@ -5,6 +5,7 @@
        type="fixed">
   <issue id="3234" link="https://github.com/apache/logging-log4j2/issues/3234"/>
   <description format="asciidoc">
-    Fix `ConcurrentModificationException`, if multiple threads iterate over the loggers at the same time.
+    Fix `ConcurrentModificationException`, if multiple threads modify loggers concurrently.
+    This bug affects users that modify logger levels programmatically.
   </description>
 </entry>
