@@ -16,47 +16,45 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runners.model.Statement;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ContextMapLookupTest {
 
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
-    private final LoggerContextRule context = new LoggerContextRule("ContextMapLookupTest.xml");
+    private static File logFile;
 
-    @Rule
-    public RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    final File logFile =
-                            new File("target", description.getClassName() + '.' + description.getMethodName() + ".log");
-                    ThreadContext.put("testClassName", description.getClassName());
-                    ThreadContext.put("testMethodName", description.getMethodName());
-                    try {
-                        base.evaluate();
-                    } finally {
-                        ThreadContext.remove("testClassName");
-                        ThreadContext.remove("testMethodName");
-                        if (logFile.exists()) {
-                            logFile.deleteOnExit();
-                        }
-                    }
-                }
-            })
-            .around(context);
+    @BeforeAll
+    private static void before() {
+        String className = ContextMapLookupTest.class.getName();
+        String methodName = "testFileLog";
+
+        logFile = new File("target", className + '.' + methodName + ".log");
+        ThreadContext.put("testClassName", className);
+        ThreadContext.put("testMethodName", methodName);
+    }
+
+    @AfterAll
+    private static void after() {
+        ThreadContext.remove("testClassName");
+        ThreadContext.remove("testMethodName");
+
+        if (logFile.exists()) {
+            logFile.deleteOnExit();
+        }
+    }
 
     @Test
     public void testLookup() {
@@ -75,6 +73,7 @@ public class ContextMapLookupTest {
      * ContextMapLookup can be used in many other ways in a config file.
      */
     @Test
+    @LoggerContextSource("ContextMapLookupTest.xml")
     public void testFileLog() {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello from testFileLog!");

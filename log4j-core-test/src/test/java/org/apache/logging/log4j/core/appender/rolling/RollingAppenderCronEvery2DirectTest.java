@@ -20,18 +20,18 @@ import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.security.SecureRandom;
 import java.util.Random;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -42,16 +42,17 @@ public class RollingAppenderCronEvery2DirectTest {
     private static final String DIR = "target/rolling-cron-every2Direct";
     private static final int LOOP_COUNT = 100;
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = loggerContext.getLogger(RollingAppenderCronEvery2DirectTest.class.getName());
         final long end = System.currentTimeMillis() + 5000;
         final Random rand = new SecureRandom();
         rand.setSeed(end);
@@ -61,7 +62,7 @@ public class RollingAppenderCronEvery2DirectTest {
             Thread.sleep(10 * rand.nextInt(100));
         } while (System.currentTimeMillis() < end);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));

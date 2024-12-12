@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
@@ -23,30 +25,28 @@ import java.nio.charset.Charset;
 import java.util.List;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1502
  */
-@Category(Layouts.Csv.class)
+@Tag("Layouts.Csv")
 public class CsvJsonParameterLayoutFileAppenderTest {
 
     private static final String FILE_PATH = "target/CsvJsonParameterLayoutFileAppenderTest.log";
+    private final String CONFIG = "log4j-cvs-json-parameter.xml";
 
-    private static final LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-cvs-json-parameter.xml");
+    private LoggerContext loggerContext;
 
-    @Rule
-    public RuleChain rule = loggerContextRule.withCleanFilesRule(FILE_PATH);
+    @RegisterExtension
+    CleanFiles cleanFiles = new CleanFiles(FILE_PATH);
 
     private void testNoNulCharacters(final String message, final String expected) throws IOException {
         @SuppressWarnings("resource")
-        final LoggerContext loggerContext = loggerContextRule.getLoggerContext();
         final Logger logger = loggerContext.getLogger("com.example");
         logger.error("log:", message);
         loggerContext.stop();
@@ -62,53 +62,69 @@ public class CsvJsonParameterLayoutFileAppenderTest {
                 count0s++;
             }
         }
-        Assert.assertEquals("File contains " + count0s + " 0x00 byte at indices " + sb, 0, count0s);
+        assertEquals(0, count0s, "File contains " + count0s + " 0x00 byte at indices " + sb);
         final List<String> readLines = Files.readLines(file, Charset.defaultCharset());
         final String actual = readLines.get(0);
-        // Assert.assertTrue(actual, actual.contains(message));
-        Assert.assertEquals(actual, expected, actual);
-        Assert.assertEquals(1, readLines.size());
+        // assertTrue(actual, actual.contains(message));
+        assertEquals(expected, actual, actual);
+        assertEquals(1, readLines.size());
     }
 
     @Test
-    public void testNoNulCharactersDoubleQuote() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersDoubleQuote(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         // TODO This does not seem right but there is no NULs. Check Apache Commons CSV.
         testNoNulCharacters("\"", "\"\"\"\"");
     }
 
     @Test
-    public void testNoNulCharactersJson() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersJson(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters("{\"id\":10,\"name\":\"Alice\"}", "\"{\"\"id\"\":10,\"\"name\"\":\"\"Alice\"\"}\"");
     }
 
     @Test
-    public void testNoNulCharactersOneChar() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersOneChar(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters("A", "A");
     }
 
     @Test
-    public void testNoNulCharactersOpenCurly() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersOpenCurly(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters("{", "{");
     }
 
     @Test
-    public void testNoNulCharactersOpenParen() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersOpenParen(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters("(", "(");
     }
 
     @Test
-    public void testNoNulCharactersOpenSquare() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersOpenSquare(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         // TODO Why is the char quoted? Check Apache Commons CSV.
         testNoNulCharacters("[", "[");
     }
 
     @Test
-    public void testNoNulCharactersThreeChars() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersThreeChars(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters("ABC", "ABC");
     }
 
     @Test
-    public void testNoNulCharactersXml() throws IOException {
+    @LoggerContextSource(CONFIG)
+    public void testNoNulCharactersXml(LoggerContext context) throws IOException {
+        this.loggerContext = context;
         testNoNulCharacters(
                 "<test attr1='val1' attr2=\"value2\">X</test>", "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
     }

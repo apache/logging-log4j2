@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,8 +27,8 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
-import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ThreadContextMap;
@@ -37,25 +36,18 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class ThreadContextDataInjectorTest {
-    @Parameters(name = "{0}")
-    public static Collection<String[]> threadContextMapClassNames() {
-        return asList(new String[][] {
-            {"org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap"},
-            {"org.apache.logging.log4j.spi.DefaultThreadContextMap"}
-        });
+
+    public static Stream<String> threadContextMapClassNames() {
+        return Stream.of(
+                "org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap",
+                "org.apache.logging.log4j.spi.DefaultThreadContextMap");
     }
 
-    @Parameter
     public String threadContextMapClassName;
 
     private static void resetThreadContextMap() {
@@ -65,12 +57,7 @@ public class ThreadContextDataInjectorTest {
         ThreadContext.init();
     }
 
-    @Before
-    public void before() {
-        System.setProperty("log4j2.threadContextMap", threadContextMapClassName);
-    }
-
-    @After
+    @AfterEach
     public void after() {
         ThreadContext.remove("foo");
         ThreadContext.remove("baz");
@@ -121,14 +108,20 @@ public class ThreadContextDataInjectorTest {
         ThreadContext.put("foo", "bar");
     }
 
-    @Test
-    public void testThreadContextImmutability() {
+    @ParameterizedTest
+    @MethodSource("threadContextMapClassNames")
+    public void testThreadContextImmutability(final String name) {
+        System.setProperty("log4j2.threadContextMap", name);
+        this.threadContextMapClassName = name;
         prepareThreadContext(false);
         testContextDataInjector();
     }
 
-    @Test
-    public void testInheritableThreadContextImmutability() throws Throwable {
+    @ParameterizedTest
+    @MethodSource("threadContextMapClassNames")
+    public void testInheritableThreadContextImmutability(final String name) throws Throwable {
+        System.setProperty("log4j2.threadContextMap", name);
+        this.threadContextMapClassName = name;
         prepareThreadContext(true);
         try {
             newSingleThreadExecutor().submit(this::testContextDataInjector).get();

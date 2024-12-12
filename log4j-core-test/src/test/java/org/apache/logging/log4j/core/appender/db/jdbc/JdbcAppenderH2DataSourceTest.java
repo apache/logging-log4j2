@@ -19,19 +19,20 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 import java.io.IOException;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  *
  */
 public class JdbcAppenderH2DataSourceTest extends AbstractJdbcAppenderDataSourceTest {
 
-    @Before
+    @AfterEach
     public void afterEachDeleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }
 
-    @Before
+    @BeforeEach
     public void beforeEachDeleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }

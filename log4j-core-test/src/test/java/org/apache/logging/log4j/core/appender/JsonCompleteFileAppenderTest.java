@@ -16,73 +16,65 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.CleanFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.ClockFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests a "complete" JSON file.
  */
-@RunWith(Parameterized.class)
-@Category(Layouts.Json.class)
+@Tag("Layouts.Json")
 public class JsonCompleteFileAppenderTest {
 
-    public JsonCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {
-        this.loggerContextRule = new LoggerContextRule("JsonCompleteFileAppenderTest.xml", contextSelector);
-        this.cleanFiles = new CleanFiles(logFile);
-        this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);
-    }
+    private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
 
-    @BeforeClass
-    public static void beforeClass() {
+    @RegisterExtension
+    CleanFiles cleanFiles = new CleanFiles(logFile);
+
+    @BeforeAll
+    public static void beforeAll() {
         System.setProperty(ClockFactory.PROPERTY_NAME, Log4jLogEventTest.FixedTimeClock.class.getName());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    public static void afterAll() {
         System.clearProperty(ClockFactory.PROPERTY_NAME);
     }
 
-    @Parameters(name = "{0}")
-    public static Class<?>[] getParameters() {
-        return CoreContextSelectors.CLASSES;
+    @MethodSource
+    public static Stream<Class<?>> getParameters() {
+        return Stream.of(CoreContextSelectors.CLASSES);
     }
 
-    private final File logFile = new File("target", "JsonCompleteFileAppenderTest.log");
-    private final LoggerContextRule loggerContextRule;
-    private final CleanFiles cleanFiles;
-
-    @Rule
-    public RuleChain ruleChain;
-
-    @Test
-    public void testFlushAtEndOfBatch() throws Exception {
-        final Logger logger = this.loggerContextRule.getLogger("com.foo.Bar");
+    @ParameterizedTest
+    @MethodSource("getParameters")
+    @LoggerContextSource("JsonCompleteFileAppenderTest.xml")
+    public void testFlushAtEndOfBatch(final Class<ContextSelector> contextSelector, final LoggerContext loggerContext)
+            throws Exception {
+        final Logger logger = loggerContext.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=true";
         logger.info(logMsg);
         logger.error(logMsg, new IllegalArgumentException("badarg"));
-        this.loggerContextRule.getLoggerContext().stop(); // stops async thread
+        loggerContext.getConfiguration().getLoggerContext().stop(); // stops async thread
 
         final List<String> lines = Files.readAllLines(logFile.toPath(), StandardCharsets.UTF_8);
 
@@ -103,10 +95,10 @@ public class JsonCompleteFileAppenderTest {
         for (int i = 0; i < expected.length; i++) {
             final String line = lines.get(i);
             assertTrue(
-                    "line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']',
-                    line.contains(expected[i]));
+                    line.contains(expected[i]),
+                    "line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']');
         }
         final String location = "testFlushAtEndOfBatch";
-        assertFalse("no location", lines.get(0).contains(location));
+        assertFalse(lines.get(0).contains(location), "no location");
     }
 }
