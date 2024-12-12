@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests
@@ -35,17 +35,18 @@ public class RollingNewDirectoryTest {
 
     private static final String DIR = "target/rolling-new-directory";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingNewDirectoryTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private Logger logger;
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingNewDirectoryTest.class.getName());
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingNewDirectoryTest.class.getName());
     }
 
     @Test
@@ -55,7 +56,7 @@ public class RollingNewDirectoryTest {
             Thread.sleep(300);
         }
         final File dir = new File(DIR);
-        assertNotNull("No directory created", dir);
-        assertTrue("Child irectories not created", dir.exists() && dir.listFiles().length > 2);
+        assertNotNull(dir, "No directory created");
+        assertTrue(dir.exists() && dir.listFiles().length > 2, "Child irectories not created");
     }
 }

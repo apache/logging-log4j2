@@ -16,21 +16,25 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 public class SocketAppenderSocketOptionsTest {
 
@@ -46,66 +50,63 @@ public class SocketAppenderSocketOptionsTest {
             throw new IllegalStateException(e);
         }
         tcpSocketTestServer.start();
-        loggerContextRule = new LoggerContextRule("log4j-socket-options.xml");
     }
 
-    @ClassRule
-    public static final LoggerContextRule loggerContextRule;
-
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    public static void afterAll() {
         if (tcpSocketTestServer != null) {
             tcpSocketTestServer.shutdown();
         }
     }
 
     @Test
-    public void testSocketOptions() throws IOException {
-        Assert.assertNotNull(loggerContextRule);
-        Assert.assertNotNull(loggerContextRule.getConfiguration());
-        final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
-        Assert.assertNotNull(appender);
+    @LoggerContextSource("log4j-socket-options.xml")
+    public void testSocketOptions(final LoggerContext loggerContext) throws IOException {
+        assertNotNull(loggerContext);
+        assertNotNull(loggerContext.getConfiguration());
+        final SocketAppender appender = loggerContext.getConfiguration().getAppender("socket");
+
+        assertNotNull(appender);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
-        Assert.assertNotNull(manager);
+        assertNotNull(manager);
         final OutputStream outputStream = manager.getOutputStream();
-        Assert.assertFalse(outputStream instanceof NullOutputStream);
+        assertFalse(outputStream instanceof NullOutputStream);
         final SocketOptions socketOptions = manager.getSocketOptions();
-        Assert.assertNotNull(socketOptions);
+        assertNotNull(socketOptions);
         final Socket socket = manager.getSocket();
-        Assert.assertNotNull(socket);
+        assertNotNull(socket);
         // Test config request
-        Assert.assertEquals(false, socketOptions.isKeepAlive());
-        Assert.assertEquals(false, socketOptions.isOobInline());
-        Assert.assertEquals(false, socketOptions.isReuseAddress());
-        Assert.assertEquals(false, socketOptions.isTcpNoDelay());
-        Assert.assertEquals(
+        assertFalse(socketOptions.isKeepAlive());
+        assertFalse(socketOptions.isOobInline());
+        assertFalse(socketOptions.isReuseAddress());
+        assertFalse(socketOptions.isTcpNoDelay());
+        assertEquals(
                 Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
                 socketOptions.getActualTrafficClass().intValue());
-        Assert.assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
-        Assert.assertEquals(8000, socketOptions.getSendBufferSize().intValue());
-        Assert.assertEquals(12345, socketOptions.getSoLinger().intValue());
-        Assert.assertEquals(54321, socketOptions.getSoTimeout().intValue());
+        assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
+        assertEquals(8000, socketOptions.getSendBufferSize().intValue());
+        assertEquals(12345, socketOptions.getSoLinger().intValue());
+        assertEquals(54321, socketOptions.getSoTimeout().intValue());
         // Test live socket
-        Assert.assertFalse(socket.getKeepAlive());
-        Assert.assertFalse(socket.getOOBInline());
-        Assert.assertFalse(socket.getReuseAddress());
-        Assert.assertFalse(socket.getTcpNoDelay());
-        // Assert.assertEquals(10000, socket.getReceiveBufferSize());
+        assertFalse(socket.getKeepAlive());
+        assertFalse(socket.getOOBInline());
+        assertFalse(socket.getReuseAddress());
+        assertFalse(socket.getTcpNoDelay());
+        // assertEquals(10000, socket.getReceiveBufferSize());
         // This settings changes while we are running, so we cannot assert it.
-        // Assert.assertEquals(8000, socket.getSendBufferSize());
-        Assert.assertEquals(12345, socket.getSoLinger());
-        Assert.assertEquals(54321, socket.getSoTimeout());
+        // assertEquals(8000, socket.getSendBufferSize());
+        assertEquals(12345, socket.getSoLinger());
+        assertEquals(54321, socket.getSoTimeout());
     }
 
     @Test
-    public void testSocketTrafficClass() throws IOException {
-        Assume.assumeTrue(
-                "Run only on Java 7",
-                System.getProperty("java.specification.version").equals("1.7"));
-        Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
-        final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
+    @LoggerContextSource("log4j-socket-options.xml")
+    public void testSocketTrafficClass(final LoggerContext loggerContext) throws IOException {
+        assumeTrue(System.getProperty("java.specification.version").equals("1.7"), "Run only on Java 7");
+        assumeFalse("true".equals(System.getenv("TRAVIS")), "Do not run on Travis CI");
+        final SocketAppender appender = loggerContext.getConfiguration().getAppender("socket");
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
         final Socket socket = manager.getSocket();
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
+        assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
     }
 }

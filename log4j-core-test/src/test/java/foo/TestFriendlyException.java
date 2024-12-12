@@ -16,7 +16,9 @@
  */
 package foo;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 
 import java.net.Socket;
 import java.util.Arrays;
@@ -61,7 +63,7 @@ public final class TestFriendlyException extends RuntimeException {
 
     static {
         // Ensure the distinct packaging
-        assertThat(TestFriendlyException.class.getPackage().getName()).doesNotStartWith("org.apache");
+        assertThat(TestFriendlyException.class.getPackage().getName(), not(startsWith("org.apache")));
     }
 
     private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
@@ -82,7 +84,7 @@ public final class TestFriendlyException extends RuntimeException {
                 if (stackTraceElement.getClassName().equals(socketClassName)) {
                     if (Constants.JAVA_MAJOR_VERSION > 8) {
                         final String stackTraceElementString = stackTraceElement.toString();
-                        assertThat(stackTraceElementString).startsWith("java.base/");
+                        assertThat(stackTraceElementString, startsWith("java.base/"));
                     }
                     return stackTraceElement;
                 }

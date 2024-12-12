@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -28,34 +28,38 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
-import org.apache.logging.log4j.core.test.junit.JndiRule;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.JndiExtension;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.h2.util.IOUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Abstract unit test for JdbcAppender using a {@link DataSource} configuration.
  */
 public abstract class AbstractJdbcAppenderDataSourceTest extends AbstractJdbcDataSourceTest {
 
-    @Rule
-    public final RuleChain rules;
+    @RegisterExtension
+    public JndiExtension ext = new JndiExtension(createBindings());
 
+    @RegisterExtension
     private final JdbcRule jdbcRule;
 
     protected AbstractJdbcAppenderDataSourceTest(final JdbcRule jdbcRule) {
-        this.rules = RuleChain.emptyRuleChain()
-                .around(new JndiRule("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource()))
-                .around(jdbcRule)
-                .around(new LoggerContextRule("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source.xml"));
         this.jdbcRule = jdbcRule;
+    }
+
+    private Map<String, Object> createBindings() {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("java:/comp/env/jdbc/TestDataSourceAppender", createMockDataSource());
+        return map;
     }
 
     private DataSource createMockDataSource() {
@@ -71,6 +75,7 @@ public abstract class AbstractJdbcAppenderDataSourceTest extends AbstractJdbcDat
     }
 
     @Test
+    @LoggerContextSource("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-data-source.xml")
     public void testDataSourceConfig() throws Exception {
         try (final Connection connection = jdbcRule.getConnectionSource().getConnection()) {
             final Error exception = new Error("Final error massage is fatal!");
@@ -89,28 +94,28 @@ public abstract class AbstractJdbcAppenderDataSourceTest extends AbstractJdbcDat
             try (final Statement statement = connection.createStatement();
                     final ResultSet resultSet = statement.executeQuery("SELECT * FROM dsLogEntry ORDER BY id")) {
 
-                assertTrue("There should be at least one row.", resultSet.next());
+                assertTrue(resultSet.next(), "There should be at least one row.");
 
                 final long date = resultSet.getTimestamp("eventDate").getTime();
-                assertTrue("The date should be later than pre-logging (1).", date >= millis);
-                assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
+                assertTrue(date >= millis, "The date should be later than pre-logging (1).");
+                assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (1).");
                 assertEquals(
-                        "The literal column is not correct (1).",
                         "Literal Value of Data Source",
-                        resultSet.getString("literalColumn"));
-                assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
-                assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
+                        resultSet.getString("literalColumn"),
+                        "The literal column is not correct (1).");
+                assertEquals("FATAL", resultSet.getNString("level"), "The level column is not correct (1).");
+                assertEquals(logger.getName(), resultSet.getNString("logger"), "The logger column is not correct (1).");
                 assertEquals(
-                        "The message column is not correct (1).",
                         "Error from data source 02.",
-                        resultSet.getString("message"));
+                        resultSet.getString("message"),
+                        "The message column is not correct (1).");
                 assertEquals(
-                        "The exception column is not correct (1).",
                         stackTrace,
                         IOUtils.readStringAndClose(
-                                resultSet.getNClob("exception").getCharacterStream(), -1));
+                                resultSet.getNClob("exception").getCharacterStream(), -1),
+                        "The exception column is not correct (1).");
 
-                assertFalse("There should not be two rows.", resultSet.next());
+                assertFalse(resultSet.next(), "There should not be two rows.");
             }
         }
     }

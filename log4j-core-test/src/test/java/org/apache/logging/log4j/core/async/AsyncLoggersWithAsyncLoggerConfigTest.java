@@ -16,39 +16,39 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
+@Tag(Tags.ASYNC_LOGGERS)
 public class AsyncLoggersWithAsyncLoggerConfigTest {
 
-    @ClassRule
-    public static LoggerContextRule context =
-            new LoggerContextRule("AsyncLoggersWithAsyncLoggerConfigTest.xml", AsyncLoggerContextSelector.class);
-
     @Test
-    public void testLoggingWorks() throws Exception {
+    @LoggerContextSource("AsyncLoggersWithAsyncLoggerConfigTest.xml")
+    public void testLoggingWorks(LoggerContext context) throws Exception {
         final Logger logger = LogManager.getLogger();
         logger.error("This is a test");
         logger.warn("Hello world!");
         Thread.sleep(100);
-        final List<String> list = context.getListAppender("List").getMessages();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events. Expected 2, got " + list.size(), 2, list.size());
+        final ListAppender listAppender = context.getConfiguration().getAppender("List");
+        final List<String> list = listAppender.getMessages();
+
+        assertNotNull(list, "No events generated");
+        assertEquals(2, list.size(), "Incorrect number of events. Expected 2, got " + list.size());
         String msg = list.get(0);
         String expected = getClass().getName() + " This is a test";
-        assertEquals("Expected " + expected + ", Actual " + msg, expected, msg);
+        assertEquals(expected, msg, "Expected " + expected + ", Actual " + msg);
         msg = list.get(1);
         expected = getClass().getName() + " Hello world!";
-        assertEquals("Expected " + expected + ", Actual " + msg, expected, msg);
+        assertEquals(expected, msg, "Expected " + expected + ", Actual " + msg);
     }
 }
