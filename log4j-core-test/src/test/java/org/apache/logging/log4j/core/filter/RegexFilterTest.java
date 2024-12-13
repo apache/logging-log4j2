@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +38,13 @@ class RegexFilterTest {
     @BeforeAll
     static void before() {
         StatusLogger.getLogger().setLevel(Level.OFF);
+    }
+
+    @Test
+    void testRegexFilterDoesNotThrowWithAllTheParametersExceptRegexEqualNull() {
+        assertDoesNotThrow(() -> {
+            RegexFilter.createFilter(".* test .*", null, null, null, null);
+        });
     }
 
     @Test
