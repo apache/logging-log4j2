@@ -640,6 +640,35 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect1">
+<h2 id="release-notes-2-24-3"><a class="anchor" href="#release-notes-2-24-3"></a>2.24.3</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2024-12-10</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This release fixes two minor bugs.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-24-3-fixed"><a class="anchor" href="#release-notes-2-24-3-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix <code>ConcurrentModificationException</code>, if multiple threads modify loggers concurrently. This bug affects users that modify logger levels programmatically. (<a href="https://github.com/apache/logging-log4j2/issues/3234">3234</a>)</p>
+</li>
+<li>
+<p>Protects <code>PropertiesUtil</code> against property sources that call <code>PropertiesUtil</code> recursively. In some cases such a property source can even cause deadlocks. (<a href="https://github.com/apache/logging-log4j2/issues/3252">3252</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-24-2"><a class="anchor" href="#release-notes-2-24-2"></a>2.24.2</h2>
 <div class="sectionbody">
 <div class="dlist">

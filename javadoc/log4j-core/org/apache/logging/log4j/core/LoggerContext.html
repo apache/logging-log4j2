@@ -274,10 +274,12 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <div class="block">Determines if the specified Logger exists.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">newInstance</a><wbr>(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory)" class="member-name-link">newInstance</a><wbr>(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;context,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Callback to create a new logger.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onChange(org.apache.logging.log4j.core.config.Reconfigurable)" class="member-name-link">onChange</a><wbr>(<a href="config/Reconfigurable.html" title="interface in org.apache.logging.log4j.core.config">Reconfigurable</a>&nbsp;reconfigurable)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -1015,9 +1017,18 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="newInstance(org.apache.logging.log4j.core.LoggerContext,java.lang.String,org.apache.logging.log4j.message.MessageFactory)">
 <h3>newInstance</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="Logger.html" title="class in org.apache.logging.log4j.core">Logger</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;context,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">MessageFactory</a>&nbsp;messageFactory)</span></div>
+<div class="block">Callback to create a new logger.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>context</code> - The <a href="LoggerContext.html" title="class in org.apache.logging.log4j.core"><code>LoggerContext</code></a> this logger is associated with, never <code>null</code>.</dd>
+<dd><code>messageFactory</code> - The message factory to be used, never <code>null</code>.</dd>
+<dd><code>name</code> - The logger name, never <code>null</code>.</dd>
+<dt>Returns:</dt>
+<dd>A new logger instance.</dd>
+</dl>
 </section>
 </li>
 </ul>
