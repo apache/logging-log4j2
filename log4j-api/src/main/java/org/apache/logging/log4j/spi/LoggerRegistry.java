@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spi;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -171,19 +171,19 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers() {
-        return getLoggers(new ArrayList<>());
+        readLock.lock();
+        try {
+            return loggerByMessageFactoryByName.values().stream()
+                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
+                    .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {
         requireNonNull(destination, "destination");
-        readLock.lock();
-        try {
-            loggerByMessageFactoryByName.values().stream()
-                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
-                    .forEach(destination::add);
-        } finally {
-            readLock.unlock();
-        }
+        destination.addAll(getLoggers());
         return destination;
     }
 

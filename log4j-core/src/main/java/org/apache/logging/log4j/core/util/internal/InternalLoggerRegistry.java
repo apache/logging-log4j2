@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util.internal;
 import static java.util.Objects.requireNonNull;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -78,15 +80,19 @@ public final class InternalLoggerRegistry {
         }
     }
 
-    public Stream<Logger> getLoggers() {
+    public Collection<Logger> getLoggers() {
         readLock.lock();
         try {
+            // Return a new collection to allow concurrent iteration over the loggers
+            //
+            // https://github.com/apache/logging-log4j2/issues/3234
             return loggerRefByNameByMessageFactory.values().stream()
                     .flatMap(loggerRefByName -> loggerRefByName.values().stream())
                     .flatMap(loggerRef -> {
                         @Nullable Logger logger = loggerRef.get();
                         return logger != null ? Stream.of(logger) : Stream.empty();
-                    });
+                    })
+                    .collect(Collectors.toList());
         } finally {
             readLock.unlock();
         }

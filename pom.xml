@@ -309,9 +309,9 @@
     <!-- project version -->
     <revision>2.25.0-SNAPSHOT</revision>
     <!-- Versions used on the site: no snapshots! -->
-    <site-log4j-api.version>2.24.2</site-log4j-api.version>
-    <site-log4j-core.version>2.24.2</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.24.2</site-log4j-layout-template-json.version>
+    <site-log4j-api.version>2.24.3</site-log4j-api.version>
+    <site-log4j-core.version>2.24.3</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.24.3</site-log4j-layout-template-json.version>
 
     <!-- =================
          Common properties
@@ -325,7 +325,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2024-11-18T20:27:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-12-10T10:15:05Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
