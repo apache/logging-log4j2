@@ -716,9 +716,9 @@ In xref:#appender-additivity-diagram[xrefstyle=short], the effective appenders f
 
 | `root`
 | ✅
-| ✅
-| ✅
-| ✅
+| ❌
+| ❌
+| ❌
 | ✅
 | ❌
 
