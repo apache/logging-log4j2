@@ -146,7 +146,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.6</asm.version>
-    <byte-buddy.version>1.15.10</byte-buddy.version>
+    <byte-buddy.version>1.15.11</byte-buddy.version>
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
