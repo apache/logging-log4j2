@@ -16,14 +16,19 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.Reader;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LoggerBufferedReaderTest extends LoggerReaderTest {
     private BufferedReader bufferedReader;
+
+    LoggerBufferedReaderTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected Reader createReader() {
@@ -36,9 +41,9 @@ public class LoggerBufferedReaderTest extends LoggerReaderTest {
 
     @Test
     public void testReadLine() throws Exception {
-        assertEquals("first line", FIRST, this.bufferedReader.readLine());
+        assertEquals(FIRST, this.bufferedReader.readLine(), "first line");
         assertMessages(FIRST);
-        assertEquals("second line", LAST, this.bufferedReader.readLine());
+        assertEquals(LAST, this.bufferedReader.readLine(), "second line");
         assertMessages(FIRST, LAST);
     }
 }
