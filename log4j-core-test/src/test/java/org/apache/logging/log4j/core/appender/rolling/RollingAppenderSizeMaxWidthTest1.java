@@ -14,31 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.test;
+package org.apache.logging.log4j.core.appender.rolling;
 
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 
-/**
- * Builds JUnit {@link RuleChain}s.
- */
-public class RuleChainFactory {
+@LoggerContextSource("log4j-rolling-size-max-width-1.xml")
+public class RollingAppenderSizeMaxWidthTest1 extends RollingAppenderSizeMaxWidthTest {
 
-    /**
-     * Creates a {@link RuleChain} where the rules are evaluated in the order you pass in.
-     *
-     * @param testRules
-     *            test rules to evaluate
-     * @return a new rule chain.
-     */
-    public static RuleChain create(final TestRule... testRules) {
-        if (testRules == null || testRules.length == 0) {
-            return RuleChain.emptyRuleChain();
-        }
-        RuleChain ruleChain = RuleChain.outerRule(testRules[0]);
-        for (int i = 1; i < testRules.length; i++) {
-            ruleChain = ruleChain.around(testRules[i]);
-        }
-        return ruleChain;
+    public RollingAppenderSizeMaxWidthTest1(LoggerContext context) {
+        super(context);
     }
 }

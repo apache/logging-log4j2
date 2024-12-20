@@ -21,30 +21,31 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
-import org.junit.Before;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  *
  */
+@LoggerContextSource("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-h2-factory-method.xml")
 public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
 
     public JdbcAppenderH2FactoryMethodTest() {
-        super(
-                new JdbcRule(
-                        JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
-                        "CREATE TABLE fmLogEntry ("
-                                + "id INTEGER, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
-                                + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
-                        "DROP TABLE IF EXISTS fmLogEntry"),
-                "h2");
+        super(new JdbcRule(
+                JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+                "CREATE TABLE fmLogEntry ("
+                        + "id INTEGER, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
+                        + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
+                "DROP TABLE IF EXISTS fmLogEntry"));
     }
 
-    @Before
+    @AfterEach
     public void afterEachDeleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }
 
-    @Before
+    @BeforeEach
     public void beforeEachDeleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }
