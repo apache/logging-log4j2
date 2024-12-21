@@ -18,6 +18,7 @@ package org.apache.logging.log4j.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -54,9 +55,45 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         @PluginAttribute("capped")
         private boolean capped = false;
 
+        @PluginAttribute("collectionName")
+        private String collectionName;
+
+        @PluginAttribute("databaseName")
+        private String databaseName;
+
         @Override
         public MongoDbProvider build() {
-            return new MongoDbProvider(connectionStringSource, capped, collectionSize);
+
+            LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
+            final ConnectionString connectionString;
+            try {
+                connectionString = new ConnectionString(connectionStringSource);
+            } catch (final IllegalArgumentException exception) {
+                final String message = String.format("Invalid MongoDB connection string `%s`.", connectionStringSource);
+                throw new IllegalArgumentException(message, exception);
+            }
+
+            // Validate the provided databaseName property
+            final String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
+            try {
+                MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
+            } catch (final IllegalArgumentException exception) {
+                final String message = String.format("Invalid MongoDB database name `%s`.", effectiveDatabaseName);
+                throw new IllegalArgumentException(message, exception);
+            }
+
+            // Validate the provided collectionName property
+            final String effectiveCollectionName =
+                    collectionName != null ? collectionName : connectionString.getCollection();
+            try {
+                MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+            } catch (final IllegalArgumentException exception) {
+                final String message = String.format("Invalid MongoDB collection name `%s`.", effectiveCollectionName);
+                throw new IllegalArgumentException(message, exception);
+            }
+
+            return new MongoDbProvider(
+                    connectionString, capped, collectionSize, effectiveDatabaseName, effectiveCollectionName);
         }
 
         public B setConnectionStringSource(final String connectionStringSource) {
@@ -71,6 +108,16 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
         public B setCollectionSize(final long collectionSize) {
             this.collectionSize = collectionSize;
+            return asBuilder();
+        }
+
+        public B setCollectionName(final String collectionName) {
+            this.collectionName = collectionName;
+            return asBuilder();
+        }
+
+        public B setDatabaseName(final String databaseName) {
+            this.databaseName = databaseName;
             return asBuilder();
         }
     }
@@ -94,18 +141,24 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     private final Long collectionSize;
     private final boolean isCapped;
+    private final String collectionName;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDbProvider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
-        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
-        this.connectionString = new ConnectionString(connectionStringSource);
+    private MongoDbProvider(
+            final ConnectionString connectionString,
+            final boolean isCapped,
+            final Long collectionSize,
+            final String databaseName,
+            final String collectionName) {
+
         LOGGER.debug("Created ConnectionString {}", connectionString);
+        this.connectionString = connectionString;
         LOGGER.debug("Creating MongoClientSettings...");
         // @formatter:off
         final MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(this.connectionString)
+                .applyConnectionString(connectionString)
                 .codecRegistry(CODEC_REGISTRIES)
                 .build();
         // @formatter:on
@@ -113,28 +166,29 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        final String databaseName = this.connectionString.getDatabase();
         LOGGER.debug("Getting MongoDatabase {}...", databaseName);
         this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+        this.collectionName = collectionName;
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
     }
 
     @Override
     public MongoDbConnection getConnection() {
-        return new MongoDbConnection(connectionString, mongoClient, mongoDatabase, isCapped, collectionSize);
+        return new MongoDbConnection(mongoClient, mongoDatabase, collectionName, isCapped, collectionSize);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s]",
+                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s, collectionName=%s]",
                 MongoDbProvider.class.getSimpleName(),
                 connectionString,
                 collectionSize,
                 isCapped,
                 mongoClient,
-                mongoDatabase);
+                mongoDatabase,
+                collectionName);
     }
 }

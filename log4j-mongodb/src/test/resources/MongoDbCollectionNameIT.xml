@@ -22,18 +22,16 @@
                    https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
     <NoSql name="MONGO">
-      <!-- collectionSize="2147483657" is max int + 10 -->
       <MongoDb
-        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}"
-        databaseName="testDb"
-        collectionName="MongoDbCappedLongIT"
+        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb"
         capped="true"
-        collectionSize="2147483657"/>
+        collectionSize="1073741824"
+        collectionName="MongoDbCollectionNameIT"/>
     </NoSql>
   </Appenders>
   <Loggers>
     <Root level="ALL">
-      <AppenderRef ref="MONGO" />
+      <AppenderRef ref="MONGO"/>
     </Root>
   </Loggers>
 </Configuration>
