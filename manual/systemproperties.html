@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Configuration properties :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/systemproperties.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.6">
+    <meta name="generator" content="Antora 3.2.0-alpha.8">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -724,25 +724,21 @@ implementation to use.</p>
 <dl>
 <dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html"><code>org.apache.logging.log4j.core.selector.BasicContextSelector</code></a></dt>
 <dd>
-<p>Creates a single logger context and synchronous loggers</p>
+<p>Creates a single logger context and synchronous loggers.</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</code></a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.async.logger.BasicAsyncLoggerContextSelector</code></a></dt>
 <dd>
-<p>Creates a single logger context and <a href="async.html" class="xref page">asynchronous loggers</a></p>
+<p>Creates a single logger context and <a href="async.html" class="xref page">asynchronous loggers</a>.</p>
 </dd>
 <dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html"><code>org.apache.logging.log4j.core.selector.ClassLoaderContextSelector</code></a></dt>
 <dd>
-<p>Creates a separate logger context per classloader and synchronous loggers</p>
+<p>Creates a separate logger context per classloader and synchronous loggers.</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</code></a></dt>
+<dt class="hdlist1"><a href="../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html"><code>org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector</code></a></dt>
 <dd>
-<p>Creates a separate logger context per classloader and <a href="async.html" class="xref page">asynchronous loggers</a></p>
+<p>Creates a separate logger context per classloader and <a href="async.html" class="xref page">asynchronous loggers</a>.</p>
 </dd>
-<dt class="hdlist1"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html"><code>org.apache.logging.log4j.core.osgi.BundleContextSelector</code></a></dt>
-<dd>
-<p>Creates a separate logger context per OSGi bundle and synchronous loggers</p>
-</dd>
-<dt class="hdlist1">org.apache.logging.log4j.jndi.selector.JndiContextSelector</dt>
+<dt class="hdlist1"><code>org.apache.logging.log4j.jndi.selector.JndiContextSelector</code></dt>
 <dd>
 <p>Creates loggers contexts based on a JNDI lookup and synchronous loggers.
 See
