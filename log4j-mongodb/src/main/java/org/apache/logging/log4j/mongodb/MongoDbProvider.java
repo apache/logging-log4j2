@@ -54,9 +54,15 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         @PluginAttribute("capped")
         private boolean capped = false;
 
+        @PluginAttribute("collectionName")
+        private String collectionName = null;
+
+        @PluginAttribute("datbaseName")
+        private String databaseName = null;
+
         @Override
         public MongoDbProvider build() {
-            return new MongoDbProvider(connectionStringSource, capped, collectionSize);
+            return new MongoDbProvider(connectionStringSource, capped, collectionSize, databaseName, collectionName);
         }
 
         public B setConnectionStringSource(final String connectionStringSource) {
@@ -71,6 +77,16 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
         public B setCollectionSize(final long collectionSize) {
             this.collectionSize = collectionSize;
+            return asBuilder();
+        }
+
+        public B setCollectionName(final String collectionName) {
+            this.collectionName = collectionName;
+            return asBuilder();
+        }
+
+        public B setDatabaseName(final String databaseName) {
+            this.databaseName = databaseName;
             return asBuilder();
         }
     }
@@ -94,11 +110,13 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
     private final Long collectionSize;
     private final boolean isCapped;
+    private final String collectionName;
+    private final String databaseName;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDbProvider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
+    private MongoDbProvider(final String connectionStringSource, final boolean isCapped, final Long collectionSize, final String databaseName, final String collectionName) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -113,10 +131,19 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        final String databaseName = this.connectionString.getDatabase();
-        LOGGER.debug("Getting MongoDatabase {}...", databaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
+        if (databaseName == null || databaseName.isEmpty()) {
+            this.databaseName = this.connectionString.getDatabase();
+        } else {
+            this.databaseName = databaseName;
+        }
+        LOGGER.debug("Getting MongoDatabase {}...", this.databaseName);
+        this.mongoDatabase = this.mongoClient.getDatabase(this.databaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+        if (collectionName == null || collectionName.isEmpty()) {
+            this.collectionName = this.connectionString.getCollection();
+        } else {
+            this.collectionName = collectionName;
+        }
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
     }
