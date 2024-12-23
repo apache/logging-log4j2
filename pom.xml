@@ -320,7 +320,7 @@
     <project.build.outputTimestamp>2024-11-09T05:50:28Z</project.build.outputTimestamp>
 
     <!-- Version of Log4j API required -->
-    <log4j-api.version>2.24.2</log4j-api.version>
+    <log4j-api.version>2.24.3</log4j-api.version>
 
     <!-- ========================
          Site-specific properties
