@@ -116,7 +116,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDbProvider(final String connectionStringSource, final boolean isCapped, final Long collectionSize, final String databaseName, final String collectionName) {
+    private MongoDbProvider(
+            final String connectionStringSource,
+            final boolean isCapped,
+            final Long collectionSize,
+            final String databaseName,
+            final String collectionName) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
