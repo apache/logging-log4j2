@@ -18,11 +18,11 @@
 = Development
 
 This page shares information related to the development of Log4j.
-Content is aimed for users who want to contribute source code patches and maintainers.
+This content targets users who want to contribute source code patches and maintainers.
 
 [TIP]
 ====
-Do you need help for setting up or configuring Log4j?
+Do you need help setting up or configuring Log4j?
 Please refer to {logging-services-url}/support.html[the Support page] instead.
 ====
 
@@ -45,7 +45,7 @@ Please refer to {logging-services-url}/support.html[the Support page] for the co
 [#branching]
 == Branching scheme
 
-The following branching scheme is followed:
+We follow the following branching scheme:
 
 `2.x`:: The most recent Log4j 2 code
 
@@ -54,7 +54,7 @@ The following branching scheme is followed:
 `<sourceBranch>-site-<environment>`::
 `<sourceBranch>-site-<environment>-out`::
 Branches used to serve the staging and production websites.
-`out`-suffixed ones are automatically populated by CI, you are not supposed to touch them.
+CI automatically populates `out`-suffixed ones; you are not supposed to touch them.
 See {logging-services-url}/logging-parent/usage.html#website[the Logging Parent website] for details.
 
 `release/<version>`::
@@ -73,9 +73,9 @@ See {project-github-url}/FUZZING.adoc[the fuzzing instructions].
 [#contributor]
 == I am **not** a committer. How shall I submit a patch?
 
-. Is this a _trivial fix_ such as code or documentation typo?
+. Is this a _trivial fix_ such as a code or documentation typo?
 Simply submit a pull request.
-Changelog entry is not needed and make sure `./mvnw verify site` succeeds.
+A Changelog entry is unnecessary. Please ensure that `./mvnw verify site` succeeds.
 
 . Is this a _non-trivial fix_ or a _new feature_?
 Pitch it in a {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channel] and ask for assistance.
@@ -87,11 +87,11 @@ Pitch it in a {logging-services-url}/support.html#discussions-maintainer[maintai
 Go ahead and push it.
 
 . Otherwise, submit a pull request.
-Make sure a changelog entry is attached and `./mvnw verify site` succeeds.
+Ensure a changelog entry is attached and `./mvnw verify site` succeeds.
 +
 [TIP]
 ====
-You are strongly advised to spar with another maintainer first (see {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channels]) before starting to code.
+We strongly advise you to spar with another maintainer first (see {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channels]) before starting to code.
 ====
 
 [#release-project]
@@ -99,7 +99,7 @@ You are strongly advised to spar with another maintainer first (see {logging-ser
 
 All Maven-based Logging Services projects are parented by
 {logging-services-url}/logging-parent/index.html[Logging Parent],
-which streamlines several project-wide processes, including making a new release.
+streamlining several project-wide processes, including making a new release.
 See {logging-services-url}/logging-parent/release-instructions-project.html[its release instructions for projects].
 
 [#release-xml-schema]
@@ -107,12 +107,12 @@ See {logging-services-url}/logging-parent/release-instructions-project.html[its 
 
 All Maven-based Logging Services projects are parented by
 {logging-services-url}/logging-parent/index.html[Logging Parent],
-which streamlines several project-wide processes, including publishing XML schemas.
+streamlining several project-wide processes, including publishing XML schemas.
 See {logging-services-url}/logging-parent/release-instructions-xml-schema.html[its release instructions for XML schemas].
 
 [WARNING]
 ====
 **Projects and XML schemas have different lifecycles!**
-A new release of a project does not necessarily mean a new release of its XML schemas.
-XML schemas might have been untouched, or they might contain minor changes while the project itself contains breaking changes, etc.
+A project's new release does not necessarily mean a new release of its XML schemas.
+XML schemas might have been untouched or contain minor changes, while the project contains breaking changes, etc.
 ====
