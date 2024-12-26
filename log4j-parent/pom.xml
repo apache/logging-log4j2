@@ -119,7 +119,7 @@
     <logback.version>1.3.14</logback.version>
     <maven.version>3.9.9</maven.version>
     <mockito.version>4.11.0</mockito.version>
-    <nashorn.version>15.5</nashorn.version>
+    <nashorn.version>15.6</nashorn.version>
     <org.eclipse.osgi.version>3.22.0</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.15</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
