@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util.internal.instant;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.sequencePattern;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,10 +31,9 @@ import java.util.TimeZone;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.CompositePatternSequence;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DynamicPatternSequence;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternSequence;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DateTimeFormatterPatternFormatterFactory;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternFormatterFactory;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.SecondPatternFormatterFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -47,8 +45,10 @@ class InstantPatternDynamicFormatterTest {
     @ParameterizedTest
     @MethodSource("sequencingTestCases")
     void sequencing_should_work(
-            final String pattern, final ChronoUnit thresholdPrecision, final List<PatternSequence> expectedSequences) {
-        final List<PatternSequence> actualSequences = sequencePattern(pattern, thresholdPrecision);
+            final String pattern,
+            final ChronoUnit thresholdPrecision,
+            final List<PatternFormatterFactory> expectedSequences) {
+        final List<PatternFormatterFactory> actualSequences = sequencePattern(pattern, thresholdPrecision);
         assertThat(actualSequences).isEqualTo(expectedSequences);
     }
 
@@ -56,25 +56,19 @@ class InstantPatternDynamicFormatterTest {
         final List<Arguments> testCases = new ArrayList<>();
 
         // `SSSX` should be treated constant for daily updates
-        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, singletonList(pCom(pDyn("SSS"), pDyn("X")))));
+        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, asList(pMilliSec(), pDyn("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated hourly
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.HOURS,
-                asList(
-                        pCom(pDyn("yyyy"), pDyn("MM"), pDyn("dd"), pDyn("HH")),
-                        pCom(pDyn("mm"), pDyn("ss"), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyyMMddHH", ChronoUnit.HOURS), pDyn("mm"), pSec("", 3), pDyn("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated per minute
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.MINUTES,
-                asList(
-                        pCom(pDyn("yyyy"), pDyn("MM"), pDyn("dd"), pDyn("HH"), pDyn("mm")),
-                        pCom(pDyn("ss"), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec("", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated daily
         final String iso8601InstantPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
@@ -82,77 +76,50 @@ class InstantPatternDynamicFormatterTest {
                 iso8601InstantPattern,
                 ChronoUnit.DAYS,
                 asList(
-                        pCom(pDyn("yyyy"), pSta("-"), pDyn("MM"), pSta("-"), pDyn("dd"), pSta("T")),
-                        pCom(
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":"),
-                                pDyn("ss"),
-                                pSta("."),
-                                pDyn("SSS"),
-                                pDyn("X")))));
+                        pDyn("yyyy'-'MM'-'dd'T'", ChronoUnit.DAYS),
+                        pDyn("HH':'mm':'", ChronoUnit.MINUTES),
+                        pSec(".", 3),
+                        pDyn("X"))));
 
         // ISO9601 instant cache updated per minute
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.MINUTES,
-                asList(
-                        pCom(
-                                pDyn("yyyy"),
-                                pSta("-"),
-                                pDyn("MM"),
-                                pSta("-"),
-                                pDyn("dd"),
-                                pSta("T"),
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":")),
-                        pCom(pDyn("ss"), pSta("."), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated per second
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.SECONDS,
-                asList(
-                        pCom(
-                                pDyn("yyyy"),
-                                pSta("-"),
-                                pDyn("MM"),
-                                pSta("-"),
-                                pDyn("dd"),
-                                pSta("T"),
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":"),
-                                pDyn("ss"),
-                                pSta(".")),
-                        pDyn("SSS"),
-                        pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
+
+        // Seconds and micros
+        testCases.add(Arguments.of(
+                "HH:mm:ss.SSSSSS", ChronoUnit.MINUTES, asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 6))));
 
         return testCases;
     }
 
-    private static CompositePatternSequence pCom(final PatternSequence... sequences) {
-        return new CompositePatternSequence(asList(sequences));
+    private static DateTimeFormatterPatternFormatterFactory pDyn(final String pattern) {
+        return new DateTimeFormatterPatternFormatterFactory(pattern);
     }
 
-    private static DynamicPatternSequence pDyn(final String pattern) {
-        return new DynamicPatternSequence(pattern);
+    private static DateTimeFormatterPatternFormatterFactory pDyn(final String pattern, final ChronoUnit precision) {
+        return new DateTimeFormatterPatternFormatterFactory(pattern, precision);
     }
 
-    private static StaticPatternSequence pSta(final String literal) {
-        return new StaticPatternSequence(literal);
+    private static SecondPatternFormatterFactory pSec(String separator, int fractionalDigits) {
+        return new SecondPatternFormatterFactory(true, separator, fractionalDigits);
+    }
+
+    private static SecondPatternFormatterFactory pMilliSec() {
+        return new SecondPatternFormatterFactory(false, "", 3);
     }
 
     @ParameterizedTest
     @ValueSource(
             strings = {
                 // Basics
-                "S",
                 "SSSSSSS",
                 "SSSSSSSSS",
                 "n",
@@ -163,8 +130,7 @@ class InstantPatternDynamicFormatterTest {
                 "yyyy-MM-dd HH:mm:ss,SSSSSSS",
                 "yyyy-MM-dd HH:mm:ss,SSSSSSSS",
                 "yyyy-MM-dd HH:mm:ss,SSSSSSSSS",
-                "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS",
-                "yyyy-MM-dd'T'HH:mm:ss.SXXX"
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"
             })
     void should_recognize_patterns_of_nano_precision(final String pattern) {
         assertPatternPrecision(pattern, ChronoUnit.NANOS);
@@ -351,7 +317,9 @@ class InstantPatternDynamicFormatterTest {
 
     private static MutableInstant randomInstant() {
         final MutableInstant instant = new MutableInstant();
-        final long epochSecond = RANDOM.nextInt(1_621_280_470); // 2021-05-17 21:41:10
+        // In the 1970's some time zones had sub-minute offsets to UTC, e.g., Africa/Monrovia
+        final int startEighties = 315_532_800;
+        final long epochSecond = startEighties + RANDOM.nextInt(1_621_280_470 - startEighties); // 2021-05-17 21:41:10
         final int epochSecondNano = randomNanos();
         instant.initFromEpochSecond(epochSecond, epochSecondNano);
         return instant;

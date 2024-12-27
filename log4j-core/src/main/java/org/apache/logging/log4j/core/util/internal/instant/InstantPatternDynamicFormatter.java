@@ -29,10 +29,11 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -164,7 +165,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             final Instant creationInstant) {
 
         // Sequence the pattern and create associated formatters
-        final List<PatternSequence> sequences = sequencePattern(pattern, precisionThreshold);
+        final List<PatternFormatterFactory> sequences = sequencePattern(pattern, precisionThreshold);
         final List<InstantPatternFormatter> formatters = sequences.stream()
                 .map(sequence -> {
                     final InstantPatternFormatter formatter = sequence.createFormatter(locale, timeZone);
@@ -204,7 +205,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
                 // Combine all extracted formatters into one
             default:
-                final ChronoUnit precision = new CompositePatternSequence(sequences).precision;
+                final ChronoUnit precision = formatters.stream()
+                        .map(InstantFormatter::getPrecision)
+                        .min(Comparator.comparing(ChronoUnit::getDuration))
+                        .get();
                 return new AbstractFormatter(pattern, locale, timeZone, precision) {
                     @Override
                     public void formatTo(final StringBuilder buffer, final Instant instant) {
@@ -218,17 +222,27 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
     }
 
-    static List<PatternSequence> sequencePattern(final String pattern, final ChronoUnit precisionThreshold) {
-        List<PatternSequence> sequences = sequencePattern(pattern);
-        final List<PatternSequence> mergedSequences = mergeDynamicSequences(sequences, precisionThreshold);
-        return mergeConsequentEffectivelyConstantSequences(mergedSequences, precisionThreshold);
+    static List<PatternFormatterFactory> sequencePattern(final String pattern, final ChronoUnit precisionThreshold) {
+        List<PatternFormatterFactory> sequences = sequencePattern(pattern, (l, p) -> {
+            switch (l) {
+                case 's':
+                    return new SecondPatternFormatterFactory(true, "", 0);
+                case 'S':
+                    return new SecondPatternFormatterFactory(false, "", p.length());
+                default:
+                    return new DateTimeFormatterPatternFormatterFactory(p);
+            }
+        });
+        return mergeFactories(sequences, precisionThreshold);
     }
 
-    private static List<PatternSequence> sequencePattern(final String pattern) {
+    static List<PatternFormatterFactory> sequencePattern(
+            final String pattern,
+            BiFunction<Character, String, PatternFormatterFactory> dynamicFormatterFactoryProvider) {
         if (pattern.isEmpty()) {
             return Collections.emptyList();
         }
-        final List<PatternSequence> sequences = new ArrayList<>();
+        final List<PatternFormatterFactory> sequences = new ArrayList<>();
         for (int startIndex = 0; startIndex < pattern.length(); ) {
             final char c = pattern.charAt(startIndex);
 
@@ -240,7 +254,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     endIndex++;
                 }
                 final String sequenceContent = pattern.substring(startIndex, endIndex);
-                final PatternSequence sequence = new DynamicPatternSequence(sequenceContent);
+                final PatternFormatterFactory sequence = dynamicFormatterFactoryProvider.apply(c, sequenceContent);
                 sequences.add(sequence);
                 startIndex = endIndex;
             }
@@ -256,19 +270,19 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 }
                 final String sequenceLiteral =
                         (startIndex + 1) == endIndex ? "'" : pattern.substring(startIndex + 1, endIndex);
-                final PatternSequence sequence = new StaticPatternSequence(sequenceLiteral);
+                final PatternFormatterFactory sequence = new StaticPatternFormatterFactory(sequenceLiteral);
                 sequences.add(sequence);
                 startIndex = endIndex + 1;
             }
 
             // Handle unknown literal
             else {
-                final PatternSequence sequence = new StaticPatternSequence("" + c);
+                final PatternFormatterFactory sequence = new StaticPatternFormatterFactory("" + c);
                 sequences.add(sequence);
                 startIndex++;
             }
         }
-        return mergeConsequentStaticPatternSequences(sequences);
+        return sequences;
     }
 
     private static boolean isDynamicPatternLetter(final char c) {
@@ -276,110 +290,15 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     }
 
     /**
-     * Merges consequent static sequences.
+     * Merges sequences of formatter factories using {@link PatternFormatterFactory#tryMerge}.
      *
      * <p>
-     * For example, the sequencing of the {@code [MM-dd] HH:mm} pattern will create two static sequences for {@code ]} (right brace) and {@code } (whitespace) characters.
-     * This method will combine such consequent static sequences into one.
+     * For example, given the {@code yyyy-MM-dd'T'HH:mm:ss.SSS} pattern and a precision threshold of {@link ChronoUnit#MINUTES},
+     * this method will combine sequences associated with {@code yyyy-MM-dd'T'HH:mm:} into a single sequence,
+     * since these are consequent and effectively constant sequences.
      * </p>
      *
      * <h2>Example</h2>
-     *
-     * <p>
-     * The {@code [MM-dd] HH:mm} pattern will result in following sequences:
-     * </p>
-     *
-     * <pre>{@code
-     * [
-     *     static(literal="["),
-     *     dynamic(pattern="MM", precision=MONTHS),
-     *     static(literal="-"),
-     *     dynamic(pattern="dd", precision=DAYS),
-     *     static(literal="]"),
-     *     static(literal=" "),
-     *     dynamic(pattern="HH", precision=HOURS),
-     *     static(literal=":"),
-     *     dynamic(pattern="mm", precision=MINUTES)
-     * ]
-     * }</pre>
-     *
-     * <p>
-     * The above sequencing implies creation of 9 {@link AbstractFormatter}s.
-     * This method transforms it to the following:
-     * </p>
-     *
-     * <pre>{@code
-     * [
-     *     static(literal="["),
-     *     dynamic(pattern="MM", precision=MONTHS),
-     *     static(literal="-"),
-     *     dynamic(pattern="dd", precision=DAYS),
-     *     static(literal="] "),
-     *     dynamic(pattern="HH", precision=HOURS),
-     *     static(literal=":"),
-     *     dynamic(pattern="mm", precision=MINUTES)
-     * ]
-     * }</pre>
-     *
-     * <p>
-     * The above sequencing implies creation of 8 {@link AbstractFormatter}s.
-     * </p>
-     *
-     * @param sequences sequences to be transformed
-     * @return transformed sequencing where consequent static sequences are merged
-     */
-    private static List<PatternSequence> mergeConsequentStaticPatternSequences(final List<PatternSequence> sequences) {
-
-        // Short-circuit if there is nothing to merge
-        if (sequences.size() < 2) {
-            return sequences;
-        }
-
-        final List<PatternSequence> mergedSequences = new ArrayList<>();
-        final List<StaticPatternSequence> accumulatedSequences = new ArrayList<>();
-        for (final PatternSequence sequence : sequences) {
-
-            // Spotted a static sequence? Stage it for merging.
-            if (sequence instanceof StaticPatternSequence) {
-                accumulatedSequences.add((StaticPatternSequence) sequence);
-            }
-
-            // Spotted a dynamic sequence.
-            // Merge the accumulated static sequences, and then append the dynamic sequence.
-            else {
-                mergeConsequentStaticPatternSequences(mergedSequences, accumulatedSequences);
-                mergedSequences.add(sequence);
-            }
-        }
-
-        // Merge leftover static sequences
-        mergeConsequentStaticPatternSequences(mergedSequences, accumulatedSequences);
-        return mergedSequences;
-    }
-
-    private static void mergeConsequentStaticPatternSequences(
-            final List<PatternSequence> mergedSequences, final List<StaticPatternSequence> accumulatedSequences) {
-        mergeAccumulatedSequences(mergedSequences, accumulatedSequences, () -> {
-            final String literal = accumulatedSequences.stream()
-                    .map(sequence -> sequence.literal)
-                    .collect(Collectors.joining());
-            return new StaticPatternSequence(literal);
-        });
-    }
-
-    /**
-     * Merges the sequences in between the first and the last found dynamic (i.e., non-constant) sequences.
-     *
-     * <p>
-     * For example, given the {@code ss.SSS} pattern – where {@code ss} and {@code SSS} is effectively not constant, yet {@code .} is – this method will combine it into a single dynamic sequence.
-     * Because, as demonstrated in {@code DateTimeFormatterSequencingBenchmark}, formatting {@code ss.SSS} is approximately 20% faster than formatting first {@code ss}, then manually appending a {@code .}, and then formatting {@code SSS}.
-     * </p>
-     *
-     * <h2>Example</h2>
-     *
-     * <p>
-     * Assume {@link #mergeConsequentStaticPatternSequences(List)} produced the following:
-     * </p>
      *
      * <pre>{@code
      * [
@@ -395,115 +314,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
      *     static(literal=":"),
      *     dynamic(pattern="ss", precision=SECONDS),
      *     static(literal="."),
-     *     dynamic(pattern="SSS", precision=MILLISECONDS),
-     *     dynamic(pattern="X", precision=HOURS),
-     * ]
-     * }</pre>
-     *
-     * <p>
-     * For a threshold precision of {@link ChronoUnit#MINUTES}, this sequencing effectively translates to two {@link DateTimeFormatter#formatTo(TemporalAccessor, Appendable)} invocations for each {@link #formatTo(StringBuilder, Instant)} call: one for {@code ss}, and another one for {@code SSS}.
-     * This method transforms the above sequencing into the following:
-     * </p>
-     *
-     * <pre>{@code
-     * [
-     *     dynamic(pattern="yyyy", precision=YEARS),
-     *     static(literal="-"),
-     *     dynamic(pattern="MM", precision=MONTHS),
-     *     static(literal="-"),
-     *     dynamic(pattern="dd", precision=DAYS),
-     *     static(literal="T"),
-     *     dynamic(pattern="HH", precision=HOURS),
-     *     static(literal=":"),
-     *     dynamic(pattern="mm", precision=MINUTES),
-     *     static(literal=":"),
-     *     composite(
-     *         sequences=[
-     *             dynamic(pattern="ss", precision=SECONDS),
-     *             static(literal="."),
-     *             dynamic(pattern="SSS", precision=MILLISECONDS)
-     *         ],
-     *         precision=MILLISECONDS),
-     *     dynamic(pattern="X", precision=HOURS),
-     * ]
-     * }</pre>
-     *
-     * <p>
-     * The resultant sequencing effectively translates to a single {@link DateTimeFormatter#formatTo(TemporalAccessor, Appendable)} invocation for each {@link #formatTo(StringBuilder, Instant)} call: only one fore {@code ss.SSS}.
-     * </p>
-     *
-     * @param sequences sequences, preferable produced by {@link #mergeConsequentStaticPatternSequences(List)}, to be transformed
-     * @param precisionThreshold  a precision threshold to determine dynamic (i.e., non-constant) sequences
-     * @return transformed sequencing where sequences in between the first and the last found dynamic (i.e., non-constant) sequences are merged
-     */
-    private static List<PatternSequence> mergeDynamicSequences(
-            final List<PatternSequence> sequences, final ChronoUnit precisionThreshold) {
-
-        // Locate the first and the last dynamic (i.e., non-constant) sequence indices
-        int firstDynamicSequenceIndex = -1;
-        int lastDynamicSequenceIndex = -1;
-        for (int sequenceIndex = 0; sequenceIndex < sequences.size(); sequenceIndex++) {
-            final PatternSequence sequence = sequences.get(sequenceIndex);
-            final boolean constant = sequence.isConstantForDurationOf(precisionThreshold);
-            if (!constant) {
-                if (firstDynamicSequenceIndex < 0) {
-                    firstDynamicSequenceIndex = sequenceIndex;
-                }
-                lastDynamicSequenceIndex = sequenceIndex;
-            }
-        }
-
-        // Short-circuit if there are less than 2 dynamic sequences
-        if (firstDynamicSequenceIndex < 0 || firstDynamicSequenceIndex == lastDynamicSequenceIndex) {
-            return sequences;
-        }
-
-        // Merge dynamic sequences
-        final List<PatternSequence> mergedSequences = new ArrayList<>();
-        if (firstDynamicSequenceIndex > 0) {
-            mergedSequences.addAll(sequences.subList(0, firstDynamicSequenceIndex));
-        }
-        final PatternSequence mergedDynamicSequence = new CompositePatternSequence(
-                sequences.subList(firstDynamicSequenceIndex, lastDynamicSequenceIndex + 1));
-        mergedSequences.add(mergedDynamicSequence);
-        if ((lastDynamicSequenceIndex + 1) < sequences.size()) {
-            mergedSequences.addAll(sequences.subList(lastDynamicSequenceIndex + 1, sequences.size()));
-        }
-        return mergedSequences;
-    }
-
-    /**
-     * Merges sequences that are consequent and effectively constant for the provided precision threshold.
-     *
-     * <p>
-     * For example, given the {@code yyyy-MM-dd'T'HH:mm:ss.SSS} pattern and a precision threshold of {@link ChronoUnit#MINUTES}, this method will combine sequences associated with {@code yyyy-MM-dd'T'HH:mm:} into a single sequence, since these are consequent and effectively constant sequences.
-     * </p>
-     *
-     * <h2>Example</h2>
-     *
-     * <p>
-     * Assume {@link #mergeDynamicSequences(List, ChronoUnit)} produced the following:
-     * </p>
-     *
-     * <pre>{@code
-     * [
-     *     dynamic(pattern="yyyy", precision=YEARS),
-     *     static(literal="-"),
-     *     dynamic(pattern="MM", precision=MONTHS),
-     *     static(literal="-"),
-     *     dynamic(pattern="dd", precision=DAYS),
-     *     static(literal="T"),
-     *     dynamic(pattern="HH", precision=HOURS),
-     *     static(literal=":"),
-     *     dynamic(pattern="mm", precision=MINUTES),
-     *     static(literal=":"),
-     *     composite(
-     *         sequences=[
-     *             dynamic(pattern="ss", precision=SECONDS),
-     *             static(literal="."),
-     *             dynamic(pattern="SSS", precision=MILLISECONDS)
-     *         ],
-     *         precision=MILLISECONDS),
+     *     dynamic(pattern="SSS", precision=MILLISECONDS)
      *     dynamic(pattern="X", precision=HOURS),
      * ]
      * }</pre>
@@ -515,28 +326,9 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
      *
      * <pre>{@code
      * [
-     *     composite(
-     *         sequences=[
-     *             dynamic(pattern="yyyy", precision=YEARS),
-     *             static(literal="-"),
-     *             dynamic(pattern="MM", precision=MONTHS),
-     *             static(literal="-"),
-     *             dynamic(pattern="dd", precision=DAYS),
-     *             static(literal="T"),
-     *             dynamic(pattern="HH", precision=HOURS),
-     *             static(literal=":"),
-     *             dynamic(pattern="mm", precision=MINUTES),
-     *             static(literal=":")
-     *         ],
-     *         precision=MINUTES),
-     *     composite(
-     *         sequences=[
-     *             dynamic(pattern="ss", precision=SECONDS),
-     *             static(literal="."),
-     *             dynamic(pattern="SSS", precision=MILLISECONDS)
-     *         ],
-     *         precision=MILLISECONDS),
-     *     dynamic(pattern="X", precision=HOURS),
+     *     dynamic(pattern="yyyy-MM-dd'T'HH:mm", precision=MINUTES),
+     *     dynamic(pattern="ss.SSS", precision=MILLISECONDS),
+     *     dynamic(pattern="X", precision=MINUTES)
      * ]
      * }</pre>
      *
@@ -544,52 +336,30 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
      * The resultant sequencing effectively translates to 3 {@link AbstractFormatter}s.
      * </p>
      *
-     * @param sequences sequences, preferable produced by {@link #mergeDynamicSequences(List, ChronoUnit)}, to be transformed
+     * @param sequences a list of pattern formatter factories
      * @param precisionThreshold  a precision threshold to determine effectively constant sequences
-     * @return transformed sequencing where sequences that are consequent and effectively constant for the provided precision threshold are merged
+     * @return transformed sequencing, where sequences that are effectively constant or effectively dynamic are merged.
      */
-    private static List<PatternSequence> mergeConsequentEffectivelyConstantSequences(
-            final List<PatternSequence> sequences, final ChronoUnit precisionThreshold) {
-
-        // Short-circuit if there is nothing to merge
+    private static List<PatternFormatterFactory> mergeFactories(
+            final List<PatternFormatterFactory> sequences, final ChronoUnit precisionThreshold) {
         if (sequences.size() < 2) {
             return sequences;
         }
-
-        final List<PatternSequence> mergedSequences = new ArrayList<>();
-        boolean accumulatorConstant = true;
-        final List<PatternSequence> accumulatedSequences = new ArrayList<>();
-        for (final PatternSequence sequence : sequences) {
-            final boolean sequenceConstant = sequence.isConstantForDurationOf(precisionThreshold);
-            if (sequenceConstant != accumulatorConstant) {
-                mergeConsequentEffectivelyConstantSequences(mergedSequences, accumulatedSequences);
-                accumulatorConstant = sequenceConstant;
+        final List<PatternFormatterFactory> mergedSequences = new ArrayList<>();
+        PatternFormatterFactory currentFactory = sequences.get(0);
+        for (int i = 1; i < sequences.size(); i++) {
+            PatternFormatterFactory nextFactory = sequences.get(i);
+            PatternFormatterFactory mergedFactory = currentFactory.tryMerge(nextFactory, precisionThreshold);
+            // The current factory cannot be merged with the next one.
+            if (mergedFactory == null) {
+                mergedSequences.add(currentFactory);
+                currentFactory = nextFactory;
+            } else {
+                currentFactory = mergedFactory;
             }
-            accumulatedSequences.add(sequence);
         }
-
-        // Merge the accumulator leftover
-        mergeConsequentEffectivelyConstantSequences(mergedSequences, accumulatedSequences);
+        mergedSequences.add(currentFactory);
         return mergedSequences;
-    }
-
-    private static void mergeConsequentEffectivelyConstantSequences(
-            final List<PatternSequence> mergedSequences, final List<PatternSequence> accumulatedSequences) {
-        mergeAccumulatedSequences(
-                mergedSequences, accumulatedSequences, () -> new CompositePatternSequence(accumulatedSequences));
-    }
-
-    private static <S extends PatternSequence> void mergeAccumulatedSequences(
-            final List<PatternSequence> mergedSequences,
-            final List<S> accumulatedSequences,
-            final Supplier<PatternSequence> mergedSequenceSupplier) {
-        if (accumulatedSequences.isEmpty()) {
-            return;
-        }
-        final PatternSequence mergedSequence =
-                accumulatedSequences.size() == 1 ? accumulatedSequences.get(0) : mergedSequenceSupplier.get();
-        mergedSequences.add(mergedSequence);
-        accumulatedSequences.clear();
     }
 
     private static long toEpochMinutes(final Instant instant) {
@@ -602,7 +372,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 : java.time.Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
     }
 
-    private abstract static class AbstractFormatter implements InstantPatternFormatter {
+    abstract static class AbstractFormatter implements InstantPatternFormatter {
 
         private final String pattern;
 
@@ -612,7 +382,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         private final ChronoUnit precision;
 
-        private AbstractFormatter(
+        AbstractFormatter(
                 final String pattern, final Locale locale, final TimeZone timeZone, final ChronoUnit precision) {
             this.pattern = pattern;
             this.locale = locale;
@@ -641,17 +411,146 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
     }
 
-    abstract static class PatternSequence {
+    /**
+     * Creates an {@link InstantPatternFormatter}.
+     */
+    abstract static class PatternFormatterFactory {
 
         final String pattern;
 
         final ChronoUnit precision;
 
         @SuppressWarnings("ReturnValueIgnored")
-        PatternSequence(final String pattern, final ChronoUnit precision) {
+        PatternFormatterFactory(final String pattern, final ChronoUnit precision) {
             DateTimeFormatter.ofPattern(pattern); // Validate the pattern
             this.pattern = pattern;
             this.precision = precision;
+        }
+
+        abstract InstantPatternFormatter createFormatter(final Locale locale, final TimeZone timeZone);
+
+        /**
+         * Tries to merge two factories.
+         *
+         * @param other A pattern formatter factory.
+         * @param thresholdPrecision The time interval during which the instant formatters created by this factory will
+         *                           be used.
+         *                           This prevents merging effectively constant and dynamic factories.
+         * @return A merged formatter factory or {@code null} if merging is not possible.
+         */
+        @Nullable
+        PatternFormatterFactory tryMerge(PatternFormatterFactory other, ChronoUnit thresholdPrecision) {
+            return null;
+        }
+
+        boolean isConstantForDurationOf(final ChronoUnit thresholdPrecision) {
+            return precision.compareTo(thresholdPrecision) >= 0;
+        }
+
+        @Override
+        public boolean equals(final Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (object == null || getClass() != object.getClass()) {
+                return false;
+            }
+            PatternFormatterFactory sequence = (PatternFormatterFactory) object;
+            return Objects.equals(pattern, sequence.pattern) && precision == sequence.precision;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(pattern, precision);
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + "[" + "pattern='" + pattern + '\'' + ", precision=" + precision + ']';
+        }
+    }
+
+    static final class StaticPatternFormatterFactory extends PatternFormatterFactory {
+
+        private final String literal;
+
+        StaticPatternFormatterFactory(final String literal) {
+            super(escapeLiteral(literal), ChronoUnit.FOREVER);
+            this.literal = literal;
+        }
+
+        @Override
+        InstantPatternFormatter createFormatter(final Locale locale, final TimeZone timeZone) {
+            return new AbstractFormatter(pattern, locale, timeZone, precision) {
+                @Override
+                public void formatTo(final StringBuilder buffer, final Instant instant) {
+                    buffer.append(literal);
+                }
+            };
+        }
+
+        @Override
+        @Nullable
+        PatternFormatterFactory tryMerge(PatternFormatterFactory other, ChronoUnit thresholdPrecision) {
+            // We always merge consecutive static pattern factories
+            if (other instanceof StaticPatternFormatterFactory) {
+                final StaticPatternFormatterFactory otherStatic = (StaticPatternFormatterFactory) other;
+                return new StaticPatternFormatterFactory(this.literal + otherStatic.literal);
+            }
+            // We also merge a static pattern factory with a DTF factory
+            if (other instanceof DateTimeFormatterPatternFormatterFactory) {
+                final DateTimeFormatterPatternFormatterFactory otherDtf =
+                        (DateTimeFormatterPatternFormatterFactory) other;
+                return new DateTimeFormatterPatternFormatterFactory(
+                        this.pattern + otherDtf.pattern, otherDtf.precision);
+            }
+            return super.tryMerge(other, thresholdPrecision);
+        }
+
+        static String escapeLiteral(String literal) {
+            StringBuilder sb = new StringBuilder(literal.length() + 2);
+            boolean inSingleQuotes = false;
+            for (int i = 0; i < literal.length(); i++) {
+                char c = literal.charAt(i);
+                if (c == '\'') {
+                    if (inSingleQuotes) {
+                        sb.append("'");
+                    }
+                    inSingleQuotes = false;
+                    sb.append("''");
+                } else {
+                    if (!inSingleQuotes) {
+                        sb.append("'");
+                    }
+                    inSingleQuotes = true;
+                    sb.append(c);
+                }
+            }
+            if (inSingleQuotes) {
+                sb.append("'");
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
+     * Formats the pattern using {@link DateTimeFormatter}.
+     */
+    static final class DateTimeFormatterPatternFormatterFactory extends PatternFormatterFactory {
+
+        /**
+         * @param simplePattern A {@link DateTimeFormatter} pattern containing a single letter.
+         */
+        DateTimeFormatterPatternFormatterFactory(final String simplePattern) {
+            this(simplePattern, patternPrecision(simplePattern));
+        }
+
+        /**
+         * @param pattern Any {@link DateTimeFormatter} pattern.
+         * @param precision The maximum interval of time over which this pattern is constant.
+         */
+        DateTimeFormatterPatternFormatterFactory(final String pattern, final ChronoUnit precision) {
+            super(pattern, precision);
         }
 
         InstantPatternFormatter createFormatter(final Locale locale, final TimeZone timeZone) {
@@ -666,68 +565,37 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             };
         }
 
-        private boolean isConstantForDurationOf(final ChronoUnit thresholdPrecision) {
-            return precision.compareTo(thresholdPrecision) >= 0;
-        }
-
         @Override
-        public boolean equals(final Object object) {
-            if (this == object) {
-                return true;
-            }
-            if (object == null || getClass() != object.getClass()) {
-                return false;
-            }
-            PatternSequence sequence = (PatternSequence) object;
-            return Objects.equals(pattern, sequence.pattern) && precision == sequence.precision;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(pattern, precision);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("<%s>%s", pattern, precision);
-        }
-    }
-
-    static final class StaticPatternSequence extends PatternSequence {
-
-        private final String literal;
-
-        StaticPatternSequence(final String literal) {
-            super(literal.equals("'") ? "''" : ("'" + literal + "'"), ChronoUnit.FOREVER);
-            this.literal = literal;
-        }
-
-        @Override
-        InstantPatternFormatter createFormatter(final Locale locale, final TimeZone timeZone) {
-            return new AbstractFormatter(pattern, locale, timeZone, precision) {
-                @Override
-                public void formatTo(final StringBuilder buffer, final Instant instant) {
-                    buffer.append(literal);
+        @Nullable
+        PatternFormatterFactory tryMerge(PatternFormatterFactory other, ChronoUnit thresholdPrecision) {
+            // We merge two DTF factories if they are both above or below the threshold
+            if (other instanceof DateTimeFormatterPatternFormatterFactory) {
+                final DateTimeFormatterPatternFormatterFactory otherDtf =
+                        (DateTimeFormatterPatternFormatterFactory) other;
+                if (isConstantForDurationOf(thresholdPrecision)
+                        == otherDtf.isConstantForDurationOf(thresholdPrecision)) {
+                    ChronoUnit precision = this.precision.getDuration().compareTo(otherDtf.precision.getDuration()) < 0
+                            ? this.precision
+                            : otherDtf.precision;
+                    return new DateTimeFormatterPatternFormatterFactory(this.pattern + otherDtf.pattern, precision);
                 }
-            };
-        }
-    }
-
-    static final class DynamicPatternSequence extends PatternSequence {
-
-        DynamicPatternSequence(final String content) {
-            super(content, contentPrecision(content));
+            }
+            // We merge a static pattern factory
+            if (other instanceof StaticPatternFormatterFactory) {
+                final StaticPatternFormatterFactory otherStatic = (StaticPatternFormatterFactory) other;
+                return new DateTimeFormatterPatternFormatterFactory(this.pattern + otherStatic.pattern, this.precision);
+            }
+            return super.tryMerge(other, thresholdPrecision);
         }
 
         /**
-         * @param content a single-letter directive content complying (e.g., {@code H}, {@code HH}, or {@code pHH})
+         * @param simplePattern a single-letter directive simplePattern complying (e.g., {@code H}, {@code HH}, or {@code pHH})
          * @return the time precision of the directive
          */
-        @Nullable
-        private static ChronoUnit contentPrecision(final String content) {
+        private static ChronoUnit patternPrecision(final String simplePattern) {
 
-            validateContent(content);
-            final String paddingRemovedContent = removePadding(content);
+            validateContent(simplePattern);
+            final String paddingRemovedContent = removePadding(simplePattern);
 
             if (paddingRemovedContent.matches("[GuyY]+")) {
                 return ChronoUnit.YEARS;
@@ -769,7 +637,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return ChronoUnit.NANOS;
             }
 
-            final String message = String.format("unrecognized pattern: `%s`", content);
+            final String message = String.format("unrecognized pattern: `%s`", simplePattern);
             throw new IllegalArgumentException(message);
         }
 
@@ -806,26 +674,114 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
     }
 
-    static final class CompositePatternSequence extends PatternSequence {
+    static class SecondPatternFormatterFactory extends PatternFormatterFactory {
 
-        CompositePatternSequence(final List<PatternSequence> sequences) {
-            super(concatSequencePatterns(sequences), findSequenceMaxPrecision(sequences));
-            // Only allow two or more sequences
-            if (sequences.size() < 2) {
-                throw new IllegalArgumentException("was expecting two or more sequences: " + sequences);
+        private final boolean printSeconds;
+        private final String separator;
+        private final int fractionalDigits;
+
+        SecondPatternFormatterFactory(boolean printSeconds, String separator, int fractionalDigits) {
+            super(
+                    createPattern(printSeconds, separator, fractionalDigits),
+                    determinePrecision(printSeconds, fractionalDigits));
+            this.printSeconds = printSeconds;
+            this.separator = separator;
+            this.fractionalDigits = fractionalDigits;
+        }
+
+        private static String createPattern(boolean printSeconds, String separator, int fractionalDigits) {
+            StringBuilder builder = new StringBuilder();
+            if (printSeconds) {
+                builder.append("ss");
+            }
+            builder.append(StaticPatternFormatterFactory.escapeLiteral(separator));
+            if (fractionalDigits > 0) {
+                builder.append(Strings.repeat("S", fractionalDigits));
+            }
+            return builder.toString();
+        }
+
+        private static ChronoUnit determinePrecision(boolean printSeconds, int digits) {
+            return digits > 6
+                    ? ChronoUnit.NANOS
+                    : digits > 3
+                            ? ChronoUnit.MICROS
+                            : digits > 0 ? ChronoUnit.MILLIS : printSeconds ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
+        }
+
+        private static void formatSeconds(StringBuilder buffer, Instant instant) {
+            long secondsInMinute = instant.getEpochSecond() % 60L;
+            buffer.append((char) ((secondsInMinute / 10L) + '0'));
+            buffer.append((char) ((secondsInMinute % 10L) + '0'));
+        }
+
+        private void formatFractionalDigits(StringBuilder buffer, Instant instant) {
+            final int offset = buffer.length();
+            buffer.setLength(offset + fractionalDigits);
+            long value = instant.getNanoOfSecond();
+            int valuePrecision = 9;
+            // Skip digits beyond the requested precision
+            while (fractionalDigits < valuePrecision) {
+                valuePrecision--;
+                value = value / 10L;
+            }
+            // Print the digits
+            while (0 < valuePrecision--) {
+                buffer.setCharAt(offset + valuePrecision, (char) ('0' + value % 10L));
+                value = value / 10L;
             }
         }
 
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        private static ChronoUnit findSequenceMaxPrecision(List<PatternSequence> sequences) {
-            return sequences.stream()
-                    .map(sequence -> sequence.precision)
-                    .min(Comparator.comparing(ChronoUnit::getDuration))
-                    .get();
+        @Override
+        InstantPatternFormatter createFormatter(Locale locale, TimeZone timeZone) {
+            if (!printSeconds) {
+                return new AbstractFormatter(pattern, locale, timeZone, precision) {
+                    @Override
+                    public void formatTo(StringBuilder buffer, Instant instant) {
+                        buffer.append(separator);
+                        formatFractionalDigits(buffer, instant);
+                    }
+                };
+            }
+            if (fractionalDigits == 0) {
+                return new AbstractFormatter(pattern, locale, timeZone, precision) {
+                    @Override
+                    public void formatTo(StringBuilder buffer, Instant instant) {
+                        formatSeconds(buffer, instant);
+                        buffer.append(separator);
+                    }
+                };
+            }
+            return new AbstractFormatter(pattern, locale, timeZone, precision) {
+                @Override
+                public void formatTo(StringBuilder buffer, Instant instant) {
+                    formatSeconds(buffer, instant);
+                    buffer.append(separator);
+                    formatFractionalDigits(buffer, instant);
+                }
+            };
         }
 
-        private static String concatSequencePatterns(List<PatternSequence> sequences) {
-            return sequences.stream().map(sequence -> sequence.pattern).collect(Collectors.joining());
+        @Override
+        @Nullable
+        PatternFormatterFactory tryMerge(PatternFormatterFactory other, ChronoUnit thresholdPrecision) {
+            // If we don't have a fractional part, we can merge a literal separator
+            if (other instanceof StaticPatternFormatterFactory) {
+                StaticPatternFormatterFactory staticOther = (StaticPatternFormatterFactory) other;
+                if (fractionalDigits == 0) {
+                    return new SecondPatternFormatterFactory(
+                            printSeconds, this.separator + staticOther.literal, fractionalDigits);
+                }
+            }
+            // We can always append more fractional digits
+            if (other instanceof SecondPatternFormatterFactory) {
+                SecondPatternFormatterFactory secondOther = (SecondPatternFormatterFactory) other;
+                if (!secondOther.printSeconds && secondOther.separator.isEmpty()) {
+                    return new SecondPatternFormatterFactory(
+                            printSeconds, this.separator, this.fractionalDigits + secondOther.fractionalDigits);
+                }
+            }
+            return super.tryMerge(other, thresholdPrecision);
         }
     }
 }
