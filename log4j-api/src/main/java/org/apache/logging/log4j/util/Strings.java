@@ -70,6 +70,7 @@ public final class Strings {
      *
      * @param s the String to check, may be {@code null}
      * @return {@code true} if the String is {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}
+     * @since 2.0.1
      */
     public static boolean isBlank(final String s) {
         if (s == null || s.isEmpty()) {
@@ -118,6 +119,7 @@ public final class Strings {
      *
      * @param s the String to check, may be {@code null}
      * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
+     * @since 2.0.1
      */
     public static boolean isNotBlank(final String s) {
         return !isBlank(s);
