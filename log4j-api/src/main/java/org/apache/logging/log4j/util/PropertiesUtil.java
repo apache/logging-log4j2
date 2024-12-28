@@ -270,6 +270,7 @@ public final class PropertiesUtil {
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the parsed double value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     * @since 2.6
      */
     public double getDoubleProperty(final String name, final double defaultValue) {
         final String prop = getStringProperty(name);

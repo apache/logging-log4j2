@@ -310,6 +310,7 @@ public final class Strings {
      * @param str The string to lower case.
      * @return a new string
      * @see String#toLowerCase(Locale)
+     * @since 2.6
      */
     public static String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);

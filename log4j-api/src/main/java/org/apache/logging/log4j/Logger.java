@@ -142,6 +142,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void debug(Marker marker, CharSequence message);
 
@@ -152,6 +153,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void debug(Marker marker, CharSequence message, Throwable throwable);
 
@@ -274,6 +276,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
      *
      * @param message the message object to log.
+     * @since 2.6
      */
     void debug(CharSequence message);
 
@@ -283,6 +286,7 @@ public interface Logger {
      *
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void debug(CharSequence message, Throwable throwable);
 
@@ -363,6 +367,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0);
 
@@ -373,6 +378,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0, Object p1);
 
@@ -384,6 +390,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -396,6 +403,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -409,6 +417,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -423,6 +432,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -438,6 +448,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void debug(
             Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
@@ -455,6 +466,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void debug(
             Marker marker,
@@ -482,6 +494,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void debug(
             Marker marker,
@@ -511,6 +524,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void debug(
             Marker marker,
@@ -531,6 +545,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0);
 
@@ -540,6 +555,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1);
 
@@ -550,6 +566,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2);
 
@@ -561,6 +578,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -573,6 +591,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -586,6 +605,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -600,6 +620,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -615,6 +636,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
 
@@ -631,6 +653,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void debug(
             String message,
@@ -658,6 +681,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void debug(
             String message,
@@ -675,7 +699,7 @@ public interface Logger {
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
      * logged.
-     * @deprecated Use {@link #traceEntry()} instead which performs the same function.
+     * @deprecated :uUse {@link #traceEntry()} instead which performs the same function.
      */
     @Deprecated
     void entry();
@@ -747,6 +771,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement.
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void error(Marker marker, CharSequence message);
 
@@ -757,6 +782,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement.
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void error(Marker marker, CharSequence message, Throwable throwable);
 
@@ -879,6 +905,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
      *
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void error(CharSequence message);
 
@@ -888,6 +915,7 @@ public interface Logger {
      *
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void error(CharSequence message, Throwable throwable);
 
@@ -968,6 +996,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0);
 
@@ -978,6 +1007,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0, Object p1);
 
@@ -989,6 +1019,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -1001,6 +1032,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -1014,6 +1046,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -1028,6 +1061,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -1043,6 +1077,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void error(
             Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
@@ -1060,6 +1095,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void error(
             Marker marker,
@@ -1087,6 +1123,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void error(
             Marker marker,
@@ -1116,6 +1153,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void error(
             Marker marker,
@@ -1136,6 +1174,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0);
 
@@ -1145,6 +1184,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1);
 
@@ -1155,6 +1195,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2);
 
@@ -1166,6 +1207,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -1178,6 +1220,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -1191,6 +1234,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -1205,6 +1249,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -1220,6 +1265,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
 
@@ -1236,6 +1282,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void error(
             String message,
@@ -1263,6 +1310,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void error(
             String message,
@@ -1279,7 +1327,7 @@ public interface Logger {
 
     /**
      * Logs exit from a method. Used for methods that do not return anything.
-     * @deprecated Use {@link #traceExit()} instead which performs the same function.
+     * @deprecated Since 2.6, use {@link #traceExit()} instead which performs the same function.
      */
     @Deprecated
     void exit();
@@ -1294,7 +1342,7 @@ public interface Logger {
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the result.
-     * @deprecated Use {@link #traceExit(Object)} instead which performs the same function.
+     * @deprecated Since 2.6, use {@link #traceExit(Object)} instead which performs the same function.
      */
     @Deprecated
     <R> R exit(R result);
@@ -1344,6 +1392,7 @@ public interface Logger {
      *
      * @param marker The marker data specific to this log statement.
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void fatal(Marker marker, CharSequence message);
 
@@ -1354,6 +1403,7 @@ public interface Logger {
      * @param marker The marker data specific to this log statement.
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void fatal(Marker marker, CharSequence message, Throwable throwable);
 
@@ -1476,6 +1526,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
      *
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void fatal(CharSequence message);
 
@@ -1485,6 +1536,7 @@ public interface Logger {
      *
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void fatal(CharSequence message, Throwable throwable);
 
@@ -1565,6 +1617,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0);
 
@@ -1575,6 +1628,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0, Object p1);
 
@@ -1586,6 +1640,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -1598,6 +1653,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -1611,6 +1667,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -1625,6 +1682,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -1640,6 +1698,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
@@ -1657,6 +1716,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             Marker marker,
@@ -1684,6 +1744,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             Marker marker,
@@ -1713,6 +1774,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             Marker marker,
@@ -1733,6 +1795,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0);
 
@@ -1742,6 +1805,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1);
 
@@ -1752,6 +1816,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2);
 
@@ -1763,6 +1828,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -1775,6 +1841,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -1788,6 +1855,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -1802,6 +1870,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -1817,6 +1886,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
 
@@ -1833,6 +1903,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             String message,
@@ -1860,6 +1931,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void fatal(
             String message,
@@ -1955,6 +2027,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void info(Marker marker, CharSequence message);
 
@@ -1965,6 +2038,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void info(Marker marker, CharSequence message, Throwable throwable);
 
@@ -2176,6 +2250,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0);
 
@@ -2186,6 +2261,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0, Object p1);
 
@@ -2197,6 +2273,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -2209,6 +2286,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -2222,6 +2300,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -2236,6 +2315,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -2251,6 +2331,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void info(
             Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
@@ -2268,6 +2349,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void info(
             Marker marker,
@@ -2295,6 +2377,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void info(
             Marker marker,
@@ -2324,6 +2407,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void info(
             Marker marker,
@@ -2344,6 +2428,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0);
 
@@ -2353,6 +2438,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1);
 
@@ -2363,6 +2449,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2);
 
@@ -2374,6 +2461,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -2386,6 +2474,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -2399,6 +2488,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -2413,6 +2503,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -2428,6 +2519,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
 
@@ -2444,6 +2536,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void info(
             String message,
@@ -2471,6 +2564,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void info(
             String message,
@@ -2651,6 +2745,7 @@ public interface Logger {
      * @param level the logging level
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void log(Level level, Marker marker, CharSequence message);
 
@@ -2662,6 +2757,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void log(Level level, Marker marker, CharSequence message, Throwable throwable);
 
@@ -2795,6 +2891,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void log(Level level, CharSequence message);
 
@@ -2805,6 +2902,7 @@ public interface Logger {
      * @param level the logging level
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void log(Level level, CharSequence message, Throwable throwable);
 
@@ -2893,6 +2991,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, Marker marker, String message, Object p0);
 
@@ -2904,6 +3003,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, Marker marker, String message, Object p0, Object p1);
 
@@ -2916,6 +3016,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -2929,6 +3030,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -2943,6 +3045,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -2958,6 +3061,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -2983,6 +3087,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3010,6 +3115,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3039,6 +3145,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3070,6 +3177,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3092,6 +3200,7 @@ public interface Logger {
      * @param level the logging level
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0);
 
@@ -3102,6 +3211,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1);
 
@@ -3113,6 +3223,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1, Object p2);
 
@@ -3125,6 +3236,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -3138,6 +3250,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -3152,6 +3265,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -3167,6 +3281,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -3183,6 +3298,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3210,6 +3326,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3239,6 +3356,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void log(
             Level level,
@@ -3346,6 +3464,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void trace(Marker marker, CharSequence message);
 
@@ -3357,6 +3476,7 @@ public interface Logger {
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @see #debug(String)
+     * @since 2.6
      */
     void trace(Marker marker, CharSequence message, Throwable throwable);
 
@@ -3573,6 +3693,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0);
 
@@ -3583,6 +3704,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0, Object p1);
 
@@ -3594,6 +3716,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -3606,6 +3729,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -3619,6 +3743,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -3633,6 +3758,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -3648,6 +3774,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void trace(
             Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
@@ -3665,6 +3792,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void trace(
             Marker marker,
@@ -3692,6 +3820,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void trace(
             Marker marker,
@@ -3721,6 +3850,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void trace(
             Marker marker,
@@ -3741,6 +3871,7 @@ public interface Logger {
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0);
 
@@ -3750,6 +3881,7 @@ public interface Logger {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1);
 
@@ -3760,6 +3892,7 @@ public interface Logger {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2);
 
@@ -3771,6 +3904,7 @@ public interface Logger {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -3783,6 +3917,7 @@ public interface Logger {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
@@ -3796,6 +3931,7 @@ public interface Logger {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
@@ -3810,6 +3946,7 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
@@ -3825,6 +3962,7 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
+     * @since 2.6
      */
     void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
 
@@ -3841,6 +3979,7 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
+     * @since 2.6
      */
     void trace(
             String message,
@@ -3868,6 +4007,7 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
+     * @since 2.6
      */
     void trace(
             String message,
@@ -4110,6 +4250,7 @@ public interface Logger {
      *
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void warn(Marker marker, CharSequence message);
 
@@ -4120,6 +4261,7 @@ public interface Logger {
      * @param marker the marker data specific to this log statement
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void warn(Marker marker, CharSequence message, Throwable throwable);
 
@@ -4242,6 +4384,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#WARN WARN} level.
      *
      * @param message the message CharSequence to log.
+     * @since 2.6
      */
     void warn(CharSequence message);
 
@@ -4251,6 +4394,7 @@ public interface Logger {
      *
      * @param message the message CharSequence to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
+     * @since 2.6
      */
     void warn(CharSequence message, Throwable throwable);
 

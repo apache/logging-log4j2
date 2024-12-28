@@ -633,6 +633,7 @@ public class StatusLogger extends AbstractLogger {
      * Sets the level of the fallback listener.
      *
      * @param level a level
+     * @since 2.6
      * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
      */
     @Deprecated
