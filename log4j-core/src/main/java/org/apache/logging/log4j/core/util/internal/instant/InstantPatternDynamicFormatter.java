@@ -422,6 +422,31 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             return precision.compareTo(thresholdPrecision) >= 0;
         }
 
+        static String escapeLiteral(String literal) {
+            StringBuilder sb = new StringBuilder(literal.length() + 2);
+            boolean inSingleQuotes = false;
+            for (int i = 0; i < literal.length(); i++) {
+                char c = literal.charAt(i);
+                if (c == '\'') {
+                    if (inSingleQuotes) {
+                        sb.append("'");
+                    }
+                    inSingleQuotes = false;
+                    sb.append("''");
+                } else {
+                    if (!inSingleQuotes) {
+                        sb.append("'");
+                    }
+                    inSingleQuotes = true;
+                    sb.append(c);
+                }
+            }
+            if (inSingleQuotes) {
+                sb.append("'");
+            }
+            return sb.toString();
+        }
+
         @Override
         public boolean equals(final Object object) {
             if (this == object) {
@@ -478,31 +503,6 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return new DynamicPatternSequence(this.pattern + otherDtf.pattern, otherDtf.precision);
             }
             return null;
-        }
-
-        static String escapeLiteral(String literal) {
-            StringBuilder sb = new StringBuilder(literal.length() + 2);
-            boolean inSingleQuotes = false;
-            for (int i = 0; i < literal.length(); i++) {
-                char c = literal.charAt(i);
-                if (c == '\'') {
-                    if (inSingleQuotes) {
-                        sb.append("'");
-                    }
-                    inSingleQuotes = false;
-                    sb.append("''");
-                } else {
-                    if (!inSingleQuotes) {
-                        sb.append("'");
-                    }
-                    inSingleQuotes = true;
-                    sb.append(c);
-                }
-            }
-            if (inSingleQuotes) {
-                sb.append("'");
-            }
-            return sb.toString();
         }
     }
 
