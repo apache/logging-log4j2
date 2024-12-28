@@ -674,6 +674,7 @@ public final class PropertiesUtil {
      * Returns true if system properties tell us we are running on Windows.
      *
      * @return true if system properties tell us we are running on Windows.
+     * @since 2.5
      */
     public boolean isOsWindows() {
         return SystemPropertiesPropertySource.getSystemProperty("os.name", "").startsWith("Windows");

@@ -740,6 +740,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      * @return {@code this}
+     * @since 2.5
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final String value) {
