@@ -51,6 +51,7 @@ public final class Strings {
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
+     * @since 2.7
      */
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
@@ -160,6 +161,7 @@ public final class Strings {
      * @param iterable  the {@code Iterable} providing the values to join together, may be null
      * @param separator  the separator character to use
      * @return the joined String, {@code null} if null iterator input
+     * @since 2.7
      */
     public static String join(final Iterable<?> iterable, final char separator) {
         if (iterable == null) {
@@ -178,6 +180,7 @@ public final class Strings {
      * @param iterator  the {@code Iterator} of values to join together, may be null
      * @param separator  the separator character to use
      * @return the joined String, {@code null} if null iterator input
+     * @since 2.7
      */
     public static String join(final Iterator<?> iterator, final char separator) {
 

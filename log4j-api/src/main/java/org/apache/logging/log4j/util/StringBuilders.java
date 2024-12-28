@@ -93,6 +93,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to append the value to
      * @param obj the object whose text representation to append to the StringBuilder
+     * @since 2.7
      */
     public static void appendValue(final StringBuilder stringBuilder, final Object obj) {
         if (!appendSpecificTypes(stringBuilder, obj)) {
