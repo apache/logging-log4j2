@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 /**
  * <em>Consider this class private.</em>
+ * @since 2.3
  */
 @InternalApi
 public final class StringBuilders {

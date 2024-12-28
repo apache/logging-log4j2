@@ -59,6 +59,7 @@ public final class Strings {
      *
      * @param str a String
      * @return {@code "str"}
+     * @since 2.3
      */
     public static String dquote(final String str) {
         return Chars.DQUOTE + str + Chars.DQUOTE;
@@ -255,6 +256,7 @@ public final class Strings {
      *
      * @param str a String
      * @return {@code 'str'}
+     * @since 2.3
      */
     public static String quote(final String str) {
         return Chars.QUOTE + str + Chars.QUOTE;
