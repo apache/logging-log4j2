@@ -270,30 +270,32 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     /**
      * Merges pattern sequences using {@link PatternSequence#tryMerge}.
      *
+     * <h2>Example</h2>
+     *
      * <p>
-     * For example, given the {@code yyyy-MM-dd'T'HH:mm:ss.SSS} pattern and a precision threshold of {@link ChronoUnit#MINUTES},
+     * For example, given the {@code yyyy-MM-dd'T'HH:mm:ss.SSS} pattern, a precision threshold of {@link ChronoUnit#MINUTES}
+     * and the three implementations ({@link DateTimeFormatterPatternSequence}, {@link StaticPatternSequence} and
+     * {@link SecondPatternSequence}) from this class,
      * this method will combine pattern sequences associated with {@code yyyy-MM-dd'T'HH:mm:} into a single sequence,
      * since these are consecutive and effectively constant sequences.
      * </p>
      *
-     * <h2>Example</h2>
-     *
      * <pre>{@code
      * [
-     *     dynamic(pattern="yyyy", precision=YEARS),
+     *     dateTimeFormatter(pattern="yyyy", precision=YEARS),
      *     static(literal="-"),
-     *     dynamic(pattern="MM", precision=MONTHS),
+     *     dateTimeFormatter(pattern="MM", precision=MONTHS),
      *     static(literal="-"),
-     *     dynamic(pattern="dd", precision=DAYS),
+     *     dateTimeFormatter(pattern="dd", precision=DAYS),
      *     static(literal="T"),
-     *     dynamic(pattern="HH", precision=HOURS),
+     *     dateTimeFormatter(pattern="HH", precision=HOURS),
      *     static(literal=":"),
-     *     dynamic(pattern="mm", precision=MINUTES),
+     *     dateTimeFormatter(pattern="mm", precision=MINUTES),
      *     static(literal=":"),
-     *     dynamic(pattern="ss", precision=SECONDS),
+     *     second(pattern="ss", precision=SECONDS),
      *     static(literal="."),
-     *     dynamic(pattern="SSS", precision=MILLISECONDS)
-     *     dynamic(pattern="X", precision=HOURS),
+     *     second(pattern="SSS", precision=MILLISECONDS)
+     *     dateTimeFormatter(pattern="X", precision=HOURS),
      * ]
      * }</pre>
      *
@@ -304,9 +306,9 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
      *
      * <pre>{@code
      * [
-     *     dynamic(pattern="yyyy-MM-dd'T'HH:mm", precision=MINUTES),
-     *     dynamic(pattern="ss.SSS", precision=MILLISECONDS),
-     *     dynamic(pattern="X", precision=MINUTES)
+     *     dateTimeFormatter(pattern="yyyy-MM-dd'T'HH:mm", precision=MINUTES),
+     *     second(pattern="ss.SSS", precision=MILLISECONDS),
+     *     dateTimeFormatter(pattern="X", precision=MINUTES)
      * ]
      * }</pre>
      *
