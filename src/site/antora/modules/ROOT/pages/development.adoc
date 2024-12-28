@@ -75,7 +75,7 @@ See {project-github-url}/FUZZING.adoc[the fuzzing instructions].
 
 . Is this a _trivial fix_ such as a code or documentation typo?
 Simply submit a pull request.
-A Changelog entry is unnecessary. Please ensure that `./mvnw verify site` succeeds.
+A changelog entry is unnecessary. Please ensure that `./mvnw verify site` succeeds.
 
 . Is this a _non-trivial fix_ or a _new feature_?
 Pitch it in a {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channel] and ask for assistance.
