@@ -227,7 +227,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                         sequence = new SecondPatternSequence(false, "", sequenceContent.length());
                         break;
                     default:
-                        sequence = new DateTimeFormatterPatternSequence(sequenceContent);
+                        sequence = new DynamicPatternSequence(sequenceContent);
                 }
                 sequences.add(sequence);
                 startIndex = endIndex;
@@ -273,7 +273,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
      *
      * <p>
      * For example, given the {@code yyyy-MM-dd'T'HH:mm:ss.SSS} pattern, a precision threshold of {@link ChronoUnit#MINUTES}
-     * and the three implementations ({@link DateTimeFormatterPatternSequence}, {@link StaticPatternSequence} and
+     * and the three implementations ({@link DynamicPatternSequence}, {@link StaticPatternSequence} and
      * {@link SecondPatternSequence}) from this class,
      * this method will combine pattern sequences associated with {@code yyyy-MM-dd'T'HH:mm:} into a single sequence,
      * since these are consecutive and effectively constant sequences.
@@ -473,9 +473,9 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return new StaticPatternSequence(this.literal + otherStatic.literal);
             }
             // We also merge a static pattern factory with a DTF factory
-            if (other instanceof DateTimeFormatterPatternSequence) {
-                final DateTimeFormatterPatternSequence otherDtf = (DateTimeFormatterPatternSequence) other;
-                return new DateTimeFormatterPatternSequence(this.pattern + otherDtf.pattern, otherDtf.precision);
+            if (other instanceof DynamicPatternSequence) {
+                final DynamicPatternSequence otherDtf = (DynamicPatternSequence) other;
+                return new DynamicPatternSequence(this.pattern + otherDtf.pattern, otherDtf.precision);
             }
             return null;
         }
@@ -509,12 +509,12 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     /**
      * Creates formatters that use {@link DateTimeFormatter}.
      */
-    static final class DateTimeFormatterPatternSequence extends PatternSequence {
+    static final class DynamicPatternSequence extends PatternSequence {
 
         /**
          * @param singlePattern A {@link DateTimeFormatter} pattern containing a single letter.
          */
-        DateTimeFormatterPatternSequence(final String singlePattern) {
+        DynamicPatternSequence(final String singlePattern) {
             this(singlePattern, patternPrecision(singlePattern));
         }
 
@@ -522,7 +522,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
          * @param pattern Any {@link DateTimeFormatter} pattern.
          * @param precision The maximum interval of time over which this pattern is constant.
          */
-        DateTimeFormatterPatternSequence(final String pattern, final ChronoUnit precision) {
+        DynamicPatternSequence(final String pattern, final ChronoUnit precision) {
             super(pattern, precision);
         }
 
@@ -542,20 +542,20 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         @Nullable
         PatternSequence tryMerge(PatternSequence other, ChronoUnit thresholdPrecision) {
             // We merge two DTF factories if they are both above or below the threshold
-            if (other instanceof DateTimeFormatterPatternSequence) {
-                final DateTimeFormatterPatternSequence otherDtf = (DateTimeFormatterPatternSequence) other;
+            if (other instanceof DynamicPatternSequence) {
+                final DynamicPatternSequence otherDtf = (DynamicPatternSequence) other;
                 if (isConstantForDurationOf(thresholdPrecision)
                         == otherDtf.isConstantForDurationOf(thresholdPrecision)) {
                     ChronoUnit precision = this.precision.getDuration().compareTo(otherDtf.precision.getDuration()) < 0
                             ? this.precision
                             : otherDtf.precision;
-                    return new DateTimeFormatterPatternSequence(this.pattern + otherDtf.pattern, precision);
+                    return new DynamicPatternSequence(this.pattern + otherDtf.pattern, precision);
                 }
             }
             // We merge a static pattern factory
             if (other instanceof StaticPatternSequence) {
                 final StaticPatternSequence otherStatic = (StaticPatternSequence) other;
-                return new DateTimeFormatterPatternSequence(this.pattern + otherStatic.pattern, this.precision);
+                return new DynamicPatternSequence(this.pattern + otherStatic.pattern, this.precision);
             }
             return null;
         }
@@ -674,11 +674,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
 
         private static ChronoUnit determinePrecision(boolean printSeconds, int digits) {
-            return digits > 6
-                    ? ChronoUnit.NANOS
-                    : digits > 3
-                            ? ChronoUnit.MICROS
-                            : digits > 0 ? ChronoUnit.MILLIS : printSeconds ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
+            if (digits > 6) return ChronoUnit.NANOS;
+            if (digits > 3) return ChronoUnit.MICROS;
+            if (digits > 0) return ChronoUnit.MILLIS;
+            return printSeconds ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
         }
 
         private static void formatSeconds(StringBuilder buffer, Instant instant) {
