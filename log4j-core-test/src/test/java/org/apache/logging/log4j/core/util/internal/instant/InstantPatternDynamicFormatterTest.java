@@ -103,8 +103,8 @@ class InstantPatternDynamicFormatterTest {
         return testCases;
     }
 
-    private static DateTimeFormatterPatternSequence pDtf(final String simplePattern) {
-        return new DateTimeFormatterPatternSequence(simplePattern);
+    private static DateTimeFormatterPatternSequence pDtf(final String singlePattern) {
+        return new DateTimeFormatterPatternSequence(singlePattern);
     }
 
     private static DateTimeFormatterPatternSequence pDtf(final String pattern, final ChronoUnit precision) {
@@ -324,7 +324,7 @@ class InstantPatternDynamicFormatterTest {
         // We will exclude them for tests:
         final long minEpochSecond = 315_532_800; // 1980-01-01 01:00:00
         final long maxEpochSecond = 1_621_280_470; // 2021-05-17 21:41:10
-        final long epochSecond = RANDOM.nextLong(minEpochSecond, maxEpochSecond);
+        final long epochSecond = minEpochSecond + RANDOM.nextLong(maxEpochSecond - minEpochSecond);
         final int epochSecondNano = randomNanos();
         instant.initFromEpochSecond(epochSecond, epochSecondNano);
         return instant;

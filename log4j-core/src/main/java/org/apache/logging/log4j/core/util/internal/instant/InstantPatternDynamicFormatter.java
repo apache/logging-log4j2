@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -199,21 +198,11 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     }
 
     static List<PatternSequence> sequencePattern(final String pattern, final ChronoUnit precisionThreshold) {
-        List<PatternSequence> sequences = sequencePattern(pattern, (l, p) -> {
-            switch (l) {
-                case 's':
-                    return new SecondPatternSequence(true, "", 0);
-                case 'S':
-                    return new SecondPatternSequence(false, "", p.length());
-                default:
-                    return new DateTimeFormatterPatternSequence(p);
-            }
-        });
+        List<PatternSequence> sequences = sequencePattern(pattern);
         return mergeFactories(sequences, precisionThreshold);
     }
 
-    private static List<PatternSequence> sequencePattern(
-            final String pattern, BiFunction<Character, String, PatternSequence> dynamicPatternSequenceProvider) {
+    private static List<PatternSequence> sequencePattern(final String pattern) {
         if (pattern.isEmpty()) {
             return Collections.emptyList();
         }
@@ -229,7 +218,17 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     endIndex++;
                 }
                 final String sequenceContent = pattern.substring(startIndex, endIndex);
-                final PatternSequence sequence = dynamicPatternSequenceProvider.apply(c, sequenceContent);
+                final PatternSequence sequence;
+                switch (c) {
+                    case 's':
+                        sequence = new SecondPatternSequence(true, "", 0);
+                        break;
+                    case 'S':
+                        sequence = new SecondPatternSequence(false, "", sequenceContent.length());
+                        break;
+                    default:
+                        sequence = new DateTimeFormatterPatternSequence(sequenceContent);
+                }
                 sequences.add(sequence);
                 startIndex = endIndex;
             }
@@ -513,10 +512,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     static final class DateTimeFormatterPatternSequence extends PatternSequence {
 
         /**
-         * @param simplePattern A {@link DateTimeFormatter} pattern containing a single letter.
+         * @param singlePattern A {@link DateTimeFormatter} pattern containing a single letter.
          */
-        DateTimeFormatterPatternSequence(final String simplePattern) {
-            this(simplePattern, patternPrecision(simplePattern));
+        DateTimeFormatterPatternSequence(final String singlePattern) {
+            this(singlePattern, patternPrecision(singlePattern));
         }
 
         /**
