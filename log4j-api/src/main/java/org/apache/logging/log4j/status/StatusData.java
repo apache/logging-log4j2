@@ -60,6 +60,7 @@ public class StatusData implements Serializable {
      * @param message a message
      * @param throwable the error occurred
      * @param threadName the thread name
+     * @since 2.4
      */
     public StatusData(
             @Nullable final StackTraceElement caller,
@@ -141,6 +142,7 @@ public class StatusData implements Serializable {
      * Returns the name of the thread associated with the event.
      *
      * @return the name of the thread associated with the event
+     * @since 2.4
      */
     public String getThreadName() {
         return threadName;

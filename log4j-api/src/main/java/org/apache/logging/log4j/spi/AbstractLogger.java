@@ -2588,6 +2588,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), throwable);
     }
 
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2600,7 +2603,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, message, effectiveThrowable);
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2774,7 +2779,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,

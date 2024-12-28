@@ -21,6 +21,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Utility class for lambda support.
+ * @since 2.4
  */
 public final class LambdaUtil {
     /**

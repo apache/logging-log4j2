@@ -596,6 +596,7 @@ public final class PropertiesUtil {
      * @param properties The Properties to evaluate.
      * @param prefix     The prefix to extract.
      * @return The subset of properties.
+     * @since 2.4
      */
     public static Properties extractSubset(final Properties properties, final String prefix) {
         final Properties subset = new Properties();
