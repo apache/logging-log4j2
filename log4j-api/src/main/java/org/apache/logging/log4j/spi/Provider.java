@@ -48,6 +48,7 @@ public class Provider {
 
     /**
      * Property name to set for a Log4j 2 provider to specify the priority of this implementation.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -55,6 +56,7 @@ public class Provider {
 
     /**
      * Property name to set to the implementation of {@link ThreadContextMap}.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -62,6 +64,7 @@ public class Provider {
 
     /**
      * Property name to set to the implementation of {@link LoggerContextFactory}.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -100,6 +103,7 @@ public class Provider {
 
     /**
      * Constructor used by the deprecated {@code META-INF/log4j-provider.properties} format.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -194,6 +198,7 @@ public class Provider {
      * Loads the {@link LoggerContextFactory} class specified by this Provider.
      *
      * @return the LoggerContextFactory implementation class or {@code null} if unspecified or a loader error occurred.
+     * @since 2.0.1
      */
     public @Nullable Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
         if (loggerContextFactoryClass != null) {
@@ -254,6 +259,7 @@ public class Provider {
      *
      * @return the {@code ThreadContextMap} implementation class or {@code null} if unspecified or a loading error
      * occurred.
+     * @since 2.0.1
      */
     public @Nullable Class<? extends ThreadContextMap> loadThreadContextMap() {
         if (threadContextMapClass != null) {

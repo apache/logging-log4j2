@@ -37,6 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see RuntimePermission
  * @see Thread#getContextClassLoader()
  * @see ClassLoader#getSystemClassLoader()
+ * @since 2.0.1
  */
 @InternalApi
 public final class LoaderUtil {

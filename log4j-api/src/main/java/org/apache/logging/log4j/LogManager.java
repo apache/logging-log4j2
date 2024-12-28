@@ -43,6 +43,7 @@ public class LogManager {
     /**
      * Log4j's property to set to the fully qualified class name of a custom implementation of
      * {@link LoggerContextFactory}.
+     * @since 2.0.1
      * @deprecated Replaced since 2.24.0 with {@value org.apache.logging.log4j.spi.Provider#PROVIDER_PROPERTY_NAME}.
      */
     @Deprecated
