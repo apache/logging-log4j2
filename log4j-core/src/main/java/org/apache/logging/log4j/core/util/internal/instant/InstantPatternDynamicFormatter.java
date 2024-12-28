@@ -351,7 +351,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 : java.time.Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
     }
 
-    abstract static class AbstractFormatter implements InstantPatternFormatter {
+    private abstract static class AbstractFormatter implements InstantPatternFormatter {
 
         private final String pattern;
 
