@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Architecture :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/architecture.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.6">
+    <meta name="generator" content="Antora 3.2.0-alpha.8">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -366,13 +366,13 @@ An overview these major classes can be depicted as follows:</p>
 <div class="title">Figure 1. An overview of major classes and their relation</div>
 </div>
 <div class="paragraph">
-<p>At a really high level,</p>
+<p>At a high level,</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>A <a href="#LoggerContext"><code>LoggerContext</code></a>, the composition anchor, gets created in combination with a <a href="#Configuration"><code>Configuration</code></a>.
-Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.</p>
+Both can be created directly (i.e., programmatically) or indirectly at first interaction with Log4j.</p>
 </li>
 <li>
 <p><code>LoggerContext</code> creates <a href="#Logger"><code>Logger</code></a>s that users interact with for logging purposes.</p>
@@ -381,7 +381,7 @@ Both can be created either directly (i.e., programmatically) or indirectly at fi
 <p><a href="#Appender"><code>Appender</code></a> delivers a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> to a target (file, socket, database, etc.) and typically uses a <a href="#Layout"><code>Layout</code></a> to encode log events and an <a href="#AbstractManager"><code>AbstractManager</code></a> to handle the lifecycle of the target resource.</p>
 </li>
 <li>
-<p><a href="#LoggerConfig"><code>LoggerConfig</code></a> encapsulates configuration for a <code>Logger</code>, as <code>AppenderControl</code> and <code>AppenderRef</code> for <code>Appender</code>s.</p>
+<p><a href="#LoggerConfig"><code>LoggerConfig</code></a> encapsulates configuration for a <code>Logger,</code> as <code>AppenderControl</code> and <code>AppenderRef</code> for <code>Appender</code>s.</p>
 </li>
 <li>
 <p><a href="#Configuration"><code>Configuration</code></a> is equipped with <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a> to allow property substitution in <code>String</code>-typed values.</p>
@@ -392,7 +392,7 @@ Both can be created either directly (i.e., programmatically) or indirectly at fi
 </ul>
 </div>
 <div class="paragraph">
-<p>Following sections examine this interplay in detail.</p>
+<p>The following sections examine this interplay in detail.</p>
 </div>
 </div>
 </div>
