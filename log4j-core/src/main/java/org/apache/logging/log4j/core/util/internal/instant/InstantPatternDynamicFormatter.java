@@ -504,7 +504,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return new DateTimeFormatterPatternFormatterFactory(
                         this.pattern + otherDtf.pattern, otherDtf.precision);
             }
-            return super.tryMerge(other, thresholdPrecision);
+            return null;
         }
 
         static String escapeLiteral(String literal) {
@@ -585,7 +585,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 final StaticPatternFormatterFactory otherStatic = (StaticPatternFormatterFactory) other;
                 return new DateTimeFormatterPatternFormatterFactory(this.pattern + otherStatic.pattern, this.precision);
             }
-            return super.tryMerge(other, thresholdPrecision);
+            return null;
         }
 
         /**
@@ -781,7 +781,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                             printSeconds, this.separator, this.fractionalDigits + secondOther.fractionalDigits);
                 }
             }
-            return super.tryMerge(other, thresholdPrecision);
+            return null;
         }
     }
 }

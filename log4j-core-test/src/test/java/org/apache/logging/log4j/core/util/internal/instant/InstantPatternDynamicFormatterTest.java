@@ -317,9 +317,11 @@ class InstantPatternDynamicFormatterTest {
 
     private static MutableInstant randomInstant() {
         final MutableInstant instant = new MutableInstant();
-        // In the 1970's some time zones had sub-minute offsets to UTC, e.g., Africa/Monrovia
-        final int startEighties = 315_532_800;
-        final long epochSecond = startEighties + RANDOM.nextInt(1_621_280_470 - startEighties); // 2021-05-17 21:41:10
+        // In the 1970's some time zones had sub-minute offsets to UTC, e.g., Africa/Monrovia.
+        // We will exclude them for tests:
+        final long minEpochSecond = 315_532_800; // 1980-01-01 01:00:00
+        final long maxEpochSecond = 1_621_280_470; // 2021-05-17 21:41:10
+        final long epochSecond = RANDOM.nextLong(minEpochSecond, maxEpochSecond);
         final int epochSecondNano = randomNanos();
         instant.initFromEpochSecond(epochSecond, epochSecondNano);
         return instant;
