@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util.internal.instant;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.sequencePattern;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,9 +32,10 @@ import java.util.TimeZone;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DateTimeFormatterPatternFormatterFactory;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternFormatterFactory;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.SecondPatternFormatterFactory;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DateTimeFormatterPatternSequence;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternSequence;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.SecondPatternSequence;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,30 +47,31 @@ class InstantPatternDynamicFormatterTest {
     @ParameterizedTest
     @MethodSource("sequencingTestCases")
     void sequencing_should_work(
-            final String pattern,
-            final ChronoUnit thresholdPrecision,
-            final List<PatternFormatterFactory> expectedSequences) {
-        final List<PatternFormatterFactory> actualSequences = sequencePattern(pattern, thresholdPrecision);
+            final String pattern, final ChronoUnit thresholdPrecision, final List<PatternSequence> expectedSequences) {
+        final List<PatternSequence> actualSequences = sequencePattern(pattern, thresholdPrecision);
         assertThat(actualSequences).isEqualTo(expectedSequences);
     }
 
     static List<Arguments> sequencingTestCases() {
         final List<Arguments> testCases = new ArrayList<>();
 
+        // Merged constants
+        testCases.add(Arguments.of(":'foo',", ChronoUnit.DAYS, singletonList(new StaticPatternSequence(":foo,"))));
+
         // `SSSX` should be treated constant for daily updates
-        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, asList(pMilliSec(), pDyn("X"))));
+        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, asList(pMilliSec(), pDtf("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated hourly
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.HOURS,
-                asList(pDyn("yyyyMMddHH", ChronoUnit.HOURS), pDyn("mm"), pSec("", 3), pDyn("X"))));
+                asList(pDtf("yyyyMMddHH", ChronoUnit.HOURS), pDtf("mm"), pSec("", 3), pDtf("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated per minute
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.MINUTES,
-                asList(pDyn("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec("", 3), pDyn("X"))));
+                asList(pDtf("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec("", 3), pDtf("X"))));
 
         // ISO9601 instant cache updated daily
         final String iso8601InstantPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
@@ -76,44 +79,44 @@ class InstantPatternDynamicFormatterTest {
                 iso8601InstantPattern,
                 ChronoUnit.DAYS,
                 asList(
-                        pDyn("yyyy'-'MM'-'dd'T'", ChronoUnit.DAYS),
-                        pDyn("HH':'mm':'", ChronoUnit.MINUTES),
+                        pDtf("yyyy'-'MM'-'dd'T'", ChronoUnit.DAYS),
+                        pDtf("HH':'mm':'", ChronoUnit.MINUTES),
                         pSec(".", 3),
-                        pDyn("X"))));
+                        pDtf("X"))));
 
         // ISO9601 instant cache updated per minute
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.MINUTES,
-                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
+                asList(pDtf("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDtf("X"))));
 
         // ISO9601 instant cache updated per second
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.SECONDS,
-                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
+                asList(pDtf("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDtf("X"))));
 
         // Seconds and micros
         testCases.add(Arguments.of(
-                "HH:mm:ss.SSSSSS", ChronoUnit.MINUTES, asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 6))));
+                "HH:mm:ss.SSSSSS", ChronoUnit.MINUTES, asList(pDtf("HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 6))));
 
         return testCases;
     }
 
-    private static DateTimeFormatterPatternFormatterFactory pDyn(final String pattern) {
-        return new DateTimeFormatterPatternFormatterFactory(pattern);
+    private static DateTimeFormatterPatternSequence pDtf(final String simplePattern) {
+        return new DateTimeFormatterPatternSequence(simplePattern);
     }
 
-    private static DateTimeFormatterPatternFormatterFactory pDyn(final String pattern, final ChronoUnit precision) {
-        return new DateTimeFormatterPatternFormatterFactory(pattern, precision);
+    private static DateTimeFormatterPatternSequence pDtf(final String pattern, final ChronoUnit precision) {
+        return new DateTimeFormatterPatternSequence(pattern, precision);
     }
 
-    private static SecondPatternFormatterFactory pSec(String separator, int fractionalDigits) {
-        return new SecondPatternFormatterFactory(true, separator, fractionalDigits);
+    private static SecondPatternSequence pSec(String separator, int fractionalDigits) {
+        return new SecondPatternSequence(true, separator, fractionalDigits);
     }
 
-    private static SecondPatternFormatterFactory pMilliSec() {
-        return new SecondPatternFormatterFactory(false, "", 3);
+    private static SecondPatternSequence pMilliSec() {
+        return new SecondPatternSequence(false, "", 3);
     }
 
     @ParameterizedTest
