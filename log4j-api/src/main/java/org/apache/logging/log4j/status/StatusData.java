@@ -94,6 +94,7 @@ public class StatusData implements Serializable {
      * Returns the instant of the event.
      *
      * @return the event's instant
+     * @since 2.23.0
      */
     public Instant getInstant() {
         return instant;
@@ -103,7 +104,7 @@ public class StatusData implements Serializable {
      * Returns the instant of the event.
      *
      * @return the event's instant
-     * @deprecated Use {@link #getInstant()} instead.
+     * @deprecated since 2.23.0, use {@link #getInstant()} instead.
      */
     @Deprecated
     public long getTimestamp() {
