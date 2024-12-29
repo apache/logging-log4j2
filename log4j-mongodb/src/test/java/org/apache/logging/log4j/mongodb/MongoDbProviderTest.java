@@ -2,15 +2,14 @@ package org.apache.logging.log4j.mongodb;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 class MongoDbProviderTest {
 
     private String validConnectionStringWithoutDatabase = "mongodb://localhost:27017";
-    private String invalidConnectionString = "test:test";
     private String validConnectionStringWithDatabase = "mongodb://localhost:27017/logging";
     private String validConnectionStringWithDatabaseAndCollection = "mongodb://localhost:27017/logging.logs";
 
@@ -29,9 +28,9 @@ class MongoDbProviderTest {
                 .setCollectionName(this.collectionName)
                 .build();
 
-        assertNotNull("Returned provider is null", provider);
-        assertEquals("Collection names do not match", this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals("Database names do not match", this.databaseName, provider.getConnection().getCollection().getNamespace().getDatabaseName());
+        assertNotNull(provider, "Returned provider is null");
+        assertEquals(this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName(), "Collection names do not match");
+        assertEquals( this.databaseName, provider.getConnection().getCollection().getNamespace().getDatabaseName(), "Database names do not match");
 
     }
 
@@ -42,7 +41,7 @@ class MongoDbProviderTest {
                 .setConnectionStringSource(this.validConnectionStringWithoutDatabase)
                 .build();
 
-        assertNull("Provider should be null but was not", provider);
+        assertNull( provider, "Provider should be null but was not");
 
 
     }
@@ -55,7 +54,7 @@ class MongoDbProviderTest {
                 .setCollectionName(this.collectionName)
                 .build();
 
-        assertNull("Provider should be null but was not", provider);
+        assertNull(provider,"Provider should be null but was not");
 
 
 
@@ -69,7 +68,7 @@ class MongoDbProviderTest {
                 .setDatabaseName(this.databaseName)
                 .build();
 
-        assertNull("Provider should be null but was not", provider);
+        assertNull(provider,"Provider should be null but was not");
 
 
     }
@@ -81,9 +80,9 @@ class MongoDbProviderTest {
                 .setCollectionName(this.collectionName)
                 .build();
 
-        assertNotNull("Provider should be null but was not", provider);
-        assertEquals("Collection names do not match", this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals("Database names do not match", "logging", provider.getConnection().getCollection().getNamespace().getDatabaseName());
+        assertNotNull(provider,"Provider should not be null");
+        assertEquals(this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName(), "Provider should be null but was not");
+        assertEquals( "logging", provider.getConnection().getCollection().getNamespace().getDatabaseName(),"Database names do not match");
 
     }
 
@@ -96,9 +95,9 @@ class MongoDbProviderTest {
                 .setDatabaseName(this.databaseName)
                 .build();
 
-        assertNotNull("Provider should not be null", provider);
-        assertEquals("Collection name does not match provided configuration", this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals("Database name does not match provided configuration", this.databaseName, provider.getConnection().getCollection().getNamespace().getDatabaseName());
+        assertNotNull(provider,"Provider should not be null");
+        assertEquals(this.collectionName, provider.getConnection().getCollection().getNamespace().getCollectionName(), "Collection name does not match provided configuration");
+        assertEquals(this.databaseName, provider.getConnection().getCollection().getNamespace().getDatabaseName(), "Database name does not match provided configuration");
 
     }
 

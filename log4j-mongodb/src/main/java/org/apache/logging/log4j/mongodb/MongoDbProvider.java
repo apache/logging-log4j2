@@ -77,7 +77,6 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             // Validate the provided databaseName property
             try {
                 MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
-                databaseName = effectiveDatabaseName;
             } catch (final IllegalArgumentException e) {
                 LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
                 return null;
@@ -85,13 +84,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             // Validate the provided collectionName property
             try {
                 MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
-                collectionName = effectiveCollectionName;
             } catch (final IllegalArgumentException e) {
                 LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
                 return null;
             }
 
-            return new MongoDbProvider(connectionString, capped, collectionSize, databaseName, collectionName);
+            return new MongoDbProvider(connectionString, capped, collectionSize, effectiveDatabaseName, effectiveCollectionName);
         }
 
         public B setConnectionStringSource(final String connectionStringSource) {

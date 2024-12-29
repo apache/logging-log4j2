@@ -821,7 +821,7 @@ for its format.
 | 'string'
 |
 |
-It specifies the name of the database for the logger to use.
+It specifies the name of the database for the appender to use.
 
 Overrides the value provided in the connection string if present.
 
@@ -831,9 +831,10 @@ Overrides the value provided in the connection string if present.
 | 'string'
 |
 |
-It pecifies the name of the collection for the logger to use.
-
-Overrides the value provided in the connection string if present.
+It specifies the name of the collection for the appender to use.
+For backward compatibility, the collection name can also be specified in the
+https://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[Java-specific connection string]
+If collection name is specified in both places, the value provided here will be used.
 
 **Required**
 
