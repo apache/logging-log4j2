@@ -109,12 +109,12 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
                 "Mongo4Connection [collection=%s, mongoClient=%s]", collection, mongoClient);
     }
 
+    /*
+     * This method is exposed to help support unit tests for the MongoDbProvider class.
+     *
+     */
     public MongoCollection<Document> getCollection(){
         return this.collection;
-    }
-
-    public MongoClient getMongoClient(){
-        return this.mongoClient;
     }
 
 }
