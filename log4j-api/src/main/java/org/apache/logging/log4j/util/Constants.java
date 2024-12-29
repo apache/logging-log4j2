@@ -67,6 +67,7 @@ public final class Constants {
 
     /**
      * Java major version.
+     * @since 2.8.1
      */
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
