@@ -817,6 +817,28 @@ for its format.
 
 **Required**
 
+| [[MongoDbProvider-attr-databaseName]]databaseName
+| 'string'
+|
+|
+It specifies the name of the database for the logger to use.
+
+Overrides the value provided in the connection string if present.
+
+**Required**
+
+| [[MongoDbProvider-attr-collectionName]]collectionName
+| 'string'
+|
+|
+It pecifies the name of the collection for the logger to use.
+
+Overrides the value provided in the connection string if present.
+
+**Required**
+
+
+
 | [[MongoDbProvider-attr-capped]]capped
 | `boolean`
 | `false`

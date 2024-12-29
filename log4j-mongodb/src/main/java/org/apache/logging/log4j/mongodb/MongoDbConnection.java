@@ -59,20 +59,19 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
         }
     }
 
-    private final ConnectionString connectionString;
+
     private final MongoCollection<Document> collection;
     private final MongoClient mongoClient;
 
     public MongoDbConnection(
-            final ConnectionString connectionString,
             final MongoClient mongoClient,
             final MongoDatabase mongoDatabase,
+            final String collectionName,
             final boolean isCapped,
             final Long sizeInBytes) {
-        this.connectionString = connectionString;
         this.mongoClient = mongoClient;
         this.collection =
-                getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped, sizeInBytes);
+                getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
 
     @Override
@@ -107,7 +106,15 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
     @Override
     public String toString() {
         return String.format(
-                "Mongo4Connection [connectionString=%s, collection=%s, mongoClient=%s]",
-                connectionString, collection, mongoClient);
+                "Mongo4Connection [collection=%s, mongoClient=%s]", collection, mongoClient);
     }
+
+    public MongoCollection<Document> getCollection(){
+        return this.collection;
+    }
+
+    public MongoClient getMongoClient(){
+        return this.mongoClient;
+    }
+
 }

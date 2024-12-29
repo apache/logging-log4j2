@@ -18,6 +18,7 @@ package org.apache.logging.log4j.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -57,12 +58,40 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         @PluginAttribute("collectionName")
         private String collectionName = null;
 
-        @PluginAttribute("datbaseName")
+        @PluginAttribute("databaseName")
         private String databaseName = null;
 
         @Override
         public MongoDbProvider build() {
-            return new MongoDbProvider(connectionStringSource, capped, collectionSize, databaseName, collectionName);
+            LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
+            ConnectionString connectionString;
+            try {
+                connectionString = new ConnectionString(connectionStringSource);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
+                return null;
+            }
+
+            String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
+            String effectiveCollectionName = collectionName != null ? collectionName: connectionString.getCollection();
+            // Validate the provided databaseName property
+            try {
+                MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
+                databaseName = effectiveDatabaseName;
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
+                return null;
+            }
+            // Validate the provided collectionName property
+            try {
+                MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+                collectionName = effectiveCollectionName;
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
+                return null;
+            }
+
+            return new MongoDbProvider(connectionString, capped, collectionSize, databaseName, collectionName);
         }
 
         public B setConnectionStringSource(final String connectionStringSource) {
@@ -111,24 +140,18 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private final Long collectionSize;
     private final boolean isCapped;
     private final String collectionName;
-    private final String databaseName;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDbProvider(
-            final String connectionStringSource,
-            final boolean isCapped,
-            final Long collectionSize,
-            final String databaseName,
-            final String collectionName) {
-        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
-        this.connectionString = new ConnectionString(connectionStringSource);
+    private MongoDbProvider(final ConnectionString connectionString, final boolean isCapped, final Long collectionSize, final String databaseName, final String collectionName) {
+
         LOGGER.debug("Created ConnectionString {}", connectionString);
+        this.connectionString = connectionString;
         LOGGER.debug("Creating MongoClientSettings...");
         // @formatter:off
         final MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(this.connectionString)
+                .applyConnectionString(connectionString)
                 .codecRegistry(CODEC_REGISTRIES)
                 .build();
         // @formatter:on
@@ -136,37 +159,29 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        if (databaseName == null || databaseName.isEmpty()) {
-            this.databaseName = this.connectionString.getDatabase();
-        } else {
-            this.databaseName = databaseName;
-        }
-        LOGGER.debug("Getting MongoDatabase {}...", this.databaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(this.databaseName);
+        LOGGER.debug("Getting MongoDatabase {}...", databaseName);
+        this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
-        if (collectionName == null || collectionName.isEmpty()) {
-            this.collectionName = this.connectionString.getCollection();
-        } else {
-            this.collectionName = collectionName;
-        }
+        this.collectionName = collectionName;
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
     }
 
     @Override
     public MongoDbConnection getConnection() {
-        return new MongoDbConnection(connectionString, mongoClient, mongoDatabase, isCapped, collectionSize);
+        return new MongoDbConnection(mongoClient, mongoDatabase, collectionName, isCapped, collectionSize);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s]",
+                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s, collectionName=%s]",
                 MongoDbProvider.class.getSimpleName(),
                 connectionString,
                 collectionSize,
                 isCapped,
                 mongoClient,
-                mongoDatabase);
+                mongoDatabase,
+                collectionName);
     }
 }
