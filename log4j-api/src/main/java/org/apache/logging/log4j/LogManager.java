@@ -298,6 +298,7 @@ public class LogManager {
      * @param configLocation The URI for the configuration to use.
      * @param name The LoggerContext name.
      * @return a LoggerContext.
+     * @since 2.9.1
      */
     protected static LoggerContext getContext(
             final String fqcn,
