@@ -23,7 +23,9 @@
   <Appenders>
     <NoSql name="MONGO">
       <MongoDb
-        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDbCappedIntIT"
+        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}"
+        databaseName="testDb"
+        collectionName="MongoDbCappedIntIT"
         capped="true"
         collectionSize="1073741824"/>
     </NoSql>

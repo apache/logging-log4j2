@@ -22,7 +22,7 @@
                    https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
     <NoSql name="MONGO">
-      <MongoDb connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDbAdditionalFieldsIT"/>
+      <MongoDb connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}" databaseName="testDb" collectionName="MongoDbAdditionalFieldsIT"/>
       <KeyValuePair key="A" value="1"/>
       <KeyValuePair key="B" value="2"/>
       <KeyValuePair key="env1" value="${env:PATH}"/>
