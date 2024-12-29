@@ -73,7 +73,7 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
             }
 
             String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
-            String effectiveCollectionName = collectionName != null ? collectionName: connectionString.getCollection();
+            String effectiveCollectionName = collectionName != null ? collectionName : connectionString.getCollection();
             // Validate the provided databaseName property
             try {
                 MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
@@ -89,7 +89,8 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
                 return null;
             }
 
-            return new MongoDbProvider(connectionString, capped, collectionSize, effectiveDatabaseName, effectiveCollectionName);
+            return new MongoDbProvider(
+                    connectionString, capped, collectionSize, effectiveDatabaseName, effectiveCollectionName);
         }
 
         public B setConnectionStringSource(final String connectionStringSource) {
@@ -142,7 +143,12 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDbProvider(final ConnectionString connectionString, final boolean isCapped, final Long collectionSize, final String databaseName, final String collectionName) {
+    private MongoDbProvider(
+            final ConnectionString connectionString,
+            final boolean isCapped,
+            final Long collectionSize,
+            final String databaseName,
+            final String collectionName) {
 
         LOGGER.debug("Created ConnectionString {}", connectionString);
         this.connectionString = connectionString;

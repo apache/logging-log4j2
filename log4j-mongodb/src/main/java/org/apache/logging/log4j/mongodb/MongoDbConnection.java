@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.mongodb;
 
-import com.mongodb.ConnectionString;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -59,7 +58,6 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
         }
     }
 
-
     private final MongoCollection<Document> collection;
     private final MongoClient mongoClient;
 
@@ -70,8 +68,7 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
             final boolean isCapped,
             final Long sizeInBytes) {
         this.mongoClient = mongoClient;
-        this.collection =
-                getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
+        this.collection = getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
 
     @Override
@@ -105,16 +102,14 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
 
     @Override
     public String toString() {
-        return String.format(
-                "Mongo4Connection [collection=%s, mongoClient=%s]", collection, mongoClient);
+        return String.format("Mongo4Connection [collection=%s, mongoClient=%s]", collection, mongoClient);
     }
 
     /*
      * This method is exposed to help support unit tests for the MongoDbProvider class.
      *
      */
-    public MongoCollection<Document> getCollection(){
+    public MongoCollection<Document> getCollection() {
         return this.collection;
     }
-
 }
