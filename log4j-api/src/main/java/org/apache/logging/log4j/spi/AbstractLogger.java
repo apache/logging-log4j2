@@ -687,6 +687,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         entry(FQCN, (Object[]) null);
     }
 
+    /**
+     * @deprecated since 2.22.0, use {@link #traceEntry(String, Object...)} instead.
+     */
     @Deprecated
     @Override
     public void entry(final Object... params) {

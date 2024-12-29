@@ -56,6 +56,7 @@ public final class Base64Util {
 
     /**
      * This method does not specify an encoding for the {@code str} parameter and should not be used.
+     * @deprecated since 2.22.0, use {@link java.util.Base64} instead.
      */
     @Deprecated
     public static String encode(final String str) {

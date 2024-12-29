@@ -20,6 +20,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 
+/**
+ * @since 2.22.0
+ */
 public class LazyBoolean implements BooleanSupplier {
     private final BooleanSupplier supplier;
     private final Lock lock = new ReentrantLock();
