@@ -18,6 +18,8 @@ package org.apache.logging.log4j.internal;
 
 /**
  * Keeps track of LogManager initialization status;
+ *
+ * @since 2.14.1
  */
 public class LogManagerStatus {
 

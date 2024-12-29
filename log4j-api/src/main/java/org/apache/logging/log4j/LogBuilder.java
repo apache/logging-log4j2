@@ -332,6 +332,8 @@ public interface LogBuilder {
 
     /**
      * Causes all the data collected to be logged. Default implementatoin does nothing.
+     *
+     * @since 2.14.1
      */
     default void log() {}
 }
