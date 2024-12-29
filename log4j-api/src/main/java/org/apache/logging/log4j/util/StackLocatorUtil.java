@@ -23,6 +23,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class.
+ *
+ * @since 2.9.0
  */
 @InternalApi
 public final class StackLocatorUtil {

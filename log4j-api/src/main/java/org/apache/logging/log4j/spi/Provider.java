@@ -133,6 +133,7 @@ public class Provider {
      * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION},
      * @param loggerContextFactoryClass A public exported implementation of {@link LoggerContextFactory} or {@code
      * null} if {@link #getLoggerContextFactory()} is also implemented.
+     * @since 2.9.0
      */
     public Provider(
             final @Nullable Integer priority,
@@ -148,6 +149,7 @@ public class Provider {
      * null} if {@link #getLoggerContextFactory()} is also implemented,
      * @param threadContextMapClass A public exported implementation of {@link ThreadContextMap} or {@code null} if
      * {@link #getThreadContextMapInstance()} is implemented.
+     * @since 2.9.0
      */
     public Provider(
             final @Nullable Integer priority,
@@ -168,6 +170,8 @@ public class Provider {
     /**
      * Returns the Log4j API versions supported by the implementation.
      * @return A String containing the Log4j versions supported.
+     *
+     * @since 2.9.0
      */
     public String getVersions() {
         return versions != null ? versions : "";

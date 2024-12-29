@@ -61,7 +61,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
     /**
      * Creates a StructuredDataId based on the name.
      * @param name The Structured Data Element name (maximum length is 32)
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataId(final String name) {
         this(name, null, null, MAX_LENGTH);
@@ -71,7 +71,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * Creates a StructuredDataId based on the name.
      * @param name The Structured Data Element name.
      * @param maxLength The maximum length of the name.
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataId(final String name, final int maxLength) {
         this(name, null, null, maxLength);
@@ -94,7 +94,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param required The list of keys that are required for this id.
      * @param optional The list of keys that are optional for this id.
      * @param maxLength The maximum length of the id's name.
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataId(final String name, final String[] required, final String[] optional, int maxLength) {
         int index = -1;
@@ -192,7 +192,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param required The list of keys that are required for this id.
      * @param optional The list of keys that are optional for this id.
      * @param maxLength The maximum length of the StructuredData Id key.
-     * @since 2.9
+     * @since 2.9.0
      * @deprecated Use {@link #StructuredDataId(String, String, String[], String[], int)} instead.
      */
     @InlineMe(replacement = "this(name, String.valueOf(enterpriseNumber), required, optional, maxLength)")

@@ -214,7 +214,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to check
      * @param maxSize the maximum number of characters the StringBuilder is allowed to have
-     * @since 2.9
+     * @since 2.9.0
      */
     public static void trimToMaxSize(final StringBuilder stringBuilder, final int maxSize) {
         if (stringBuilder != null && stringBuilder.capacity() > maxSize) {

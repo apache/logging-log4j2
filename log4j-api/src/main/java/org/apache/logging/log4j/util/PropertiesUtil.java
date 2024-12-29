@@ -160,6 +160,7 @@ public final class PropertiesUtil {
      *
      * @param name the name of the property to verify
      * @return {@code true} if the specified property is defined, regardless of its value
+     * @since 2.9.0
      */
     public boolean hasProperty(final String name) {
         return environment.containsKey(name);
@@ -196,6 +197,7 @@ public final class PropertiesUtil {
      * @param defaultValueIfAbsent  the default value to use if the property is undefined
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
+     * @since 2.9.0
      */
     public boolean getBooleanProperty(
             final String name, final boolean defaultValueIfAbsent, final boolean defaultValueIfPresent) {

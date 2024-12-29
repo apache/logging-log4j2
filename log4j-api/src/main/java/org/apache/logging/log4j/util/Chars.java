@@ -52,6 +52,7 @@ public final class Chars {
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid
+     * @since 2.8.2
      */
     public static char getUpperCaseHex(final int digit) {
         if (digit < 0 || digit >= 16) {
@@ -65,6 +66,7 @@ public final class Chars {
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid
+     * @since 2.8.2
      */
     public static char getLowerCaseHex(final int digit) {
         if (digit < 0 || digit >= 16) {

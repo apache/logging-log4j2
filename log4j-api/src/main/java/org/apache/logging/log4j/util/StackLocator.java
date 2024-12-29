@@ -49,6 +49,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * environments may fall back to using {@link Throwable#getStackTrace()} which is significantly slower due to
  * examination of every virtual frame of execution.
  * </p>
+ *
+ * @since 2.9.0
  */
 @InternalApi
 public final class StackLocator {
