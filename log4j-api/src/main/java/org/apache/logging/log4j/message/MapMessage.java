@@ -598,7 +598,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      *
      * @param candidateKey The candidate key.
      * @return The candidate key.
-     * @since 2.12
+     * @since 2.12.0
      */
     protected String toKey(final String candidateKey) {
         return candidateKey;
