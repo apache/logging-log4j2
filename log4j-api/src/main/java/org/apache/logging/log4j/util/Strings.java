@@ -45,6 +45,7 @@ public final class Strings {
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final String[] EMPTY_ARRAY = {};
 
@@ -325,6 +326,7 @@ public final class Strings {
      * @param str1 the first string.
      * @param str2 the second string.
      * @return the concatenated String.
+     * @since 2.15.0
      */
     public static String concat(final String str1, final String str2) {
         if (isEmpty(str1)) {

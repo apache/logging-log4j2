@@ -116,11 +116,13 @@ public final class Constants {
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final Object[] EMPTY_OBJECT_ARRAY = {};
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final byte[] EMPTY_BYTE_ARRAY = {};
 

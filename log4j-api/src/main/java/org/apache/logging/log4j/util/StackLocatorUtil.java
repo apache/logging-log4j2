@@ -99,6 +99,7 @@ public final class StackLocatorUtil {
      * @param sentinelClass Sentinel class at which to begin searching
      * @param callerPredicate Predicate checked after the sentinelClass is found
      * @return the first matching class after <code>sentinelClass</code> is found.
+     * @since 2.15.0
      */
     @PerformanceSensitive
     public static Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
