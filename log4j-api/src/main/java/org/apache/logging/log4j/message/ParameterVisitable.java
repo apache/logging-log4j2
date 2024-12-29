@@ -22,7 +22,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Allows message parameters to be iterated over without any allocation
  * or memory copies.
  *
- * @since 2.11
+ * @since 2.11.0
  */
 @PerformanceSensitive("allocation")
 public interface ParameterVisitable {

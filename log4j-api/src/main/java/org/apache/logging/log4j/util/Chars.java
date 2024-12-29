@@ -35,7 +35,10 @@ public final class Chars {
     /** Line Feed. */
     public static final char LF = '\n';
 
-    /** NUL. */
+    /**
+     * NUL.
+     * @since 2.11.0
+     */
     public static final char NUL = 0;
 
     /** Single Quote [']. */
