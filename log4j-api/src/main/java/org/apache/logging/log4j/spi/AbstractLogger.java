@@ -138,6 +138,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param name the logger name (if null, will be derived from this class)
      * @param messageFactory the {@link Message} factory (if null, {@link ParameterizedMessageFactory} will be used)
      * @param flowMessageFactory the {@link org.apache.logging.log4j.message.FlowMessage} factory (if null, {@link DefaultFlowMessageFactory} will be used)
+     * @since 2.24.0
      */
     protected AbstractLogger(
             final String name, final MessageFactory messageFactory, final FlowMessageFactory flowMessageFactory) {

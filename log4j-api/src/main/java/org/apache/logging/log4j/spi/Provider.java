@@ -43,6 +43,7 @@ import org.jspecify.annotations.Nullable;
 public class Provider {
     /**
      * Constant inlined by the compiler
+     * @since 2.24.0
      */
     protected static final String CURRENT_VERSION = "2.6.0";
 
@@ -317,7 +318,7 @@ public class Provider {
      *
      * @return the URL corresponding to the Provider {@code META-INF/log4j-provider.properties} file or {@code null}
      * for a provider class.
-     * @deprecated since 2.24.0, without replacement.
+     * @deprecated since 2.24.0, without a replacement.
      */
     @Deprecated
     public @Nullable URL getUrl() {
