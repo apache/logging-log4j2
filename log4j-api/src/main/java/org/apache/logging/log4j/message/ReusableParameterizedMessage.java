@@ -369,6 +369,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                 + ", throwableProvided=" + (getThrowable() != null) + ']';
     }
 
+    /**
+     * @since 2.11.1
+     */
     @Override
     public void clear() { // LOG4J2-1583
         // This method does not clear parameter values, those are expected to be swapped to a
