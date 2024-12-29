@@ -101,6 +101,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static boolean appendSpecificTypes(final StringBuilder stringBuilder, final Object obj) {
         if (obj == null || obj instanceof String) {
             stringBuilder.append((String) obj);
@@ -223,6 +226,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeJson(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
         for (int i = start; i < toAppendTo.length(); i++) {
@@ -299,6 +305,9 @@ public final class StringBuilders {
         return lastPos;
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
         for (int i = start; i < toAppendTo.length(); i++) {

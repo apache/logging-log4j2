@@ -2946,6 +2946,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * one if a single logging call without nested logging calls has been made, or more depending on the level of
      * nesting.
      * @return the depth of the nested logging calls in the current Thread
+     * @since 2.10.0
      */
     public static int getRecursionDepth() {
         return getRecursionDepthHolder()[0];
