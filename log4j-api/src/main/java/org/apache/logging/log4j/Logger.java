@@ -1971,7 +1971,7 @@ public interface Logger {
      * Gets the flow message factory used to convert messages into flow messages.
      *
      * @return the flow message factory, as an instance of {@link FlowMessageFactory}.
-     * @since 2.20
+     * @since 2.20.0
      */
     FlowMessageFactory getFlowMessageFactory();
 

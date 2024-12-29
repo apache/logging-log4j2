@@ -112,7 +112,7 @@ public interface LogBuilder {
      *
      * @param messageSupplier The supplier of the message to log.
      * @return the message logger or {@code null} if no logging occurred.
-     * @since 2.20
+     * @since 2.20.0
      */
     default Message logAndGet(final Supplier<Message> messageSupplier) {
         return null;

@@ -49,6 +49,9 @@ public class SystemPropertiesPropertySource implements PropertySource {
         return INSTANCE;
     }
 
+    /**
+     * @since 2.20.0
+     */
     public static String getSystemProperty(final String key, final String defaultValue) {
         final String value = INSTANCE.getProperty(key);
         return value != null ? value : defaultValue;
