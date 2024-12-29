@@ -22,6 +22,8 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Interface for constructing log events before logging them. Instances of LogBuilders should only be created
  * by calling one of the Logger methods that return a LogBuilder.
+ *
+ * @since 2.13.0
  */
 public interface LogBuilder {
     /** NOOP Logbuilder */
