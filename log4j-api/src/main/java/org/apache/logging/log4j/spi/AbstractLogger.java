@@ -2870,6 +2870,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
+    /**
+     * @since 2.12.1
+     */
     protected void log(
             final Level level,
             final Marker marker,
@@ -3813,6 +3816,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
+    /**
+     * @since 2.12.1
+     */
     protected boolean requiresLocation() {
         return false;
     }

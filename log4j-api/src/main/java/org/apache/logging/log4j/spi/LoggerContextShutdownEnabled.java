@@ -20,6 +20,8 @@ import java.util.List;
 
 /**
  * LoggerContexts implementing this are able register LoggerContextShutdownAware classes.
+ *
+ * @since 2.12.1
  */
 public interface LoggerContextShutdownEnabled {
 
