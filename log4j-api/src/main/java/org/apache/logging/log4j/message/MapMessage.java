@@ -420,6 +420,9 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         MapMessageJsonFormatter.format(sb, data);
     }
 
+    /**
+     * @since 2.11.2
+     */
     protected void asJavaUnquoted(final StringBuilder sb) {
         asJava(sb, false);
     }
