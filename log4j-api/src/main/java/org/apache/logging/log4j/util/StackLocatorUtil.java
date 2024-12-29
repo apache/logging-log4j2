@@ -86,6 +86,7 @@ public final class StackLocatorUtil {
      * @param depth The stack frame count to walk.
      * @return A class or null.
      * @throws IndexOutOfBoundsException if depth is negative.
+     * @since 2.17.2
      */
     @PerformanceSensitive
     public static ClassLoader getCallerClassLoader(final int depth) {
@@ -112,6 +113,9 @@ public final class StackLocatorUtil {
         return stackLocator.getCallerClass(anchor);
     }
 
+    /**
+     * @since 2.17.2
+     */
     // migrated from ThrowableProxy
     @PerformanceSensitive
     public static Deque<Class<?>> getCurrentStackTrace() {

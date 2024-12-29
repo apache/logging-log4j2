@@ -214,6 +214,9 @@ public final class Strings {
         return buf.toString();
     }
 
+    /**
+     * @since 2.17.2
+     */
     public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
@@ -305,6 +308,7 @@ public final class Strings {
      * @param str The string to upper case.
      * @return a new string
      * @see String#toLowerCase(Locale)
+     * @since 2.17.2
      */
     public static String toRootLowerCase(final String str) {
         return str.toLowerCase(Locale.ROOT);

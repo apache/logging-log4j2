@@ -208,6 +208,9 @@ public final class StackLocator {
         return Object.class;
     }
 
+    /**
+     * @since 2.17.2
+     */
     // migrated from ThrowableProxy
     @PerformanceSensitive
     public Deque<Class<?>> getCurrentStackTrace() {
