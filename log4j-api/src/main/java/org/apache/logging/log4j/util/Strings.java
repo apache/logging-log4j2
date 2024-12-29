@@ -347,6 +347,7 @@ public final class Strings {
      * @param count the repetition count
      * @return the new string
      * @throws IllegalArgumentException if either {@code str} is null or {@code count} is negative
+     * @since 2.14.0
      */
     public static String repeat(final String str, final int count) {
         Objects.requireNonNull(str, "str");
