@@ -318,6 +318,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param structuredDataId The SD-ID as described in RFC 5424. If null the value in the StructuredData
      *                         will be used.
      * @param sb The StringBuilder to append the formatted message to.
+     * @since 2.8
      */
     public final void asString(final Format format, final StructuredDataId structuredDataId, final StringBuilder sb) {
         final boolean full = Format.FULL.equals(format);

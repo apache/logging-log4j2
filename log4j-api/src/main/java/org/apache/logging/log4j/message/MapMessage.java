@@ -79,6 +79,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
          *
          * @param format a MapFormat name
          * @return a MapFormat
+         * @since 2.8
          */
         public static MapFormat lookupIgnoreCase(final String format) {
             return XML.name().equalsIgnoreCase(format)
@@ -96,6 +97,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
          * All {@code MapFormat} names.
          *
          * @return All {@code MapFormat} names.
+         * @since 2.8
          */
         public static String[] names() {
             return new String[] {XML.name(), JSON.name(), JAVA.name(), JAVA_UNQUOTED.name()};

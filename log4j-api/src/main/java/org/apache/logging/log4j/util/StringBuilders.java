@@ -157,6 +157,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal, false otherwise
+     * @since 2.8
      */
     public static boolean equals(
             final CharSequence left,
@@ -187,6 +188,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal ignoring case, false otherwise
+     * @since 2.8
      */
     public static boolean equalsIgnoreCase(
             final CharSequence left,

@@ -228,6 +228,7 @@ public final class PropertiesUtil {
      *
      * @param name the name of the property to look up
      * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
+     * @since 2.8
      */
     public Charset getCharsetProperty(final String name) {
         return getCharsetProperty(name, Charset.defaultCharset());
@@ -240,6 +241,7 @@ public final class PropertiesUtil {
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the Charset value of the property or {@code defaultValue} if undefined.
+     * @since 2.8
      */
     public Charset getCharsetProperty(final String name, final Charset defaultValue) {
         final String charsetName = getStringProperty(name);
