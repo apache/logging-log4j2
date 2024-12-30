@@ -21,9 +21,6 @@ import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_
 
 import java.io.ObjectInputFilter;
 
-/**
- * @since 2.11.0
- */
 public class DefaultObjectInputFilter implements ObjectInputFilter {
 
     private final ObjectInputFilter delegate;
