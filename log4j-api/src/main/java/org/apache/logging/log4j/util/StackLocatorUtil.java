@@ -23,6 +23,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class.
+ *
+ * @since 2.9.0
  */
 @InternalApi
 public final class StackLocatorUtil {
@@ -84,6 +86,7 @@ public final class StackLocatorUtil {
      * @param depth The stack frame count to walk.
      * @return A class or null.
      * @throws IndexOutOfBoundsException if depth is negative.
+     * @since 2.17.2
      */
     @PerformanceSensitive
     public static ClassLoader getCallerClassLoader(final int depth) {
@@ -97,6 +100,7 @@ public final class StackLocatorUtil {
      * @param sentinelClass Sentinel class at which to begin searching
      * @param callerPredicate Predicate checked after the sentinelClass is found
      * @return the first matching class after <code>sentinelClass</code> is found.
+     * @since 2.15.0
      */
     @PerformanceSensitive
     public static Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
@@ -109,6 +113,9 @@ public final class StackLocatorUtil {
         return stackLocator.getCallerClass(anchor);
     }
 
+    /**
+     * @since 2.17.2
+     */
     // migrated from ThrowableProxy
     @PerformanceSensitive
     public static Deque<Class<?>> getCurrentStackTrace() {

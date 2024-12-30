@@ -38,6 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
  * through {@link #newMessage(String, Object...)}.
  * </p>
+ * @since 2.5
  */
 public final class ParameterizedNoReferenceMessageFactory extends AbstractMessageFactory {
     private static final long serialVersionUID = 5027639245636870500L;

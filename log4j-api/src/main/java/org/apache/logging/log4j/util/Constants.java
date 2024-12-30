@@ -67,6 +67,7 @@ public final class Constants {
 
     /**
      * Java major version.
+     * @since 2.8.1
      */
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
@@ -77,7 +78,8 @@ public final class Constants {
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
      * Users can override with system property "log4j.maxReusableMsgSize".
      * </p>
-     * @since 2.9
+     *
+     * @since 2.9.0
      */
     public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
 
@@ -89,6 +91,8 @@ public final class Constants {
      * {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
      * system property {@code org.apache.logging.log4j.simplelog.StatusLogger.level}.
      * </p>
+     *
+     * @since 2.9.0
      */
     public static final String LOG4J2_DEBUG = "log4j2.debug";
 
@@ -112,11 +116,13 @@ public final class Constants {
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final Object[] EMPTY_OBJECT_ARRAY = {};
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final byte[] EMPTY_BYTE_ARRAY = {};
 

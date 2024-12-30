@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 /**
  * <em>Consider this class private.</em>
+ * @since 2.3
  */
 @InternalApi
 public final class StringBuilders {
@@ -92,6 +93,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to append the value to
      * @param obj the object whose text representation to append to the StringBuilder
+     * @since 2.7
      */
     public static void appendValue(final StringBuilder stringBuilder, final Object obj) {
         if (!appendSpecificTypes(stringBuilder, obj)) {
@@ -99,6 +101,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static boolean appendSpecificTypes(final StringBuilder stringBuilder, final Object obj) {
         if (obj == null || obj instanceof String) {
             stringBuilder.append((String) obj);
@@ -155,6 +160,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal, false otherwise
+     * @since 2.8
      */
     public static boolean equals(
             final CharSequence left,
@@ -185,6 +191,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal ignoring case, false otherwise
+     * @since 2.8
      */
     public static boolean equalsIgnoreCase(
             final CharSequence left,
@@ -210,7 +217,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to check
      * @param maxSize the maximum number of characters the StringBuilder is allowed to have
-     * @since 2.9
+     * @since 2.9.0
      */
     public static void trimToMaxSize(final StringBuilder stringBuilder, final int maxSize) {
         if (stringBuilder != null && stringBuilder.capacity() > maxSize) {
@@ -219,6 +226,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeJson(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
         for (int i = start; i < toAppendTo.length(); i++) {
@@ -295,6 +305,9 @@ public final class StringBuilders {
         return lastPos;
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
         for (int i = start; i < toAppendTo.length(); i++) {

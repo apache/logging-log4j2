@@ -73,7 +73,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param msg The message.
      * @param type The message type.
      * @param maxLength The maximum length of keys;
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataMessage(final String id, final String msg, final String type, final int maxLength) {
         this.id = new StructuredDataId(id, null, null, maxLength);
@@ -102,7 +102,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param type The message type.
      * @param data The StructuredData map.
      * @param maxLength The maximum length of keys;
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataMessage(
             final String id, final String msg, final String type, final Map<String, String> data, final int maxLength) {
@@ -129,7 +129,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param msg The message.
      * @param type The message type.
      * @param maxLength The maximum length of keys;
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataMessage(final StructuredDataId id, final String msg, final String type, final int maxLength) {
         this.id = id;
@@ -159,7 +159,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param type The message type.
      * @param data The StructuredData map.
      * @param maxLength The maximum length of keys;
-     * @since 2.9
+     * @since 2.9.0
      */
     public StructuredDataMessage(
             final StructuredDataId id,
@@ -318,6 +318,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param structuredDataId The SD-ID as described in RFC 5424. If null the value in the StructuredData
      *                         will be used.
      * @param sb The StringBuilder to append the formatted message to.
+     * @since 2.8
      */
     public final void asString(final Format format, final StructuredDataId structuredDataId, final StringBuilder sb) {
         final boolean full = Format.FULL.equals(format);
@@ -520,6 +521,9 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         validateKey(key);
     }
 
+    /**
+     * @since 2.9.0
+     */
     protected void validateKey(final String key) {
         if (maxLength > 0 && key.length() > maxLength) {
             throw new IllegalArgumentException(

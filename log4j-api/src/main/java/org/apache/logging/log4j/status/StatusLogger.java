@@ -581,6 +581,7 @@ public class StatusLogger extends AbstractLogger {
      * Returns the fallback listener.
      *
      * @return the fallback listener
+     * @since 2.23.0
      */
     public StatusConsoleListener getFallbackListener() {
         return fallbackListener;
@@ -590,7 +591,8 @@ public class StatusLogger extends AbstractLogger {
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
+     * @deprecated Since 2.23.0, instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method
+     * on the fallback listener returned by {@link #getFallbackListener()}.
      */
     @Deprecated
     public void setLevel(final Level level) {
@@ -633,7 +635,9 @@ public class StatusLogger extends AbstractLogger {
      * Sets the level of the fallback listener.
      *
      * @param level a level
-     * @deprecated Instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method on the fallback listener returned by {@link #getFallbackListener()}.
+     * @since 2.6
+     * @deprecated Since 2.23.0, instead use the {@link StatusConsoleListener#setLevel(Level) setLevel(Level)} method
+     * on the fallback listener returned by {@link #getFallbackListener()}.
      */
     @Deprecated
     public void updateListenerLevel(final Level level) {
@@ -689,7 +693,8 @@ public class StatusLogger extends AbstractLogger {
     /**
      * Returns buffered events.
      *
-     * @deprecated Instead of relying on the buffering provided by {@code StatusLogger}, users should register their own listeners to access to logged events.
+     * @deprecated Since 2.23.0, instead of relying on the buffering provided by {@code StatusLogger},
+     * users should register their own listeners to access to logged events.
      * @return a thread-safe read-only collection of buffered events
      */
     @Deprecated
@@ -703,7 +708,8 @@ public class StatusLogger extends AbstractLogger {
     /**
      * Clears the event buffer.
      *
-     * @deprecated Instead of relying on the buffering provided by {@code StatusLogger}, users should register their own listeners to access to logged events.
+     * @deprecated Since 2.23.0, instead of relying on the buffering provided by {@code StatusLogger},
+     * users should register their own listeners to access to logged events.
      */
     @Deprecated
     public void clear() {

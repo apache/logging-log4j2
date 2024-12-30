@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Convenience class to be used as an {@link ExtendedLogger} registry by {@code LoggerContext} implementations.
+ * @since 2.6
  */
 @NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
@@ -52,6 +53,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Data structure contract for the internal storage of admitted loggers.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
@@ -68,6 +70,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link ConcurrentHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
@@ -93,6 +96,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link WeakHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated

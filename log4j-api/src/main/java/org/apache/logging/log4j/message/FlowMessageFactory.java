@@ -28,7 +28,7 @@ public interface FlowMessageFactory {
      * @param message format string
      * @param params  parameters
      * @return the new entry message
-     * @since 2.20
+     * @since 2.20.0
      */
     EntryMessage newEntryMessage(String message, Object... params);
 
@@ -46,7 +46,7 @@ public interface FlowMessageFactory {
      * @param format a format string
      * @param result the return value
      * @return the new exit message
-     * @since 2.20
+     * @since 2.20.0
      */
     ExitMessage newExitMessage(String format, Object result);
 
@@ -55,7 +55,7 @@ public interface FlowMessageFactory {
      *
      * @param message the original entry message
      * @return the new exit message
-     * @since 2.20
+     * @since 2.20.0
      */
     ExitMessage newExitMessage(Message message);
 

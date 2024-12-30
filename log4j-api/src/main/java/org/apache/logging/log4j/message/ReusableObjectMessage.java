@@ -131,6 +131,9 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
         return new ObjectMessage(obj);
     }
 
+    /**
+     * @since 2.11.1
+     */
     @Override
     public void clear() {
         obj = null;
