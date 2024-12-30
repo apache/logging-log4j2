@@ -37,7 +37,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public final class ReusableMessageFactory implements MessageFactory2, Serializable {
 
     /**
-     * Instance of ReusableMessageFactory..
+     * Instance of ReusableMessageFactory.
      */
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 

@@ -142,7 +142,7 @@ public class StatusConsoleListener implements StatusListener {
      * Adds package name filters to exclude.
      *
      * @param filters An array of package names to exclude.
-     * @deprecated This method is ineffective and only kept for binary backward compatibility.
+     * @deprecated since 2.23.0, this method is ineffective and only kept for binary backward compatibility.
      */
     @Deprecated
     public void setFilters(final String... filters) {}

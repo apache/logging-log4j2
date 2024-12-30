@@ -19,6 +19,8 @@ package org.apache.logging.log4j.util;
 /**
  * Exception thrown when an error occurs while accessing internal resources. This is generally used to
  * convert checked exceptions to runtime exceptions.
+ *
+ * @since 2.22.0
  */
 public class InternalException extends RuntimeException {
 

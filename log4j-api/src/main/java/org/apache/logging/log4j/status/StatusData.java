@@ -60,6 +60,7 @@ public class StatusData implements Serializable {
      * @param message a message
      * @param throwable the error occurred
      * @param threadName the thread name
+     * @since 2.4
      */
     public StatusData(
             @Nullable final StackTraceElement caller,
@@ -93,6 +94,7 @@ public class StatusData implements Serializable {
      * Returns the instant of the event.
      *
      * @return the event's instant
+     * @since 2.23.0
      */
     public Instant getInstant() {
         return instant;
@@ -102,7 +104,7 @@ public class StatusData implements Serializable {
      * Returns the instant of the event.
      *
      * @return the event's instant
-     * @deprecated Use {@link #getInstant()} instead.
+     * @deprecated since 2.23.0, use {@link #getInstant()} instead.
      */
     @Deprecated
     public long getTimestamp() {
@@ -141,6 +143,7 @@ public class StatusData implements Serializable {
      * Returns the name of the thread associated with the event.
      *
      * @return the name of the thread associated with the event
+     * @since 2.4
      */
     public String getThreadName() {
         return threadName;

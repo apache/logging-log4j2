@@ -22,7 +22,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 /**
  * A {@link StringMapMessage} typed to {@link String}-only values. This is like the MapMessage class before 2.9.
  *
- * @since 2.9
+ * @since 2.9.0
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable

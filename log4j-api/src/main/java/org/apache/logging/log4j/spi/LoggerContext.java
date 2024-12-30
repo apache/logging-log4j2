@@ -26,6 +26,7 @@ public interface LoggerContext {
 
     /**
      * Empty array.
+     * @since 2.17.2
      */
     LoggerContext[] EMPTY_ARRAY = {};
 

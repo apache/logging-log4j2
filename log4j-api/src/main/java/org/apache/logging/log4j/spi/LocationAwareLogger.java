@@ -22,6 +22,8 @@ import org.apache.logging.log4j.message.Message;
 
 /**
  * Logger that accepts the location of the caller.
+ *
+ * @since 2.12.1
  */
 public interface LocationAwareLogger {
     void logMessage(

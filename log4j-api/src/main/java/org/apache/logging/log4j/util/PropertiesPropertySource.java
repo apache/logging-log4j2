@@ -38,6 +38,9 @@ public class PropertiesPropertySource implements PropertySource {
         this(properties, DEFAULT_PRIORITY);
     }
 
+    /**
+     * @since 2.18.0
+     */
     public PropertiesPropertySource(final Properties properties, final int priority) {
         this.properties = properties;
         this.priority = priority;

@@ -97,6 +97,9 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
     }
 
+    /**
+     * @since 2.8
+     */
     public void removeAll(final Iterable<String> keys) {
         final Object[] state = localState.get();
         if (state != null) {

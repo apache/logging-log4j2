@@ -109,6 +109,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    /**
+     * @since 2.8
+     */
     public SortedArrayStringMap(final Map<String, ?> map) {
         resize(ceilingNextPowerOfTwo(map.size()));
         for (final Map.Entry<String, ?> entry : map.entrySet()) {

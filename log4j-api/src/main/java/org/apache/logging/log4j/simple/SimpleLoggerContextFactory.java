@@ -27,6 +27,8 @@ public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
     /**
      * Singleton instance.
+     *
+     * @since 2.17.2
      */
     public static final SimpleLoggerContextFactory INSTANCE = new SimpleLoggerContextFactory();
 
