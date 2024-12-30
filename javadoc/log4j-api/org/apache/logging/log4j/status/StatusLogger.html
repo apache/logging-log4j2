@@ -262,7 +262,8 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#clear()" class="member-name-link">clear</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="StatusConsoleListener.html" title="class in org.apache.logging.log4j.status">StatusConsoleListener</a></code></div>
@@ -289,7 +290,8 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getStatusData()" class="member-name-link">getStatusData</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
@@ -498,7 +500,8 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setLevel(org.apache.logging.log4j.Level)" class="member-name-link">setLevel</a><wbr>(<a href="../Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
 </div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
@@ -510,7 +513,8 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#updateListenerLevel(org.apache.logging.log4j.Level)" class="member-name-link">updateListenerLevel</a><wbr>(<a href="../Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
 </div>
 </div>
 </div>
@@ -683,6 +687,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the fallback listener</dd>
+<dt>Since:</dt>
+<dd>2.23.0</dd>
 </dl>
 </section>
 </li>
@@ -692,7 +698,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setLevel</span><wbr><span class="parameters">(<a href="../Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
 </div>
 <div class="block">Sets the level of the fallback listener.</div>
 <dl class="notes">
@@ -729,12 +736,15 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateListenerLevel</span><wbr><span class="parameters">(<a href="../Level.html" title="class in org.apache.logging.log4j">Level</a>&nbsp;level)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="#getFallbackListener()"><code>getFallbackListener()</code></a>.</div>
 </div>
 <div class="block">Sets the level of the fallback listener.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>level</code> - a level</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -762,7 +772,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="StatusData.html" title="class in org.apache.logging.log4j.status">StatusData</a>&gt;</span>&nbsp;<span class="element-name">getStatusData</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 <div class="block">Returns buffered events.</div>
 <dl class="notes">
@@ -777,7 +788,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">clear</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 <div class="block">Clears the event buffer.</div>
 </section>

@@ -87,7 +87,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/EventLogger.html" title="class in org.apache.logging.log4j">org.apache.logging.log4j.EventLogger</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment"><a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j"><code>Logger</code></a> accepts <a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s, users should use to that instead.</div>
+<div class="deprecation-comment">Deprecated since 2.24.0.
+ <a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j"><code>Logger</code></a> accepts <a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s, users should use to that instead.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/LoggerContextKey.html" title="class in org.apache.logging.log4j.spi">org.apache.logging.log4j.spi.LoggerContextKey</a></div>
 <div class="col-last odd-row-color">
@@ -141,19 +142,19 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/Logger.html#entry()">org.apache.logging.log4j.Logger.entry()</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceEntry()"><code>Logger.traceEntry()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceEntry()"><code>Logger.traceEntry()</code></a> instead which performs the same function.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/Logger.html#entry(java.lang.Object...)">org.apache.logging.log4j.Logger.entry<wbr>(Object...)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceEntry(java.lang.String,java.lang.Object...)"><code>Logger.traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">since 2.11.2, use <a href="org/apache/logging/log4j/Logger.html#traceEntry(java.lang.String,java.lang.Object...)"><code>Logger.traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/Logger.html#exit()">org.apache.logging.log4j.Logger.exit()</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceExit()"><code>Logger.traceExit()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceExit()"><code>Logger.traceExit()</code></a> instead which performs the same function.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/Logger.html#exit(R)">org.apache.logging.log4j.Logger.exit<wbr>(R)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceExit(R)"><code>Logger.traceExit(Object)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceExit(R)"><code>Logger.traceExit(Object)</code></a> instead which performs the same function.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/MarkerManager.html#getMarker(java.lang.String,java.lang.String)">org.apache.logging.log4j.MarkerManager.getMarker<wbr>(String, String)</a></div>
 <div class="col-last even-row-color">
@@ -170,7 +171,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,int)">org.apache.logging.log4j.message.StructuredDataId.makeId<wbr>(String, int)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)"><code>StructuredDataId.makeId(String, String)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)"><code>StructuredDataId.makeId(String, String)</code></a> instead</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/spi/AbstractLogger.html#checkMessageFactory(org.apache.logging.log4j.spi.ExtendedLogger,org.apache.logging.log4j.message.MessageFactory)">org.apache.logging.log4j.spi.AbstractLogger.checkMessageFactory<wbr>(ExtendedLogger, MessageFactory)</a></div>
 <div class="col-last even-row-color">
@@ -202,34 +203,40 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/Provider.html#getUrl()">org.apache.logging.log4j.spi.Provider.getUrl()</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">since 2.24.0, without replacement.</div>
+<div class="deprecation-comment">since 2.24.0, without a replacement.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setFilters(java.lang.String...)">org.apache.logging.log4j.status.StatusConsoleListener.setFilters<wbr>(String...)</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">This method is ineffective and only kept for binary backward compatibility.</div>
+<div class="deprecation-comment">since 2.23.0, this method is ineffective and only kept for binary backward compatibility.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusData.html#getTimestamp()">org.apache.logging.log4j.status.StatusData.getTimestamp()</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
+<div class="deprecation-comment">since 2.23.0, use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#clear()">org.apache.logging.log4j.status.StatusLogger.clear()</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#getStatusData()">org.apache.logging.log4j.status.StatusLogger.getStatusData()</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#setLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.setLevel<wbr>(Level)</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/status/StatusLogger.html#updateListenerLevel(org.apache.logging.log4j.Level)">org.apache.logging.log4j.status.StatusLogger.updateListenerLevel<wbr>(Level)</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/util/Base64Util.html#encode(java.lang.String)">org.apache.logging.log4j.util.Base64Util.encode<wbr>(String)</a></div>
-<div class="col-last even-row-color"></div>
+<div class="col-last even-row-color">
+<div class="deprecation-comment">since 2.22.0, use <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html" title="class or interface in java.util" class="external-link"><code>Base64</code></a> instead.</div>
+</div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/util/PropertiesUtil.html#reload()">org.apache.logging.log4j.util.PropertiesUtil.reload()</a></div>
 <div class="col-last odd-row-color">
 <div class="deprecation-comment">since 2.24.0 caching of property values is disabled.</div>
@@ -247,15 +254,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.Throwable)">org.apache.logging.log4j.message.ParameterizedMessage<wbr>(String, String[], Throwable)</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.Object,java.lang.Object)"><code>ParameterizedMessage(String, Object[], Throwable)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.Object,java.lang.Object)"><code>ParameterizedMessage(String, Object[], Throwable)</code></a> instead</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,int,java.lang.String%5B%5D,java.lang.String%5B%5D)">org.apache.logging.log4j.message.StructuredDataId<wbr>(String, int, String[], String[])</a></div>
 <div class="col-last odd-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
 </div>
 <div class="col-summary-item-name even-row-color"><a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,int,java.lang.String%5B%5D,java.lang.String%5B%5D,int)">org.apache.logging.log4j.message.StructuredDataId<wbr>(String, int, String[], String[], int)</a></div>
 <div class="col-last even-row-color">
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
 </div>
 <div class="col-summary-item-name odd-row-color"><a href="org/apache/logging/log4j/spi/DefaultThreadContextMap.html#%3Cinit%3E(boolean)">org.apache.logging.log4j.spi.DefaultThreadContextMap<wbr>(boolean)</a></div>
 <div class="col-last odd-row-color">

@@ -603,14 +603,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#entry()" class="member-name-link">entry</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceEntry()"><code>traceEntry()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceEntry()"><code>traceEntry()</code></a> instead which performs the same function.</div>
 </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#entry(java.lang.Object...)" class="member-name-link">entry</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceEntry(java.lang.String,java.lang.Object...)"><code>traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">since 2.11.2, use <a href="#traceEntry(java.lang.String,java.lang.Object...)"><code>traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
 </div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
@@ -1019,14 +1019,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#exit()" class="member-name-link">exit</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceExit()"><code>traceExit()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceExit()"><code>traceExit()</code></a> instead which performs the same function.</div>
 </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code>&lt;R&gt;&nbsp;R</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6"><code><a href="#exit(R)" class="member-name-link">exit</a><wbr>(R&nbsp;result)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceExit(R)"><code>traceExit(Object)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceExit(R)"><code>traceExit(Object)</code></a> instead which performs the same function.</div>
 </div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
@@ -3390,6 +3390,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3406,6 +3408,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3604,6 +3608,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message object to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3618,6 +3624,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3748,6 +3756,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3765,6 +3775,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3784,6 +3796,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3805,6 +3819,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3828,6 +3844,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3853,6 +3871,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3880,6 +3900,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3909,6 +3931,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3940,6 +3964,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3973,6 +3999,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -3986,6 +4014,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4001,6 +4031,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4018,6 +4050,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4037,6 +4071,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4058,6 +4094,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4081,6 +4119,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4106,6 +4146,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4133,6 +4175,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4162,6 +4206,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4193,6 +4239,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4202,7 +4250,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="return-type">void</span>&nbsp;<span class="element-name">entry</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceEntry()"><code>traceEntry()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceEntry()"><code>traceEntry()</code></a> instead which performs the same function.</div>
 </div>
 <div class="block">Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
  logged.</div>
@@ -4214,7 +4262,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="return-type">void</span>&nbsp;<span class="element-name">entry</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceEntry(java.lang.String,java.lang.Object...)"><code>traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">since 2.11.2, use <a href="#traceEntry(java.lang.String,java.lang.Object...)"><code>traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
 </div>
 <div class="block">Logs entry to a method along with its parameters (consider using one of the <code>traceEntry(...)</code> methods instead.)
  <p>
@@ -4310,6 +4358,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - the marker data specific to this log statement.</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4326,6 +4376,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement.</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4524,6 +4576,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4538,6 +4592,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4668,6 +4724,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4685,6 +4743,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4704,6 +4764,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4725,6 +4787,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4748,6 +4812,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4773,6 +4839,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4800,6 +4868,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4829,6 +4899,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4860,6 +4932,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4893,6 +4967,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4906,6 +4982,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4921,6 +4999,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4938,6 +5018,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4957,6 +5039,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -4978,6 +5062,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5001,6 +5087,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5026,6 +5114,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5053,6 +5143,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5082,6 +5174,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5113,6 +5207,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5122,7 +5218,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="return-type">void</span>&nbsp;<span class="element-name">exit</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceExit()"><code>traceExit()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceExit()"><code>traceExit()</code></a> instead which performs the same function.</div>
 </div>
 <div class="block">Logs exit from a method. Used for methods that do not return anything.</div>
 </section>
@@ -5133,7 +5229,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="type-parameters">&lt;R&gt;</span>&nbsp;<span class="return-type">R</span>&nbsp;<span class="element-name">exit</span><wbr><span class="parameters">(R&nbsp;result)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#traceExit(R)"><code>traceExit(Object)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="#traceExit(R)"><code>traceExit(Object)</code></a> instead which performs the same function.</div>
 </div>
 <div class="block">Logs exiting from a method with the result. This may be coded as:
 
@@ -5224,6 +5320,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - The marker data specific to this log statement.</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5240,6 +5338,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - The marker data specific to this log statement.</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5438,6 +5538,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5452,6 +5554,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5582,6 +5686,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5599,6 +5705,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5618,6 +5726,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5639,6 +5749,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5662,6 +5774,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5687,6 +5801,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5714,6 +5830,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5743,6 +5861,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5774,6 +5894,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5807,6 +5929,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5820,6 +5944,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5835,6 +5961,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5852,6 +5980,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5871,6 +6001,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5892,6 +6024,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5915,6 +6049,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5940,6 +6076,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5967,6 +6105,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5996,6 +6136,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6027,6 +6169,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6068,7 +6212,7 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the flow message factory, as an instance of <a href="message/FlowMessageFactory.html" title="interface in org.apache.logging.log4j.message"><code>FlowMessageFactory</code></a>.</dd>
 <dt>Since:</dt>
-<dd>2.20</dd>
+<dd>2.20.0</dd>
 </dl>
 </section>
 </li>
@@ -6157,6 +6301,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6173,6 +6319,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6515,6 +6663,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6532,6 +6682,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6551,6 +6703,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6572,6 +6726,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6595,6 +6751,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6620,6 +6778,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6647,6 +6807,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6676,6 +6838,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6707,6 +6871,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6740,6 +6906,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6753,6 +6921,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6768,6 +6938,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6785,6 +6957,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6804,6 +6978,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6825,6 +7001,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6848,6 +7026,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6873,6 +7053,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6900,6 +7082,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6929,6 +7113,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6960,6 +7146,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7228,6 +7416,8 @@ loadScripts(document, 'script');</script>
 <dd><code>level</code> - the logging level</dd>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7246,6 +7436,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7469,6 +7661,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>level</code> - the logging level</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7485,6 +7679,8 @@ loadScripts(document, 'script');</script>
 <dd><code>level</code> - the logging level</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7633,6 +7829,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7652,6 +7850,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7673,6 +7873,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7696,6 +7898,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7721,6 +7925,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7748,6 +7954,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7777,6 +7985,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7808,6 +8018,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7841,6 +8053,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7876,6 +8090,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7891,6 +8107,8 @@ loadScripts(document, 'script');</script>
 <dd><code>level</code> - the logging level</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7908,6 +8126,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7927,6 +8147,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7948,6 +8170,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7971,6 +8195,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -7996,6 +8222,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8023,6 +8251,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8052,6 +8282,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8083,6 +8315,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8116,6 +8350,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8266,6 +8502,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8282,6 +8520,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -8660,6 +8900,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8677,6 +8919,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8696,6 +8940,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8717,6 +8963,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8740,6 +8988,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8765,6 +9015,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8792,6 +9044,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8821,6 +9075,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8852,6 +9108,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8885,6 +9143,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8898,6 +9158,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8913,6 +9175,8 @@ loadScripts(document, 'script');</script>
 <dd><code>message</code> - the message to log; the format depends on the message factory.</dd>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8930,6 +9194,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p0</code> - parameter to the message.</dd>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8949,6 +9215,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p1</code> - parameter to the message.</dd>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8970,6 +9238,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p2</code> - parameter to the message.</dd>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -8993,6 +9263,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p3</code> - parameter to the message.</dd>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9018,6 +9290,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p4</code> - parameter to the message.</dd>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9045,6 +9319,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p5</code> - parameter to the message.</dd>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9074,6 +9350,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p6</code> - parameter to the message.</dd>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9105,6 +9383,8 @@ loadScripts(document, 'script');</script>
 <dd><code>p7</code> - parameter to the message.</dd>
 <dd><code>p8</code> - parameter to the message.</dd>
 <dd><code>p9</code> - parameter to the message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9433,6 +9713,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9449,6 +9731,8 @@ loadScripts(document, 'script');</script>
 <dd><code>marker</code> - the marker data specific to this log statement</dd>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9647,6 +9931,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -9661,6 +9947,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message CharSequence to log.</dd>
 <dd><code>throwable</code> - the <code>Throwable</code> to log, including its stack trace.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>

@@ -3897,6 +3897,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>DEFAULT_FLOW_MESSAGE_FACTORY_CLASS</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../message/FlowMessageFactory.html" title="interface in org.apache.logging.log4j.message">FlowMessageFactory</a>&gt;</span>&nbsp;<span class="element-name">DEFAULT_FLOW_MESSAGE_FACTORY_CLASS</span></div>
 <div class="block">The default FlowMessageFactory class.</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -3956,6 +3960,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dd><code>name</code> - the logger name (if null, will be derived from this class)</dd>
 <dd><code>messageFactory</code> - the <a href="../message/Message.html" title="interface in org.apache.logging.log4j.message"><code>Message</code></a> factory (if null, <a href="../message/ParameterizedMessageFactory.html" title="class in org.apache.logging.log4j.message"><code>ParameterizedMessageFactory</code></a> will be used)</dd>
 <dd><code>flowMessageFactory</code> - the <a href="../message/FlowMessage.html" title="interface in org.apache.logging.log4j.message"><code>FlowMessage</code></a> factory (if null, <a href="../message/DefaultFlowMessageFactory.html" title="class in org.apache.logging.log4j.message"><code>DefaultFlowMessageFactory</code></a> will be used)</dd>
+<dt>Since:</dt>
+<dd>2.24.0</dd>
 </dl>
 </section>
 </li>
@@ -5060,6 +5066,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dd><code>fqcn</code> - The fully qualified class name of the <b>caller</b>.</dd>
 <dd><code>format</code> - Format String for the parameters.</dd>
 <dd><code>paramSuppliers</code> - The Suppliers of the parameters.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5077,6 +5085,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dd><code>fqcn</code> - The fully qualified class name of the <b>caller</b>.</dd>
 <dd><code>format</code> - The format String for the parameters.</dd>
 <dd><code>paramSuppliers</code> - The parameters to the method.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5092,6 +5102,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dd><code>fqcn</code> - The fully qualified class name of the <b>caller</b>.</dd>
 <dd><code>format</code> - The format String for the parameters.</dd>
 <dd><code>params</code> - The parameters to the method.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5107,6 +5119,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dt>Parameters:</dt>
 <dd><code>fqcn</code> - The fully qualified class name of the <b>caller</b>.</dd>
 <dd><code>messageSupplier</code> - The Supplier of the Message.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -5187,6 +5201,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>entryMsg</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../message/EntryMessage.html" title="interface in org.apache.logging.log4j.message">EntryMessage</a></span>&nbsp;<span class="element-name">entryMsg</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;format,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -5194,6 +5212,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>entryMsg</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../message/EntryMessage.html" title="interface in org.apache.logging.log4j.message">EntryMessage</a></span>&nbsp;<span class="element-name">entryMsg</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;format,
  <a href="../util/MessageSupplier.html" title="interface in org.apache.logging.log4j.util">MessageSupplier</a>...&nbsp;paramSuppliers)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -5201,6 +5223,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>entryMsg</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../message/EntryMessage.html" title="interface in org.apache.logging.log4j.message">EntryMessage</a></span>&nbsp;<span class="element-name">entryMsg</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;format,
  <a href="../util/Supplier.html" title="interface in org.apache.logging.log4j.util">Supplier</a>&lt;?&gt;...&nbsp;paramSuppliers)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -6277,6 +6303,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dd><code>result</code> - The result being returned from the method call.</dd>
 <dt>Returns:</dt>
 <dd>the return value passed to this method.</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 </dl>
 </section>
 </li>
@@ -6285,6 +6313,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <h3>exitMsg</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../message/Message.html" title="interface in org.apache.logging.log4j.message">Message</a></span>&nbsp;<span class="element-name">exitMsg</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;format,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;result)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10199,6 +10231,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="../Marker.html" title="interface in org.apache.logging.log4j">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>&nbsp;message,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10219,6 +10255,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="../Marker.html" title="interface in org.apache.logging.log4j">Marker</a>&nbsp;marker,
  <a href="../util/MessageSupplier.html" title="interface in org.apache.logging.log4j.util">MessageSupplier</a>&nbsp;messageSupplier,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.4</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10229,6 +10269,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="../Marker.html" title="interface in org.apache.logging.log4j">Marker</a>&nbsp;marker,
  <a href="../util/Supplier.html" title="interface in org.apache.logging.log4j.util">Supplier</a>&lt;?&gt;&nbsp;messageSupplier,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.4</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10268,6 +10312,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="../Marker.html" title="interface in org.apache.logging.log4j">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10279,6 +10327,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10291,6 +10343,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p0,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p2)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10304,6 +10360,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p1,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p2,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p3)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10318,6 +10378,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p2,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p3,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p4)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10333,6 +10397,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p3,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p4,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p5)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10349,6 +10417,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p4,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p5,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p6)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10366,6 +10438,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p5,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p6,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p7)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10384,6 +10460,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p6,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p7,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p8)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10403,6 +10483,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p7,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p8,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;p9)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.6</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10413,6 +10497,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="../Marker.html" title="interface in org.apache.logging.log4j">Marker</a>&nbsp;marker,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
  <a href="../util/Supplier.html" title="interface in org.apache.logging.log4j.util">Supplier</a>&lt;?&gt;...&nbsp;paramSuppliers)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.4</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10451,6 +10539,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html" title="class or interface in java.lang" class="external-link">StackTraceElement</a>&nbsp;location,
  <a href="../message/Message.html" title="interface in org.apache.logging.log4j.message">Message</a>&nbsp;message,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.12.1</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -10501,6 +10593,8 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the depth of the nested logging calls in the current Thread</dd>
+<dt>Since:</dt>
+<dd>2.10.0</dd>
 </dl>
 </section>
 </li>
@@ -12886,6 +12980,10 @@ implements <a href="ExtendedLogger.html" title="interface in org.apache.logging.
 <section class="detail" id="requiresLocation()">
 <h3>requiresLocation</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">requiresLocation</span>()</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.12.1</dd>
+</dl>
 </section>
 </li>
 <li>
