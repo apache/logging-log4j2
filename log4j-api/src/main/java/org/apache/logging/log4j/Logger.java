@@ -699,7 +699,7 @@ public interface Logger {
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
      * logged.
-     * @deprecated :uUse {@link #traceEntry()} instead which performs the same function.
+     * @deprecated Since 2.6, use {@link #traceEntry()} instead which performs the same function.
      */
     @Deprecated
     void entry();

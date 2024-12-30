@@ -679,18 +679,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return flowMessage;
     }
 
-    /**
-     * @deprecated since 2.11.0
-     */
     @Deprecated
     @Override
     public void entry() {
         entry(FQCN, (Object[]) null);
     }
 
-    /**
-     * @deprecated since 2.22.0, use {@link #traceEntry(String, Object...)} instead.
-     */
     @Deprecated
     @Override
     public void entry(final Object... params) {
@@ -1095,18 +1089,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
-    /**
-     * @deprecated since 2.11.0
-     */
     @Deprecated
     @Override
     public void exit() {
         exit(FQCN, (Object) null);
     }
 
-    /**
-     * @deprecated since 2.11.0
-     */
     @Deprecated
     @Override
     public <R> R exit(final R result) {
