@@ -561,34 +561,36 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
 
         /**
-         * @param simplePattern a single-letter directive simplePattern complying (e.g., {@code H}, {@code HH}, or {@code pHH})
+         * @param singlePattern a single-letter directive singlePattern complying (e.g., {@code H}, {@code HH}, or {@code pHH})
          * @return the time precision of the directive
          */
-        private static ChronoUnit patternPrecision(final String simplePattern) {
+        private static ChronoUnit patternPrecision(final String singlePattern) {
 
-            validateContent(simplePattern);
-            final String paddingRemovedContent = removePadding(simplePattern);
+            validateContent(singlePattern);
+            final String paddingRemovedContent = removePadding(singlePattern);
 
-            if (paddingRemovedContent.matches("[GuyY]+")) {
+            if (paddingRemovedContent.matches("G+")) {
+                return ChronoUnit.ERAS;
+            } else if (paddingRemovedContent.matches("[uyY]+")) {
                 return ChronoUnit.YEARS;
             } else if (paddingRemovedContent.matches("[MLQq]+")) {
                 return ChronoUnit.MONTHS;
-            } else if (paddingRemovedContent.matches("[wW]+")) {
+            } else if (paddingRemovedContent.matches("w+")) {
                 return ChronoUnit.WEEKS;
-            } else if (paddingRemovedContent.matches("[DdgEecF]+")) {
+            } else if (paddingRemovedContent.matches("[DdgEecFW]+")) {
                 return ChronoUnit.DAYS;
-            } else if (paddingRemovedContent.matches("[aBhKkH]+")
-                    // Time-zone directives
-                    || paddingRemovedContent.matches("[ZxXOzvV]+")) {
+            } else if (paddingRemovedContent.matches("[aBhKkH]+")) {
                 return ChronoUnit.HOURS;
-            } else if (paddingRemovedContent.contains("m")) {
+            } else if (paddingRemovedContent.contains("m")
+                    // Time-zone directives
+                    || paddingRemovedContent.matches("[ZxXOzVv]+")) {
                 return ChronoUnit.MINUTES;
             } else if (paddingRemovedContent.contains("s")) {
                 return ChronoUnit.SECONDS;
             }
 
             // 2 to 3 consequent `S` characters output millisecond precision
-            else if (paddingRemovedContent.matches("S{2,3}")
+            else if (paddingRemovedContent.matches("S{1,3}")
                     // `A` (milli-of-day) outputs millisecond precision.
                     || paddingRemovedContent.contains("A")) {
                 return ChronoUnit.MILLIS;
@@ -599,17 +601,15 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return ChronoUnit.MICROS;
             }
 
-            // A single `S` (fraction-of-second) outputs nanosecond precision
-            else if (paddingRemovedContent.equals("S")
-                    // 7 to 9 consequent `S` characters output nanosecond precision
-                    || paddingRemovedContent.matches("S{7,9}")
+            // 7 to 9 consequent `S` characters output nanosecond precision
+            else if (paddingRemovedContent.matches("S{7,9}")
                     // `n` (nano-of-second) and `N` (nano-of-day) always output nanosecond precision.
                     // This is independent of how many times they occur sequentially.
                     || paddingRemovedContent.matches("[nN]+")) {
                 return ChronoUnit.NANOS;
             }
 
-            final String message = String.format("unrecognized pattern: `%s`", simplePattern);
+            final String message = String.format("unrecognized pattern: `%s`", singlePattern);
             throw new IllegalArgumentException(message);
         }
 

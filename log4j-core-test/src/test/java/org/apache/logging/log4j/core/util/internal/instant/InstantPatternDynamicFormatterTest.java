@@ -202,20 +202,31 @@ class InstantPatternDynamicFormatterTest {
         assertPatternPrecision(pattern, ChronoUnit.SECONDS);
     }
 
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
+    static Stream<String> should_recognize_patterns_of_minute_precision() {
+        Stream<String> stream = Stream.of(
                 // Basics
                 "m",
                 "mm",
+                "Z",
+                "x",
+                "X",
+                "O",
+                "z",
+                "VV",
                 // Mixed with other stuff
                 "yyyy-MM-dd HH:mm",
                 "yyyy-MM-dd'T'HH:mm",
                 "HH:mm",
+                "yyyy-MM-dd HH x",
+                "yyyy-MM-dd'T'HH XX",
                 // Single-quoted text containing nanosecond and millisecond directives
                 "yyyy-MM-dd'S'HH:mm",
-                "yyyy-MM-dd'n'HH:mm"
-            })
+                "yyyy-MM-dd'n'HH:mm");
+        return Constants.JAVA_MAJOR_VERSION > 8 ? Stream.concat(stream, Stream.of("v")) : stream;
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void should_recognize_patterns_of_minute_precision(final String pattern) {
         assertPatternPrecision(pattern, ChronoUnit.MINUTES);
     }
@@ -236,26 +247,69 @@ class InstantPatternDynamicFormatterTest {
                 "K",
                 "k",
                 "H",
-                "Z",
-                "x",
-                "X",
-                "O",
-                "z",
-                "VV",
                 // Mixed with other stuff
                 "yyyy-MM-dd HH",
                 "yyyy-MM-dd'T'HH",
-                "yyyy-MM-dd HH x",
-                "yyyy-MM-dd'T'HH XX",
                 "ddHH",
                 // Single-quoted text containing nanosecond and millisecond directives
                 "yyyy-MM-dd'S'HH",
                 "yyyy-MM-dd'n'HH"));
         if (Constants.JAVA_MAJOR_VERSION > 8) {
             java8Patterns.add("B");
-            java8Patterns.add("v");
         }
         return java8Patterns;
+    }
+
+    static Stream<Arguments> dynamic_pattern_should_correctly_determine_precision() {
+        // When no a precise unit is not available, uses the closest smaller unit.
+        return Stream.of(
+                Arguments.of("G", ChronoUnit.ERAS),
+                Arguments.of("u", ChronoUnit.YEARS),
+                Arguments.of("D", ChronoUnit.DAYS),
+                Arguments.of("M", ChronoUnit.MONTHS),
+                Arguments.of("L", ChronoUnit.MONTHS),
+                Arguments.of("d", ChronoUnit.DAYS),
+                Arguments.of("Q", ChronoUnit.MONTHS),
+                Arguments.of("q", ChronoUnit.MONTHS),
+                Arguments.of("Y", ChronoUnit.YEARS),
+                Arguments.of("w", ChronoUnit.WEEKS),
+                Arguments.of("W", ChronoUnit.DAYS), // The month can change in the middle of the week
+                Arguments.of("F", ChronoUnit.DAYS), // The month can change in the middle of the week
+                Arguments.of("E", ChronoUnit.DAYS),
+                Arguments.of("e", ChronoUnit.DAYS),
+                Arguments.of("c", ChronoUnit.DAYS),
+                Arguments.of("a", ChronoUnit.HOURS), // Let us round it down
+                Arguments.of("h", ChronoUnit.HOURS),
+                Arguments.of("K", ChronoUnit.HOURS),
+                Arguments.of("k", ChronoUnit.HOURS),
+                Arguments.of("H", ChronoUnit.HOURS),
+                Arguments.of("m", ChronoUnit.MINUTES),
+                Arguments.of("s", ChronoUnit.SECONDS),
+                Arguments.of("S", ChronoUnit.MILLIS),
+                Arguments.of("SS", ChronoUnit.MILLIS),
+                Arguments.of("SSS", ChronoUnit.MILLIS),
+                Arguments.of("SSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("SSSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("SSSSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("A", ChronoUnit.MILLIS),
+                Arguments.of("n", ChronoUnit.NANOS),
+                Arguments.of("N", ChronoUnit.NANOS),
+                // Time zones can change in the middle of a UTC hour (e.g. India)
+                Arguments.of("VV", ChronoUnit.MINUTES),
+                Arguments.of("z", ChronoUnit.MINUTES),
+                Arguments.of("O", ChronoUnit.MINUTES),
+                Arguments.of("X", ChronoUnit.MINUTES),
+                Arguments.of("x", ChronoUnit.MINUTES),
+                Arguments.of("Z", ChronoUnit.MINUTES));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void dynamic_pattern_should_correctly_determine_precision(String singlePattern, ChronoUnit expectedPrecision) {
+        assertThat(pDyn(singlePattern).precision).isEqualTo(expectedPrecision);
     }
 
     private static void assertPatternPrecision(final String pattern, final ChronoUnit expectedPrecision) {
