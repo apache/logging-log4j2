@@ -100,12 +100,4 @@ https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org
 Each Log4j artifact is accompanied by a Software Bill of Materials (SBOM).
 See {logging-services-url}/download.html#sbom[the Download page of Logging Services page] for details.
 
-[#older]
-== Older releases
-
-Are you looking for old versions of Log4j?
-While we recommend always using the latest version, you can find the older versions here:
-
-* {logging-services-url}/log4j/1.x/index.html[Log4j 1.x (End of Life, Java 1.4)]
-* {logging-services-url}/log4j/2.3.x/index.html[Log4j 2.3.x (Java 6)]
-* {logging-services-url}/log4j/2.12.x/index.html[Log4j 2.12.x (Java 7)]
+include::partial$supported-versions.adoc[leveloffset=+1]

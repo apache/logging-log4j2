@@ -1,0 +1,299 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Supported versions
+
+.Maintenance status of selected Log4j versions
+[cols="1h,2,1m,1,1,1,2"]
+|===
+| Version | Status | Latest release | First stable release | End-of-maintenance | End-of-life | Notes
+
+| 3.0.x
+| **[development]#Active development#**
+| 3.0.0-beta3
+|
+|
+|
+|
+
+| 2.26.x
+| **[development]#Active development#**
+|
+|
+|
+|
+|
+
+| 2.25.x
+| **[active]#Active maintenance#**
+| 2.25.2
+| 2025-06-13
+|
+|
+|
+
+| 2.24.x
+| **[eom]#End-of-maintenance#**
+| 2.24.3
+| 2024-09-03
+| 2025-06-13
+|
+|
+
+| 2.12.x
+| **[eom]#End-of-maintenance#**
+| 2.12.4
+| 2019-06-23
+| 2021-12-29
+|
+| Last release to support Java 7
+
+| 2.3.x
+| **[eom]#End-of-maintenance#**
+| 2.3.2
+| 2015-05-09
+| 2021-12-29
+|
+| Last release to support Java 6
+
+| 1.x
+| **[eol]#End-of-life#**
+| 1.2.17
+| 2000-01-08
+| 2014-07-12
+| 2015-08-05
+| Last release to support Java 1.4
+
+|===
+
+See xref:versioning.adoc[Version lifecycle and maintenance policy] for more information.
+
+
+[%collapsible]
+.Click to see all past versions
+====
+
+.Maintenance status of all Log4j versions
+[cols="1h,2,1m,1,1,1"]
+|===
+| Version | Status | Latest release | First release | End-of-maintenance | End-of-life
+
+| 3.0.x
+| **[development]#Active development#**
+| 3.0.0-beta3
+|
+|
+|
+
+| 2.26.x
+| **[development]#Active development#**
+|
+|
+|
+|
+
+| 2.25.x
+| **[active]#Active maintenance#**
+| 2.25.2
+| 2025-06-13
+|
+|
+
+| 2.24.x
+| **[eom]#End-of-maintenance#**
+| 2.24.3
+| 2024-09-03
+| 2025-06-13
+|
+
+| 2.23.x
+| **[eom]#End-of-maintenance#**
+| 2.23.1
+| 2024-02-17
+| 2024-09-03
+|
+
+| 2.22.x
+| **[eom]#End-of-maintenance#**
+| 2.22.1
+| 2023-11-17
+| 2024-02-17
+|
+
+| 2.21.x
+| **[eom]#End-of-maintenance#**
+| 2.21.1
+| 2023-10-12
+| 2023-11-17
+|
+
+| 2.20.x
+| **[eom]#End-of-maintenance#**
+| 2.20.0
+| 2023-02-17
+| 2023-10-12
+|
+
+| 2.19.x
+| **[eom]#End-of-maintenance#**
+| 2.19.0
+| 2022-09-09
+| 2023-02-17
+|
+
+| 2.18.x
+| **[eom]#End-of-maintenance#**
+| 2.18.0
+| 2022-06-28
+| 2022-09-09
+|
+
+| 2.17.x
+| **[eom]#End-of-maintenance#**
+| 2.17.2
+| 2021-12-17
+| 2022-06-28
+|
+
+| 2.16.x
+| **[eom]#End-of-maintenance#**
+| 2.16.0
+| 2021-12-13
+| 2021-12-17
+|
+
+| 2.15.x
+| **[eom]#End-of-maintenance#**
+| 2.15.0
+| 2021-12-06
+| 2021-12-13
+|
+
+| 2.14.x
+| **[eom]#End-of-maintenance#**
+| 2.14.1
+| 2020-11-06
+| 2021-12-06
+|
+
+| 2.13.x
+| **[eom]#End-of-maintenance#**
+| 2.13.3
+| 2019-12-11
+| 2020-11-06
+|
+
+| 2.12.x
+| **[eom]#End-of-maintenance#**
+| 2.12.4
+| 2019-06-23
+| 2021-12-29
+|
+
+| 2.11.x
+| **[eom]#End-of-maintenance#**
+| 2.11.2
+| 2018-03-11
+| 2019-06-23
+|
+
+| 2.10.x
+| **[eom]#End-of-maintenance#**
+| 2.10.0
+| 2017-11-18
+| 2018-03-11
+|
+
+| 2.9.x
+| **[eom]#End-of-maintenance#**
+| 2.9.1
+| 2017-08-26
+| 2017-11-18
+|
+
+| 2.8.x
+| **[eom]#End-of-maintenance#**
+| 2.8.2
+| 2017-01-21
+| 2017-08-26
+|
+
+| 2.7.x
+| **[eom]#End-of-maintenance#**
+| 2.7
+| 2016-10-02
+| 2017-01-21
+|
+
+| 2.6.x
+| **[eom]#End-of-maintenance#**
+| 2.6.2
+| 2016-05-25
+| 2016-10-02
+|
+
+| 2.5.x
+| **[eom]#End-of-maintenance#**
+| 2.5
+| 2015-12-06
+| 2016-05-25
+|
+
+| 2.4.x
+| **[eom]#End-of-maintenance#**
+| 2.4.1
+| 2015-09-20
+| 2015-12-06
+|
+
+| 2.3.x
+| **[eom]#End-of-maintenance#**
+| 2.3.2
+| 2015-05-09
+| 2021-12-29
+|
+
+| 2.2.x
+| **[eom]#End-of-maintenance#**
+| 2.2
+| 2015-02-22
+| 2015-05-09
+|
+
+| 2.1.x
+| **[eom]#End-of-maintenance#**
+| 2.1
+| 2014-10-19
+| 2015-02-22
+|
+
+| 2.0.x
+| **[eom]#End-of-maintenance#**
+| 2.0.2
+| 2014-07-12
+| 2014-10-19
+|
+
+| 1.x
+| **[eol]#End-of-life#**
+| 1.2.17
+| 2000-01-08
+| 2014-07-12
+| 2015-08-05
+
+|===
+====
