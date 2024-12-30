@@ -408,6 +408,30 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         /**
          * Tries to merge two pattern sequences.
          *
+         * <p>
+         *     If not {@link null}, the pattern sequence returned by this method must:
+         * </p>
+         * <ol>
+         *     <li>Have a {@link #precision}, which is the minimum of the precisions of the two merged sequences.</li>
+         *     <li>
+         *         Create formatters that are equivalent to the concatenation of the formatters produced by the
+         *         two merged sequences.
+         *     </li>
+         * </ol>
+         * <p>
+         *     The returned pattern sequence should try to achieve these two goals:
+         * </p>
+         * <ol>
+         *     <li>
+         *         Create formatters which are faster than the concatenation of the formatters produced by the
+         *         two merged sequences.
+         *     </li>
+         *     <li>
+         *         It should be {@link null} if one of the pattern sequences is effectively constant over
+         *         {@code thresholdPrecision}, but the other one is not.
+         *     </li>
+         * </ol>
+         *
          * @param other A pattern sequence.
          * @param thresholdPrecision A precision threshold to determine effectively constant sequences.
          *                           This prevents merging effectively constant and dynamic pattern sequences.
