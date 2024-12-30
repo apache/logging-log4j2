@@ -407,7 +407,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusLogger.html#clear()" class="member-name-link">clear()</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/SortedArrayStringMap.html#clear()" class="member-name-link">clear()</a> - Method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/SortedArrayStringMap.html" title="class in org.apache.logging.log4j.util">SortedArrayStringMap</a></dt>
@@ -987,7 +988,9 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/Base64Util.html#encode(java.lang.String)" class="member-name-link">encode(String)</a> - Static method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/Base64Util.html" title="class in org.apache.logging.log4j.util">Base64Util</a></dt>
 <dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.22.0, use <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html" title="class or interface in java.util" class="external-link"><code>Base64</code></a> instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/EnglishEnums.html" class="type-name-link" title="class in org.apache.logging.log4j.util">EnglishEnums</a> - Class in <a href="org/apache/logging/log4j/util/package-summary.html">org.apache.logging.log4j.util</a></dt>
 <dd>
@@ -1016,7 +1019,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/Logger.html#entry()" class="member-name-link">entry()</a> - Method in interface org.apache.logging.log4j.<a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j">Logger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceEntry()"><code>Logger.traceEntry()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceEntry()"><code>Logger.traceEntry()</code></a> instead which performs the same function.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry()" class="member-name-link">entry()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
@@ -1026,7 +1029,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/Logger.html#entry(java.lang.Object...)" class="member-name-link">entry(Object...)</a> - Method in interface org.apache.logging.log4j.<a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j">Logger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceEntry(java.lang.String,java.lang.Object...)"><code>Logger.traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">since 2.11.2, use <a href="org/apache/logging/log4j/Logger.html#traceEntry(java.lang.String,java.lang.Object...)"><code>Logger.traceEntry(String, Object...)</code></a> instead which performs the same function.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#entry(java.lang.Object...)" class="member-name-link">entry(Object...)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
@@ -1451,7 +1454,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/EventLogger.html" class="type-name-link" title="class in org.apache.logging.log4j">EventLogger</a> - Class in <a href="org/apache/logging/log4j/package-summary.html">org.apache.logging.log4j</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment"><a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j"><code>Logger</code></a> accepts <a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s, users should use to that instead.</div>
+<div class="deprecation-comment">Deprecated since 2.24.0.
+ <a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j"><code>Logger</code></a> accepts <a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message"><code>StructuredDataMessage</code></a>s, users should use to that instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#EXCEPTION_MARKER" class="member-name-link">EXCEPTION_MARKER</a> - Static variable in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
@@ -1469,7 +1473,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/Logger.html#exit()" class="member-name-link">exit()</a> - Method in interface org.apache.logging.log4j.<a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j">Logger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceExit()"><code>Logger.traceExit()</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceExit()"><code>Logger.traceExit()</code></a> instead which performs the same function.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit()" class="member-name-link">exit()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
@@ -1487,7 +1491,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/Logger.html#exit(R)" class="member-name-link">exit(R)</a> - Method in interface org.apache.logging.log4j.<a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j">Logger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/Logger.html#traceExit(R)"><code>Logger.traceExit(Object)</code></a> instead which performs the same function.</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/Logger.html#traceExit(R)"><code>Logger.traceExit(Object)</code></a> instead which performs the same function.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#exit(R)" class="member-name-link">exit(R)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
@@ -2936,7 +2940,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusLogger.html#getStatusData()" class="member-name-link">getStatusData()</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead of relying on the buffering provided by <code>StatusLogger</code>, users should register their own listeners to access to logged events.</div>
+<div class="deprecation-comment">Since 2.23.0, instead of relying on the buffering provided by <code>StatusLogger</code>,
+ users should register their own listeners to access to logged events.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/status/StatusConsoleListener.html#getStatusLevel()" class="member-name-link">getStatusLevel()</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusConsoleListener.html" title="class in org.apache.logging.log4j.status">StatusConsoleListener</a></dt>
@@ -3056,7 +3061,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusData.html#getTimestamp()" class="member-name-link">getTimestamp()</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusData.html" title="class in org.apache.logging.log4j.status">StatusData</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
+<div class="deprecation-comment">since 2.23.0, use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataMessage.html#getType()" class="member-name-link">getType()</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a></dt>
@@ -3070,7 +3075,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/spi/Provider.html#getUrl()" class="member-name-link">getUrl()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/Provider.html" title="class in org.apache.logging.log4j.spi">Provider</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">since 2.24.0, without replacement.</div>
+<div class="deprecation-comment">since 2.24.0, without a replacement.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/spi/DefaultThreadContextMap.html#getValue(java.lang.String)" class="member-name-link">getValue(String)</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/DefaultThreadContextMap.html" title="class in org.apache.logging.log4j.spi">DefaultThreadContextMap</a></dt>
@@ -3550,7 +3555,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/ReusableMessageFactory.html#INSTANCE" class="member-name-link">INSTANCE</a> - Static variable in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/ReusableMessageFactory.html" title="class in org.apache.logging.log4j.message">ReusableMessageFactory</a></dt>
 <dd>
-<div class="block">Instance of ReusableMessageFactory..</div>
+<div class="block">Instance of ReusableMessageFactory.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/SimpleMessageFactory.html#INSTANCE" class="member-name-link">INSTANCE</a> - Static variable in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/SimpleMessageFactory.html" title="class in org.apache.logging.log4j.message">SimpleMessageFactory</a></dt>
 <dd>
@@ -4807,7 +4812,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,int)" class="member-name-link">makeId(String, int)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)"><code>StructuredDataId.makeId(String, String)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)"><code>StructuredDataId.makeId(String, String)</code></a> instead</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#makeId(java.lang.String,java.lang.String)" class="member-name-link">makeId(String, String)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
@@ -5427,7 +5432,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.Throwable)" class="member-name-link">ParameterizedMessage(String, String[], Throwable)</a> - Constructor for class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/ParameterizedMessage.html" title="class in org.apache.logging.log4j.message">ParameterizedMessage</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.Object,java.lang.Object)"><code>ParameterizedMessage(String, Object[], Throwable)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.6, use <a href="org/apache/logging/log4j/message/ParameterizedMessage.html#%3Cinit%3E(java.lang.String,java.lang.Object,java.lang.Object)"><code>ParameterizedMessage(String, Object[], Throwable)</code></a> instead</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/ParameterizedMessageFactory.html" class="type-name-link" title="class in org.apache.logging.log4j.message">ParameterizedMessageFactory</a> - Class in <a href="org/apache/logging/log4j/message/package-summary.html">org.apache.logging.log4j.message</a></dt>
@@ -5981,7 +5986,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setFilters(java.lang.String...)" class="member-name-link">setFilters(String...)</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusConsoleListener.html" title="class in org.apache.logging.log4j.status">StatusConsoleListener</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">This method is ineffective and only kept for binary backward compatibility.</div>
+<div class="deprecation-comment">since 2.23.0, this method is ineffective and only kept for binary backward compatibility.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataMessage.html#setId(java.lang.String)" class="member-name-link">setId(String)</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a></dt>
@@ -6001,7 +6006,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusLogger.html#setLevel(org.apache.logging.log4j.Level)" class="member-name-link">setLevel(Level)</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/status/StatusLogger.html#setLogger(org.apache.logging.log4j.status.StatusLogger)" class="member-name-link">setLogger(StatusLogger)</a> - Static method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a></dt>
@@ -6278,13 +6284,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,int,java.lang.String%5B%5D,java.lang.String%5B%5D)" class="member-name-link">StructuredDataId(String, int, String[], String[])</a> - Constructor for class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,int,java.lang.String%5B%5D,java.lang.String%5B%5D,int)" class="member-name-link">StructuredDataId(String, int, String[], String[], int)</a> - Constructor for class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)" class="member-name-link">StructuredDataId(String, String[], String[])</a> - Constructor for class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
@@ -6990,7 +6996,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/status/StatusLogger.html#updateListenerLevel(org.apache.logging.log4j.Level)" class="member-name-link">updateListenerLevel(Level)</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusLogger.html" title="class in org.apache.logging.log4j.status">StatusLogger</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
+<div class="deprecation-comment">Since 2.23.0, instead use the <a href="org/apache/logging/log4j/status/StatusConsoleListener.html#setLevel(org.apache.logging.log4j.Level)"><code>setLevel(Level)</code></a> method
+ on the fallback listener returned by <a href="org/apache/logging/log4j/status/StatusLogger.html#getFallbackListener()"><code>StatusLogger.getFallbackListener()</code></a>.</div>
 </div>
 </dd>
 </dl>

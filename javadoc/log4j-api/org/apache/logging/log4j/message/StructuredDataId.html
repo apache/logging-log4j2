@@ -151,7 +151,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;optional)</code></div>
 <div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
 </div>
 </div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,int,java.lang.String%5B%5D,java.lang.String%5B%5D,int)" class="member-name-link">StructuredDataId</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
@@ -161,7 +161,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
  int&nbsp;maxLength)</code></div>
 <div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
 </div>
 </div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)" class="member-name-link">StructuredDataId</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
@@ -240,7 +240,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
  int&nbsp;anEnterpriseNumber)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#makeId(java.lang.String,java.lang.String)"><code>makeId(String, String)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#makeId(java.lang.String,java.lang.String)"><code>makeId(String, String)</code></a> instead</div>
 </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></code></div>
@@ -301,6 +301,8 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">RESERVED</span></div>
 <div class="block">Reserved enterprise number.</div>
 <dl class="notes">
+<dt>Since:</dt>
+<dd>2.18.0</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -327,7 +329,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dt>Parameters:</dt>
 <dd><code>name</code> - The Structured Data Element name (maximum length is 32)</dd>
 <dt>Since:</dt>
-<dd>2.9</dd>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -342,7 +344,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>name</code> - The Structured Data Element name.</dd>
 <dd><code>maxLength</code> - The maximum length of the name.</dd>
 <dt>Since:</dt>
-<dd>2.9</dd>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -375,7 +377,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>optional</code> - The list of keys that are optional for this id.</dd>
 <dd><code>maxLength</code> - The maximum length of the id's name.</dd>
 <dt>Since:</dt>
-<dd>2.9</dd>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -393,6 +395,8 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>enterpriseNumber</code> - The enterprise number.</dd>
 <dd><code>required</code> - The list of keys that are required for this id.</dd>
 <dd><code>optional</code> - The list of keys that are optional for this id.</dd>
+<dt>Since:</dt>
+<dd>2.18.0</dd>
 </dl>
 </section>
 </li>
@@ -406,7 +410,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;required,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;optional)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)"><code>StructuredDataId(String, String, String[], String[])</code></a> instead.</div>
 </div>
 <div class="block">A Constructor that helps conformance to RFC 5424.</div>
 <dl class="notes">
@@ -435,7 +439,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>optional</code> - The list of keys that are optional for this id.</dd>
 <dd><code>maxLength</code> - The maximum length of the StructuredData Id key.</dd>
 <dt>Since:</dt>
-<dd>2.9</dd>
+<dd>2.18.0</dd>
 </dl>
 </section>
 </li>
@@ -450,7 +454,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;optional,
  int&nbsp;maxLength)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D,int)"><code>StructuredDataId(String, String, String[], String[], int)</code></a> instead.</div>
 </div>
 <div class="block">A Constructor that helps conformance to RFC 5424.</div>
 <dl class="notes">
@@ -461,7 +465,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>optional</code> - The list of keys that are optional for this id.</dd>
 <dd><code>maxLength</code> - The maximum length of the StructuredData Id key.</dd>
 <dt>Since:</dt>
-<dd>2.9</dd>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -498,6 +502,8 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dd><code>anEnterpriseNumber</code> - The enterprise number.</dd>
 <dt>Returns:</dt>
 <dd>a StructuredDataId.</dd>
+<dt>Since:</dt>
+<dd>2.18.0</dd>
 </dl>
 </section>
 </li>
@@ -509,7 +515,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 </span><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></span>&nbsp;<span class="element-name">makeId</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;defaultId,
  int&nbsp;anEnterpriseNumber)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">Use <a href="#makeId(java.lang.String,java.lang.String)"><code>makeId(String, String)</code></a> instead</div>
+<div class="deprecation-comment">Since 2.18.0, use <a href="#makeId(java.lang.String,java.lang.String)"><code>makeId(String, String)</code></a> instead</div>
 </div>
 <div class="block">Creates an id based on the current id.</div>
 <dl class="notes">
@@ -562,6 +568,8 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializab
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the enterprise number.</dd>
+<dt>Since:</dt>
+<dd>2.18.0</dd>
 </dl>
 </section>
 </li>

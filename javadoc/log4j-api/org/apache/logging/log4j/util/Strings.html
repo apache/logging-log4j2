@@ -252,6 +252,10 @@ loadScripts(document, 'script');</script>
 <h3>EMPTY_ARRAY</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">EMPTY_ARRAY</span></div>
 <div class="block">The empty array.</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.15.0</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -260,6 +264,10 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">LINE_SEPARATOR</span></div>
 <div class="block">OS-dependent line separator, defaults to <code>"\n"</code> if the system property <code>""line.separator"</code> cannot be
  read.</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.7</dd>
+</dl>
 </section>
 </li>
 </ul>
@@ -280,6 +288,8 @@ loadScripts(document, 'script');</script>
 <dd><code>str</code> - a String</dd>
 <dt>Returns:</dt>
 <dd><code>"str"</code></dd>
+<dt>Since:</dt>
+<dd>2.3</dd>
 </dl>
 </section>
 </li>
@@ -294,6 +304,8 @@ loadScripts(document, 'script');</script>
 <dd><code>s</code> - the String to check, may be <code>null</code></dd>
 <dt>Returns:</dt>
 <dd><code>true</code> if the String is <code>null</code>, empty, or all characters are <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Character.html#isWhitespace-int-" title="class or interface in java.lang" class="external-link"><code>Character.isWhitespace(char)</code></a></dd>
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 </dl>
 </section>
 </li>
@@ -339,6 +351,8 @@ loadScripts(document, 'script');</script>
 <dd><code>s</code> - the String to check, may be <code>null</code></dd>
 <dt>Returns:</dt>
 <dd><code>true</code> if the String is non-<code>null</code> and has content after being trimmed.</dd>
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 </dl>
 </section>
 </li>
@@ -385,6 +399,8 @@ loadScripts(document, 'script');</script>
 <dd><code>separator</code> - the separator character to use</dd>
 <dt>Returns:</dt>
 <dd>the joined String, <code>null</code> if null iterator input</dd>
+<dt>Since:</dt>
+<dd>2.7</dd>
 </dl>
 </section>
 </li>
@@ -404,6 +420,8 @@ loadScripts(document, 'script');</script>
 <dd><code>separator</code> - the separator character to use</dd>
 <dt>Returns:</dt>
 <dd>the joined String, <code>null</code> if null iterator input</dd>
+<dt>Since:</dt>
+<dd>2.7</dd>
 </dl>
 </section>
 </li>
@@ -411,6 +429,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="splitList(java.lang.String)">
 <h3>splitList</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">splitList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;string)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.17.2</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -442,6 +464,8 @@ loadScripts(document, 'script');</script>
 <dd><code>len</code> - the length of the required String</dd>
 <dt>Returns:</dt>
 <dd>the leftmost characters, <code>null</code> if null String input</dd>
+<dt>Since:</dt>
+<dd>2.11.2</dd>
 </dl>
 </section>
 </li>
@@ -455,6 +479,8 @@ loadScripts(document, 'script');</script>
 <dd><code>str</code> - a String</dd>
 <dt>Returns:</dt>
 <dd><code>'str'</code></dd>
+<dt>Since:</dt>
+<dd>2.3</dd>
 </dl>
 </section>
 </li>
@@ -499,6 +525,8 @@ loadScripts(document, 'script');</script>
 <dd><code>str</code> - The string to upper case.</dd>
 <dt>Returns:</dt>
 <dd>a new string</dd>
+<dt>Since:</dt>
+<dd>2.17.2</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -518,6 +546,8 @@ loadScripts(document, 'script');</script>
 <dd><code>str</code> - The string to lower case.</dd>
 <dt>Returns:</dt>
 <dd>a new string</dd>
+<dt>Since:</dt>
+<dd>2.6</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -539,6 +569,8 @@ loadScripts(document, 'script');</script>
 <dd><code>str2</code> - the second string.</dd>
 <dt>Returns:</dt>
 <dd>the concatenated String.</dd>
+<dt>Since:</dt>
+<dd>2.15.0</dd>
 </dl>
 </section>
 </li>
@@ -556,6 +588,8 @@ loadScripts(document, 'script');</script>
 <dd>the new string</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if either <code>str</code> is null or <code>count</code> is negative</dd>
+<dt>Since:</dt>
+<dd>2.14.0</dd>
 </dl>
 </section>
 </li>

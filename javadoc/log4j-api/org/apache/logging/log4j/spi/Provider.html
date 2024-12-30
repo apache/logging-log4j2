@@ -205,7 +205,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getUrl()" class="member-name-link">getUrl</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">since 2.24.0, without replacement.</div>
+<div class="deprecation-comment">since 2.24.0, without a replacement.</div>
 </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -252,6 +252,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">protected static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">CURRENT_VERSION</span></div>
 <div class="block">Constant inlined by the compiler</div>
 <dl class="notes">
+<dt>Since:</dt>
+<dd>2.24.0</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -271,6 +273,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="block">Property name to set for a Log4j 2 provider to specify the priority of this implementation.</div>
 <dl class="notes">
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -290,6 +294,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="block">Property name to set to the implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a>.</div>
 <dl class="notes">
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -309,6 +315,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="block">Property name to set to the implementation of <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a>.</div>
 <dl class="notes">
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -354,6 +362,10 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">since 2.24.0</div>
 </div>
 <div class="block">Constructor used by the deprecated <code>META-INF/log4j-provider.properties</code> format.</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.0.1</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -382,6 +394,8 @@ loadScripts(document, 'script');</script>
 <dd><code>versions</code> - Minimal API version required, should be set to <a href="#CURRENT_VERSION"><code>CURRENT_VERSION</code></a>,</dd>
 <dd><code>loggerContextFactoryClass</code> - A public exported implementation of <a href="LoggerContextFactory.html" title="interface in org.apache.logging.log4j.spi"><code>LoggerContextFactory</code></a> or <code>
  null</code> if <a href="#getLoggerContextFactory()"><code>getLoggerContextFactory()</code></a> is also implemented.</dd>
+<dt>Since:</dt>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -400,6 +414,8 @@ loadScripts(document, 'script');</script>
  null</code> if <a href="#getLoggerContextFactory()"><code>getLoggerContextFactory()</code></a> is also implemented,</dd>
 <dd><code>threadContextMapClass</code> - A public exported implementation of <a href="ThreadContextMap.html" title="interface in org.apache.logging.log4j.spi"><code>ThreadContextMap</code></a> or <code>null</code> if
  <a href="#getThreadContextMapInstance()"><code>getThreadContextMapInstance()</code></a> is implemented.</dd>
+<dt>Since:</dt>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -419,6 +435,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>A String containing the Log4j versions supported.</dd>
+<dt>Since:</dt>
+<dd>2.9.0</dd>
 </dl>
 </section>
 </li>
@@ -461,6 +479,8 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the LoggerContextFactory implementation class or <code>null</code> if unspecified or a loader error occurred.</dd>
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 </dl>
 </section>
 </li>
@@ -496,6 +516,8 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>the <code>ThreadContextMap</code> implementation class or <code>null</code> if unspecified or a loading error
  occurred.</dd>
+<dt>Since:</dt>
+<dd>2.0.1</dd>
 </dl>
 </section>
 </li>
@@ -517,7 +539,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a></span>&nbsp;<span class="element-name">getUrl</span>()</div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">since 2.24.0, without replacement.</div>
+<div class="deprecation-comment">since 2.24.0, without a replacement.</div>
 </div>
 <div class="block">Gets the URL containing this Provider's Log4j details.</div>
 <dl class="notes">

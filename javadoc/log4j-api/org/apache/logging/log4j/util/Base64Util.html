@@ -81,6 +81,10 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
  the original method was removed in Java 9.</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.12.0</dd>
+</dl>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -98,7 +102,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#encode(java.lang.String)" class="member-name-link">encode</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;str)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.22.0, use <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html" title="class or interface in java.util" class="external-link"><code>Base64</code></a> instead.</div>
+</div>
 </div>
 </div>
 </div>
@@ -122,7 +128,9 @@ loadScripts(document, 'script');</script>
 <h3>encode</h3>
 <div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">encode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;str)</span></div>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.22.0, use <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html" title="class or interface in java.util" class="external-link"><code>Base64</code></a> instead.</div>
+</div>
 <div class="block">This method does not specify an encoding for the <code>str</code> parameter and should not be used.</div>
 </section>
 </li>
