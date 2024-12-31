@@ -29,9 +29,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.Nullable;
 
@@ -141,7 +142,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         // Sequence the pattern and create associated formatters
         final List<PatternSequence> sequences = sequencePattern(pattern, precisionThreshold);
-        final List<InstantPatternFormatter> formatters = sequences.stream()
+        final InstantPatternFormatter[] formatters = sequences.stream()
                 .map(sequence -> {
                     final InstantPatternFormatter formatter = sequence.createFormatter(locale, timeZone);
                     final boolean constant = sequence.isConstantForDurationOf(precisionThreshold);
@@ -161,9 +162,9 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                         }
                     };
                 })
-                .collect(Collectors.toList());
+                .toArray(InstantPatternFormatter[]::new);
 
-        switch (formatters.size()) {
+        switch (formatters.length) {
 
                 // If found an empty pattern, return an empty formatter
             case 0:
@@ -176,11 +177,24 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
                 // If extracted a single formatter, return it as is
             case 1:
-                return formatters.get(0);
+                return formatters[0];
+
+                // Profiling shows that unrolling the generic loop boosts performance
+            case 2:
+                final InstantPatternFormatter first = formatters[0];
+                final InstantPatternFormatter second = formatters[1];
+                return new AbstractFormatter(
+                        pattern, locale, timeZone, min(first.getPrecision(), second.getPrecision())) {
+                    @Override
+                    public void formatTo(StringBuilder buffer, Instant instant) {
+                        first.formatTo(buffer, instant);
+                        second.formatTo(buffer, instant);
+                    }
+                };
 
                 // Combine all extracted formatters into one
             default:
-                final ChronoUnit precision = formatters.stream()
+                final ChronoUnit precision = Stream.of(formatters)
                         .map(InstantFormatter::getPrecision)
                         .min(Comparator.comparing(ChronoUnit::getDuration))
                         .get();
@@ -188,13 +202,17 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     @Override
                     public void formatTo(final StringBuilder buffer, final Instant instant) {
                         // noinspection ForLoopReplaceableByForEach (avoid iterator allocation)
-                        for (int formatterIndex = 0; formatterIndex < formatters.size(); formatterIndex++) {
-                            final InstantPatternFormatter formatter = formatters.get(formatterIndex);
+                        for (int formatterIndex = 0; formatterIndex < formatters.length; formatterIndex++) {
+                            final InstantPatternFormatter formatter = formatters[formatterIndex];
                             formatter.formatTo(buffer, instant);
                         }
                     }
                 };
         }
+    }
+
+    private static ChronoUnit min(ChronoUnit left, ChronoUnit right) {
+        return left.getDuration().compareTo(right.getDuration()) < 0 ? left : right;
     }
 
     static List<PatternSequence> sequencePattern(final String pattern, final ChronoUnit precisionThreshold) {
@@ -672,6 +690,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
     static class SecondPatternSequence extends PatternSequence {
 
+        private static final int[] POWERS_OF_TEN = {
+            100_000_000, 10_000_000, 1_000_000, 100_000, 10_000, 1_000, 100, 10, 1
+        };
+
         private final boolean printSeconds;
         private final String separator;
         private final int fractionalDigits;
@@ -711,30 +733,38 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
 
         private void formatFractionalDigits(StringBuilder buffer, Instant instant) {
-            final int offset = buffer.length();
-            buffer.setLength(offset + fractionalDigits);
-            long value = instant.getNanoOfSecond();
-            int valuePrecision = 9;
-            // Skip digits beyond the requested precision
-            while (fractionalDigits < valuePrecision) {
-                valuePrecision--;
-                value = value / 10L;
-            }
+            int nanos = instant.getNanoOfSecond();
+            // digits contain the first idx digits.
+            int digits;
+            // moreDigits contains the first (idx + 1) digits
+            int moreDigits = 0;
             // Print the digits
-            while (0 < valuePrecision--) {
-                buffer.setCharAt(offset + valuePrecision, (char) ('0' + value % 10L));
-                value = value / 10L;
+            for (int idx = 0; idx < fractionalDigits; idx++) {
+                digits = moreDigits;
+                moreDigits = nanos / POWERS_OF_TEN[idx];
+                buffer.append((char) ('0' + moreDigits - 10 * digits));
             }
+        }
+
+        private static void formatMillis(StringBuilder buffer, Instant instant) {
+            int ms = instant.getNanoOfSecond() / 1_000_000;
+            int cs = ms / 10;
+            int ds = cs / 10;
+            buffer.append((char) ('0' + ds));
+            buffer.append((char) ('0' + cs - 10 * ds));
+            buffer.append((char) ('0' + ms - 10 * cs));
         }
 
         @Override
         InstantPatternFormatter createFormatter(Locale locale, TimeZone timeZone) {
+            final BiConsumer<StringBuilder, Instant> fractionDigitsFormatter =
+                    fractionalDigits == 3 ? SecondPatternSequence::formatMillis : this::formatFractionalDigits;
             if (!printSeconds) {
                 return new AbstractFormatter(pattern, locale, timeZone, precision) {
                     @Override
                     public void formatTo(StringBuilder buffer, Instant instant) {
                         buffer.append(separator);
-                        formatFractionalDigits(buffer, instant);
+                        fractionDigitsFormatter.accept(buffer, instant);
                     }
                 };
             }
@@ -752,7 +782,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 public void formatTo(StringBuilder buffer, Instant instant) {
                     formatSeconds(buffer, instant);
                     buffer.append(separator);
-                    formatFractionalDigits(buffer, instant);
+                    fractionDigitsFormatter.accept(buffer, instant);
                 }
             };
         }
