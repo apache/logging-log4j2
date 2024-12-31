@@ -2700,7 +2700,8 @@ Format modifiers to control such things as field width, padding, left, and right
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><code><a href="#converter-date">%d<br>
 %date</a></code></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock">Only the predefined date formats (<code>DEFAULT</code>, <code>ISO8601</code>, <code>UNIX</code>, <code>UNIX_MILLIS</code>, etc.) are garbage-free</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock">The numeric formats (<code>UNIX</code> and <code>UNIX_MILLIS</code>) are garbage-free.
+The remaining formats are low-garbage and only generate temporary objects once per minute.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><code><a href="#converter-encode">%enc{pattern}<br>
