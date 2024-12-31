@@ -1607,7 +1607,9 @@ Format modifiers to control such things as field width, padding, left, and right
 
 |<<converter-date,%d +
 %date>>
-|Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
+|
+The numeric formats (`UNIX` and `UNIX_MILLIS`) are garbage-free.
+The remaining formats are low-garbage and only generate temporary objects once per minute.
 
 |<<converter-encode,%enc\{pattern} +
 %encode\{pattern}>>

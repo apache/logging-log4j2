@@ -107,7 +107,7 @@ class InstantPatternThreadLocalCachedFormatterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"S", "SSSS", "SSSSS", "SSSSSS", "SSSSSSS", "SSSSSSSS", "SSSSSSSSS", "n", "N"})
+    @ValueSource(strings = {"SSSS", "SSSSS", "SSSSSS", "SSSSSSS", "SSSSSSSS", "SSSSSSSSS", "n", "N"})
     void ofMilliPrecision_should_fail_on_inconsistent_precision(final String subMilliPattern) {
         final InstantPatternDynamicFormatter dynamicFormatter =
                 new InstantPatternDynamicFormatter(subMilliPattern, LOCALE, TIME_ZONE);
