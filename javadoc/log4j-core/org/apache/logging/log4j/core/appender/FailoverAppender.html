@@ -150,20 +150,23 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Create a Failover Appender.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#start()" class="member-name-link">start</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#requiresLocation()" class="member-name-link">requiresLocation</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#start()" class="member-name-link">start</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Make the Filter available for use.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.appender.AbstractAppender">Methods inherited from class&nbsp;org.apache.logging.log4j.core.appender.<a href="AbstractAppender.html" title="class in org.apache.logging.log4j.core.appender">AbstractAppender</a></h3>
-<code><a href="AbstractAppender.html#error(java.lang.String)">error</a>, <a href="AbstractAppender.html#error(java.lang.String,java.lang.Throwable)">error</a>, <a href="AbstractAppender.html#error(java.lang.String,org.apache.logging.log4j.core.LogEvent,java.lang.Throwable)">error</a>, <a href="AbstractAppender.html#getHandler()">getHandler</a>, <a href="AbstractAppender.html#getLayout()">getLayout</a>, <a href="AbstractAppender.html#getName()">getName</a>, <a href="AbstractAppender.html#ignoreExceptions()">ignoreExceptions</a>, <a href="AbstractAppender.html#parseInt(java.lang.String,int)">parseInt</a>, <a href="AbstractAppender.html#requiresLocation()">requiresLocation</a>, <a href="AbstractAppender.html#setHandler(org.apache.logging.log4j.core.ErrorHandler)">setHandler</a>, <a href="AbstractAppender.html#toSerializable(org.apache.logging.log4j.core.LogEvent)">toSerializable</a></code></div>
+<code><a href="AbstractAppender.html#error(java.lang.String)">error</a>, <a href="AbstractAppender.html#error(java.lang.String,java.lang.Throwable)">error</a>, <a href="AbstractAppender.html#error(java.lang.String,org.apache.logging.log4j.core.LogEvent,java.lang.Throwable)">error</a>, <a href="AbstractAppender.html#getHandler()">getHandler</a>, <a href="AbstractAppender.html#getLayout()">getLayout</a>, <a href="AbstractAppender.html#getName()">getName</a>, <a href="AbstractAppender.html#ignoreExceptions()">ignoreExceptions</a>, <a href="AbstractAppender.html#parseInt(java.lang.String,int)">parseInt</a>, <a href="AbstractAppender.html#setHandler(org.apache.logging.log4j.core.ErrorHandler)">setHandler</a>, <a href="AbstractAppender.html#toSerializable(org.apache.logging.log4j.core.LogEvent)">toSerializable</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.filter.AbstractFilterable">Methods inherited from class&nbsp;org.apache.logging.log4j.core.filter.<a href="../filter/AbstractFilterable.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilterable</a></h3>
 <code><a href="../filter/AbstractFilterable.html#addFilter(org.apache.logging.log4j.core.Filter)">addFilter</a>, <a href="../filter/AbstractFilterable.html#getFilter()">getFilter</a>, <a href="../filter/AbstractFilterable.html#getPropertyArray()">getPropertyArray</a>, <a href="../filter/AbstractFilterable.html#hasFilter()">hasFilter</a>, <a href="../filter/AbstractFilterable.html#isFiltered(org.apache.logging.log4j.core.LogEvent)">isFiltered</a>, <a href="../filter/AbstractFilterable.html#removeFilter(org.apache.logging.log4j.core.Filter)">removeFilter</a>, <a href="../filter/AbstractFilterable.html#stop(long,java.util.concurrent.TimeUnit)">stop</a>, <a href="../filter/AbstractFilterable.html#stop(long,java.util.concurrent.TimeUnit,boolean)">stop</a></code></div>
@@ -253,6 +256,18 @@ loadScripts(document, 'script');</script>
                they are propagated to the caller.</dd>
 <dt>Returns:</dt>
 <dd>The FailoverAppender that was created.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="requiresLocation()">
+<h3>requiresLocation</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">requiresLocation</span>()</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../impl/LocationAware.html#requiresLocation()">requiresLocation</a></code>&nbsp;in interface&nbsp;<code><a href="../impl/LocationAware.html" title="interface in org.apache.logging.log4j.core.impl">LocationAware</a></code></dd>
+<dt>Overrides:</dt>
+<dd><code><a href="AbstractAppender.html#requiresLocation()">requiresLocation</a></code>&nbsp;in class&nbsp;<code><a href="AbstractAppender.html" title="class in org.apache.logging.log4j.core.appender">AbstractAppender</a></code></dd>
 </dl>
 </section>
 </li>
