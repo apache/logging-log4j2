@@ -36,7 +36,7 @@ class ThrowableConsumingMessageFactoryTest {
     private static final Object P8 = new Object();
     private static final Object P9 = new Object();
     private static final Object P10 = new Object();
-    private static final Object THROWABLE = new Throwable();
+    private static final Throwable THROWABLE = new Throwable();
 
     @Test
     void should_not_consume_last_object_parameter() {
