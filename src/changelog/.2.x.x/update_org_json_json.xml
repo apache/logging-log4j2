@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3346" link="https://github.com/apache/logging-log4j2/pull/3346"/>
-  <description format="asciidoc">Update `org.json:json` to version `20241224`</description>
+  <issue id="3374" link="https://github.com/apache/logging-log4j2/pull/3374"/>
+  <description format="asciidoc">Update `org.json:json` to version `20250107`</description>
 </entry>
