@@ -682,6 +682,9 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Fix <code>ConcurrentModificationException</code>, if multiple threads modify loggers concurrently. This bug affects users that modify logger levels programmatically. (<a href="https://github.com/apache/logging-log4j2/issues/3234">3234</a>)</p>
 </li>
 <li>
+<p>Fix for RegexCreator NPE, the constructor expects a boolean primitive, but the createFilter static method was boxed. Fixed that to remove the NPE issues. (<a href="https://github.com/apache/logging-log4j2/issues/3239">3239</a>)</p>
+</li>
+<li>
 <p>Protects <code>PropertiesUtil</code> against property sources that call <code>PropertiesUtil</code> recursively. In some cases such a property source can even cause deadlocks. (<a href="https://github.com/apache/logging-log4j2/issues/3252">3252</a>)</p>
 </li>
 </ul>
