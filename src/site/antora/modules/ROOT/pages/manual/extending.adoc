@@ -14,490 +14,151 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Extending Log4j
 
-Log4j provides numerous ways that it can be manipulated and extended.
-This section includes an overview of the various ways that are directly
-supported by the Log4j 3 implementation.
-
-[#LoggerContextFactory]
-== LoggerContextFactory
-
-The `LoggerContextFactory` binds the Log4j API to its implementation.
-The Log4j `LogManager` locates a `LoggerContextFactory` by using
-`java.util.ServiceLoader` to locate all instances of
-`org.apache.logging.log4j.spi.Provider`. Each implementation must
-provide a class that extends `org.apache.logging.log4j.spi.Provider` and
-should have a no-arg constructor that delegates to Provider's
-constructor passing the Priority, the API versions it is compatible
-with, and the class that implements
-`org.apache.logging.log4j.spi.LoggerContextFactory`. Log4j will compare
-the current API version and if it is compatible the implementation 
-will be added to the list of providers. The API version in
-`org.apache.logging.log4j.LogManager` is only changed when a feature is
-added to the API that implementations need to be aware of. If more than
-one valid implementation is located the value for the Priority will be
-used to identify the factory with the highest priority. Finally, the
-class that implements
-`org.apache.logging.log4j.spi.LoggerContextFactory` will be instantiated
-and bound to the LogManager. In Log4j 2 this is provided by
-`Log4jContextFactory`.
-
-Applications may change the LoggerContextFactory that will be used by
-
-1.  Create a binding to the logging implementation.
-..  Implement a new link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`LoggerContextFactory`].
-..  Implement a class that extends
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/spi/Provider.html[`org.apache.logging.spi.Provider`]
-with a no-arg constructor that calls super-class's constructor with the
-Priority, the API version(s), `LoggerContextFactory` class, and
-optionally, a
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`]
-implementation class.
-..  Create a `META-INF/services/org.apache.logging.spi.Provider` file
-that contains the name of the class that implements
-`org.apache.logging.spi.Provider`.
-2.  Setting the system property "log4j2.loggerContextFactory" to the name
-of the `LoggerContextFactory` class to use.
-3.  Setting the property "log4j2.loggerContextFactory" in a properties
-file named "log4j2.LogManager.properties" to the name of the
-LoggerContextFactory class to use. The properties file must be on the
-classpath.
-
-[#InjectorCallback]
-== InjectorCallback
-InjectorCallback services are called by an link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/di/Injector.html[`Injector`] when its `init()` method is invoked (see link:./dependencyinjection.html[Dependency Injection] for further information about `Injector`).
-These callback services are invoked in order using `InjectorCallback::getOrder` and the natural integer comparator.
-Callbacks may examine the current state of the invoking `Injector` as well as make changes to bindings or provide default bindings.
-Backwards compatibility with system property based methods for configuring various extensions are handled through a default callback with order 0 which allows for making customizations before or after the defaults are set up.
-Callback classes must have a no-args constructor and need to be defined in two places:
-
-1.  Add the fully qualified class name of the callback class to a file named `META-INF/services/org.apache.logging.log4j.plugins.di.InjectorCallback`.
-2.  For compatibility with Java modules, add a line to `module-info.java` containing `provides org.apache.logging.log4j.plugins.di.InjectorCallback with my.fully.qualified.ClassName;`.
-
-[#ContextSelector]
-== ContextSelector
-
-ContextSelectors are called by the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[Log4j `LoggerContext` factory]. They perform the actual work of locating or
-creating a LoggerContext, which is the anchor for Loggers and their
-configuration. ContextSelectors are free to implement any mechanism they
-desire to manage LoggerContexts. The default Log4jContextFactory checks
-for the presence of an `Injector` binding for `ContextSelector`.
-If none are defined, the System Property named "Log4jContextSelector" is checked.
-If found, the property is expected to contain the name of the Class that implements the ContextSelector to be used.
-This class is then used for creating `ContextSelector` instances.
-
-Log4j provides five ContextSelectors:
-
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html[`BasicContextSelector`]::
-  Uses either a LoggerContext that has been stored in a ThreadLocal or a
-  common LoggerContext.
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`]::
-  Associates LoggerContexts with the ClassLoader that created the caller
-  of the getLogger(...) call. This is the default ContextSelector.
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`JndiContextSelector`]::
-  Locates the LoggerContext by querying JNDI.
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`AsyncLoggerContextSelector`]::
-  Creates a LoggerContext that ensures that all loggers are
-  AsyncLoggers.
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html[`BundleContextSelector`]::
-  Associates LoggerContexts with the ClassLoader of the bundle that
-  created the caller of the getLogger call. This is enabled by default
-  in OSGi environments.
-
-[#ConfigurationFactory]
-== ConfigurationFactory
-
-Modifying the way in which logging can be configured is usually one of
-the areas with the most interest. The primary method for doing that is
-by implementing or extending a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`].
-Log4j provides two ways of adding new ConfigurationFactories. The first
-is by defining the system property named "log4j.configurationFactory" to
-the name of the class that should be searched first for a configuration.
-The second method is by defining the `ConfigurationFactory` as a `Plugin`.
-
-All the ConfigurationFactories are then processed in order. Each factory
-is called on its `getSupportedTypes()` method to determine the file
-extensions it supports. If a configuration file is located with one of
-the specified file extensions then control is passed to that
-`ConfigurationFactory` to load the configuration and create the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] object.
-
-Most `Configuration` extend the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/AbstractConfiguration.html[`AbstractConfiguration`] class. This class expects that the subclass will process the configuration file and create
-a hierarchy of `Node` objects. Each `Node` is fairly simple in that it
-consists of the name of the node, the name/value pairs associated with
-the node, The `PluginType` of the node and a List of all of its child
-Nodes. `Configuration` will then be passed the `Node` tree and
-instantiate the configuration objects from that.
-
-[source,java]
-----
-@Namespace("ConfigurationFactory")
-@Plugin("XMLConfigurationFactory")
-@Order(5)
-public class XMLConfigurationFactory extends ConfigurationFactory {
-
-    /**
-     * Valid file extensions for XML files.
-     */
-    public static final String[] SUFFIXES = new String[] {".xml", "*"};
-
-    /**
-     * Returns the Configuration.
-     * @param loggerContext The logger context.
-     * @param source The InputSource.
-     * @return The Configuration.
-     */
-    @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        return new XmlConfiguration(loggerContext, source);
-    }
-
-    /**
-     * Returns the file suffixes for XML files.
-     * @return An array of File extensions.
-     */
-    public String[] getSupportedTypes() {
-        return SUFFIXES;
-    }
-}
-----
-
-[#LoggerConfig]
-== LoggerConfig
-
-`LoggerConfig` objects are where Loggers created by applications tie into
-the configuration. The Log4j implementation requires that all
-LoggerConfigs are based on the LoggerConfig class, so applications
-wishing to make changes must do so by extending the `LoggerConfig` class.
-To declare the new `LoggerConfig`, declare it as a Plugin of type "Core"
-and providing the name that applications should specify as the element
-name in the configuration. The `LoggerConfig` should also define a
-PluginFactory that will create an instance of the `LoggerConfig`.
-
-The following example shows how the root `LoggerConfig` simply extends a
-generic `LoggerConfig`.
-
-[source,java]
-----
-@Configurable(printObject = true)
-@Plugin("root")
-public static class RootLogger extends LoggerConfig {
-
-    @PluginFactory
-    public static LoggerConfig createLogger(@PluginAttribute(defaultBooleanValue = true) boolean additivity,
-                                            @PluginAttribute(defaultStringValue = "ERROR") Level level,
-                                            @PluginElement AppenderRef[] refs,
-                                            @PluginElement Filter filter) {
-        List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, level, additivity);
-    }
-}
-----
-
-[#LogEventFactory]
-== LogEventFactory
-
-A LogEventFactory is used to generate LogEvents. Applications may replace the standard LogEventFactory by setting the value of the system property Log4jLogEventFactory to the name of the custom LogEventFactory class.
-
-Note: When log4j is configured to have xref:manual/async.adoc#AllAsync[all
-loggers asynchronous], log events are pre-allocated in a ring buffer and
-the `LogEventFactory` is not used.
-
-[#MessageFactory]
-== MessageFactory
-
-A `MessageFactory` is used to generate `Message` objects. Applications may
-replace the standard `ReusableMessageFactory` by setting the value of the
-system property `log4j2.messageFactory` to the name of the custom
-`MessageFactory` class.
-
-Flow messages for the `Logger.entry()` and `Logger.exit()` methods have
-a separate `FlowMessageFactory`. Applications may replace the
-`DefaultFlowMessageFactory` by setting the value of the system property
-`log4j2.flowMessageFactory` to the name of the custom `FlowMessageFactory`
-class.
-
-[#Lookups]
-== Lookups
-
-Lookups are the means in which parameter substitution is performed.
-During Configuration initialization an "Interpolator" is created that
-locates all the Lookups and registers them for use when a variable needs
-to be resolved. The interpolator matches the "prefix" portion of the
-variable name to a registered Lookup and passes control to it to resolve
-the variable.
-
-A Lookup must be declared using a `@Plugin @Lookup` annotation. The `value` specified on the `@Plugin` annotation will be used to
-match the prefix. The example below shows a Lookup that will return
-the value of a System Property.
-
-The provided Lookups are documented here: xref:manual/lookups.adoc[Lookups]
-
-[source,java]
-----
-@Lookup
-@Plugin("sys")
-public class SystemPropertiesLookup implements StrLookup {
-
-    /**
-     * Lookup the value for the key.
-     * @param key  the key to be looked up, may be null
-     * @return The value for the key.
-     */
-    public String lookup(String key) {
-        return System.getProperty(key);
-    }
-
-    /**
-     * Lookup the value for the key using the data in the LogEvent.
-     * @param event The current LogEvent.
-     * @param key  the key to be looked up, may be null
-     * @return The value associated with the key.
-     */
-    public String lookup(LogEvent event, String key) {
-        return System.getProperty(key);
-    }
-}
-----
-
-[#Filters]
-== Filters
-
-As might be expected, Filters are used to reject or accept log
-events as they pass through the logging system. A Filter is declared
-using a `@Configurable` annotation with an `elementType` of "filter".
-The `value` attribute on the `@Plugin` annotation is used to specify the name
-of the element users should use to enable the Filter. Specifying the
-`printObject` attribute with a value of "true" indicates that a call to
-`toString` will format the arguments to the filter as the configuration is
-being processed. The Filter must also specify a `@PluginFactory` method
-or `@PluginFactoryBuilder` builder class and method
-that will be called to create the Filter.
-
-The example below shows a Filter used to reject LogEvents based upon
-their logging level. Notice the typical pattern where all the filter
-methods resolve to a single filter method.
-
-[source,java]
-----
-@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
-@Plugin
-public final class ThresholdFilter extends AbstractFilter {
-
-    private final Level level;
-
-    private ThresholdFilter(Level level, Result onMatch, Result onMismatch) {
-        super(onMatch, onMismatch);
-        this.level = level;
-    }
-
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object[] params) {
-        return filter(level);
-    }
-
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
-        return filter(level);
-    }
-
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
-        return filter(level);
-    }
-
-    @Override
-    public Result filter(LogEvent event) {
-        return filter(event.getLevel());
-    }
-
-    private Result filter(Level level) {
-        return level.isAtLeastAsSpecificAs(this.level) ? onMatch : onMismatch;
-    }
-
-    @Override
-    public String toString() {
-        return level.toString();
-    }
-
-    /**
-     * Create a ThresholdFilter.
-     * @param level The log Level.
-     * @param onMatch The action to take on a match.
-     * @param onMismatch The action to take on a mismatch.
-     * @return The created ThresholdFilter.
-     */
-    @PluginFactory
-    public static ThresholdFilter createFilter(@PluginAttribute(defaultStringValue = "ERROR") Level level,
-                                               @PluginAttribute(defaultStringValue = "NEUTRAL") Result onMatch,
-                                               @PluginAttribute(defaultStringValue = "DENY") Result onMismatch) {
-        return new ThresholdFilter(level, onMatch, onMismatch);
-    }
-}
-----
-
-[#Appenders]
-== Appenders
-
-Appenders are passed an event, (usually) invoke a Layout to format the
-event, and then "publish" the event in whatever manner is desired.
-Appenders are declared as `@Configurable` with an
-`elementType` of "appender". The `value` attribute on the `@Plugin` annotation
-specifies the name of the element users must provide in their
-configuration to use the Appender. Appenders should specify `printObject`
-as "true" if the toString method renders the values of the attributes
-passed to the Appender.
-
-Appenders must also declare a `@PluginFactory` method that returns an instance
-of the appender or a builder class used to create the appender. The example below shows
-an Appender named "Stub" that can be used as an initial template.
-
-Most Appenders use Managers. A manager actually "owns" the resources,
-such as an `OutputStream` or socket. When a reconfiguration occurs a new
-Appender will be created. However, if nothing significant in the
-previous Manager has changed, the new Appender will simply reference it
-instead of creating a new one. This insures that events are not lost
-while a reconfiguration is taking place without requiring that logging
-pause while the reconfiguration takes place.
-
-[source,java]
-----
-@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
-@Plugin("Stub")
-public final class StubAppender extends AbstractOutputStreamAppender<StubManager> {
-
-    private StubAppender(String name,
-                         Layout<?> layout,
-                         Filter filter,
-                         boolean ignoreExceptions,
-                         StubManager  manager) {
-        super(name, layout, filter, ignoreExceptions, true, manager);
-    }
-
-    @PluginFactory
-    public static StubAppender createAppender(@PluginAttribute @Required(message = "No name provided for StubAppender") String name,
-                                              @PluginAttribute boolean ignoreExceptions,
-                                              @PluginElement Layout layout,
-                                              @PluginElement Filter filter) {
-
-        StubManager manager = StubManager.getStubManager(name);
-        if (manager == null) {
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        return new StubAppender(name, layout, filter, ignoreExceptions, manager);
-    }
-}
-----
-
-[#Plugin_Builders]
-== Plugin Builders
-
-Some plugins take a lot of optional configuration options. When a plugin
-takes many options, it is more maintainable to use a builder class
-rather than a factory method (see _Item 2: Consider a builder when faced
-with many constructor parameters_ in _Effective Java_ by Joshua Bloch).
-There are some other advantages to using an annotated builder class over
-an annotated factory method:
-
-* Attribute names don't need to be specified if they match the field name or the parameter name.
-* Default values can be specified in code rather than through an
-annotation (also allowing a runtime-calculated default value which isn't
-allowed in annotations).
-* Adding new optional parameters doesn't require existing programmatic
-configuration to be refactored.
-* Easier to write unit tests using builders rather than factory methods
-with optional parameters.
-* Default values are specified via code rather than relying on
-reflection and injection, so they work programmatically as well as in a
-configuration file.
-
-Here is an example of a plugin factory from `ListAppender`:
-
-[source,java]
-----
-@PluginFactory
-public static ListAppender createAppender(
-        @PluginAttribute @Required(message = "No name provided for ListAppender") final String name,
-        @PluginAttribute final boolean entryPerNewLine,
-        @PluginAttribute final boolean raw,
-        @PluginElement final Layout<?> layout,
-        @PluginElement final Filter filter) {
-    return new ListAppender(name, filter, layout, newLine, raw);
-}
-----
-
-Here is that same factory using a builder pattern instead:
-
-[source,java]
-----
-@PluginFactory
-public static Builder newBuilder() {
-    return new Builder();
-}
-
-public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ListAppender> {
-
-    private String name;
-    private boolean entryPerNewLine;
-    private boolean raw;
-    private Layout<?> layout;
-    private Filter filter;
-
-
-    public Builder setName(
-            @PluginAttribute
-            @Required(message = "No name provided for ListAppender")
-            final String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Builder setEntryPerNewLine(@PluginAttribute final boolean entryPerNewLine) {
-        this.entryPerNewLine = entryPerNewLine;
-        return this;
-    }
-
-    public Builder setRaw(@PluginAttribute final boolean raw) {
-        this.raw = raw;
-        return this;
-    }
-
-    public Builder setLayout(@PluginElement final Layout<?> layout) {
-        this.layout = layout;
-        return this;
-    }
-
-    public Builder setFilter(@PluginElement final Filter filter) {
-        this.filter = filter;
-        return this;
-    }
-
-    @Override
-    public ListAppender build() {
-        return new ListAppender(name, filter, layout, entryPerNewLine, raw);
-    }
-}
-----
-
-When plugins are being constructed after a configuration has been
-parsed, a plugin builder will be used if available, otherwise a plugin
-factory method will be used as a fallback. If a plugin contains neither
-factory, then it cannot be used from a configuration file (it can still
-be used programmatically of course).
-
-Here is an example of using a plugin factory versus a plugin builder
-programmatically:
-
-[source,java]
-----
-ListAppender list1 = ListAppender.createAppender("List1", true, false, null, null);
-ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLine(true).build();
-----
+= Extending
+
+Log4j provides numerous extension points to adapt it for custom needs.
+Several of such extension points are covered in the page of the associated component:
+
+* Log4j API
+** {log4j2-url}/manual/customloglevels.html[Extending levels]
+** {log4j2-url}/manual/markers.html[Extending markers]
+** {log4j2-url}/manual/messages.html#extending[Extending messages]
+** {log4j2-url}/manual/thread-context.html#extending[Extending thread context]
+* Log4j Core
+** xref:manual/appenders.adoc#extending[Extending appenders]
+** xref:manual/filters.adoc#extending[Extending filters]
+** xref:manual/layouts.adoc#extending[Extending layouts]
+*** xref:manual/json-template-layout.adoc#extending[Extending JSON Template Layout]
+*** xref:manual/pattern-layout.adoc#extending[Extending Pattern Layout]
+** xref:manual/lookups.adoc#extending[Extending lookups]
+
+This section guides you on the rest of the Log4j extension points.
+
+[#mechanisms]
+== Extension mechanisms
+
+Log4j allows extensions primarily using following mechanisms:
 
 [#Custom_Plugins]
-== Custom Plugins
+=== Plugins
 
-// TODO
-See the xref:manual/plugins.adoc[Plugins] section of the manual.
+include::partial$manual/plugin-preliminaries.adoc[]
+
+[#bindings]
+=== Bindings
+
+The Log4j plugin system was enhanced in 3.0 to support arbitrary bindings for xref:manual/dependencyinjection.adoc[dependency injection].
+Many shared components in Log4j could be configured via system properties or similar to include a fully qualified class name to use.
+Using custom bindings, however, these custom classes can be configured as code.
+Default bindings are configured in {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/impl/CoreDefaultBundle.java[`CoreDefaultBundle`].
+Custom bindings can be installed by defining a link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/spi/ConfigurableInstanceFactoryPostProcessor.html[`ConfigurableInstanceFactoryPostProcessor`] service class which invokes `ConfigurableInstanceFactory::registerBundle` to register the bundle class containing the bindings.
+This approach is more portable than the legacy approach of using system properties to define the classes as it removes ambiguity of `ClassLoader` ownership and other details of modules and similar runtimes.
+
+[#service-loader]
+=== ``ServiceLoader``s
+
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ServiceLoader.html[`ServiceLoader`] is a simple service-provider loading facility baked into the Java platform itself.
+Log4j uses ``ServiceLoader``s for extending places where
+
+* The service needs to be implementation agnostic.
+As a result, <<Custom_Plugins,the Log4j plugin system>> cannot be used, since it is provided by the logging implementation, i.e., Log4j Core.
+For instance, this is why {log4j2-url}/manual/thread-context.html#extending[extending Thread Context], which is a Log4j API component, works using ``ServiceLoader``s.
+
+* The service needs to be loaded before <<Custom_Plugins,the Log4j plugin system>>.
+For instance, this is why <<Provider,extending `Provider`>> works using ``ServiceLoader``s.
+
+Refer to https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/ServiceLoader.html[the `ServiceLoader` documentation] for details.
+
+[#system-properties]
+=== System properties
+
+Log4j uses system properties to determine the fully-qualified class name (FQCN) to load for extending a certain functionality.
+For instance, <<MessageFactory, extending `MessageFactory2`>> works using system properties.
+
+[WARNING]
+====
+Loading a class using _only_ its FQCN can result in unexpected behaviour when there are multiple class loaders.
+====
+
+[#points]
+== Extension points
+
+In this section we will guide you on certain Log4j extension points that are not covered elsewhere.
+
+[#Provider]
+=== `Provider`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/Provider.html[`Provider`] is the anchor contract binding Log4j API to an implementation.
+For instance, it has been implemented by Log4j Core, Log4j-to-JUL bridge, and Log4j-to-SLF4J bridge modules.
+
+Under the hood, link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] locates a `Provider` implementation using <<service-loader,the `ServiceLoader` mechanism>>, and delegates invocations to it.
+Hence, you can extend it by providing a `org.apache.logging.log4j.spi.Provider` implementation in the form of a `ServiceLoader`.
+
+Having multiple ``Provider``s in the classpath is strongly discouraged.
+A specific provider can be <<bindings,bound>> using a custom bundle class if Log4j Core is also available.
+Alternatively, you can use xref:manual/systemproperties.adoc#log4j.provider[the `log4j.provider` property] to explicitly select one.
+
+[#LoggerContextFactory]
+=== `LoggerContextFactory`
+
+link:../javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html[`LoggerContextFactory`] is the factory class used by Log4j API implementations to create xref:manual/architecture.adoc#LoggerContext[`LoggerContext`]s.
+If you are using Log4j Core, you can use <<ContextSelector>>s to influence the way its `LoggerContextFactory` implementation works.
+If you are creating a new Log4j API implementation, you should <<Provider,provide a custom `Provider`>> to introduce your custom `LoggerContextFactory` implementation.
+
+[#ContextSelector]
+=== `ContextSelector`
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`Log4jContextFactory`], the Log4j Core implementation of <<LoggerContextFactory>>, delegates the actual work to a link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`ContextSelector`].
+This should be configured as a `ContextSelector` binding in a <<bindings,custom binding>>.
+Alternatively, it can be configured using xref:manual/systemproperties.adoc#log4j.loggerContext.selector[the `log4j.loggerContext.selector` property].
+
+[#ConfigurationFactory]
+=== `ConfigurationFactory`
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationFactory.html[`ConfigurationFactory`] is the factory class used by Log4j Core to create link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`] instances given a xref:manual/architecture.adoc#LoggerContext[`LoggerContext`] and a link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationSource.html[`ConfigurationSource`].
+
+You can provide a custom `ConfigurationFactory` in the form of a <<Custom_Plugins,plugin>>.
+For example, see {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfigurationFactory.java[`XmlConfigurationFactory.java`] and {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/xml/XmlConfiguration.java[`XmlConfiguration.java`] of Log4j Core.
+
+A specific configuration factory can be bound in a <<bindings,custom bundle class>> which can take priority over the default configuration factories.
+You can also use xref:manual/systemproperties.adoc#log4j.configuration.factory[the `log4j.configuration.factory` property] to explicitly set a `ConfigurationFactory` to be used before any other factory implementation.
+
+[#LoggerConfig]
+=== `LoggerConfig`
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`] denotes the `Logger` configurations in a `Configuration`.
+A custom `LoggerConfig` needs to satisfy the following conditions:
+
+* It needs to extend from `LoggerConfig` class
+* It needs to be declared as a <<Custom_Plugins,plugin>>
+* It needs to include a `@Configurable` annotation on the class
+
+For example, see `RootLogger` definition in {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/config/LoggerConfig.java[`LoggerConfig.java`].
+
+[#LogEventFactory]
+=== `LogEventFactory`
+
+Log4j Core uses link:../javadoc/log4j-core/org/apache/logging/log4j/core/impl/LogEventFactory.html[`LogEventFactory`] to create link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`]s.
+You can replace the default `LogEventFactory` implementation with a custom one of yours by defining a <<bindings,custom binding>> for `LogEventFactory` or by using xref:manual/systemproperties.adoc#log4j.logEvent.factory[the `log4j.logEvent.factory` property].
+
+[NOTE]
+====
+xref:manual/async.adoc[] discard `LogEventFactory` and any configuration related with it.
+====
+
+[#MessageFactory]
+=== `MessageFactory2`
+
+Log4j Core uses link:../javadoc/log4j-api/org/apache/logging/log4j/message/MessageFactory2.html[`MessageFactory2`] to create link:../javadoc/log4j-api/org/apache/logging/log4j/message/Message.html[`Message`]s.
+You can replace the default `MessageFactory2` implementation with a custom one of yours by using xref:manual/systemproperties.adoc#log4j.message.factory[the `log4j.message.factory` property].
+
+[IMPORTANT]
+====
+Message factory implementations are expected to interpret formatting patterns containing placeholders denoted with `{}`.
+For instance, the default message factory chooses between a {log4j2-url}/manual/messages.html#SimpleMessage[`SimpleMessage`] and a {log4j2-url}/manual/messages.html#ParameterizedMessage[`ParameterizedMessage`] depending on the presence of placeholders in the formatting pattern.
+
+If you want to change the placeholder style (e.g., switching from `{}` to `%s`), you should *not* replace the default message factory.
+Because this will break the existing Log4j API calls using the standard placeholder style.
+Instead, you can use link:../javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] methods accepting a message factory to create ``Logger``s with your custom message factory implementations.
+====
