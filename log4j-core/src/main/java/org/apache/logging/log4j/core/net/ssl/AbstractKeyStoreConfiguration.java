@@ -16,16 +16,29 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.Executors;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.event.Event;
+import org.apache.logging.log4j.core.event.Event.EventType;
+import org.apache.logging.log4j.core.event.EventService;
 import org.apache.logging.log4j.core.util.NetUtils;
 
 /**
@@ -63,6 +76,20 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         this(location, new MemoryPasswordProvider(password == null ? null : password.toCharArray()), keyStoreType);
     }
 
+    private static void watchKeyAndTrustStoreFiles(final String keyStoreLocation, final String trustStoreLocation) {
+        Set<String> filePathsToWatch = new HashSet<>();
+        if (keyStoreLocation != null) {
+            filePathsToWatch.add(keyStoreLocation);
+        }
+        if (trustStoreLocation != null) {
+            filePathsToWatch.add(trustStoreLocation);
+        }
+    }
+
+    private void watchKeyStoreForChanges(final String location) {
+        Executors.newSingleThreadExecutor().execute(new WatchRunnable(location));
+    }
+
     @Override
     protected KeyStore load() throws StoreConfigurationException {
         final String loadLocation = this.getLocation();
@@ -81,6 +108,9 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             try (final InputStream fin = openInputStream(loadLocation)) {
                 ks.load(fin, password);
                 LOGGER.debug("KeyStore successfully loaded from location {}", loadLocation);
+
+                watchKeyStoreForChanges(loadLocation);
+
                 return ks;
             }
         } catch (final CertificateException e) {
@@ -151,5 +181,40 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
 
     public String getKeyStoreType() {
         return keyStoreType;
+    }
+
+    private static final class WatchRunnable implements Runnable {
+
+        private String fileToWatch;
+
+        public WatchRunnable(String fileToWatch) {
+            this.fileToWatch = fileToWatch;
+        }
+
+        @Override
+        public void run() {
+            WatchService watchService;
+            try {
+                watchService = FileSystems.getDefault().newWatchService();
+
+                File file = new File(fileToWatch);
+                Path directory = file.getParentFile().toPath();
+                LOGGER.info("Watching {} for changes", fileToWatch);
+                directory.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+
+                WatchKey key;
+                while ((key = watchService.take()) != null) {
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (file.getName().equals(event.context().toString())) {
+                            LOGGER.info("Change detected in configuration file {}", event.context());
+                            EventService.publish(new Event(EventType.CONFIGURATION_CHANGED));
+                        }
+                    }
+                    key.reset();
+                }
+            } catch (IOException | InterruptedException exception) {
+                LOGGER.error("Error watching a configuration related file for SocketAppender", exception);
+            }
+        }
     }
 }
