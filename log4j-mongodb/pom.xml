@@ -30,7 +30,7 @@
     <!-- OSGi and JPMS options -->
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
     <!-- Dependency versions -->
-    <mongodb.version>5.2.1</mongodb.version>
+    <mongodb.version>5.3.0</mongodb.version>
     <slf4j2.version>2.0.16</slf4j2.version>
   </properties>
   <dependencyManagement>
