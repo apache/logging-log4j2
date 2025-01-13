@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="3217" link="https://github.com/apache/logging-log4j2/pull/3217"/>
+  <description format="asciidoc">Currently Java 8 users do not have access to timestamps with sub-millisecond precision.
+   This change moves the SystemClock implementation from log4j-core-java9 to log4j-core, overriding the current one, so that java 8 users can benefit from it.
+  </description>
+</entry>
