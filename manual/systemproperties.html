@@ -2675,7 +2675,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 </tbody>
 </table>
 <div class="paragraph">
-<p>Specifies the
+<p>It specifies the
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html"><code>Clock</code></a>
 implementation used to timestamp log events.</p>
 </div>
@@ -2686,23 +2686,45 @@ implementation used to timestamp log events.</p>
 <dl>
 <dt class="hdlist1">SystemClock</dt>
 <dd>
-<p>uses the best available system clock as time source.
+<p>It uses the best available system time source.
 See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html#systemDefaultZone--"><code>Clock#systemDefaultZone()</code></a> for details.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Depending on the version of the JRE, this implementation might not be garbage-free or might only become garbage-free when the code is hot enough.</p>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t require a nanosecond precision, and you need a garbage-free implementation, use <a href="#log4j2.clock.SystemMillisClock"><code>SystemMillisClock</code></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </dd>
+</dl>
+</div>
+<div id="log4j2.clock.SystemMillisClock" class="dlist">
+<dl>
 <dt class="hdlist1">SystemMillisClock</dt>
 <dd>
-<p>same as <code>SystemClock</code>, but truncates the result to a millisecond.</p>
+<p>It is similar to <code>SystemClock</code>, but truncates the result to a millisecond.
+This implementation is garbage-free.</p>
 </dd>
 <dt class="hdlist1">CachedClock</dt>
 <dd>
-<p>uses a separate thread to update the timestamp value.
+<p>It uses a separate thread to update the timestamp value.
 See
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html"><code>CachedClock</code></a>
 for details.</p>
 </dd>
 <dt class="hdlist1">CoarseCachedClock</dt>
 <dd>
-<p>alternative implementation of <code>CachedClock</code> with a slightly lower precision.
+<p>This is  an alternative implementation of <code>CachedClock</code> with a slightly lower precision.
 See
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html"><code>CoarseCachedClock</code></a>
 for details.</p>

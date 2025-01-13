@@ -78,12 +78,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="Clock.html" title="interface in org.apache.logging.log4j.core.util">Clock</a></code></dd>
+<dd><code><a href="../time/PreciseClock.html" title="interface in org.apache.logging.log4j.core.time">PreciseClock</a></code>, <code><a href="Clock.html" title="interface in org.apache.logging.log4j.core.util">Clock</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">SystemClock</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="Clock.html" title="interface in org.apache.logging.log4j.core.util">Clock</a></span></div>
+implements <a href="Clock.html" title="interface in org.apache.logging.log4j.core.util">Clock</a>, <a href="../time/PreciseClock.html" title="interface in org.apache.logging.log4j.core.time">PreciseClock</a></span></div>
 <div class="block">Implementation of the <code>Clock</code> interface that returns the system time.</div>
 </section>
 <section class="summary">
@@ -116,6 +116,11 @@ implements <a href="Clock.html" title="interface in org.apache.logging.log4j.cor
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#currentTimeMillis()" class="member-name-link">currentTimeMillis</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the system time.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(org.apache.logging.log4j.core.time.MutableInstant)" class="member-name-link">init</a><wbr>(<a href="../time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a>&nbsp;mutableInstant)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Initializes the specified instant with time information as accurate as available on this platform.</div>
 </div>
 </div>
 </div>
@@ -158,6 +163,20 @@ implements <a href="Clock.html" title="interface in org.apache.logging.log4j.cor
 <dd><code><a href="Clock.html#currentTimeMillis()">currentTimeMillis</a></code>&nbsp;in interface&nbsp;<code><a href="Clock.html" title="interface in org.apache.logging.log4j.core.util">Clock</a></code></dd>
 <dt>Returns:</dt>
 <dd>the result of calling <code>System.currentTimeMillis()</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="init(org.apache.logging.log4j.core.time.MutableInstant)">
+<h3>init</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(<a href="../time/MutableInstant.html" title="class in org.apache.logging.log4j.core.time">MutableInstant</a>&nbsp;mutableInstant)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../time/PreciseClock.html#init(org.apache.logging.log4j.core.time.MutableInstant)">PreciseClock</a></code></span></div>
+<div class="block">Initializes the specified instant with time information as accurate as available on this platform.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="../time/PreciseClock.html#init(org.apache.logging.log4j.core.time.MutableInstant)">init</a></code>&nbsp;in interface&nbsp;<code><a href="../time/PreciseClock.html" title="interface in org.apache.logging.log4j.core.time">PreciseClock</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>mutableInstant</code> - the container to be initialized with the accurate time information</dd>
 </dl>
 </section>
 </li>
