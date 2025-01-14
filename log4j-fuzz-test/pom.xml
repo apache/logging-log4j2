@@ -66,6 +66,13 @@
       <artifactId>jazzer</artifactId>
     </dependency>
 
+    <!-- Jazzer release `0.23.0` made `jazzer-api` a runtime dependency: https://github.com/CodeIntelligenceTesting/jazzer/issues/919
+         This causes compilation failures, hence adding it as an explicit compile-time dependency. -->
+    <dependency>
+      <groupId>com.code-intelligence</groupId>
+      <artifactId>jazzer-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
