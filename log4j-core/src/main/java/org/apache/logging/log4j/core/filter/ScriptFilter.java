@@ -105,7 +105,12 @@ public final class ScriptFilter extends AbstractFilter {
     }
 
     private Result executeScript(
-            final Logger logger, final Level level, final Marker marker, final Message msg, final Object[] params, final Throwable t) {
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final Message msg,
+            final Object[] params,
+            final Throwable t) {
         final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
