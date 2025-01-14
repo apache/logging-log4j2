@@ -101,7 +101,7 @@
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
-    <jazzer.version>0.22.1</jazzer.version>
+    <jazzer.version>0.23.0</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
@@ -267,6 +267,12 @@
       <dependency>
         <groupId>com.code-intelligence</groupId>
         <artifactId>jazzer</artifactId>
+        <version>${jazzer.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.code-intelligence</groupId>
+        <artifactId>jazzer-api</artifactId>
         <version>${jazzer.version}</version>
       </dependency>
 
