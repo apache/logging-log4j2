@@ -18,7 +18,13 @@
 <Configuration status="ERROR">
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
+      <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>[suvrat@suvrat logging-log4j2]$ git push
+Username for 'https://github.com': suvrat1629
+Password for 'https://suvrat1629@github.com':
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/Suvrat1629/logging-log4j2.git/'
+
     </List>
   </Appenders>
   <Loggers>
