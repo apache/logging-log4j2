@@ -41,6 +41,11 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.event.Event;
+import org.apache.logging.log4j.core.event.Event.EventType;
+import org.apache.logging.log4j.core.event.EventFilter;
+import org.apache.logging.log4j.core.event.EventListener;
+import org.apache.logging.log4j.core.event.EventService;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
@@ -73,7 +78,8 @@ public class LoggerContext extends AbstractLifeCycle
                 AutoCloseable,
                 Terminable,
                 ConfigurationListener,
-                LoggerContextShutdownEnabled {
+                LoggerContextShutdownEnabled,
+                EventListener {
 
     /**
      * Property name of the property change event fired if the configuration is changed.
@@ -308,6 +314,7 @@ public class LoggerContext extends AbstractLifeCycle
                 configLock.unlock();
             }
         }
+        EventService.subscribe(this, new EventFilter(EventType.CONFIGURATION_CHANGED));
         LOGGER.debug("LoggerContext[name={}, {}] started OK.", getName(), this);
     }
 
@@ -331,6 +338,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
         }
         setConfiguration(config);
+        EventService.subscribe(this, new EventFilter(EventType.CONFIGURATION_CHANGED));
         LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 
@@ -862,5 +870,13 @@ public class LoggerContext extends AbstractLifeCycle
      */
     protected Logger newInstance(LoggerContext context, String name, MessageFactory messageFactory) {
         return new Logger(context, name, messageFactory);
+    }
+
+    @Override
+    public void onEvent(Event event) {
+        LOGGER.debug("Event received: " + event.getEventType());
+        if (configuration instanceof Reconfigurable) {
+            onChange((Reconfigurable) configuration);
+        }
     }
 }
