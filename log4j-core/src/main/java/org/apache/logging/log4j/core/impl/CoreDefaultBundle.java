@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +85,7 @@ import org.jspecify.annotations.Nullable;
  * @see LogEventFactory
  * @see StrSubstitutor
  */
+@ServiceConsumer(value = RecyclerFactoryProvider.class, cardinality = Cardinality.MULTIPLE)
 public final class CoreDefaultBundle {
 
     @SingletonFactory
