@@ -325,7 +325,7 @@ https://logging.staged.apache.org/log4j/transform/log4j-transform-maven-shade-pl
 
 https://gradleup.com/shadow/[Gradle Shadow Plugin]:::
 You need to use the
-https://github.com/GradleUp/shadow/blob/main/src/main/groovy/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.groovy[`Log4j2PluginsCacheFileTransformer`].
+https://github.com/GradleUp/shadow/blob/main/src/main/kotlin/com/github/jengelman/gradle/plugins/shadow/transformers/Log4j2PluginsCacheFileTransformer.kt[`Log4j2PluginsCacheFileTransformer`].
 ====
 
 [#android]
