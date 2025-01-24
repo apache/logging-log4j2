@@ -80,7 +80,8 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * The base Configuration. Many configuration implementations will extend this class.
+ * The base Configuration. Many configuration implementations will extend this
+ * class.
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
@@ -153,7 +154,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.loggerContext = new WeakReference<>(loggerContext);
         tempLookup.setLoggerContext(loggerContext);
         // The loggerContext is null for the NullConfiguration class.
-        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
+        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext,
+        // "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         componentMap.put(CONTEXT_PROPERTIES, propertyMap);
         pluginManager = new PluginManager(Node.CATEGORY);
@@ -282,8 +284,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 if (file != null) {
                     final Source cfgSource = new Source(file);
                     final long lastModified = file.lastModified();
-                    final ConfigurationFileWatcher watcher =
-                            new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
+                    final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
+                            listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
@@ -369,15 +371,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         super.stop(timeout, timeUnit, false);
 
         // Stop the components that are closest to the application first:
-        // 1. Notify all LoggerConfigs' ReliabilityStrategy that the configuration will be stopped.
+        // 1. Notify all LoggerConfigs' ReliabilityStrategy that the configuration will
+        // be stopped.
         // 2. Stop the LoggerConfig objects (this may stop nested Filters)
-        // 3. Stop the AsyncLoggerConfigDelegate. This shuts down the AsyncLoggerConfig Disruptor
-        //    and waits until all events in the RingBuffer have been processed.
+        // 3. Stop the AsyncLoggerConfigDelegate. This shuts down the AsyncLoggerConfig
+        // Disruptor
+        // and waits until all events in the RingBuffer have been processed.
         // 4. Stop all AsyncAppenders. This shuts down the associated thread and
-        //    waits until all events in the queue have been processed. (With optional timeout.)
-        // 5. Notify all LoggerConfigs' ReliabilityStrategy that appenders will be stopped.
-        //    This guarantees that any event received by a LoggerConfig before reconfiguration
-        //    are passed on to the Appenders before the Appenders are stopped.
+        // waits until all events in the queue have been processed. (With optional
+        // timeout.)
+        // 5. Notify all LoggerConfigs' ReliabilityStrategy that appenders will be
+        // stopped.
+        // This guarantees that any event received by a LoggerConfig before
+        // reconfiguration
+        // are passed on to the Appenders before the Appenders are stopped.
         // 6. Stop the remaining running Appenders. (It should now be safe to do so.)
         // 7. Notify all LoggerConfigs that their Appenders can be cleaned up.
 
@@ -572,8 +579,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Process conditions by evaluating them and including the children of conditions that are true
+     * Process conditions by evaluating them and including the children of
+     * conditions that are true
      * and discarding those that are not.
+     * 
      * @param node The node to evaluate.
      */
     protected void processConditionals(final Node node) {
@@ -623,10 +632,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Handle Select nodes. This finds the first child condition that returns true and attaches its children
+     * Handle Select nodes. This finds the first child condition that returns true
+     * and attaches its children
      * to the parent of the Select Node. Other Nodes are discarded.
+     * 
      * @param selectNode The Select Node.
-     * @param type The PluginType of the Select Node.
+     * @param type       The PluginType of the Select Node.
      * @return The list of Nodes to be added to the parent.
      */
     protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
@@ -663,7 +674,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
-        // Find the "Properties" node first
+
         boolean hasProperties = false;
         for (final Node node : rootNode.getChildren()) {
             if ("Properties".equalsIgnoreCase(node.getName())) {
@@ -687,28 +698,37 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
+        Node scriptsNode = null;
+        for (final Node node : rootNode.getChildren()) {
+            if ("Scripts".equalsIgnoreCase(node.getName())) {
+                scriptsNode = node;
+                createConfiguration(scriptsNode, null);
+                if (scriptsNode.getObject() != null) {
+                    for (final AbstractScript script : scriptsNode.getObject(AbstractScript[].class)) {
+                        if (script instanceof ScriptRef) {
+                            LOGGER.error(
+                                    "Script reference to {} not added. Scripts definition cannot contain script references",
+                                    script.getName());
+                        } else if (scriptManager != null) {
+                            scriptManager.addScript(script);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
         boolean setLoggers = false;
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(child.getName())) {
-                // We already used this node
-                continue;
+            if ("Properties".equalsIgnoreCase(child.getName()) || "Scripts".equalsIgnoreCase(child.getName())) {
+                continue; // Skip already processed nodes
             }
             createConfiguration(child, null);
             if (child.getObject() == null) {
                 continue;
             }
-            if ("Scripts".equalsIgnoreCase(child.getName())) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error(
-                                "Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else if (scriptManager != null) {
-                        scriptManager.addScript(script);
-                    }
-                }
-            } else if ("Appenders".equalsIgnoreCase(child.getName())) {
+            if ("Appenders".equalsIgnoreCase(child.getName())) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
@@ -748,7 +768,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             LOGGER.warn(
                     "No Root logger was configured, creating default ERROR-level Root logger with Console appender");
             setToDefault();
-            // return; // LOG4J2-219: creating default root=ok, but don't exclude configured Loggers
         }
 
         for (final Map.Entry<String, LoggerConfig> entry : loggerConfigs.entrySet()) {
@@ -828,7 +847,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Returns the Appender with the specified name.
      *
      * @param appenderName The name of the Appender.
-     * @return the Appender with the specified name or null if the Appender cannot be located.
+     * @return the Appender with the specified name or null if the Appender cannot
+     *         be located.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -881,7 +901,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
+     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#
+     * getReliabilityStrategy(org.apache.logging.log4j
      * .core.config.LoggerConfig)
      */
     @Override
@@ -890,12 +911,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Associates an Appender with a LoggerConfig. This method is synchronized in case a Logger with the same name is
+     * Associates an Appender with a LoggerConfig. This method is synchronized in
+     * case a Logger with the same name is
      * being updated at the same time.
      * <p>
-     * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
+     * Note: This method is not used when configuring via configuration. It is
+     * primarily used by unit tests.
      * </p>
-     * @param logger The Logger the Appender will be associated with.
+     * 
+     * @param logger   The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
     @Override
@@ -920,11 +944,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Associates a Filter with a LoggerConfig. This method is synchronized in case a Logger with the same name is being
+     * Associates a Filter with a LoggerConfig. This method is synchronized in case
+     * a Logger with the same name is being
      * updated at the same time.
      * <p>
-     * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
+     * Note: This method is not used when configuring via configuration. It is
+     * primarily used by unit tests.
      * </p>
+     * 
      * @param logger The Logger the Footer will be associated with.
      * @param filter The Filter.
      */
@@ -945,12 +972,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Marks a LoggerConfig as additive. This method is synchronized in case a Logger with the same name is being
+     * Marks a LoggerConfig as additive. This method is synchronized in case a
+     * Logger with the same name is being
      * updated at the same time.
      * <p>
-     * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
+     * Note: This method is not used when configuring via configuration. It is
+     * primarily used by unit tests.
      * </p>
-     * @param logger The Logger the Appender will be associated with.
+     * 
+     * @param logger   The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
     @Override
@@ -970,8 +1000,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Remove an Appender. First removes any associations between LoggerConfigs and the Appender, removes the Appender
-     * from this appender list and then stops the appender. This method is synchronized in case an Appender with the
+     * Remove an Appender. First removes any associations between LoggerConfigs and
+     * the Appender, removes the Appender
+     * from this appender list and then stops the appender. This method is
+     * synchronized in case an Appender with the
      * same name is being added during the removal.
      *
      * @param appenderName the name of the appender to remove.
@@ -998,7 +1030,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Locates the appropriate LoggerConfig for a Logger name. This will remove tokens from the package name as
+     * Locates the appropriate LoggerConfig for a Logger name. This will remove
+     * tokens from the package name as
      * necessary or return the root LoggerConfig if no other matches were found.
      *
      * @param loggerName The Logger name.
@@ -1038,7 +1071,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Returns a Map of all the LoggerConfigs.
      *
-     * @return a Map with each entry containing the name of the Logger and the LoggerConfig.
+     * @return a Map with each entry containing the name of the Logger and the
+     *         LoggerConfig.
      */
     @Override
     public Map<String, LoggerConfig> getLoggers() {
@@ -1056,10 +1090,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Add a loggerConfig. The LoggerConfig must already be configured with Appenders, Filters, etc. After addLogger is
+     * Add a loggerConfig. The LoggerConfig must already be configured with
+     * Appenders, Filters, etc. After addLogger is
      * called LoggerContext.updateLoggers must be called.
      *
-     * @param loggerName The name of the Logger.
+     * @param loggerName   The name of the Logger.
      * @param loggerConfig The LoggerConfig.
      */
     @Override
@@ -1101,6 +1136,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * This method is used by Arbiters to create specific children.
+     * 
      * @param type The PluginType.
      * @param node The Node.
      * @return The created object or null;
@@ -1115,39 +1151,58 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Invokes a static factory method to either create the desired object or to create a builder object that creates
-     * the desired object. In the case of a factory method, it should be annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each parameter should be annotated with
-     * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be a type that can be converted from a
-     * string using one of the {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter TypeConverters}
-     * . Parameters with {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any plugin class or
-     * an array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
+     * Invokes a static factory method to either create the desired object or to
+     * create a builder object that creates
+     * the desired object. In the case of a factory method, it should be annotated
+     * with
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginFactory}, and each
+     * parameter should be annotated with
+     * an appropriate plugin annotation depending on what that parameter describes.
+     * Parameters annotated with
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginAttribute} must be
+     * a type that can be converted from a
+     * string using one of the
+     * {@link org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
+     * TypeConverters}
+     * . Parameters with
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginElement} may be any
+     * plugin class or
+     * an array of a plugin class. Collections and Maps are currently not supported,
+     * although the factory method that is
      * called can create these from an array.
      * <p>
      * Plugins can also be created using a builder class that implements
-     * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static method annotated with
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} should create the builder class, and
-     * the various fields in the builder class should be annotated similarly to the method parameters. However, instead
+     * {@link org.apache.logging.log4j.core.util.Builder}. In that case, a static
+     * method annotated with
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute}
+     * should create the builder class, and
+     * the various fields in the builder class should be annotated similarly to the
+     * method parameters. However, instead
      * of using PluginAttribute, one should use
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute} where the default value can be
-     * specified as the default field value instead of as an additional annotation parameter.
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute}
+     * where the default value can be
+     * specified as the default field value instead of as an additional annotation
+     * parameter.
      * </p>
      * <p>
      * In either case, there are also annotations for specifying a
      * {@link org.apache.logging.log4j.core.config.Configuration} (
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
+     * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or
+     * a
      * {@link org.apache.logging.log4j.core.config.Node} (
      * {@link org.apache.logging.log4j.core.config.plugins.PluginNode}).
      * </p>
      * <p>
-     * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
+     * Although the happy path works, more work still needs to be done to log
+     * incorrect parameters. These will generally
      * result in unhelpful InvocationTargetExceptions.
      * </p>
-     * @param type the type of plugin to create.
-     * @param node the corresponding configuration node for this plugin to create.
+     * 
+     * @param type  the type of plugin to create.
+     * @param node  the corresponding configuration node for this plugin to create.
      * @param event the LogEvent that spurred the creation of this plugin
-     * @return the created plugin object or {@code null} if there was an error setting it up.
+     * @return the created plugin object or {@code null} if there was an error
+     *         setting it up.
      * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
      * @see org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor
      * @see org.apache.logging.log4j.core.config.plugins.convert.TypeConverter
@@ -1218,12 +1273,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Reads an InputStream using buffered reads into a byte array buffer. The given InputStream will remain open after
+     * Reads an InputStream using buffered reads into a byte array buffer. The given
+     * InputStream will remain open after
      * invocation of this method.
      *
      * @param is the InputStream to read into a byte array buffer.
      * @return a byte array of the InputStream contents.
-     * @throws IOException if the {@code read} method of the provided InputStream throws this exception.
+     * @throws IOException if the {@code read} method of the provided InputStream
+     *                     throws this exception.
      */
     protected static byte[] toByteArray(final InputStream is) throws IOException {
         final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
