@@ -37,14 +37,15 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Returns the onMatch result if the script returns True and returns the onMismatch value otherwise.
+ * Returns the onMatch result if the script returns True and returns the
+ * onMismatch value otherwise.
  */
 @Plugin(name = "ScriptFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ScriptFilter extends AbstractFilter {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();
 
-    private AbstractScript script;
+    private final AbstractScript script;
     private final Configuration configuration;
 
     private ScriptFilter(
@@ -58,66 +59,57 @@ public final class ScriptFilter extends AbstractFilter {
     }
 
     @Override
-    public void start() {
-        super.start();
-        if (script instanceof ScriptRef) {
-            AbstractScript resolvedScript = configuration.getScriptManager().getScript(script.getName());
-            if (resolvedScript == null) {
-                LOGGER.error("No script with name {} has been declared.", script.getName());
-                // Optionally: mark the filter as unusable or handle failure gracefully
-                return;
-            }
-            this.script = resolvedScript; // Update to resolved script
-        } else {
-            if (!configuration.getScriptManager().addScript(script)) {
-                LOGGER.error("Failed to add script {} to the ScriptManager.", script.getName());
-            }
-        }
-    }
-
-    @Override
     public Result filter(
             final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
-        return executeScript(logger, level, marker, new SimpleMessage(msg), params, null);
-    }
-
-    @Override
-    public Result filter(
-            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
-        Message message = msg instanceof String ? new SimpleMessage((String) msg) : new ObjectMessage(msg);
-        return executeScript(logger, level, marker, message, null, t);
-    }
-
-    @Override
-    public Result filter(
-            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
-        return executeScript(logger, level, marker, msg, null, t);
-    }
-
-    @Override
-    public Result filter(final LogEvent event) {
         final SimpleBindings bindings = new SimpleBindings();
-        bindings.put("logEvent", event);
+        bindings.put("logger", logger);
+        bindings.put("level", level);
+        bindings.put("marker", marker);
+        bindings.put("message", new SimpleMessage(msg));
+        bindings.put("parameters", params);
+        bindings.put("throwable", null);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
-    private Result executeScript(
-            final Logger logger,
-            final Level level,
-            final Marker marker,
-            final Message msg,
-            final Object[] params,
-            final Throwable t) {
+    @Override
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
+        final SimpleBindings bindings = new SimpleBindings();
+        bindings.put("logger", logger);
+        bindings.put("level", level);
+        bindings.put("marker", marker);
+        bindings.put("message", msg instanceof String ? new SimpleMessage((String) msg) : new ObjectMessage(msg));
+        bindings.put("parameters", null);
+        bindings.put("throwable", t);
+        bindings.putAll(configuration.getProperties());
+        bindings.put("substitutor", configuration.getStrSubstitutor());
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
+    }
+
+    @Override
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         final SimpleBindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         bindings.put("level", level);
         bindings.put("marker", marker);
         bindings.put("message", msg);
-        bindings.put("parameters", params);
+        bindings.put("parameters", null);
         bindings.put("throwable", t);
+        bindings.putAll(configuration.getProperties());
+        bindings.put("substitutor", configuration.getStrSubstitutor());
+        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
+    }
+
+    @Override
+    public Result filter(final LogEvent event) {
+        final SimpleBindings bindings = new SimpleBindings();
+        bindings.put("logEvent", event);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
@@ -131,10 +123,12 @@ public final class ScriptFilter extends AbstractFilter {
 
     /**
      * Creates the ScriptFilter.
-     * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be
-     *      provided.
-     * @param match The action to take if a match occurs.
-     * @param mismatch The action to take if no match occurs.
+     *
+     * @param script        The script to run. The script must return a boolean
+     *                      value. Either script or scriptFile must be
+     *                      provided.
+     * @param match         The action to take if a match occurs.
+     * @param mismatch      The action to take if no match occurs.
      * @param configuration the configuration
      * @return A ScriptFilter.
      */
@@ -153,6 +147,16 @@ public final class ScriptFilter extends AbstractFilter {
         if (configuration.getScriptManager() == null) {
             LOGGER.error("Script support is not enabled");
             return null;
+        }
+        if (script instanceof ScriptRef) {
+            if (configuration.getScriptManager().getScript(script.getName()) == null) {
+                logger.error("No script with name {} has been declared.", script.getName());
+                return null;
+            }
+        } else {
+            if (!configuration.getScriptManager().addScript(script)) {
+                return null;
+            }
         }
 
         return new ScriptFilter(script, configuration, match, mismatch);
