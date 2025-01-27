@@ -945,7 +945,16 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
+            /**
+            * @deprecated Use {@link #withFilter(Filter)} instead
+            */
+            @Deprecated
             public B withtFilter(final Filter filter) {
+                this.filter = filter;
+                return asBuilder();
+            }
+
+            public B withFilter(final Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
