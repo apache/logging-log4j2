@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.di.spi;
 
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.ServiceLoader;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -27,7 +26,6 @@ import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
  * {@link Ordered} annotation on the class for overriding the order it will be invoked.
  */
 @FunctionalInterface
-@ServiceConsumer(ConfigurableInstanceFactoryPostProcessor.class)
 public interface ConfigurableInstanceFactoryPostProcessor {
 
     /**
