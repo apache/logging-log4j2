@@ -133,6 +133,11 @@ include::partial$components/log4j-api.adoc[]
 
 Log4j provides several modules to facilitate the deployment of different logging implementations:
 
+xref:manual/simple-logger.adoc[]::
+This is a fallback implementation embedded into the Log4j API artifact.
+The usage of this implementation generates an error message unless you enable it explicitly.
+See <<impl-simple>> for more details.
+
 `log4j-core`::
 The reference implementation.
 Log4 Core primarily accepts input from Log4j API.
@@ -168,6 +173,30 @@ h| Gradle
 | testRuntimeOnly
 |===
 ====
+
+[#impl-simple]
+=== Installing Simple Logger
+
+The
+xref:manual/simple-logger.adoc[Simple Logger]
+implementation is embedded in the Log4j API and does not need any external dependency.
+It is intended as a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+The Log4j API will log an error to the
+xref:manual/status-logger.adoc[Status Logger] to avoid its unintentional usages:
+
+----
+2024-10-03T11:53:34.281462230Z main ERROR Log4j API could not find a logging provider.
+----
+
+To remove the warning and confirm that you want to use Simple Logger, add a
+xref:manual/systemproperties.adoc#property-sources[`log4j2.component.properties` file]
+at the root of your class path with content:
+
+[source,properties]
+----
+# Activate Simple Logger implementation
+log4j.provider = org.apache.logging.log4j.simple.internal.SimpleProvider
+----
 
 [#impl-core]
 === Installing Log4j Core
