@@ -649,6 +649,12 @@ You can import the BOM in your build tool of preference:</p>
 </div>
 <div class="dlist">
 <dl>
+<dt class="hdlist1"><a href="simple-logger.html" class="xref page">Simple Logger</a></dt>
+<dd>
+<p>This is a fallback implementation embedded into the Log4j API artifact.
+The usage of this implementation generates an error message unless you enable it explicitly.
+See <a href="#impl-simple">Installing Simple Logger</a> for more details.</p>
+</dd>
 <dt class="hdlist1"><code>log4j-core</code></dt>
 <dd>
 <p>The reference implementation.
@@ -708,6 +714,33 @@ Since currently only
 </td>
 </tr>
 </table>
+</div>
+<div class="sect2">
+<h3 id="impl-simple"><a class="anchor" href="#impl-simple"></a>Installing Simple Logger</h3>
+<div class="paragraph">
+<p>The
+<a href="simple-logger.html" class="xref page">Simple Logger</a>
+implementation is embedded in the Log4j API and does not need any external dependency.
+It is intended as a convenience for environments where either a fully-fledged logging implementation is missing, or cannot be included for other reasons.
+The Log4j API will log an error to the
+<a href="status-logger.html" class="xref page">Status Logger</a> to avoid its unintentional usages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>2024-10-03T11:53:34.281462230Z main ERROR Log4j API could not find a logging provider.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To remove the warning and confirm that you want to use Simple Logger, add a
+<a href="systemproperties.html#property-sources" class="xref page"><code>log4j2.component.properties</code> file</a>
+at the root of your class path with content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties"># Activate Simple Logger implementation
+log4j.provider = org.apache.logging.log4j.simple.internal.SimpleProvider</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="impl-core"><a class="anchor" href="#impl-core"></a>Installing Log4j Core</h3>
