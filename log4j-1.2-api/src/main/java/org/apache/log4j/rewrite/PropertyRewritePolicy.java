@@ -110,7 +110,6 @@ public class PropertyRewritePolicy implements RewritePolicy {
                         .setThrown(source.getThrowableInformation().getThrowable())
                         .setTimeMillis(source.getTimeStamp())
                         .setNanoTime(0)
-                        .setThrownProxy(null)
                         .build();
             }
             return new LogEventAdapter(event);
