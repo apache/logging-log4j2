@@ -147,44 +147,43 @@ public final class InternalLoggerRegistry {
             return logger;
         }
 
+        // Creating a logger is expensive and might cause lookups and locks, possibly deadlocks:
+        // https://github.com/apache/logging-log4j2/issues/3252
+        // https://github.com/apache/logging-log4j2/issues/3399
+        //
+        // Creating loggers without a lock, allows multiple threads to create loggers in parallel, which also
+        // improves performance.
+        // Since all loggers with the same parameters are equivalent, we can safely return the logger from the
+        // thread that finishes first.
+        Logger newLogger = loggerSupplier.apply(name, messageFactory);
+
+        // Report name and message factory mismatch if there are any
+        final String loggerName = newLogger.getName();
+        final MessageFactory loggerMessageFactory = newLogger.getMessageFactory();
+        if (!loggerName.equals(name) || !loggerMessageFactory.equals(messageFactory)) {
+            StatusLogger.getLogger()
+                    .error(
+                            "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different name `{}` or message factory `{}`.\n"
+                                    + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
+                                    + "This generally hints a problem at the logger context implementation.\n"
+                                    + "Please report this using the Log4j project issue tracker.",
+                            loggerName,
+                            loggerMessageFactory,
+                            name,
+                            messageFactory);
+        }
+
         // Write lock slow path: Insert the logger
         writeLock.lock();
         try {
 
-            // See if the logger is created by another thread in the meantime
-            final Map<String, WeakReference<Logger>> loggerRefByName =
-                    loggerRefByNameByMessageFactory.computeIfAbsent(messageFactory, ignored -> new HashMap<>());
-            WeakReference<Logger> loggerRef = loggerRefByName.get(name);
-            if (loggerRef != null && (logger = loggerRef.get()) != null) {
-                return logger;
-            }
-
-            // Create the logger
-            logger = loggerSupplier.apply(name, messageFactory);
-
-            // Report name and message factory mismatch if there are any
-            final String loggerName = logger.getName();
-            final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-            if (!loggerMessageFactory.equals(messageFactory)) {
-                StatusLogger.getLogger()
-                        .error(
-                                "Newly registered logger with name `{}` and message factory `{}`, is requested to be associated with a different name `{}` or message factory `{}`.\n"
-                                        + "Effectively the message factory of the logger will be used and the other one will be ignored.\n"
-                                        + "This generally hints a problem at the logger context implementation.\n"
-                                        + "Please report this using the Log4j project issue tracker.",
-                                loggerName,
-                                loggerMessageFactory,
-                                name,
-                                messageFactory);
-                // Register logger under alternative keys
-                loggerRefByNameByMessageFactory
-                        .computeIfAbsent(loggerMessageFactory, ignored -> new HashMap<>())
-                        .putIfAbsent(loggerName, new WeakReference<>(logger));
-            }
-
-            // Insert the logger
-            loggerRefByName.put(name, new WeakReference<>(logger));
-            return logger;
+            Logger currentLogger = loggerRefByNameByMessageFactory
+                    .computeIfAbsent(messageFactory, ignored -> new HashMap<>())
+                    .computeIfAbsent(name, ignored -> new WeakReference<>(newLogger))
+                    .get();
+            // A replacement for Reference.reachabilityFence() from Java 9.
+            // Prevents `newLogger` to become unreachable in the lines above.
+            return currentLogger != null ? currentLogger : newLogger;
         } finally {
             writeLock.unlock();
         }
