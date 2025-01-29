@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.apache.logging.log4j.Level;
@@ -32,10 +32,10 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.junit.CleanFolders;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1798
@@ -45,12 +45,12 @@ public class RollingFileAppenderInterruptedThreadTest {
     private static final String ROLLING_APPENDER_FILES_DIR =
             "target/" + RollingFileAppenderInterruptedThreadTest.class.getSimpleName();
 
-    @Rule
-    public CleanFolders cleanFolders = new CleanFolders(true, false, 3, ROLLING_APPENDER_FILES_DIR);
-
     LoggerContext loggerContext;
 
-    @Before
+    @RegisterExtension
+    private CleanFolders cleanFolders = new CleanFolders(true, false, 3, ROLLING_APPENDER_FILES_DIR);
+
+    @BeforeEach
     public void setUp() {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("LOG4J2-1798 test");
@@ -71,7 +71,7 @@ public class RollingFileAppenderInterruptedThreadTest {
         loggerContext = Configurator.initialize(builder.build());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Configurator.shutdown(loggerContext);
         loggerContext = null;
