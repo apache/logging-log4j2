@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.util.internal;
 
 import static java.util.Objects.requireNonNull;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
@@ -29,7 +27,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -40,15 +37,14 @@ import org.jspecify.annotations.Nullable;
  * Convenience class used by {@link org.apache.logging.log4j.core.LoggerContext}
  * <p>
  *   We don't use {@link org.apache.logging.log4j.spi.LoggerRegistry} from the Log4j API to keep Log4j Core independent
- *   from the version of the Log4j API at runtime.
+ *   of the version of the Log4j API at runtime.
  * </p>
  * @since 2.25.0
  */
 @NullMarked
 public final class InternalLoggerRegistry {
 
-    private final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
-            new WeakHashMap<>();
+    private final Map<MessageFactory, Map<String, Logger>> loggerRefByNameByMessageFactory = new WeakHashMap<>();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -73,7 +69,6 @@ public final class InternalLoggerRegistry {
             return Optional.of(loggerRefByNameByMessageFactory)
                     .map(loggerRefByNameByMessageFactory -> loggerRefByNameByMessageFactory.get(messageFactory))
                     .map(loggerRefByName -> loggerRefByName.get(name))
-                    .map(WeakReference::get)
                     .orElse(null);
         } finally {
             readLock.unlock();
@@ -88,10 +83,6 @@ public final class InternalLoggerRegistry {
             // https://github.com/apache/logging-log4j2/issues/3234
             return loggerRefByNameByMessageFactory.values().stream()
                     .flatMap(loggerRefByName -> loggerRefByName.values().stream())
-                    .flatMap(loggerRef -> {
-                        @Nullable Logger logger = loggerRef.get();
-                        return logger != null ? Stream.of(logger) : Stream.empty();
-                    })
                     .collect(Collectors.toList());
         } finally {
             readLock.unlock();
@@ -176,14 +167,9 @@ public final class InternalLoggerRegistry {
         // Write lock slow path: Insert the logger
         writeLock.lock();
         try {
-
-            Logger currentLogger = loggerRefByNameByMessageFactory
-                    .computeIfAbsent(messageFactory, ignored -> new HashMap<>())
-                    .computeIfAbsent(name, ignored -> new WeakReference<>(newLogger))
-                    .get();
-            // A replacement for Reference.reachabilityFence() from Java 9.
-            // Prevents `newLogger` to become unreachable in the lines above.
-            return currentLogger != null ? currentLogger : newLogger;
+            return loggerRefByNameByMessageFactory
+                    .computeIfAbsent(messageFactory, ignored -> new WeakValuesHashMap<>())
+                    .computeIfAbsent(name, ignored -> newLogger);
         } finally {
             writeLock.unlock();
         }
