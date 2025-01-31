@@ -147,12 +147,19 @@ public final class InternalLoggerRegistry {
             return logger;
         }
 
-        // Creating a logger is expensive and might cause lookups and locks, possibly deadlocks:
-        // https://github.com/apache/logging-log4j2/issues/3252
-        // https://github.com/apache/logging-log4j2/issues/3399
+        // Intentionally moving the logger creation outside the write lock, because:
         //
-        // Creating loggers without a lock, allows multiple threads to create loggers in parallel, which also
-        // improves performance.
+        // - Logger instantiation is expensive (causes contention on the write-lock)
+        //
+        // - User code might have circular code paths, though through different threads.
+        //   Consider `T1[ILR:computeIfAbsent] -> ... -> T1[Logger::new] -> ... -> T2[ILR::computeIfAbsent]`.
+        //   Hence, having logger instantiation while holding a write lock might cause deadlocks:
+        //   https://github.com/apache/logging-log4j2/issues/3252
+        //   https://github.com/apache/logging-log4j2/issues/3399
+        //
+        // - Creating loggers without a lock, allows multiple threads to create loggers in parallel, which also improves
+        // performance.
+        //
         // Since all loggers with the same parameters are equivalent, we can safely return the logger from the
         // thread that finishes first.
         Logger newLogger = loggerSupplier.apply(name, messageFactory);
@@ -176,14 +183,16 @@ public final class InternalLoggerRegistry {
         // Write lock slow path: Insert the logger
         writeLock.lock();
         try {
-
-            Logger currentLogger = loggerRefByNameByMessageFactory
-                    .computeIfAbsent(messageFactory, ignored -> new HashMap<>())
-                    .computeIfAbsent(name, ignored -> new WeakReference<>(newLogger))
-                    .get();
-            // A replacement for Reference.reachabilityFence() from Java 9.
-            // Prevents `newLogger` to become unreachable in the lines above.
-            return currentLogger != null ? currentLogger : newLogger;
+            Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
+            // noinspection Java8MapApi (avoid the allocation of lambda passed to `Map::computeIfAbsent`)
+            if (loggerRefByName == null) {
+                loggerRefByNameByMessageFactory.put(messageFactory, loggerRefByName = new HashMap<>());
+            }
+            final WeakReference<Logger> loggerRef = loggerRefByName.get(name);
+            if (loggerRef == null || (logger = loggerRef.get()) == null) {
+                loggerRefByName.put(name, new WeakReference<>(logger = newLogger));
+            }
+            return logger;
         } finally {
             writeLock.unlock();
         }
