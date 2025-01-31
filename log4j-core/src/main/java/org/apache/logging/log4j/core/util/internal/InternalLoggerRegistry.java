@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -70,11 +69,15 @@ public final class InternalLoggerRegistry {
         requireNonNull(messageFactory, "messageFactory");
         readLock.lock();
         try {
-            return Optional.of(loggerRefByNameByMessageFactory)
-                    .map(loggerRefByNameByMessageFactory -> loggerRefByNameByMessageFactory.get(messageFactory))
-                    .map(loggerRefByName -> loggerRefByName.get(name))
-                    .map(WeakReference::get)
-                    .orElse(null);
+            final Map<String, WeakReference<Logger>> loggerRefByName =
+                    loggerRefByNameByMessageFactory.get(messageFactory);
+            if (loggerRefByName != null) {
+                final WeakReference<Logger> loggerRef = loggerRefByName.get(name);
+                if (loggerRef != null) {
+                    return loggerRef.get();
+                }
+            }
+            return null;
         } finally {
             readLock.unlock();
         }
