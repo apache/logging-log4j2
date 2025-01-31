@@ -30,17 +30,20 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Convenience class used by {@link org.apache.logging.log4j.core.LoggerContext}
+ * A registry of {@link Logger}s namespaced by name and message factory.
+ * This class is internally used by {@link LoggerContext}.
  * <p>
- *   We don't use {@link org.apache.logging.log4j.spi.LoggerRegistry} from the Log4j API to keep Log4j Core independent
- *   from the version of the Log4j API at runtime.
+ * We don't use {@linkplain org.apache.logging.log4j.spi.LoggerRegistry the registry from Log4j API} to keep Log4j Core independent from the version of Log4j API at runtime.
+ * This also allows Log4j Core to evolve independently from Log4j API.
  * </p>
+ *
  * @since 2.25.0
  */
 @NullMarked
