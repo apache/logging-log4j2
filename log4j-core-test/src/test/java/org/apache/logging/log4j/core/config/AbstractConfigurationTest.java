@@ -79,30 +79,17 @@ class AbstractConfigurationTest {
             rootLogger.getAttributes().put("level", "INFO");
             loggers.getChildren().add(rootLogger);
 
-            // Add Properties Node only if the map is not null and has entries
-            if (map != null && !map.isEmpty()) {
+            if (map != null) {
                 final Node properties = newNode(rootNode, "Properties");
                 rootNode.getChildren().add(properties);
 
                 for (final Entry<String, String> entry : map.entrySet()) {
-                    // Create Property node with "name" and "value" attributes
                     final Node property = newNode(properties, "Property");
                     property.getAttributes().put("name", entry.getKey());
                     property.getAttributes().put("value", entry.getValue());
                     properties.getChildren().add(property);
                 }
             }
-
-            // Add a Scripts Node if required (Example for flexibility in testing)
-            final Node scripts = newNode(rootNode, "Scripts");
-            rootNode.getChildren().add(scripts);
-
-            // Add sample script node for testing purposes
-            final Node script = newNode(scripts, "Script");
-            script.getAttributes().put("name", "TestScript");
-            script.getAttributes().put("language", "JavaScript");
-            script.getAttributes().put("scriptText", "print('Hello, Log4j!');");
-            scripts.getChildren().add(script);
         }
 
         private Node newNode(final Node parent, final String name) {
