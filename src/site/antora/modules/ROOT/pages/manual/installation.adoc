@@ -133,6 +133,11 @@ include::partial$components/log4j-api.adoc[]
 
 Log4j provides several modules to facilitate the deployment of different logging implementations:
 
+xref:manual/simple-logger.adoc[]::
+This is a fallback implementation embedded into the Log4j API artifact.
+The usage of this implementation generates an error message unless you enable it explicitly.
+See <<impl-simple>> for more details.
+
 `log4j-core`::
 The reference implementation.
 Log4 Core primarily accepts input from Log4j API.

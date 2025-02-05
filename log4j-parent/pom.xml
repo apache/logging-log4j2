@@ -66,7 +66,7 @@
     <assertj.version>3.27.3</assertj.version>
     <awaitility.version>4.2.2</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.17</cassandra.version>
+    <cassandra.version>3.11.18</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.17.1</commons-codec.version>
     <commons-compress.version>1.27.1</commons-compress.version>
@@ -80,7 +80,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.24</groovy.version>
+    <groovy.version>4.0.25</groovy.version>
     <guava.version>33.4.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -101,7 +101,7 @@
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
-    <jazzer.version>0.23.0</jazzer.version>
+    <jazzer.version>0.24.0</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
@@ -145,7 +145,7 @@
          ===================================================== -->
     <asm.version>9.6</asm.version>
     <byte-buddy.version>1.14.9</byte-buddy.version>
-    <commons-pool2.version>2.12.0</commons-pool2.version>
+    <commons-pool2.version>2.12.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <jna.version>5.16.0</jna.version>
