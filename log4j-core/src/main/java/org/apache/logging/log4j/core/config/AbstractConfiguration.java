@@ -574,6 +574,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Process conditions by evaluating them and including the children of conditions that are true
      * and discarding those that are not.
+     *
      * @param node The node to evaluate.
      */
     protected void processConditionals(final Node node) {
@@ -625,6 +626,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Handle Select nodes. This finds the first child condition that returns true and attaches its children
      * to the parent of the Select Node. Other Nodes are discarded.
+     *
      * @param selectNode The Select Node.
      * @param type The PluginType of the Select Node.
      * @return The list of Nodes to be added to the parent.
@@ -687,28 +689,35 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
+        for (final Node node : rootNode.getChildren()) {
+            if ("Scripts".equalsIgnoreCase(node.getName())) {
+                createConfiguration(node, null);
+                if (node.getObject() != null) {
+                    for (final AbstractScript script : node.getObject(AbstractScript[].class)) {
+                        if (script instanceof ScriptRef) {
+                            LOGGER.error(
+                                    "Script reference to {} not added. Scripts definition cannot contain script references",
+                                    script.getName());
+                        } else if (scriptManager != null) {
+                            scriptManager.addScript(script);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
         boolean setLoggers = false;
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(child.getName())) {
-                // We already used this node
-                continue;
+            if ("Properties".equalsIgnoreCase(child.getName()) || "Scripts".equalsIgnoreCase(child.getName())) {
+                continue; // Skip already processed nodes
             }
             createConfiguration(child, null);
             if (child.getObject() == null) {
                 continue;
             }
-            if ("Scripts".equalsIgnoreCase(child.getName())) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error(
-                                "Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else if (scriptManager != null) {
-                        scriptManager.addScript(script);
-                    }
-                }
-            } else if ("Appenders".equalsIgnoreCase(child.getName())) {
+            if ("Appenders".equalsIgnoreCase(child.getName())) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
@@ -895,7 +904,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
      * </p>
-     * @param logger The Logger the Appender will be associated with.
+     *
+     * @param logger   The Logger the Appender will be associated with.
      * @param appender The Appender.
      */
     @Override
@@ -925,6 +935,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
      * </p>
+     *
      * @param logger The Logger the Footer will be associated with.
      * @param filter The Filter.
      */
@@ -950,7 +961,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * <p>
      * Note: This method is not used when configuring via configuration. It is primarily used by unit tests.
      * </p>
-     * @param logger The Logger the Appender will be associated with.
+     *
+     * @param logger   The Logger the Appender will be associated with.
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
     @Override
@@ -1101,6 +1113,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * This method is used by Arbiters to create specific children.
+     *
      * @param type The PluginType.
      * @param node The Node.
      * @return The created object or null;
@@ -1144,8 +1157,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
      * result in unhelpful InvocationTargetExceptions.
      * </p>
-     * @param type the type of plugin to create.
-     * @param node the corresponding configuration node for this plugin to create.
+     *
+     * @param type  the type of plugin to create.
+     * @param node  the corresponding configuration node for this plugin to create.
      * @param event the LogEvent that spurred the creation of this plugin
      * @return the created plugin object or {@code null} if there was an error setting it up.
      * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder

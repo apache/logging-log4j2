@@ -19,6 +19,7 @@
   <Appenders>
     <List name="List">
       <PatternLayout pattern="[%-5level] %c{1.} %msg%n"/>
+
     </List>
   </Appenders>
   <Loggers>

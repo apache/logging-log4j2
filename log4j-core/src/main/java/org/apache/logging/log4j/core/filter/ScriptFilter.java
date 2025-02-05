@@ -37,7 +37,8 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Returns the onMatch result if the script returns True and returns the onMismatch value otherwise.
+ * Returns the onMatch result if the script returns True and returns the
+ * onMismatch value otherwise.
  */
 @Plugin(name = "ScriptFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class ScriptFilter extends AbstractFilter {
@@ -122,10 +123,12 @@ public final class ScriptFilter extends AbstractFilter {
 
     /**
      * Creates the ScriptFilter.
-     * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be
-     *      provided.
-     * @param match The action to take if a match occurs.
-     * @param mismatch The action to take if no match occurs.
+     *
+     * @param script        The script to run. The script must return a boolean
+     *                      value. Either script or scriptFile must be
+     *                      provided.
+     * @param match         The action to take if a match occurs.
+     * @param mismatch      The action to take if no match occurs.
      * @param configuration the configuration
      * @return A ScriptFilter.
      */
