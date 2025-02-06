@@ -16,25 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.layout.JsonLayout;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class HttpAppenderBuilderTest {
 
@@ -43,9 +42,7 @@ class HttpAppenderBuilderTest {
 
     private HttpAppender.Builder<?> getBuilder() {
         Configuration mockConfig = new DefaultConfiguration();
-        return HttpAppender.newBuilder()
-                .setConfiguration(mockConfig)
-                .setName("TestHttpAppender"); // Name is required
+        return HttpAppender.newBuilder().setConfiguration(mockConfig).setName("TestHttpAppender"); // Name is required
     }
 
     @Test
@@ -55,12 +52,13 @@ class HttpAppenderBuilderTest {
         HttpAppender appender = HttpAppender.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setName("TestAppender")
-                .setLayout(JsonLayout.createDefaultLayout())  // Providing a layout here
+                .setLayout(JsonLayout.createDefaultLayout()) // Providing a layout here
                 .build();
 
         // Verify that the error message for missing URL is captured
         assertThat(listener.findStatusData(Level.ERROR))
-                .anyMatch(statusData -> statusData.getMessage().getFormattedMessage().contains("HttpAppender requires URL to be set."));
+                .anyMatch(statusData ->
+                        statusData.getMessage().getFormattedMessage().contains("HttpAppender requires URL to be set."));
     }
 
     @Test
@@ -70,23 +68,22 @@ class HttpAppenderBuilderTest {
         HttpAppender appender = HttpAppender.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setName("TestAppender")
-                .setUrl(new URL("http://localhost:8080/logs"))  // Providing the URL
+                .setUrl(new URL("http://localhost:8080/logs")) // Providing the URL
                 .build();
 
         // Verify that the error message for missing layout is captured
-        assertThat(listener.findStatusData(Level.ERROR))
-                .anyMatch(statusData -> statusData.getMessage().getFormattedMessage().contains("HttpAppender requires a layout to be set."));
+        assertThat(listener.findStatusData(Level.ERROR)).anyMatch(statusData -> statusData
+                .getMessage()
+                .getFormattedMessage()
+                .contains("HttpAppender requires a layout to be set."));
     }
-
 
     @Test
     void testBuilderWithValidConfiguration() throws Exception {
         URL url = new URL("http://example.com");
         Layout<?> layout = JsonLayout.createDefaultLayout(); // Valid layout
 
-        HttpAppender.Builder<?> builder = getBuilder()
-                .setUrl(url)
-                .setLayout(layout);
+        HttpAppender.Builder<?> builder = getBuilder().setUrl(url).setLayout(layout);
 
         HttpAppender appender = builder.build();
         assertNotNull(appender, "HttpAppender should be created with valid configuration.");
@@ -98,10 +95,8 @@ class HttpAppenderBuilderTest {
         Layout<?> layout = JsonLayout.createDefaultLayout();
         String customMethod = "PUT";
 
-        HttpAppender.Builder<?> builder = getBuilder()
-                .setUrl(url)
-                .setLayout(layout)
-                .setMethod(customMethod);
+        HttpAppender.Builder<?> builder =
+                getBuilder().setUrl(url).setLayout(layout).setMethod(customMethod);
 
         HttpAppender appender = builder.build();
         assertNotNull(appender, "HttpAppender should be created with a custom HTTP method.");
@@ -111,15 +106,12 @@ class HttpAppenderBuilderTest {
     void testBuilderWithHeaders() throws Exception {
         URL url = new URL("http://example.com");
         Layout<?> layout = JsonLayout.createDefaultLayout();
-        Property[] headers = new Property[]{
-                Property.createProperty("Header1", "Value1"),
-                Property.createProperty("Header2", "Value2")
+        Property[] headers = new Property[] {
+            Property.createProperty("Header1", "Value1"), Property.createProperty("Header2", "Value2")
         };
 
-        HttpAppender.Builder<?> builder = getBuilder()
-                .setUrl(url)
-                .setLayout(layout)
-                .setHeaders(headers);
+        HttpAppender.Builder<?> builder =
+                getBuilder().setUrl(url).setLayout(layout).setHeaders(headers);
 
         HttpAppender appender = builder.build();
         assertNotNull(appender, "HttpAppender should be created with headers.");
@@ -131,10 +123,8 @@ class HttpAppenderBuilderTest {
         Layout<?> layout = JsonLayout.createDefaultLayout();
         SslConfiguration sslConfig = mock(SslConfiguration.class);
 
-        HttpAppender.Builder<?> builder = getBuilder()
-                .setUrl(url)
-                .setLayout(layout)
-                .setSslConfiguration(sslConfig);
+        HttpAppender.Builder<?> builder =
+                getBuilder().setUrl(url).setLayout(layout).setSslConfiguration(sslConfig);
 
         HttpAppender appender = builder.build();
         assertNotNull(appender, "HttpAppender should be created with SSL configuration.");
