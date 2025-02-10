@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.test.validation;
+package example;
 
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 /**
  * Test plugin class for unit tests.
  */
-@Configurable(deferChildren = true)
+@Configurable(deferChildren = true, printObject = true)
 @Plugin("Fake")
 @PluginAliases({"AnotherFake", "StillFake"})
 public class FakePlugin {
