@@ -460,7 +460,6 @@ class Configurator1Test {
 
         builder.add(builder.newRootLogger(Level.DEBUG).add(builder.newAppenderRef("rolling")));
         final Configuration config = builder.build();
-        config.initialize();
         assertNotNull(config.getAppender("rolling"), "No rolling file appender");
         assertEquals("RollingBuilder", config.getName(), "Unexpected Configuration");
         // Initialize the new configuration
