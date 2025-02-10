@@ -23,34 +23,43 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Builder;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Interface for building logging configurations.
  * @param <T> The Configuration type created by this builder.
  * @since 2.4
  */
+@ProviderType
 public interface ConfigurationBuilder<T extends Configuration> extends Builder<T> {
 
     /**
      * Adds a ScriptComponent.
-     * @param builder The ScriptComponentBuilder with all of its attributes and sub components set.
+     * @param builder The ScriptComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(ScriptComponentBuilder builder);
 
     /**
      * Adds a ScriptFileComponent.
-     * @param builder The ScriptFileComponentBuilder with all of its attributes and sub components set.
+     * @param builder The ScriptFileComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(ScriptFileComponentBuilder builder);
 
     /**
      * Adds an AppenderComponent.
-     * @param builder The AppenderComponentBuilder with all of its attributes and sub components set.
+     * @param builder The AppenderComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(AppenderComponentBuilder builder);
 
@@ -58,37 +67,60 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Adds a CustomLevel component.
      * @param builder The CustomLevelComponentBuilder with all of its attributes set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
      * Adds a Filter component.
-     * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
+     * @param builder the FilterComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(FilterComponentBuilder builder);
 
     /**
      * Adds a Logger component.
-     * @param builder The LoggerComponentBuilder with all of its attributes and sub components set.
+     * @param builder The LoggerComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(LoggerComponentBuilder builder);
 
     /**
      * Adds the root Logger component.
-     * @param builder The RootLoggerComponentBuilder with all of its attributes and sub components set.
+     * @param builder The RootLoggerComponentBuilder with all of its attributes and subcomponents set.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder);
 
     /**
      * Adds a Property key and value.
+     * <p>
+     *     This is a convenience method which creates, configures and immediately adds
+     *     a {@code PropertyComponentBuilder}.
+     * </p>
      * @param key The property key.
      * @param value The property value.
      * @return this builder instance.
+     * @throws ConfigurationException if an error occurs while building the created {@code PropertyComponentBuilder}
+     * @throws NullPointerException if the builder argument is null
      */
     ConfigurationBuilder<T> addProperty(String key, String value);
+
+    /**
+     * Adds a Property component.
+     * @param builder the PropertyComponentBuilder with all of its attributes and subcomponents set
+     * @return this builder instance
+     * @throws ConfigurationException if an error occurs while building the given builder
+     * @throws NullPointerException if the builder argument is null
+     */
+    ConfigurationBuilder<T> addProperty(PropertyComponentBuilder builder);
 
     /**
      * Returns a builder for creating Async Loggers.
@@ -392,6 +424,9 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Set the Advertiser Plugin name.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param advertiser The Advertiser Plugin name.
      * @return this builder instance.
      */
@@ -399,13 +434,19 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Sets the name of the configuration.
-     * @param name the name of the {@link Configuration}. By default is {@code "Constructed"}.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
+     * @param name the name of the {@link Configuration}. By default, the value is {@code "Built"}.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setConfigurationName(String name);
 
     /**
      * Sets the configuration source, if one exists.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param configurationSource the ConfigurationSource.
      * @return this builder instance.
      */
@@ -413,13 +454,29 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Sets the interval at which the configuration file should be checked for changes.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param intervalSeconds The number of seconds that should pass between checks of the configuration file.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
     /**
+     * Sets the interval at which the configuration file should be checked for changes.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
+     * @param intervalSeconds the number of seconds that should pass between checks of the configuraion file
+     * @return this builder instance.
+     */
+    ConfigurationBuilder<T> setMonitorInterval(int intervalSeconds);
+
+    /**
      * Sets the list of packages to search for plugins.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param packages The comma separated list of packages.
      * @return this builder instance.
      */
@@ -427,29 +484,77 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
     /**
      * Sets whether the shutdown hook should be disabled.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param flag "disable" will prevent the shutdown hook from being set.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setShutdownHook(String flag);
 
     /**
-     * How long appenders and background tasks will get to shutdown when the JVM shuts down.
-     * Default is zero which mean that each appender uses its default timeout, and don't wait for background
+     * How long appenders and background tasks will get to shut down when the JVM shuts down.
+     * The default is zero which mean that each appender uses its default timeout, and don't wait for background
      * tasks. Not all appenders will honor this, it is a hint and not an absolute guarantee that the shutdown
      * procedure will not take longer. Setting this too low increase the risk of losing outstanding log events
      * not yet written to the final destination. (Not used if {@link #setShutdownHook(String)} is set to "disable".)
+     * <p>
+     *     If the timeout value is set to {@code null} any previously configured value will be cleared.
+     * </p>
      * @return this builder instance.
-     *
+     * @throws NullPointerException if the given {@code timeUnit} is {@code null}
      * @see LoggerContext#stop(long, TimeUnit)
      */
     ConfigurationBuilder<T> setShutdownTimeout(long timeout, TimeUnit timeUnit);
 
     /**
+     * Sets the shutdown timeout for appenders and background tasks (in the specified time-unit) to shut down
+     * when the JVM is shutdown
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
+     * @param timeout the timeout (in the given time-unit
+     * @param timeUnit the time-unit of the {@code timeout} value (i.e. SECONDS, MILLISECONDS)
+     * @return this builder instance
+     * @throws IllegalArgumentException if the {@code timeout} can not be converted to a valid {@code Long}
+     * @throws NullPointerException if the {@code timeUnit} is {@code null}
+     */
+    ConfigurationBuilder<T> setShutdownTimeout(String timeout, TimeUnit timeUnit);
+
+    /**
+     * Sets the shutdown timeout (in milliseconds) for appenders and background tasks to shut down when the JVM
+     * is shutdown.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
+     * @param timeoutMillis the timeout in milliseconds
+     * @return this builder instance
+     */
+    ConfigurationBuilder<T> setShutdownTimeout(long timeoutMillis);
+
+    /**
      * Sets the level of the StatusLogger.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
      * @param level The logging level.
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setStatusLevel(Level level);
+
+    /**
+     * Sets the level of the StatusLogger.
+     * <p>
+     *     If the given value is {@code null}, any previous value will be cleared.
+     * </p>
+     * <p>
+     *     If the given value is not {@code null}, it must be resolvable to a valid configured level
+     * </p>
+     * @param level The logging level
+     * @return this builder instance
+     * @throws IllegalArgumentException if the given argument is not a valid level
+     */
+    ConfigurationBuilder<T> setStatusLevel(String level);
 
     /**
      * Sets whether the logging should include constructing Plugins.
