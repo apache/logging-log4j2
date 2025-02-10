@@ -479,7 +479,7 @@ log4j2.properties::
 ----
 appender.0.type = Console
 appender.0.name = CONSOLE
-appender.0.layout = PatternLayout # <1>
+appender.0.layout.type = PatternLayout # <1>
 appender.0.layout.pattern = %d [%t] %5p %c{1.} - %m%n
 rootLogger.level = INFO
 rootLogger.appenderRef.0.ref = CONSOLE
