@@ -774,8 +774,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected void setToDefault() {
-        // LOG4J2-1176 facilitate memory leak investigation
-        setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
+        // LOG4J2-3431 don't set a default name if one has already been set
+        if (this.getName() == null || this.getName().trim().isEmpty()) {
+            // LOG4J2-1176 facilitate memory leak investigation
+            setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
+        }
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(DefaultLayout.INSTANCE);
         appender.start();
         addAppender(appender);
