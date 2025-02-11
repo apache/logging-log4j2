@@ -26,7 +26,7 @@
         connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb"
         capped="true"
         collectionSize="1073741824"
-        collectionName="MongoDBCollectionNameIT"/>
+        collectionName="MongoDbCollectionNameIT"/>
     </NoSql>
   </Appenders>
   <Loggers>
