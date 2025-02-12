@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Objects;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -41,7 +41,7 @@ public class AsyncWaitStrategyFactoryConfig {
     private final String factoryClassName;
 
     public AsyncWaitStrategyFactoryConfig(final String factoryClassName) {
-        this.factoryClassName = Objects.requireNonNull(factoryClassName, "factoryClassName");
+        this.factoryClassName = Assert.requireNonEmpty(factoryClassName, "factoryClassName");
     }
 
     @PluginBuilderFactory
@@ -67,12 +67,16 @@ public class AsyncWaitStrategyFactoryConfig {
         }
 
         public B withFactoryClassName(final String className) {
-            this.factoryClassName = className;
+            this.factoryClassName =
+                    Assert.requireNonEmpty(className, "The 'className' argument must not be null or empty.");
             return asBuilder();
         }
 
         @Override
         public AsyncWaitStrategyFactoryConfig build() {
+            if (!isValid()) {
+                return null;
+            }
             return new AsyncWaitStrategyFactoryConfig(factoryClassName);
         }
 
