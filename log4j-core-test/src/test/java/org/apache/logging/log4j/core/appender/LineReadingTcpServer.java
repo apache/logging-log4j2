@@ -30,7 +30,11 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -38,12 +42,13 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * A simple TCP server implementation reading the accepted connection's input stream into a blocking queue of lines.
  * <p>
- * The implementation is thread-safe, yet connections are handled sequentially, i.e., no parallelization.
+ * The implementation is thread-safe.
  * The input stream of the connection is decoded in UTF-8.
  * </p><p>
  * This class can also be used for secure (i.e., SSL) connections.
@@ -60,9 +65,11 @@ final class LineReadingTcpServer implements AutoCloseable {
 
     private ServerSocket serverSocket;
 
-    private Socket clientSocket;
+    private Map<String, Socket> clientSocketMap;
 
-    private Thread readerThread;
+    private ExecutorService executorService;
+
+    private Thread acceptThread;
 
     private final BlockingQueue<String> lines = new LinkedBlockingQueue<>();
 
@@ -77,8 +84,10 @@ final class LineReadingTcpServer implements AutoCloseable {
     synchronized void start(final String name, final int port) throws IOException {
         if (!running) {
             running = true;
+            clientSocketMap = new ConcurrentHashMap<String, Socket>();
+            executorService = Executors.newCachedThreadPool();
             serverSocket = createServerSocket(port);
-            readerThread = createReaderThread(name);
+            acceptThread = createAcceptThread(name);
         }
     }
 
@@ -94,8 +103,8 @@ final class LineReadingTcpServer implements AutoCloseable {
         return serverSocket;
     }
 
-    private Thread createReaderThread(final String name) {
-        final String threadName = "LineReadingTcpSocketServerReader-" + name;
+    private Thread createAcceptThread(final String name) {
+        final String threadName = "LineReadingTcpSocketServerAcceptor-" + name;
         final Thread thread = new Thread(this::acceptClients, threadName);
         thread.setDaemon(true); // Avoid blocking JVM exit
         thread.setUncaughtExceptionHandler((ignored, error) -> LOGGER.error("uncaught reader thread exception", error));
@@ -106,28 +115,33 @@ final class LineReadingTcpServer implements AutoCloseable {
     private void acceptClients() {
         try {
             while (running) {
-                acceptClient();
+                // Accept the client connection
+                final Socket clientSocket;
+                try {
+                    clientSocket = serverSocket.accept();
+                } catch (SocketException ignored) {
+                    continue;
+                }
+                clientSocketMap.put(clientSocket.getRemoteSocketAddress().toString(), clientSocket);
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            readClient(clientSocket);
+                        } catch (Exception e) {
+                            // do nothing
+                        }
+                    }
+                };
+                executorService.submit(runnable);
             }
         } catch (final Exception error) {
             LOGGER.error("failed accepting client connections", error);
         }
     }
 
-    private void acceptClient() throws Exception {
-
-        // Accept the client connection
-        final Socket clientSocket;
-        try {
-            clientSocket = serverSocket.accept();
-        } catch (SocketException ignored) {
-            return;
-        }
+    private void readClient(Socket clientSocket) throws Exception {
         clientSocket.setSoLinger(true, 0); // Enable immediate forceful close
-        synchronized (this) {
-            if (running) {
-                this.clientSocket = clientSocket;
-            }
-        }
 
         // Read from the client
         try (final InputStream clientInputStream = clientSocket.getInputStream();
@@ -137,7 +151,7 @@ final class LineReadingTcpServer implements AutoCloseable {
             while (running) {
                 final String line = clientBufferedReader.readLine();
                 if (line == null) {
-                    break;
+                    continue;
                 }
                 lines.put(line);
             }
@@ -155,13 +169,7 @@ final class LineReadingTcpServer implements AutoCloseable {
         // Clean up the client connection.
         finally {
             try {
-                synchronized (this) {
-                    if (!clientSocket.isClosed()) {
-                        clientSocket.shutdownOutput();
-                        clientSocket.close();
-                    }
-                    this.clientSocket = null;
-                }
+                clientSocket.close();
             } catch (final Exception error) {
                 LOGGER.error("failed closing client socket", error);
             }
@@ -172,30 +180,27 @@ final class LineReadingTcpServer implements AutoCloseable {
     public void close() throws Exception {
 
         // Stop the reader, if running
-        Thread stoppedReaderThread = null;
+        Thread stoppedAcceptThread = null;
         synchronized (this) {
             if (running) {
                 running = false;
-                // `acceptClient()` might have closed the client socket due to a connection failure and haven't created
-                // a new one yet. Hence, here we double-check if the client connection is in place.
-                if (clientSocket != null && !clientSocket.isClosed()) {
-                    // Interrupting a thread is not sufficient to unblock operations waiting on socket I/O:
-                    // https://stackoverflow.com/a/4426050/1278899 Hence, here we close the client socket to unblock the
-                    // read from the client socket.
-                    clientSocket.close();
-                }
                 serverSocket.close();
-                stoppedReaderThread = readerThread;
-                clientSocket = null;
                 serverSocket = null;
-                readerThread = null;
+                stoppedAcceptThread = acceptThread;
+                acceptThread = null;
+                for (Map.Entry<String, Socket> entry : clientSocketMap.entrySet()) {
+                    Closer.closeSilently(entry.getValue());
+                }
+                clientSocketMap.clear();
+                clientSocketMap = null;
+                executorService.awaitTermination(0, TimeUnit.MILLISECONDS);
             }
         }
 
         // We wait for the termination of the reader thread outside the synchronized block. Otherwise, there is a chance
         // of deadlock with this `join()` and the synchronized block inside the `acceptClient()`.
-        if (stoppedReaderThread != null) {
-            stoppedReaderThread.join();
+        if (stoppedAcceptThread != null) {
+            stoppedAcceptThread.join();
         }
     }
 

@@ -104,6 +104,7 @@
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <disruptor.version>4.0.0</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
+    <error-prone.version>2.36.0</error-prone.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>4.0.25</groovy.version>
     <guava.version>33.4.0-jre</guava.version>
