@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,14 +43,12 @@ class HttpAppenderBuilderTest {
     @Test
     @UsingStatusListener
     void testBuilderWithoutUrl(final ListStatusListener listener) throws Exception {
-        // Build the HttpAppender without URL
         HttpAppender appender = HttpAppender.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setName("TestAppender")
                 .setLayout(JsonLayout.createDefaultLayout()) // Providing a layout here
                 .build();
 
-        // Verify that the error message for missing URL is captured
         assertThat(listener.findStatusData(Level.ERROR))
                 .anyMatch(statusData ->
                         statusData.getMessage().getFormattedMessage().contains("HttpAppender requires URL to be set."));
@@ -60,14 +57,12 @@ class HttpAppenderBuilderTest {
     @Test
     @UsingStatusListener
     void testBuilderWithUrlAndWithoutLayout(final ListStatusListener listener) throws Exception {
-        // Build the HttpAppender with URL but without Layout
         HttpAppender appender = HttpAppender.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setName("TestAppender")
-                .setUrl(new URL("http://localhost:8080/logs")) // Providing the URL
+                .setUrl(new URL("http://localhost:8080/logs"))
                 .build();
 
-        // Verify that the error message for missing layout is captured
         assertThat(listener.findStatusData(Level.ERROR)).anyMatch(statusData -> statusData
                 .getMessage()
                 .getFormattedMessage()
@@ -77,7 +72,7 @@ class HttpAppenderBuilderTest {
     @Test
     void testBuilderWithValidConfiguration() throws Exception {
         URL url = new URL("http://example.com");
-        Layout<?> layout = JsonLayout.createDefaultLayout(); // Valid layout
+        Layout<?> layout = JsonLayout.createDefaultLayout();
 
         HttpAppender.Builder<?> builder = getBuilder().setUrl(url).setLayout(layout);
 
@@ -117,7 +112,9 @@ class HttpAppenderBuilderTest {
     void testBuilderWithSslConfiguration() throws Exception {
         URL url = new URL("https://example.com");
         Layout<?> layout = JsonLayout.createDefaultLayout();
-        SslConfiguration sslConfig = mock(SslConfiguration.class);
+
+        // ✅ FIXED: Use real SslConfiguration instead of Mockito mock
+        SslConfiguration sslConfig = SslConfiguration.createSSLConfiguration(null, null, null, false);
 
         HttpAppender.Builder<?> builder =
                 getBuilder().setUrl(url).setLayout(layout).setSslConfiguration(sslConfig);
