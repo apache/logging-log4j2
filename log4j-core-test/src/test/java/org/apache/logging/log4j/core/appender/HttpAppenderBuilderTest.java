@@ -113,7 +113,7 @@ class HttpAppenderBuilderTest {
         URL url = new URL("https://example.com");
         Layout<?> layout = JsonLayout.createDefaultLayout();
 
-        //Use real SslConfiguration instead of Mockito mock
+        // Use real SslConfiguration instead of Mockito mock
         SslConfiguration sslConfig = SslConfiguration.createSSLConfiguration(null, null, null, false);
 
         HttpAppender.Builder<?> builder =
