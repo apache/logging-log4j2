@@ -30,16 +30,11 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class HttpAppenderBuilderTest {
-
-    // Mock the LOGGER to verify error logs
-    private final StatusLogger mockStatusLogger = Mockito.mock(StatusLogger.class);
 
     private HttpAppender.Builder<?> getBuilder() {
         Configuration mockConfig = new DefaultConfiguration();
