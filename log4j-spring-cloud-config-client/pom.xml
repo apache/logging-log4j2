@@ -37,7 +37,7 @@
     <spring-boot.version>3.4.2</spring-boot.version>
     <commons-logging.version>1.3.4</commons-logging.version>
     <spring-cloud.version>4.2.0</spring-cloud.version>
-    <spring-framework.version>6.2.2</spring-framework.version>
+    <spring-framework.version>6.2.3</spring-framework.version>
 
     <!--
       ~ OSGi and JPMS options
