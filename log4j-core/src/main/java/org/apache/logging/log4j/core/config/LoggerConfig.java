@@ -44,7 +44,6 @@ import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LocationAware;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -611,14 +610,6 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             final Throwable t,
             final List<Property> props) {
         final List<Property> results = new ArrayList<>(props.size());
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(data)
-                .setMarker(marker)
-                .setLevel(level)
-                .setLoggerName(loggerName)
-                .setLoggerFqcn(fqcn)
-                .setThrown(t)
-                .build();
         for (int i = 0; i < props.size(); i++) {
             final Property prop = props.get(i);
             final String value = prop.evaluate(config.getStrSubstitutor()); // since LOG4J2-1575

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Instant;
@@ -62,96 +62,116 @@ public class Log4jLogEvent implements LogEvent {
     private static volatile NanoClock nanoClock = new DummyNanoClock();
     private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
+    // 1. Fields with an immutable type, initialized in the constructor
     private final String loggerFqcn;
-    private final Marker marker;
     private final Level level;
     private final String loggerName;
-    private Message message;
-    private final MutableInstant instant = new MutableInstant();
+    private final Marker marker;
     private final transient Throwable thrown;
-    private ThrowableProxy thrownProxy;
-    private final StringMap contextData;
-    private final ThreadContext.ContextStack contextStack;
-    private long threadId;
-    private String threadName;
-    private int threadPriority;
-    private StackTraceElement source;
-    private boolean includeLocation;
-    private boolean endOfBatch = false;
     /** @since Log4J 2.4 */
     private final transient long nanoTime;
+    // This field is mutable, but its state is not shared with other objects.
+    private final MutableInstant instant = new MutableInstant();
+
+    // 2. Fields with setters, initialized in the constructor.
+    private boolean endOfBatch;
+    private boolean includeLocation;
+
+    // 3. Fields with an immutable type, initialized lazily.
+    //    These fields self-initialize if not provided.
+    private StackTraceElement source;
+    private String threadName;
+    private long threadId;
+    private int threadPriority;
+
+    // 4. Fields with a potentially mutable type.
+    //    These fields can cause mutability problems for Log4jLogEvent.
+    private Message message;
+    private final StringMap contextData;
+    private final ThreadContext.ContextStack contextStack;
+
+    // 5. Deprecated fields, only used for serialization
+    private ThrowableProxy thrownProxy;
 
     /** LogEvent Builder helper class. */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<LogEvent> {
 
+        // 1. Fields with an immutable type, initialized eagerly.
+        //    These fields always keep the value assigned.
         private String loggerFqcn;
-        private Marker marker;
         private Level level;
         private String loggerName;
-        private Message message;
+        private Marker marker;
         private Throwable thrown;
-        private final MutableInstant instant = new MutableInstant();
-        private ThrowableProxy thrownProxy;
-        private StringMap contextData = createContextData((List<Property>) null);
-        private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
-        private long threadId;
-        private String threadName;
-        private int threadPriority;
-        private StackTraceElement source;
+        private boolean endOfBatch;
         private boolean includeLocation;
-        private boolean endOfBatch = false;
         private long nanoTime;
+        // This field is mutable, but it is always copied.
+        private final MutableInstant instant = new MutableInstant();
 
-        public Builder() {}
+        // 2. Fields with an immutable type, initialized lazily.
+        //    These fields self-initialize if not provided.
+        private StackTraceElement source;
+        private String threadName;
+        private long threadId;
+        private int threadPriority;
 
+        // 3. Fields with a mutable type.
+        //    These fields require special handling.
+        private Message message;
+        private StringMap contextData;
+        private ThreadContext.ContextStack contextStack;
+
+        public Builder() {
+            this.contextData = createContextData((List<Property>) null);
+            this.contextStack = ThreadContext.getImmutableStack();
+        }
+
+        /**
+         * Initializes the builder with an <strong>immutable</strong> instance or a copy of the log event fields.
+         *
+         * @param other The log event to copy.
+         */
         public Builder(final LogEvent other) {
             Objects.requireNonNull(other);
-            if (other instanceof RingBufferLogEvent) {
-                ((RingBufferLogEvent) other).initializeBuilder(this);
-                return;
-            }
-            if (other instanceof MutableLogEvent) {
-                ((MutableLogEvent) other).initializeBuilder(this);
-                return;
-            }
+            // These can be safely copied, since the getters have no side effects.
             this.loggerFqcn = other.getLoggerFqcn();
-            this.marker = other.getMarker();
             this.level = other.getLevel();
             this.loggerName = other.getLoggerName();
-            this.message = other.getMessage();
-            this.instant.initFrom(other.getInstant());
+            this.marker = other.getMarker();
             this.thrown = other.getThrown();
-            this.contextStack = other.getContextStack();
-            this.includeLocation = other.isIncludeLocation();
             this.endOfBatch = other.isEndOfBatch();
+            this.includeLocation = other.isIncludeLocation();
             this.nanoTime = other.getNanoTime();
+            this.instant.initFrom(other.getInstant());
 
-            // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
-            if (other instanceof Log4jLogEvent) {
-                final Log4jLogEvent evt = (Log4jLogEvent) other;
-                this.contextData = evt.contextData;
-                this.thrownProxy = evt.thrownProxy;
-                this.source = evt.source;
-                this.threadId = evt.threadId;
-                this.threadName = evt.threadName;
-                this.threadPriority = evt.threadPriority;
-            } else {
-                if (other.getContextData() instanceof StringMap) {
-                    this.contextData = (StringMap) other.getContextData();
-                } else {
-                    if (this.contextData.isFrozen()) {
-                        this.contextData = ContextDataFactory.createContextData();
-                    } else {
-                        this.contextData.clear();
-                    }
-                    this.contextData.putAll(other.getContextData());
-                }
-                this.thrownProxy = other.getThrownProxy();
-                this.source = other.getSource();
-                this.threadId = other.getThreadId();
-                this.threadName = other.getThreadName();
-                this.threadPriority = other.getThreadPriority();
-            }
+            // These getters are:
+            // * side-effect-free in RingBufferLogEvent and MutableLogEvent,
+            // * have side effects in Log4jLogEvent,
+            //   but since we are copying the event, we want to call them.
+            this.threadId = other.getThreadId();
+            this.threadPriority = other.getThreadPriority();
+            this.threadName = other.getThreadName();
+            // The `getSource()` method is:
+            // * side-effect-free in RingBufferLogEvent,
+            // * have side effects in Log4jLogEvent and MutableLogEvent,
+            //   but since we are copying the event, we want to call it.
+            this.source = other.getSource();
+
+            Message message = other.getMessage();
+            this.message = message instanceof ReusableMessage
+                    ? ((ReusableMessage) message).memento()
+                    : InternalAsyncUtil.makeMessageImmutable(message);
+
+            ReadOnlyStringMap contextData = other.getContextData();
+            this.contextData = contextData instanceof StringMap && ((StringMap) contextData).isFrozen()
+                    ? (StringMap) contextData
+                    : contextData != null
+                            ? ContextDataFactory.createContextData(contextData)
+                            : ContextDataFactory.emptyFrozenContextData();
+
+            // TODO: The immutability of the context stack is not checked.
+            this.contextStack = other.getContextStack();
         }
 
         public Builder setLevel(final Level level) {
@@ -194,8 +214,11 @@ public class Log4jLogEvent implements LogEvent {
             return this;
         }
 
+        /**
+         * @deprecated since 2.25.0 without a replacement
+         */
+        @Deprecated
         public Builder setThrownProxy(final ThrowableProxy thrownProxy) {
-            this.thrownProxy = thrownProxy;
             return this;
         }
 
@@ -271,7 +294,6 @@ public class Log4jLogEvent implements LogEvent {
                     level,
                     message,
                     thrown,
-                    thrownProxy,
                     contextData,
                     contextStack,
                     threadId,
@@ -311,7 +333,6 @@ public class Log4jLogEvent implements LogEvent {
                 (Throwable) null,
                 null,
                 null,
-                null,
                 0,
                 null,
                 0,
@@ -332,7 +353,6 @@ public class Log4jLogEvent implements LogEvent {
                 Strings.EMPTY,
                 null,
                 null,
-                (Throwable) null,
                 null,
                 null,
                 null,
@@ -392,7 +412,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 t,
-                null,
                 createContextData(properties),
                 ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
                 0, // thread id
@@ -430,7 +449,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 t,
-                null,
                 createContextData(properties),
                 ThreadContext.getDepth() == 0 ? null : ThreadContext.cloneStack(), // mutable copy
                 0, // thread id
@@ -476,7 +494,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 t,
-                null,
                 createContextData(mdc),
                 ndc,
                 0,
@@ -496,7 +513,7 @@ public class Log4jLogEvent implements LogEvent {
      * @param level The logging Level.
      * @param message The Message.
      * @param thrown A Throwable or null.
-     * @param thrownProxy A ThrowableProxy or null.
+     * @param ignoredThrownProxy Ignored.
      * @param mdc The mapped diagnostic context.
      * @param ndc the nested diagnostic context.
      * @param threadName The name of the thread.
@@ -513,7 +530,7 @@ public class Log4jLogEvent implements LogEvent {
             final Level level,
             final Message message,
             final Throwable thrown,
-            final ThrowableProxy thrownProxy,
+            final ThrowableProxy ignoredThrownProxy,
             final Map<String, String> mdc,
             final ThreadContext.ContextStack ndc,
             final String threadName,
@@ -526,7 +543,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 thrown,
-                thrownProxy,
                 createContextData(mdc),
                 ndc,
                 0,
@@ -547,7 +563,6 @@ public class Log4jLogEvent implements LogEvent {
      * @param level The logging Level.
      * @param message The Message.
      * @param thrown A Throwable or null.
-     * @param thrownProxy A ThrowableProxy or null.
      * @param contextData The key-value pairs from the context.
      * @param contextStack the nested diagnostic context.
      * @param threadId the thread ID
@@ -566,7 +581,6 @@ public class Log4jLogEvent implements LogEvent {
             final Level level,
             final Message message,
             final Throwable thrown,
-            final ThrowableProxy thrownProxy,
             final StringMap contextData,
             final ThreadContext.ContextStack contextStack,
             final long threadId,
@@ -583,7 +597,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 thrown,
-                thrownProxy,
                 contextData,
                 contextStack,
                 threadId,
@@ -603,7 +616,6 @@ public class Log4jLogEvent implements LogEvent {
             final Level level,
             final Message message,
             final Throwable thrown,
-            final ThrowableProxy thrownProxy,
             final StringMap contextData,
             final ThreadContext.ContextStack contextStack,
             final long threadId,
@@ -619,7 +631,6 @@ public class Log4jLogEvent implements LogEvent {
                 level,
                 message,
                 thrown,
-                thrownProxy,
                 contextData,
                 contextStack,
                 threadId,
@@ -641,7 +652,6 @@ public class Log4jLogEvent implements LogEvent {
             final Level level,
             final Message message,
             final Throwable thrown,
-            final ThrowableProxy thrownProxy,
             final StringMap contextData,
             final ThreadContext.ContextStack contextStack,
             final long threadId,
@@ -655,7 +665,6 @@ public class Log4jLogEvent implements LogEvent {
         this.level = level == null ? Level.OFF : level; // LOG4J2-462, LOG4J2-465
         this.message = message;
         this.thrown = thrown;
-        this.thrownProxy = thrownProxy;
         this.contextData = contextData == null ? ContextDataFactory.createContextData() : contextData;
         this.contextStack = contextStack == null ? ThreadContext.EMPTY_STACK : contextStack;
         this.threadId = threadId;
@@ -720,7 +729,15 @@ public class Log4jLogEvent implements LogEvent {
         if (getMessage() instanceof ReusableMessage) {
             makeMessageImmutable();
         }
+        populateLazilyInitializedFields();
         return this;
+    }
+
+    private void populateLazilyInitializedFields() {
+        getSource();
+        getThreadId();
+        getThreadPriority();
+        getThreadName();
     }
 
     /**
@@ -751,7 +768,9 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public void makeMessageImmutable() {
-        message = new MementoMessage(message.getFormattedMessage(), message.getFormat(), message.getParameters());
+        message = message instanceof ReusableMessage
+                ? ((ReusableMessage) message).memento()
+                : InternalAsyncUtil.makeMessageImmutable(message);
     }
 
     @Override
@@ -814,10 +833,8 @@ public class Log4jLogEvent implements LogEvent {
      */
     @Override
     public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
-            thrownProxy = new ThrowableProxy(thrown);
-        }
-        return thrownProxy;
+        // The `thrownProxy` field is non-null only after deserialization.
+        return thrownProxy != null ? thrownProxy : thrown != null ? new ThrowableProxy(thrown) : null;
     }
 
     /**
@@ -912,7 +929,6 @@ public class Log4jLogEvent implements LogEvent {
      * @return a LogEventProxy.
      */
     protected Object writeReplace() {
-        getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(this, this.includeLocation);
     }
 
@@ -927,7 +943,6 @@ public class Log4jLogEvent implements LogEvent {
      */
     public static Serializable serialize(final LogEvent event, final boolean includeLocation) {
         if (event instanceof Log4jLogEvent) {
-            event.getThrownProxy(); // ensure ThrowableProxy is initialized
             return new LogEventProxy((Log4jLogEvent) event, includeLocation);
         }
         return new LogEventProxy(event, includeLocation);
@@ -943,7 +958,6 @@ public class Log4jLogEvent implements LogEvent {
      * @see #serialize(LogEvent, boolean)
      */
     public static Serializable serialize(final Log4jLogEvent event, final boolean includeLocation) {
-        event.getThrownProxy(); // ensure ThrowableProxy is initialized
         return new LogEventProxy(event, includeLocation);
     }
 
@@ -962,7 +976,6 @@ public class Log4jLogEvent implements LogEvent {
                     proxy.level,
                     proxy.message,
                     proxy.thrown,
-                    proxy.thrownProxy,
                     proxy.contextData,
                     proxy.contextStack,
                     proxy.threadId,
@@ -983,6 +996,12 @@ public class Log4jLogEvent implements LogEvent {
         throw new InvalidObjectException("Proxy required");
     }
 
+    /**
+     * Creates a new immutable copy of a {@link LogEvent}.
+     *
+     * @param logEvent The log event to copy.
+     * @return An immutable log event.
+     */
     public static LogEvent createMemento(final LogEvent logEvent) {
         return new Log4jLogEvent.Builder(logEvent).build();
     }
@@ -993,7 +1012,14 @@ public class Log4jLogEvent implements LogEvent {
      * @return a new immutable copy of the data in this {@code Log4jLogEvent}
      */
     public static Log4jLogEvent createMemento(final LogEvent event, final boolean includeLocation) {
-        return deserialize(serialize(event, includeLocation));
+        // In the case `includeLocation` is false, we temporarily disable its computation.
+        if (event.isIncludeLocation() && !includeLocation) {
+            event.setIncludeLocation(false);
+            Log4jLogEvent memento = (Log4jLogEvent) createMemento(event);
+            event.setIncludeLocation(true);
+            return memento;
+        }
+        return (Log4jLogEvent) createMemento(event);
     }
 
     @Override
@@ -1065,9 +1091,6 @@ public class Log4jLogEvent implements LogEvent {
         if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
             return false;
         }
-        if (thrownProxy != null ? !thrownProxy.equals(that.thrownProxy) : that.thrownProxy != null) {
-            return false;
-        }
 
         return true;
     }
@@ -1083,7 +1106,6 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + instant.hashCode();
         result = 31 * result + (int) (nanoTime ^ (nanoTime >>> 32));
         result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
-        result = 31 * result + (thrownProxy != null ? thrownProxy.hashCode() : 0);
         result = 31 * result + (contextData != null ? contextData.hashCode() : 0);
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
         result = 31 * result + (int) (threadId ^ (threadId >>> 32));
@@ -1146,7 +1168,7 @@ public class Log4jLogEvent implements LogEvent {
             this.timeMillis = event.instant.getEpochMillisecond();
             this.nanoOfMillisecond = event.instant.getNanoOfMillisecond();
             this.thrown = event.thrown;
-            this.thrownProxy = event.thrownProxy;
+            this.thrownProxy = event.getThrownProxy();
             this.contextData = event.contextData;
             this.contextStack = event.contextStack;
             this.source = includeLocation ? event.getSource() : event.source;
@@ -1172,9 +1194,14 @@ public class Log4jLogEvent implements LogEvent {
             this.thrownProxy = event.getThrownProxy();
             this.contextData = memento(event.getContextData());
             this.contextStack = event.getContextStack();
-            this.source = includeLocation
-                    ? event.getSource()
-                    : event instanceof MutableLogEvent ? ((MutableLogEvent) event).source : null;
+            // In the case `includeLocation` is false, we temporarily disable its computation.
+            if (event.isIncludeLocation() && !includeLocation) {
+                event.setIncludeLocation(false);
+                this.source = event.getSource();
+                event.setIncludeLocation(true);
+            } else {
+                this.source = event.getSource();
+            }
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
             this.threadPriority = event.getThreadPriority();
@@ -1218,8 +1245,8 @@ public class Log4jLogEvent implements LogEvent {
                     loggerFQCN,
                     level,
                     message(),
-                    thrown,
-                    thrownProxy,
+                    // `thrown` is always null after deserialization
+                    thrownProxy != null ? thrownProxy.getThrowable() : null,
                     contextData,
                     contextStack,
                     threadId,
@@ -1231,6 +1258,7 @@ public class Log4jLogEvent implements LogEvent {
                     nanoTime);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
+            result.thrownProxy = thrownProxy;
             return result;
         }
 
