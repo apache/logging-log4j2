@@ -22,100 +22,94 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MongoDb4ProviderTest {
 
-    private String validConnectionStringWithoutDatabase = "mongodb://localhost:27017";
-    private String validConnectionStringWithDatabase = "mongodb://localhost:27017/logging";
-    private String validConnectionStringWithDatabaseAndCollection = "mongodb://localhost:27017/logging.logs";
+    private static final String CON_STR_WO_DB = "mongodb://localhost:27017";
+    private static final String CON_STR_W_DB = "mongodb://localhost:27017/logging";
+    private static final String CON_STR_DB_COLL = "mongodb://localhost:27017/logging.logs";
 
-    private String collectionName = "logsTest";
-    private String databaseName = "loggingTest";
+    private static final String collectionName = "logsTest";
+    private static final String databaseName = "loggingTest";
 
     @Test
     void createProviderWithDatabaseAndCollectionProvidedViaConfig() {
 
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithoutDatabase)
-                .setDatabaseName(this.databaseName)
-                .setCollectionName(this.collectionName)
+                .setConnectionStringSource(CON_STR_WO_DB)
+                .setDatabaseName(databaseName)
+                .setCollectionName(collectionName)
                 .build();
 
-        assertNotNull(provider, "Returned provider is null");
+        assertNotNull(provider);
         assertEquals(
-                this.collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName(),
-                "Collection names do not match");
+                collectionName,
+                provider.getConnection().getCollection().getNamespace().getCollectionName());
         assertEquals(
-                this.databaseName,
-                provider.getConnection().getCollection().getNamespace().getDatabaseName(),
-                "Database names do not match");
+                databaseName,
+                provider.getConnection().getCollection().getNamespace().getDatabaseName());
     }
 
     @Test
     void createProviderWithoutDatabaseName() {
 
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithoutDatabase)
+                .setConnectionStringSource(CON_STR_WO_DB)
                 .build();
 
-        assertNull(provider, "Provider should be null but was not");
+        assertNull(provider);
     }
 
     @Test
     void createProviderWithoutDatabaseNameWithCollectionName() {
 
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithoutDatabase)
-                .setCollectionName(this.collectionName)
+                .setConnectionStringSource(CON_STR_WO_DB)
+                .setCollectionName(collectionName)
                 .build();
 
-        assertNull(provider, "Provider should be null but was not");
+        assertNull(provider);
     }
 
     @Test
     void createProviderWithoutCollectionName() {
 
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithoutDatabase)
-                .setDatabaseName(this.databaseName)
+                .setConnectionStringSource(CON_STR_WO_DB)
+                .setDatabaseName(databaseName)
                 .build();
 
-        assertNull(provider, "Provider should be null but was not");
+        assertNull(provider);
     }
 
     @Test
     void createProviderWithDatabaseOnConnectionString() {
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithDatabase)
-                .setCollectionName(this.collectionName)
+                .setConnectionStringSource(CON_STR_W_DB)
+                .setCollectionName(collectionName)
                 .build();
 
-        assertNotNull(provider, "Provider should not be null");
+        assertNotNull(provider);
         assertEquals(
-                this.collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName(),
-                "Provider should be null but was not");
+                collectionName,
+                provider.getConnection().getCollection().getNamespace().getCollectionName());
         assertEquals(
                 "logging",
-                provider.getConnection().getCollection().getNamespace().getDatabaseName(),
-                "Database names do not match");
+                provider.getConnection().getCollection().getNamespace().getDatabaseName());
     }
 
     @Test
     void createProviderConfigOverridesConnectionString() {
 
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(this.validConnectionStringWithDatabaseAndCollection)
-                .setCollectionName(this.collectionName)
-                .setDatabaseName(this.databaseName)
+                .setConnectionStringSource(CON_STR_DB_COLL)
+                .setCollectionName(collectionName)
+                .setDatabaseName(databaseName)
                 .build();
 
-        assertNotNull(provider, "Provider should not be null");
+        assertNotNull(provider);
         assertEquals(
-                this.collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName(),
-                "Collection name does not match provided configuration");
+                collectionName,
+                provider.getConnection().getCollection().getNamespace().getCollectionName());
         assertEquals(
-                this.databaseName,
-                provider.getConnection().getCollection().getNamespace().getDatabaseName(),
-                "Database name does not match provided configuration");
+                databaseName,
+                provider.getConnection().getCollection().getNamespace().getDatabaseName());
     }
 }
