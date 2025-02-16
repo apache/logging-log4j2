@@ -67,21 +67,23 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
             final ConnectionString connectionString,
             final MongoClient mongoClient,
             final MongoDatabase mongoDatabase,
+            final String collectionName,
             final boolean isCapped,
             final Integer sizeInBytes) {
-        this(connectionString, mongoClient, mongoDatabase, isCapped, Long.valueOf(sizeInBytes));
+        this(connectionString, mongoClient, mongoDatabase, collectionName, isCapped, Long.valueOf(sizeInBytes));
     }
 
     public MongoDb4Connection(
             final ConnectionString connectionString,
             final MongoClient mongoClient,
             final MongoDatabase mongoDatabase,
+            final String collectionName,
             final boolean isCapped,
             final Long sizeInBytes) {
         this.connectionString = connectionString;
         this.mongoClient = mongoClient;
         this.collection =
-                getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped, sizeInBytes);
+                getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
 
     @Override
@@ -118,5 +120,13 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
         return String.format(
                 "Mongo4Connection [connectionString=%s, collection=%s, mongoClient=%s]",
                 connectionString, collection, mongoClient);
+    }
+
+    /*
+     * This method is exposed to help support unit tests for the MongoDbProvider class.
+     *
+     */
+    public MongoCollection<Document> getCollection() {
+        return this.collection;
     }
 }

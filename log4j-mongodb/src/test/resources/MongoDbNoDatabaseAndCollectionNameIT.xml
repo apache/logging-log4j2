@@ -19,15 +19,13 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="
                    https://logging.apache.org/xml/ns
-                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+                   https://logging.apache.org/xml/ns/log4j-config-3.xsd">
   <Appenders>
     <NoSql name="MONGO">
-      <MongoDb4
-        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/"
+      <MongoDb
+        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDbNoDatabaseAndCollectionNameIT"
         capped="true"
         collectionSize="1073741824"
-        databaseName="testDb"
-        collectionName="MongoDb4CappedIntIT" />
       />
     </NoSql>
   </Appenders>

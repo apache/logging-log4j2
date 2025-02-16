@@ -24,9 +24,11 @@
     <NoSql name="MONGO">
       <!-- collectionSize="2147483657" is max int + 10 -->
       <MongoDb4
-        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDb4CappedLongIT"
+        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/"
         capped="true"
-        collectionSize="2147483657"/>
+        collectionSize="2147483657"
+        databaseName="testDb"
+        collectionName="MongoDb4CappedLongIT" />
     </NoSql>
   </Appenders>
   <Loggers>
