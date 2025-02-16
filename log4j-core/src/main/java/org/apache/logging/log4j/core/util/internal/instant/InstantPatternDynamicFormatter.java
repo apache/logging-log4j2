@@ -239,7 +239,11 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 final PatternSequence sequence;
                 switch (c) {
                     case 's':
-                        sequence = new SecondPatternSequence(true, "", 0);
+                        if (sequenceContent.length() == 2) {
+                            sequence = new SecondPatternSequence(true, "", 0);
+                        } else {
+                            sequence = new DynamicPatternSequence(sequenceContent);
+                        }
                         break;
                     case 'S':
                         sequence = new SecondPatternSequence(false, "", sequenceContent.length());
