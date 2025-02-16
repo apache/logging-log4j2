@@ -35,7 +35,9 @@ class RollingRandomAppenderDirectWriteAndSwitchDirectoryTest {
     private Path loggingPath;
 
     @Test
-    @LoggerContextSource(value = "appender/rolling/RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.xml", timeout = 10)
+    @LoggerContextSource(
+            value = "appender/rolling/RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.xml",
+            timeout = 10)
     void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.class.getName());
         final LocalTime start = LocalTime.now();
@@ -46,6 +48,8 @@ class RollingRandomAppenderDirectWriteAndSwitchDirectoryTest {
             Thread.sleep(100);
         } while (start.getSecond() == end.getSecond());
         Path nextLogPath = loggingPath.resolve(String.format("%d/%d.log", end.getSecond(), end.getSecond()));
-        assertThat(nextLogPath).as("Archived log for second %s", end.getSecond()).exists();
+        assertThat(nextLogPath)
+                .as("Archived log for second %s", end.getSecond())
+                .exists();
     }
 }
