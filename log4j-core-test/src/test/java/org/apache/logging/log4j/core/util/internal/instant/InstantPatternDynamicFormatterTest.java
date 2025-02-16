@@ -100,6 +100,9 @@ class InstantPatternDynamicFormatterTest {
         testCases.add(Arguments.of(
                 "HH:mm:ss.SSSSSS", ChronoUnit.MINUTES, asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 6))));
 
+        // Seconds without padding
+        testCases.add(Arguments.of("s.SSS", ChronoUnit.SECONDS, asList(pDyn("s'.'", ChronoUnit.SECONDS), pMilliSec())));
+
         return testCases;
     }
 
@@ -352,7 +355,9 @@ class InstantPatternDynamicFormatterTest {
                         "yyyy-MM-dd'T'HH:mm:ss.SSS",
                         "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
                         "dd/MM/yy HH:mm:ss.SSS",
-                        "dd/MM/yyyy HH:mm:ss.SSS")
+                        "dd/MM/yyyy HH:mm:ss.SSS",
+                        // seconds without padding
+                        "s.SSS")
                 .flatMap(InstantPatternDynamicFormatterTest::formatterInputs);
     }
 
