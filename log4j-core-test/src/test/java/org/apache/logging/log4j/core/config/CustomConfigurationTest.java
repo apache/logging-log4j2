@@ -63,20 +63,26 @@ class CustomConfigurationTest {
                 .withConfiguration(config)
                 .build();
         final FileAppender appender = FileAppender.newBuilder()
-                .withFileName(logFile.toString())
-                .withAppend(false)
-                .setName("File")
+                .setBufferedIo(false)
                 .setIgnoreExceptions(false)
-                .withBufferedIo(false)
+                .setName("File")
                 .setLayout(layout)
+                .withAppend(false)
+                .withFileName(logFile.toString())
                 .build();
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[] {ref};
 
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(
-                false, Level.INFO, "org.apache.logging.log4j", "true", refs, null, config, null);
+        final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
+                .withConfig(config)
+                .withAdditivity(false)
+                .withIncludeLocation("true")
+                .withLevel(Level.INFO)
+                .withLoggerName("org.apache.logging.log4j")
+                .withRefs(refs)
+                .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();
