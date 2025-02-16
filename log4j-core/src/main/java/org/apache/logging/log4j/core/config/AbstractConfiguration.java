@@ -78,6 +78,7 @@ import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -775,7 +776,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void setToDefault() {
         // LOG4J2-3431 don't set a default name if one has already been set
-        if (this.getName() == null || this.getName().trim().isEmpty()) {
+        if (Strings.isBlank(getName())) {
             // LOG4J2-1176 facilitate memory leak investigation
             setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
         }
