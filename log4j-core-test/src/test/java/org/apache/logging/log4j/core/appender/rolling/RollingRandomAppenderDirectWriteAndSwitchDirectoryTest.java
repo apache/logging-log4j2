@@ -16,24 +16,28 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.LocalTime;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
-@CleanUpDirectories(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.DIR)
-class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
+@CleanUpDirectories(RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.DIR)
+class RollingRandomAppenderDirectWriteAndSwitchDirectoryTest {
     public static final String DIR = "target/rolling-random-direct-switch-director";
 
+    @TempLoggingDir
+    private Path loggingPath;
+
     @Test
-    @LoggerContextSource(value = "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
+    @LoggerContextSource(value = "appender/rolling/RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.xml", timeout = 10)
     void testAppender(final LoggerContext context) throws Exception {
-        final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
+        final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectoryTest.class.getName());
         final LocalTime start = LocalTime.now();
         LocalTime end;
         do {
@@ -41,8 +45,7 @@ class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
             logger.info("test log");
             Thread.sleep(100);
         } while (start.getSecond() == end.getSecond());
-
-        final File nextLogFile = new File(String.format("%s/%d/%d.log", DIR, end.getSecond(), end.getSecond()));
-        assertTrue(nextLogFile.exists(), "nextLogFile not created");
+        Path nextLogPath = loggingPath.resolve(String.format("%d/%d.log", end.getSecond(), end.getSecond()));
+        assertThat(nextLogPath).as("Archived log for second %s", end.getSecond()).exists();
     }
 }
