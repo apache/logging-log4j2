@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
-    <issue id="3322" link="https://github.com/apache/logging-log4j2/pull/3322"/>
+    <issue id="3467" link="https://github.com/apache/logging-log4j2/pull/3467"/>
     <description format="asciidoc">Add `collectionName` and `databaseName` arguments to the MongoDB appender</description>
 </entry>
