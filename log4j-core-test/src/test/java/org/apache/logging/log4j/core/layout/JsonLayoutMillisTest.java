@@ -16,57 +16,51 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the JsonLayout class with millis.
  */
-@Category(Layouts.Json.class)
+@Tag("Layouts.Json")
+@LoggerContextSource("log4j2-json-layout-timestamp.xml")
 public class JsonLayoutMillisTest {
-
-    private static final String CONFIG = "log4j2-json-layout-timestamp.xml";
-
-    private ListAppender app;
-
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private Logger logger;
 
     private void assertEventCount(final List<LogEvent> events, final int expected) {
-        assertEquals("Incorrect number of events.", expected, events.size());
+        assertEquals(events.size(), expected, "Incorrect number of events.");
     }
 
-    @Before
-    public void before() {
+    @BeforeEach
+    public void before(final LoggerContext context, @Named("List") final ListAppender app) {
         logger = context.getLogger("LayoutTest");
         //
-        app = context.getListAppender("List").clear();
+        app.clear();
     }
 
     @Test
-    public void testTimestamp() {
+    public void testTimestamp(@Named("List") final ListAppender app) {
         logger.info("This is a test message");
         final List<String> message = app.getMessages();
-        assertTrue("No messages", message != null && !message.isEmpty());
+        assertTrue(message != null && !message.isEmpty(), "No messages");
         final String json = message.get(0);
         System.out.println(json);
-        assertNotNull("No JSON message", json);
-        assertTrue("No timestamp", json.contains("\"timeMillis\":"));
-        assertFalse("Instant is present", json.contains("instant:"));
+        assertNotNull(json, "No JSON message");
+        assertTrue(json.contains("\"timeMillis\":"), "No timestamp");
+        assertFalse(json.contains("instant:"), "Instant is present");
     }
 }

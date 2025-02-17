@@ -29,29 +29,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for LOG4J2-1769.
  *
  * @since 2.8
  */
+@LoggerContextSource("log4j2-json-layout.xml")
 public class ConcurrentLoggingWithJsonLayoutTest {
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-json-layout.xml");
-
     private static final String PATH = "target/test-json-layout.log";
 
-    @AfterClass
+    @AfterAll
     public static void after() {
         new File(PATH).delete();
     }
 
     @Test
-    public void testConcurrentLogging() throws Throwable {
+    public void testConcurrentLogging(final LoggerContext context) throws Throwable {
         final Logger log = context.getLogger(ConcurrentLoggingWithJsonLayoutTest.class);
         final Set<Thread> threads = Collections.synchronizedSet(new HashSet<Thread>());
         final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<Throwable>());
