@@ -22,9 +22,7 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <NoSql name="MONGO">
-      <MongoDb4 connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/"
-                databaseName="testDb"
-                collectionName="MongoDb4IT" />
+      <MongoDb4 connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDb4IT" />
     </NoSql>
   </Appenders>
   <Loggers>
