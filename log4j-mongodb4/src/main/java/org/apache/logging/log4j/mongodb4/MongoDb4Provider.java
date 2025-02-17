@@ -18,6 +18,7 @@ package org.apache.logging.log4j.mongodb4;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -60,14 +61,47 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         @PluginBuilderAttribute("capped")
         private boolean capped = false;
 
+        @PluginBuilderAttribute("collectionName")
+        private String collectionName;
+
+        @PluginBuilderAttribute("databaseName")
+        private String databaseName;
+
+
+
         @Override
         public MongoDb4Provider build() {
             StatusLogger.getLogger().warn("The {} Appender is deprecated, use the MongoDb Appender.", PLUGIN_NAME);
+
+            ConnectionString connectionString;
+            try {
+                connectionString = new ConnectionString(connectionStringSource);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
+                return null;
+            }
+
+            String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
+            String effectiveCollectionName = collectionName != null ? collectionName : connectionString.getCollection();
+            // Validate the provided databaseName property
+            try {
+                MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
+                return null;
+            }
+            // Validate the provided collectionName property
+            try {
+                MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+            } catch (final IllegalArgumentException e) {
+                LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
+                return null;
+            }
             return newMongoDb4Provider();
         }
 
         protected MongoDb4Provider newMongoDb4Provider() {
-            return new MongoDb4Provider(connectionStringSource, capped, collectionSize);
+            return new MongoDb4Provider(connectionStringSource, databaseName, collectionName, capped, collectionSize);
         }
 
         /**
@@ -113,6 +147,28 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             this.collectionSize = sizeInBytes;
             return asBuilder();
         }
+
+        /**
+         * Sets name of the collection for the appender to output to
+         *
+         * @param collectionName the name of the collection for the appender to output to
+         * @return this instance.
+         */
+        public B setCollectionName(final String collectionName) {
+            this.collectionName = collectionName;
+            return asBuilder();
+        }
+
+        /**
+         * Sets the name of the logical database for the appender to output to.
+         *
+         * @param databaseName the name of the DB for the appender to output to
+         * @return this instance.
+         */
+        public B setDatabaseName(final String databaseName) {
+            this.databaseName = databaseName;
+            return asBuilder();
+        }
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -140,11 +196,12 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
     private final Long collectionSize;
     private final boolean isCapped;
+    private final String collectionName;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
+    private MongoDb4Provider(final String connectionStringSource, final String databaseName, final String collectionName, final boolean isCapped, final Long collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -159,28 +216,29 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        final String databaseName = this.connectionString.getDatabase();
         LOGGER.debug("Getting MongoDatabase {}...", databaseName);
         this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
+        this.collectionName = collectionName;
     }
 
     @Override
     public MongoDb4Connection getConnection() {
-        return new MongoDb4Connection(connectionString, mongoClient, mongoDatabase, isCapped, collectionSize);
+        return new MongoDb4Connection(connectionString, mongoClient, mongoDatabase, collectionName, isCapped, collectionSize);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s]",
+                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s, collectionName=%s]",
                 MongoDb4Provider.class.getSimpleName(),
                 connectionString,
                 collectionSize,
                 isCapped,
                 mongoClient,
-                mongoDatabase);
+                mongoDatabase,
+                collectionName);
     }
 }

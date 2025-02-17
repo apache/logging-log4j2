@@ -23,7 +23,9 @@
   <Appenders>
     <NoSql name="MONGO">
       <MessageLayout />
-      <MongoDb4 connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb.MongoDb4MapMessageIT" />
+      <MongoDb4 connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/"
+                databaseName="testDb"
+                collectionName="MongoDb4MapMessageIT" />
     </NoSql>
   </Appenders>
   <Loggers>
