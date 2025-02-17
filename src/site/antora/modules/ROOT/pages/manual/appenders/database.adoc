@@ -1164,14 +1164,10 @@ It supports the following configuration options:
 | Attribute | Type | Default value | Description
 
 | [[MongoDbProvider-attr-connection]]connection
-| https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString`]
+| https://www.mongodb.com/docs/manual/reference/connection-string/#standard-connection-string-format[Connection String]
 |
 |
 It specifies the connection URI used to reach the server.
-
-See
-https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri[Connection URI documentation]
-for its format.
 
 **Required**
 
@@ -1179,9 +1175,10 @@ for its format.
 | `string`
 |
 |
-It specifies the name of the database for the appender to use
+It specifies the name of the database for the appender to use.
 
-Overrides the value provided in the connection string if present
+The database name can also be specified in <<MongoDbProvider-attr-connection,the connection URI>>.
+If both are provided, this `databaseName` attribute will be used.
 
 **Required**
 
@@ -1189,9 +1186,10 @@ Overrides the value provided in the connection string if present
 | `string`
 |
 |
-It specifies the name of the collection for the appender to use
-For backward compatibility, the collection name can also be specified in the
-https://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[Java-specific connection string]
+It specifies the name of the collection for the appender to use.
+
+For backward compatibility, the collection name can also be specified in <<MongoDbProvider-attr-connection,the connection URI>> per https://mongodb.github.io/mongo-java-driver/5.3/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString` of the MongoDB Java Driver].
+If both are provided, this `collectionName` attribute will be used.
 
 **Required**
 
@@ -1230,14 +1228,10 @@ It supports the following configuration attributes:
 | Attribute | Type | Default value | Description
 
 | [[MongoDb4Provider-attr-connection]]connection
-| https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString`]
+| https://mongodb.github.io/mongo-java-driver/5.3/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html[`ConnectionString`]
 |
 |
 It specifies the connection URI used to reach the server.
-
-See
-https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri[Connection URI documentation]
-for its format.
 
 **Required**
 
