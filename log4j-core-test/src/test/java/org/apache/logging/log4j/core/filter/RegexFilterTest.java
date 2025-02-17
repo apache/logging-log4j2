@@ -19,9 +19,12 @@ package org.apache.logging.log4j.core.filter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.Level;
@@ -87,9 +90,18 @@ class RegexFilterTest {
     }
 
     @Test
-    void testNoMsg() throws Exception {
-        final RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
+    void testNoMsg() {
+
+        final RegexFilter filter =
+            RegexFilter.newBuilder()
+                       .setRegex(".* test .*")
+                       .setUseRawMsg(false)
+                       .build();
+
+        assertNotNull(filter);
+
         filter.start();
+
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, null));
@@ -97,28 +109,112 @@ class RegexFilterTest {
     }
 
     @Test
-    void testParameterizedMsg() throws Exception {
+    void testParameterizedMsg() {
         final String msg = "params {} {}";
         final Object[] params = {"foo", "bar"};
 
         // match against raw message
-        final RegexFilter rawFilter = RegexFilter.createFilter(
-                "params \\{\\} \\{\\}",
-                null,
-                true, // useRawMsg
-                Result.ACCEPT,
-                Result.DENY);
+        final RegexFilter rawFilter =
+            RegexFilter.newBuilder()
+                       .setRegex("params \\{\\} \\{\\}")
+                       .setUseRawMsg(true)
+                       .setOnMatch(Result.ACCEPT)
+                       .setOnMismatch(Result.DENY)
+                       .build();
+
+        assertNotNull(rawFilter);
+
         final Result rawResult = rawFilter.filter(null, null, null, msg, params);
         assertThat(rawResult, equalTo(Result.ACCEPT));
 
         // match against formatted message
-        final RegexFilter fmtFilter = RegexFilter.createFilter(
-                "params foo bar",
-                null,
-                false, // useRawMsg
-                Result.ACCEPT,
-                Result.DENY);
+        final RegexFilter fmtFilter =
+            RegexFilter.newBuilder()
+                       .setRegex("params foo bar")
+                       .setUseRawMsg(false)
+                       .setOnMatch(Result.ACCEPT)
+                       .setOnMismatch(Result.DENY).build();
+
+        assertNotNull(fmtFilter);
+
         final Result fmtResult = fmtFilter.filter(null, null, null, msg, params);
         assertThat(fmtResult, equalTo(Result.ACCEPT));
+    }
+
+    /**
+     * A builder with no 'regex' expression should both be invalid and return null on 'build()'.
+     */
+    @Test
+    void testWithValidRegex() {
+
+        final String regex = "^[a-zA-Z0-9_]+$"; // matches alphanumeric with underscores
+
+        final RegexFilter.Builder builder =
+            RegexFilter.newBuilder().setRegex(regex).setUseRawMsg(false).setOnMatch(Result.ACCEPT).setOnMismatch(Result.DENY);
+
+        assertTrue(builder.isValid());
+
+        final RegexFilter filter = builder.build();
+
+        assertNotNull(filter);
+
+        assertEquals(Result.ACCEPT, filter.filter("Hello_123"));
+
+        assertEquals(Result.DENY, filter.filter("Hello@123"));
+
+        assertEquals(regex, filter.getRegex());
+    }
+
+    @Test
+    void testRegexFilterGetters() {
+
+        final String regex = "^[a-zA-Z0-9_]+$"; // matches alphanumeric with underscores
+
+        final RegexFilter filter =
+            RegexFilter.newBuilder()
+                       .setRegex(regex)
+                       .setUseRawMsg(false)
+                       .setOnMatch(Result.ACCEPT)
+                       .setOnMismatch(Result.DENY)
+                       .build();
+
+        assertNotNull(filter);
+
+        assertEquals(regex, filter.getRegex());
+        assertFalse(filter.isUseRawMessage());
+        assertEquals(Result.ACCEPT, filter.getOnMatch());
+        assertEquals(Result.DENY, filter.getOnMismatch());
+        assertNotNull(filter.getPattern());
+        assertEquals(regex, filter.getPattern().pattern());
+    }
+
+    /**
+     * A builder with no 'regex' expression should both be invalid and return null on 'build()'.
+     */
+    @Test
+    void testBuilderWithoutRegexNotValid() {
+
+        final RegexFilter.Builder builder = RegexFilter.newBuilder();
+
+        assertFalse(builder.isValid());
+
+        assertNull(builder.build());
+
+    }
+
+    /**
+     * A builder with an invalid 'regex' expression should return null on 'build()'.
+     */
+    @Test
+    void testBuilderWithInvalidRegexNotValid() {
+
+        final RegexFilter.Builder builder = RegexFilter.newBuilder();
+
+        builder.setRegex("[a-z");
+
+        assertFalse(builder.isValid());
+
+        assertNull(builder.build());
+
     }
 }
