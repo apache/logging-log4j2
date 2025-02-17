@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.filter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,13 +44,17 @@ class RegexFilterTest {
     @Test
     void testRegexFilterDoesNotThrowWithAllTheParametersExceptRegexEqualNull() {
         assertDoesNotThrow(() -> {
-            RegexFilter.createFilter(".* test .*", null, null, null, null);
+            RegexFilter.newBuilder().setRegex(".* test .*").build();
         });
     }
 
     @Test
     void testThresholds() throws Exception {
-        RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
+        RegexFilter filter = RegexFilter.newBuilder()
+                .setRegex(".* test .*")
+                .setUseRawMsg(false)
+                .build();
+        assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(
@@ -65,7 +70,7 @@ class RegexFilterTest {
                 .setMessage(new SimpleMessage("test")) //
                 .build();
         assertSame(Filter.Result.DENY, filter.filter(event));
-        filter = RegexFilter.createFilter(null, null, false, null, null);
+        filter = RegexFilter.newBuilder().build();
         assertNull(filter);
     }
 
