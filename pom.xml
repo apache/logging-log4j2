@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>11.3.0</version>
+    <version>12.0.0</version>
     <relativePath />
   </parent>
 
@@ -357,6 +357,7 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
+    <jspecify.version>1.0.0</jspecify.version>
     <log4j-docgen.version>0.9.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
@@ -370,7 +371,7 @@
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
-    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `ge.apache.org` -->
+    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `develocity.apache.org` -->
     <version.maven-surefire>3.2.5</version.maven-surefire>
   </properties>
 
@@ -993,6 +994,7 @@
           <groupId>org.jspecify</groupId>
           <artifactId>jspecify</artifactId>
           <version>${jspecify.version}</version>
+          <scope>test</scope>
         </dependency>
       </dependencies>
 
