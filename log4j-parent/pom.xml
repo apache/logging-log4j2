@@ -66,7 +66,8 @@
     <assertj.version>3.26.3</assertj.version>
     <awaitility.version>4.2.2</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.17</cassandra.version>
+    <bnd.annotation.version>7.1.0</bnd.annotation.version>
+    <cassandra.version>3.11.18</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.17.1</commons-codec.version>
     <commons-compress.version>1.27.1</commons-compress.version>
@@ -127,8 +128,11 @@
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports: -->
     <osgi.api.version>6.0.0</osgi.api.version>
-    <pax-exam.version>4.13.5</pax-exam.version>
-    <plexus-utils.version>3.5.1</plexus-utils.version>
+    <osgi.annotation.bundle.version>2.0.0</osgi.annotation.bundle.version>
+    <osgi.annotation.versioning.version>1.1.2</osgi.annotation.versioning.version>
+    <pax-exam.version>4.14.0</pax-exam.version>
+    <plexus-utils.version>3.6.0</plexus-utils.version>
+    <spotbugs-annotations.version>4.9.1</spotbugs-annotations.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
@@ -583,6 +587,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jspecify</groupId>
+        <artifactId>jspecify</artifactId>
+        <version>${jspecify.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
@@ -837,6 +847,7 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <version>${bnd.annotation.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -849,19 +860,22 @@
 
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>osgi.annotation</artifactId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <version>${osgi.annotation.bundle.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <artifactId>org.osgi.annotation.versioning</artifactId>
+      <version>${osgi.annotation.versioning.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.github.spotbugs</groupId>
       <artifactId>spotbugs-annotations</artifactId>
+      <version>${spotbugs-annotations.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -983,6 +997,16 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs combine.children="append">
+            <arg>--should-stop=ifError=FLOW</arg>
+          </compilerArgs>
+        </configuration>
       </plugin>
 
       <!--
