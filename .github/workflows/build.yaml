@@ -80,7 +80,7 @@ jobs:
     name: "verify-reproducibility (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
     uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@rel/12.0.0
     with:
-      nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || needs.deploy-snapshot.outputs.nexus-url }}
+      nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || 'https://repository.apache.org/content/groups/snapshots' }}
       # Encode the `runs-on` input as JSON array
       runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
 
