@@ -6,9 +6,7 @@
         "name": "SOCKET",
         "host": "localhost",
         "port": 12345,
-        "JsonTemplateLayout": {
-          "nullEventDelimiterEnabled": true
-        }
+        "JsonTemplateLayout": {}
       }
       // end::socketAppender[]
     },
