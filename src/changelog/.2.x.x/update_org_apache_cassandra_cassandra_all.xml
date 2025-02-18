@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3434" link="https://github.com/apache/logging-log4j2/pull/3434"/>
-  <description format="asciidoc">Update `org.apache.cassandra:cassandra-all` to version `3.11.18`</description>
+  <issue id="3440" link="https://github.com/apache/logging-log4j2/pull/3440"/>
+  <description format="asciidoc">Update `org.apache.cassandra:cassandra-all` to version `3.11.19`</description>
 </entry>
