@@ -991,6 +991,16 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs combine.children="append">
+            <arg>--should-stop=ifError=FLOW</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
       <!--
         ~ Some external logging bridges can interfere with our tests, giving false negatives.
         -->
