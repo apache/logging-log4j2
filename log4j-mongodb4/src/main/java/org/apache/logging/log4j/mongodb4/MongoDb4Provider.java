@@ -67,8 +67,6 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         @PluginBuilderAttribute("databaseName")
         private String databaseName;
 
-
-
         @Override
         public MongoDb4Provider build() {
             StatusLogger.getLogger().warn("The {} Appender is deprecated, use the MongoDb Appender.", PLUGIN_NAME);
@@ -201,7 +199,12 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(final String connectionStringSource, final String databaseName, final String collectionName, final boolean isCapped, final Long collectionSize) {
+    private MongoDb4Provider(
+            final String connectionStringSource,
+            final String databaseName,
+            final String collectionName,
+            final boolean isCapped,
+            final Long collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -226,7 +229,8 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
     @Override
     public MongoDb4Connection getConnection() {
-        return new MongoDb4Connection(connectionString, mongoClient, mongoDatabase, collectionName, isCapped, collectionSize);
+        return new MongoDb4Connection(
+                connectionString, mongoClient, mongoDatabase, collectionName, isCapped, collectionSize);
     }
 
     @Override
