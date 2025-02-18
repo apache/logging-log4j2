@@ -108,7 +108,6 @@
     <jeromq.version>0.6.0</jeromq.version>
     <jmdns.version>3.6.0</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <jspecify.version>1.0.0</jspecify.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.11.4</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
