@@ -1609,9 +1609,50 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 <div class="paragraph">
 <p>Assuming <code>min="1"</code> and <code>max="3"</code> the rotation of the log files is represented in the graph below:</p>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../../_images/diag-d5122741a680d765fa3170a444015b615a1fdafd.svg" alt="Diagram">
+<pre>@startuml
+class "Initial status" as initial {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+}
+class "1st rollover" as first {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+}
+class "2nd rollover" as second {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+}
+
+object "Delete file" as delete
+
+initial::app.log -&gt; first::app.1.log
+
+first::app.log -&gt; second::app.1.log
+first::app.1.log -&gt; second::app.2.log
+
+second::app.log -&gt; third::app.1.log
+second::app.1.log -&gt; third::app.2.log
+second::app.2.log -&gt; third::app.3.log
+
+third::app.log -&gt; fourth::app.1.log
+third::app.1.log -&gt; fourth::app.2.log
+third::app.2.log -&gt; fourth::app.3.log
+third::app.3.log -[#red]-&gt; delete
+@enduml</pre>
 </div>
 </div>
 </dd>
@@ -1639,9 +1680,50 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 <div class="paragraph">
 <p>Assuming <code>min="1"</code> and <code>max="3"</code> the rotation of the log files is represented in the graph below:</p>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../../_images/diag-35cc4e8101ffe76d0edc44ed334a6273018dc51b.svg" alt="Diagram">
+<pre>@startuml
+class "Initial status" as initial {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+}
+class "1st rollover" as first {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+}
+class "2nd rollover" as second {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+}
+
+object "Delete file" as delete
+
+initial::app.log -&gt; first::app.1.log
+
+first::app.log -&gt; second::app.2.log
+first::app.1.log -&gt; second::app.1.log
+
+second::app.log -&gt; third::app.3.log
+second::app.1.log -&gt; third::app.1.log
+second::app.2.log -&gt; third::app.2.log
+
+third::app.log -&gt; fourth::app.3.log
+third::app.1.log -[#red]-&gt; delete
+third::app.2.log -&gt; fourth::app.1.log
+third::app.3.log -&gt; fourth::app.2.log
+@enduml</pre>
 </div>
 </div>
 </dd>
@@ -1654,9 +1736,49 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 <div class="paragraph">
 <p>Using the <code>nomax</code> strategy no files will ever be deleted and newer archive files will be assigned increasing index numbers, starting from <code>min</code>.</p>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../../_images/diag-768e5e02508ea736d8901892b519a6d3a7a770ab.svg" alt="Diagram">
+<pre>@startuml
+class "Initial status" as initial {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+}
+class "1st rollover" as first {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+}
+class "2nd rollover" as second {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+}
+class "3rd rollover" as third {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+}
+class "4th rollover" as fourth {
+  &lt;color:green&gt;app.log&lt;/color&gt;
+  app.1.log
+  app.2.log
+  app.3.log
+  app.4.log
+}
+
+initial::app.log -&gt; first::app.1.log
+
+first::app.log -&gt; second::app.2.log
+first::app.1.log -&gt; second::app.1.log
+
+second::app.log -&gt; third::app.3.log
+second::app.1.log -&gt; third::app.1.log
+second::app.2.log -&gt; third::app.2.log
+
+third::app.log -&gt; fourth::app.4.log
+third::app.1.log -&gt; fourth::app.1.log
+third::app.2.log -&gt; fourth::app.2.log
+third::app.3.log -&gt; fourth::app.3.log
+@enduml</pre>
 </div>
 </div>
 </dd>
