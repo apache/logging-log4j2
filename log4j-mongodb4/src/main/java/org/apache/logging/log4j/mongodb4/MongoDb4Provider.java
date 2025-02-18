@@ -205,6 +205,30 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             final String collectionName,
             final boolean isCapped,
             final Long collectionSize) {
+        ConnectionString connectionString;
+        try {
+            connectionString = new ConnectionString(connectionStringSource);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
+            throw e;
+        }
+
+        String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
+        String effectiveCollectionName = collectionName != null ? collectionName : connectionString.getCollection();
+        // Validate the provided databaseName property
+        try {
+            MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
+            throw e;
+        }
+        // Validate the provided collectionName property
+        try {
+            MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
+            throw e;
+        }
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -219,12 +243,61 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        LOGGER.debug("Getting MongoDatabase {}...", databaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
+        LOGGER.debug("Getting MongoDatabase {}...", effectiveDatabaseName);
+        this.mongoDatabase = this.mongoClient.getDatabase(effectiveDatabaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
-        this.collectionName = collectionName;
+        this.collectionName = effectiveCollectionName;
+    }
+
+    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
+
+        ConnectionString connectionString;
+        try {
+            connectionString = new ConnectionString(connectionStringSource);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
+            throw e;
+        }
+
+        String effectiveDatabaseName = connectionString.getDatabase();
+        String effectiveCollectionName = connectionString.getCollection();
+        // Validate the provided databaseName property
+        try {
+            MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
+            throw e;
+        }
+        // Validate the provided collectionName property
+        try {
+            MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
+            throw e;
+        }
+
+        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
+        this.connectionString = new ConnectionString(connectionStringSource);
+        LOGGER.debug("Created ConnectionString {}", connectionString);
+        LOGGER.debug("Creating MongoClientSettings...");
+        // @formatter:off
+        final MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(this.connectionString)
+                .codecRegistry(CODEC_REGISTRIES)
+                .build();
+        // @formatter:on
+        LOGGER.debug("Created MongoClientSettings {}", settings);
+        LOGGER.debug("Creating MongoClient {}...", settings);
+        this.mongoClient = MongoClients.create(settings);
+        LOGGER.debug("Created MongoClient {}", mongoClient);
+        LOGGER.debug("Getting MongoDatabase {}...", effectiveDatabaseName);
+        this.mongoDatabase = this.mongoClient.getDatabase(effectiveCollectionName);
+        LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+        this.isCapped = isCapped;
+        this.collectionSize = collectionSize;
+        this.collectionName = effectiveCollectionName;
     }
 
     @Override

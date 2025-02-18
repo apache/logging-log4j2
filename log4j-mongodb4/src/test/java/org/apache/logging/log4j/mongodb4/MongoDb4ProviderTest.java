@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.mongodb.MongoNamespace;
+import com.mongodb.client.MongoCollection;
+import java.lang.reflect.Field;
 import org.junit.jupiter.api.Test;
 
 class MongoDb4ProviderTest {
@@ -89,12 +92,11 @@ class MongoDb4ProviderTest {
                 .build();
 
         assertNotNull(provider);
-        assertEquals(
-                collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals(
-                "logging",
-                provider.getConnection().getCollection().getNamespace().getDatabaseName());
+
+        MongoNamespace namespace = findProviderNamespace(provider);
+        assertEquals(collectionName, namespace.getCollectionName());
+
+        assertEquals("logging", namespace.getDatabaseName());
     }
 
     @Test
@@ -107,11 +109,20 @@ class MongoDb4ProviderTest {
                 .build();
 
         assertNotNull(provider);
-        assertEquals(
-                collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals(
-                databaseName,
-                provider.getConnection().getCollection().getNamespace().getDatabaseName());
+        MongoNamespace namespace = findProviderNamespace(provider);
+        assertEquals(collectionName, namespace.getCollectionName());
+        assertEquals(databaseName, namespace.getDatabaseName());
+    }
+
+    private static MongoNamespace findProviderNamespace(final MongoDb4Provider provider) {
+        MongoDb4Connection connection = provider.getConnection();
+        try {
+            Field collectionField = connection.getClass().getDeclaredField("collection");
+            collectionField.setAccessible(true);
+            MongoCollection<?> collection = (MongoCollection<?>) collectionField.get(connection);
+            return collection.getNamespace();
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

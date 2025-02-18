@@ -85,6 +85,35 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
         this.collection = getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
 
+    @Deprecated
+    public MongoDb4Connection(
+            final ConnectionString connectionString,
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final boolean isCapped,
+            final Long sizeInBytes) {
+        this.connectionString = connectionString;
+        this.mongoClient = mongoClient;
+        this.collection =
+                getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped, sizeInBytes);
+    }
+
+    @Deprecated
+    public MongoDb4Connection(
+            final ConnectionString connectionString,
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final boolean isCapped,
+            final Integer sizeInBytes) {
+        this(
+                connectionString,
+                mongoClient,
+                mongoDatabase,
+                connectionString.getCollection(),
+                isCapped,
+                Long.valueOf(sizeInBytes));
+    }
+
     @Override
     public void closeImpl() {
         // LOG4J2-1196
