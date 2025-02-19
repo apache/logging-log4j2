@@ -705,8 +705,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             final int maxSecondDigits = 2;
             if (secondDigits > maxSecondDigits) {
                 final String message = String.format(
-                        "More than %d `s` pattern letters are not supported, found: %d",
-                        maxSecondDigits, secondDigits);
+                        "More than %d `s` pattern letters are not supported, found: %d", maxSecondDigits, secondDigits);
                 throw new IllegalArgumentException(message);
             }
             final int maxFractionalDigits = 9;
