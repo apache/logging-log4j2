@@ -726,15 +726,8 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             return secondDigits > 0 ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
         }
 
-        private void formatSeconds(StringBuilder buffer, Instant instant) {
-            switch (secondDigits) {
-                case 1:
-                    buffer.append(instant.getEpochSecond() % 60L);
-                    break;
-                case 2:
-                    formatPaddedSeconds(buffer, instant);
-                    break;
-            }
+        private static void formatUnpaddedSeconds(StringBuilder buffer, Instant instant) {
+            buffer.append(instant.getEpochSecond() % 60L);
         }
 
         private static void formatPaddedSeconds(StringBuilder buffer, Instant instant) {
@@ -768,8 +761,9 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         @Override
         InstantPatternFormatter createFormatter(Locale locale, TimeZone timeZone) {
-            final BiConsumer<StringBuilder, Instant> secondDigitsFormatter =
-                    secondDigits == 2 ? SecondPatternSequence::formatPaddedSeconds : this::formatSeconds;
+            final BiConsumer<StringBuilder, Instant> secondDigitsFormatter = secondDigits == 2
+                    ? SecondPatternSequence::formatPaddedSeconds
+                    : SecondPatternSequence::formatUnpaddedSeconds;
             final BiConsumer<StringBuilder, Instant> fractionDigitsFormatter =
                     fractionalDigits == 3 ? SecondPatternSequence::formatMillis : this::formatFractionalDigits;
             if (secondDigits == 0) {
