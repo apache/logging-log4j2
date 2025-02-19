@@ -21,6 +21,7 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -350,6 +351,26 @@ public class WatchManager extends AbstractLifeCycle {
                     source,
                     millisToString(lastModified),
                     lastModified);
+        }
+        watchers.put(source, new ConfigurationMonitor(lastModified, watcher));
+    }
+
+    /**
+     * Watches the given file.
+     *
+     * @param source  the source to watch.
+     * @param auxiliarySources auxiliary sources to also watch
+     * @param watcher the watcher to notify of file changes.
+     */
+    public void watch(
+            final Source source, final Collection<Source> auxiliarySources, final ConfigurationFileWatcher watcher) {
+        watcher.watching(source, auxiliarySources);
+        final long lastModified = watcher.getLastModified();
+        if (logger.isDebugEnabled()) {
+            String message = auxiliarySources.isEmpty()
+                    ? "Watching configuration '{}' for lastModified {} ({})"
+                    : "Watching configuration '{}' for lastModified {} ({}) and files {}";
+            logger.debug(message, source, millisToString(lastModified), lastModified);
         }
         watchers.put(source, new ConfigurationMonitor(lastModified, watcher));
     }

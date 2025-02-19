@@ -545,6 +545,30 @@ class LoggerTest {
     }
 
     @Test
+    void testReconfigurationMonitorUris(final LoggerContext context) throws Exception {
+        final Configuration oldConfig = context.getConfiguration();
+        final int MONITOR_INTERVAL_SECONDS = 5;
+        final File file = new File("target/test-classes/org/apache/logging/log4j/core/net/ssl/keyStore.p12");
+        final long orig = file.lastModified();
+        final long newTime = orig + 10000;
+        assertTrue(file.setLastModified(newTime), "setLastModified should have succeeded.");
+        TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
+        for (int i = 0; i < 17; ++i) {
+            logger.debug("Reconfigure");
+        }
+        Thread.sleep(100);
+        for (int i = 0; i < 20; i++) {
+            if (context.getConfiguration() != oldConfig) {
+                break;
+            }
+            Thread.sleep(50);
+        }
+        final Configuration newConfig = context.getConfiguration();
+        assertNotNull(newConfig, "No configuration");
+        assertNotSame(newConfig, oldConfig, "Reconfiguration failed");
+    }
+
+    @Test
     void testSuppressedThrowable(final LoggerContext context) {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.nothrown");
         testLogger.debug("This is a test", new Throwable("Testing"));

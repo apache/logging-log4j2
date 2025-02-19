@@ -419,6 +419,15 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
     /**
+     * Set the URIs to be monitored in addition to the configuration file
+     * @param monitorUris the URIs to monitor
+     * @return this builder instance
+     */
+    default ConfigurationBuilder<T> setMonitorUris(final String monitorUris) {
+        return this;
+    }
+
+    /**
      * Sets the list of packages to search for plugins.
      * @param packages The comma separated list of packages.
      * @return this builder instance.

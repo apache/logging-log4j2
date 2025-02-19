@@ -61,6 +61,7 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * @param <T> The BuiltConfiguration type.
@@ -80,6 +81,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;
+    private String monitorUris;
     private Level level;
     private String destination;
     private String packages;
@@ -214,7 +216,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (advertiser != null) {
                 configuration.createAdvertiser(advertiser, source);
             }
-            configuration.setMonitorInterval(monitorInterval);
+            configuration.initializeMonitoring(monitorInterval, monitorUris);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
@@ -286,6 +288,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
         if (monitorInterval > 0) {
             xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
+        }
+        if (Strings.isNotBlank(monitorUris)) {
+            xmlWriter.writeAttribute("monitorUris", monitorUris);
         }
 
         writeXmlSection(xmlWriter, properties);
@@ -562,6 +567,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setMonitorInterval(final String intervalSeconds) {
         monitorInterval = Integers.parseInt(intervalSeconds);
+        return this;
+    }
+
+    @Override
+    public ConfigurationBuilder<T> setMonitorUris(final String monitorUris) {
+        this.monitorUris = monitorUris;
         return this;
     }
 

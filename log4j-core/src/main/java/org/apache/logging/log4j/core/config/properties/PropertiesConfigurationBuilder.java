@@ -61,6 +61,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String CONFIG_NAME = "name";
     private static final String MONITOR_INTERVAL = "monitorInterval";
     private static final String CONFIG_TYPE = "type";
+    private static final String MONITOR_URIS = "monitorUris";
 
     private final ConfigurationBuilder<PropertiesConfiguration> builder;
     private LoggerContext loggerContext;
@@ -95,6 +96,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 .setPackages(rootProperties.getProperty(PACKAGES))
                 .setConfigurationName(rootProperties.getProperty(CONFIG_NAME))
                 .setMonitorInterval(rootProperties.getProperty(MONITOR_INTERVAL, "0"))
+                .setMonitorUris(rootProperties.getProperty(MONITOR_URIS))
                 .setAdvertiser(rootProperties.getProperty(ADVERTISER_KEY));
 
         final Properties propertyPlaceholders = PropertiesUtil.extractSubset(rootProperties, "property");
