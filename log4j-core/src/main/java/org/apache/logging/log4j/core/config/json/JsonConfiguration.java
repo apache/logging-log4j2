@@ -23,8 +23,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.Source;
 
 /**
  * Creates a Node hierarchy from a JSON file.
@@ -66,6 +70,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             processAttributes(rootNode, root);
             final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
+            Collection<Source> auxiliarySources = new HashSet<>();
             for (final Map.Entry<String, String> entry :
                     rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
@@ -87,9 +92,13 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     monitorIntervalSeconds = Integers.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "application/json");
+                } else if ("monitorUris".equalsIgnoreCase(key)) {
+                    for (final String uri : Arrays.asList(value.split(Patterns.COMMA_SEPARATOR))) {
+                        auxiliarySources.add(new Source(new URI(uri)));
+                    }
                 }
             }
-            initializeWatchers(this, configSource, monitorIntervalSeconds);
+            initializeWatchers(this, configSource, auxiliarySources, monitorIntervalSeconds);
             statusConfig.initialize();
             if (getName() == null) {
                 setName(configSource.getLocation());
