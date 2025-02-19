@@ -285,10 +285,17 @@ public final class TypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
+     * Converts a {@link String} into a Log4j {@link Level}.
      */
     @Plugin(name = "Level", category = CATEGORY)
     public static class LevelConverter implements TypeConverter<Level> {
+        /**
+         * {@inheritDoc}
+         * @param s the string to convert
+         * @return the resolved level
+         * @throws NullPointerException if the given value is {@code null}.
+         * @throws IllegalArgumentException if the given argument is not resolvable to a level
+         */
         @Override
         public Level convert(final String s) {
             return Level.valueOf(s);
