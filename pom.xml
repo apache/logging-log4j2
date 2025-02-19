@@ -557,23 +557,6 @@
 
     <plugins>
 
-      <!-- Enable BOM flattening -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <version>${flatten-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>flatten-bom</id>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <inherited>false</inherited>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Apache RAT (Release Audit Tool) check to verify licenses.
            `apache-rat-plugin`: https://creadur.apache.org/rat/apache-rat-plugin/
            Release Audit Tool: https://creadur.apache.org/rat/index.html -->
