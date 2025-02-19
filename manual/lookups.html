@@ -358,33 +358,11 @@
 <div class="paragraph">
 <p>Log4j Core provides a flexible and extensible property substitution system.</p>
 </div>
-<div id="StrSubstitutor-diagram" class="literalblock kroki-error">
-<div class="title">Property substitution system</div>
+<div id="StrSubstitutor-diagram" class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-class StrSubstitutor #line.bold {
-  Interpolator interpolator
-  String replace(String input)
-  String replace(LogEvent event, String input)
-}
-
-StrSubstitutor --&gt; Interpolator
-
-class Interpolator {
-  StrLookup[] lookups
-  String lookup(String key)
-  String lookup(LogEvent event, String key)
-}
-
-Interpolator --&gt; "0..*" StrLookup
-
-class StrLookup {
-  String lookup(String input)
-  String lookup(LogEvent event, String key)
-}
-
-@enduml</pre>
+<img src="../_images/diag-5c97f284d82478c0499cab16fe90893de781b11f.svg" alt="Property substitution system">
 </div>
+<div class="title">Figure 1. Property substitution system</div>
 </div>
 <div class="paragraph">
 <p>The property substitution system is composed of these elements:</p>
