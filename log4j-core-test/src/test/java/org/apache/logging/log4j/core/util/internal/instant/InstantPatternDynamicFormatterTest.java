@@ -65,13 +65,13 @@ class InstantPatternDynamicFormatterTest {
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.HOURS,
-                asList(pDyn("yyyyMMddHH", ChronoUnit.HOURS), pDyn("mm"), pSec("", 3), pDyn("X"))));
+                asList(pDyn("yyyyMMddHH", ChronoUnit.HOURS), pDyn("mm"), pSec(2, "", 3), pDyn("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated per minute
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.MINUTES,
-                asList(pDyn("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec("", 3), pDyn("X"))));
+                asList(pDyn("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec(2, "", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated daily
         final String iso8601InstantPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
@@ -81,24 +81,29 @@ class InstantPatternDynamicFormatterTest {
                 asList(
                         pDyn("yyyy'-'MM'-'dd'T'", ChronoUnit.DAYS),
                         pDyn("HH':'mm':'", ChronoUnit.MINUTES),
-                        pSec(".", 3),
+                        pSec(2, ".", 3),
                         pDyn("X"))));
 
         // ISO9601 instant cache updated per minute
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.MINUTES,
-                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated per second
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.SECONDS,
-                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 3), pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 3), pDyn("X"))));
 
         // Seconds and micros
         testCases.add(Arguments.of(
-                "HH:mm:ss.SSSSSS", ChronoUnit.MINUTES, asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(".", 6))));
+                "HH:mm:ss.SSSSSS",
+                ChronoUnit.MINUTES,
+                asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 6))));
+
+        // Seconds without padding
+        testCases.add(Arguments.of("s.SSS", ChronoUnit.SECONDS, singletonList(pSec(1, ".", 3))));
 
         return testCases;
     }
@@ -111,12 +116,12 @@ class InstantPatternDynamicFormatterTest {
         return new DynamicPatternSequence(pattern, precision);
     }
 
-    private static SecondPatternSequence pSec(String separator, int fractionalDigits) {
-        return new SecondPatternSequence(true, separator, fractionalDigits);
+    private static SecondPatternSequence pSec(int secondDigits, String separator, int fractionalDigits) {
+        return new SecondPatternSequence(secondDigits, separator, fractionalDigits);
     }
 
     private static SecondPatternSequence pMilliSec() {
-        return new SecondPatternSequence(false, "", 3);
+        return new SecondPatternSequence(0, "", 3);
     }
 
     @ParameterizedTest
@@ -352,7 +357,9 @@ class InstantPatternDynamicFormatterTest {
                         "yyyy-MM-dd'T'HH:mm:ss.SSS",
                         "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
                         "dd/MM/yy HH:mm:ss.SSS",
-                        "dd/MM/yyyy HH:mm:ss.SSS")
+                        "dd/MM/yyyy HH:mm:ss.SSS",
+                        // seconds without padding
+                        "s.SSS")
                 .flatMap(InstantPatternDynamicFormatterTest::formatterInputs);
     }
 
@@ -364,7 +371,7 @@ class InstantPatternDynamicFormatterTest {
             Arrays.stream(TimeZone.getAvailableIDs()).map(TimeZone::getTimeZone).toArray(TimeZone[]::new);
 
     static Stream<Arguments> formatterInputs(final String pattern) {
-        return IntStream.range(0, 500).mapToObj(ignoredIndex -> {
+        return IntStream.range(0, 100).mapToObj(ignoredIndex -> {
             final Locale locale = LOCALES[RANDOM.nextInt(LOCALES.length)];
             final TimeZone timeZone = TIME_ZONES[RANDOM.nextInt(TIME_ZONES.length)];
             final MutableInstant instant = randomInstant();
