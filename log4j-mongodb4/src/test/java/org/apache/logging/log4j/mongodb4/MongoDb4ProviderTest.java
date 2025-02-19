@@ -16,110 +16,98 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoCollection;
 import java.lang.reflect.Field;
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
 class MongoDb4ProviderTest {
 
     private static final String CON_STR_WO_DB = "mongodb://localhost:27017";
+
     private static final String CON_STR_W_DB = "mongodb://localhost:27017/logging";
+
     private static final String CON_STR_DB_COLL = "mongodb://localhost:27017/logging.logs";
 
-    private static final String collectionName = "logsTest";
-    private static final String databaseName = "loggingTest";
+    private static final String COLLECTION_NAME = "logsTest";
+
+    private static final String DATABASE_NAME = "loggingTest";
 
     @Test
     void createProviderWithDatabaseAndCollectionProvidedViaConfig() {
-
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
                 .setConnectionStringSource(CON_STR_WO_DB)
-                .setDatabaseName(databaseName)
-                .setCollectionName(collectionName)
+                .setDatabaseName(DATABASE_NAME)
+                .setCollectionName(COLLECTION_NAME)
                 .build();
-
-        assertNotNull(provider);
-        assertEquals(
-                collectionName,
-                provider.getConnection().getCollection().getNamespace().getCollectionName());
-        assertEquals(
-                databaseName,
-                provider.getConnection().getCollection().getNamespace().getDatabaseName());
+        assertThat(provider).isNotNull();
+        assertProviderNamespace(provider, DATABASE_NAME, COLLECTION_NAME);
     }
 
     @Test
     void createProviderWithoutDatabaseName() {
-
-        MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(CON_STR_WO_DB)
-                .build();
-
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDb4Provider.newBuilder()
+                        .setConnectionStringSource(CON_STR_WO_DB)
+                        .build())
+                .hasMessage("Invalid MongoDB database name: `null`");
     }
 
     @Test
     void createProviderWithoutDatabaseNameWithCollectionName() {
-
-        MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(CON_STR_WO_DB)
-                .setCollectionName(collectionName)
-                .build();
-
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDb4Provider.newBuilder()
+                        .setConnectionStringSource(CON_STR_WO_DB)
+                        .setCollectionName(COLLECTION_NAME)
+                        .build())
+                .hasMessage("Invalid MongoDB database name: `null`");
     }
 
     @Test
     void createProviderWithoutCollectionName() {
-
-        MongoDb4Provider provider = MongoDb4Provider.newBuilder()
-                .setConnectionStringSource(CON_STR_WO_DB)
-                .setDatabaseName(databaseName)
-                .build();
-
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDb4Provider.newBuilder()
+                        .setConnectionStringSource(CON_STR_WO_DB)
+                        .setDatabaseName(DATABASE_NAME)
+                        .build())
+                .hasMessage("Invalid MongoDB collection name: `null`");
     }
 
     @Test
     void createProviderWithDatabaseOnConnectionString() {
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
                 .setConnectionStringSource(CON_STR_W_DB)
-                .setCollectionName(collectionName)
+                .setCollectionName(COLLECTION_NAME)
                 .build();
-
-        assertNotNull(provider);
-
-        MongoNamespace namespace = findProviderNamespace(provider);
-        assertEquals(collectionName, namespace.getCollectionName());
-
-        assertEquals("logging", namespace.getDatabaseName());
+        assertThat(provider).isNotNull();
+        assertProviderNamespace(provider, "logging", COLLECTION_NAME);
     }
 
     @Test
     void createProviderConfigOverridesConnectionString() {
-
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
                 .setConnectionStringSource(CON_STR_DB_COLL)
-                .setCollectionName(collectionName)
-                .setDatabaseName(databaseName)
+                .setCollectionName(COLLECTION_NAME)
+                .setDatabaseName(DATABASE_NAME)
                 .build();
-
-        assertNotNull(provider);
-        MongoNamespace namespace = findProviderNamespace(provider);
-        assertEquals(collectionName, namespace.getCollectionName());
-        assertEquals(databaseName, namespace.getDatabaseName());
+        assertThat(provider).isNotNull();
+        assertProviderNamespace(provider, DATABASE_NAME, COLLECTION_NAME);
     }
 
-    private static MongoNamespace findProviderNamespace(final MongoDb4Provider provider) {
-        MongoDb4Connection connection = provider.getConnection();
+    private static void assertProviderNamespace(MongoDb4Provider provider, String databaseName, String collectionName) {
+        MongoNamespace namespace = providerNamespace(provider);
+        assertThat(namespace.getDatabaseName()).isEqualTo(databaseName);
+        assertThat(namespace.getCollectionName()).isEqualTo(collectionName);
+    }
+
+    private static MongoNamespace providerNamespace(MongoDb4Provider provider) {
         try {
-            Field collectionField = connection.getClass().getDeclaredField("collection");
+            MongoDb4Connection connection = provider.getConnection();
+            Field collectionField = MongoDb4Connection.class.getDeclaredField("collection");
             collectionField.setAccessible(true);
-            MongoCollection<?> collection = (MongoCollection<?>) collectionField.get(connection);
+            @SuppressWarnings("unchecked")
+            MongoCollection<Document> collection = (MongoCollection<Document>) collectionField.get(connection);
             return collection.getNamespace();
         } catch (Exception exception) {
             throw new RuntimeException(exception);

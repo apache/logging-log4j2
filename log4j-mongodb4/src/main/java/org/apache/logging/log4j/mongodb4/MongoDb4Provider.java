@@ -22,7 +22,6 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -69,32 +68,8 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
         @Override
         public MongoDb4Provider build() {
-            StatusLogger.getLogger().warn("The {} Appender is deprecated, use the MongoDb Appender.", PLUGIN_NAME);
-
-            ConnectionString connectionString;
-            try {
-                connectionString = new ConnectionString(connectionStringSource);
-            } catch (final IllegalArgumentException e) {
-                LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
-                return null;
-            }
-
-            String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
-            String effectiveCollectionName = collectionName != null ? collectionName : connectionString.getCollection();
-            // Validate the provided databaseName property
-            try {
-                MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
-            } catch (final IllegalArgumentException e) {
-                LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
-                return null;
-            }
-            // Validate the provided collectionName property
-            try {
-                MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
-            } catch (final IllegalArgumentException e) {
-                LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
-                return null;
-            }
+            StatusLogger.getLogger()
+                    .warn("The {} Appender is deprecated, use the MongoDb Appender instead.", PLUGIN_NAME);
             return newMongoDb4Provider();
         }
 
@@ -169,14 +144,10 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         }
     }
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
-    // @formatter:off
     private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(),
             CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE),
             CodecRegistries.fromCodecs(new MongoDb4DocumentObjectCodec()));
-    // @formatter:on
 
     // TODO Where does this number come from?
     private static final long DEFAULT_COLLECTION_SIZE = 536_870_912;
@@ -205,99 +176,52 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             final String collectionName,
             final boolean isCapped,
             final Long collectionSize) {
-        ConnectionString connectionString;
-        try {
-            connectionString = new ConnectionString(connectionStringSource);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
-            throw e;
-        }
-
-        String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
-        String effectiveCollectionName = collectionName != null ? collectionName : connectionString.getCollection();
-        // Validate the provided databaseName property
-        try {
-            MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
-            throw e;
-        }
-        // Validate the provided collectionName property
-        try {
-            MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
-            throw e;
-        }
-        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
-        this.connectionString = new ConnectionString(connectionStringSource);
-        LOGGER.debug("Created ConnectionString {}", connectionString);
-        LOGGER.debug("Creating MongoClientSettings...");
-        // @formatter:off
+        this.connectionString = createConnectionString(connectionStringSource);
         final MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(this.connectionString)
                 .codecRegistry(CODEC_REGISTRIES)
                 .build();
-        // @formatter:on
-        LOGGER.debug("Created MongoClientSettings {}", settings);
-        LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
-        LOGGER.debug("Created MongoClient {}", mongoClient);
-        LOGGER.debug("Getting MongoDatabase {}...", effectiveDatabaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(effectiveDatabaseName);
-        LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+        this.mongoDatabase = createDatabase(connectionString, databaseName, mongoClient);
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
-        this.collectionName = effectiveCollectionName;
+        this.collectionName = getEffectiveCollectionName(connectionString, collectionName);
     }
 
-    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
-
-        ConnectionString connectionString;
+    private static ConnectionString createConnectionString(final String connectionStringSource) {
         try {
-            connectionString = new ConnectionString(connectionStringSource);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB connection string `{}`.", connectionStringSource, e);
-            throw e;
+            return new ConnectionString(connectionStringSource);
+        } catch (final IllegalArgumentException error) {
+            final String message = String.format("Invalid MongoDB connection string: `%s`", connectionStringSource);
+            throw new IllegalArgumentException(message, error);
         }
+    }
 
-        String effectiveDatabaseName = connectionString.getDatabase();
-        String effectiveCollectionName = connectionString.getCollection();
-        // Validate the provided databaseName property
+    private static MongoDatabase createDatabase(
+            final ConnectionString connectionString, final String databaseName, final MongoClient client) {
+        final String effectiveDatabaseName = databaseName != null ? databaseName : connectionString.getDatabase();
         try {
+            // noinspection DataFlowIssue
             MongoNamespace.checkDatabaseNameValidity(effectiveDatabaseName);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB database name `{}`.", effectiveDatabaseName, e);
-            throw e;
+        } catch (final IllegalArgumentException error) {
+            final String message = String.format("Invalid MongoDB database name: `%s`", effectiveDatabaseName);
+            throw new IllegalArgumentException(message, error);
         }
-        // Validate the provided collectionName property
-        try {
-            MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error("Invalid MongoDB collection name `{}`.", effectiveCollectionName, e);
-            throw e;
-        }
+        return client.getDatabase(effectiveDatabaseName);
+    }
 
-        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
-        this.connectionString = new ConnectionString(connectionStringSource);
-        LOGGER.debug("Created ConnectionString {}", connectionString);
-        LOGGER.debug("Creating MongoClientSettings...");
-        // @formatter:off
-        final MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(this.connectionString)
-                .codecRegistry(CODEC_REGISTRIES)
-                .build();
-        // @formatter:on
-        LOGGER.debug("Created MongoClientSettings {}", settings);
-        LOGGER.debug("Creating MongoClient {}...", settings);
-        this.mongoClient = MongoClients.create(settings);
-        LOGGER.debug("Created MongoClient {}", mongoClient);
-        LOGGER.debug("Getting MongoDatabase {}...", effectiveDatabaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(effectiveCollectionName);
-        LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
-        this.isCapped = isCapped;
-        this.collectionSize = collectionSize;
-        this.collectionName = effectiveCollectionName;
+    private static String getEffectiveCollectionName(
+            final ConnectionString connectionString, final String collectionName) {
+        final String effectiveCollectionName =
+                collectionName != null ? collectionName : connectionString.getCollection();
+        try {
+            // noinspection DataFlowIssue
+            MongoNamespace.checkCollectionNameValidity(effectiveCollectionName);
+        } catch (final IllegalArgumentException error) {
+            final String message = String.format("Invalid MongoDB collection name: `%s`", effectiveCollectionName);
+            throw new IllegalArgumentException(message, error);
+        }
+        return effectiveCollectionName;
     }
 
     @Override
