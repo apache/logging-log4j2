@@ -702,11 +702,19 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             super(
                     createPattern(secondDigits, separator, fractionalDigits),
                     determinePrecision(secondDigits, fractionalDigits));
-            if (secondDigits < 0 || secondDigits > 2) {
-                throw new IllegalArgumentException("Unsupported number of `s` pattern letters.");
+            final int maxSecondDigits = 2;
+            if (secondDigits > maxSecondDigits) {
+                final String message = String.format(
+                        "More than %d `s` pattern letters are not supported, found: %d",
+                        maxSecondDigits, secondDigits);
+                throw new IllegalArgumentException(message);
             }
-            if (fractionalDigits > 9) {
-                throw new IllegalArgumentException("Unsupported number of `S` pattern letters.");
+            final int maxFractionalDigits = 9;
+            if (fractionalDigits > maxFractionalDigits) {
+                final String message = String.format(
+                        "More than %d `S` pattern letters are not supported, found: %d",
+                        maxFractionalDigits, fractionalDigits);
+                throw new IllegalArgumentException(message);
             }
             this.secondDigits = secondDigits;
             this.separator = separator;
