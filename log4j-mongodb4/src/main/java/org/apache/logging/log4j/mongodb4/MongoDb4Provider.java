@@ -40,6 +40,8 @@ import org.bson.codecs.configuration.CodecRegistry;
 @Plugin(name = MongoDb4Provider.PLUGIN_NAME, category = Core.CATEGORY_NAME, printObject = true)
 public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection> {
 
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
     static final String PLUGIN_NAME = "MongoDb4";
 
     /**
@@ -68,8 +70,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
         @Override
         public MongoDb4Provider build() {
-            StatusLogger.getLogger()
-                    .warn("The {} Appender is deprecated, use the MongoDb Appender instead.", PLUGIN_NAME);
+            LOGGER.warn("The {} Appender is deprecated, use the MongoDb Appender instead.", PLUGIN_NAME);
             return newMongoDb4Provider();
         }
 
@@ -186,6 +187,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
         this.collectionName = getEffectiveCollectionName(connectionString, collectionName);
+        LOGGER.debug("instantiated {}", this);
     }
 
     private static ConnectionString createConnectionString(final String connectionStringSource) {
@@ -233,13 +235,12 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     @Override
     public String toString() {
         return String.format(
-                "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s, collectionName=%s]",
+                "%s [connectionString=`%s`, collectionSize=%s, isCapped=%s, databaseName=`%s`, collectionName=`%s`]",
                 MongoDb4Provider.class.getSimpleName(),
                 connectionString,
                 collectionSize,
                 isCapped,
-                mongoClient,
-                mongoDatabase,
+                mongoDatabase.getName(),
                 collectionName);
     }
 }
