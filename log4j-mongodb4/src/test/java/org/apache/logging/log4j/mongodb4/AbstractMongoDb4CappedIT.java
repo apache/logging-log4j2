@@ -24,6 +24,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.Document;
 
 abstract class AbstractMongoDb4CappedIT {
@@ -33,8 +34,9 @@ abstract class AbstractMongoDb4CappedIT {
         logger.info("Hello log");
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
         assertNotNull(database);
-        final MongoCollection<Document> collection =
-                database.getCollection(getClass().getSimpleName());
+        final String collectionName = getClass().getSimpleName();
+        StatusLogger.getLogger().debug("Using collection name: {}", collectionName);
+        final MongoCollection<Document> collection = database.getCollection(collectionName);
         assertNotNull(collection);
         final Document first = collection.find().first();
         assertNotNull(first);
