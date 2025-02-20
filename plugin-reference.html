@@ -1477,7 +1477,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -23792,8 +23792,10 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb capped=""
+         collectionName=""
          collectionSize=""
-         connection=""&gt;
+         connection=""
+         databaseName=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
 &lt;/MongoDb&gt;</code></pre>
@@ -23828,6 +23830,12 @@ toString(), or to output the value of a specific key within the property bundle 
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>long?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -23836,6 +23844,12 @@ toString(), or to output the value of a specific key within the property bundle 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>connection</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -23900,8 +23914,10 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MongoDb4 capped=""
+          collectionName=""
           collectionSize=""
-          connection=""&gt;
+          connection=""
+          databaseName=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
 &lt;/MongoDb4&gt;</code></pre>
@@ -23938,6 +23954,14 @@ toString(), or to output the value of a specific key within the property bundle 
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets name of the collection for the appender to output to</p>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>collectionSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>long?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -23954,6 +23978,14 @@ toString(), or to output the value of a specific key within the property bundle 
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the MongoDB connection string.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets the name of the logical database for the appender to output to.</p>
 </div></div></td>
 </tr>
 </tbody>

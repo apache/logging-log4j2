@@ -2819,12 +2819,27 @@ It supports the following configuration options:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-connection"></a>connection</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.mongodb.com/docs/manual/reference/connection-string/#standard-connection-string-format">Connection String</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the connection URI used to reach the server.</p>
-<p class="tableblock">See
-<a href="https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri">Connection URI documentation</a>
-for its format.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-databaseName"></a>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the name of the database for the appender to use.</p>
+<p class="tableblock">The database name can also be specified in <a href="#MongoDbProvider-attr-connection">the connection URI</a>.
+If both are provided, this <code>databaseName</code> attribute will be used.</p>
+<p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-collectionName"></a>collectionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the name of the collection for the appender to use.</p>
+<p class="tableblock">For backward compatibility, the collection name can also be specified in <a href="#MongoDbProvider-attr-connection">the connection URI</a> per <a href="https://mongodb.github.io/mongo-java-driver/5.3/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code> of the MongoDB Java Driver</a>.
+If both are provided, this <code>collectionName</code> attribute will be used.</p>
 <p class="tableblock"><strong>Required</strong></p></td>
 </tr>
 <tr>
@@ -2913,12 +2928,9 @@ It supports the following configuration attributes:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDb4Provider-attr-connection"></a>connection</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://mongodb.github.io/mongo-java-driver/5.1/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://mongodb.github.io/mongo-java-driver/5.3/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html"><code>ConnectionString</code></a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the connection URI used to reach the server.</p>
-<p class="tableblock">See
-<a href="https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/connect/#connection-uri">Connection URI documentation</a>
-for its format.</p>
 <p class="tableblock"><strong>Required</strong></p></td>
 </tr>
 <tr>
@@ -3206,7 +3218,9 @@ object.</p>
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
-  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/"
+           databaseName="logging"
+           collectionName="logs"/&gt;
 &lt;/NoSql&gt;</code></pre>
 </div>
 </div>
@@ -3218,7 +3232,9 @@ object.</p>
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
   "name": "MONGO",
   "MongoDb": {
-    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/",
+    "databaseName": "logging",
+    "collectionName": "logs"
   }
 }</code></pre>
 </div>
@@ -3231,7 +3247,9 @@ object.</p>
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
   name: "MONGO"
   MongoDb:
-    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"</code></pre>
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/"
+    databaseName: "logging"
+    collectionName: "logs"</code></pre>
 </div>
 </div>
 </div>
@@ -3242,7 +3260,9 @@ object.</p>
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.1.type = NoSql
 appender.1.name = MONGO
 appender.1.provider.type = MongoDB
-appender.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs</code></pre>
+appender.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/
+appender.1.provider.databaseName = logging
+appender.1.provider.collectionName = logs</code></pre>
 </div>
 </div>
 </div>
@@ -3497,7 +3517,9 @@ appender.0.provider.databaseName = logging</code></pre>
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
-  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/"
+           databaseName="logging"
+           collectionName="logs"/&gt;
   &lt;KeyValuePair key="startTime" value="${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
   &lt;KeyValuePair key="currentTime" value="$${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
 &lt;/NoSql&gt;</code></pre>
@@ -3511,7 +3533,9 @@ appender.0.provider.databaseName = logging</code></pre>
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
   "name": "MONGO",
   "MongoDb": {
-    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/",
+    "databaseName": "logging",
+    "collectionName": "logs"
   },
   "KeyValuePair": [
     {
@@ -3534,7 +3558,9 @@ appender.0.provider.databaseName = logging</code></pre>
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
   name: "MONGO"
   MongoDb:
-    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/"
+    databaseName: "logging"
+    collectionName: "logs"
   KeyValuePair:
     - key: "startTime"
       value: "${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3550,7 +3576,9 @@ appender.0.provider.databaseName = logging</code></pre>
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = NoSql
 appender.0.name = MONGO
 appender.0.provider.type = MongoDB
-appender.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs
+appender.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017
+appender.0.provider.databaseName = logging
+appender.0.provider.collectionName = logs
 
 appender.0.kv[0].type = KeyValuePair
 appender.0.kv[0].key = startTime
