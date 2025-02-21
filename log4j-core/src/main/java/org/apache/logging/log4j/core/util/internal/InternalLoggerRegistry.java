@@ -79,9 +79,21 @@ public final class InternalLoggerRegistry {
      * Removes a logger from the registry.
      */
     private void removeLogger(Reference<? extends Logger> loggerRef) {
+        Logger logger = loggerRef.get();
+        if (logger == null) return; // Logger already cleared
+
+        MessageFactory messageFactory = logger.getMessageFactory();
+        String name = logger.getName();
+
         writeLock.lock();
         try {
-            loggerRefByNameByMessageFactory.values().forEach(map -> map.values().removeIf(ref -> ref == loggerRef));
+            Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
+            if (loggerRefByName != null) {
+                loggerRefByName.remove(name);
+                if (loggerRefByName.isEmpty()) {
+                    loggerRefByNameByMessageFactory.remove(messageFactory); // Cleanup
+                }
+            }
         } finally {
             writeLock.unlock();
         }
