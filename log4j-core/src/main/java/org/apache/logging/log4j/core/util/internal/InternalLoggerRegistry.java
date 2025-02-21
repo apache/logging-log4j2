@@ -41,8 +41,12 @@ import org.jspecify.annotations.Nullable;
 /**
  * A registry of {@link Logger}s namespaced by name and message factory.
  * This class is internally used by {@link LoggerContext}.
- *
- * Handles automatic cleanup of stale logger references to prevent memory leaks.
+ * <p>
+ * We don't use {@linkplain org.apache.logging.log4j.spi.LoggerRegistry the
+ * registry from Log4j API} to keep Log4j Core independent from the version of
+ * Log4j API at runtime.
+ * This also allows Log4j Core to evolve independently from Log4j API.
+ * </p>
  *
  * @since 2.25.0
  */
@@ -85,6 +89,10 @@ public final class InternalLoggerRegistry {
 
     /**
      * Returns the logger associated with the given name and message factory.
+     *
+     * @param name           a logger name
+     * @param messageFactory a message factory
+     * @return the logger associated with the given name and message factory
      */
     public @Nullable Logger getLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
@@ -112,6 +120,9 @@ public final class InternalLoggerRegistry {
 
         readLock.lock();
         try {
+            // Return a new collection to allow concurrent iteration over the loggers
+            //
+            // https://github.com/apache/logging-log4j2/issues/3234
             return loggerRefByNameByMessageFactory.values().stream()
                     .flatMap(loggerRefByName -> loggerRefByName.values().stream())
                     .flatMap(loggerRef -> {
@@ -124,12 +135,27 @@ public final class InternalLoggerRegistry {
         }
     }
 
+    /**
+     * Checks if a logger associated with the given name and message factory exists.
+     *
+     * @param name           a logger name
+     * @param messageFactory a message factory
+     * @return {@code true}, if the logger exists; {@code false} otherwise.
+     */
     public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
         return getLogger(name, messageFactory) != null;
     }
 
+    /**
+     * Checks if a logger associated with the given name and message factory type
+     * exists.
+     *
+     * @param name                a logger name
+     * @param messageFactoryClass a message factory class
+     * @return {@code true}, if the logger exists; {@code false} otherwise.
+     */
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         requireNonNull(name, "name");
         requireNonNull(messageFactoryClass, "messageFactoryClass");
@@ -161,10 +187,30 @@ public final class InternalLoggerRegistry {
             return logger;
         }
 
+        // Intentionally moving the logger creation outside the write lock, because:
+        //
+        // - Logger instantiation is expensive (causes contention on the write-lock)
+        //
+        // - User code might have circular code paths, though through different threads.
+        // Consider `T1[ILR:computeIfAbsent] -> ... -> T1[Logger::new] -> ... ->
+        // T2[ILR::computeIfAbsent]`.
+        // Hence, having logger instantiation while holding a write lock might cause
+        // deadlocks:
+        // https://github.com/apache/logging-log4j2/issues/3252
+        // https://github.com/apache/logging-log4j2/issues/3399
+        //
+        // - Creating loggers without a lock, allows multiple threads to create loggers
+        // in parallel, which also improves
+        // performance.
+        //
+        // Since all loggers with the same parameters are equivalent, we can safely
+        // return the logger from the
+        // thread that finishes first.
         Logger newLogger = loggerSupplier.apply(name, messageFactory);
+
+        // Report name and message factory mismatch if there are any
         final String loggerName = newLogger.getName();
         final MessageFactory loggerMessageFactory = newLogger.getMessageFactory();
-
         if (!loggerName.equals(name) || !loggerMessageFactory.equals(messageFactory)) {
             StatusLogger.getLogger()
                     .error(
@@ -178,9 +224,11 @@ public final class InternalLoggerRegistry {
                             messageFactory);
         }
 
+        // Write lock slow path: Insert the logger
         writeLock.lock();
         try {
             Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
+            // noinspection Java8MapApi (avoid the allocation of lambda passed to `Map::computeIfAbsent`)
             if (loggerRefByName == null) {
                 loggerRefByNameByMessageFactory.put(messageFactory, loggerRefByName = new HashMap<>());
             }
