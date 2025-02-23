@@ -102,7 +102,7 @@ public final class InternalLoggerRegistry {
     /**
      * Returns the logger associated with the given name and message factory.
      *
-     * @param name           a logger name
+     * @param name a logger name
      * @param messageFactory a message factory
      * @return the logger associated with the given name and message factory
      */
@@ -150,7 +150,7 @@ public final class InternalLoggerRegistry {
     /**
      * Checks if a logger associated with the given name and message factory exists.
      *
-     * @param name           a logger name
+     * @param name a logger name
      * @param messageFactory a message factory
      * @return {@code true}, if the logger exists; {@code false} otherwise.
      */
@@ -161,10 +161,9 @@ public final class InternalLoggerRegistry {
     }
 
     /**
-     * Checks if a logger associated with the given name and message factory type
-     * exists.
+     * Checks if a logger associated with the given name and message factory type exists.
      *
-     * @param name                a logger name
+     * @param name a logger name
      * @param messageFactoryClass a message factory class
      * @return {@code true}, if the logger exists; {@code false} otherwise.
      */
@@ -188,12 +187,14 @@ public final class InternalLoggerRegistry {
             final MessageFactory messageFactory,
             final BiFunction<String, MessageFactory, Logger> loggerSupplier) {
 
+        // Check arguments
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
         requireNonNull(loggerSupplier, "loggerSupplier");
 
         expungeStaleEntries(); // Clean up before adding a new logger
 
+        // Read lock fast path: See if logger already exists
         @Nullable Logger logger = getLogger(name, messageFactory);
         if (logger != null) {
             return logger;
@@ -204,19 +205,15 @@ public final class InternalLoggerRegistry {
         // - Logger instantiation is expensive (causes contention on the write-lock)
         //
         // - User code might have circular code paths, though through different threads.
-        // Consider `T1[ILR:computeIfAbsent] -> ... -> T1[Logger::new] -> ... ->
-        // T2[ILR::computeIfAbsent]`.
-        // Hence, having logger instantiation while holding a write lock might cause
-        // deadlocks:
-        // https://github.com/apache/logging-log4j2/issues/3252
-        // https://github.com/apache/logging-log4j2/issues/3399
+        //   Consider `T1[ILR:computeIfAbsent] -> ... -> T1[Logger::new] -> ... -> T2[ILR::computeIfAbsent]`.
+        //   Hence, having logger instantiation while holding a write lock might cause deadlocks:
+        //   https://github.com/apache/logging-log4j2/issues/3252
+        //   https://github.com/apache/logging-log4j2/issues/3399
         //
-        // - Creating loggers without a lock, allows multiple threads to create loggers
-        // in parallel, which also improves
+        // - Creating loggers without a lock, allows multiple threads to create loggers in parallel, which also improves
         // performance.
         //
-        // Since all loggers with the same parameters are equivalent, we can safely
-        // return the logger from the
+        // Since all loggers with the same parameters are equivalent, we can safely return the logger from the
         // thread that finishes first.
         Logger newLogger = loggerSupplier.apply(name, messageFactory);
 
