@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3492" link="https://github.com/apache/logging-log4j2/pull/3492"/>
+  <issue id="3497" link="https://github.com/apache/logging-log4j2/pull/3497"/>
   <description format="asciidoc">Update `org.slf4j:slf4j-api` to version `2.0.17`</description>
 </entry>
