@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.core.util.AbstractWatcher;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.Source;
@@ -30,6 +33,7 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
 
     private File file;
     private long lastModifiedMillis;
+    private Map<File, Long> auxiliaryFiles = new HashMap<>();
 
     public ConfigurationFileWatcher(
             final Configuration configuration,
@@ -42,12 +46,23 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
 
     @Override
     public long getLastModified() {
-        return file != null ? file.lastModified() : 0;
+        Long latestModifiedAuxFile = 0L;
+        for (final File auxFile : auxiliaryFiles.keySet()) {
+            if (auxFile.lastModified() > latestModifiedAuxFile) {
+                latestModifiedAuxFile = auxFile.lastModified();
+            }
+        }
+
+        return file != null
+                ? file.lastModified() > latestModifiedAuxFile ? file.lastModified() : latestModifiedAuxFile
+                : 0;
     }
 
     @Override
     public void fileModified(final File file) {
         lastModifiedMillis = file.lastModified();
+        auxiliaryFiles.entrySet().stream()
+                .forEach(auxFile -> auxFile.setValue(auxFile.getKey().lastModified()));
     }
 
     @Override
@@ -57,9 +72,25 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
         super.watching(source);
     }
 
+    /**
+     * Called when the Watcher is registered.
+     * @param source the Source that is being watched.
+     * @param auxiliarySources auxiliary sources also being watched.
+     */
+    public void watching(final Source source, final Collection<Source> auxiliarySources) {
+        file = source.getFile();
+        lastModifiedMillis = file.lastModified();
+        auxiliarySources.forEach(auxSource -> {
+            auxiliaryFiles.put(auxSource.getFile(), auxSource.getFile().lastModified());
+        });
+        super.watching(source);
+    }
+
     @Override
     public boolean isModified() {
-        return lastModifiedMillis != file.lastModified();
+        return lastModifiedMillis != file.lastModified()
+                || auxiliaryFiles.entrySet().stream()
+                        .anyMatch(file -> file.getValue() != file.getKey().lastModified());
     }
 
     @Override
