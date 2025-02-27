@@ -17,16 +17,19 @@
 package org.apache.logging.log4j.core.config.builder.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Generic component that captures attributes and Components in preparation for assembling the Appender's
@@ -37,75 +40,125 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends ConfigurationBuilder<? extends Configuration>>
         implements ComponentBuilder<T> {
 
-    private final CB builder;
-    private final String type;
+    private final @NonNull CB builder;
+    private final @Nullable String name;
+    private final @NonNull String type;
+    private final @Nullable String value;
     private final Map<String, String> attributes = new LinkedHashMap<>();
     private final List<Component> components = new ArrayList<>();
-    private final String name;
-    private final String value;
 
-    public DefaultComponentBuilder(final CB builder, final String type) {
+    /**
+     * Constructs a component builder with the given configuration builder and type with {@code null} name and value.
+     * @param builder the configuration builder
+     * @param type the type (plugin-type) of the component being built
+     * @throws NullPointerException if either {@code builder} or {@code type} argument is null
+     */
+    public DefaultComponentBuilder(final @NonNull CB builder, final @NonNull String type) {
         this(builder, null, type, null);
     }
 
-    public DefaultComponentBuilder(final CB builder, final String name, final String type) {
+    /**
+     * Constructs a component builder with the given configuration builder, name, type, and {@code null} value.
+     * @param builder the configuration builder
+     * @param name the component name
+     * @param type the type (plugin-type) of the component being built
+     * @throws NullPointerException if either {@code builder} or {@code type} argument is null
+     */
+    public DefaultComponentBuilder(final @NonNull CB builder, final @Nullable String name, final @NonNull String type) {
         this(builder, name, type, null);
     }
 
-    public DefaultComponentBuilder(final CB builder, final String name, final String type, final String value) {
-        this.type = type;
-        this.builder = builder;
+    /**
+     * Constructs a component builder with the given configuration builder, name, type, and value.
+     * @param builder the configuration builder
+     * @param name the component name
+     * @param type the type (plugin-type) of the component being built
+     * @param value the component value
+     * @throws NullPointerException if either {@code builder} or {@code type} argument is null
+     */
+    public DefaultComponentBuilder(
+            final @NonNull CB builder,
+            final @Nullable String name,
+            final @NonNull String type,
+            final @Nullable String value) {
+        super();
+        this.builder = Objects.requireNonNull(builder, "The 'builder' argument must not be null.");
+        this.type = Objects.requireNonNull(type, "The 'type' argument must not be null.");
         this.name = name;
         this.value = value;
     }
 
     /** {@inheritDoc} */
     @Override
-    public T addAttribute(final String key, final boolean value) {
+    public @NonNull T addAttribute(final @NonNull String key, final boolean value) {
         return put(key, Boolean.toString(value));
     }
 
     /** {@inheritDoc} */
     @Override
-    public T addAttribute(final String key, final Enum<?> value) {
-        return put(key, Optional.ofNullable(value).map(Enum::name).orElse(null));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public T addAttribute(final String key, final int value) {
+    public @NonNull T addAttribute(final @NonNull String key, final int value) {
         return put(key, Integer.toString(value));
     }
 
     /** {@inheritDoc} */
     @Override
-    public T addAttribute(final String key, final Level level) {
+    public @NonNull T addAttribute(final @NonNull String key, final @Nullable Enum<?> value) {
+        return put(key, Optional.ofNullable(value).map(Enum::name).orElse(null));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public @NonNull T addAttribute(final @NonNull String key, final @Nullable Level level) {
         return put(key, Optional.ofNullable(level).map(Level::toString).orElse(null));
     }
 
     /** {@inheritDoc} */
     @Override
-    public T addAttribute(final String key, final Object value) {
+    public @NonNull T addAttribute(final @NonNull String key, final @Nullable Object value) {
         return put(key, Optional.ofNullable(value).map(Object::toString).orElse(null));
     }
 
     /** {@inheritDoc} */
     @Override
-    public T addAttribute(final String key, final String value) {
+    public @NonNull T addAttribute(final @NonNull String key, final @Nullable String value) {
         return put(key, value);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    @SuppressWarnings("unchecked")
-    public T addComponent(final ComponentBuilder<?> builder) {
-        components.add(builder.build());
-        return (T) this;
+    /**
+     * Gets the value of the component attribute with the given key.
+     *
+     * @param key the key
+     * @return the attribute value or {@code null} if not found
+     */
+    protected @Nullable String getAttribute(final @NonNull String key) {
+
+        Objects.requireNonNull(key, "The 'key' argument must not be null.");
+
+        return this.attributes.get(key);
+    }
+
+    /**
+     * Gets the map of key/value component attributes.
+     * <p>
+     *   The result map is guaranteed to have both non-{@code null} keys and values.
+     * </p>
+     * @return an <i>immutable</i> map of the key/value attributes
+     */
+    protected @NonNull Map<String, String> getAttributes() {
+        return Collections.unmodifiableMap(attributes);
     }
 
     /** {@inheritDoc} */
     @Override
-    public Component build() {
+    public @NonNull T addComponent(final @NonNull ComponentBuilder<?> builder) {
+        Objects.requireNonNull(builder, "The 'builder' argument must not be null.");
+        components.add(builder.build());
+        return self();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public @NonNull Component build() {
         final Component component = new Component(type, name, value);
         component.getAttributes().putAll(attributes);
         component.getComponents().addAll(components);
@@ -114,13 +167,13 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
 
     /** {@inheritDoc} */
     @Override
-    public CB getBuilder() {
+    public @NonNull CB getBuilder() {
         return builder;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
@@ -133,9 +186,11 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
      * @param key the key
      * @param value the value
      * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} argument is {@code null}
      */
-    @SuppressWarnings("unchecked")
-    protected T put(final String key, final String value) {
+    private @NonNull T put(final @NonNull String key, final @Nullable String value) {
+
+        Objects.requireNonNull(key, "The 'key' argument must not be null.");
 
         if (value != null) {
             attributes.put(key, value);
@@ -143,6 +198,28 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
             attributes.remove(key);
         }
 
+        return self();
+    }
+
+    /**
+     * Clears the internal state removing all configured attributes and components.
+     * <p>
+     *   This method is primarily intended to be used in testing.
+     * </p>
+     */
+    protected void clear() {
+        synchronized (this) {
+            attributes.clear();
+            components.clear();
+        }
+    }
+
+    /**
+     * Returns an instance of this builder cast to its generic type.
+     * @return this builder
+     */
+    @SuppressWarnings("unchecked")
+    protected @NonNull T self() {
         return (T) this;
     }
 }

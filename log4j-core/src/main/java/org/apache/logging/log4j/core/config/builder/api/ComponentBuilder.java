@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.config.builder.api;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Builder;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Builds arbitrary components and is the base type for the provided components.
@@ -35,9 +37,11 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * </p>
      * @param key The attribute key.
      * @param value The value of the attribute.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, String value);
+    @NonNull
+    T addAttribute(@NonNull String key, @Nullable String value);
 
     /**
      * Adds a logging Level attribute.
@@ -47,9 +51,11 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * </p>
      * @param key The attribute key.
      * @param level The logging Level.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, Level level);
+    @NonNull
+    T addAttribute(@NonNull String key, @Nullable Level level);
 
     /**
      * Adds an enumeration attribute.
@@ -59,25 +65,31 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * </p>
      * @param key The attribute key.
      * @param value The enumeration.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, Enum<?> value);
+    @NonNull
+    T addAttribute(@NonNull String key, @Nullable Enum<?> value);
 
     /**
      * Adds an integer attribute.
      * @param key The attribute key.
      * @param value The integer value.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, int value);
+    @NonNull
+    T addAttribute(@NonNull String key, int value);
 
     /**
      * Adds a boolean attribute.
      * @param key The attribute key.
      * @param value The boolean value.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, boolean value);
+    @NonNull
+    T addAttribute(@NonNull String key, boolean value);
 
     /**
      * Adds an Object attribute.
@@ -87,26 +99,32 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * </p>
      * @param key The attribute key.
      * @param value The object value.
-     * @return This ComponentBuilder.
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T addAttribute(String key, Object value);
+    @NonNull
+    T addAttribute(@NonNull String key, @Nullable Object value);
 
     /**
      * Adds a sub component.
      * @param builder The Assembler for the subcomponent with all of its attributes and sub-components set.
-     * @return This ComponentBuilder (<em>not</em> the argument).
+     * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code builder} is {@code null}
      */
-    T addComponent(ComponentBuilder<?> builder);
+    @NonNull
+    T addComponent(@NonNull ComponentBuilder<?> builder);
 
     /**
-     * Returns the name of the component, if any.
-     * @return The component's name or null if it doesn't have one.
+     * Returns the name of the component.
+     * @return The component's name or {@code null} if it doesn't have one.
      */
+    @Nullable
     String getName();
 
     /**
-     * Retrieves the ConfigurationBuilder.
+     * Retrieves the {@code ConfigurationBuilder}.
      * @return The ConfigurationBuilder.
      */
+    @NonNull
     ConfigurationBuilder<? extends Configuration> getBuilder();
 }
