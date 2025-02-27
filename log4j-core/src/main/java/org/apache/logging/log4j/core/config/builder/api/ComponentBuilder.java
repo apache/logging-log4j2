@@ -29,6 +29,10 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Adds a String attribute.
+     * <p>
+     *   If the given {@code level} value is {@code null}, the component attribute with the given key
+     *   will be removed (if present).
+     * </p>
      * @param key The attribute key.
      * @param value The value of the attribute.
      * @return This ComponentBuilder.
@@ -37,6 +41,10 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Adds a logging Level attribute.
+     * <p>
+     *   If the given {@code level} value is {@code null}, the component attribute with the given key
+     *   will be removed (if present).
+     * </p>
      * @param key The attribute key.
      * @param level The logging Level.
      * @return This ComponentBuilder.
@@ -45,6 +53,10 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Adds an enumeration attribute.
+     * <p>
+     *   If the given {@code level} value is {@code null}, the component attribute with the given key
+     *   will be removed (if present).
+     * </p>
      * @param key The attribute key.
      * @param value The enumeration.
      * @return This ComponentBuilder.
@@ -69,6 +81,10 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Adds an Object attribute.
+     * <p>
+     *   If the given {@code value} is {@code null}, the component attribute with the given key
+     *   will be removed (if present).
+     * </p>
      * @param key The attribute key.
      * @param value The object value.
      * @return This ComponentBuilder.
