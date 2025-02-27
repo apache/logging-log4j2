@@ -90,7 +90,7 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public static class </span><span class="element-name type-name-label">TypeConverters.LevelConverter</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="TypeConverter.html" title="interface in org.apache.logging.log4j.core.config.plugins.convert">TypeConverter</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</span></div>
-<div class="block">Converts a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> into a Log4j <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a>. Returns <code>null</code> for invalid level names.</div>
+<div class="block">Converts a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link"><code>String</code></a> into a Log4j <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level</code></a>.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -158,15 +158,17 @@ implements <a href="TypeConverter.html" title="interface in org.apache.logging.l
 <section class="detail" id="convert(java.lang.String)">
 <h3>convert</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a></span>&nbsp;<span class="element-name">convert</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;s)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="TypeConverter.html#convert(java.lang.String)">TypeConverter</a></code></span></div>
 <div class="block">Converts a String to a given type.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="TypeConverter.html#convert(java.lang.String)">convert</a></code>&nbsp;in interface&nbsp;<code><a href="TypeConverter.html" title="interface in org.apache.logging.log4j.core.config.plugins.convert">TypeConverter</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&gt;</code></dd>
 <dt>Parameters:</dt>
-<dd><code>s</code> - the String to convert. Cannot be <code>null</code>.</dd>
+<dd><code>s</code> - the string to convert</dd>
 <dt>Returns:</dt>
-<dd>the converted object.</dd>
+<dd>the resolved level</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given value is <code>null</code>.</dd>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if the given argument is not resolvable to a level</dd>
 </dl>
 </section>
 </li>
