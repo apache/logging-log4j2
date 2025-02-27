@@ -91,37 +91,38 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final boolean value) {
-        return put(key, Boolean.toString(value));
+        return putAttribute(key, Boolean.toString(value));
     }
 
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final int value) {
-        return put(key, Integer.toString(value));
+        return putAttribute(key, Integer.toString(value));
     }
 
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final @Nullable Enum<?> value) {
-        return put(key, Optional.ofNullable(value).map(Enum::name).orElse(null));
+        return putAttribute(key, Optional.ofNullable(value).map(Enum::name).orElse(null));
     }
 
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final @Nullable Level level) {
-        return put(key, Optional.ofNullable(level).map(Level::toString).orElse(null));
+        return putAttribute(key, Optional.ofNullable(level).map(Level::toString).orElse(null));
     }
 
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final @Nullable Object value) {
-        return put(key, Optional.ofNullable(value).map(Object::toString).orElse(null));
+        return putAttribute(
+                key, Optional.ofNullable(value).map(Object::toString).orElse(null));
     }
 
     /** {@inheritDoc} */
     @Override
     public @NonNull T addAttribute(final @NonNull String key, final @Nullable String value) {
-        return put(key, value);
+        return putAttribute(key, value);
     }
 
     /**
@@ -188,7 +189,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} argument is {@code null}
      */
-    private @NonNull T put(final @NonNull String key, final @Nullable String value) {
+    private @NonNull T putAttribute(final @NonNull String key, final @Nullable String value) {
 
         Objects.requireNonNull(key, "The 'key' argument must not be null.");
 
