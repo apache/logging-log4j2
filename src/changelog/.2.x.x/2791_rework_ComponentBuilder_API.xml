@@ -5,7 +5,8 @@
        type="changed">
   <issue id="2791" link="https://github.com/apache/logging-log4j2/issues/2791"/>
   <description format="asciidoc">
-    Fix problem when null attribute values are set on DefaultComponentBuilder.
-    GitHub issue #2791.
+    Fix problem when null attribute values are set on DefaultComponentBuilder. GitHub issue #2791.
+    Added JVerify annotations to config.builder.* packages.
+    Updated Builder APIs and Default***Builder implementations.
   </description>
 </entry>
