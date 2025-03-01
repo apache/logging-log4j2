@@ -57,7 +57,7 @@ class NoLanguagesTest {
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newScriptFile("filter.groovy", "target/test-classes/scripts/filter.groovy")
-                .addIsWatched(true));
+                .setIsWatchedAttribute(true));
         final AppenderComponentBuilder appenderBuilder =
                 builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout")

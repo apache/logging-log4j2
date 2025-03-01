@@ -40,7 +40,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
-                .addIsWatched(true));
+                .setIsWatchedAttribute(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .addAttribute("level", Level.DEBUG));
 

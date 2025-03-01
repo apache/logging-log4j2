@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests: {@link DefaultComponentBuilder}.
  */
-@SuppressWarnings("DataFlowIssue")
+@SuppressWarnings({"DataFlowIssue", "RedundantCast"})
 class DefaultComponentBuilderTest {
 
     private final DefaultComponentBuilder<?, ?> builder =

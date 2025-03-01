@@ -16,8 +16,17 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.config.LoggerConfig.RootLogger;
+
 /**
- * Assembler for constructing the root Logger Components.
+ * A builder interface for constructing and configuring {@link RootLogger} components in a Log4j
+ * configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.4
  */
 public interface RootLoggerComponentBuilder extends LoggableComponentBuilder<RootLoggerComponentBuilder> {}
