@@ -100,7 +100,7 @@ class AsyncLoggerConfigTest {
                 .withLoggerName(FQCN)
                 .withConfig(configuration)
                 .withLevel(Level.INFO)
-                .withFilter(filter)
+                .setFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);
         when(appender.isStarted()).thenReturn(true);

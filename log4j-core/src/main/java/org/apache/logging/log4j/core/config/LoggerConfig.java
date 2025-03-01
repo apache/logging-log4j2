@@ -214,15 +214,20 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated Use {@link #withFilter(Filter)} instead
+         * @deprecated Use {@link #setFilter(Filter)} instead
          */
         @Deprecated
         public B withtFilter(final Filter filter) {
-            this.filter = filter;
-            return asBuilder();
+            return setFilter(filter);
         }
 
+        /** @deprecated Use {@link #setFilter(Filter)} instead. */
+        @Deprecated
         public B withFilter(final Filter filter) {
+            return setFilter(filter);
+        }
+
+        public B setFilter(final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -945,7 +950,15 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
+            /**
+             * @deprecated Use {@link #setFilter(Filter)} instead
+             */
+            @Deprecated
             public B withtFilter(final Filter filter) {
+                return setFilter(filter);
+            }
+
+            public B setFilter(final Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
