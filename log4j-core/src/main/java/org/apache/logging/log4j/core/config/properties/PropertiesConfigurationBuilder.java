@@ -187,9 +187,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             builder.add(createRootLogger(props));
         }
 
-        builder.setLoggerContext(loggerContext);
-
-        return builder.build(false);
+        return builder.setLoggerContext(loggerContext).build(false);
     }
 
     private ScriptComponentBuilder createScript(final Properties properties) {

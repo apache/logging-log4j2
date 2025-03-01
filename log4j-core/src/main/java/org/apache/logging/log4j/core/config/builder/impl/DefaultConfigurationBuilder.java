@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -698,8 +699,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     /** {@inheritDoc} */
     @Override
-    public void setLoggerContext(final @Nullable LoggerContext loggerContext) {
+    @BaselineIgnore("2.25.0")
+    public ConfigurationBuilder<T> setLoggerContext(final @Nullable LoggerContext loggerContext) {
         this.loggerContext = loggerContext;
+        return this;
     }
 
     /**
