@@ -47,9 +47,9 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final String lastValue = "foobar";
 
-        builder.addAttribute(key, Level.ERROR);
-        builder.addAttribute(key, State.INITIALIZING);
-        builder.addAttribute(key, lastValue);
+        builder.setAttribute(key, Level.ERROR);
+        builder.setAttribute(key, State.INITIALIZING);
+        builder.setAttribute(key, lastValue);
 
         assertEquals(
                 lastValue,
@@ -67,7 +67,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final boolean booleanValue = true;
 
-        builder.addAttribute(key, booleanValue);
+        builder.setAttribute(key, booleanValue);
 
         assertEquals(
                 Boolean.toString(booleanValue),
@@ -80,7 +80,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, true),
+                () -> builder.setAttribute((String) null, true),
                 "addAttribute(String, boolean) should throw an exception with null key");
     }
 
@@ -90,7 +90,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final int value = 5;
 
-        builder.addAttribute(key, value);
+        builder.setAttribute(key, value);
 
         assertEquals(
                 Integer.toString(value),
@@ -103,7 +103,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, 5),
+                () -> builder.setAttribute((String) null, 5),
                 "addAttribute(String, int) should throw an exception with null key");
     }
 
@@ -113,7 +113,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final State enumValue = State.INITIALIZING;
 
-        builder.addAttribute(key, enumValue);
+        builder.setAttribute(key, enumValue);
 
         assertEquals(
                 enumValue.name(),
@@ -126,7 +126,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, State.INITIALIZING),
+                () -> builder.setAttribute((String) null, State.INITIALIZING),
                 "addAttribute(String, Enum) should throw an exception with null key");
     }
 
@@ -135,8 +135,8 @@ class DefaultComponentBuilderTest {
 
         final String key = "k1";
 
-        builder.addAttribute(key, "foobar");
-        builder.addAttribute(key, (State) null);
+        builder.setAttribute(key, "foobar");
+        builder.setAttribute(key, (State) null);
 
         assertFalse(
                 builder.getAttributes().containsKey(key),
@@ -149,7 +149,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final Level levelValue = Level.ERROR;
 
-        builder.addAttribute(key, levelValue);
+        builder.setAttribute(key, levelValue);
 
         assertEquals(
                 levelValue.toString(),
@@ -162,7 +162,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, Level.ERROR),
+                () -> builder.setAttribute((String) null, Level.ERROR),
                 "addAttribute(String, Level) should throw an exception with null key");
     }
 
@@ -171,8 +171,8 @@ class DefaultComponentBuilderTest {
 
         final String key = "k1";
 
-        builder.addAttribute(key, "foobar");
-        builder.addAttribute(key, (Level) null);
+        builder.setAttribute(key, "foobar");
+        builder.setAttribute(key, (Level) null);
 
         assertFalse(
                 builder.getAttributes().containsKey(key),
@@ -185,7 +185,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final Long objectValue = 50L;
 
-        builder.addAttribute(key, objectValue);
+        builder.setAttribute(key, objectValue);
 
         assertEquals(
                 objectValue.toString(),
@@ -198,7 +198,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, 50L),
+                () -> builder.setAttribute((String) null, 50L),
                 "addAttribute(String, Object) should throw an exception with null key");
     }
 
@@ -207,8 +207,8 @@ class DefaultComponentBuilderTest {
 
         final String key = "k1";
 
-        builder.addAttribute(key, "foobar");
-        builder.addAttribute(key, (Long) null);
+        builder.setAttribute(key, "foobar");
+        builder.setAttribute(key, (Long) null);
 
         assertFalse(
                 builder.getAttributes().containsKey(key),
@@ -221,7 +221,7 @@ class DefaultComponentBuilderTest {
         final String key = "k1";
         final String stringValue = "foobar";
 
-        builder.addAttribute(key, stringValue);
+        builder.setAttribute(key, stringValue);
 
         assertEquals(
                 stringValue,
@@ -234,7 +234,7 @@ class DefaultComponentBuilderTest {
 
         assertThrows(
                 NullPointerException.class,
-                () -> builder.addAttribute((String) null, "foobar"),
+                () -> builder.setAttribute((String) null, "foobar"),
                 "addAttribute(String, Enum) should throw an exception with null key");
     }
 
@@ -243,8 +243,8 @@ class DefaultComponentBuilderTest {
 
         final String key = "k1";
 
-        builder.addAttribute(key, "foobar");
-        builder.addAttribute(key, (String) null);
+        builder.setAttribute(key, "foobar");
+        builder.setAttribute(key, (String) null);
 
         assertFalse(
                 builder.getAttributes().containsKey(key),

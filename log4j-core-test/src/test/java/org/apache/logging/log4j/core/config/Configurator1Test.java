@@ -55,7 +55,6 @@ import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
@@ -291,7 +290,7 @@ class Configurator1Test {
         assertTrue(file.setLastModified(System.currentTimeMillis()), "setLastModified should have succeeded.");
         TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds() + 1);
         for (int i = 0; i < 100; ++i) {
-            logger.debug("Test message " + i);
+            logger.debug("Test message {}", i);
         }
 
         // Sleep and check
@@ -405,21 +404,21 @@ class Configurator1Test {
 
     @Test
     void testBuilder() {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
-                .addAttribute("level", Level.DEBUG));
+                .setAttribute("level", Level.DEBUG));
         final AppenderComponentBuilder appenderBuilder =
-                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+                builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(
-                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+                builder.newLayout("PatternLayout").setAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
-                .addAttribute("marker", "FLOW"));
+                .setAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
                 .add(builder.newAppenderRef("Stdout"))
-                .addAttribute("additivity", false));
+                .setAdditivityAttribute(false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();
@@ -430,25 +429,25 @@ class Configurator1Test {
 
     @Test
     void testRolling() {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("RollingBuilder");
         // create the console appender
         AppenderComponentBuilder appenderBuilder =
-                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+                builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(
-                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+                builder.newLayout("PatternLayout").setAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         builder.add(appenderBuilder);
 
         final LayoutComponentBuilder layoutBuilder =
-                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n");
-        final ComponentBuilder triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("CronTriggeringPolicy").addAttribute("schedule", "0 0 0 * * ?"))
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100M"));
+                builder.newLayout("PatternLayout").setAttribute("pattern", "%d [%t] %-5level: %msg%n");
+        final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
+                .addComponent(builder.newComponent("CronTriggeringPolicy").setAttribute("schedule", "0 0 0 * * ?"))
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").setAttribute("size", "100M"));
         appenderBuilder = builder.newAppender("rolling", "RollingFile")
-                .addAttribute("fileName", "target/rolling.log")
-                .addAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
+                .setAttribute("fileName", "target/rolling.log")
+                .setAttribute("filePattern", "target/archive/rolling-%d{MM-dd-yy}.log.gz")
                 .add(layoutBuilder)
                 .addComponent(triggeringPolicy);
         builder.add(appenderBuilder);
@@ -456,7 +455,7 @@ class Configurator1Test {
         // create the new logger
         builder.add(builder.newLogger("TestLogger", Level.DEBUG)
                 .add(builder.newAppenderRef("rolling"))
-                .addAttribute("additivity", false));
+                .setAdditivityAttribute(false));
 
         builder.add(builder.newRootLogger(Level.DEBUG).add(builder.newAppenderRef("rolling")));
         final Configuration config = builder.build();
@@ -464,8 +463,8 @@ class Configurator1Test {
         assertNotNull(config.getAppender("rolling"), "No rolling file appender");
         assertEquals("RollingBuilder", config.getName(), "Unexpected Configuration");
         // Initialize the new configuration
-        final LoggerContext ctx = Configurator.initialize(config);
-        Configurator.shutdown(ctx);
+        final LoggerContext tCtx = Configurator.initialize(config);
+        Configurator.shutdown(tCtx);
     }
 
     @Test
@@ -477,30 +476,30 @@ class Configurator1Test {
                         + "            } else {\n"
                         + "                return null;\n"
                         + "            }";
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newScriptFile("filter.groovy", "target/test-classes/scripts/filter.groovy")
                 .setIsWatchedAttribute(true));
         final AppenderComponentBuilder appenderBuilder =
-                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+                builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout")
                 .addComponent(builder.newComponent("ScriptPatternSelector")
-                        .addAttribute("defaultPattern", "[%-5level] %c{1.} %C{1.}.%M.%L %msg%n")
+                        .setAttribute("defaultPattern", "[%-5level] %c{1.} %C{1.}.%M.%L %msg%n")
                         .addComponent(builder.newComponent("PatternMatch")
-                                .addAttribute("key", "NoLocation")
-                                .addAttribute("pattern", "[%-5level] %c{1.} %msg%n"))
+                                .setAttribute("key", "NoLocation")
+                                .setAttribute("pattern", "[%-5level] %c{1.} %msg%n"))
                         .addComponent(builder.newComponent("PatternMatch")
-                                .addAttribute("key", "FLOW")
-                                .addAttribute("pattern", "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"))
+                                .setAttribute("key", "FLOW")
+                                .setAttribute("pattern", "[%-5level] %c{1.} ====== %C{1.}.%M:%L %msg ======%n"))
                         .addComponent(builder.newComponent("selectorScript", "Script", script)
-                                .addAttribute("language", "beanshell"))));
+                                .setAttribute("language", "beanshell"))));
         appenderBuilder.add(builder.newFilter("ScriptFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
-                .addComponent(builder.newComponent("ScriptRef").addAttribute("ref", "filter.groovy")));
+                .addComponent(builder.newComponent("ScriptRef").setAttribute("ref", "filter.groovy")));
         builder.add(appenderBuilder);
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
                 .add(builder.newAppenderRef("Stdout"))
-                .addAttribute("additivity", false));
+                .setAdditivityAttribute(false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();

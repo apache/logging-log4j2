@@ -42,7 +42,6 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
@@ -219,24 +218,21 @@ class SocketAppenderReconnectTest {
             final int server1Port = server1.getServerSocket().getLocalPort();
 
             // Create the configuration transformer to add the `<Ssl>`, `<KeyStore>`, and `<TrustStore>` elements
-            final BiFunction<
-                            ConfigurationBuilder<BuiltConfiguration>,
-                            AppenderComponentBuilder,
-                            AppenderComponentBuilder>
+            final BiFunction<ConfigurationBuilder<?>, AppenderComponentBuilder, AppenderComponentBuilder>
                     appenderComponentBuilderTransformer = (configBuilder, appenderComponentBuilder) -> {
                         final ComponentBuilder<?> keyStoreComponentBuilder = configBuilder
                                 .newComponent("KeyStore")
-                                .addAttribute("type", keyStoreType)
-                                .addAttribute("location", keyStoreFilePath.toString())
-                                .addAttribute("passwordFile", keyStorePasswordFilePath);
+                                .setAttribute("type", keyStoreType)
+                                .setAttribute("location", keyStoreFilePath.toString())
+                                .setAttribute("passwordFile", keyStorePasswordFilePath);
                         final ComponentBuilder<?> trustStoreComponentBuilder = configBuilder
                                 .newComponent("TrustStore")
-                                .addAttribute("type", trustStoreType)
-                                .addAttribute("location", trustStoreFilePath.toString())
-                                .addAttribute("passwordFile", trustStorePasswordFilePath);
+                                .setAttribute("type", trustStoreType)
+                                .setAttribute("location", trustStoreFilePath.toString())
+                                .setAttribute("passwordFile", trustStorePasswordFilePath);
                         return appenderComponentBuilder.addComponent(configBuilder
                                 .newComponent("Ssl")
-                                .addAttribute("protocol", "TLS")
+                                .setAttribute("protocol", "TLS")
                                 .addComponent(keyStoreComponentBuilder)
                                 .addComponent(trustStoreComponentBuilder));
                     };
@@ -301,27 +297,23 @@ class SocketAppenderReconnectTest {
             final String host,
             final int port,
             @Nullable
-                    final BiFunction<
-                                    ConfigurationBuilder<BuiltConfiguration>,
-                                    AppenderComponentBuilder,
-                                    AppenderComponentBuilder>
+                    final BiFunction<ConfigurationBuilder<?>, AppenderComponentBuilder, AppenderComponentBuilder>
                             appenderComponentBuilderTransformer) {
 
         // Create the configuration builder
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder()
-                        .setStatusLevel(Level.ERROR)
-                        .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .setStatusLevel(Level.ERROR)
+                .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
 
         // Create the appender configuration
         final AppenderComponentBuilder appenderComponentBuilder = configBuilder
                 .newAppender(APPENDER_NAME, "Socket")
-                .addAttribute("host", host)
-                .addAttribute("port", port)
-                .addAttribute("ignoreExceptions", false)
-                .addAttribute("reconnectionDelayMillis", 10)
-                .addAttribute("immediateFlush", true)
-                .add(configBuilder.newLayout("PatternLayout").addAttribute("pattern", "%m%n"));
+                .setAttribute("host", host)
+                .setAttribute("port", port)
+                .setAttribute("ignoreExceptions", false)
+                .setAttribute("reconnectionDelayMillis", 10)
+                .setAttribute("immediateFlush", true)
+                .add(configBuilder.newLayout("PatternLayout").setAttribute("pattern", "%m%n"));
         final AppenderComponentBuilder transformedAppenderComponentBuilder = appenderComponentBuilderTransformer != null
                 ? appenderComponentBuilderTransformer.apply(configBuilder, appenderComponentBuilder)
                 : appenderComponentBuilder;
@@ -406,7 +398,7 @@ class SocketAppenderReconnectTest {
         // Verify the failure
         for (int i = 0; i < retryCount; i++) {
             try {
-                logger.info("should fail #" + i);
+                logger.info("should fail #{}", i);
                 fail("should have failed #" + i);
             } catch (final AppenderLoggingException ignored) {
                 assertThat(errorHandler.getBuffer()).hasSize(2 * (i + 1));

@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 /**
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
@@ -36,33 +35,33 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 // @Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
-    static Configuration addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
+    static Configuration addTestFixtures(final String name, final ConfigurationBuilder<?> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
                 .setIsWatchedAttribute(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
-                .addAttribute("level", Level.DEBUG));
+                .setAttribute("level", Level.DEBUG));
 
         final AppenderComponentBuilder appenderBuilder =
-                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+                builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(
-                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+                builder.newLayout("PatternLayout").setAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
-                .addAttribute("marker", "FLOW"));
+                .setAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
 
         final AppenderComponentBuilder appenderBuilder2 =
-                builder.newAppender("Kafka", "Kafka").addAttribute("topic", "my-topic");
+                builder.newAppender("Kafka", "Kafka").setAttribute("topic", "my-topic");
         appenderBuilder2.addComponent(builder.newProperty("bootstrap.servers", "localhost:9092"));
         appenderBuilder2.add(builder.newLayout("GelfLayout")
-                .addAttribute("host", "my-host")
+                .setAttribute("host", "my-host")
                 .addComponent(builder.newKeyValuePair("extraField", "extraValue")));
         builder.add(appenderBuilder2);
 
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
                 .add(builder.newAppenderRef("Stdout"))
-                .addAttribute("additivity", false));
+                .setAdditivityAttribute(false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.add(builder.newCustomLevel("Panic", 17));
@@ -78,7 +77,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation) {
-        final ConfigurationBuilder<BuiltConfiguration> builder = newConfigurationBuilder();
+        final ConfigurationBuilder<?> builder = newConfigurationBuilder();
         return addTestFixtures(name, builder);
     }
 
