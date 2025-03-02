@@ -39,8 +39,8 @@ import org.junit.jupiter.api.Test;
 
 public class RegexFilterTest {
     @BeforeAll
-    public static void before() {
-        StatusLogger.getLogger().setLevel(Level.OFF);
+    static void before() {
+        StatusLogger.getLogger().getFallbackListener().setLevel(Level.OFF);
     }
 
     @Test
@@ -154,8 +154,6 @@ public class RegexFilterTest {
                 .setOnMatch(Result.ACCEPT)
                 .setOnMismatch(Result.DENY);
 
-        assertTrue(builder.isValid());
-
         final RegexFilter filter = builder.build();
 
         assertNotNull(filter);
@@ -197,8 +195,6 @@ public class RegexFilterTest {
 
         final RegexFilter.Builder builder = RegexFilter.newBuilder();
 
-        assertFalse(builder.isValid());
-
         assertNull(builder.build());
     }
 
@@ -211,8 +207,6 @@ public class RegexFilterTest {
         final RegexFilter.Builder builder = RegexFilter.newBuilder();
 
         builder.setRegex("[a-z");
-
-        assertFalse(builder.isValid());
 
         assertNull(builder.build());
     }
