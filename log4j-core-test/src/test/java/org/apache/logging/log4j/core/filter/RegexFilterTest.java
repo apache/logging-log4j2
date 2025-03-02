@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.Level;
@@ -94,11 +93,10 @@ public class RegexFilterTest {
     @Test
     void testNoMsg() {
 
-        final RegexFilter filter =
-            RegexFilter.newBuilder()
-                       .setRegex(".* test .*")
-                       .setUseRawMsg(false)
-                       .build();
+        final RegexFilter filter = RegexFilter.newBuilder()
+                .setRegex(".* test .*")
+                .setUseRawMsg(false)
+                .build();
 
         assertNotNull(filter);
 
@@ -116,13 +114,12 @@ public class RegexFilterTest {
         final Object[] params = {"foo", "bar"};
 
         // match against raw message
-        final RegexFilter rawFilter =
-            RegexFilter.newBuilder()
-                       .setRegex("params \\{\\} \\{\\}")
-                       .setUseRawMsg(true)
-                       .setOnMatch(Result.ACCEPT)
-                       .setOnMismatch(Result.DENY)
-                       .build();
+        final RegexFilter rawFilter = RegexFilter.newBuilder()
+                .setRegex("params \\{\\} \\{\\}")
+                .setUseRawMsg(true)
+                .setOnMatch(Result.ACCEPT)
+                .setOnMismatch(Result.DENY)
+                .build();
 
         assertNotNull(rawFilter);
 
@@ -130,12 +127,12 @@ public class RegexFilterTest {
         assertThat(rawResult, equalTo(Result.ACCEPT));
 
         // match against formatted message
-        final RegexFilter fmtFilter =
-            RegexFilter.newBuilder()
-                       .setRegex("params foo bar")
-                       .setUseRawMsg(false)
-                       .setOnMatch(Result.ACCEPT)
-                       .setOnMismatch(Result.DENY).build();
+        final RegexFilter fmtFilter = RegexFilter.newBuilder()
+                .setRegex("params foo bar")
+                .setUseRawMsg(false)
+                .setOnMatch(Result.ACCEPT)
+                .setOnMismatch(Result.DENY)
+                .build();
 
         assertNotNull(fmtFilter);
 
@@ -151,8 +148,11 @@ public class RegexFilterTest {
 
         final String regex = "^[a-zA-Z0-9_]+$"; // matches alphanumeric with underscores
 
-        final RegexFilter.Builder builder =
-            RegexFilter.newBuilder().setRegex(regex).setUseRawMsg(false).setOnMatch(Result.ACCEPT).setOnMismatch(Result.DENY);
+        final RegexFilter.Builder builder = RegexFilter.newBuilder()
+                .setRegex(regex)
+                .setUseRawMsg(false)
+                .setOnMatch(Result.ACCEPT)
+                .setOnMismatch(Result.DENY);
 
         assertTrue(builder.isValid());
 
@@ -172,13 +172,12 @@ public class RegexFilterTest {
 
         final String regex = "^[a-zA-Z0-9_]+$"; // matches alphanumeric with underscores
 
-        final RegexFilter filter =
-            RegexFilter.newBuilder()
-                       .setRegex(regex)
-                       .setUseRawMsg(false)
-                       .setOnMatch(Result.ACCEPT)
-                       .setOnMismatch(Result.DENY)
-                       .build();
+        final RegexFilter filter = RegexFilter.newBuilder()
+                .setRegex(regex)
+                .setUseRawMsg(false)
+                .setOnMatch(Result.ACCEPT)
+                .setOnMismatch(Result.DENY)
+                .build();
 
         assertNotNull(filter);
 
@@ -201,7 +200,6 @@ public class RegexFilterTest {
         assertFalse(builder.isValid());
 
         assertNull(builder.build());
-
     }
 
     /**
@@ -217,6 +215,5 @@ public class RegexFilterTest {
         assertFalse(builder.isValid());
 
         assertNull(builder.build());
-
     }
 }

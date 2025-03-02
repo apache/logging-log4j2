@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -33,23 +32,22 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.message.StringFormattedMessage;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
- * This filter returns the onMatch result if the message matches the regular expression.
- *
- * The "useRawMsg" attribute can be used to indicate whether the regular expression should be applied to the result of
- * calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.
- *
+ * This filter returns the {@code onMatch} result if the message exactly matches the configured
+ * "{@code regex}" regular-expression pattern; otherwise, it returns the {@code onMismatch} result.
  */
-@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
-@Plugin
+@Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@NullMarked
 public final class RegexFilter extends AbstractFilter {
 
     /** The pattern compiled from the regular-expression. */
@@ -61,11 +59,15 @@ public final class RegexFilter extends AbstractFilter {
     /**
      * Constructs a new {@code RegexFilter} configured by the given builder.
      * @param builder the builder
-     * @throws IllegalArgumentException if the regular expression cannot be compiled to a pattern
+     * @throws IllegalArgumentException if the regular expression is not configured or cannot be compiled to a pattern
      */
     private RegexFilter(final Builder builder) {
 
         super(builder);
+
+        if (Strings.isNotBlank(builder.regex)) {
+            throw new IllegalArgumentException("The 'regex' attribute must not be null or empty.");
+        }
 
         this.useRawMessage = Boolean.TRUE.equals(builder.useRawMsg);
 
@@ -77,14 +79,6 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     /**
-     * Returns the regular-expression.
-     * @return the regular-expression (it may be an empty string but never {@code null})
-     */
-    public String getRegex() {
-        return this.pattern.pattern();
-    }
-
-    /**
      * Returns the compiled regular-expression pattern.
      * @return the pattern (will never be {@code null}
      */
@@ -93,58 +87,122 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     /**
+     * Returns the regular-expression.
+     * @return the regular-expression (it may be an empty string but never {@code null})
+     */
+    public String getRegex() {
+        return this.pattern.pattern();
+    }
+
+    /**
      * Returns whether the raw-message should be used.
-     * @return {@code} if the raw message should be used; otherwise, {@code false}
+     * @return {@code true} if the raw message should be used; otherwise, {@code false}
      */
     public boolean isUseRawMessage() {
         return this.useRawMessage;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     *   This implementation performs the filter evaluation against the given message formatted with
+     *   the given parameters.
+     * </p>
+     * <p>
+     *   The following method arguments are ignored by this filter method implementation:
+     *   <ul>
+     *     <li>{@code logger}</li>
+     *     <li>{@code level}</li>
+     *     <li>{@code marker}</li>
+     *   </ul>
+     * </p>
+     */
     @Override
     public Result filter(
-            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
+            final @Nullable Logger logger,
+            final @Nullable Level level,
+            final @Nullable Marker marker,
+            final @Nullable String msg,
+            final @Nullable Object @Nullable ... params) {
+
         return (useRawMessage || params == null || params.length == 0)
                 ? filter(msg)
                 : filter(ParameterizedMessage.format(msg, params));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     *   This implementation performs the filter evaluation against the given message.
+     * </p>
+     * <p>
+     *   The following method arguments are ignored by this filter method implementation:
+     *   <ul>
+     *     <li>{@code logger}</li>
+     *     <li>{@code level}</li>
+     *     <li>{@code marker}</li>
+     *     <li>{@code throwable}</li>
+     *   </ul>
+     * </p>
+     */
     @Override
     public Result filter(
-            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
-        return (msg == null) ? this.onMismatch : filter(msg.toString());
+            final @Nullable Logger logger,
+            final @Nullable Level level,
+            final @Nullable Marker marker,
+            final @Nullable Object message,
+            final @Nullable Throwable throwable) {
+
+        return (message == null) ? this.onMismatch : filter(message.toString());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     *   This implementation performs the filter evaluation against the given message.
+     * </p>
+     * <p>
+     *   The following method arguments are ignored by this filter method implementation:
+     *   <ul>
+     *     <li>{@code logger}</li>
+     *     <li>{@code level}</li>
+     *     <li>{@code marker}</li>
+     *     <li>{@code throwable}</li>
+     *   </ul>
+     * </p>
+     */
     @Override
     public Result filter(
-            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
-        if (msg == null) {
-            return onMismatch;
-        }
-        return filter(getMessageTextByType(msg));
+            final @Nullable Logger logger,
+            final @Nullable Level level,
+            final @Nullable Marker marker,
+            final @Nullable Message message,
+            final @Nullable Throwable throwable) {
+        return (message == null) ? this.onMismatch : filter(getMessageTextByType(message));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the {@code event} argument is {@code null}
+     */
     @Override
     public Result filter(final LogEvent event) {
+        Objects.requireNonNull(event, "The 'event' argument must not be null.");
         return filter(getMessageTextByType(event.getMessage()));
     }
 
     /**
-     * Apply the filter to the given message and return the match/mismatch result.
+     * Apply the filter to the given message and return the {@code onMatch} result if the <i>entire</i>
+     * message matches the configured regex pattern; otherwise, {@code onMismatch}.
      * <p>
-     *   If the given '{@code msg}' is {@code null} the configured mismatch result will be returned.
+     *   If the given '{@code msg}' is {@code null} the configured {@code onMismatch} result will be returned.
      * </p>
      * @param msg the message
-     * @return the filter result
+     * @return the {@code onMatch} result if the pattern matches; otherwise, the {@code onMismatch} result
      */
-    public Result filter(final String msg) {
-        if (msg == null) {
-            return onMismatch;
-        }
-        return pattern.matcher(msg).matches() ? onMatch : onMismatch;
+    public Result filter(final @Nullable String msg) {
+        return (msg != null && pattern.matcher(msg).matches()) ? onMatch : onMismatch;
     }
 
     /**
@@ -183,6 +241,7 @@ public final class RegexFilter extends AbstractFilter {
                 : message.getFormattedMessage();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "useRawMessage=" + useRawMessage + ", pattern=" + pattern.toString();
@@ -190,12 +249,11 @@ public final class RegexFilter extends AbstractFilter {
 
     /**
      * Creates a new builder instance.
-     *
      * @return the new builder instance
      */
     @PluginBuilderFactory
-    public static RegexFilter.Builder newBuilder() {
-        return new RegexFilter.Builder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
@@ -210,7 +268,8 @@ public final class RegexFilter extends AbstractFilter {
          * The regular expression to match.
          */
         @PluginBuilderAttribute
-        private String regex;
+        @Required(message = "No 'regex' provided for RegexFilter")
+        private @Nullable String regex;
 
         /**
          * If {@code true}, for {@link ParameterizedMessage}, {@link StringFormattedMessage},
@@ -218,11 +277,9 @@ public final class RegexFilter extends AbstractFilter {
          * the message field will be used as the match target.
          */
         @PluginBuilderAttribute
-        private Boolean useRawMsg;
+        private @Nullable Boolean useRawMsg;
 
-        /**
-         * Private constructor.
-         */
+        /** Private constructor. */
         private Builder() {
             super();
         }
@@ -234,7 +291,7 @@ public final class RegexFilter extends AbstractFilter {
          * @return this builder
          */
         public Builder setRegex(final String regex) {
-            this.regex = regex;
+            this.regex = Assert.requireNonEmpty(regex, "The 'regex' attribute must not be null or empty.");
             return this;
         }
 
@@ -251,54 +308,26 @@ public final class RegexFilter extends AbstractFilter {
         }
 
         /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isValid() {
-            boolean valid = true;
-            if (!isRegexValid()) {
-                valid = false;
-            }
-            return valid;
-        }
-
-        /**
          * Builds and returns a {@link RegexFilter} instance configured by this builder.
          *
          * @return the created {@link RegexFilter} or {@code null} if the builder is misconfigured
          */
         @Override
-        public RegexFilter build() {
+        public @Nullable RegexFilter build() {
 
-            if (!isValid()) {
+            // validate the "regex" attribute
+            if (this.regex == null) {
+                LOGGER.error("Unable to create RegexFilter: The 'regex' attribute must be provided.");
                 return null;
             }
 
+            // build with *safety* to not throw exceptions
             try {
                 return new RegexFilter(this);
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create RegexFilter. {}", ex.getMessage(), ex);
                 return null;
             }
-        }
-
-        /**
-         * Validates the 'regex' attribute.
-         * <p>
-         *   If the regular-expression is not set, or cannot be compiled to a valid pattern the validation will fail.
-         * </p>
-         * @return {@code true} if the regular-expression is valid; otherwise, {@code false}
-         */
-        private boolean isRegexValid() {
-            if (regex == null) {
-                return false;
-            }
-            try {
-                Pattern.compile(regex);
-            } catch (final PatternSyntaxException ex) {
-                return false;
-            }
-            return true;
         }
     }
 
@@ -327,11 +356,11 @@ public final class RegexFilter extends AbstractFilter {
     @Deprecated
     @SuppressWarnings("MagicConstant")
     private RegexFilter(
-            final boolean useRawMessage,
             final String regex,
-            final String[] patternFlags,
-            final Result onMatch,
-            final Result onMismatch) {
+            final boolean useRawMessage,
+            final @Nullable String @Nullable [] patternFlags,
+            final @Nullable Result onMatch,
+            final @Nullable Result onMismatch) {
         super(onMatch, onMismatch);
         Objects.requireNonNull(regex, "The 'regex' argument must be provided for RegexFilter");
         this.patternFlags = patternFlags == null ? new String[0] : patternFlags.clone();
@@ -375,32 +404,22 @@ public final class RegexFilter extends AbstractFilter {
     public static RegexFilter createFilter(
             // @formatter:off
             @PluginAttribute("regex") final String regex,
-            @PluginElement("PatternFlags") final String[] patternFlags,
-            @PluginAttribute("useRawMsg") final Boolean useRawMsg,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch)
+            @PluginElement("PatternFlags") final String @Nullable [] patternFlags,
+            @PluginAttribute("useRawMsg") final @Nullable Boolean useRawMsg,
+            @PluginAttribute("onMatch") final @Nullable Result match,
+            @PluginAttribute("onMismatch") final @Nullable Result mismatch)
             // @formatter:on
             throws IllegalArgumentException, IllegalAccessException {
 
         // LOG4J-3086 - pattern-flags can be embedded in RegEx expression
+        Objects.requireNonNull(regex, "The 'regex' argument must not be null.");
 
-        boolean raw = Boolean.TRUE.equals(useRawMsg);
-        if (regex == null) {
-            LOGGER.error("A regular expression must be provided for RegexFilter");
-            return null;
-        }
-
-        try {
-            return new RegexFilter(raw, regex, patternFlags, match, mismatch);
-        } catch (final Exception ex) {
-            LOGGER.error("Unable to create RegexFilter. {}", ex.getMessage(), ex);
-            return null;
-        }
+        return new RegexFilter(regex, Boolean.TRUE.equals(useRawMsg), patternFlags, match, mismatch);
     }
 
     /** @deprecated pattern flags have been deprecated - they can just be included in the regex-expression. */
     @Deprecated
-    private static int toPatternFlags(final String[] patternFlags)
+    private static int toPatternFlags(final String @Nullable [] patternFlags)
             throws IllegalArgumentException, IllegalAccessException {
         if (patternFlags == null || patternFlags.length == 0) {
             return DEFAULT_PATTERN_FLAGS;
