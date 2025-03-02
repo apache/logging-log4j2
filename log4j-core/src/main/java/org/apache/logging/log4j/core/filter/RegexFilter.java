@@ -308,6 +308,12 @@ public final class RegexFilter extends AbstractFilter {
             return this;
         }
 
+        /** {@inheritDoc} */
+        @Override
+        public boolean isValid() {
+            return (Strings.isNotEmpty(this.regex));
+        }
+
         /**
          * Builds and returns a {@link RegexFilter} instance configured by this builder.
          *
