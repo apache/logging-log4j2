@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -51,9 +52,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Plugin
 public final class RegexFilter extends AbstractFilter {
 
-    /** The regular-expression. */
-    private final String regex;
-
     /** The pattern compiled from the regular-expression. */
     private final Pattern pattern;
 
@@ -69,13 +67,12 @@ public final class RegexFilter extends AbstractFilter {
 
         super(builder);
 
-        this.regex = builder.regex;
         this.useRawMessage = Boolean.TRUE.equals(builder.useRawMsg);
 
         try {
-            this.pattern = Pattern.compile(regex);
+            this.pattern = Pattern.compile(builder.regex);
         } catch (final Exception ex) {
-            throw new IllegalArgumentException("Unable to compile regular expression: '" + regex + "'.", ex);
+            throw new IllegalArgumentException("Unable to compile regular expression: '" + builder.regex + "'.", ex);
         }
     }
 
@@ -84,7 +81,7 @@ public final class RegexFilter extends AbstractFilter {
      * @return the regular-expression (it may be an empty string but never {@code null})
      */
     public String getRegex() {
-        return this.regex;
+        return this.pattern.pattern();
     }
 
     /**
@@ -143,7 +140,7 @@ public final class RegexFilter extends AbstractFilter {
      * @param msg the message
      * @return the filter result
      */
-    private Result filter(final String msg) {
+    public Result filter(final String msg) {
         if (msg == null) {
             return onMismatch;
         }
@@ -188,7 +185,7 @@ public final class RegexFilter extends AbstractFilter {
 
     @Override
     public String toString() {
-        return "useRawMessage=" + useRawMessage + ", regex=" + regex + ", pattern=" + pattern.toString();
+        return "useRawMessage=" + useRawMessage + ", pattern=" + pattern.toString();
     }
 
     /**
@@ -258,7 +255,11 @@ public final class RegexFilter extends AbstractFilter {
          */
         @Override
         public boolean isValid() {
-            return (regex != null);
+            boolean valid = true;
+            if (!isRegexValid()) {
+                valid = false;
+            }
+            return valid;
         }
 
         /**
@@ -279,6 +280,25 @@ public final class RegexFilter extends AbstractFilter {
                 LOGGER.error("Unable to create RegexFilter. {}", ex.getMessage(), ex);
                 return null;
             }
+        }
+
+        /**
+         * Validates the 'regex' attribute.
+         * <p>
+         *   If the regular-expression is not set, or cannot be compiled to a valid pattern the validation will fail.
+         * </p>
+         * @return {@code true} if the regular-expression is valid; otherwise, {@code false}
+         */
+        private boolean isRegexValid() {
+            if (regex == null) {
+                return false;
+            }
+            try {
+                Pattern.compile(regex);
+            } catch (final PatternSyntaxException ex) {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -313,7 +333,7 @@ public final class RegexFilter extends AbstractFilter {
             final Result onMatch,
             final Result onMismatch) {
         super(onMatch, onMismatch);
-        this.regex = Objects.requireNonNull(regex, "The 'regex' argument must be provided for RegexFilter");
+        Objects.requireNonNull(regex, "The 'regex' argument must be provided for RegexFilter");
         this.patternFlags = patternFlags == null ? new String[0] : patternFlags.clone();
         try {
             int flags = toPatternFlags(this.patternFlags);
