@@ -97,7 +97,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -124,7 +124,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   the filter action against this filter's match text.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -152,7 +152,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   formatted message.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code logger}</li>
      *     <li>{@code level}</li>
@@ -187,7 +187,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -214,7 +214,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -242,7 +242,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -271,7 +271,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -301,7 +301,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -333,7 +333,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -367,7 +367,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -402,7 +402,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -437,7 +437,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
@@ -474,7 +474,7 @@ public final class StringMatchFilter extends AbstractFilter {
      *   given parameters.
      * </p>
      * <p>
-     *   The following parameters are ignored by this filter method implementation:
+     *   The following method arguments are ignored by this filter method implementation:
      *   <ul>
      *     <li>{@code level}</li>
      *     <li>{@code marker}</li>
