@@ -133,7 +133,6 @@ public final class RegexFilter extends AbstractFilter {
         return (useRawMessage || params == null || params.length == 0)
                 ? filter(msg)
                 : filter(ParameterizedMessage.format(msg, params));
-
     }
 
     /**
@@ -311,11 +310,6 @@ public final class RegexFilter extends AbstractFilter {
             return this;
         }
 
-        /** {@inheritDoc} */
-        public boolean isValid() {
-            return (Strings.isNotEmpty(this.regex));
-        }
-
         /**
          * Builds and returns a {@link RegexFilter} instance configured by this builder.
          *
@@ -339,5 +333,4 @@ public final class RegexFilter extends AbstractFilter {
             }
         }
     }
-
 }
