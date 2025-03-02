@@ -65,7 +65,6 @@ public final class StringMatchFilter extends AbstractFilter {
         } else {
             throw new IllegalArgumentException("The 'text' argument must not be null or empty.");
         }
-
     }
 
     /**
@@ -573,7 +572,6 @@ public final class StringMatchFilter extends AbstractFilter {
                 LOGGER.error("Unable to create StringMatchFilter: {}", ex.getMessage(), ex);
                 return null;
             }
-
         }
     }
 }
