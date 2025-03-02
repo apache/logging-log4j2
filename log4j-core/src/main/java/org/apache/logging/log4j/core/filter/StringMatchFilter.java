@@ -57,8 +57,15 @@ public final class StringMatchFilter extends AbstractFilter {
      * @throws IllegalArgumentException if the {@code text} argument is {@code null} or blank
      */
     private StringMatchFilter(final Builder builder) {
+
         super(builder);
-        this.text = Assert.requireNonEmpty(builder.text, "The 'text' argument must not be null.");
+
+        if (Strings.isNotEmpty(builder.text)) {
+            this.text = builder.text;
+        } else {
+            throw new IllegalArgumentException("The 'text' argument must not be null or empty.");
+        }
+
     }
 
     /**
@@ -72,7 +79,7 @@ public final class StringMatchFilter extends AbstractFilter {
     /**
      * {@inheritDoc}
      * <p>
-     *   This implementation performs the filter evaluation on the given event's formatted messsage.
+     *   This implementation performs the filter evaluation on the given event's formatted message.
      * </p>
      *
      * @throws NullPointerException if the given {@code event} is {@code null}
@@ -549,23 +556,24 @@ public final class StringMatchFilter extends AbstractFilter {
             return this;
         }
 
-        boolean isValid() {
-            return Strings.isNotEmpty(this.text);
-        }
-
         /** {@inheritDoc} */
         @Override
         public @Nullable StringMatchFilter build() {
 
-            if (!isValid()) {
+            // validate the 'text' attribute
+            if (this.text == null) {
+                LOGGER.error("Unable to create StringMatchFilter: The 'text' attribute must be configured.");
                 return null;
             }
 
-            if (this.text == null) {
-                throw new IllegalStateException("The 'text' attribute has not been set.");
+            // build with *safety* to not throw unexpected exceptions
+            try {
+                return new StringMatchFilter(this);
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create StringMatchFilter: {}", ex.getMessage(), ex);
+                return null;
             }
 
-            return new StringMatchFilter(this);
         }
     }
 }
