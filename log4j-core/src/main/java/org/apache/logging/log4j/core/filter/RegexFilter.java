@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
@@ -26,18 +23,16 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.util.Assert;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -45,9 +40,15 @@ import org.jspecify.annotations.Nullable;
 /**
  * This filter returns the {@code onMatch} result if the message exactly matches the configured
  * "{@code regex}" regular-expression pattern; otherwise, it returns the {@code onMismatch} result.
+ * <p>
+ *   The "useRawMsg" attribute can be used to indicate whether the regular expression should be applied to
+ *   the result of calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false).
+ *   The default is {@code false}.
+ * </p>
  */
-@Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
 @NullMarked
+@Plugin
 public final class RegexFilter extends AbstractFilter {
 
     /** The pattern compiled from the regular-expression. */
@@ -64,6 +65,10 @@ public final class RegexFilter extends AbstractFilter {
     private RegexFilter(final Builder builder) {
 
         super(builder);
+
+        // NOTE: the constructor throws exceptions but is only called from Builder#build() where *null*
+        //       should be returned for a misconfigured builder.  *If* an exception is thrown here
+        //       it will be caught and logged in the builder and not propagated by returning *null*.
 
         if (Strings.isBlank(builder.regex)) {
             throw new IllegalArgumentException("The 'regex' attribute must not be null or empty.");
@@ -128,6 +133,7 @@ public final class RegexFilter extends AbstractFilter {
         return (useRawMessage || params == null || params.length == 0)
                 ? filter(msg)
                 : filter(ParameterizedMessage.format(msg, params));
+
     }
 
     /**
@@ -212,7 +218,6 @@ public final class RegexFilter extends AbstractFilter {
      *   will be returned.
      * </p>
      * <ul>
-     *   <li>{@link MessageFormatMessage}</li>
      *   <li>{@link ParameterizedMessage}</li>
      *   <li>{@link StringFormattedMessage}</li>
      *   <li>{@link StructuredDataMessage}</li>
@@ -235,7 +240,6 @@ public final class RegexFilter extends AbstractFilter {
         return useRawMessage
                         && (message instanceof ParameterizedMessage
                                 || message instanceof StringFormattedMessage
-                                || message instanceof MessageFormatMessage
                                 || message instanceof StructuredDataMessage)
                 ? message.getFormat()
                 : message.getFormattedMessage();
@@ -244,14 +248,14 @@ public final class RegexFilter extends AbstractFilter {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "useRawMessage=" + useRawMessage + ", pattern=" + pattern.toString();
+        return "useRawMessage=" + useRawMessage + ", pattern=" + pattern;
     }
 
     /**
      * Creates a new builder instance.
      * @return the new builder instance
      */
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -260,7 +264,7 @@ public final class RegexFilter extends AbstractFilter {
      * A {@link RegexFilter} builder instance.
      */
     public static final class Builder extends AbstractFilterBuilder<RegexFilter.Builder>
-            implements org.apache.logging.log4j.core.util.Builder<RegexFilter> {
+            implements org.apache.logging.log4j.plugins.util.Builder<RegexFilter> {
 
         /* NOTE: LOG4J-3086 - No patternFlags in builder - this functionality has been deprecated/removed. */
 
@@ -272,8 +276,8 @@ public final class RegexFilter extends AbstractFilter {
         private @Nullable String regex;
 
         /**
-         * If {@code true}, for {@link ParameterizedMessage}, {@link StringFormattedMessage},
-         * and {@link MessageFormatMessage}, the message format pattern; for {@link StructuredDataMessage},
+         * If {@code true}, for {@link ParameterizedMessage} / {@link StringFormattedMessage},
+         * the message format pattern will be used as the match target, and for {@link StructuredDataMessage}
          * the message field will be used as the match target.
          */
         @PluginBuilderAttribute
@@ -308,7 +312,6 @@ public final class RegexFilter extends AbstractFilter {
         }
 
         /** {@inheritDoc} */
-        @Override
         public boolean isValid() {
             return (Strings.isNotEmpty(this.regex));
         }
@@ -337,114 +340,4 @@ public final class RegexFilter extends AbstractFilter {
         }
     }
 
-    /*
-     * DEPRECATIONS:
-     * The constructor/fields/methods below have been deprecated.
-     * - the 'create***' factory methods should no longer be used - use the builder instead
-     * - pattern-flags should now be passed via the regular expression itself
-     */
-
-    /**
-     * @deprecated pattern flags have been deprecated - they can just be included in the regex-expression.
-     */
-    @Deprecated
-    private static final int DEFAULT_PATTERN_FLAGS = 0;
-
-    /**
-     * @deprecated - pattern flags no longer supported.
-     */
-    @Deprecated
-    private String[] patternFlags = new String[0];
-
-    /**
-     * @deprecated use {@link RegexFilter.Builder} instead
-     */
-    @Deprecated
-    @SuppressWarnings("MagicConstant")
-    private RegexFilter(
-            final String regex,
-            final boolean useRawMessage,
-            final @Nullable String @Nullable [] patternFlags,
-            final @Nullable Result onMatch,
-            final @Nullable Result onMismatch) {
-        super(onMatch, onMismatch);
-        Objects.requireNonNull(regex, "The 'regex' argument must be provided for RegexFilter");
-        this.patternFlags = patternFlags == null ? new String[0] : patternFlags.clone();
-        try {
-            int flags = toPatternFlags(this.patternFlags);
-            this.pattern = Pattern.compile(regex, flags);
-        } catch (final Exception ex) {
-            throw new IllegalArgumentException("Unable to compile regular expression: '" + regex + "'.", ex);
-        }
-        this.useRawMessage = useRawMessage;
-    }
-
-    /**
-     * Returns the pattern-flags applied to the regular-expression when compiling the pattern.
-     *
-     * @return the pattern-flags (maybe empty but never {@code null}
-     * @deprecated pattern-flags are no longer supported
-     */
-    @Deprecated
-    public String[] getPatternFlags() {
-        return this.patternFlags.clone();
-    }
-
-    /**
-     * Creates a Filter that matches a regular expression.
-     *
-     * @param regex        The regular expression to match.
-     * @param patternFlags An array of Strings where each String is a {@link Pattern#compile(String, int)} compilation flag.
-     *                     (no longer used - pattern flags can be embedded in regex-expression.
-     * @param useRawMsg    If {@code true}, for {@link ParameterizedMessage}, {@link StringFormattedMessage},
-     *                     and {@link MessageFormatMessage}, the message format pattern; for {@link StructuredDataMessage},
-     *                     the message field will be used as the match target.
-     * @param match        The action to perform when a match occurs.
-     * @param mismatch     The action to perform when a mismatch occurs.
-     * @return The RegexFilter.
-     * @throws IllegalAccessException   When there is no access to the definition of the specified member.
-     * @throws IllegalArgumentException When passed an illegal or inappropriate argument.
-     * @deprecated use {@link #newBuilder} to instantiate builder
-     */
-    @Deprecated
-    public static RegexFilter createFilter(
-            // @formatter:off
-            @PluginAttribute("regex") final String regex,
-            @PluginElement("PatternFlags") final String @Nullable [] patternFlags,
-            @PluginAttribute("useRawMsg") final @Nullable Boolean useRawMsg,
-            @PluginAttribute("onMatch") final @Nullable Result match,
-            @PluginAttribute("onMismatch") final @Nullable Result mismatch)
-            // @formatter:on
-            throws IllegalArgumentException, IllegalAccessException {
-
-        // LOG4J-3086 - pattern-flags can be embedded in RegEx expression
-        Objects.requireNonNull(regex, "The 'regex' argument must not be null.");
-
-        return new RegexFilter(regex, Boolean.TRUE.equals(useRawMsg), patternFlags, match, mismatch);
-    }
-
-    /** @deprecated pattern flags have been deprecated - they can just be included in the regex-expression. */
-    @Deprecated
-    private static int toPatternFlags(final String @Nullable [] patternFlags)
-            throws IllegalArgumentException, IllegalAccessException {
-        if (patternFlags == null || patternFlags.length == 0) {
-            return DEFAULT_PATTERN_FLAGS;
-        }
-        final Field[] fields = Pattern.class.getDeclaredFields();
-        final Comparator<Field> comparator = (f1, f2) -> f1.getName().compareTo(f2.getName());
-        Arrays.sort(fields, comparator);
-        final String[] fieldNames = new String[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            fieldNames[i] = fields[i].getName();
-        }
-        int flags = DEFAULT_PATTERN_FLAGS;
-        for (final String test : patternFlags) {
-            final int index = Arrays.binarySearch(fieldNames, test);
-            if (index >= 0) {
-                final Field field = fields[index];
-                flags |= field.getInt(Pattern.class);
-            }
-        }
-        return flags;
-    }
 }
