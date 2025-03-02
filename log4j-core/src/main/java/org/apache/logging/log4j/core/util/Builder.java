@@ -45,11 +45,8 @@ public interface Builder<T> extends Supplier<T> {
      */
     T build();
 
-    /**
-     * Validates that the builder is properly configured to build.
-     * @return {@code true} if the builder configuration is valid; otherwise, {@code false}
-     */
-    default boolean isValid() {
-        return PluginBuilder.validateFields(this, getErrorPrefix());
+    @Override
+    default T get() {
+        return build();
     }
 }
