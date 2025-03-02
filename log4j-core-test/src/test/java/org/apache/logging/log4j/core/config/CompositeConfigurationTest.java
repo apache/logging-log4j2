@@ -246,11 +246,10 @@ public class CompositeConfigurationTest {
     private void runTest(final LoggerContextRule rule, final Statement statement) {
         try {
             rule.apply(
-                            statement,
-                            Description.createTestDescription(
-                                    getClass(),
-                                    Thread.currentThread().getStackTrace()[1].getMethodName()))
-                    .evaluate();
+                statement,
+                Description.createTestDescription(getClass(),
+                                                  Thread.currentThread().getStackTrace()[1].getMethodName()))
+                .evaluate();
         } catch (final Throwable e) {
             Throwables.rethrow(e);
         }

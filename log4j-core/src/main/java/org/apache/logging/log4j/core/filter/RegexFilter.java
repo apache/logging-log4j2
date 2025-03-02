@@ -65,7 +65,7 @@ public final class RegexFilter extends AbstractFilter {
 
         super(builder);
 
-        if (Strings.isNotBlank(builder.regex)) {
+        if (Strings.isBlank(builder.regex)) {
             throw new IllegalArgumentException("The 'regex' attribute must not be null or empty.");
         }
 
@@ -316,8 +316,8 @@ public final class RegexFilter extends AbstractFilter {
         public @Nullable RegexFilter build() {
 
             // validate the "regex" attribute
-            if (this.regex == null) {
-                LOGGER.error("Unable to create RegexFilter: The 'regex' attribute must be provided.");
+            if (Strings.isEmpty(this.regex)) {
+                LOGGER.error("Unable to create RegexFilter: The 'regex' attribute be set to a non-empty String.");
                 return null;
             }
 
