@@ -34,7 +34,6 @@ public class AbstractFilterTest {
     @Test
     public void testUnrolledBackwardsCompatible() {
         final ConcreteFilter filter = new ConcreteFilter();
-        final Filter.Result expected = Filter.Result.DENY;
         verifyMethodsWithUnrolledVarargs(filter, Filter.Result.DENY);
 
         filter.testResult = Filter.Result.ACCEPT;
