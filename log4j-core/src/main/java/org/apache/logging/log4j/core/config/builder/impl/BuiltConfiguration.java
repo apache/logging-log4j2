@@ -20,38 +20,64 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.builder.api.Component;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.jspecify.annotations.Nullable;
 
 /**
- * This is the general version of the Configuration created by the Builder. It may be extended to
- * enhance its functionality.
+ * A {@link Configuration} implementation that is built using a {@link ConfigurationBuilder} implementaion.
+ * <p>
+ *   This class may be extended to enhance its functionality.
+ * </p>
  *
  * @since 2.4
  */
 public class BuiltConfiguration extends AbstractConfiguration {
-    private final StatusConfiguration statusConfig;
-    protected Component rootComponent;
-    private Component loggersComponent;
-    private Component appendersComponent;
-    private Component filtersComponent;
-    private Component propertiesComponent;
-    private Component customLevelsComponent;
-    private Component scriptsComponent;
-    private String contentType = "text";
 
+    private static final String DEFAULT_CONTENT_TYPE = "text";
+
+    private final StatusConfiguration statusConfig;
+    private String contentType = DEFAULT_CONTENT_TYPE;
+
+    protected @Nullable Component rootComponent;
+    private @Nullable Component loggersComponent = null;
+    private @Nullable Component appendersComponent = null;
+    private @Nullable Component filtersComponent = null;
+    private @Nullable Component propertiesComponent = null;
+    private @Nullable Component customLevelsComponent = null;
+    private @Nullable Component scriptsComponent;
+
+    /**
+     * Constructs a new built-configuration instance.
+     * <p>
+     *   <strong>Important:</strong> this constructor is invoked via reflection in {@link DefaultConfigurationBuilder}.
+     *   Do not change its signature!
+     * </p>
+     * @param loggerContext the logger-context
+     * @param source the configuration-source
+     * @param rootComponent the root component to build the configuration's node tree from
+     */
     public BuiltConfiguration(
-            final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
+            final @Nullable LoggerContext loggerContext,
+            final @Nullable ConfigurationSource source,
+            final Component rootComponent) {
+
         super(loggerContext, source);
+
+        Objects.requireNonNull(rootComponent, "The 'rootComponent' argument must not be null.");
+
         statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
+
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Scripts": {
@@ -78,26 +104,44 @@ public class BuiltConfiguration extends AbstractConfiguration {
                     customLevelsComponent = component;
                     break;
                 }
+                default: {
+                    // NO-OP
+                    break;
+                }
             }
         }
+
         this.rootComponent = rootComponent;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setup() {
+
         final List<Node> children = rootNode.getChildren();
-        if (propertiesComponent.getComponents().size() > 0) {
+
+        if (propertiesComponent != null && !propertiesComponent.getComponents().isEmpty()) {
             children.add(convertToNode(rootNode, propertiesComponent));
         }
-        if (scriptsComponent.getComponents().size() > 0) {
+
+        if (scriptsComponent != null && !scriptsComponent.getComponents().isEmpty()) {
             children.add(convertToNode(rootNode, scriptsComponent));
         }
-        if (customLevelsComponent.getComponents().size() > 0) {
+
+        if (customLevelsComponent != null
+                && !customLevelsComponent.getComponents().isEmpty()) {
             children.add(convertToNode(rootNode, customLevelsComponent));
         }
-        children.add(convertToNode(rootNode, loggersComponent));
-        children.add(convertToNode(rootNode, appendersComponent));
-        if (filtersComponent.getComponents().size() > 0) {
+
+        if (loggersComponent != null && !loggersComponent.getComponents().isEmpty()) {
+            children.add(convertToNode(rootNode, loggersComponent));
+        }
+
+        if (appendersComponent != null && !appendersComponent.getComponents().isEmpty()) {
+            children.add(convertToNode(rootNode, appendersComponent));
+        }
+
+        if (filtersComponent != null && !filtersComponent.getComponents().isEmpty()) {
             if (filtersComponent.getComponents().size() == 1) {
                 children.add(
                         convertToNode(rootNode, filtersComponent.getComponents().get(0)));
@@ -105,18 +149,18 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 children.add(convertToNode(rootNode, filtersComponent));
             }
         }
+
         rootComponent = null;
     }
 
-    public String getContentType() {
-        return this.contentType;
-    }
-
-    public void setContentType(final String contentType) {
-        this.contentType = contentType;
-    }
-
-    public void createAdvertiser(final String advertiserString, final ConfigurationSource configSource) {
+    /**
+     * Creates an advertiser node.
+     *
+     * @param advertiserString the advertiser string
+     * @param configSource the configuration source
+     */
+    public void createAdvertiser(
+            final @Nullable String advertiserString, final @Nullable ConfigurationSource configSource) {
         byte[] buffer = null;
         try {
             if (configSource != null) {
@@ -126,38 +170,111 @@ public class BuiltConfiguration extends AbstractConfiguration {
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.warn("Unable to read configuration source " + configSource.toString());
+            LOGGER.warn("Unable to read configuration source {}", configSource);
         }
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
     }
 
+    /**
+     * Gets the content type.
+     *
+     * @return returns the content-type
+     */
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    /**
+     * Returns the status configuration of the {@code StatusLogger} fallback listener.
+     * @return the status configurations
+     */
     public StatusConfiguration getStatusConfiguration() {
         return statusConfig;
     }
 
-    public void setPluginPackages(final String packages) {
-        pluginPackages.addAll(Arrays.asList(packages.split(Patterns.COMMA_SEPARATOR)));
+    /**
+     * Sets the content-type.
+     * <p>
+     *   If the given {@code contentType} is {@code null}, the default content-type "{@code text}" will be assigned.
+     * </p>
+     *
+     * @param contentType the content-type
+     */
+    public void setContentType(final @Nullable String contentType) {
+        this.contentType = (contentType != null) ? contentType : DEFAULT_CONTENT_TYPE;
     }
 
+    /**
+     * Sets the plugin-packages to scan for Log4j plugins.
+     * @param packages a comma-separated list of package names
+     */
+    public void setPluginPackages(final @Nullable String packages) {
+        if (packages != null) {
+            pluginPackages.addAll(Arrays.asList(packages.split(Patterns.COMMA_SEPARATOR)));
+        }
+    }
+
+    /**
+     * Sets the shutdown-hook flag.
+     * @param flag "{@code disable}" to disable the shutdown-hook; otherwise, enabled
+     */
     public void setShutdownHook(final String flag) {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }
 
+    /**
+     * Sets the shutdown time in milliseconds.
+     * <p>
+     *   The shutdown-timeout specifies how long appenders and background tasks will get to shut down when the
+     *   JVM is shutting down.
+     * </p>
+     * <p>
+     *   The default is zero which means that each appender uses its default timeout, and doesn't wait for background
+     *   tasks. Not all appenders will honor this, it is a hint and not an absolute guarantee that the shutdown
+     *   procedure will not take longer.
+     * </p>
+     * <p>
+     *   Setting the shutdown-timeout too low increase the risk of losing outstanding log events that have not yet
+     *   been written to the final destination.
+     * </p>
+     * <p>
+     *   This setting is ignored if {@link #setShutdownHook(String)} has been set to "disable".
+     * </p>
+     * @param shutdownTimeoutMillis the shutdown timeout (in milliseconds)
+     */
     public void setShutdownTimeoutMillis(final long shutdownTimeoutMillis) {
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
     }
 
+    /**
+     * Sets the configuration's "monitorInterval" attribute.
+     * <p>
+     *   The monitor interval specifies the number of seconds between checks for changes to the configuration source.
+     * </p>
+     *
+     * @param intervalSeconds the monitor interval (in seconds)
+     */
     public void setMonitorInterval(final int intervalSeconds) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
             initializeWatchers((Reconfigurable) this, getConfigurationSource(), intervalSeconds);
         }
     }
 
-    @Override
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
+    /**
+     * Converts the given {@link Component} into a {@link Node} with the given {@code parent}.
+     * <p>
+     *   This method will recurse through the children of the given component building a node tree.
+     * </p>
+     * <p>
+     *   Note: This method assigns the specified parent within the new child node; however, it does not
+     *   <i>add</i> the new node to the parent.  That is performed by the caller (which in most cases this
+     *   method due to recursion).
+     * </p>
+     *
+     * @param parent the parent node
+     * @param component the component to convert
+     * @return the converted node
+     */
     protected Node convertToNode(final Node parent, final Component component) {
         final String name = component.getPluginType();
         final PluginType<?> pluginType = pluginManager.getPluginType(name);
