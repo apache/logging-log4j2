@@ -275,6 +275,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Reconfigurable reconfigurable,
             final ConfigurationSource configSource,
             final int monitorIntervalSeconds) {
+        initializeWatchers(reconfigurable, configSource, Collections.emptySet(), monitorIntervalSeconds);
+    }
+
+    protected void initializeWatchers(
+            final Reconfigurable reconfigurable,
+            final ConfigurationSource configSource,
+            final Collection<Source> auxiliarySources,
+            final int monitorIntervalSeconds) {
         if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
@@ -284,7 +292,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     final long lastModified = file.lastModified();
                     final ConfigurationFileWatcher watcher =
                             new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
-                    watchManager.watch(cfgSource, watcher);
+                    watchManager.watch(cfgSource, auxiliarySources, watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
                 }
