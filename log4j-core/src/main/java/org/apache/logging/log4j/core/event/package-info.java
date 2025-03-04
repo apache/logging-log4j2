@@ -15,11 +15,11 @@
  * limitations under the license.
  */
 /**
- * Implementation of Log4j 2.
+ * Classes and interfaces supporting configuration of Log4j 2 with JSON.
  */
 @Export
-@Version("2.25.0")
-package org.apache.logging.log4j.core;
+@Version("2.20.1")
+package org.apache.logging.log4j.core.event;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
