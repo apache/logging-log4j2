@@ -46,7 +46,7 @@
 
     <!-- Dependency versions -->
     <spifly.version>1.3.7</spifly.version>
-    <logback.version>1.5.16</logback.version>
+    <logback.version>1.5.17</logback.version>
   </properties>
 
   <dependencyManagement>
