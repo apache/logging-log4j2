@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3465" link="https://github.com/apache/logging-log4j2/pull/3465"/>
-  <description format="asciidoc">Update `org.wiremock:wiremock` to version `3.12.0`</description>
+  <issue id="3522" link="https://github.com/apache/logging-log4j2/pull/3522"/>
+  <description format="asciidoc">Update `org.wiremock:wiremock` to version `3.12.1`</description>
 </entry>
