@@ -482,8 +482,7 @@ Nevertheless, there are some tips we recommend you to practice:</p>
 <p><strong>For writing to console</strong>, use a <a href="manual/appenders.html#ConsoleAppender" class="xref page">Console Appender</a> and make sure to configure its <code>direct</code> attribute to <code>true</code> for the maximum efficiency.</p>
 </li>
 <li>
-<p><strong>For writing to an external service</strong>, use a <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a> and make sure to set the protocol to TCP and configure the null delimiter of the associated layout.
-For instance, see <a href="manual/json-template-layout.html#plugin-attr-nullEventDelimiterEnabled" class="xref page">the <code>nullEventDelimiterEnabled</code> configuration attribute of JSON Template Layout</a>.</p>
+<p><strong>For writing to an external service</strong>, use a <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a> and make sure to configure the protocol and layout&#8217;s null termination (e.g., see <a href="manual/json-template-layout.html#plugin-attr-nullEventDelimiterEnabled" class="xref page">the <code>nullEventDelimiterEnabled</code> configuration attribute of JSON Template Layout</a>) appropriately.</p>
 </li>
 </ul>
 </div>
@@ -744,7 +743,7 @@ output {
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/cloud/logstash/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Socket name="SOCKET" host="localhost" port="12345"&gt;
-  &lt;JsonTemplateLayout nullEventDelimiterEnabled="true"/&gt;
+  &lt;JsonTemplateLayout/&gt;
 &lt;/Socket&gt;</code></pre>
 </div>
 </div>
@@ -757,9 +756,7 @@ output {
   "name": "SOCKET",
   "host": "localhost",
   "port": 12345,
-  "JsonTemplateLayout": {
-    "nullEventDelimiterEnabled": true
-  }
+  "JsonTemplateLayout": {}
 }</code></pre>
 </div>
 </div>
@@ -772,8 +769,7 @@ output {
   name: "SOCKET"
   host: "localhost"
   port: 12345
-  JsonTemplateLayout:
-    nullEventDelimiterEnabled: true</code></pre>
+  JsonTemplateLayout: {}</code></pre>
 </div>
 </div>
 </div>
@@ -785,8 +781,7 @@ output {
 appender.0.name = SOCKET
 appender.0.host = localhost
 appender.0.port = 12345
-appender.0.layout.type = JsonTemplateLayout
-appender.0.layout.nullEventDelimiterEnabled = true</code></pre>
+appender.0.layout.type = JsonTemplateLayout</code></pre>
 </div>
 </div>
 </div>
