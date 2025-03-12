@@ -23,7 +23,10 @@
   <Appenders>
     <NoSql name="MONGO">
       <MongoDb
-        connection="mongodb://log4jUser:12345678@localhost:${sys:log4j.mongo.port:-27017}"  databaseName="testDb" collectionName="MongoDbAuthFailureIT" />
+        connection="mongodb://localhost:${sys:log4j.mongo.port:-27017}/testDb"
+        capped="true"
+        collectionSize="1073741824"
+        collectionName="MongoDbCollectionNameIT"/>
     </NoSql>
   </Appenders>
   <Loggers>
