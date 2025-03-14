@@ -56,3 +56,16 @@ Creates a separate logger context per OSGi bundle and synchronous loggers
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`org.apache.logging.log4j.core.selector.JndiContextSelector`]::
 Creates loggers contexts based on a JNDI lookup and synchronous loggers See xref:jakarta.adoc#jndi-configuration[Web application] for details.
+
+There are also third-party context selector implementations:
+
+[IMPORTANT]
+====
+These context selectors are provided by **third-party** vendors and are not maintained by the Apache Software Foundation.
+====
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatContextSelector`]::
+Selects the currently active Tomcat web application and creates synchronous loggers.
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatAsyncContextSelector`]::
+Selects the currently active Tomcat web application and creates xref:manual/async.adoc[asynchronous loggers].
