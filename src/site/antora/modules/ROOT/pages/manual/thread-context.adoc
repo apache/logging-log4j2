@@ -165,7 +165,9 @@ META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider
 
 [IMPORTANT]
 ====
-These context data providers are supplied by **third-party** vendors and are not maintained by the Apache Software Foundation.
+These context data providers are supplied by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
 ====
 
 https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/log4j/log4j-context-data/log4j-context-data-2.17/library-autoconfigure[OpenTelemetry Context Data Provider]::

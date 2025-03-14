@@ -61,7 +61,9 @@ There are also third-party context selector implementations:
 
 [IMPORTANT]
 ====
-These context selectors are provided by **third-party** vendors and are not maintained by the Apache Software Foundation.
+These context selectors are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
 ====
 
 https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatContextSelector`]::

@@ -968,7 +968,9 @@ include::partial$features/servlet-support.adoc[]
 
 [IMPORTANT]
 ====
-These lookups are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] (Log4j, Log4cxx, Log4net) project.
+These lookups are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
 ====
 
 [#KubernetesLookup]
