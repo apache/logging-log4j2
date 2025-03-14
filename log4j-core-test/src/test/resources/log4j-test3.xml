@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="DEBUG" name="XMLConfigTest" monitorInterval="5" shutdownHook="disable">
+<Configuration status="OFF" name="XMLConfigTest" monitorInterval="5" shutdownHook="disable">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m MDC%X%n"/>
