@@ -968,7 +968,7 @@ include::partial$features/servlet-support.adoc[]
 
 [IMPORTANT]
 ====
-These lookups are provided by **third-party** vendors and are not maintained by the Apache Software Foundation.
+These lookups are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] (Log4j, Log4cxx, Log4net) project.
 ====
 
 [#KubernetesLookup]
@@ -1019,11 +1019,6 @@ https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup-keys[sup
 The Tomcat Lookup allows retrieving the names of the currently active Tomcat engine, host and application context.
 See
 https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup[Copernik.eu Tomcat Lookup documentation] for more details.
-
-[TIP]
-====
-If you wish your custom lookup to appear on this page, use the ``[Edit]`` link at the top and submit a pull request.
-====
 
 [#extending]
 == Extending
