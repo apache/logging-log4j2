@@ -321,6 +321,8 @@ public class LoggerContext extends AbstractLifeCycle
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
+                    setStarting();
+                    reconfigure(config);
                     if (this.configuration.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
@@ -330,7 +332,6 @@ public class LoggerContext extends AbstractLifeCycle
                 configLock.unlock();
             }
         }
-        setConfiguration(config);
         LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 

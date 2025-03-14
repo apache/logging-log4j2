@@ -158,7 +158,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                 final URL url = ResourceUtils.getURL(location);
                 final ConfigurationSource source = getConfigurationSource(url);
                 if (source != null) {
-                    ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
+                    ctx.reconfigure(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
                 }
             } else {
                 final List<AbstractConfiguration> configs = new ArrayList<>();
@@ -189,9 +189,9 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     first = false;
                 }
                 if (configs.size() > 1) {
-                    ctx.start(new CompositeConfiguration(configs));
+                    ctx.reconfigure(new CompositeConfiguration(configs));
                 } else {
-                    ctx.start(configs.get(0));
+                    ctx.reconfigure(configs.get(0));
                 }
             }
         } catch (Exception ex) {
