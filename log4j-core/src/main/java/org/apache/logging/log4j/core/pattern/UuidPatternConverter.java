@@ -29,32 +29,47 @@ import org.apache.logging.log4j.plugins.Plugin;
 @Plugin("UuidPatternConverter")
 @ConverterKeys({"u", "uuid"})
 public final class UuidPatternConverter extends LogEventPatternConverter {
+    private enum UuidType {
+        TIME,
+        RANDOM,
+        HASH
+    }
 
-    private final boolean isRandom;
+    private final UuidType uuidType;
 
     /**
      * Private constructor.
      */
-    private UuidPatternConverter(final boolean isRandom) {
+    private UuidPatternConverter(final UuidType uuidType) {
         super("u", "uuid");
-        this.isRandom = isRandom;
+        this.uuidType = uuidType;
     }
 
     /**
-     * Obtains an instance of SequencePatternConverter.
+     * Obtains an instance of UuidPatternConverter.
      *
-     * @param options options, currently ignored, may be null.
-     * @return instance of SequencePatternConverter.
+     * @param options options
+     * @return instance of UuidPatternConverter.
      */
     public static UuidPatternConverter newInstance(final String[] options) {
         if (options.length == 0) {
-            return new UuidPatternConverter(false);
+            return new UuidPatternConverter(UuidType.TIME);
         }
 
-        if (options.length > 1 || (!options[0].equalsIgnoreCase("RANDOM") && !options[0].equalsIgnoreCase("Time"))) {
-            LOGGER.error("UUID Pattern Converter only accepts a single option with the value \"RANDOM\" or \"TIME\"");
+        if (options.length == 1) {
+            switch (options[0].toUpperCase()) {
+                case "TIME":
+                    return new UuidPatternConverter(UuidType.TIME);
+                case "RANDOM":
+                    return new UuidPatternConverter(UuidType.RANDOM);
+                case "HASH":
+                    return new UuidPatternConverter(UuidType.HASH);
+            }
         }
-        return new UuidPatternConverter(options[0].equalsIgnoreCase("RANDOM"));
+
+        LOGGER.error(
+                "UUID Pattern Converter only accepts a single option with the value \"TIME\" or \"RANDOM\" or \"HASH\"");
+        return new UuidPatternConverter(UuidType.TIME);
     }
 
     /**
@@ -62,7 +77,12 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final UUID uuid = isRandom ? UUID.randomUUID() : UuidUtil.getTimeBasedUuid();
+        final UUID uuid =
+                switch (uuidType) {
+                    case TIME -> UuidUtil.getTimeBasedUuid();
+                    case RANDOM -> UUID.randomUUID();
+                    case HASH -> UuidUtil.getLogEventBasedUuid(event);
+                };
         toAppendTo.append(uuid.toString());
     }
 }

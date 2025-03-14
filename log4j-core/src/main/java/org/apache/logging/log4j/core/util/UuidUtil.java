@@ -21,6 +21,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.CoreProperties.UuidProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 
@@ -50,6 +51,7 @@ public final class UuidUtil {
     private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
     private static final long LEAST = initialize(NetUtils.getMacAddress());
+    private static final long SALT = new SecureRandom().nextLong();
 
     /* This class cannot be instantiated */
     private UuidUtil() {}
@@ -139,5 +141,48 @@ public final class UuidUtil {
         final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
         final long most = timeLow | timeMid | TYPE1 | timeHi;
         return new UUID(most, LEAST);
+    }
+
+    /**
+     * Generates a Type 4 UUID based on the deterministic LogEvent hash.
+     * Meant for generating consistent, correlatable UUID values across multiple Appenders for the same LogEvent.
+     *
+     * @param logEvent
+     * @return universally unique identifiers (UUID)
+     */
+    public static UUID getLogEventBasedUuid(LogEvent logEvent) {
+        // TODO: better hashing algorithm - include other LogEvent fields?
+        long epochSecond = logEvent.getInstant().getEpochSecond();
+        // Enable 'log4j.configuration.usePreciseClock' system property otherwise will be truncated to millis
+        long nanoOfSecond = logEvent.getInstant().getNanoOfSecond();
+        // Thread IDs typically increment from 0 producing a narrow range
+        long threadId = logEvent.getThreadId();
+
+        // Increase entropy
+        long most = mix(epochSecond, nanoOfSecond, threadId);
+        long least = mix(threadId, ~nanoOfSecond, epochSecond);
+        // Set UUID v4 bits
+        most &= 0xFFFFFFFFFFFF0FFFL;
+        most |= 0x0000000000004000L;
+        least &= 0x3FFFFFFFFFFFFFFFL;
+        least |= 0x8000000000000000L;
+
+        return new UUID(most, least);
+    }
+
+    private static long mix(long v1, long v2, long v3) {
+        // XOR with large primes
+        long hash = v1 * 0x9E3779B97F4A7C15L;
+        hash ^= (v2 * 0xC6BC279692B5C323L);
+        hash ^= (v3 * 0x3243F6A8885A308DL);
+        // Scramble
+        hash ^= (hash >>> 33);
+        hash *= 0xff51afd7ed558ccdL;
+        hash ^= (hash >>> 33);
+        hash *= 0xc4ceb9fe1a85ec53L;
+        hash ^= (hash >>> 33);
+        // Add salt
+        hash ^= SALT;
+        return hash;
     }
 }
