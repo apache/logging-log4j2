@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
-@SetTestProperty(key = "log4j2.is.webapp", value = "false")
+@SetTestProperty(key = "log4j2.isWebapp", value = "false")
 @LoggerContextSource("log4j-test3.xml")
 class ShutdownDisabledTest {
 
