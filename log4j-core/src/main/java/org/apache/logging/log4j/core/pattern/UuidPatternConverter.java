@@ -81,7 +81,7 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
                 switch (uuidType) {
                     case TIME -> UuidUtil.getTimeBasedUuid();
                     case RANDOM -> UUID.randomUUID();
-                    case HASH -> UuidUtil.getLogEventBasedUuid(event);
+                    case HASH -> UuidUtil.getHashBasedUuid(event);
                 };
         toAppendTo.append(uuid.toString());
     }

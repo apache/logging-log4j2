@@ -18,12 +18,14 @@ package org.apache.logging.log4j.core.util;
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.CoreProperties.UuidProperties;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
+import org.apache.logging.log4j.message.TimestampMessage;
 
 /**
  * Generates a unique ID. The generated UUID will be unique for approximately 8,925 years so long as
@@ -51,7 +53,6 @@ public final class UuidUtil {
     private static final int HUNDRED_NANOS_PER_MILLI = 10000;
 
     private static final long LEAST = initialize(NetUtils.getMacAddress());
-    private static final long SALT = new SecureRandom().nextLong();
 
     /* This class cannot be instantiated */
     private UuidUtil() {}
@@ -144,45 +145,53 @@ public final class UuidUtil {
     }
 
     /**
-     * Generates a Type 4 UUID based on the deterministic LogEvent hash.
-     * Meant for generating consistent, correlatable UUID values across multiple Appenders for the same LogEvent.
+     * Generates a custom Type 8 UUID based on the LogEvent hash.
      *
-     * @param logEvent
+     * @param event the LogEvent to hash
      * @return universally unique identifiers (UUID)
      */
-    public static UUID getLogEventBasedUuid(LogEvent logEvent) {
-        // TODO: better hashing algorithm - include other LogEvent fields?
-        long epochSecond = logEvent.getInstant().getEpochSecond();
-        // Enable 'log4j.configuration.usePreciseClock' system property otherwise will be truncated to millis
-        long nanoOfSecond = logEvent.getInstant().getNanoOfSecond();
-        // Thread IDs typically increment from 0 producing a narrow range
-        long threadId = logEvent.getThreadId();
+    public static UUID getHashBasedUuid(LogEvent event) {
+        // Logging calls made repeatedly from same location with same params (e.g. in a tight loop)
+        // may produce identical UUIDs since LogEvent timestamps are truncated to milliseconds and aren't
+        // precise enough to vary between invocations.
+        // This shouldn't affect practical use-cases, but can be remediated slightly by enabling nanosecond
+        // timestamps with the 'log4j.configuration.usePreciseClock' property.
+        // Proper fix would require using a monotonic counter or ID inside the LogEvent.
 
-        // Increase entropy
-        long most = mix(epochSecond, nanoOfSecond, threadId);
-        long least = mix(threadId, ~nanoOfSecond, epochSecond);
-        // Set UUID v4 bits
-        most &= 0xFFFFFFFFFFFF0FFFL;
-        most |= 0x0000000000004000L;
-        least &= 0x3FFFFFFFFFFFFFFFL;
-        least |= 0x8000000000000000L;
+        ByteBuffer buffer = ByteBuffer.allocate(80); // cache in TLS?
+        buffer.putInt(Objects.hashCode(event.getLoggerFqcn()));
+        buffer.putInt(Objects.hashCode(event.getLoggerName()));
 
-        return new UUID(most, least);
-    }
+        long epochMilli = event.getInstant().getEpochMillisecond();
+        if (epochMilli == 0 && event.getMessage() instanceof TimestampMessage tsm) {
+            epochMilli = tsm.getTimestamp();
+        }
+        buffer.putLong(epochMilli);
 
-    private static long mix(long v1, long v2, long v3) {
-        // XOR with large primes
-        long hash = v1 * 0x9E3779B97F4A7C15L;
-        hash ^= (v2 * 0xC6BC279692B5C323L);
-        hash ^= (v3 * 0x3243F6A8885A308DL);
-        // Scramble
-        hash ^= (hash >>> 33);
-        hash *= 0xff51afd7ed558ccdL;
-        hash ^= (hash >>> 33);
-        hash *= 0xc4ceb9fe1a85ec53L;
-        hash ^= (hash >>> 33);
-        // Add salt
-        hash ^= SALT;
-        return hash;
+        buffer.putInt(event.getInstant().getNanoOfMillisecond());
+        buffer.putLong(event.getNanoTime());
+        buffer.putInt(Objects.hashCode(event.getLevel()));
+        buffer.putInt(Objects.hashCode(event.getMarker()));
+        buffer.putInt(Objects.hashCode(event.isIncludeLocation()));
+        buffer.putInt(Objects.hashCode(event.isEndOfBatch()));
+        buffer.putInt(Objects.hashCode(event.getMessage()));
+        buffer.putInt(Objects.hashCode(event.getContextData()));
+        buffer.putInt(Objects.hashCode(event.getContextStack()));
+        buffer.putInt(Objects.hashCode(event.isIncludeLocation() ? event.getSource() : event.peekSource()));
+        buffer.putInt(Objects.hashCode(event.getThreadName()));
+        buffer.putLong(event.getThreadId());
+        buffer.putInt(event.getThreadPriority());
+        buffer.putInt(Objects.hashCode(event.getThrown()));
+
+        byte[] bytes = buffer.array();
+        long[] hash = MurmurHash3.hash128x64(bytes);
+
+        // Set UUID V8 bits
+        hash[0] &= 0xFFFFFFFFFFFF8FFFL;
+        hash[0] |= 0x0000000000008000L;
+        hash[1] &= 0x3FFFFFFFFFFFFFFFL;
+        hash[1] |= 0x8000000000000000L;
+
+        return new UUID(hash[0], hash[1]);
     }
 }
