@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3193" link="https://github.com/apache/logging-log4j2/pull/3193"/>
-  <description format="asciidoc">Update `org.jmdns:jmdns` to version `3.6.0`</description>
+  <issue id="3537" link="https://github.com/apache/logging-log4j2/pull/3537"/>
+  <description format="asciidoc">Update `org.jmdns:jmdns` to version `3.6.1`</description>
 </entry>
