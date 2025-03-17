@@ -405,54 +405,11 @@ In this case, you need to install <code>log4j-core</code> and <code>log4j-slf4j2
 <div class="paragraph">
 <p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
 </div>
-<div class="literalblock kroki-error">
-<div class="title">Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>/-----------------------------------------------------------------------------------\
-|                                                                                   |
-|       +------------+                       +----------+          +----------+     |
-|       |            |                       |          |          |          |     |
-|       |            v                       |          v          |          v     |
-| +-----+-----+ +---------+ +---------+ +----+----+ +-------+ +----+----+ +-------+ |
-| |           | |{d}c1FF  | |         | |         | |{d}c1FF| |         | |{d}c1FF| |
-| |Application| |Log4j API| |Library 1| |Library 2| | SLF4J | |Library 3| |  JUL  | |
-| |           | |         | |         | |         | |       | |         | |       | |
-| +-----------+ +--+------+ +----+----+ +---------+ +---+---+ +---------+ +---+---+ |
-|                  :   ^         |                      :                     :     |
-|                  |   |         |                      |                     |     |
-| Compile time     |   |         |                      |                     |     |
-\------------------|---|---------|----------------------|---------------------|-----/
-                   |   |         |                      |                     |
-                   |   |         |                /-----/         /-----------/
-                   |   |         |                |               |
-        /----------/   \------+--|----------+-----|---------\     |
-        |                     |  |          |     |         |     |
-/-------|---------------------|--|----------|-----|---------|-----|-----------------\
-|       |                     |  |          |     |         |     |         Runtime |
-|       v                     :  |          :     v         :     v                 |
-| +----------+          +-----+------+ +----+---------+ +---+--------+              |
-| |cGRE      |          |cYEL        | |cYEL          | |cYEL        |              |
-| |Log4j Core|          |JPL to Log4j| |SLF4J to Log4j| |JUL to Log4j|              |
-| |          |          |            | |              | |            |              |
-| +----------+          +------------+ +--------------+ +------------+              |
-| |log4j2.xml|                ^  |                                                  |
-| +----------+                |  |                                                  |
-|                             |  |                                                  |
-|                             |  |                                                  |
-|            /-------------+--|--/                                                  |
-|            |             |  |                                                     |
-| +----------+-------------|--|---------------------------------------------------+ |
-| |JRE                     v  :                                                   | |
-| |                      +----+--+                                                | |
-| |                      |{d}c1FF|                                                | |
-| |                      |  JPL  |                                                | |
-| |                      |       |                                                | |
-| |                      +-------+                                                | |
-| |                                                                               | |
-| +-------------------------------------------------------------------------------+ |
-|                                                                                   |
-\-----------------------------------------------------------------------------------/</pre>
+<img src="../_images/diag-1fd758c2554d79996565796f77cf0f8dc6b3bca2.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.">
 </div>
+<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges.</div>
 </div>
 </div>
 </div>
@@ -1397,7 +1354,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
   &lt;dependency&gt;
     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
     &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
-    &lt;version&gt;2.0.16&lt;/version&gt;
+    &lt;version&gt;2.0.17&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
   &lt;/dependency&gt;
 
@@ -1414,7 +1371,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
-runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
+runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.17' // SLF4J-to-JUL bridge</code></pre>
 </div>
 </div>
 </div>
@@ -1474,7 +1431,7 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'ch.qos.logback:logback-classic:1.5.16'
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'ch.qos.logback:logback-classic:1.5.17'
 runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge</code></pre>
 </div>
 </div>
