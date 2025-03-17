@@ -17,11 +17,15 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.UUID;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.util.UuidUtil;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
 /**
- * Compares random UUID generation with time-based UUID generation.
+ * Compares UUID generators.
  */
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
@@ -31,6 +35,10 @@ import org.openjdk.jmh.annotations.Benchmark;
 // java -jar log4j-perf/target/benchmarks.jar -help
 //
 public class UuidGeneratorBenchmark {
+    @State(Scope.Benchmark)
+    public static class UuidGeneratorBenchmarkState {
+        private final LogEvent logEvent = LogEventFixtures.createLogEvent();
+    }
 
     @Benchmark
     public UUID base() {
@@ -45,5 +53,10 @@ public class UuidGeneratorBenchmark {
     @Benchmark
     public UUID timeBasedUUID() {
         return UuidUtil.getTimeBasedUuid();
+    }
+
+    @Benchmark
+    public UUID hashBasedUuid(UuidGeneratorBenchmarkState state) {
+        return UuidUtil.getHashBasedUuid(state.logEvent);
     }
 }
