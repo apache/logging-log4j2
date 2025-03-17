@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.junit.jupiter.api.Test;
 
 public class UuidTest {
@@ -105,6 +107,20 @@ public class UuidTest {
             }
         }
         assertEquals(0, errors, errors + " duplicate UUIDS");
+    }
+
+    @Test
+    public void testHashBasedUuid() {
+        LogEvent event1 = LogEventFixtures.createLogEvent();
+        LogEvent event2 = LogEventFixtures.createLogEvent()
+                .asBuilder()
+                .setThrown(event1.getThrown())
+                .build();
+        UUID uuid1 = UuidUtil.getHashBasedUuid(event1);
+        UUID uuid2 = UuidUtil.getHashBasedUuid(event2);
+        assertEquals(uuid1, uuid2, "UUIDs don't match");
+        assertEquals(8, uuid1.version(), "Wrong version");
+        assertEquals(2, uuid1.variant(), "Wrong variant");
     }
 
     private static class Worker extends Thread {
