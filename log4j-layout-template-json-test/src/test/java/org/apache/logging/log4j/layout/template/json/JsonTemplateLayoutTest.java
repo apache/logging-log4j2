@@ -57,6 +57,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -291,9 +292,9 @@ class JsonTemplateLayoutTest {
 
         // Create the layout with property.
         final String propertyValue = "propertyValue";
-        final Configuration config = ConfigurationBuilderFactory.newConfigurationBuilder()
-                .addProperty(propertyName, propertyValue)
-                .build();
+        final ConfigurationBuilder<?> configurationBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        configurationBuilder.add(configurationBuilder.newProperty(propertyName, propertyValue));
+        final Configuration config = configurationBuilder.build();
         final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(config)
                 .setEventTemplate(eventTemplate)
