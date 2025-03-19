@@ -37,6 +37,7 @@ github:
   homepage: https://logging.apache.org/log4j/2.x
   features:
     issues: true
+    discussions: true
   del_branch_on_merge: true
   autolink_jira:
     - LOG4J2
