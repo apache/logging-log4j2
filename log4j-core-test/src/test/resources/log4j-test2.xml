@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF" name="XMLConfigTest" monitorInterval="1" monitorUris="target/test-classes/org/apache/logging/log4j/core/net/ssl/keyStore.p12">
+<Configuration status="OFF" name="XMLConfigTest" monitorInterval="1">
   <Appenders>
     <RollingFile name="HostFile" fileName="target/${hostName}.log" filePattern="target/${hostName}-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>

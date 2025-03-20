@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -132,6 +133,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
+    private List<URI> uris = Collections.emptyList();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
@@ -275,14 +277,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Reconfigurable reconfigurable,
             final ConfigurationSource configSource,
             final int monitorIntervalSeconds) {
-        initializeWatchers(reconfigurable, configSource, Collections.emptySet(), monitorIntervalSeconds);
-    }
-
-    protected void initializeWatchers(
-            final Reconfigurable reconfigurable,
-            final ConfigurationSource configSource,
-            final Collection<Source> auxiliarySources,
-            final int monitorIntervalSeconds) {
         if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
@@ -292,7 +286,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     final long lastModified = file.lastModified();
                     final ConfigurationFileWatcher watcher =
                             new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
-                    watchManager.watch(cfgSource, auxiliarySources, watcher);
+                    watchManager.watch(cfgSource, watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
                 }
@@ -331,10 +325,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
         if (watchManager.getIntervalSeconds() >= 0) {
-            LOGGER.info(
-                    "Start watching for changes to {} every {} seconds",
-                    getConfigurationSource(),
-                    watchManager.getIntervalSeconds());
+            if (uris != null && uris.size() > 0) {
+                LOGGER.info(
+                        "Start watching for changes to {} and {} every {} seconds",
+                        getConfigurationSource(),
+                        uris,
+                        watchManager.getIntervalSeconds());
+                watchManager.addMonitorUris(configurationSource.getSource(), uris);
+            } else {
+                LOGGER.info(
+                        "Start watching for changes to {} every {} seconds",
+                        getConfigurationSource(),
+                        watchManager.getIntervalSeconds());
+            }
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
@@ -737,9 +740,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
                 final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
+            } else if (child.isInstanceOf(MonitorUris.class)) {
+                uris = convertToJavaNetUris(child.getObject(MonitorUris.class).getUris());
             } else {
                 final List<String> expected = Arrays.asList(
-                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                        "\"Appenders\"",
+                        "\"Loggers\"",
+                        "\"Properties\"",
+                        "\"Scripts\"",
+                        "\"CustomLevels\"",
+                        "\"MonitorUris\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
@@ -773,6 +783,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
 
         setParents();
+    }
+
+    private List<URI> convertToJavaNetUris(final List<Uri> uris) {
+        final List<URI> javaNetUris = new ArrayList<>();
+        for (Uri uri : uris) {
+            try {
+                javaNetUris.add(new URI(uri.getUri()));
+            } catch (URISyntaxException e) {
+                LOGGER.error("Error parsing monitor URI: " + uri, e);
+            }
+        }
+        return javaNetUris;
     }
 
     public static Level getDefaultLevel() {

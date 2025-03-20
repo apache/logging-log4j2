@@ -382,4 +382,8 @@ public class ConfigurationSource {
             return null;
         }
     }
+
+    Source getSource() {
+        return this.source;
+    }
 }

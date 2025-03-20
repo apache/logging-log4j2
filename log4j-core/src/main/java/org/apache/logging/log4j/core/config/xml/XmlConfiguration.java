@@ -20,13 +20,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.xml.XMLConstants;
@@ -49,7 +45,6 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -111,7 +106,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
-            Collection<Source> auxiliarySources = new HashSet<>();
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
                 final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
@@ -135,15 +129,11 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     monitorIntervalSeconds = Integers.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "text/xml");
-                } else if ("monitorUris".equalsIgnoreCase(key)) {
-                    for (final String uri : Arrays.asList(value.split(Patterns.COMMA_SEPARATOR))) {
-                        auxiliarySources.add(new Source(new URI(uri)));
-                    }
                 }
             }
-            initializeWatchers(this, configSource, auxiliarySources, monitorIntervalSeconds);
+            initializeWatchers(this, configSource, monitorIntervalSeconds);
             statusConfig.initialize();
-        } catch (final SAXException | IOException | ParserConfigurationException | URISyntaxException e) {
+        } catch (final SAXException | IOException | ParserConfigurationException e) {
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
