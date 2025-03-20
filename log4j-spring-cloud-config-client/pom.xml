@@ -34,7 +34,7 @@
 
   <properties>
     <!-- Dependency versions -->
-    <spring-cloud.version>4.2.0</spring-cloud.version>
+    <spring-cloud.version>4.2.1</spring-cloud.version>
 
     <!--
       ~ OSGi and JPMS options
