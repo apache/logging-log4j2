@@ -38,6 +38,7 @@ github:
   features:
     issues: true
     discussions: true
+    projects: true
   del_branch_on_merge: true
   autolink_jira:
     - LOG4J2
