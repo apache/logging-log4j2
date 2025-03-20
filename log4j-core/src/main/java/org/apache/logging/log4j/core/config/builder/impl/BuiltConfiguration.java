@@ -18,11 +18,7 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -34,8 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -52,6 +46,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component propertiesComponent;
     private Component customLevelsComponent;
     private Component scriptsComponent;
+    private Component monitorUriComponent;
     private String contentType = "text";
 
     public BuiltConfiguration(
@@ -84,6 +79,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
                     customLevelsComponent = component;
                     break;
                 }
+                case "MonitorUris": {
+                    monitorUriComponent = component;
+                    break;
+                }
             }
         }
         this.rootComponent = rootComponent;
@@ -100,6 +99,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         }
         if (customLevelsComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, customLevelsComponent));
+        }
+        if (monitorUriComponent.getComponents().size() > 0) {
+            children.add(convertToNode(rootNode, monitorUriComponent));
         }
         children.add(convertToNode(rootNode, loggersComponent));
         children.add(convertToNode(rootNode, appendersComponent));
@@ -154,28 +156,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
     }
 
     public void setMonitorInterval(final int intervalSeconds) {
-        initializeMonitoring(intervalSeconds, "");
-    }
-
-    public void initializeMonitoring(final int intervalSeconds, final String monitorUris) {
         if (this instanceof Reconfigurable && intervalSeconds > 0) {
-            initializeWatchers(
-                    (Reconfigurable) this, getConfigurationSource(), getAuxiliarySources(monitorUris), intervalSeconds);
+            initializeWatchers((Reconfigurable) this, getConfigurationSource(), intervalSeconds);
         }
-    }
-
-    private Collection<Source> getAuxiliarySources(final String monitorUris) {
-        final Collection<Source> auxiliarySources = new HashSet<>();
-        if (Strings.isNotBlank(monitorUris)) {
-            for (final String uri : Arrays.asList(monitorUris.split(Patterns.COMMA_SEPARATOR))) {
-                try {
-                    auxiliarySources.add(new Source(new URI(uri)));
-                } catch (URISyntaxException e) {
-                    LOGGER.error("Error parsing monitorUris: " + monitorUris, e);
-                }
-            }
-        }
-        return auxiliarySources;
     }
 
     @Override
