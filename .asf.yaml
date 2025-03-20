@@ -31,6 +31,7 @@ notifications:
   pullrequests: notifications@logging.apache.org
   pullrequests_bot_dependabot: robots@logging.apache.org
   jira_options: link label worklog
+  discussions: dev@logging.apache.org
 
 github:
   description: "Apache Log4j is a versatile, feature-rich, efficient logging API and backend for Java."
