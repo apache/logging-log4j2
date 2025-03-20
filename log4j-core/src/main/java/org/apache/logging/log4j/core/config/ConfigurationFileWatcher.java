@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.File;
-import java.util.Collection;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +31,7 @@ import org.apache.logging.log4j.core.util.Watcher;
  */
 public class ConfigurationFileWatcher extends AbstractWatcher implements FileWatcher {
 
-    private File file;
-    private long lastModifiedMillis;
-    private Map<File, Long> auxiliaryFiles = new HashMap<>();
+    private Map<File, Long> monitoredFiles = new HashMap<>();
 
     public ConfigurationFileWatcher(
             final Configuration configuration,
@@ -41,56 +39,49 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
             final List<ConfigurationListener> configurationListeners,
             long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
-        this.lastModifiedMillis = lastModifiedMillis;
     }
 
     @Override
     public long getLastModified() {
-        Long latestModifiedAuxFile = 0L;
-        for (final File auxFile : auxiliaryFiles.keySet()) {
-            if (auxFile.lastModified() > latestModifiedAuxFile) {
-                latestModifiedAuxFile = auxFile.lastModified();
+        Long lastModifiedMillis = 0L;
+        for (final File monitoredFile : monitoredFiles.keySet()) {
+            if (monitoredFile.lastModified() > lastModifiedMillis) {
+                lastModifiedMillis = monitoredFile.lastModified();
             }
         }
-
-        return file != null
-                ? file.lastModified() > latestModifiedAuxFile ? file.lastModified() : latestModifiedAuxFile
-                : 0;
+        return lastModifiedMillis;
     }
 
     @Override
     public void fileModified(final File file) {
-        lastModifiedMillis = file.lastModified();
-        auxiliaryFiles.entrySet().stream()
-                .forEach(auxFile -> auxFile.setValue(auxFile.getKey().lastModified()));
+        monitoredFiles.entrySet().stream()
+                .forEach(monitoredFile ->
+                        monitoredFile.setValue(monitoredFile.getKey().lastModified()));
     }
 
     @Override
     public void watching(final Source source) {
-        file = source.getFile();
-        lastModifiedMillis = file.lastModified();
+        File file = source.getFile();
+        monitoredFiles.put(file, file.lastModified());
         super.watching(source);
     }
 
     /**
-     * Called when the Watcher is registered.
-     * @param source the Source that is being watched.
-     * @param auxiliarySources auxiliary sources also being watched.
+     * Add the given URIs to be watched.
+     *
+     * @param monitorUris URIs to also watch
      */
-    public void watching(final Source source, final Collection<Source> auxiliarySources) {
-        file = source.getFile();
-        lastModifiedMillis = file.lastModified();
-        auxiliarySources.forEach(auxSource -> {
-            auxiliaryFiles.put(auxSource.getFile(), auxSource.getFile().lastModified());
+    public void addMonitorUris(final List<URI> monitorUris) {
+        monitorUris.forEach(uri -> {
+            File additionalFile = new Source(uri).getFile();
+            monitoredFiles.put(additionalFile, additionalFile.lastModified());
         });
-        super.watching(source);
     }
 
     @Override
     public boolean isModified() {
-        return lastModifiedMillis != file.lastModified()
-                || auxiliaryFiles.entrySet().stream()
-                        .anyMatch(file -> file.getValue() != file.getKey().lastModified());
+        return monitoredFiles.entrySet().stream()
+                .anyMatch(file -> file.getValue() != file.getKey().lastModified());
     }
 
     @Override

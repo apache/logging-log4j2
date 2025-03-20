@@ -62,6 +62,15 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
+     * Adds a MonitorUri component.
+     * @param builder The MonitorUriComponentBuilder with all of its attributes set.
+     * @return this builder instance.
+     */
+    default ConfigurationBuilder<T> add(MonitorUriComponentBuilder builder) {
+        return this;
+    }
+
+    /**
      * Adds a Filter component.
      * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
      * @return this builder instance.
@@ -273,6 +282,15 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     CustomLevelComponentBuilder newCustomLevel(String name, int level);
 
     /**
+     * Returns a builder for creating MonitorUris
+     * @param uri The URI.
+     * @return A new MonitorUriComponentBuilder.
+     */
+    default MonitorUriComponentBuilder newMonitorUri(String uri) {
+        return null;
+    }
+
+    /**
      * Returns a builder for creating Filters.
      * @param pluginName The Plugin type of the Filter.
      * @param onMatch "ACCEPT", "DENY", or "NEUTRAL"
@@ -417,15 +435,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder instance.
      */
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
-
-    /**
-     * Set the URIs to be monitored in addition to the configuration file
-     * @param monitorUris the URIs to monitor
-     * @return this builder instance
-     */
-    default ConfigurationBuilder<T> setMonitorUris(final String monitorUris) {
-        return this;
-    }
 
     /**
      * Sets the list of packages to search for plugins.

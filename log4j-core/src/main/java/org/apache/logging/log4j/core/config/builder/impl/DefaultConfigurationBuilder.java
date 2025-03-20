@@ -55,13 +55,13 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.MonitorUriComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * @param <T> The BuiltConfiguration type.
@@ -78,10 +78,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component properties;
     private Component customLevels;
     private Component scripts;
+    private Component monitorUris;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;
-    private String monitorUris;
     private Level level;
     private String destination;
     private String packages;
@@ -126,6 +126,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         components.add(appenders);
         loggers = new Component("Loggers");
         components.add(loggers);
+        monitorUris = new Component("MonitorUris");
+        components.add(monitorUris);
     }
 
     protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
@@ -136,6 +138,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> add(final AppenderComponentBuilder builder) {
         return add(appenders, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> add(final MonitorUriComponentBuilder builder) {
+        return add(monitorUris, builder);
     }
 
     @Override
@@ -216,7 +223,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (advertiser != null) {
                 configuration.createAdvertiser(advertiser, source);
             }
-            configuration.initializeMonitoring(monitorInterval, monitorUris);
+            configuration.setMonitorInterval(monitorInterval);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid Configuration class specified", ex);
         }
@@ -289,13 +296,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         if (monitorInterval > 0) {
             xmlWriter.writeAttribute("monitorInterval", String.valueOf(monitorInterval));
         }
-        if (Strings.isNotBlank(monitorUris)) {
-            xmlWriter.writeAttribute("monitorUris", monitorUris);
-        }
 
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
         writeXmlSection(xmlWriter, customLevels);
+        writeXmlSection(xmlWriter, monitorUris);
         if (filters.getComponents().size() == 1) {
             writeXmlComponent(xmlWriter, filters.getComponents().get(0));
         } else if (filters.getComponents().size() > 1) {
@@ -342,7 +347,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
     }
 
-    @Override
     public ScriptComponentBuilder newScript(final String name, final String language, final String text) {
         return new DefaultScriptComponentBuilder(this, name, language, text);
     }
@@ -459,6 +463,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
+    public MonitorUriComponentBuilder newMonitorUri(final String uri) {
+        return new DefaultMonitorUriComponentBuilder(this, uri);
+    }
+
+    @Override
     public FilterComponentBuilder newFilter(
             final String type, final Filter.Result onMatch, final Filter.Result onMismatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMismatch.name());
@@ -567,12 +576,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> setMonitorInterval(final String intervalSeconds) {
         monitorInterval = Integers.parseInt(intervalSeconds);
-        return this;
-    }
-
-    @Override
-    public ConfigurationBuilder<T> setMonitorUris(final String monitorUris) {
-        this.monitorUris = monitorUris;
         return this;
     }
 

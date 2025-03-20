@@ -18,7 +18,7 @@
  * Configuration using Properties files.
  */
 @Export
-@Version("2.21.0")
+@Version("2.20.1")
 package org.apache.logging.log4j.core.config.properties;
 
 import org.osgi.annotation.bundle.Export;

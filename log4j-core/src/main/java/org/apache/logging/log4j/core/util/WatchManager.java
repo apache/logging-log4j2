@@ -20,8 +20,8 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
+import java.net.URI;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -358,26 +358,6 @@ public class WatchManager extends AbstractLifeCycle {
     /**
      * Watches the given file.
      *
-     * @param source  the source to watch.
-     * @param auxiliarySources auxiliary sources to also watch
-     * @param watcher the watcher to notify of file changes.
-     */
-    public void watch(
-            final Source source, final Collection<Source> auxiliarySources, final ConfigurationFileWatcher watcher) {
-        watcher.watching(source, auxiliarySources);
-        final long lastModified = watcher.getLastModified();
-        if (logger.isDebugEnabled()) {
-            String message = auxiliarySources.isEmpty()
-                    ? "Watching configuration '{}' for lastModified {} ({})"
-                    : "Watching configuration '{}' for lastModified {} ({}) and files {}";
-            logger.debug(message, source, millisToString(lastModified), lastModified);
-        }
-        watchers.put(source, new ConfigurationMonitor(lastModified, watcher));
-    }
-
-    /**
-     * Watches the given file.
-     *
      * @param file        the file to watch.
      * @param fileWatcher the watcher to notify of file changes.
      */
@@ -390,5 +370,18 @@ public class WatchManager extends AbstractLifeCycle {
         }
         final Source source = new Source(file);
         watch(source, watcher);
+    }
+
+    /**
+     * Add the given URIs to be monitored for the given source.
+     *
+     * @param source the source being watched.
+     * @param monitorUris the URIs to also watch
+     */
+    public void addMonitorUris(final Source source, final List<URI> monitorUris) {
+        ConfigurationMonitor monitor = watchers.get(source);
+        if (monitor != null && monitor.getWatcher() instanceof ConfigurationFileWatcher) {
+            ((ConfigurationFileWatcher) monitor.getWatcher()).addMonitorUris(monitorUris);
+        }
     }
 }
