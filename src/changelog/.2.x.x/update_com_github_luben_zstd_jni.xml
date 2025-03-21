@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3447" link="https://github.com/apache/logging-log4j2/pull/3447"/>
-  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.6-10`</description>
+  <issue id="3479" link="https://github.com/apache/logging-log4j2/pull/3479"/>
+  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.7-1`</description>
 </entry>
