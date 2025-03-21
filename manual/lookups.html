@@ -2191,8 +2191,21 @@ If you are using those application servers, you should replace the dependencies 
 <div class="sect1">
 <h2 id="third-party"><a class="anchor" href="#third-party"></a>Third-party lookups</h2>
 <div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The following additional lookups are available from third-party vendors:</p>
+<p>These lookups are provided by <strong>third-party</strong> vendors and are not maintained by the
+<a href="https://logging.apache.org">Apache Logging Services</a>
+(Log4j, Log4cxx, Log4net) project.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="KubernetesLookup"><a class="anchor" href="#KubernetesLookup"></a>Kubernetes Lookup</h3>
@@ -2254,6 +2267,32 @@ If you are upgrading to Spring Boot 3, make sure to remove the latter from your 
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="TomcatLookup"><a class="anchor" href="#TomcatLookup"></a>Tomcat Lookup</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Syntax</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tomcat:&lt;key&gt;</code></p>
+<p class="tableblock">where <code>key</code> is one of the
+<a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup-keys">supported Tomcat Lookup keys</a></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#installation"><code>eu.copernik:log4j-tomcat</code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The Tomcat Lookup allows retrieving the names of the currently active Tomcat engine, host and application context.
+See
+<a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup">Copernik.eu Tomcat Lookup documentation</a> for more details.</p>
 </div>
 </div>
 </div>

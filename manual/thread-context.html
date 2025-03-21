@@ -568,9 +568,40 @@ You can provide a custom <code>ContextDataProvider</code> implementation as foll
 </div>
 </li>
 <li>
-<p>Write the fully-qualified class name of your custom implementation (e.g., <code>com.mycompany.CustomContextDataProvider</code>) to the file created in the previous step</p>
+<p>Write the fully-qualified class name of your custom implementation (e.g., <code>com.mycompany.CustomContextDataProvider</code>) to the file created in the previous step.</p>
 </li>
 </ol>
+</div>
+<div class="sect3">
+<h4 id="_third_party_custom_thread_context_data_providers"><a class="anchor" href="#_third_party_custom_thread_context_data_providers"></a>Third-party custom thread context data providers</h4>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These context data providers are supplied by <strong>third-party</strong> vendors and are not maintained by the
+<a href="https://logging.apache.org">Apache Logging Services</a>
+(Log4j, Log4cxx, Log4net) project.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/log4j/log4j-context-data/log4j-context-data-2.17/library-autoconfigure">OpenTelemetry Context Data Provider</a></dt>
+<dd>
+<p>Injects trace context data into log events.</p>
+</dd>
+<dt class="hdlist1"><a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextDataProvider">Copernik.eu Tomcat Context Data Provider</a></dt>
+<dd>
+<p>Injects the name of the currently active Tomcat engine, host and web application into log events.</p>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 <div class="sect2">
