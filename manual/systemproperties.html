@@ -747,6 +747,37 @@ for details.</p>
 </dd>
 </dl>
 </div>
+<div class="paragraph">
+<p>There are also third-party context selector implementations:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These context selectors are provided by <strong>third-party</strong> vendors and are not maintained by the
+<a href="https://logging.apache.org">Apache Logging Services</a>
+(Log4j, Log4cxx, Log4net) project.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector"><code>eu.copernik.log4j.tomcat.TomcatContextSelector</code></a></dt>
+<dd>
+<p>Selects the currently active Tomcat web application and creates synchronous loggers.</p>
+</dd>
+<dt class="hdlist1"><a href="https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector"><code>eu.copernik.log4j.tomcat.TomcatAsyncContextSelector</code></a></dt>
+<dd>
+<p>Selects the currently active Tomcat web application and creates <a href="async.html" class="xref page">asynchronous loggers</a>.</p>
+</dd>
+</dl>
+</div>
 </div>
 <div class="sect3">
 <h4 id="log4j.loggerContext.shutdownHookEnabled"><a class="anchor" href="#log4j.loggerContext.shutdownHookEnabled"></a><code>log4j.loggerContext.shutdownHookEnabled</code></h4>
