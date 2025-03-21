@@ -64,6 +64,21 @@ See
 {logging-services-url}/log4j/jakarta/log4j-jakarta-web.html#jndi[Web application]
 for details.
 
+There are also third-party context selector implementations:
+
+[IMPORTANT]
+====
+These context selectors are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
+====
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatContextSelector`]::
+Selects the currently active Tomcat web application and creates synchronous loggers.
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatAsyncContextSelector`]::
+Selects the currently active Tomcat web application and creates xref:manual/async.adoc[asynchronous loggers].
+
 [id=log4j.loggerContext.shutdownHookEnabled]
 == `log4j.loggerContext.shutdownHookEnabled`
 
