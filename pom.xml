@@ -366,7 +366,7 @@
          `log4j-docgen`-specific properties
          ================================== -->
     <!-- `log4j-docgen` qualified class name exclude pattern -->
-    <log4j.docgen.typeFilter.excludePattern>^java\..+</log4j.docgen.typeFilter.excludePattern>
+    <log4j.docgen.typeFilter.excludePattern>^java\.(?!lang\.Class|net\.InetAddress|net\.URL|nio\.charset\.Charset|util\.regex\.Pattern).+</log4j.docgen.typeFilter.excludePattern>
     <!-- Directories where `log4j-docgen` annotation processor will emit files to -->
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
