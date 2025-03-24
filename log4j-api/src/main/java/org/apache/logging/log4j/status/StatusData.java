@@ -179,7 +179,10 @@ public class StatusData implements Serializable {
         sb.append(message.getFormattedMessage());
         final Object[] parameters = message.getParameters();
         Throwable effectiveThrowable;
-        if (throwable == null && parameters != null && parameters[parameters.length - 1] instanceof Throwable) {
+        if (throwable == null
+                && parameters != null
+                && parameters.length > 0
+                && parameters[parameters.length - 1] instanceof Throwable) {
             effectiveThrowable = (Throwable) parameters[parameters.length - 1];
         } else {
             effectiveThrowable = throwable;
