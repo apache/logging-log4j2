@@ -46,7 +46,7 @@ public interface Filter extends LifeCycle {
     String ELEMENT_TYPE = "filter";
 
     /**
-     * The result that can returned from a filter method call.
+     * The result that can be returned from a filter method call.
      */
     enum Result {
         /**

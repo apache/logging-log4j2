@@ -47,25 +47,37 @@ implementation to use.
 The implementations available by default are:
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html[`org.apache.logging.log4j.core.selector.BasicContextSelector`]::
-Creates a single logger context and synchronous loggers
+Creates a single logger context and synchronous loggers.
 
-link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector`]::
-Creates a single logger context and xref:manual/async.adoc[asynchronous loggers]
+link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/BasicAsyncLoggerContextSelector.html[`org.apache.logging.log4j.async.logger.BasicAsyncLoggerContextSelector`]::
+Creates a single logger context and xref:manual/async.adoc[asynchronous loggers].
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`org.apache.logging.log4j.core.selector.ClassLoaderContextSelector`]::
-Creates a separate logger context per classloader and synchronous loggers
+Creates a separate logger context per classloader and synchronous loggers.
 
-link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html[`org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`]::
-Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers]
+link:../javadoc/log4j-async-logger/org/apache/logging/log4j/async/logger/AsyncLoggerContextSelector.html[`org.apache.logging.log4j.async.logger.AsyncLoggerContextSelector`]::
+Creates a separate logger context per classloader and xref:manual/async.adoc[asynchronous loggers].
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/osgi/BundleContextSelector.html[`org.apache.logging.log4j.core.osgi.BundleContextSelector`]::
-Creates a separate logger context per OSGi bundle and synchronous loggers
-
-org.apache.logging.log4j.jndi.selector.JndiContextSelector::
+`org.apache.logging.log4j.jndi.selector.JndiContextSelector`::
 Creates loggers contexts based on a JNDI lookup and synchronous loggers.
 See
 {logging-services-url}/log4j/jakarta/log4j-jakarta-web.html#jndi[Web application]
 for details.
+
+There are also third-party context selector implementations:
+
+[IMPORTANT]
+====
+These context selectors are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
+====
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatContextSelector`]::
+Selects the currently active Tomcat web application and creates synchronous loggers.
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextSelector[`eu.copernik.log4j.tomcat.TomcatAsyncContextSelector`]::
+Selects the currently active Tomcat web application and creates xref:manual/async.adoc[asynchronous loggers].
 
 [id=log4j.loggerContext.shutdownHookEnabled]
 == `log4j.loggerContext.shutdownHookEnabled`

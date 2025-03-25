@@ -945,7 +945,12 @@ include::partial$features/servlet-support.adoc[]
 [#third-party]
 == Third-party lookups
 
-The following additional lookups are available from third-party vendors:
+[IMPORTANT]
+====
+These lookups are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
+====
 
 [#KubernetesLookup]
 === Kubernetes Lookup
@@ -971,6 +976,24 @@ Kubernetes Lookup is distributed as a part of Fabric8's Kubernetes Client, refer
 Starting with Spring Boot 3 a `$+{spring:...}+` lookup is available out-of-the-box.
 https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log4j2-extensions.environment-properties-lookup[Spring Boot documentation]
 for more details.
+
+[#TomcatLookup]
+=== Tomcat Lookup
+
+[cols="1h,4"]
+|===
+| Syntax
+|
+`tomcat:<key>`
+
+where `key` is one of the
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup-keys[supported Tomcat Lookup keys]
+| Dependency | https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#installation[`eu.copernik:log4j-tomcat`]
+|===
+
+The Tomcat Lookup allows retrieving the names of the currently active Tomcat engine, host and application context.
+See
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatLookup[Copernik.eu Tomcat Lookup documentation] for more details.
 
 [#extending]
 == Extending
