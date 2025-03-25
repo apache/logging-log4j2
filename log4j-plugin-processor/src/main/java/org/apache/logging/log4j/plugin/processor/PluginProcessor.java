@@ -315,13 +315,9 @@ public class PluginProcessor extends AbstractProcessor {
         return str1.substring(0, minLength);
     }
 
-    private static boolean isServiceConsumerClassPresent() {
-        try {
-            Class.forName("aQute.bnd.annotation.spi.ServiceConsumer");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    private boolean isServiceConsumerClassPresent() {
+        // Looks for the presence of the annotation on the classpath, not the annotation processor path.
+        return processingEnv.getElementUtils().getTypeElement("aQute.bnd.annotation.spi.ServiceConsumer") != null;
     }
 
     private void handleOptions(Map<String, String> options) {
