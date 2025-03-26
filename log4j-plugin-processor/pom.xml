@@ -31,10 +31,6 @@
   <name>Apache Log4j Plugin Processor</name>
   <description>Log4j Plugin Annotation Processor</description>
 
-  <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-  </properties>
-
   <dependencies>
 
     <dependency>
@@ -47,6 +43,51 @@
       <artifactId>log4j-plugins</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test-no-bnd-annotations</id>
+            <configuration>
+              <classpathDependencyExcludes>
+                <exclude>biz.aQute.bnd:biz.aQute.bnd.annotation</exclude>
+              </classpathDependencyExcludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>
