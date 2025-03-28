@@ -154,6 +154,16 @@
     <httpcore.version>4.4.16</httpcore.version>
     <jna.version>5.17.0</jna.version>
 
+    <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
+         to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
+         Overrides parent's 'bnd-jpms-module-info' and hence re-defines '$[bnd-module-name];access=0' -->
+    <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
+      biz.aQute.bnd.annotation,
+      com.google.errorprone.annotations,
+      com.github.spotbugs.annotations,
+      org.osgi.annotation.bundle,
+      org.osgi.annotation.versioning
+      "</bnd-jpms-module-info>
   </properties>
 
   <dependencyManagement>
@@ -1084,6 +1094,58 @@
               ]]></script>
               </scripts>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Add annotation library dependencies (defined as <scope>provided</scope> in this file) as compileOnlyApi
+           dependencies for Gradle consumers. This makes the Jars automatically available at compile time to make
+           the '-Xlint:classfile' check of javac pass.-->
+      <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <configuration>
+          <compileOnlyApiDependencies>
+            <dependency>
+              <groupId>org.jspecify</groupId>
+              <artifactId>jspecify</artifactId>
+              <version>${jspecify.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>biz.aQute.bnd</groupId>
+              <artifactId>biz.aQute.bnd.annotation</artifactId>
+              <version>${bnd.annotation.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_annotations</artifactId>
+              <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <!-- Note: 'org.osgi.annotation.bundle' and 'osgi.annotation' overlap. We do not want to add
+                   both. As 'org.osgi.annotation.bundle' has an Automatic-Module-Name, it is preferred. -->
+              <artifactId>org.osgi.annotation.bundle</artifactId>
+              <version>${osgi.annotation.bundle.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+              <version>${osgi.annotation.versioning.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs-annotations</artifactId>
+              <version>${spotbugs-annotations.version}</version>
+            </dependency>
+          </compileOnlyApiDependencies>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gmm</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
