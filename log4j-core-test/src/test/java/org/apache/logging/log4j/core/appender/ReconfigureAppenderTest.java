@@ -27,9 +27,7 @@ import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Builder;
 import org.junit.jupiter.api.Test;
 
 class ReconfigureAppenderTest {
@@ -127,8 +125,7 @@ class ReconfigureAppenderTest {
     }
 
     private void createAndAddAppender() {
-        final ConfigurationBuilder<BuiltConfiguration> config_builder =
-                ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> config_builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
         // All loggers must have a root logger. The default root logger logs ERRORs to the console.
         // Override this with a root logger that does not log anywhere as we leave it up the
@@ -141,10 +138,10 @@ class ReconfigureAppenderTest {
         // Retrieve the logger.
         final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
-        final Builder pattern_builder =
+        final PatternLayout.Builder pattern_builder =
                 PatternLayout.newBuilder().withPattern("[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
 
-        final PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
+        final PatternLayout pattern_layout = pattern_builder.build();
 
         appender = RollingFileAppender.newBuilder()
                 .withLayout(pattern_layout)
