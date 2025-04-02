@@ -12,7 +12,7 @@
       "unit": "secs.nanos"
     }
   },
-  "logging.googleapis.com/severity": {
+  "severity": {
     "$resolver": "pattern",
     "pattern": "%level{WARN=WARNING, TRACE=DEBUG, FATAL=EMERGENCY}",
     "stackTraceEnabled": false
@@ -40,11 +40,6 @@
       "pattern": "%replace{%C.%M}{^\\?\\.$}{}",
       "stackTraceEnabled": false
     }
-  },
-  "logging.googleapis.com/insertId": {
-    "$resolver": "pattern",
-    "pattern": "%uuid{TIME}",
-    "stackTraceEnabled": false
   },
   "logging.googleapis.com/trace": {
     "$resolver": "mdc",
