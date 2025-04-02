@@ -149,40 +149,28 @@ class GcpLayoutTest {
             }
 
             // Verify insert id.
-            assertThat(accessor.getString("logging.googleapis.com/insertId")).matches("[-]?[0-9]+");
+            assertThat(accessor.getString("logging.googleapis.com/insertId")).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
 
             // Verify exception.
             if (exception != null) {
 
-                // Verify exception class.
-                assertThat(accessor.getString(new String[] {"_exception", "class"}))
-                        .isEqualTo(exception.getClass().getCanonicalName());
-
-                // Verify exception message.
-                assertThat(accessor.getString(new String[] {"_exception", "message"}))
-                        .isEqualTo(exception.getMessage());
-
                 // Verify exception stack trace.
-                assertThat(accessor.getString(new String[] {"_exception", "stackTrace"}))
+                assertThat(accessor.getString("exception"))
                         .contains(exception.getLocalizedMessage())
                         .contains("at org.apache.logging.log4j.layout.template.json")
                         .contains("at " + JAVA_BASE_PREFIX + "java.lang.reflect.Method")
                         .contains("at org.junit.platform.engine");
 
             } else {
-                assertThat(accessor.getObject(new String[] {"_exception", "class"}))
-                        .isNull();
-                assertThat(accessor.getObject(new String[] {"_exception", "message"}))
-                        .isNull();
-                assertThat(accessor.getString(new String[] {"_exception", "stackTrace"}))
+                assertThat(accessor.getString("exception"))
                         .isEmpty();
             }
 
             // Verify thread name.
-            assertThat(accessor.getString("_thread")).isEqualTo(logEvent.getThreadName());
+            assertThat(accessor.getString("thread")).isEqualTo(logEvent.getThreadName());
 
             // Verify logger name.
-            assertThat(accessor.getString("_logger")).isEqualTo(logEvent.getLoggerName());
+            assertThat(accessor.getString("logger")).isEqualTo(logEvent.getLoggerName());
         });
     }
 
