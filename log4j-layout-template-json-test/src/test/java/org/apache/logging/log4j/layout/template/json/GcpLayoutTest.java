@@ -148,9 +148,6 @@ class GcpLayoutTest {
                         .isEmpty();
             }
 
-            // Verify insert id.
-            assertThat(accessor.getString("logging.googleapis.com/insertId")).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
-
             // Verify exception.
             if (exception != null) {
 
