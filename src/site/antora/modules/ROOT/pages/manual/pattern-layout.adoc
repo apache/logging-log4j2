@@ -912,7 +912,7 @@ A logger conversion specifier can be optionally followed by a _precision specifi
 If the number is positive, the layout prints the corresponding number of the rightmost logger name components.
 If negative, the layout removes the corresponding number of leftmost logger name components.
 * If the precision contains periods then the number before the period identifies the length to be printed from items that precede the matching period in the logger name.
-An asterix can be used as a wildecard to print the whole logger name component before a period. 
+An asterisk can be used as a wildcard to print the whole logger name component before a period. 
 * If the precision contains any non-integer characters, then the layout abbreviates the name based on the pattern.
 If the precision integer is less than one, the layout still prints the right-most token in full.
 
