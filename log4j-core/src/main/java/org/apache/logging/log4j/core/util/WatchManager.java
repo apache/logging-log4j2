@@ -20,6 +20,7 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
+import java.net.URI;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -369,5 +370,18 @@ public class WatchManager extends AbstractLifeCycle {
         }
         final Source source = new Source(file);
         watch(source, watcher);
+    }
+
+    /**
+     * Add the given URIs to be monitored for the given source.
+     *
+     * @param source the source being watched.
+     * @param monitorUris the URIs to also watch
+     */
+    public void addMonitorUris(final Source source, final List<URI> monitorUris) {
+        ConfigurationMonitor monitor = watchers.get(source);
+        if (monitor != null && monitor.getWatcher() instanceof ConfigurationFileWatcher) {
+            ((ConfigurationFileWatcher) monitor.getWatcher()).addMonitorUris(monitorUris);
+        }
     }
 }
