@@ -401,8 +401,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                     break;
             }
             switch (result.status) {
-                    // These results cause changes in the filter
-                    // We call the listeners
+                // These results cause changes in the filter
+                // We call the listeners
                 case SUCCESS:
                 case NOT_FOUND:
                 case EMPTY:
@@ -410,7 +410,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         listener.onEvent();
                     }
                     break;
-                    // These results do no cause changes in the filter
+                // These results do no cause changes in the filter
                 case ERROR:
                 case NOT_MODIFIED:
                     break;
