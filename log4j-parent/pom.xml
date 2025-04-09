@@ -991,19 +991,6 @@
         </executions>
       </plugin>
 
-      <!-- REMOVE THIS `m-c-p` OVERRIDE with the next `logging-parent` update!
-           This is a temporary fix for the Error Prone `2.36.0` issue:
-           https://github.com/apache/logging-parent/commit/c98462c444eda72d5fe8e7a0b8112949142b7a0a -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs combine.children="append">
-            <arg>--should-stop=ifError=FLOW</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-
       <!--
         ~ Some external logging bridges can interfere with our tests, giving false negatives.
         -->
