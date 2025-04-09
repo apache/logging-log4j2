@@ -166,7 +166,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         switch (formatters.length) {
 
-                // If found an empty pattern, return an empty formatter
+            // If found an empty pattern, return an empty formatter
             case 0:
                 return new AbstractFormatter(pattern, locale, timeZone, ChronoUnit.FOREVER) {
                     @Override
@@ -175,11 +175,11 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     }
                 };
 
-                // If extracted a single formatter, return it as is
+            // If extracted a single formatter, return it as is
             case 1:
                 return formatters[0];
 
-                // Profiling shows that unrolling the generic loop boosts performance
+            // Profiling shows that unrolling the generic loop boosts performance
             case 2:
                 final InstantPatternFormatter first = formatters[0];
                 final InstantPatternFormatter second = formatters[1];
@@ -192,7 +192,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     }
                 };
 
-                // Combine all extracted formatters into one
+            // Combine all extracted formatters into one
             default:
                 final ChronoUnit precision = Stream.of(formatters)
                         .map(InstantFormatter::getPrecision)
