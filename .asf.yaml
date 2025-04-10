@@ -66,12 +66,16 @@ github:
   # Enforce Review-then-Commit
   protected_branches:
     2.x: &default_protection
-      # All reviews must be addressed before merging
-      required_conversation_resolution: true
-      # Use "Squash and merge" or equivalent
-      required_linear_history: true
       # All commits must be signed
       required_signatures: true
+      # All reviews must be addressed before merging
+      required_conversation_resolution: true
+      # Require the `build` to pass before merging
+      required_status_checks:
+        checks:
+          # The GitHub Actions app
+          - app_id: ~
+            check: "build"
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
