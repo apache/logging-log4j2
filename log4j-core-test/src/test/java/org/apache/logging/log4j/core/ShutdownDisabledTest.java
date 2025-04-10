@@ -35,6 +35,6 @@ class ShutdownDisabledTest {
         Field shutdownCallback = LoggerContext.class.getDeclaredField("shutdownCallback");
         Object fieldValue = ReflectionUtil.getFieldValue(shutdownCallback, ctx);
         assertFalse(config.isShutdownHookEnabled(), "Shutdown hook is enabled");
-        assertNull(fieldValue, "Shutdown callback is null");
+        assertNull(fieldValue, "Shutdown callback");
     }
 }
