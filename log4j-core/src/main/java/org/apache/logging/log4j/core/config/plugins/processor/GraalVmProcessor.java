@@ -138,17 +138,17 @@ public class GraalVmProcessor extends AbstractProcessor {
                 ExecutableElement executableChild = (ExecutableElement) child;
                 if (executableChild.getModifiers().contains(Modifier.PUBLIC)) {
                     switch (executableChild.getSimpleName().toString()) {
-                            // 1. All public constructors.
+                        // 1. All public constructors.
                         case "<init>":
                             addMethod(typeElement, executableChild);
                             break;
-                            // 2. Static `newInstance` method used in, e.g. `PatternConverter` classes.
+                        // 2. Static `newInstance` method used in, e.g. `PatternConverter` classes.
                         case "newInstance":
                             if (executableChild.getModifiers().contains(Modifier.STATIC)) {
                                 addMethod(typeElement, executableChild);
                             }
                             break;
-                            // 3. Other factory methods are annotated, so we don't deal with them here.
+                        // 3. Other factory methods are annotated, so we don't deal with them here.
                         default:
                     }
                 }
