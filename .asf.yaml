@@ -75,9 +75,10 @@ github:
         checks:
           # The GitHub Actions app: 15368
           - app_id: 15368
-            context: "build"
-          - app_id: 15368
-            context: "codeql-analysis"
+            context: "build / build (ubuntu-latest)"
+          # CodeQL app
+          - app_id: 57789
+            context: "CodeQL"
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
