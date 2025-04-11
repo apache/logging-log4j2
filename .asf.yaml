@@ -73,10 +73,10 @@ github:
       # Require checks to pass before merging
       required_status_checks:
         checks:
-          # The GitHub Actions app
-          - app_id: ~
+          # The GitHub Actions app: 15368
+          - app_id: 15368
             check: "build"
-          - app_id: ~
+          - app_id: 15368
             check: "codeql-analysis"
       # At least one positive review must be present
       required_pull_request_reviews:
