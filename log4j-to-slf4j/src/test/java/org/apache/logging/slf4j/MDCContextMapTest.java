@@ -26,14 +26,13 @@ import static org.mockito.Mockito.when;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Issue;
-import org.slf4j.MDCTestHelper;
 import org.slf4j.spi.MDCAdapter;
 
 class MDCContextMapTest {
 
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/1426")
-    void nonNullGetCopy() {
+    void nonNullGetCopy() throws Exception {
         final ThreadContextMap contextMap = new MDCContextMap();
         final MDCAdapter mockAdapter = mock(MDCAdapter.class);
         when(mockAdapter.getCopyOfContextMap()).thenReturn(null);
