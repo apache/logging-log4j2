@@ -37,7 +37,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class LogEventAdapter extends LoggingEvent {
 
-    private static final long JVM_START_TIME = initStartTime();
+    public static final long JVM_START_TIME = initStartTime();
 
     private final LogEvent event;
 
@@ -50,7 +50,7 @@ public class LogEventAdapter extends LoggingEvent {
      * elapsed since 01.01.1970.
      * @return the time when the JVM started.
      */
-    public static long getStartTime() {
+    public static long getJvmStartTime() {
         return JVM_START_TIME;
     }
 
