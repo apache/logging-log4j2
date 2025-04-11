@@ -36,7 +36,7 @@ public final class ExceptionRootCauseResolverFactory implements EventResolverFac
 
     @Override
     public String getName() {
-        return ExceptionRootCauseResolver.getName();
+        return "exceptionRootCause";
     }
 
     @Override
