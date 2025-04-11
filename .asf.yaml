@@ -75,9 +75,9 @@ github:
         checks:
           # The GitHub Actions app: 15368
           - app_id: 15368
-            check: "build"
+            context: "build"
           - app_id: 15368
-            check: "codeql-analysis"
+            context: "codeql-analysis"
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
@@ -91,9 +91,9 @@ github:
         checks:
           # The GitHub Actions app: 15368
           - app_id: 15368
-            check: "build"
+            context: "build"
           - app_id: 15368
-            check: "codeql-analysis"
+            context: "codeql-analysis"
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
