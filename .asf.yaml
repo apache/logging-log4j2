@@ -65,7 +65,7 @@ github:
 
   # Enforce Review-then-Commit
   protected_branches:
-    2.x: &default_protection
+    2.x:
       # All commits must be signed
       required_signatures: true
       # All reviews must be addressed before merging
@@ -82,4 +82,18 @@ github:
       required_pull_request_reviews:
         required_approving_review_count: 1
     main:
-      *default_protection
+      # All commits must be signed
+      required_signatures: true
+      # All reviews must be addressed before merging
+      required_conversation_resolution: true
+      # Require checks to pass before merging
+      required_status_checks:
+        checks:
+          # The GitHub Actions app: 15368
+          - app_id: 15368
+            check: "build"
+          - app_id: 15368
+            check: "codeql-analysis"
+      # At least one positive review must be present
+      required_pull_request_reviews:
+        required_approving_review_count: 1
