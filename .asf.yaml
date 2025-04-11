@@ -16,7 +16,7 @@
 #
 
 # `.asf.yaml` is a branch-specific YAML configuration file for Git repositories to control features such as notifications, GitHub settings, etc.
-# See its documentation for details: https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
+# See its documentation for details: https://github.com/apache/infrastructure-asfyaml
 
 # Bare minimum `notifications` to
 #
@@ -63,8 +63,23 @@ github:
     merge:   false
     rebase:  false
 
+  # Enforce Review-then-Commit
   protected_branches:
+    2.x: &default_protection
+      # All commits must be signed
+      required_signatures: true
+      # All reviews must be addressed before merging
+      required_conversation_resolution: true
+      # Require checks to pass before merging
+      required_status_checks:
+        checks:
+          # The GitHub Actions app
+          - app_id: ~
+            check: "build"
+          - app_id: ~
+            check: "codeql-analysis"
+      # At least one positive review must be present
+      required_pull_request_reviews:
+        required_approving_review_count: 1
     main:
-      required_signatures: true
-    2.x:
-      required_signatures: true
+      *default_protection
