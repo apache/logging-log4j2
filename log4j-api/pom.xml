@@ -68,12 +68,10 @@
       <scope>provided</scope>
     </dependency>
 
-    <!--
-      ~ Effectively optional, but included due to its size and the compilation warnings its absence causes.
-      -->
     <dependency>
       <groupId>org.jspecify</groupId>
       <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
