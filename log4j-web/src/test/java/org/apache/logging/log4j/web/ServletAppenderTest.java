@@ -32,12 +32,12 @@ import org.springframework.mock.web.MockServletContext;
 /**
  *
  */
-public class ServletAppenderTest {
+class ServletAppenderTest {
 
     private static final String CONFIG = "WEB-INF/classes/log4j-servlet.xml";
 
     @Test
-    public void testAppender() throws Exception {
+    void testAppender() {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
         servletContext.setAttribute("TestAttr", "AttrValue");

@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.parser;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class XmlLogEventParserTest extends LogEventParserTest {
+class XmlLogEventParserTest extends LogEventParserTest {
 
     private XmlLogEventParser parser;
 
@@ -72,55 +74,57 @@ public class XmlLogEventParserTest extends LogEventParserTest {
                     + "  </Thrown>\n"
                     + "</Event>";
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         parser = new XmlLogEventParser();
     }
 
     @Test
-    public void testString() throws ParseException {
+    void testString() throws ParseException {
         final LogEvent logEvent = parser.parseFrom(XML);
         assertLogEvent(logEvent);
     }
 
-    @Test(expected = ParseException.class)
-    public void testStringEmpty() throws ParseException {
-        parser.parseFrom("");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testStringInvalidXml() throws ParseException {
-        parser.parseFrom("foobar");
+    @Test
+    void testStringEmpty() {
+        assertThrows(ParseException.class, () -> parser.parseFrom(""));
     }
 
     @Test
-    public void testEmptyObject() throws ParseException {
+    void testStringInvalidXml() {
+        assertThrows(ParseException.class, () -> parser.parseFrom("foobar"));
+    }
+
+    @Test
+    void testEmptyObject() throws ParseException {
         parser.parseFrom("<Event></Event>");
     }
 
-    @Test(expected = ParseException.class)
-    public void testStringWrongPropertyType() throws ParseException {
-        parser.parseFrom("<Event><Instant epochSecond=\"bar\">foobar</Instant></Event>");
+    @Test
+    void testStringWrongPropertyType() {
+        assertThrows(
+                ParseException.class,
+                () -> parser.parseFrom("<Event><Instant epochSecond=\"bar\">foobar</Instant></Event>"));
     }
 
     @Test
-    public void testTimeMillisIgnored() throws ParseException {
+    void testTimeMillisIgnored() throws ParseException {
         parser.parseFrom("<Event><timeMillis>foobar</timeMillis></Event>");
     }
 
     @Test
-    public void testStringIgnoreInvalidProperty() throws ParseException {
+    void testStringIgnoreInvalidProperty() throws ParseException {
         parser.parseFrom("<Event><foo>bar</foo></Event>");
     }
 
     @Test
-    public void testByteArray() throws ParseException {
+    void testByteArray() throws ParseException {
         final LogEvent logEvent = parser.parseFrom(XML.getBytes(StandardCharsets.UTF_8));
         assertLogEvent(logEvent);
     }
 
     @Test
-    public void testByteArrayOffsetLength() throws ParseException {
+    void testByteArrayOffsetLength() throws ParseException {
         final byte[] bytes = ("abc" + XML + "def").getBytes(StandardCharsets.UTF_8);
         final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);

@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
  */
 @Tag("allocation")
 @Tag("functional")
-public class GcFreeMixedSyncAsyncLoggingTest {
+class GcFreeMixedSyncAsyncLoggingTest {
 
     @Test
-    public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
+    void testNoAllocationDuringSteadyStateLogging() throws Throwable {
         GcFreeLoggingTestUtil.runTest(getClass());
     }
 

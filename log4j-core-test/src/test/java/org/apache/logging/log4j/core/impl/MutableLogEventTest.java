@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the MutableLogEvent class.
  */
-public class MutableLogEventTest {
+class MutableLogEventTest {
     private static final StringMap CONTEXT_DATA = createContextData();
     private static final ThreadContext.ContextStack STACK = new MutableThreadContextStack(Arrays.asList("abc", "xyz"));
 
@@ -59,13 +59,13 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testToImmutable() {
+    void testToImmutable() {
         final LogEvent logEvent = new MutableLogEvent();
         assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     @Test
-    public void testInitFromCopiesAllFields() {
+    void testInitFromCopiesAllFields() {
         //        private ThrowableProxy thrownProxy;
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
@@ -107,7 +107,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testInitFromReusableCopiesFormatString() {
+    void testInitFromReusableCopiesFormatString() {
         final Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
@@ -150,7 +150,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testInitFromReusableObjectCopiesParameter() {
+    void testInitFromReusableObjectCopiesParameter() {
         final Object param = new Object();
         final Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
         final Log4jLogEvent source = Log4jLogEvent.newBuilder()
@@ -183,7 +183,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testClear() {
+    void testClear() {
         final MutableLogEvent mutable = new MutableLogEvent();
         // initialize the event with an empty message
         final ReusableSimpleMessage simpleMessage = new ReusableSimpleMessage();
@@ -268,7 +268,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testJavaIoSerializable() throws Exception {
+    void testJavaIoSerializable() {
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextData(CONTEXT_DATA);
         evt.setContextStack(STACK);
@@ -312,7 +312,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testJavaIoSerializableWithThrown() throws Exception {
+    void testJavaIoSerializableWithThrown() {
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextData(CONTEXT_DATA);
         evt.setContextStack(STACK);
@@ -358,7 +358,7 @@ public class MutableLogEventTest {
     }
 
     @Test
-    public void testPreservesLocation() {
+    void testPreservesLocation() {
         final StackTraceElement source = new RuntimeException().getStackTrace()[0];
         final MutableLogEvent mutable = new MutableLogEvent();
         mutable.setSource(source);

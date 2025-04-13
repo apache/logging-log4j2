@@ -29,18 +29,18 @@ import org.junit.jupiter.api.Test;
 /**
  * Test configuration from Properties.
  */
-public class XmlRollingWithPropertiesTest {
+class XmlRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/" + XmlRollingWithPropertiesTest.class.getSimpleName();
 
     @BeforeAll
-    public static void setupSystemProperties() {
+    static void setupSystemProperties() {
         System.setProperty("test.directory", TEST_DIR);
         System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.xml");
     }
 
     @Test
-    public void testProperties() throws Exception {
+    void testProperties() throws Exception {
         // ${test.directory}/logs/etl.log
         final Path path = Paths.get(TEST_DIR, "logs/etl.log");
         Files.deleteIfExists(path);

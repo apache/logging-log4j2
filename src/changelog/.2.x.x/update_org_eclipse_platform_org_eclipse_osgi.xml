@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2940" link="https://github.com/apache/logging-log4j2/pull/2940"/>
-  <description format="asciidoc">Update `org.eclipse.platform:org.eclipse.osgi` to version `3.21.0`</description>
+  <issue id="3530" link="https://github.com/apache/logging-log4j2/pull/3530"/>
+  <description format="asciidoc">Update `org.eclipse.platform:org.eclipse.osgi` to version `3.23.0`</description>
 </entry>

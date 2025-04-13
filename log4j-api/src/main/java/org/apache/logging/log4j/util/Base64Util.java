@@ -25,6 +25,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Base64 encodes Strings. This utility is only necessary because the mechanism to do this changed in Java 8 and
  * the original method was removed in Java 9.
+ *
+ * @since 2.12.0
  */
 public final class Base64Util {
 
@@ -54,6 +56,7 @@ public final class Base64Util {
 
     /**
      * This method does not specify an encoding for the {@code str} parameter and should not be used.
+     * @deprecated since 2.22.0, use {@link java.util.Base64} instead.
      */
     @Deprecated
     public static String encode(final String str) {

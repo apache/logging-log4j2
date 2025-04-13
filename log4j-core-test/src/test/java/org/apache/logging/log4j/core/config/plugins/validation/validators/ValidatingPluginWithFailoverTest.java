@@ -39,14 +39,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ValidatingPluginWithFailoverTest {
+class ValidatingPluginWithFailoverTest {
 
     private PluginType<FailoverAppender> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final PluginManager manager = new PluginManager(Core.CATEGORY_NAME);
         manager.collectPlugins();
         plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
@@ -66,7 +66,7 @@ public class ValidatingPluginWithFailoverTest {
     }
 
     @Test
-    public void testDoesNotLog_NoParameterThatMatchesElement_message() {
+    void testDoesNotLog_NoParameterThatMatchesElement_message() {
         final StoringStatusListener listener = new StoringStatusListener();
         // @formatter:off
         final PluginBuilder builder = new PluginBuilder(plugin)

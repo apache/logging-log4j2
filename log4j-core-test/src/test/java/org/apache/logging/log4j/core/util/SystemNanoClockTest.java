@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the SystemNanoClock.
  */
-public class SystemNanoClockTest {
+class SystemNanoClockTest {
 
     @Test
-    public void testReturnsSystemNanoTime() {
+    void testReturnsSystemNanoTime() {
         final NanoClock clock = new SystemNanoClock();
         final long expected = System.nanoTime();
         final long actual = clock.nanoTime();

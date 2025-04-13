@@ -43,7 +43,7 @@ public class LoggerResolver extends TypeBasedParameterResolver<Logger>
     }
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(ExtensionContext extensionContext) {
         final LoggerContextHolder holder =
                 ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {
@@ -63,7 +63,7 @@ public class LoggerResolver extends TypeBasedParameterResolver<Logger>
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) throws Exception {
+    public void beforeEach(ExtensionContext extensionContext) {
         final LoggerContextHolder holder =
                 ExtensionContextAnchor.getAttribute(KEY, LoggerContextHolder.class, extensionContext);
         if (holder != null) {

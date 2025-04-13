@@ -20,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class SocketAppenderBuilderTest {
+class SocketAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1620
      */
     @Test
-    public void testDefaultImmediateFlush() {
+    void testDefaultImmediateFlush() {
         assertTrue(
                 SocketAppender.newBuilder().isImmediateFlush(),
                 "Regression of LOG4J2-1620: default value for immediateFlush should be true");

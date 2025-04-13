@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.jupiter.api.Test;
 
-public class AbstractAppenderBuilderTest {
+class AbstractAppenderBuilderTest {
 
     @Test
-    public void testDefaultLayoutLeak() {
+    void testDefaultLayoutLeak() {
         final int expected = AbstractManager.getManagerCount();
         final Configuration configuration = new DefaultConfiguration();
         final ConsoleAppender appender = ConsoleAppender.newBuilder()

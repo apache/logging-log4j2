@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.parser;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class YamlLogEventParserTest extends LogEventParserTest {
+class YamlLogEventParserTest extends LogEventParserTest {
 
     private YamlLogEventParser parser;
 
@@ -67,55 +69,55 @@ public class YamlLogEventParserTest extends LogEventParserTest {
             + " file: \"Main.java\"\n"
             + " line: 29";
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         parser = new YamlLogEventParser();
     }
 
     @Test
-    public void testString() throws ParseException {
+    void testString() throws ParseException {
         final LogEvent logEvent = parser.parseFrom(YAML);
         assertLogEvent(logEvent);
     }
 
-    @Test(expected = ParseException.class)
-    public void testStringEmpty() throws ParseException {
-        parser.parseFrom("");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testStringInvalidYaml() throws ParseException {
-        parser.parseFrom("foobar");
+    @Test
+    void testStringEmpty() {
+        assertThrows(ParseException.class, () -> parser.parseFrom(""));
     }
 
     @Test
-    public void testEmptyObject() throws ParseException {
+    void testStringInvalidYaml() {
+        assertThrows(ParseException.class, () -> parser.parseFrom("foobar"));
+    }
+
+    @Test
+    void testEmptyObject() throws ParseException {
         parser.parseFrom("---\n");
     }
 
     @Test
-    public void testTimeMillisIgnored() throws ParseException {
+    void testTimeMillisIgnored() throws ParseException {
         parser.parseFrom("---\ntimeMillis: \"foobar\"\n");
     }
 
-    @Test(expected = ParseException.class)
-    public void testStringWrongPropertyType() throws ParseException {
-        parser.parseFrom("---\nthreadId: \"foobar\"\n");
+    @Test
+    void testStringWrongPropertyType() {
+        assertThrows(ParseException.class, () -> parser.parseFrom("---\nthreadId: \"foobar\"\n"));
     }
 
     @Test
-    public void testStringIgnoreInvalidProperty() throws ParseException {
+    void testStringIgnoreInvalidProperty() throws ParseException {
         parser.parseFrom("---\nfoo: \"bar\"\n");
     }
 
     @Test
-    public void testByteArray() throws ParseException {
+    void testByteArray() throws ParseException {
         final LogEvent logEvent = parser.parseFrom(YAML.getBytes(StandardCharsets.UTF_8));
         assertLogEvent(logEvent);
     }
 
     @Test
-    public void testByteArrayOffsetLength() throws ParseException {
+    void testByteArrayOffsetLength() throws ParseException {
         final byte[] bytes = ("abc" + YAML + "def").getBytes(StandardCharsets.UTF_8);
         final LogEvent logEvent = parser.parseFrom(bytes, 3, bytes.length - 6);
         assertLogEvent(logEvent);

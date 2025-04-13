@@ -31,10 +31,10 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletContext;
 
-public class WebLookupTest {
+class WebLookupTest {
 
     @Test
-    public void testLookup() throws Exception {
+    void testLookup() {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
         ((MockServletContext) servletContext).setContextPath("/WebApp");
@@ -76,7 +76,7 @@ public class WebLookupTest {
     }
 
     @Test
-    public void testLookup2() throws Exception {
+    void testLookup2() {
         ContextAnchor.THREAD_CONTEXT.remove();
         final ServletContext servletContext = new MockServletContext();
         ((MockServletContext) servletContext).setContextPath("/");

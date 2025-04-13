@@ -26,16 +26,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class ThrowableAttributeConverterTest {
+class ThrowableAttributeConverterTest {
     private ThrowableAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new ThrowableAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final RuntimeException exception = new RuntimeException("My message 01.");
 
         final String stackTrace = getStackTrace(exception);
@@ -52,7 +52,7 @@ public class ThrowableAttributeConverterTest {
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         final SQLException cause2 = new SQLException("This is a test cause.");
         final Error cause1 = new Error(cause2);
         final RuntimeException exception = new RuntimeException("My message 01.", cause1);
@@ -71,12 +71,12 @@ public class ThrowableAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

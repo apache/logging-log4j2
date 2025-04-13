@@ -53,10 +53,6 @@ public final class StackLocator {
                 .orElse(null));
     }
 
-    public Class<?> getCallerClass(final String fqcn) {
-        return getCallerClass(fqcn, "");
-    }
-
     public Class<?> getCallerClass(final String fqcn, final String pkg) {
         return WALKER.walk(s -> s.dropWhile(f -> !f.getClassName().equals(fqcn))
                         .dropWhile(f -> f.getClassName().equals(fqcn))

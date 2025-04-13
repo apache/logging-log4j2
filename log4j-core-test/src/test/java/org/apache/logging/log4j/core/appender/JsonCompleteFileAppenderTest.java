@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +84,7 @@ public class JsonCompleteFileAppenderTest {
         logger.error(logMsg, new IllegalArgumentException("badarg"));
         this.loggerContextRule.getLoggerContext().stop(); // stops async thread
 
-        final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(logFile.toPath(), StandardCharsets.UTF_8);
 
         final String[] expected = {
             "[", // equals
@@ -106,6 +107,6 @@ public class JsonCompleteFileAppenderTest {
                     line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !lines.get(0).contains(location));
+        assertFalse("no location", lines.get(0).contains(location));
     }
 }

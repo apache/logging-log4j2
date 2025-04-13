@@ -23,11 +23,11 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.util.Chars;
 import org.junit.jupiter.api.Test;
 
-public class TlsSyslogFrameTest {
+class TlsSyslogFrameTest {
     private static final String TEST_MESSAGE = "The quick brown fox jumps over the lazy dog";
 
     @Test
-    public void equals() {
+    void equals() {
         final TlsSyslogFrame first = new TlsSyslogFrame(TEST_MESSAGE);
         final TlsSyslogFrame second = new TlsSyslogFrame(TEST_MESSAGE);
         assertEquals(first, second);
@@ -35,7 +35,7 @@ public class TlsSyslogFrameTest {
     }
 
     @Test
-    public void notEquals() {
+    void notEquals() {
         final TlsSyslogFrame first = new TlsSyslogFrame("A message");
         final TlsSyslogFrame second = new TlsSyslogFrame("B message");
         assertNotEquals(first, second);
@@ -43,7 +43,7 @@ public class TlsSyslogFrameTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         final TlsSyslogFrame frame = new TlsSyslogFrame(TEST_MESSAGE);
         final int length = TEST_MESSAGE.getBytes(StandardCharsets.UTF_8).length;
         final String expected = Integer.toString(length) + Chars.SPACE + TEST_MESSAGE;

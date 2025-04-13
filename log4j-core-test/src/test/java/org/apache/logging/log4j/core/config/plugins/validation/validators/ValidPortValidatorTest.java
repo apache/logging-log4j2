@@ -28,13 +28,13 @@ import org.apache.logging.log4j.core.config.plugins.validation.HostAndPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ValidPortValidatorTest {
+class ValidPortValidatorTest {
     private PluginType<HostAndPort> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<HostAndPort>) manager.getPluginType("HostAndPort");
@@ -44,19 +44,19 @@ public class ValidPortValidatorTest {
     }
 
     @Test
-    public void testNegativePort() throws Exception {
+    void testNegativePort() {
         node.getAttributes().put("port", "-1");
         assertNull(buildPlugin());
     }
 
     @Test
-    public void testValidPort() throws Exception {
+    void testValidPort() {
         node.getAttributes().put("port", "10");
         assertNotNull(buildPlugin());
     }
 
     @Test
-    public void testInvalidPort() throws Exception {
+    void testInvalidPort() {
         node.getAttributes().put("port", "1234567890");
         assertNull(buildPlugin());
     }

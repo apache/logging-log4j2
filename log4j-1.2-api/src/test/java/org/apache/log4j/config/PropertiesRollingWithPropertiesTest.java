@@ -29,19 +29,19 @@ import org.junit.jupiter.api.Test;
 /**
  * Test configuration from Properties.
  */
-public class PropertiesRollingWithPropertiesTest {
+class PropertiesRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/" + PropertiesRollingWithPropertiesTest.class.getSimpleName();
 
     @BeforeAll
-    public static void setupSystemProperties() {
+    static void setupSystemProperties() {
         // Set system properties as a replacement for SystemPropertyTestRule
         System.setProperty("test.directory", TEST_DIR);
         System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");
     }
 
     @Test
-    public void testProperties() throws Exception {
+    void testProperties() throws Exception {
         final Path path = Paths.get(TEST_DIR, "somefile.log");
         Files.deleteIfExists(path);
         final Logger logger = LogManager.getLogger("test");

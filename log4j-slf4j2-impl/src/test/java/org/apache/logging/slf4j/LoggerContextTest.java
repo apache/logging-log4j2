@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests cleanup of the LoggerContexts.
  */
-public class LoggerContextTest {
+class LoggerContextTest {
 
     @Test
-    public void testCleanup() throws Exception {
+    void testCleanup() {
         final Log4jLoggerFactory factory = (Log4jLoggerFactory) LoggerFactory.getILoggerFactory();
         factory.getLogger("test");
         Set<LoggerContext> set = factory.getLoggerContexts();

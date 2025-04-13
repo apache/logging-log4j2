@@ -45,26 +45,26 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the SortedArrayStringMap class.
  */
-public class SortedArrayStringMapTest {
+class SortedArrayStringMapTest {
 
     @Test
-    public void testConstructorDisallowsNegativeCapacity() {
+    void testConstructorDisallowsNegativeCapacity() {
         assertThrows(IllegalArgumentException.class, () -> new SortedArrayStringMap(-1));
     }
 
     @Test
-    public void testConstructorAllowsZeroCapacity() {
+    void testConstructorAllowsZeroCapacity() {
         final SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
         assertEquals(0, sortedArrayStringMap.size());
     }
 
     @Test
-    public void testConstructorIgnoresNull() {
+    void testConstructorIgnoresNull() {
         assertEquals(0, new SortedArrayStringMap((SortedArrayStringMap) null).size());
     }
 
     @Test
-    public void testConstructorNonStringKeys() {
+    void testConstructorNonStringKeys() {
         final Map<Object, Integer> map = new HashMap<>(1);
         map.put(Long.MAX_VALUE, 1);
         map.put(null, null);
@@ -74,7 +74,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -83,7 +83,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testSerialization() throws Exception {
+    void testSerialization() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", null); // null may be treated differently
@@ -95,7 +95,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testSerializationOfEmptyMap() throws Exception {
+    void testSerializationOfEmptyMap() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
@@ -103,7 +103,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testSerializationOfNonSerializableValue() throws Exception {
+    void testSerializationOfNonSerializableValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -120,7 +120,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testDeserializationOfUnknownClass() throws Exception {
+    void testDeserializationOfUnknownClass() throws Exception {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("serializableButNotInClasspathOfDeserializer", new org.junit.runner.Result());
@@ -189,7 +189,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll() {
+    void testPutAll() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -210,7 +210,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_overwritesSameKeys2() {
+    void testPutAll_overwritesSameKeys2() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -236,7 +236,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInLargeOriginal() {
+    void testPutAll_nullKeyInLargeOriginal() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -261,7 +261,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInSmallOriginal() {
+    void testPutAll_nullKeyInSmallOriginal() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -284,7 +284,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInSmallAdditional() {
+    void testPutAll_nullKeyInSmallAdditional() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -309,7 +309,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInLargeAdditional() {
+    void testPutAll_nullKeyInLargeAdditional() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -332,7 +332,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInBoth_LargeOriginal() {
+    void testPutAll_nullKeyInBoth_LargeOriginal() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -358,7 +358,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInBoth_SmallOriginal() {
+    void testPutAll_nullKeyInBoth_SmallOriginal() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -382,7 +382,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_overwritesSameKeys1() {
+    void testPutAll_overwritesSameKeys1() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -404,13 +404,13 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         final SortedArrayStringMap other = new SortedArrayStringMap();
 
         assertEquals(other, original, "Empty maps are equal");
         assertEquals(other.hashCode(), original.hashCode(), "Empty maps have equal hashcode");
-        assertNotEquals(original, "Object other than SortedArrayStringMap");
+        assertNotEquals("Object other than SortedArrayStringMap", original);
 
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -445,7 +445,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testToMap() {
+    void testToMap() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -462,7 +462,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_KeepsExistingValues() {
+    void testPutAll_KeepsExistingValues() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -492,7 +492,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_sizePowerOfTwo() {
+    void testPutAll_sizePowerOfTwo() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -527,7 +527,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAll_largeAddition() {
+    void testPutAll_largeAddition() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue(null, "nullVal");
         original.putValue("a", "aaa");
@@ -555,7 +555,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutAllSelfDoesNotModify() {
+    void testPutAllSelfDoesNotModify() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -571,7 +571,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationBiConsumerPut() {
+    void testConcurrentModificationBiConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -580,7 +580,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationBiConsumerPutValue() {
+    void testConcurrentModificationBiConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -589,21 +589,21 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationBiConsumerRemove() {
+    void testConcurrentModificationBiConsumerRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.remove("a")));
     }
 
     @Test
-    public void testConcurrentModificationBiConsumerClear() {
+    void testConcurrentModificationBiConsumerClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(ConcurrentModificationException.class, () -> original.forEach((s, o) -> original.clear()));
     }
 
     @Test
-    public void testConcurrentModificationTriConsumerPut() {
+    void testConcurrentModificationTriConsumerPut() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -612,7 +612,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationTriConsumerPutValue() {
+    void testConcurrentModificationTriConsumerPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -621,7 +621,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationTriConsumerRemove() {
+    void testConcurrentModificationTriConsumerRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -630,7 +630,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testConcurrentModificationTriConsumerClear() {
+    void testConcurrentModificationTriConsumerClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         assertThrows(
@@ -638,12 +638,12 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testInitiallyNotFrozen() {
+    void testInitiallyNotFrozen() {
         assertFalse(new SortedArrayStringMap().isFrozen());
     }
 
     @Test
-    public void testIsFrozenAfterCallingFreeze() {
+    void testIsFrozenAfterCallingFreeze() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         assertFalse(original.isFrozen(), "before freeze");
         original.freeze();
@@ -651,14 +651,14 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testFreezeProhibitsPutValue() {
+    void testFreezeProhibitsPutValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.freeze();
         assertThrows(UnsupportedOperationException.class, () -> original.putValue("a", "aaa"));
     }
 
     @Test
-    public void testFreezeProhibitsRemove() {
+    void testFreezeProhibitsRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("b", "bbb");
         original.freeze();
@@ -668,7 +668,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsRemoveOfNonExistingKey() {
+    void testFreezeAllowsRemoveOfNonExistingKey() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("b", "bbb");
         original.freeze();
@@ -676,14 +676,14 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsRemoveIfEmpty() {
+    void testFreezeAllowsRemoveIfEmpty() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.freeze();
         assertDoesNotThrow(() -> original.remove("a"));
     }
 
     @Test
-    public void testFreezeProhibitsClear() {
+    void testFreezeProhibitsClear() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aaa");
         original.freeze();
@@ -691,14 +691,14 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsClearIfEmpty() {
+    void testFreezeAllowsClearIfEmpty() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.freeze();
         assertDoesNotThrow(original::clear);
     }
 
     @Test
-    public void testPutInsertsInAlphabeticOrder() {
+    void testPutInsertsInAlphabeticOrder() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -723,7 +723,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testPutValueInsertsInAlphabeticOrder() {
+    void testPutValueInsertsInAlphabeticOrder() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -748,7 +748,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testNullKeysAllowed() {
+    void testNullKeysAllowed() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -776,7 +776,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testNullKeysCopiedToAsMap() {
+    void testNullKeysCopiedToAsMap() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -815,7 +815,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
@@ -831,7 +831,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testRemoveNullsOutRemovedSlot() throws Exception {
+    void testRemoveNullsOutRemovedSlot() throws Exception {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("b", "bvalue");
@@ -851,7 +851,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testRemoveWhenFull() {
+    void testRemoveWhenFull() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("b", "bvalue");
@@ -861,7 +861,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testNullValuesArePreserved() {
+    void testNullValuesArePreserved() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
@@ -877,7 +877,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -895,7 +895,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testGetValue_GetValueAt() {
+    void testGetValue_GetValueAt() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -922,7 +922,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testClear() throws Exception {
+    void testClear() throws Exception {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -940,7 +940,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testIndexOfKey() {
+    void testIndexOfKey() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         assertEquals(0, original.indexOfKey("a"));
@@ -977,7 +977,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testContainsKey() {
+    void testContainsKey() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         assertFalse(original.containsKey("a"), "a");
         assertFalse(original.containsKey("B"), "B");
@@ -1010,7 +1010,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testGetValueAt() {
+    void testGetValueAt() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         assertEquals("a", original.getKeyAt(0));
@@ -1032,7 +1032,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testSizeAndIsEmpty() {
+    void testSizeAndIsEmpty() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         assertEquals(0, original.size());
         assertTrue(original.isEmpty(), "initial");
@@ -1063,7 +1063,7 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
-    public void testForEachBiConsumer() {
+    void testForEachBiConsumer() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -1095,7 +1095,7 @@ public class SortedArrayStringMapTest {
     };
 
     @Test
-    public void testForEachTriConsumer() {
+    void testForEachTriConsumer() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");

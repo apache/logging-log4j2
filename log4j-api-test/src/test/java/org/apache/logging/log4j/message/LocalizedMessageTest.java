@@ -31,21 +31,21 @@ import org.junit.jupiter.api.parallel.Resources;
  * Tests LocalizedMessage.
  */
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class LocalizedMessageTest {
+class LocalizedMessageTest {
 
     private <T extends Serializable> T roundtrip(final T msg) {
         return SerializationUtils.roundtrip(msg);
     }
 
     @Test
-    public void testMessageFormat() {
+    void testMessageFormat() {
         final LocalizedMessage msg =
                 new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
     @Test
-    public void testSerializationMessageFormat() {
+    void testSerializationMessageFormat() {
         final LocalizedMessage msg =
                 new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
@@ -54,7 +54,7 @@ public class LocalizedMessageTest {
     }
 
     @Test
-    public void testSerializationStringFormat() {
+    void testSerializationStringFormat() {
         final LocalizedMessage msg =
                 new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
@@ -63,14 +63,14 @@ public class LocalizedMessageTest {
     }
 
     @Test
-    public void testStringFormat() {
+    void testStringFormat() {
         final LocalizedMessage msg =
                 new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] {"1", "Test"});
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
     }
 
     @Test
-    public void testUnsafeWithMutableParams() { // LOG4J2-763
+    void testUnsafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final LocalizedMessage msg = new LocalizedMessage(testMsg, param);
@@ -82,7 +82,7 @@ public class LocalizedMessageTest {
     }
 
     @Test
-    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+    void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final LocalizedMessage msg = new LocalizedMessage(testMsg, param);

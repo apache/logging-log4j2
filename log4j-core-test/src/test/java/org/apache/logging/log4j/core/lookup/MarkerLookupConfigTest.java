@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  */
 @LoggerContextSource("log4j-marker-lookup.yaml")
 @Tag("yaml")
-public class MarkerLookupConfigTest {
+class MarkerLookupConfigTest {
 
     public static final Marker PAYLOAD = MarkerManager.getMarker("PAYLOAD");
     private static final String PAYLOAD_LOG = "Message in payload.log";
@@ -50,7 +50,7 @@ public class MarkerLookupConfigTest {
     private static final String SQL_LOG = "Message in sql.log";
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         final Logger logger = LogManager.getLogger();
         logger.info(SQL, SQL_LOG);
         logger.info(PAYLOAD, PAYLOAD_LOG);

@@ -50,7 +50,7 @@ public class PerformanceRun {
     private static final int COUNT = 1000000;
 
     @Test
-    public void testPerformance() throws Exception {
+    public void testPerformance() {
         System.out.println("Starting Log4j 2.0");
         final long result3 = log4j2(COUNT);
 

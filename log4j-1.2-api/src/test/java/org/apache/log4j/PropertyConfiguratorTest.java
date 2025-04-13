@@ -271,7 +271,7 @@ class PropertyConfiguratorTest {
      * @throws IOException if IOException creating properties jar.
      */
     @Test
-    public void testJarURL() throws IOException {
+    void testJarURL() throws IOException {
         final File dir = new File("output");
         dir.mkdirs();
         final File file = new File("output/properties.jar");
@@ -287,7 +287,7 @@ class PropertyConfiguratorTest {
     }
 
     @Test
-    public void testLocalVsGlobal() {
+    void testLocalVsGlobal() {
         LoggerRepository repos1, repos2;
         final Logger catA = Logger.getLogger(CAT_A_NAME);
         final Logger catB = Logger.getLogger(CAT_B_NAME);
@@ -360,10 +360,9 @@ class PropertyConfiguratorTest {
     /**
      * Test for bug 40944. configure(URL) did not catch IllegalArgumentException and did not close stream.
      *
-     * @throws IOException if IOException creating properties file.
      */
     @Test
-    void testURLBadEscape() throws IOException {
+    void testURLBadEscape() {
         final URL configURL = PropertyConfiguratorTest.class.getResource(BAD_ESCAPE_PROPERTIES);
         PropertyConfigurator.configure(configURL);
     }

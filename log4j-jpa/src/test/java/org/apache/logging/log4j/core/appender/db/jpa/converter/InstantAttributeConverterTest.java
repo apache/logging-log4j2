@@ -28,18 +28,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class InstantAttributeConverterTest {
+class InstantAttributeConverterTest {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private InstantAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new InstantAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(1234567, 89012);
 
@@ -56,12 +56,12 @@ public class InstantAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

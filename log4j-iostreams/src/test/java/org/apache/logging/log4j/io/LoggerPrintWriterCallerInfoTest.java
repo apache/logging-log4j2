@@ -27,7 +27,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     private PrintWriter logOut;
 
     @Test
-    public void close() throws Exception {
+    public void close() {
         this.logOut.print("a\nb");
         assertMessages("before close size", 1, "close");
         this.logOut.close();
@@ -35,7 +35,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_boolean() throws Exception {
+    public void print_boolean() {
         this.logOut.print(true);
         assertMessages("print", 0, "print_boolean");
         this.logOut.println(true);
@@ -43,7 +43,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_char() throws Exception {
+    public void print_char() {
         this.logOut.print('a');
         assertMessages("print", 0, "print_char");
         this.logOut.println('b');
@@ -51,7 +51,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_chararray() throws Exception {
+    public void print_chararray() {
         this.logOut.print("a".toCharArray());
         assertMessages("print", 0, "print_chararray");
         this.logOut.println("b".toCharArray());
@@ -59,7 +59,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_double() throws Exception {
+    public void print_double() {
         this.logOut.print(1D);
         assertMessages("print", 0, "print_double");
         this.logOut.println(2D);
@@ -67,7 +67,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_float() throws Exception {
+    public void print_float() {
         this.logOut.print(1f);
         assertMessages("print", 0, "print_float");
         this.logOut.println(2f);
@@ -75,7 +75,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_int() throws Exception {
+    public void print_int() {
         this.logOut.print(1);
         assertMessages("print", 0, "print_int");
         this.logOut.println(2);
@@ -83,7 +83,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_long() throws Exception {
+    public void print_long() {
         this.logOut.print(1L);
         assertMessages("print", 0, "print_long");
         this.logOut.println(2L);
@@ -91,7 +91,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_object() throws Exception {
+    public void print_object() {
         this.logOut.print((Object) 'a');
         assertMessages("print", 0, "print_object");
         this.logOut.println((Object) 'b');
@@ -99,19 +99,19 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void print_printf() throws Exception {
+    public void print_printf() {
         this.logOut.printf("a\n");
         assertMessages("println", 1, "print_printf");
     }
 
     @Test
-    public void print_printf_locale() throws Exception {
+    public void print_printf_locale() {
         this.logOut.printf(Locale.getDefault(), "a\n");
         assertMessages("println", 1, "print_printf_locale");
     }
 
     @Test
-    public void print_string() throws Exception {
+    public void print_string() {
         this.logOut.print("a");
         assertMessages("print", 0, "print_string");
         this.logOut.println("b");
@@ -124,19 +124,19 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
     }
 
     @Test
-    public void write_bytes() throws Exception {
+    public void write_bytes() {
         this.logOut.write("b\n".toCharArray());
         assertMessages("write", 1, "write_bytes");
     }
 
     @Test
-    public void write_bytes_offset() throws Exception {
+    public void write_bytes_offset() {
         this.logOut.write("c\n".toCharArray(), 0, 2);
         assertMessages("write", 1, "write_bytes_offset");
     }
 
     @Test
-    public void write_int() throws Exception {
+    public void write_int() {
         this.logOut.write('a');
         assertMessages("write int", 0, "write_int");
         this.logOut.write('\n');

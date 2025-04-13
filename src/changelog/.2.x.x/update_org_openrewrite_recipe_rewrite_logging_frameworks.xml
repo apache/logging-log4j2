@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="2986" link="https://github.com/apache/logging-log4j2/pull/2986"/>
-  <description format="asciidoc">Update `org.openrewrite.recipe:rewrite-logging-frameworks` to version `2.3.0`</description>
+  <issue id="3446" link="https://github.com/apache/logging-log4j2/pull/3446"/>
+  <description format="asciidoc">Update `org.openrewrite.recipe:rewrite-logging-frameworks` to version `3.2.0`</description>
 </entry>

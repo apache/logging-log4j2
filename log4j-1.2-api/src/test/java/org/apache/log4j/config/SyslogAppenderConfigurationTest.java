@@ -41,7 +41,7 @@ import org.junitpioneer.jupiter.WritesSystemProperty;
  */
 @UsingStatusListener
 @WritesSystemProperty
-public class SyslogAppenderConfigurationTest {
+class SyslogAppenderConfigurationTest {
 
     private static ServerSocket tcpSocket;
 
@@ -89,32 +89,32 @@ public class SyslogAppenderConfigurationTest {
     }
 
     @Test
-    public void testPropertiesProtocolDefault() throws Exception {
+    void testPropertiesProtocolDefault() throws Exception {
         checkProtocolPropertiesConfig(Protocol.TCP, "target/test-classes/log4j1-syslog-protocol-default.properties");
     }
 
     @Test
-    public void testPropertiesProtocolTcp() throws Exception {
+    void testPropertiesProtocolTcp() throws Exception {
         checkProtocolPropertiesConfig(Protocol.TCP, "target/test-classes/log4j1-syslog-protocol-tcp.properties");
     }
 
     @Test
-    public void testPropertiesProtocolUdp() throws Exception {
+    void testPropertiesProtocolUdp() throws Exception {
         checkProtocolPropertiesConfig(Protocol.UDP, "target/test-classes/log4j1-syslog-protocol-udp.properties");
     }
 
     @Test
-    public void testXmlProtocolDefault() throws Exception {
+    void testXmlProtocolDefault() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-syslog.xml");
     }
 
     @Test
-    public void testXmlProtocolTcp() throws Exception {
+    void testXmlProtocolTcp() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-syslog-protocol-tcp.xml");
     }
 
     @Test
-    public void testXmlProtocolUdp() throws Exception {
+    void testXmlProtocolUdp() throws Exception {
         checkProtocolXmlConfig(Protocol.UDP, "target/test-classes/log4j1-syslog-protocol-udp.xml");
     }
 }

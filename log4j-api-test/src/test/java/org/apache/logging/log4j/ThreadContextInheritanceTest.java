@@ -37,72 +37,72 @@ import org.junit.jupiter.api.Test;
 @SetTestProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
 @UsingThreadContextMap
 @UsingThreadContextStack
-public class ThreadContextInheritanceTest {
+class ThreadContextInheritanceTest {
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         ThreadContext.init();
     }
 
     @AfterAll
-    public static void tearDownClass() {
+    static void tearDownClass() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
         ThreadContext.init();
     }
 
     @Test
-    public void testPush() {
+    void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(), "running");
         assertEquals(
-                ThreadContext.pop(), "ThreadContextInheritanceTest is running", "Incorrect parameterized stack value");
-        assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
+                "ThreadContextInheritanceTest is running", ThreadContext.pop(), "Incorrect parameterized stack value");
+        assertEquals("Hello", ThreadContext.pop(), "Incorrect simple stack value");
     }
 
     @Test
     @Tag("performance")
-    public void perfTest() {
+    void perfTest() {
         ThreadContextUtilityClass.perfTest();
     }
 
     @Test
-    public void testGetContextReturnsEmptyMapIfEmpty() {
+    void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
-    public void testGetContextReturnsMutableCopy() {
+    void testGetContextReturnsMutableCopy() {
         ThreadContextUtilityClass.testGetContextReturnsMutableCopy();
     }
 
     @Test
-    public void testGetImmutableContextReturnsEmptyMapIfEmpty() {
+    void testGetImmutableContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
-    public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
+    void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
     }
 
     @Test
-    public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
+    void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
     }
 
     @Test
-    public void testGetImmutableStackReturnsEmptyStackIfEmpty() {
+    void testGetImmutableStackReturnsEmptyStackIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableStackReturnsEmptyStackIfEmpty();
     }
 
     @Test
-    public void testPut() {
+    void testPut() {
         ThreadContextUtilityClass.testPut();
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
@@ -114,7 +114,7 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
-    public void testContainsKey() {
+    void testContainsKey() {
         ThreadContext.clearMap();
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");

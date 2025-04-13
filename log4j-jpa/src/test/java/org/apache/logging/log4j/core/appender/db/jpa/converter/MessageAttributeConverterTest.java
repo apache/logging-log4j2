@@ -27,18 +27,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class MessageAttributeConverterTest {
+class MessageAttributeConverterTest {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private MessageAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new MessageAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final Message message = LOGGER.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
 
         final String converted = this.converter.convertToDatabaseColumn(message);
@@ -53,12 +53,12 @@ public class MessageAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

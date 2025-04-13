@@ -31,11 +31,11 @@ import org.junit.platform.engine.support.hierarchical.ThrowableCollector;
 /**
  * Tests {@link StackLocatorUtil}.
  */
-public class StackLocatorUtilTest {
+class StackLocatorUtilTest {
 
     @Test
     @EnabledOnJre(JRE.JAVA_8)
-    public void testStackTraceEquivalence() throws Exception {
+    void testStackTraceEquivalence() throws Exception {
         // Frame 8 is a hidden frame and does not show in the stacktrace
         for (int i = 1; i < 8; i++) {
             final Class<?> expected = (Class<?>) Class.forName("sun.reflect.Reflection")
@@ -50,26 +50,26 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testGetCallerClass() throws Exception {
+    void testGetCallerClass() {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass(1);
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetCallerClassLoader() throws Exception {
+    void testGetCallerClassLoader() {
         assertSame(StackLocatorUtilTest.class.getClassLoader(), StackLocatorUtil.getCallerClassLoader(1));
     }
 
     @Test
-    public void testGetCallerClassNameViaStackTrace() throws Exception {
+    void testGetCallerClassNameViaStackTrace() throws Exception {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = Class.forName(new Throwable().getStackTrace()[0].getClassName());
         assertSame(expected, actual);
     }
 
     @Test
-    public void testGetCurrentStackTrace() throws Exception {
+    void testGetCurrentStackTrace() {
         final Deque<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
@@ -84,7 +84,7 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testTopElementInStackTrace() {
+    void testTopElementInStackTrace() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
         // Removing private class in "PrivateSecurityManagerStackTraceUtil"
@@ -93,7 +93,7 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testGetCallerClassViaName() throws Exception {
+    void testGetCallerClassViaName() {
         final Class<?> expected = TestMethodTestDescriptor.class;
         final Class<?> actual =
                 StackLocatorUtil.getCallerClass("org.junit.platform.engine.support.hierarchical.ThrowableCollector");
@@ -103,7 +103,7 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testGetCallerClassViaAnchorClass() throws Exception {
+    void testGetCallerClassViaAnchorClass() {
         final Class<?> expected = TestMethodTestDescriptor.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass(ThrowableCollector.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
@@ -112,7 +112,7 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testLocateClass() {
+    void testLocateClass() {
         final ClassLocator locator = new ClassLocator();
         final Class<?> clazz = locator.locateClass();
         assertNotNull(clazz, "Could note locate class");

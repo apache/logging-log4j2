@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests Jira3410.
  */
-public class LoggerJira3410Test {
+class LoggerJira3410Test {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         try (final LoggerContext loggerContext =
                 TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             final Logger logger = LogManager.getLogger("test");

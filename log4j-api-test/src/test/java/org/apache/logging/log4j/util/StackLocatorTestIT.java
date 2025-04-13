@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.security.Permission;
 import java.util.Deque;
 import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
@@ -57,6 +58,6 @@ public class StackLocatorTestIT {
     public void testGetCurrentStacktraceSlowPath() {
         final StackLocator stackLocator = StackLocator.getInstance();
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
-        Assertions.assertSame(StackLocator.class, classes.getFirst());
+        assertSame(StackLocator.class, classes.getFirst());
     }
 }

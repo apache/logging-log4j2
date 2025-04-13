@@ -39,10 +39,10 @@ import org.junit.jupiter.api.Test;
 @LoggerContextSource("GelfLayoutPatternSelectorTest.xml")
 @UsingAnyThreadContext
 @Tag("json")
-public class GelfLayoutPatternSelectorTest {
+class GelfLayoutPatternSelectorTest {
 
     @Test
-    public void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
+    void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
         list.clear();
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put("loginId", "rgoers");

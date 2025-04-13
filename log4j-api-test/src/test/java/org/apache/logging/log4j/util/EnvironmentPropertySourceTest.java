@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class EnvironmentPropertySourceTest {
+class EnvironmentPropertySourceTest {
 
     private final PropertySource source = new EnvironmentPropertySource();
 
@@ -40,7 +40,7 @@ public class EnvironmentPropertySourceTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNormalFormFollowsEnvironmentVariableConventions(
+    void testNormalFormFollowsEnvironmentVariableConventions(
             final CharSequence expected, final List<? extends CharSequence> tokens) {
         assertEquals(expected, source.getNormalForm(tokens));
     }

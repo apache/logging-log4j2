@@ -160,6 +160,7 @@ public final class PropertiesUtil {
      *
      * @param name the name of the property to verify
      * @return {@code true} if the specified property is defined, regardless of its value
+     * @since 2.9.0
      */
     public boolean hasProperty(final String name) {
         return environment.containsKey(name);
@@ -196,6 +197,7 @@ public final class PropertiesUtil {
      * @param defaultValueIfAbsent  the default value to use if the property is undefined
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
+     * @since 2.9.0
      */
     public boolean getBooleanProperty(
             final String name, final boolean defaultValueIfAbsent, final boolean defaultValueIfPresent) {
@@ -228,6 +230,7 @@ public final class PropertiesUtil {
      *
      * @param name the name of the property to look up
      * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
+     * @since 2.8
      */
     public Charset getCharsetProperty(final String name) {
         return getCharsetProperty(name, Charset.defaultCharset());
@@ -240,6 +243,7 @@ public final class PropertiesUtil {
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the Charset value of the property or {@code defaultValue} if undefined.
+     * @since 2.8
      */
     public Charset getCharsetProperty(final String name, final Charset defaultValue) {
         final String charsetName = getStringProperty(name);
@@ -270,6 +274,7 @@ public final class PropertiesUtil {
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the parsed double value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     * @since 2.6
      */
     public double getDoubleProperty(final String name, final double defaultValue) {
         final String prop = getStringProperty(name);
@@ -496,6 +501,7 @@ public final class PropertiesUtil {
     private static final class Environment {
 
         private final Set<PropertySource> sources = ConcurrentHashMap.newKeySet();
+        private final ThreadLocal<PropertySource> CURRENT_PROPERTY_SOURCE = new ThreadLocal<>();
 
         private Environment(final PropertySource propertySource) {
             final PropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
@@ -547,21 +553,35 @@ public final class PropertiesUtil {
         }
 
         private boolean sourceContainsProperty(final PropertySource source, final String key) {
-            try {
-                return source.containsProperty(key);
-            } catch (final Exception e) {
-                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
-                return false;
+            PropertySource recursiveSource = CURRENT_PROPERTY_SOURCE.get();
+            if (recursiveSource == null) {
+                CURRENT_PROPERTY_SOURCE.set(source);
+                try {
+                    return source.containsProperty(key);
+                } catch (final Exception e) {
+                    LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                } finally {
+                    CURRENT_PROPERTY_SOURCE.remove();
+                }
             }
+            LOGGER.warn("Recursive call to `containsProperty()` from property source {}.", recursiveSource);
+            return false;
         }
 
         private String sourceGetProperty(final PropertySource source, final String key) {
-            try {
-                return source.getProperty(key);
-            } catch (final Exception e) {
-                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
-                return null;
+            PropertySource recursiveSource = CURRENT_PROPERTY_SOURCE.get();
+            if (recursiveSource == null) {
+                CURRENT_PROPERTY_SOURCE.set(source);
+                try {
+                    return source.getProperty(key);
+                } catch (final Exception e) {
+                    LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                } finally {
+                    CURRENT_PROPERTY_SOURCE.remove();
+                }
             }
+            LOGGER.warn("Recursive call to `getProperty()` from property source {}.", recursiveSource);
+            return null;
         }
 
         private boolean containsKey(final String key) {
@@ -581,6 +601,7 @@ public final class PropertiesUtil {
      * @param properties The Properties to evaluate.
      * @param prefix     The prefix to extract.
      * @return The subset of properties.
+     * @since 2.4
      */
     public static Properties extractSubset(final Properties properties, final String prefix) {
         final Properties subset = new Properties();
@@ -658,6 +679,7 @@ public final class PropertiesUtil {
      * Returns true if system properties tell us we are running on Windows.
      *
      * @return true if system properties tell us we are running on Windows.
+     * @since 2.5
      */
     public boolean isOsWindows() {
         return SystemPropertiesPropertySource.getSystemProperty("os.name", "").startsWith("Windows");

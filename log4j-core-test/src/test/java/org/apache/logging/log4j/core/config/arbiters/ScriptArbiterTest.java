@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,39 +32,39 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests basic condition processing.
  */
-public class ScriptArbiterTest {
+class ScriptArbiterTest {
 
     static final String CONFIG = "log4j2-scriptArbiters.xml";
     static LoggerContext loggerContext = null;
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, Javascript");
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         loggerContext.stop();
         loggerContext = null;
     }
 
     @Test
-    public void prodTest() {
+    void prodTest() {
         System.setProperty("env", "prod");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
+        assertInstanceOf(ListAppender.class, app);
     }
 
     @Test
-    public void devTest() {
+    void devTest() {
         System.setProperty("env", "dev");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ConsoleAppender);
+        assertInstanceOf(ConsoleAppender.class, app);
     }
 }

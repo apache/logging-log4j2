@@ -21,23 +21,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigUseAfterShutdownTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerConfigUseAfterShutdownTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest.xml");
     }
 
     @Test
-    public void testNoErrorIfLogAfterShutdown() throws Exception {
+    void testNoErrorIfLogAfterShutdown() {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("some message");
         CoreLoggerContexts.stopLoggerContext(); // stop async thread

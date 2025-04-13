@@ -48,16 +48,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class GenerateCustomLoggerTest {
+class GenerateCustomLoggerTest {
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.test.TestLoggerContextFactory");
     }
 
     @Test
     @SuppressWarnings("ReturnValueIgnored")
-    public void testGenerateSource() throws Exception {
+    void testGenerateSource() throws Exception {
         final String CLASSNAME = "org.myorg.MyCustomLogger";
 
         // generate custom logger source

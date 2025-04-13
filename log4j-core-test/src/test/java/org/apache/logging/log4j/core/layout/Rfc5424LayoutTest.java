@@ -60,7 +60,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
-public class Rfc5424LayoutTest {
+class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
@@ -92,7 +92,7 @@ public class Rfc5424LayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -100,7 +100,7 @@ public class Rfc5424LayoutTest {
     }
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -108,7 +108,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    void testLayout() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -200,7 +200,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testCollection() throws Exception {
+    void testCollection() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -290,7 +290,7 @@ public class Rfc5424LayoutTest {
      * Test case for escaping newlines and other SD PARAM-NAME special characters.
      */
     @Test
-    public void testEscape() throws Exception {
+    void testEscape() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -371,7 +371,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC exception conversion pattern.
      */
     @Test
-    public void testException() throws Exception {
+    void testException() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -426,7 +426,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC logger field inclusion.
      */
     @Test
-    public void testMDCLoggerFields() throws Exception {
+    void testMDCLoggerFields() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -471,7 +471,7 @@ public class Rfc5424LayoutTest {
         try {
 
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             assertTrue(list.get(0).contains("Rfc5424LayoutTest.testMDCLoggerFields"), "No class/method");
 
             appender.clear();
@@ -482,7 +482,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testLoggerFields() {
+    void testLoggerFields() {
         final String[] fields = new String[] {
             "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
             "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
@@ -535,7 +535,7 @@ public class Rfc5424LayoutTest {
         try {
 
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(message.contains("Rfc5424LayoutTest.testLoggerFields"), "No class/method");
             for (final String value : expectedToContain) {
@@ -549,7 +549,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testDiscardEmptyLoggerFields() {
+    void testDiscardEmptyLoggerFields() {
         final String mdcId = "RequestContext";
 
         for (final Appender appender : root.getAppenders().values()) {
@@ -602,7 +602,7 @@ public class Rfc5424LayoutTest {
         try {
 
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertFalse(message.contains("SD-ID"), "SD-ID should have been discarded");
             assertTrue(message.contains("BAZ"), "BAZ should have been included");
@@ -615,7 +615,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testSubstituteStructuredData() {
+    void testSubstituteStructuredData() {
         final String mdcId = "RequestContext";
 
         final String expectedToContain = String.format("ATM %s MSG-ID - Message", PROCESSID);
@@ -653,7 +653,7 @@ public class Rfc5424LayoutTest {
 
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(message.contains(expectedToContain), "Not the expected message received");
             appender.clear();
@@ -664,7 +664,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testParameterizedMessage() {
+    void testParameterizedMessage() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -698,7 +698,7 @@ public class Rfc5424LayoutTest {
         root.info("Hello {}", "World");
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(
                     message.contains("Hello World"), "Incorrect message. Expected - Hello World, Actual - " + message);
@@ -734,7 +734,7 @@ public class Rfc5424LayoutTest {
         root.info("Hello {}", "World");
         try {
             final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
+            assertTrue(!list.isEmpty(), "Not enough list entries");
             final String message = list.get(0);
             assertTrue(
                     message.contains("Hello World"), "Incorrect message. Expected - Hello World, Actual - " + message);
@@ -745,7 +745,7 @@ public class Rfc5424LayoutTest {
     }
 
     @Test
-    public void testLayoutBuilderDefaultValues() {
+    void testLayoutBuilderDefaultValues() {
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
         checkDefaultValues(layout);
 
@@ -763,7 +763,7 @@ public class Rfc5424LayoutTest {
         assertNotNull(layout);
         assertEquals(Facility.LOCAL0, layout.getFacility());
         assertEquals(String.valueOf(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER), layout.getEnterpriseNumber());
-        assertEquals(true, layout.isIncludeMdc());
+        assertTrue(layout.isIncludeMdc());
         assertEquals(Rfc5424Layout.DEFAULT_MDCID, layout.getMdcId());
         assertEquals(Rfc5424Layout.DEFAULT_ID, layout.getDefaultId());
     }

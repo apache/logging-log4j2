@@ -26,12 +26,12 @@ import org.junit.BeforeClass;
 public abstract class AbstractJdbcDataSourceTest {
 
     @AfterClass
-    public static void afterClass() throws Exception {
+    public static void afterClass() {
         System.clearProperty("log4j2.enableJndiJdbc");
     }
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() {
         System.setProperty("log4j2.enableJndiJdbc", "true");
     }
 }

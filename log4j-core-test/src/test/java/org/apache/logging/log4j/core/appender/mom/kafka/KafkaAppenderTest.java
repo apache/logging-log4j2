@@ -75,7 +75,6 @@ public class KafkaAppenderTest {
 
                     return retVal;
                 }
-                ;
 
                 // @Override in version 1.1.1
                 public void close(final long timeout, final TimeUnit timeUnit) {
@@ -102,7 +101,7 @@ public class KafkaAppenderTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         KafkaManager.producerFactory = config -> kafka;
     }
 
@@ -110,12 +109,12 @@ public class KafkaAppenderTest {
     public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderTest.xml");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         kafka.clear();
     }
 
     @Test
-    public void testAppendWithLayout() throws Exception {
+    public void testAppendWithLayout() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
         appender.append(createLogEvent());
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
@@ -128,7 +127,7 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithSerializedLayout() throws Exception {
+    public void testAppendWithSerializedLayout() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
@@ -144,7 +143,7 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAsyncAppend() throws Exception {
+    public void testAsyncAppend() {
         final Appender appender = ctx.getRequiredAppender("AsyncKafkaAppender");
         appender.append(createLogEvent());
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
@@ -157,7 +156,7 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithKey() throws Exception {
+    public void testAppendWithKey() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKey");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
@@ -173,7 +172,7 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithKeyLookup() throws Exception {
+    public void testAppendWithKeyLookup() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
         final LogEvent logEvent = createLogEvent();
         final Date date = new Date();
@@ -208,7 +207,7 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppenderNoEventTimestamp() throws Exception {
+    public void testAppenderNoEventTimestamp() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderNoEventTimestamp");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);

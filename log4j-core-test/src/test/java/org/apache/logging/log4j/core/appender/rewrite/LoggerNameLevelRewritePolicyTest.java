@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 2.4
  */
-public class LoggerNameLevelRewritePolicyTest {
+class LoggerNameLevelRewritePolicyTest {
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         final KeyValuePair[] rewrite =
                 new KeyValuePair[] {new KeyValuePair("INFO", "DEBUG"), new KeyValuePair("WARN", "INFO")};
         final String loggerNameRewrite = "com.foo.bar";

@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
  * This shows the behavior this user wants to disable.
  */
 @LoggerContextSource("log4j-list-lookups.xml")
-public class PatternLayoutLookupDateTest {
+class PatternLayoutLookupDateTest {
 
     @Test
-    public void testDateLookupInMessage(final LoggerContext context, @Named("List") final ListAppender listAppender) {
+    void testDateLookupInMessage(final LoggerContext context, @Named("List") final ListAppender listAppender) {
         listAppender.clear();
         final String template = "${date:YYYY-MM-dd}";
         context.getLogger(PatternLayoutLookupDateTest.class.getName()).info(template);

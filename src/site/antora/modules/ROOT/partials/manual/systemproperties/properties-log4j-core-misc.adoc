@@ -14,6 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+// tag::clock[]
 [id=log4j2.clock]
 == `log4j2.clock`
 
@@ -24,26 +25,36 @@
 | Default value | ``SystemClock``
 |===
 
-Specifies the
+It specifies the
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/Clock.html[`Clock`]
 implementation used to timestamp log events.
 
 This must be the fully qualified class name of the implementation or one of these predefined constants:
 
-SystemClock:: uses the best available system clock as time source.
+SystemClock:: It uses the best available system time source.
 See https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/Clock.html#systemDefaultZone--[`Clock#systemDefaultZone()`] for details.
++
+[NOTE]
+====
+Depending on the version of the JRE, this implementation might not be garbage-free or might only become garbage-free when the code is hot enough.
 
-SystemMillisClock:: same as `SystemClock`, but truncates the result to a millisecond.
+If you don't require a nanosecond precision, and you need a garbage-free implementation, use <<log4j2.clock.SystemMillisClock,`SystemMillisClock`>>.
+====
 
-CachedClock:: uses a separate thread to update the timestamp value.
+[id=log4j2.clock.SystemMillisClock]
+SystemMillisClock:: It is similar to `SystemClock`, but truncates the result to a millisecond.
+This implementation is garbage-free.
+
+CachedClock:: It uses a separate thread to update the timestamp value.
 See
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CachedClock.html[`CachedClock`]
 for details.
 
-CoarseCachedClock:: alternative implementation of `CachedClock` with a slightly lower precision.
+CoarseCachedClock:: This is  an alternative implementation of `CachedClock` with a slightly lower precision.
 See
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/util/CoarseCachedClock.html[`CoarseCachedClock`]
 for details.
+// end::clock[]
 
 [id=log4j2.contextData]
 == `log4j2.contextData`

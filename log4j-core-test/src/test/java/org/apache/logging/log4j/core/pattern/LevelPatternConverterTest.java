@@ -25,7 +25,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class LevelPatternConverterTest {
+class LevelPatternConverterTest {
 
     private void testLevelLength(final int length, final String debug, final String warn) {
         final Message msg = new SimpleMessage("Hello");
@@ -54,27 +54,27 @@ public class LevelPatternConverterTest {
     }
 
     @Test
-    public void testLevelLength1() {
+    void testLevelLength1() {
         testLevelLength(1, "D", "W");
     }
 
     @Test
-    public void testLevelLength10() {
+    void testLevelLength10() {
         testLevelLength(10, "DEBUG", "WARN");
     }
 
     @Test
-    public void testLevelLength2() {
+    void testLevelLength2() {
         testLevelLength(2, "DE", "WA");
     }
 
     @Test
-    public void testLevelLength5() {
+    void testLevelLength5() {
         testLevelLength(5, "DEBUG", "WARN");
     }
 
     @Test
-    public void testLevelLowerCase() {
+    void testLevelLowerCase() {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -101,7 +101,7 @@ public class LevelPatternConverterTest {
     }
 
     @Test
-    public void testLevelMap() {
+    void testLevelMap() {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -128,7 +128,7 @@ public class LevelPatternConverterTest {
     }
 
     @Test
-    public void testLevelMapWithLength() {
+    void testLevelMapWithLength() {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
@@ -155,7 +155,7 @@ public class LevelPatternConverterTest {
     }
 
     @Test
-    public void testLevelMapWithLengthAndLowerCase() {
+    void testLevelMapWithLengthAndLowerCase() {
         final Message msg = new SimpleMessage("Hello");
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //

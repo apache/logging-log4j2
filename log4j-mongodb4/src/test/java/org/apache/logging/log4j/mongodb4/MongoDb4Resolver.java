@@ -30,14 +30,12 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 
 class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> implements BeforeAllCallback {
 
-    static final String PORT_PROPERTY = "log4j2.mongo.port";
-
     public MongoDb4Resolver() {
         super(MongoClient.class);
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(ExtensionContext context) {
         ExtensionContextAnchor.setAttribute(MongoClientHolder.class, new MongoClientHolder(), context);
     }
 
@@ -63,7 +61,7 @@ class MongoDb4Resolver extends TypeBasedParameterResolver<MongoClient> implement
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() {
             mongoClient.close();
         }
     }

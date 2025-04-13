@@ -30,22 +30,22 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests ReusableObjectMessage.
  */
-public class ReusableObjectMessageTest {
+class ReusableObjectMessageTest {
 
     @Test
-    public void testSet_InitializesFormattedMessage() throws Exception {
+    void testSet_InitializesFormattedMessage() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
     }
 
     @Test
-    public void testGetFormattedMessage_InitiallyNullString() throws Exception {
+    void testGetFormattedMessage_InitiallyNullString() {
         assertEquals("null", new ReusableObjectMessage().getFormattedMessage());
     }
 
     @Test
-    public void testGetFormattedMessage_ReturnsLatestSetString() throws Exception {
+    void testGetFormattedMessage_ReturnsLatestSetString() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
@@ -56,12 +56,12 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testGetFormat_InitiallyNull() throws Exception {
+    void testGetFormat_InitiallyNull() {
         assertNull(new ReusableObjectMessage().getFormat());
     }
 
     @Test
-    public void testGetFormat_ReturnsLatestSetString() throws Exception {
+    void testGetFormat_ReturnsLatestSetString() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormat());
@@ -72,12 +72,12 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testGetParameters_InitiallyReturnsNullObjectInLength1Array() throws Exception {
+    void testGetParameters_InitiallyReturnsNullObjectInLength1Array() {
         assertArrayEquals(new Object[] {null}, new ReusableObjectMessage().getParameters());
     }
 
     @Test
-    public void testGetParameters_ReturnsSetObjectInParameterArrayAfterMessageSet() throws Exception {
+    void testGetParameters_ReturnsSetObjectInParameterArrayAfterMessageSet() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertArrayEquals(new Object[] {"abc"}, msg.getParameters());
@@ -86,12 +86,12 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testGetThrowable_InitiallyReturnsNull() throws Exception {
+    void testGetThrowable_InitiallyReturnsNull() {
         assertNull(new ReusableObjectMessage().getThrowable());
     }
 
     @Test
-    public void testGetThrowable_ReturnsNullAfterMessageSet() throws Exception {
+    void testGetThrowable_ReturnsNullAfterMessageSet() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         msg.set("abc");
         assertNull(msg.getThrowable());
@@ -100,7 +100,7 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testFormatTo_InitiallyWritesNull() throws Exception {
+    void testFormatTo_InitiallyWritesNull() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
@@ -108,7 +108,7 @@ public class ReusableObjectMessageTest {
     }
 
     @Test
-    public void testFormatTo_WritesLatestSetString() throws Exception {
+    void testFormatTo_WritesLatestSetString() {
         final ReusableObjectMessage msg = new ReusableObjectMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);

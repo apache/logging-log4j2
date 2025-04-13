@@ -40,7 +40,7 @@ import org.junit.jupiter.api.condition.OS;
  */
 @UsingStatusListener
 @DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher is not fast enough on macOS for this test")
-public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
+class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     private final String PATTERN = "test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log\\.gz";
     private final Pattern FILE_PATTERN = Pattern.compile(PATTERN);
@@ -51,7 +51,7 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     @Test
     @LoggerContextSource
-    public void testAppender(final LoggerContext ctx) throws Exception {
+    void testAppender(final LoggerContext ctx) throws Exception {
         final Logger logger = ctx.getLogger(getClass());
         try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
             WatchKey key = loggingPath.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);

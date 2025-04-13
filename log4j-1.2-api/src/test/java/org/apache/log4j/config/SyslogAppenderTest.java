@@ -30,12 +30,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class SyslogAppenderTest {
+class SyslogAppenderTest {
 
     private static MockSyslogServer syslogServer;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         initTCPTestEnvironment(null);
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
         System.setProperty(
@@ -43,20 +43,20 @@ public class SyslogAppenderTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
         syslogServer.shutdown();
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    void sendMessage() throws Exception {
         final Logger logger = LogManager.getLogger(SyslogAppenderTest.class);
         logger.info("This is a test");
         List<String> messages = null;
         for (int i = 0; i < 5; ++i) {
             Thread.sleep(250);
             messages = syslogServer.getMessageList();
-            if (messages != null && messages.size() > 0) {
+            if (messages != null && !messages.isEmpty()) {
                 break;
             }
         }

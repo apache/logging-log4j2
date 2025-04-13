@@ -17,6 +17,7 @@
 package org.apache.log4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
@@ -31,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 1.2.12
  */
-public class LevelTest {
+class LevelTest {
 
     /**
      * Serialize Level.INFO and check against witness.
@@ -39,7 +40,7 @@ public class LevelTest {
      * @throws Exception if exception during test.
      */
     @Test
-    public void testSerializeINFO() throws Exception {
+    void testSerializeINFO() throws Exception {
         final int[] skip = new int[] {};
         SerializationTestHelper.assertSerializationEquals(
                 "target/test-classes/witness/serialization/info.bin", Level.INFO, skip, Integer.MAX_VALUE);
@@ -51,16 +52,16 @@ public class LevelTest {
      * @throws Exception if exception during test.
      */
     @Test
-    public void testDeserializeINFO() throws Exception {
+    void testDeserializeINFO() throws Exception {
         final Object obj =
                 SerializationTestHelper.deserializeStream("target/test-classes/witness/serialization/info.bin");
-        assertTrue(obj instanceof Level);
+        assertInstanceOf(Level.class, obj);
         final Level info = (Level) obj;
         assertEquals("INFO", info.toString());
         //
         //  JDK 1.1 doesn't support readResolve necessary for the assertion
         if (!System.getProperty("java.version").startsWith("1.1.")) {
-            assertEquals(obj, Level.INFO);
+            assertEquals(Level.INFO, obj);
         }
     }
 
@@ -71,10 +72,10 @@ public class LevelTest {
      * @throws Exception if exception during test.
      */
     @Test
-    public void testCustomLevelSerialization() throws Exception {
+    void testCustomLevelSerialization() throws Exception {
         final CustomLevel custom = new CustomLevel();
         final Object obj = SerializationTestHelper.serializeClone(custom);
-        assertTrue(obj instanceof CustomLevel);
+        assertInstanceOf(CustomLevel.class, obj);
 
         final CustomLevel clone = (CustomLevel) obj;
         assertEquals(Level.INFO.level, clone.level);
@@ -105,7 +106,7 @@ public class LevelTest {
      * Tests Level.TRACE_INT.
      */
     @Test
-    public void testTraceInt() {
+    void testTraceInt() {
         assertEquals(5000, Level.TRACE_INT);
     }
 
@@ -113,7 +114,7 @@ public class LevelTest {
      * Tests Level.TRACE.
      */
     @Test
-    public void testTrace() {
+    void testTrace() {
         assertEquals("TRACE", Level.TRACE.toString());
         assertEquals(5000, Level.TRACE.toInt());
         assertEquals(7, Level.TRACE.getSyslogEquivalent());
@@ -123,7 +124,7 @@ public class LevelTest {
      * Tests Level.toLevel(Level.TRACE_INT).
      */
     @Test
-    public void testIntToTrace() {
+    void testIntToTrace() {
         final Level trace = Level.toLevel(5000);
         assertEquals("TRACE", trace.toString());
     }
@@ -132,7 +133,7 @@ public class LevelTest {
      * Tests Level.toLevel("TRACE");
      */
     @Test
-    public void testStringToTrace() {
+    void testStringToTrace() {
         final Level trace = Level.toLevel("TRACE");
         assertEquals("TRACE", trace.toString());
     }
@@ -141,7 +142,7 @@ public class LevelTest {
      * Tests that Level extends Priority.
      */
     @Test
-    public void testLevelExtendsPriority() {
+    void testLevelExtendsPriority() {
         assertTrue(Priority.class.isAssignableFrom(Level.class));
     }
 
@@ -149,64 +150,64 @@ public class LevelTest {
      * Tests Level.OFF.
      */
     @Test
-    public void testOFF() {
-        assertTrue(Level.OFF instanceof Level);
+    void testOFF() {
+        assertInstanceOf(Level.class, Level.OFF);
     }
 
     /**
      * Tests Level.FATAL.
      */
     @Test
-    public void testFATAL() {
-        assertTrue(Level.FATAL instanceof Level);
+    void testFATAL() {
+        assertInstanceOf(Level.class, Level.FATAL);
     }
 
     /**
      * Tests Level.ERROR.
      */
     @Test
-    public void testERROR() {
-        assertTrue(Level.ERROR instanceof Level);
+    void testERROR() {
+        assertInstanceOf(Level.class, Level.ERROR);
     }
 
     /**
      * Tests Level.WARN.
      */
     @Test
-    public void testWARN() {
-        assertTrue(Level.WARN instanceof Level);
+    void testWARN() {
+        assertInstanceOf(Level.class, Level.WARN);
     }
 
     /**
      * Tests Level.INFO.
      */
     @Test
-    public void testINFO() {
-        assertTrue(Level.INFO instanceof Level);
+    void testINFO() {
+        assertInstanceOf(Level.class, Level.INFO);
     }
 
     /**
      * Tests Level.DEBUG.
      */
     @Test
-    public void testDEBUG() {
-        assertTrue(Level.DEBUG instanceof Level);
+    void testDEBUG() {
+        assertInstanceOf(Level.class, Level.DEBUG);
     }
 
     /**
      * Tests Level.TRACE.
      */
     @Test
-    public void testTRACE() {
-        assertTrue(Level.TRACE instanceof Level);
+    void testTRACE() {
+        assertInstanceOf(Level.class, Level.TRACE);
     }
 
     /**
      * Tests Level.ALL.
      */
     @Test
-    public void testALL() {
-        assertTrue(Level.ALL instanceof Level);
+    void testALL() {
+        assertInstanceOf(Level.class, Level.ALL);
     }
 
     /**
@@ -214,7 +215,7 @@ public class LevelTest {
      */
     @ParameterizedTest
     @MethodSource("org.apache.log4j.helpers.OptionConverterLevelTest#standardLevels")
-    public void testVersion2Level(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
+    void testVersion2Level(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
         assertEquals(log4j2Level, log4j1Level.getVersion2Level());
     }
 
@@ -222,7 +223,7 @@ public class LevelTest {
      * Tests Level.toLevel(Level.All_INT).
      */
     @Test
-    public void testIntToAll() {
+    void testIntToAll() {
         final Level level = Level.toLevel(Priority.ALL_INT);
         assertEquals("ALL", level.toString());
     }
@@ -231,7 +232,7 @@ public class LevelTest {
      * Tests Level.toLevel(Level.FATAL_INT).
      */
     @Test
-    public void testIntToFatal() {
+    void testIntToFatal() {
         final Level level = Level.toLevel(Priority.FATAL_INT);
         assertEquals("FATAL", level.toString());
     }
@@ -240,7 +241,7 @@ public class LevelTest {
      * Tests Level.toLevel(Level.OFF_INT).
      */
     @Test
-    public void testIntToOff() {
+    void testIntToOff() {
         final Level level = Level.toLevel(Priority.OFF_INT);
         assertEquals("OFF", level.toString());
     }
@@ -249,7 +250,7 @@ public class LevelTest {
      * Tests Level.toLevel(17, Level.FATAL).
      */
     @Test
-    public void testToLevelUnrecognizedInt() {
+    void testToLevelUnrecognizedInt() {
         final Level level = Level.toLevel(17, Level.FATAL);
         assertEquals("FATAL", level.toString());
     }
@@ -258,7 +259,7 @@ public class LevelTest {
      * Tests Level.toLevel(null, Level.FATAL).
      */
     @Test
-    public void testToLevelNull() {
+    void testToLevelNull() {
         final Level level = Level.toLevel(null, Level.FATAL);
         assertEquals("FATAL", level.toString());
     }
@@ -267,7 +268,7 @@ public class LevelTest {
      * Test that dotless lower I + "nfo" is recognized as INFO.
      */
     @Test
-    public void testDotlessLowerI() {
+    void testDotlessLowerI() {
         final Level level = Level.toLevel("\u0131nfo");
         assertEquals("INFO", level.toString());
     }
@@ -277,7 +278,7 @@ public class LevelTest {
      * even in Turkish locale.
      */
     @Test
-    public void testDottedLowerI() {
+    void testDottedLowerI() {
         final Locale defaultLocale = Locale.getDefault();
         final Locale turkey = new Locale("tr", "TR");
         Locale.setDefault(turkey);

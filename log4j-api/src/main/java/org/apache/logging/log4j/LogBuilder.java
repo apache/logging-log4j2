@@ -22,6 +22,8 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Interface for constructing log events before logging them. Instances of LogBuilders should only be created
  * by calling one of the Logger methods that return a LogBuilder.
+ *
+ * @since 2.13.0
  */
 public interface LogBuilder {
     /** NOOP Logbuilder */
@@ -110,7 +112,7 @@ public interface LogBuilder {
      *
      * @param messageSupplier The supplier of the message to log.
      * @return the message logger or {@code null} if no logging occurred.
-     * @since 2.20
+     * @since 2.20.0
      */
     default Message logAndGet(final Supplier<Message> messageSupplier) {
         return null;
@@ -128,6 +130,7 @@ public interface LogBuilder {
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(final String message, final Object p0) {}
@@ -139,6 +142,7 @@ public interface LogBuilder {
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(final String message, final Object p0, final Object p1) {}
@@ -151,6 +155,7 @@ public interface LogBuilder {
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(final String message, final Object p0, final Object p1, final Object p2) {}
@@ -164,6 +169,7 @@ public interface LogBuilder {
      * @param p2 parameter to the message.
      * @param p3 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {}
@@ -178,6 +184,7 @@ public interface LogBuilder {
      * @param p3 parameter to the message.
      * @param p4 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -199,6 +206,7 @@ public interface LogBuilder {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -222,6 +230,7 @@ public interface LogBuilder {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -247,6 +256,7 @@ public interface LogBuilder {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -274,6 +284,7 @@ public interface LogBuilder {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -303,6 +314,7 @@ public interface LogBuilder {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      *
+     * @since 2.13.1
      * @see org.apache.logging.log4j.util.Unbox
      */
     default void log(
@@ -320,6 +332,8 @@ public interface LogBuilder {
 
     /**
      * Causes all the data collected to be logged. Default implementatoin does nothing.
+     *
+     * @since 2.14.1
      */
     default void log() {}
 }

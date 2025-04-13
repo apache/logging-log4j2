@@ -45,7 +45,6 @@ updates:
 
   - package-ecosystem: maven
     directories:
-      - "/"
       - "/log4j-1.2-api"
       - "/log4j-api-test"
       - "/log4j-api"
@@ -59,6 +58,7 @@ updates:
       - "/log4j-docker"
       - "/log4j-fuzz-test"
       - "/log4j-iostreams"
+      - "/log4j-jakarta-jms"
       - "/log4j-jakarta-smtp"
       - "/log4j-jakarta-web"
       - "/log4j-jcl"
@@ -163,7 +163,6 @@ updates:
   - package-ecosystem: maven
     directories:
       - "/log4j-mongodb4"
-      - "/log4j-slf4j-impl"
     open-pull-requests-limit: 10
     schedule:
       interval: "daily"
@@ -174,9 +173,6 @@ updates:
       # MongoDB 4.x should only upgrade to 4.x
       - dependency-name: "org.mongodb:*"
         versions: [ "[5,)" ]
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"

@@ -52,20 +52,20 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Tests {@link FileAppender}.
  */
 @CleanUpFiles(FileAppenderTest.FILE_NAME)
-public class FileAppenderTest {
+class FileAppenderTest {
 
     static final String FILE_NAME = "target/fileAppenderTest.log";
     private static final Path PATH = Paths.get(FILE_NAME);
     private static final int THREADS = 2;
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         assertFalse(AbstractManager.hasManager(FILE_NAME), "Manager for " + FILE_NAME + " not removed");
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testAppender(final boolean createOnDemand) throws Exception {
+    void testAppender(final boolean createOnDemand) throws Exception {
         final int logEventCount = 1;
         writer(false, logEventCount, "test", createOnDemand, false);
         verifyFile(logEventCount);
@@ -73,7 +73,7 @@ public class FileAppenderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testLazyCreate(final boolean createOnDemand) throws Exception {
+    void testLazyCreate(final boolean createOnDemand) {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
@@ -106,7 +106,7 @@ public class FileAppenderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testSmallestBufferSize(final boolean createOnDemand) throws Exception {
+    void testSmallestBufferSize(final boolean createOnDemand) throws Exception {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
@@ -154,7 +154,7 @@ public class FileAppenderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testLockingAppender(final boolean createOnDemand) throws Exception {
+    void testLockingAppender(final boolean createOnDemand) throws Exception {
         final int logEventCount = 1;
         writer(true, logEventCount, "test", createOnDemand, false);
         verifyFile(logEventCount);
@@ -162,13 +162,12 @@ public class FileAppenderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testMultipleAppenderThreads(final boolean createOnDemand) throws Exception {
+    void testMultipleAppenderThreads(final boolean createOnDemand) throws Exception {
         testMultipleLockingAppenderThreads(false, THREADS, createOnDemand);
     }
 
     private void testMultipleLockingAppenderThreads(
-            final boolean lock, final int threadCount, final boolean createOnDemand)
-            throws InterruptedException, Exception {
+            final boolean lock, final int threadCount, final boolean createOnDemand) throws Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
         final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
         final int logEventCount = 100;
@@ -193,14 +192,14 @@ public class FileAppenderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    public void testMultipleLockingAppenders(final boolean createOnDemand) throws Exception {
+    void testMultipleLockingAppenders(final boolean createOnDemand) throws Exception {
         testMultipleLockingAppenderThreads(true, THREADS, createOnDemand);
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     @Disabled
-    public void testMultipleVMs(final boolean createOnDemand) throws Exception {
+    void testMultipleVMs(final boolean createOnDemand) throws Exception {
         final String classPath = System.getProperty("java.class.path");
         final int logEventCount = 10;
         final int processCount = 3;

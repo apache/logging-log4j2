@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 /**
  * Provides the PID of the current JVM.
  *
- * @since 2.9
+ * @since 2.9.0
  */
 public class ProcessIdUtil {
 

@@ -26,17 +26,17 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Test;
 
-public class Log4j1MdcPatternConverterTest {
+class Log4j1MdcPatternConverterTest {
 
     @Test
-    public void testConverter0() {
+    void testConverter0() {
         final StringMap contextMap = ContextDataFactory.createContextData(0);
         final String expected = "{}";
         test(contextMap, expected, null);
     }
 
     @Test
-    public void testConverter1() {
+    void testConverter1() {
         final StringMap contextMap = ContextDataFactory.createContextData(1);
         contextMap.putValue("key1", "value1");
         final String expected = "{{key1,value1}}";
@@ -44,7 +44,7 @@ public class Log4j1MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverter2() {
+    void testConverter2() {
         final StringMap contextMap = ContextDataFactory.createContextData(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
@@ -53,7 +53,7 @@ public class Log4j1MdcPatternConverterTest {
     }
 
     @Test
-    public void testConverterWithKey() {
+    void testConverterWithKey() {
         final StringMap contextMap = ContextDataFactory.createContextData(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
+class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
     private static final String PASSWORD = "123";
 
@@ -58,14 +58,14 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     }
 
     @Test
-    public void testNoEntityClassName() {
+    void testNoEntityClassName() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, null, "jpaAppenderTestUnit");
 
         assertNull(appender, "The appender should be null.");
     }
 
     @Test
-    public void testNoPersistenceUnitName() {
+    void testNoPersistenceUnitName() {
         final JpaAppender appender =
                 JpaAppender.createAppender("name", null, null, null, TestBaseEntity.class.getName(), null);
 
@@ -73,7 +73,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     }
 
     @Test
-    public void testBadEntityClassName() {
+    void testBadEntityClassName() {
         final JpaAppender appender =
                 JpaAppender.createAppender("name", null, null, null, "com.foo.Bar", "jpaAppenderTestUnit");
 
@@ -81,7 +81,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     }
 
     @Test
-    public void testNonLogEventEntity() {
+    void testNonLogEventEntity() {
         final JpaAppender appender =
                 JpaAppender.createAppender("name", null, null, null, Object.class.getName(), "jpaAppenderTestUnit");
 
@@ -89,7 +89,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     }
 
     @Test
-    public void testBadConstructorEntity01() {
+    void testBadConstructorEntity01() {
         final JpaAppender appender = JpaAppender.createAppender(
                 "name", null, null, null, BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit");
 
@@ -97,7 +97,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     }
 
     @Test
-    public void testBadConstructorEntity02() {
+    void testBadConstructorEntity02() {
         final JpaAppender appender = JpaAppender.createAppender(
                 "name", null, null, null, BadConstructorEntity2.class.getName(), "jpaAppenderTestUnit");
 

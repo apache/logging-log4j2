@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -35,14 +36,14 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class RollingAppenderOnStartupDirectTest {
+class RollingAppenderOnStartupDirectTest {
 
     private static final String SOURCE = "src/test/resources/__files";
     private static final String DIR = "target/onStartup";
@@ -54,8 +55,8 @@ public class RollingAppenderOnStartupDirectTest {
 
     private static LoggerContext loggerContext;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
+    @BeforeAll
+    static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
             try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
@@ -73,7 +74,7 @@ public class RollingAppenderOnStartupDirectTest {
     }
 
     @Test
-    public void performTest() throws Exception {
+    void performTest() throws Exception {
         loggerContext = Configurator.initialize("Test", CONFIG);
         final Logger logger = loggerContext.getLogger(RollingAppenderOnStartupDirectTest.class);
         for (int i = 3; i < 10; ++i) {
@@ -85,18 +86,19 @@ public class RollingAppenderOnStartupDirectTest {
                 ++fileCount;
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     final List<String> lines = Files.readAllLines(path);
-                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
+                    assertFalse(
+                            lines.isEmpty(), "No messages in " + path.toFile().getName());
                     assertTrue(
-                            "Missing message for " + path.toFile().getName(),
-                            lines.get(0).startsWith(PREFIX));
+                            lines.get(0).startsWith(PREFIX),
+                            "Missing message for " + path.toFile().getName());
                 }
             }
         }
-        assertEquals("File did not roll", 2, fileCount);
+        assertEquals(2, fileCount, "File did not roll");
     }
 
-    @AfterClass
-    public static void afterClass() throws Exception {
+    @AfterAll
+    static void afterClass() throws Exception {
         Configurator.shutdown(loggerContext);
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {

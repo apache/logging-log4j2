@@ -21,29 +21,30 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-public class ResourceBundleLookupTest {
+class ResourceBundleLookupTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final StrLookup lookup = new ResourceBundleLookup();
         lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle_en:KeyA");
         assertEquals("ValueA", lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA"));
     }
 
     @Test
-    public void testLookupWithLocale() {
+    void testLookupWithLocale() {
         final StrLookup lookup = new ResourceBundleLookup();
         lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA");
         assertEquals("ValueA", lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyA"));
     }
 
-    public void testMissingKey() {
+    @Test
+    void testMissingKey() {
         final StrLookup lookup = new ResourceBundleLookup();
         assertNull(lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyUnkown"));
     }
 
     @Test
-    public void testBadFormatBundleOnly() {
+    void testBadFormatBundleOnly() {
         final StrLookup lookup = new ResourceBundleLookup();
         assertNull(lookup.lookup("X"));
     }

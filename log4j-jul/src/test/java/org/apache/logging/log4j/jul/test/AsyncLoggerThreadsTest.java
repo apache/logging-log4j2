@@ -16,40 +16,40 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerThreadsTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerThreadsTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty("java.util.logging.manager", org.apache.logging.log4j.jul.LogManager.class.getName());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         System.clearProperty("java.util.logging.manager");
     }
 
     @Test
-    public void testAsyncLoggerThreads() {
+    void testAsyncLoggerThreads() {
         LogManager.getLogger("com.foo.Bar").info("log");
         final List<Thread> asyncLoggerThreads = Thread.getAllStackTraces().keySet().stream()
                 .filter(thread -> thread.getName().matches("Log4j2-TF.*AsyncLogger.*"))
                 .collect(Collectors.toList());
-        assertEquals(asyncLoggerThreads.toString(), 1, asyncLoggerThreads.size());
+        assertEquals(1, asyncLoggerThreads.size(), asyncLoggerThreads.toString());
     }
 }

@@ -47,7 +47,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final Logger logger = context.getLogger(getClass());
         logger.info("This is a test");
         final List<String> messages = listAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages returned");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         assertEquals(
                 "INFO org.apache.logging.log4j.core."
@@ -60,7 +60,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         final Logger logger = context.getLogger(getClass());
         logger.info("This is a ${upper:test}");
         final List<String> messages = listAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages returned");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         assertEquals(
                 "INFO org.apache.logging.log4j.core."
@@ -78,7 +78,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
             ThreadContext.remove(PARAMETER);
         }
         final List<String> messages = listAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages returned");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         assertEquals(
                 "INFO org.apache.logging.log4j.core."
@@ -96,7 +96,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
             ThreadContext.remove(PARAMETER);
         }
         final List<String> messages = listAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages returned");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         assertEquals(
                 "INFO org.apache.logging.log4j.core."
@@ -114,7 +114,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
             ThreadContext.remove(PARAMETER);
         }
         final List<String> messages = listAppender.getMessages();
-        assertTrue(messages != null && messages.size() > 0, "No messages returned");
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         assertEquals(
                 "INFO org.apache.logging.log4j.core."

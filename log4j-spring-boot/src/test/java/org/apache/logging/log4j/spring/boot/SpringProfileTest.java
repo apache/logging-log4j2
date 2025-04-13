@@ -34,7 +34,7 @@ import org.springframework.mock.env.MockEnvironment;
  * Tests basic condition processing.
  */
 @UsingStatusListener
-public class SpringProfileTest {
+class SpringProfileTest {
 
     private static final String CONFIG = "log4j2-springProfile.xml";
     private static final MockEnvironment env = new MockEnvironment();

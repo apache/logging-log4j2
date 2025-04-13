@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
  *
  */
 @LoggerContextSource("log4j2-config.xml")
-public class LoggingTest {
+class LoggingTest {
 
     @Test
-    public void testParent() {
+    void testParent() {
         final Logger logger = Logger.getLogger("org.apache.test.logging.Test");
         final Category parent = logger.getParent();
         assertNotNull(parent, "No parent Logger");

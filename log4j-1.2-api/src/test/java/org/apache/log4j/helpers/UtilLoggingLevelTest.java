@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
 import org.apache.log4j.Level;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,6 +33,7 @@ public class UtilLoggingLevelTest {
     /**
      * Test toLevel("fiNeSt").
      */
+    @Test
     public void testToLevelFINEST() {
         assertEquals(UtilLoggingLevel.FINEST, UtilLoggingLevel.toLevel("fiNeSt"));
     }
@@ -43,7 +45,7 @@ public class UtilLoggingLevelTest {
 
     @ParameterizedTest
     @MethodSource("namesAndLevels")
-    public void testOptionConverterToLevel(final String name, final UtilLoggingLevel level) {
+    void testOptionConverterToLevel(final String name, final UtilLoggingLevel level) {
         assertEquals(level, OptionConverter.toLevel(name, Level.ALL), "get v1 level by name");
         // Comparison of Log4j 2.x levels
         assertEquals(level.getVersion2Level(), org.apache.logging.log4j.Level.getLevel(name), "get v2 level by name");

@@ -32,9 +32,9 @@ import java.util.TimeZone;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.CompositePatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DynamicPatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.PatternSequence;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.SecondPatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +42,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class InstantPatternDynamicFormatterTest {
+class InstantPatternDynamicFormatterTest {
 
     @ParameterizedTest
     @MethodSource("sequencingTestCases")
@@ -55,26 +55,23 @@ public class InstantPatternDynamicFormatterTest {
     static List<Arguments> sequencingTestCases() {
         final List<Arguments> testCases = new ArrayList<>();
 
+        // Merged constants
+        testCases.add(Arguments.of(":'foo',", ChronoUnit.DAYS, singletonList(new StaticPatternSequence(":foo,"))));
+
         // `SSSX` should be treated constant for daily updates
-        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, singletonList(pCom(pDyn("SSS"), pDyn("X")))));
+        testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, asList(pMilliSec(), pDyn("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated hourly
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.HOURS,
-                asList(
-                        pCom(pDyn("yyyy"), pDyn("MM"), pDyn("dd"), pDyn("HH")),
-                        pCom(pDyn("mm"), pDyn("ss"), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyyMMddHH", ChronoUnit.HOURS), pDyn("mm"), pSec(2, "", 3), pDyn("X"))));
 
         // `yyyyMMddHHmmssSSSX` instant cache updated per minute
         testCases.add(Arguments.of(
                 "yyyyMMddHHmmssSSSX",
                 ChronoUnit.MINUTES,
-                asList(
-                        pCom(pDyn("yyyy"), pDyn("MM"), pDyn("dd"), pDyn("HH"), pDyn("mm")),
-                        pCom(pDyn("ss"), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyyMMddHHmm", ChronoUnit.MINUTES), pSec(2, "", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated daily
         final String iso8601InstantPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
@@ -82,77 +79,55 @@ public class InstantPatternDynamicFormatterTest {
                 iso8601InstantPattern,
                 ChronoUnit.DAYS,
                 asList(
-                        pCom(pDyn("yyyy"), pSta("-"), pDyn("MM"), pSta("-"), pDyn("dd"), pSta("T")),
-                        pCom(
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":"),
-                                pDyn("ss"),
-                                pSta("."),
-                                pDyn("SSS"),
-                                pDyn("X")))));
+                        pDyn("yyyy'-'MM'-'dd'T'", ChronoUnit.DAYS),
+                        pDyn("HH':'mm':'", ChronoUnit.MINUTES),
+                        pSec(2, ".", 3),
+                        pDyn("X"))));
 
         // ISO9601 instant cache updated per minute
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.MINUTES,
-                asList(
-                        pCom(
-                                pDyn("yyyy"),
-                                pSta("-"),
-                                pDyn("MM"),
-                                pSta("-"),
-                                pDyn("dd"),
-                                pSta("T"),
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":")),
-                        pCom(pDyn("ss"), pSta("."), pDyn("SSS")),
-                        pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 3), pDyn("X"))));
 
         // ISO9601 instant cache updated per second
         testCases.add(Arguments.of(
                 iso8601InstantPattern,
                 ChronoUnit.SECONDS,
-                asList(
-                        pCom(
-                                pDyn("yyyy"),
-                                pSta("-"),
-                                pDyn("MM"),
-                                pSta("-"),
-                                pDyn("dd"),
-                                pSta("T"),
-                                pDyn("HH"),
-                                pSta(":"),
-                                pDyn("mm"),
-                                pSta(":"),
-                                pDyn("ss"),
-                                pSta(".")),
-                        pDyn("SSS"),
-                        pDyn("X"))));
+                asList(pDyn("yyyy'-'MM'-'dd'T'HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 3), pDyn("X"))));
+
+        // Seconds and micros
+        testCases.add(Arguments.of(
+                "HH:mm:ss.SSSSSS",
+                ChronoUnit.MINUTES,
+                asList(pDyn("HH':'mm':'", ChronoUnit.MINUTES), pSec(2, ".", 6))));
+
+        // Seconds without padding
+        testCases.add(Arguments.of("s.SSS", ChronoUnit.SECONDS, singletonList(pSec(1, ".", 3))));
 
         return testCases;
     }
 
-    private static CompositePatternSequence pCom(final PatternSequence... sequences) {
-        return new CompositePatternSequence(asList(sequences));
+    private static DynamicPatternSequence pDyn(final String singlePattern) {
+        return new DynamicPatternSequence(singlePattern);
     }
 
-    private static DynamicPatternSequence pDyn(final String pattern) {
-        return new DynamicPatternSequence(pattern);
+    private static DynamicPatternSequence pDyn(final String pattern, final ChronoUnit precision) {
+        return new DynamicPatternSequence(pattern, precision);
     }
 
-    private static StaticPatternSequence pSta(final String literal) {
-        return new StaticPatternSequence(literal);
+    private static SecondPatternSequence pSec(int secondDigits, String separator, int fractionalDigits) {
+        return new SecondPatternSequence(secondDigits, separator, fractionalDigits);
+    }
+
+    private static SecondPatternSequence pMilliSec() {
+        return new SecondPatternSequence(0, "", 3);
     }
 
     @ParameterizedTest
     @ValueSource(
             strings = {
                 // Basics
-                "S",
                 "SSSSSSS",
                 "SSSSSSSSS",
                 "n",
@@ -163,8 +138,7 @@ public class InstantPatternDynamicFormatterTest {
                 "yyyy-MM-dd HH:mm:ss,SSSSSSS",
                 "yyyy-MM-dd HH:mm:ss,SSSSSSSS",
                 "yyyy-MM-dd HH:mm:ss,SSSSSSSSS",
-                "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS",
-                "yyyy-MM-dd'T'HH:mm:ss.SXXX"
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS"
             })
     void should_recognize_patterns_of_nano_precision(final String pattern) {
         assertPatternPrecision(pattern, ChronoUnit.NANOS);
@@ -233,20 +207,31 @@ public class InstantPatternDynamicFormatterTest {
         assertPatternPrecision(pattern, ChronoUnit.SECONDS);
     }
 
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
+    static Stream<String> should_recognize_patterns_of_minute_precision() {
+        Stream<String> stream = Stream.of(
                 // Basics
                 "m",
                 "mm",
+                "Z",
+                "x",
+                "X",
+                "O",
+                "z",
+                "VV",
                 // Mixed with other stuff
                 "yyyy-MM-dd HH:mm",
                 "yyyy-MM-dd'T'HH:mm",
                 "HH:mm",
+                "yyyy-MM-dd HH x",
+                "yyyy-MM-dd'T'HH XX",
                 // Single-quoted text containing nanosecond and millisecond directives
                 "yyyy-MM-dd'S'HH:mm",
-                "yyyy-MM-dd'n'HH:mm"
-            })
+                "yyyy-MM-dd'n'HH:mm");
+        return Constants.JAVA_MAJOR_VERSION > 8 ? Stream.concat(stream, Stream.of("v")) : stream;
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void should_recognize_patterns_of_minute_precision(final String pattern) {
         assertPatternPrecision(pattern, ChronoUnit.MINUTES);
     }
@@ -267,26 +252,69 @@ public class InstantPatternDynamicFormatterTest {
                 "K",
                 "k",
                 "H",
-                "Z",
-                "x",
-                "X",
-                "O",
-                "z",
-                "VV",
                 // Mixed with other stuff
                 "yyyy-MM-dd HH",
                 "yyyy-MM-dd'T'HH",
-                "yyyy-MM-dd HH x",
-                "yyyy-MM-dd'T'HH XX",
                 "ddHH",
                 // Single-quoted text containing nanosecond and millisecond directives
                 "yyyy-MM-dd'S'HH",
                 "yyyy-MM-dd'n'HH"));
         if (Constants.JAVA_MAJOR_VERSION > 8) {
             java8Patterns.add("B");
-            java8Patterns.add("v");
         }
         return java8Patterns;
+    }
+
+    static Stream<Arguments> dynamic_pattern_should_correctly_determine_precision() {
+        // When no a precise unit is not available, uses the closest smaller unit.
+        return Stream.of(
+                Arguments.of("G", ChronoUnit.ERAS),
+                Arguments.of("u", ChronoUnit.YEARS),
+                Arguments.of("D", ChronoUnit.DAYS),
+                Arguments.of("M", ChronoUnit.MONTHS),
+                Arguments.of("L", ChronoUnit.MONTHS),
+                Arguments.of("d", ChronoUnit.DAYS),
+                Arguments.of("Q", ChronoUnit.MONTHS),
+                Arguments.of("q", ChronoUnit.MONTHS),
+                Arguments.of("Y", ChronoUnit.YEARS),
+                Arguments.of("w", ChronoUnit.WEEKS),
+                Arguments.of("W", ChronoUnit.DAYS), // The month can change in the middle of the week
+                Arguments.of("F", ChronoUnit.DAYS), // The month can change in the middle of the week
+                Arguments.of("E", ChronoUnit.DAYS),
+                Arguments.of("e", ChronoUnit.DAYS),
+                Arguments.of("c", ChronoUnit.DAYS),
+                Arguments.of("a", ChronoUnit.HOURS), // Let us round it down
+                Arguments.of("h", ChronoUnit.HOURS),
+                Arguments.of("K", ChronoUnit.HOURS),
+                Arguments.of("k", ChronoUnit.HOURS),
+                Arguments.of("H", ChronoUnit.HOURS),
+                Arguments.of("m", ChronoUnit.MINUTES),
+                Arguments.of("s", ChronoUnit.SECONDS),
+                Arguments.of("S", ChronoUnit.MILLIS),
+                Arguments.of("SS", ChronoUnit.MILLIS),
+                Arguments.of("SSS", ChronoUnit.MILLIS),
+                Arguments.of("SSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSSS", ChronoUnit.MICROS),
+                Arguments.of("SSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("SSSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("SSSSSSSSS", ChronoUnit.NANOS),
+                Arguments.of("A", ChronoUnit.MILLIS),
+                Arguments.of("n", ChronoUnit.NANOS),
+                Arguments.of("N", ChronoUnit.NANOS),
+                // Time zones can change in the middle of a UTC hour (e.g. India)
+                Arguments.of("VV", ChronoUnit.MINUTES),
+                Arguments.of("z", ChronoUnit.MINUTES),
+                Arguments.of("O", ChronoUnit.MINUTES),
+                Arguments.of("X", ChronoUnit.MINUTES),
+                Arguments.of("x", ChronoUnit.MINUTES),
+                Arguments.of("Z", ChronoUnit.MINUTES));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void dynamic_pattern_should_correctly_determine_precision(String singlePattern, ChronoUnit expectedPrecision) {
+        assertThat(pDyn(singlePattern).precision).isEqualTo(expectedPrecision);
     }
 
     private static void assertPatternPrecision(final String pattern, final ChronoUnit expectedPrecision) {
@@ -329,7 +357,9 @@ public class InstantPatternDynamicFormatterTest {
                         "yyyy-MM-dd'T'HH:mm:ss.SSS",
                         "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
                         "dd/MM/yy HH:mm:ss.SSS",
-                        "dd/MM/yyyy HH:mm:ss.SSS")
+                        "dd/MM/yyyy HH:mm:ss.SSS",
+                        // seconds without padding
+                        "s.SSS")
                 .flatMap(InstantPatternDynamicFormatterTest::formatterInputs);
     }
 
@@ -341,7 +371,7 @@ public class InstantPatternDynamicFormatterTest {
             Arrays.stream(TimeZone.getAvailableIDs()).map(TimeZone::getTimeZone).toArray(TimeZone[]::new);
 
     static Stream<Arguments> formatterInputs(final String pattern) {
-        return IntStream.range(0, 500).mapToObj(ignoredIndex -> {
+        return IntStream.range(0, 100).mapToObj(ignoredIndex -> {
             final Locale locale = LOCALES[RANDOM.nextInt(LOCALES.length)];
             final TimeZone timeZone = TIME_ZONES[RANDOM.nextInt(TIME_ZONES.length)];
             final MutableInstant instant = randomInstant();
@@ -351,7 +381,11 @@ public class InstantPatternDynamicFormatterTest {
 
     private static MutableInstant randomInstant() {
         final MutableInstant instant = new MutableInstant();
-        final long epochSecond = RANDOM.nextInt(1_621_280_470); // 2021-05-17 21:41:10
+        // In the 1970's some time zones had sub-minute offsets to UTC, e.g., Africa/Monrovia.
+        // We will exclude them for tests:
+        final int minEpochSecond = 315_532_800; // 1980-01-01 01:00:00
+        final int maxEpochSecond = 1_621_280_470; // 2021-05-17 21:41:10
+        final long epochSecond = minEpochSecond + RANDOM.nextInt(maxEpochSecond - minEpochSecond);
         final int epochSecondNano = randomNanos();
         instant.initFromEpochSecond(epochSecond, epochSecondNano);
         return instant;

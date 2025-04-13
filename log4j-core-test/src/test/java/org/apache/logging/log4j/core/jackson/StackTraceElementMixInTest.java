@@ -16,27 +16,27 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Layouts.Json.class)
-public class StackTraceElementMixInTest {
+@Tag("Layouts.Json")
+class StackTraceElementMixInTest {
 
     @Test
-    public void testLog4jJsonObjectMapper() throws Exception {
+    void testLog4jJsonObjectMapper() throws Exception {
         this.roundtrip(new Log4jJsonObjectMapper());
     }
 
     @Test
-    public void testLog4jYamlObjectMapper() throws Exception {
+    void testLog4jYamlObjectMapper() throws Exception {
         this.roundtrip(new Log4jYamlObjectMapper());
     }
 
@@ -53,11 +53,11 @@ public class StackTraceElementMixInTest {
                 new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java", 123);
         final String s = mapper.writeValueAsString(expected);
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testLog4jXmlObjectMapper() throws Exception {
+    void testLog4jXmlObjectMapper() throws Exception {
         this.roundtrip(new Log4jXmlObjectMapper());
     }
 
@@ -66,7 +66,7 @@ public class StackTraceElementMixInTest {
     }
 
     @Test
-    public void testFromJsonWithSimpleModule() throws Exception {
+    void testFromJsonWithSimpleModule() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         final SimpleModule module = new SimpleModule();
         module.addDeserializer(StackTraceElement.class, new Log4jStackTraceElementDeserializer());
@@ -76,11 +76,11 @@ public class StackTraceElementMixInTest {
         final String s = this.aposToQuotes(
                 "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testFromJsonWithLog4jModule() throws Exception {
+    void testFromJsonWithLog4jModule() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         final boolean encodeThreadContextAsList = false;
         final SimpleModule module = new Log4jJsonModule(encodeThreadContextAsList, true, false, false);
@@ -91,6 +91,6 @@ public class StackTraceElementMixInTest {
         final String s = this.aposToQuotes(
                 "{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}");
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

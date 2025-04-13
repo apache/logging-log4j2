@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.DirectoryStream;
@@ -38,7 +39,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
-public class RollingAppenderOnStartupTest {
+class RollingAppenderOnStartupTest {
 
     private static final String SOURCE = "src/test/resources/__files";
     private static final String FILENAME = "onStartup.log";
@@ -49,7 +50,7 @@ public class RollingAppenderOnStartupTest {
     private static Path loggingPath;
 
     @BeforeAll
-    public static void setup() throws Exception {
+    static void setup() throws Exception {
         final Path target = loggingPath.resolve(FILENAME);
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.REPLACE_EXISTING);
         final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
@@ -70,7 +71,7 @@ public class RollingAppenderOnStartupTest {
 
     @Test
     @LoggerContextSource
-    public void performTest(final LoggerContext loggerContext) throws Exception {
+    void performTest(final LoggerContext loggerContext) throws Exception {
         boolean rolled = false;
         final Logger logger = loggerContext.getLogger(RollingAppenderOnStartupTest.class);
         for (int i = 3; i < 10; ++i) {
@@ -81,13 +82,14 @@ public class RollingAppenderOnStartupTest {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
                     final List<String> lines = Files.readAllLines(path);
-                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
+                    assertFalse(
+                            lines.isEmpty(), "No messages in " + path.toFile().getName());
                     assertTrue(
-                            "Missing message for " + path.toFile().getName(),
-                            lines.get(0).startsWith(PREFIX + "1"));
+                            lines.get(0).startsWith(PREFIX + "1"),
+                            "Missing message for " + path.toFile().getName());
                 }
             }
         }
-        assertTrue("File did not roll", rolled);
+        assertTrue(rolled, "File did not roll");
     }
 }

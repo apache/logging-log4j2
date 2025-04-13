@@ -43,7 +43,6 @@ class MongoDbAuthFailureIT {
         assertNotNull(database);
         final MongoCollection<Document> collection =
                 database.getCollection(getClass().getSimpleName());
-        ;
         assertNotNull(collection);
         final Document first = collection.find().first();
         assertNull(first);

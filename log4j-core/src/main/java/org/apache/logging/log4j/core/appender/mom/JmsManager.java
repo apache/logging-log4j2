@@ -42,10 +42,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Consider this class <b>private</b>; it is only <b>public</b> for access by integration tests.
  *
  * <p>
- * JMS connection and session manager. Can be used to access MessageProducer, MessageConsumer, and Message objects
- * involving a configured ConnectionFactory and Destination.
+ * JMS connection and destination manager. Uses a MessageProducer to send log events to a JMS Destination.
  * </p>
+ *
+ * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsManager}.
  */
+@Deprecated
 public class JmsManager extends AbstractManager {
 
     public static class JmsManagerConfiguration {

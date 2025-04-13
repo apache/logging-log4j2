@@ -16,8 +16,8 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,24 +25,24 @@ import org.junit.jupiter.api.Test;
 /**
  * Used to test Log4j 1 support.
  */
-public class ConsoleAppenderTest {
+class ConsoleAppenderTest {
 
     private ConsoleAppender consoleAppender;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         consoleAppender = new ConsoleAppender();
     }
 
     @Test
-    public void testFollow() {
+    void testFollow() {
         // Only really care that it compiles, behavior is secondary at this level.
         consoleAppender.setFollow(true);
         assertTrue(consoleAppender.getFollow());
     }
 
     @Test
-    public void testTarget() {
+    void testTarget() {
         // Only really care that it compiles, behavior is secondary at this level.
         consoleAppender.setTarget(ConsoleAppender.SYSTEM_OUT);
         assertEquals(ConsoleAppender.SYSTEM_OUT, consoleAppender.getTarget());

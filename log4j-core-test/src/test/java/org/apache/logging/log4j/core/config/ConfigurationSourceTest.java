@@ -81,7 +81,7 @@ public class ConfigurationSourceTest {
     }
 
     @Test
-    public void testLoadConfigurationSourceFromJarFile() throws Exception {
+    void testLoadConfigurationSourceFromJarFile() throws Exception {
         final Path jarFile = prepareJarConfigURL(tempDir);
         final URL jarConfigURL = new URL("jar:" + jarFile.toUri().toURL() + "!" + PATH_IN_JAR);
         final long expectedFdCount = getOpenFileDescriptorCount();

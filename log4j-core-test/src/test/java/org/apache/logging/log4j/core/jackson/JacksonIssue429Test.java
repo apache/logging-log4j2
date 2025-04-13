@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Layouts.Json.class)
-public class JacksonIssue429Test {
+@Tag("Layouts.Json")
+class JacksonIssue429Test {
 
     @SuppressWarnings("serial")
     static class Jackson429StackTraceElementDeserializer extends StdDeserializer<StackTraceElement> {
@@ -43,7 +43,7 @@ public class JacksonIssue429Test {
 
         @Override
         public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
-                throws IOException, JsonProcessingException {
+                throws IOException {
             jp.skipChildren();
             return new StackTraceElement("a", "b", "b", StackTraceBean.NUM);
         }
@@ -70,12 +70,12 @@ public class JacksonIssue429Test {
     }
 
     @Test
-    public void testStackTraceElementWithCustom() throws Exception {
+    void testStackTraceElementWithCustom() throws Exception {
         // first, via bean that contains StackTraceElement
         final StackTraceBean bean = MAPPER.readValue(aposToQuotes("{'Location':'foobar'}"), StackTraceBean.class);
-        Assert.assertNotNull(bean);
-        Assert.assertNotNull(bean.location);
-        Assert.assertEquals(StackTraceBean.NUM, bean.location.getLineNumber());
+        assertNotNull(bean);
+        assertNotNull(bean.location);
+        assertEquals(StackTraceBean.NUM, bean.location.getLineNumber());
 
         // and then directly, iff registered
         final ObjectMapper mapper = new ObjectMapper();
@@ -86,7 +86,7 @@ public class JacksonIssue429Test {
         final StackTraceElement elem = mapper.readValue(
                 aposToQuotes("{'class':'package.SomeClass','method':'someMethod','file':'SomeClass.java','line':123}"),
                 StackTraceElement.class);
-        Assert.assertNotNull(elem);
-        Assert.assertEquals(StackTraceBean.NUM, elem.getLineNumber());
+        assertNotNull(elem);
+        assertEquals(StackTraceBean.NUM, elem.getLineNumber());
     }
 }

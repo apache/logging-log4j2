@@ -38,34 +38,34 @@ import org.junitpioneer.jupiter.SetSystemProperty;
  * Tests the ScriptCondition class.
  */
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "js, javascript, groovy")
-public class ScriptConditionTest {
+class ScriptConditionTest {
 
     @Test
-    public void testConstructorDisallowsNullScript() {
+    void testConstructorDisallowsNullScript() {
         assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
     @Test
-    public void testConstructorDisallowsNullConfig() {
+    void testConstructorDisallowsNullConfig() {
         assertThrows(
                 NullPointerException.class,
                 () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
-    public void testCreateConditionReturnsNullForNullScript() {
+    void testCreateConditionReturnsNullForNullScript() {
         assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
     @Test
-    public void testCreateConditionDisallowsNullConfig() {
+    void testCreateConditionDisallowsNullConfig() {
         assertThrows(
                 NullPointerException.class,
                 () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
-    public void testSelectFilesToDelete() {
+    void testSelectFilesToDelete() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
@@ -78,7 +78,7 @@ public class ScriptConditionTest {
     }
 
     @Test
-    public void testSelectFilesToDelete2() {
+    void testSelectFilesToDelete2() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
@@ -101,7 +101,7 @@ public class ScriptConditionTest {
 
     @Test
     @Tag("groovy")
-    public void testSelectFilesToDelete3() {
+    void testSelectFilesToDelete3() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 

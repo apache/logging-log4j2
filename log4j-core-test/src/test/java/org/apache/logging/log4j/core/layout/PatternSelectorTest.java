@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class PatternSelectorTest {
+class PatternSelectorTest {
 
     public static class FauxLogger {
         public String formatEvent(final LogEvent event, final Layout<?> layout) {
@@ -38,7 +38,7 @@ public class PatternSelectorTest {
     LoggerContext ctx = LoggerContext.getContext();
 
     @Test
-    public void testMarkerPatternSelector() throws Exception {
+    void testMarkerPatternSelector() {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("FLOW", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
         final PatternSelector selector = MarkerPatternSelector.createSelector(
@@ -71,7 +71,7 @@ public class PatternSelectorTest {
     }
 
     @Test
-    public void testLevelPatternSelector() throws Exception {
+    void testLevelPatternSelector() {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("TRACE", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
         final PatternSelector selector =

@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -30,25 +30,25 @@ import org.junitpioneer.jupiter.SetEnvironmentVariable;
 /**
  * Tests system property condition processing.
  */
-public class EnvironmentArbiterTest {
+class EnvironmentArbiterTest {
 
     private static final String CONFIG = "log4j2-environmentArbiters.xml";
 
     @Test
     @SetEnvironmentVariable(key = "ENV", value = "prod")
     @LoggerContextSource(CONFIG)
-    public void prodTest(final LoggerContext loggerContext) throws Exception {
+    void prodTest(final LoggerContext loggerContext) {
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
+        assertInstanceOf(ListAppender.class, app);
     }
 
     @Test
     @SetEnvironmentVariable(key = "ENV", value = "dev")
     @LoggerContextSource(CONFIG)
-    public void devTest(final LoggerContext loggerContext) throws Exception {
+    void devTest(final LoggerContext loggerContext) {
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ConsoleAppender);
+        assertInstanceOf(ConsoleAppender.class, app);
     }
 }

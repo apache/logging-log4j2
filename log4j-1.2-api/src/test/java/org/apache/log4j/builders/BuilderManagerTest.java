@@ -26,7 +26,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.varia.StringMatchFilter;
 import org.junit.jupiter.api.Test;
 
-public class BuilderManagerTest {
+class BuilderManagerTest {
 
     /**
      * This test ensures that instantiation failures due to missing parameters
@@ -34,7 +34,7 @@ public class BuilderManagerTest {
      * <i>"instantiate by classname"</i> fallback mechanism for supported components.
      */
     @Test
-    public void testReturnInvalidValueOnError() {
+    void testReturnInvalidValueOnError() {
         final PropertiesConfiguration config = new PropertiesConfiguration(null, null);
         final BuilderManager manager = new BuilderManager();
         final Properties props = new Properties();

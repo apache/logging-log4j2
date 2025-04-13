@@ -49,7 +49,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class GelfLayoutTest {
+class GelfLayoutTest {
 
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
 
@@ -66,12 +66,12 @@ public class GelfLayoutTest {
     private static final String VALUE1 = "Value1";
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(configFactory);
     }
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(configFactory);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -254,47 +254,47 @@ public class GelfLayoutTest {
     }
 
     @Test
-    public void testLayoutGzipCompression() throws Exception {
+    void testLayoutGzipCompression() throws Exception {
         testCompressedLayout(CompressionType.GZIP, true, true, HOSTNAME, false, false);
     }
 
     @Test
-    public void testLayoutNoCompression() throws Exception {
+    void testLayoutNoCompression() throws Exception {
         testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, false);
     }
 
     @Test
-    public void testLayoutZlibCompression() throws Exception {
+    void testLayoutZlibCompression() throws Exception {
         testCompressedLayout(CompressionType.ZLIB, true, true, HOSTNAME, false, false);
     }
 
     @Test
-    public void testLayoutNoStacktrace() throws Exception {
+    void testLayoutNoStacktrace() throws Exception {
         testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false, false);
     }
 
     @Test
-    public void testLayoutNoThreadContext() throws Exception {
+    void testLayoutNoThreadContext() throws Exception {
         testCompressedLayout(CompressionType.OFF, true, false, HOSTNAME, false, false);
     }
 
     @Test
-    public void testLayoutNoHost() throws Exception {
+    void testLayoutNoHost() throws Exception {
         testCompressedLayout(CompressionType.OFF, true, true, null, false, false);
     }
 
     @Test
-    public void testLayoutNullDelimiter() throws Exception {
+    void testLayoutNullDelimiter() throws Exception {
         testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, true, false);
     }
 
     @Test
-    public void testLayoutNewLineDelimiter() throws Exception {
+    void testLayoutNewLineDelimiter() throws Exception {
         testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, true);
     }
 
     @Test
-    public void testFormatTimestamp() {
+    void testFormatTimestamp() {
         assertEquals("0", GelfLayout.formatTimestamp(0L).toString());
         assertEquals("1.000", GelfLayout.formatTimestamp(1000L).toString());
         assertEquals("1.001", GelfLayout.formatTimestamp(1001L).toString());
@@ -316,17 +316,17 @@ public class GelfLayoutTest {
     }
 
     @Test
-    public void testRequiresLocationPatternNotSet() {
+    void testRequiresLocationPatternNotSet() {
         testRequiresLocation(null, false);
     }
 
     @Test
-    public void testRequiresLocationPatternNotContainsLocation() {
+    void testRequiresLocationPatternNotContainsLocation() {
         testRequiresLocation("%m %n", false);
     }
 
     @Test
-    public void testRequiresLocationPatternContainsLocation() {
+    void testRequiresLocationPatternContainsLocation() {
         testRequiresLocation("%C %m %t", true);
     }
 }

@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class SimpleLiteralPatternConverterTest {
+class SimpleLiteralPatternConverterTest {
 
     @Test
-    public void testConvertBackslashes() {
+    void testConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, true);
         final String actual = literal(converter);
@@ -31,7 +31,7 @@ public class SimpleLiteralPatternConverterTest {
     }
 
     @Test
-    public void testDontConvertBackslashes() {
+    void testDontConvertBackslashes() {
         final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
         final LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, false);
         final String actual = literal(converter);

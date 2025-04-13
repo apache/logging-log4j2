@@ -35,7 +35,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jServletFilterTest {
+class Log4jServletFilterTest {
     @Mock(lenient = true) // because filterConfig is not used in testDestroy
     private FilterConfig filterConfig;
 
@@ -57,14 +57,14 @@ public class Log4jServletFilterTest {
     private Log4jServletFilter filter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         given(filterConfig.getServletContext()).willReturn(servletContext);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
         this.filter = new Log4jServletFilter();
     }
 
     @Test
-    public void testInitAndDestroy() throws Exception {
+    void testInitAndDestroy() throws Exception {
         this.filter.init(this.filterConfig);
 
         then(initializer).should().clearLoggerContext();
@@ -75,14 +75,14 @@ public class Log4jServletFilterTest {
     }
 
     @Test
-    public void testDestroy() {
+    void testDestroy() {
         assertThrows(IllegalStateException.class, () -> {
             this.filter.destroy();
         });
     }
 
     @Test
-    public void testDoFilterFirstTime() throws Exception {
+    void testDoFilterFirstTime() throws Exception {
         this.filter.init(this.filterConfig);
 
         then(initializer).should().clearLoggerContext();
@@ -102,7 +102,7 @@ public class Log4jServletFilterTest {
     }
 
     @Test
-    public void testDoFilterSecondTime() throws Exception {
+    void testDoFilterSecondTime() throws Exception {
         this.filter.init(this.filterConfig);
 
         then(initializer).should().clearLoggerContext();

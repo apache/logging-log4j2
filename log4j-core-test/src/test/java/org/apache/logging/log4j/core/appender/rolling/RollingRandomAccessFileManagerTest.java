@@ -20,13 +20,13 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.isEmpty;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.lastModified;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,19 +45,19 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the RollingRandomAccessFileManager class.
  */
-public class RollingRandomAccessFileManagerTest {
+class RollingRandomAccessFileManagerTest {
 
     /**
      * Test method for
      * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)}
      */
     @Test
-    public void testWrite_multiplesOfBufferSize() throws IOException {
+    void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
@@ -102,7 +102,7 @@ public class RollingRandomAccessFileManagerTest {
      * {@link org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager#writeBytes(byte[], int, int)} .
      */
     @Test
-    public void testWrite_dataExceedingBufferSize() throws IOException {
+    void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
@@ -144,7 +144,7 @@ public class RollingRandomAccessFileManagerTest {
     }
 
     @Test
-    public void testConfigurableBufferSize() throws IOException {
+    void testConfigurableBufferSize() throws IOException {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
@@ -183,7 +183,7 @@ public class RollingRandomAccessFileManagerTest {
     }
 
     @Test
-    public void testAppendDoesNotOverwriteExistingFile() throws IOException {
+    void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final boolean isAppend = true;
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
@@ -224,7 +224,7 @@ public class RollingRandomAccessFileManagerTest {
     }
 
     @Test
-    public void testFileTimeBasedOnSystemClockWhenAppendIsFalse() throws IOException {
+    void testFileTimeBasedOnSystemClockWhenAppendIsFalse() throws IOException {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         LockSupport.parkNanos(1000000); // 1 millisec
@@ -255,7 +255,7 @@ public class RollingRandomAccessFileManagerTest {
     }
 
     @Test
-    public void testFileTimeBasedOnFileModifiedTimeWhenAppendIsTrue() throws IOException {
+    void testFileTimeBasedOnFileModifiedTimeWhenAppendIsTrue() throws IOException {
         final File file = File.createTempFile("log4j2", "test");
         file.deleteOnExit();
         LockSupport.parkNanos(1000000); // 1 millisec
@@ -282,7 +282,7 @@ public class RollingRandomAccessFileManagerTest {
     }
 
     @Test
-    public void testRolloverRetainsFileAttributes() throws Exception {
+    void testRolloverRetainsFileAttributes() throws Exception {
 
         // Short-circuit if host doesn't support file attributes.
         if (!FileUtils.isFilePosixAttributeViewSupported()) {

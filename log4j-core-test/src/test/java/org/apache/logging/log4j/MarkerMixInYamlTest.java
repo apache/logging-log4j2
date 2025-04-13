@@ -18,11 +18,10 @@ package org.apache.logging.log4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.jackson.Log4jYamlObjectMapper;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 
-@Category(Layouts.Yaml.class)
-public class MarkerMixInYamlTest extends MarkerMixInTest {
+@Tag("Layouts.Yaml")
+class MarkerMixInYamlTest extends MarkerMixInTest {
 
     @Override
     protected ObjectMapper newObjectMapper() {

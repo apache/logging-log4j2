@@ -28,10 +28,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class MarkerFilterTest {
+class MarkerFilterTest {
 
     @Test
-    public void testMarkers() {
+    void testMarkers() {
         final Marker parent = MarkerManager.getMarker("Parent");
         final Marker child = MarkerManager.getMarker("Child").setParents(parent);
         final Marker grandChild = MarkerManager.getMarker("GrandChild").setParents(child);
@@ -40,9 +40,9 @@ public class MarkerFilterTest {
         MarkerFilter filter = MarkerFilter.createFilter("Parent", null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, null, stranger, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, null, stranger, (Object) null, null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, (Object) null, null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, (Object) null, null));
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setMarker(grandChild) //

@@ -31,22 +31,22 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests ReusableSimpleMessage.
  */
-public class ReusableSimpleMessageTest {
+class ReusableSimpleMessageTest {
 
     @Test
-    public void testSet_InitializesFormattedMessage() throws Exception {
+    void testSet_InitializesFormattedMessage() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
     }
 
     @Test
-    public void testGetFormattedMessage_InitiallyStringNull() throws Exception {
+    void testGetFormattedMessage_InitiallyStringNull() {
         assertEquals("null", new ReusableSimpleMessage().getFormattedMessage());
     }
 
     @Test
-    public void testGetFormattedMessage_ReturnsLatestSetString() throws Exception {
+    void testGetFormattedMessage_ReturnsLatestSetString() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormattedMessage());
@@ -57,12 +57,12 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testGetFormat_InitiallyStringNull() throws Exception {
+    void testGetFormat_InitiallyStringNull() {
         assertNull(new ReusableSimpleMessage().getFormat());
     }
 
     @Test
-    public void testGetFormat_ReturnsLatestSetString() throws Exception {
+    void testGetFormat_ReturnsLatestSetString() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertEquals("abc", msg.getFormat());
@@ -73,12 +73,12 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testGetParameters_InitiallyReturnsEmptyArray() throws Exception {
+    void testGetParameters_InitiallyReturnsEmptyArray() {
         assertArrayEquals(Constants.EMPTY_OBJECT_ARRAY, new ReusableSimpleMessage().getParameters());
     }
 
     @Test
-    public void testGetParameters_ReturnsEmptyArrayAfterMessageSet() throws Exception {
+    void testGetParameters_ReturnsEmptyArrayAfterMessageSet() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertArrayEquals(Constants.EMPTY_OBJECT_ARRAY, msg.getParameters());
@@ -87,12 +87,12 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testGetThrowable_InitiallyReturnsNull() throws Exception {
+    void testGetThrowable_InitiallyReturnsNull() {
         assertNull(new ReusableSimpleMessage().getThrowable());
     }
 
     @Test
-    public void testGetThrowable_ReturnsNullAfterMessageSet() throws Exception {
+    void testGetThrowable_ReturnsNullAfterMessageSet() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
         assertNull(msg.getThrowable());
@@ -101,7 +101,7 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testFormatTo_InitiallyWritesNull() throws Exception {
+    void testFormatTo_InitiallyWritesNull() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);
@@ -109,7 +109,7 @@ public class ReusableSimpleMessageTest {
     }
 
     @Test
-    public void testFormatTo_WritesLatestSetString() throws Exception {
+    void testFormatTo_WritesLatestSetString() {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         final StringBuilder sb = new StringBuilder();
         msg.formatTo(sb);

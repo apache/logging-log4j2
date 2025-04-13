@@ -16,51 +16,51 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
-public class NoSqlAppenderTest {
+@ExtendWith(MockitoExtension.class)
+class NoSqlAppenderTest {
 
     @Mock
     private NoSqlProvider<?> provider;
 
     @Test
-    public void testNoProvider() {
+    void testNoProvider() {
         final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, null);
 
-        assertNull("The appender should be null.", appender);
+        assertNull(appender, "The appender should be null.");
     }
 
     @Test
-    public void testProvider() {
+    void testProvider() {
         final NoSqlAppender appender = NoSqlAppender.createAppender("myName01", null, null, null, provider);
 
-        assertNotNull("The appender should not be null.", appender);
+        assertNotNull(appender, "The appender should not be null.");
         assertEquals(
-                "The toString value is not correct.",
                 "myName01{ manager=noSqlManager{ description=myName01, bufferSize=0, provider=" + provider + " } }",
-                appender.toString());
+                appender.toString(),
+                "The toString value is not correct.");
 
         appender.stop();
     }
 
     @Test
-    public void testProviderBuffer() {
+    void testProviderBuffer() {
         final NoSqlAppender appender = NoSqlAppender.createAppender("anotherName02", null, null, "25", provider);
 
-        assertNotNull("The appender should not be null.", appender);
+        assertNotNull(appender, "The appender should not be null.");
         assertEquals(
-                "The toString value is not correct.",
                 "anotherName02{ manager=noSqlManager{ description=anotherName02, bufferSize=25, provider=" + provider
                         + " } }",
-                appender.toString());
+                appender.toString(),
+                "The toString value is not correct.");
 
         appender.stop();
     }

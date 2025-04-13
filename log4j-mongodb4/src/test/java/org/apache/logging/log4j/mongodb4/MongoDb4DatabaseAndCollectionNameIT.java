@@ -14,19 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.mongodb4;
 
-// This class is here to allow {@link SystemClock}, {@link SystemMillisClock}
-// to compile. It will not be copied into the log4j-core module.
+import com.mongodb.client.MongoClient;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
-/**
- * Provides the time stamp used in log events.
- */
-public interface Clock {
-    /**
-     * Returns the time in milliseconds since the epoch.
-     *
-     * @return the time in milliseconds since the epoch
-     */
-    long currentTimeMillis();
+@UsingMongoDb4
+@LoggerContextSource("MongoDb4DatabaseAndCollectionNameIT.xml")
+// Print debug status logger output upon failure
+@UsingStatusListener
+class MongoDb4DatabaseAndCollectionNameIT extends AbstractMongoDb4CappedIT {
+
+    @Test
+    @Override
+    protected void test(LoggerContext ctx, MongoClient mongoClient) {
+        super.test(ctx, mongoClient);
+    }
 }

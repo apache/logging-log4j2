@@ -22,27 +22,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MDCTestCase {
+class MDCTestCase {
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MDC.clear();
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MDC.clear();
     }
 
     @Test
-    public void testPut() {
+    void testPut() {
         MDC.put("key", "some value");
         assertEquals("some value", MDC.get("key"));
         assertEquals(1, MDC.getContext().size());
     }
 
     @Test
-    public void testRemoveLastKey() {
+    void testRemoveLastKey() {
         MDC.put("key", "some value");
         MDC.remove("key");
     }

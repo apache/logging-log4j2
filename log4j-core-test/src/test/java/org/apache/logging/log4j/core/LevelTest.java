@@ -34,7 +34,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-Level.xml")
-public class LevelTest {
+class LevelTest {
 
     private final ListAppender listAll;
     private final ListAppender listTrace;
@@ -77,7 +77,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testLevelLogging(final LoggerContext context) {
+    void testLevelLogging(final LoggerContext context) {
         final Marker marker = MarkerManager.getMarker("marker");
         final Message msg = new ObjectMessage("msg");
         final Throwable t = new Throwable("test");

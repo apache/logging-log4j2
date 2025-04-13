@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,10 +40,10 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Issue;
 
-public class RollingFileManagerTest {
+class RollingFileManagerTest {
 
     /**
      * Test the RollingFileManager with a custom DirectFileRolloverStrategy
@@ -51,7 +51,7 @@ public class RollingFileManagerTest {
      * @throws IOException
      */
     @Test
-    public void testCustomDirectFileRolloverStrategy() throws IOException {
+    void testCustomDirectFileRolloverStrategy() throws IOException {
         class CustomDirectFileRolloverStrategy extends AbstractRolloverStrategy implements DirectFileRolloverStrategy {
             final File file;
 
@@ -105,7 +105,7 @@ public class RollingFileManagerTest {
      * Test that a synchronous action failure does not cause a rollover. Addresses Issue #1445.
      */
     @Test
-    public void testSynchronousActionFailure() throws IOException {
+    void testSynchronousActionFailure() throws IOException {
         class FailingSynchronousAction extends AbstractAction {
             @Override
             public boolean execute() {
@@ -158,7 +158,7 @@ public class RollingFileManagerTest {
 
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/1645")
-    public void testCreateParentDir() {
+    void testCreateParentDir() {
         final Configuration configuration = new NullConfiguration();
         final RollingFileManager manager = RollingFileManager.getFileManager(
                 null,
@@ -192,7 +192,7 @@ public class RollingFileManagerTest {
 
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/2592")
-    public void testRolloverOfDeletedFile() throws IOException {
+    void testRolloverOfDeletedFile() throws IOException {
         final File file = File.createTempFile("testRolloverOfDeletedFile", "log");
         file.deleteOnExit();
         final String testContent = "Test";

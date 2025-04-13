@@ -46,7 +46,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @UsingStatusListener
-public class RollingAppenderSizeTest {
+class RollingAppenderSizeTest {
 
     private static long DEFAULT_SHUTDOWN_MS = 500;
 
@@ -90,7 +90,7 @@ public class RollingAppenderSizeTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testIsCreateOnDemand(final String fileExtension, final boolean createOnDemand) throws IOException {
+    void testIsCreateOnDemand(final String fileExtension, final boolean createOnDemand) throws IOException {
         final Path extensionFolder = loggingPath.resolve(fileExtension);
         RollingFileAppender appender = null;
         try {
@@ -106,7 +106,7 @@ public class RollingAppenderSizeTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testAppender(final String fileExtension, final boolean createOnDemand) throws Exception {
+    void testAppender(final String fileExtension, final boolean createOnDemand) throws Exception {
         final Path extensionFolder = loggingPath.resolve(fileExtension);
         RollingFileAppender appender = null;
         try {

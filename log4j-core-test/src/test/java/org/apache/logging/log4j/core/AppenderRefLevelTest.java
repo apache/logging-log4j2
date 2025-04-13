@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-reference-level.xml")
-public class AppenderRefLevelTest {
+class AppenderRefLevelTest {
 
     private final ListAppender app1;
     private final ListAppender app2;
@@ -49,7 +49,7 @@ public class AppenderRefLevelTest {
     Marker testMarker = MarkerManager.getMarker("TEST");
 
     @Test
-    public void logger1() {
+    void logger1() {
         logger1.traceEntry();
         logger1.debug("debug message");
         logger1.error("Test Message");
@@ -63,7 +63,7 @@ public class AppenderRefLevelTest {
     }
 
     @Test
-    public void logger2() {
+    void logger2() {
         logger2.traceEntry();
         logger2.debug("debug message");
         logger2.error("Test Message");
@@ -71,13 +71,13 @@ public class AppenderRefLevelTest {
         logger2.warn("warn Message");
         logger2.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertEquals(events.size(), 2, "Incorrect number of events. Expected 2, actual " + events.size());
+        assertEquals(2, events.size(), "Incorrect number of events. Expected 2, actual " + events.size());
         events = app2.getEvents();
-        assertEquals(events.size(), 4, "Incorrect number of events. Expected 4, actual " + events.size());
+        assertEquals(4, events.size(), "Incorrect number of events. Expected 4, actual " + events.size());
     }
 
     @Test
-    public void logger3() {
+    void logger3() {
         logger3.traceEntry();
         logger3.debug(testMarker, "debug message");
         logger3.error("Test Message");

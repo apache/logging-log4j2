@@ -145,7 +145,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
     /**
      * Determine if the LogEvent should be processed or ignored.
      * @param event The LogEvent.
-     * @return true if the LogEvent should be processed.
+     * @return {@code true} if the event is filtered and should be ignored; otherwise, {@code false} if
+     *            it should be processed
      */
     @Override
     public boolean isFiltered(final LogEvent event) {

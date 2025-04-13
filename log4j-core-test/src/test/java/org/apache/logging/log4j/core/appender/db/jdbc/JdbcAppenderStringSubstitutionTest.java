@@ -41,7 +41,7 @@ public class JdbcAppenderStringSubstitutionTest {
             new LoggerContextRule("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-jdbc-string-substitution.xml");
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         final JdbcAppender appender = rule.getAppender("databaseAppender", JdbcAppender.class);
         Assert.assertNotNull(appender);
         final JdbcDatabaseManager manager = appender.getManager();

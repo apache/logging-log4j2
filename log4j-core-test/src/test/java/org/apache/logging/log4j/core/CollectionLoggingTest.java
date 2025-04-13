@@ -44,7 +44,7 @@ public class CollectionLoggingTest {
 
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
-    public void testSystemProperties(final LoggerContext context) {
+    void testSystemProperties(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         // logger.error(new MapMessage(System.getProperties()));
@@ -53,7 +53,7 @@ public class CollectionLoggingTest {
 
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
-    public void testSimpleMap(final LoggerContext context) {
+    void testSimpleMap(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(System.getProperties());
         final Map<String, String> map = new HashMap<>();
@@ -65,14 +65,14 @@ public class CollectionLoggingTest {
     }
 
     @Test
-    public void testNetworkInterfaces(final LoggerContext context) throws SocketException {
+    void testNetworkInterfaces(final LoggerContext context) throws SocketException {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(NetworkInterface.getNetworkInterfaces());
         // TODO: some assertions
     }
 
     @Test
-    public void testAvailableCharsets(final LoggerContext context) {
+    void testAvailableCharsets(final LoggerContext context) {
         final Logger logger = context.getLogger(CollectionLoggingTest.class.getName());
         logger.error(Charset.availableCharsets());
         // TODO: some assertions

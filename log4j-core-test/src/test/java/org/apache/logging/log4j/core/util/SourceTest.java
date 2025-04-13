@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -30,17 +31,17 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link Source}.
  */
-public class SourceTest {
+class SourceTest {
 
     @Test
-    public void testEqualityFile() {
+    void testEqualityFile() {
         assertEquals(new Source(new File("foo")), new Source(new File("foo")));
         assertEquals(new Source(new File("foo")), new Source(new File("./foo")));
         assertEquals(new Source(new File("foo.txt")), new Source(new File("./foo.txt")));
     }
 
     @Test
-    public void testEqualityPath() {
+    void testEqualityPath() {
         assertEquals(new Source(Paths.get("foo")), new Source(Paths.get("foo")));
         assertEquals(new Source(Paths.get("foo")), new Source(Paths.get("./foo")));
         assertEquals(new Source(Paths.get("foo.txt")), new Source(Paths.get("./foo.txt")));
@@ -48,14 +49,14 @@ public class SourceTest {
 
     @Test
     @Disabled("File URI is broken.")
-    public void testEqualityURIFile() {
+    void testEqualityURIFile() {
         assertEquals(
                 new Source(Paths.get("foo").toUri()),
                 new Source(Paths.get("./foo").toUri()));
     }
 
     @Test
-    public void testEqualityURIHttp() {
+    void testEqualityURIHttp() {
         assertEquals(
                 new Source(URI.create("http://www.apache.org/index.html")),
                 new Source(URI.create("http://www.apache.org/index.html")));
@@ -66,13 +67,17 @@ public class SourceTest {
                 new Source(URI.create("http://www.apache.org/./././.")));
     }
 
-    public void testEqualityURLFile() throws MalformedURLException {
+    @Test
+    @Disabled
+    void testEqualityURLFile() throws MalformedURLException {
         assertEquals(
                 new Source(Paths.get("foo").toUri().toURL()),
                 new Source(Paths.get("./foo").toUri().toURL()));
     }
 
-    public void testEqualityURLHttp() throws MalformedURLException {
+    @Test
+    @Disabled
+    void testEqualityURLHttp() throws MalformedURLException {
         assertEquals(
                 new Source(URI.create("http://www.apache.org/index.html").toURL()),
                 new Source(URI.create("http://www.apache.org/index.html").toURL()));
@@ -84,7 +89,9 @@ public class SourceTest {
                 new Source(URI.create("http://www.apache.org/./././.").toURL()));
     }
 
-    public void testEqualityURLHttps() throws MalformedURLException {
+    @Test
+    @Disabled
+    void testEqualityURLHttps() throws MalformedURLException {
         assertEquals(
                 new Source(URI.create("https://www.apache.org/index.html").toURL()),
                 new Source(URI.create("https://www.apache.org/index.html").toURL()));
@@ -97,7 +104,7 @@ public class SourceTest {
     }
 
     @Test
-    public void testFileConstructor() {
+    void testFileConstructor() {
         final Path path = Paths.get("foo");
         final URI uri = path.toUri();
         final File file = path.toFile();
@@ -109,7 +116,7 @@ public class SourceTest {
     }
 
     @Test
-    public void testPathStringConstructor() {
+    void testPathStringConstructor() {
         final Path path = Paths.get("foo");
         final URI uri = path.toUri();
         final File file = path.toFile();
@@ -120,7 +127,8 @@ public class SourceTest {
         assertEquals(uri, source.getURI());
     }
 
-    public void testPathURIFileConstructor() {
+    @Test
+    void testPathURIFileConstructor() {
         final Path path = Paths.get(URI.create("file:///C:/foo"));
         final URI uri = path.toUri();
         final File file = path.toFile();
@@ -132,7 +140,7 @@ public class SourceTest {
     }
 
     @Test
-    public void testURIConstructor() throws MalformedURLException {
+    void testURIConstructor() {
         final Path path = Paths.get("foo");
         final URI uri = path.toUri();
         final File file = path.toFile();
@@ -143,7 +151,7 @@ public class SourceTest {
     }
 
     @Test
-    public void testURIFileConstructor() throws MalformedURLException {
+    void testURIFileConstructor() {
         final URI uri = URI.create("file:///C:/foo");
         final Path path = Paths.get(uri);
         final File file = path.toFile();
@@ -153,23 +161,23 @@ public class SourceTest {
     }
 
     @Test
-    public void testURIHttpConstructor() throws MalformedURLException {
+    void testURIHttpConstructor() {
         final URI uri = URI.create("http://www.apache.org");
         final Source source = new Source(uri);
-        assertEquals(null, source.getFile());
+        assertNull(source.getFile());
         assertEquals(uri.toString(), source.getLocation());
     }
 
     @Test
-    public void testURIHttpsConstructor() throws MalformedURLException {
+    void testURIHttpsConstructor() {
         final URI uri = URI.create("https://www.apache.org");
         final Source source = new Source(uri);
-        assertEquals(null, source.getFile());
+        assertNull(source.getFile());
         assertEquals(uri.toString(), source.getLocation());
     }
 
     @Test
-    public void testURLConstructor() throws MalformedURLException {
+    void testURLConstructor() throws MalformedURLException {
         final Path path = Paths.get("foo");
         final File file = path.toFile();
         final URI uri = path.toUri();

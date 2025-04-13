@@ -29,16 +29,16 @@ import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class MutableThreadContextStackTest {
+class MutableThreadContextStackTest {
 
     @Test
-    public void testEmptyIfConstructedWithEmptyList() {
+    void testEmptyIfConstructedWithEmptyList() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>());
         assertTrue(stack.isEmpty());
     }
 
     @Test
-    public void testConstructorCopiesListContents() {
+    void testConstructorCopiesListContents() {
         final List<String> initial = Arrays.asList("a", "b", "c");
         final MutableThreadContextStack stack = new MutableThreadContextStack(initial);
         assertFalse(stack.isEmpty());
@@ -46,7 +46,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testPushAndAddIncreaseStack() {
+    void testPushAndAddIncreaseStack() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>());
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -57,7 +57,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testPeekReturnsLastAddedItem() {
+    void testPeekReturnsLastAddedItem() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>());
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -72,7 +72,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testPopRemovesLastAddedItem() {
+    void testPopRemovesLastAddedItem() {
         final MutableThreadContextStack stack = createStack();
         assertEquals(3, stack.getDepth());
 
@@ -90,7 +90,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>());
         stack.clear();
         assertTrue(stack.isEmpty());
@@ -102,7 +102,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testTrim() {
+    void testTrim() {
         final MutableThreadContextStack stack = createStack();
 
         stack.trim(1);
@@ -111,7 +111,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testCopy() {
+    void testCopy() {
         final MutableThreadContextStack stack = createStack();
 
         final ThreadContextStack copy = stack.copy();
@@ -141,7 +141,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testClear() {
+    void testClear() {
         final MutableThreadContextStack stack = createStack();
 
         stack.clear();
@@ -149,7 +149,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testEqualsVsSameKind() {
+    void testEqualsVsSameKind() {
         final MutableThreadContextStack stack1 = createStack();
         final MutableThreadContextStack stack2 = createStack();
         assertEquals(stack1, stack1);
@@ -159,7 +159,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testHashCodeVsSameKind() {
+    void testHashCodeVsSameKind() {
         final MutableThreadContextStack stack1 = createStack();
         final MutableThreadContextStack stack2 = createStack();
         assertEquals(stack1.hashCode(), stack2.hashCode());
@@ -180,7 +180,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testContains() {
+    void testContains() {
         final MutableThreadContextStack stack = createStack();
 
         assertTrue(stack.contains("msg1"));
@@ -189,7 +189,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testIteratorReturnsInListOrderNotStackOrder() {
+    void testIteratorReturnsInListOrderNotStackOrder() {
         final MutableThreadContextStack stack = createStack();
 
         final Iterator<String> iter = stack.iterator();
@@ -203,7 +203,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testToArray() {
+    void testToArray() {
         final MutableThreadContextStack stack = createStack();
 
         final String[] expecteds = {"msg1", "msg2", "msg3"};
@@ -211,7 +211,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testToArrayTArray() {
+    void testToArrayTArray() {
         final MutableThreadContextStack stack = createStack();
 
         final String[] expecteds = {"msg1", "msg2", "msg3"};
@@ -221,7 +221,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         final MutableThreadContextStack stack = createStack();
         assertTrue(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
 
@@ -237,14 +237,14 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testContainsAll() {
+    void testContainsAll() {
         final MutableThreadContextStack stack = createStack();
 
         assertTrue(stack.containsAll(Arrays.asList("msg1", "msg2", "msg3")));
     }
 
     @Test
-    public void testAddAll() {
+    void testAddAll() {
         final MutableThreadContextStack stack = createStack();
 
         stack.addAll(Arrays.asList("msg4", "msg5"));
@@ -257,7 +257,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testRemoveAll() {
+    void testRemoveAll() {
         final MutableThreadContextStack stack = createStack();
 
         stack.removeAll(Arrays.asList("msg1", "msg3"));
@@ -268,7 +268,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testRetainAll() {
+    void testRetainAll() {
         final MutableThreadContextStack stack = createStack();
 
         stack.retainAll(Arrays.asList("msg1", "msg3"));
@@ -279,7 +279,7 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testToStringShowsListContents() {
+    void testToStringShowsListContents() {
         final MutableThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>());
         assertEquals("[]", stack.toString());
 
@@ -293,13 +293,13 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testIsFrozenIsFalseByDefault() {
+    void testIsFrozenIsFalseByDefault() {
         assertFalse(new MutableThreadContextStack().isFrozen());
         assertFalse(createStack().isFrozen());
     }
 
     @Test
-    public void testIsFrozenIsTrueAfterCallToFreeze() {
+    void testIsFrozenIsTrueAfterCallToFreeze() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         assertFalse(stack.isFrozen());
         stack.freeze();
@@ -307,63 +307,63 @@ public class MutableThreadContextStackTest {
     }
 
     @Test
-    public void testAddAllOnFrozenStackThrowsException() {
+    void testAddAllOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.addAll(Arrays.asList("a", "b", "c")));
     }
 
     @Test
-    public void testAddOnFrozenStackThrowsException() {
+    void testAddOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.add("a"));
     }
 
     @Test
-    public void testClearOnFrozenStackThrowsException() {
+    void testClearOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, stack::clear);
     }
 
     @Test
-    public void testPopOnFrozenStackThrowsException() {
+    void testPopOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, stack::pop);
     }
 
     @Test
-    public void testPushOnFrozenStackThrowsException() {
+    void testPushOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.push("a"));
     }
 
     @Test
-    public void testRemoveOnFrozenStackThrowsException() {
+    void testRemoveOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.remove("a"));
     }
 
     @Test
-    public void testRemoveAllOnFrozenStackThrowsException() {
+    void testRemoveAllOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.removeAll(Arrays.asList("a", "b")));
     }
 
     @Test
-    public void testRetainAllOnFrozenStackThrowsException() {
+    void testRetainAllOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.retainAll(Arrays.asList("a", "b")));
     }
 
     @Test
-    public void testTrimOnFrozenStackThrowsException() {
+    void testTrimOnFrozenStackThrowsException() {
         final MutableThreadContextStack stack = new MutableThreadContextStack();
         stack.freeze();
         assertThrows(UnsupportedOperationException.class, () -> stack.trim(3));

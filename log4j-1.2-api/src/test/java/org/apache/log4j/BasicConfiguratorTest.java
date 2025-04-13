@@ -22,34 +22,34 @@ import org.junit.jupiter.api.Test;
 /**
  * Test {@link BasicConfigurator}.
  */
-public class BasicConfiguratorTest {
+class BasicConfiguratorTest {
 
     @Test
-    public void testConfigure() {
+    void testConfigure() {
         // TODO More...
         BasicConfigurator.configure();
     }
 
     @Test
-    public void testResetConfiguration() {
+    void testResetConfiguration() {
         // TODO More...
         BasicConfigurator.resetConfiguration();
     }
 
     @Test
-    public void testConfigureAppender() {
+    void testConfigureAppender() {
         BasicConfigurator.configure(null);
         // TODO More...
     }
 
     @Test
-    public void testConfigureConsoleAppender() {
+    void testConfigureConsoleAppender() {
         // TODO What to do? Map to Log4j 2 Appender deeper in the code?
         BasicConfigurator.configure(new ConsoleAppender());
     }
 
     @Test
-    public void testConfigureNullAppender() {
+    void testConfigureNullAppender() {
         // The NullAppender name is null and we do not want an NPE when the name is used as a key in a
         // ConcurrentHashMap.
         BasicConfigurator.configure(NullAppender.getNullAppender());

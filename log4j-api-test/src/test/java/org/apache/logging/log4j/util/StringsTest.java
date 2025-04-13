@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@linkStrings}.
  */
-public class StringsTest {
+class StringsTest {
 
     @Test
-    public void testConcat() {
+    void testConcat() {
         assertEquals("ab", Strings.concat("a", "b"));
         assertEquals("a", Strings.concat("a", ""));
         assertEquals("a", Strings.concat("a", null));
@@ -44,13 +44,13 @@ public class StringsTest {
      * A sanity test to make sure a typo does not mess up {@link Strings#EMPTY}.
      */
     @Test
-    public void testEMPTY() {
+    void testEMPTY() {
         assertEquals("", Strings.EMPTY);
         assertEquals(0, Strings.EMPTY.length());
     }
 
     @Test
-    public void testIsBlank() {
+    void testIsBlank() {
         assertTrue(Strings.isBlank(null));
         assertTrue(Strings.isBlank(""));
         assertTrue(Strings.isBlank(" "));
@@ -61,7 +61,7 @@ public class StringsTest {
     }
 
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         assertTrue(Strings.isEmpty(null));
         assertTrue(Strings.isEmpty(""));
         assertFalse(Strings.isEmpty(" "));
@@ -69,7 +69,7 @@ public class StringsTest {
     }
 
     @Test
-    public void testJoin() {
+    void testJoin() {
         assertNull(Strings.join((Iterable<?>) null, '.'));
         assertNull(Strings.join((Iterator<?>) null, '.'));
         assertEquals("", Strings.join((Collections.emptyList()), '.'));
@@ -85,7 +85,7 @@ public class StringsTest {
     }
 
     @Test
-    public void splitList() {
+    void splitList() {
         String[] list = Strings.splitList("1, 2, 3");
         assertEquals(3, list.length);
         list = Strings.splitList("");
@@ -95,12 +95,12 @@ public class StringsTest {
     }
 
     @Test
-    public void testQuote() {
+    void testQuote() {
         assertEquals("'Q'", Strings.quote("Q"));
     }
 
     @Test
-    public void testToLowerCase() {
+    void testToLowerCase() {
         assertEquals("a", Strings.toRootLowerCase("A"));
         assertEquals("a", Strings.toRootLowerCase("a"));
     }

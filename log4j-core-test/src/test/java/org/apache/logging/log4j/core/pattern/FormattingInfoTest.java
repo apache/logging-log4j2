@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Testing FormattingInfo.
  */
-public class FormattingInfoTest {
+class FormattingInfoTest {
 
     @Test
-    public void testFormatTruncateFromBeginning() {
+    void testFormatTruncateFromBeginning() {
         final StringBuilder message = new StringBuilder("Hello, world");
 
         final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
@@ -36,7 +36,7 @@ public class FormattingInfoTest {
     }
 
     @Test
-    public void testFormatTruncateFromEnd() {
+    void testFormatTruncateFromEnd() {
         final StringBuilder message = new StringBuilder("Hello, world");
 
         final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
@@ -46,7 +46,7 @@ public class FormattingInfoTest {
     }
 
     @Test
-    public void testFormatTruncateFromEndGivenFieldStart() {
+    void testFormatTruncateFromEndGivenFieldStart() {
         final StringBuilder message =
                 new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
 

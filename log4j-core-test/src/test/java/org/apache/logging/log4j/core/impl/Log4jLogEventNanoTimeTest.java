@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,32 +39,32 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class Log4jLogEventNanoTimeTest {
+class Log4jLogEventNanoTimeTest {
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "NanoTimeToFileTest.xml");
     }
 
     @AfterAll
-    public static void afterClass() {
+    static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
     @Test
-    public void testLog4jLogEventUsesNanoTimeClock() throws Exception {
+    void testLog4jLogEventUsesNanoTimeClock() throws Exception {
         final File file = new File("target", "NanoTimeToFileTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final long before = System.nanoTime();
         log.info("Use actual System.nanoTime()");
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof SystemNanoClock, "using SystemNanoClock");
+        assertInstanceOf(SystemNanoClock.class, Log4jLogEvent.getNanoClock(), "using SystemNanoClock");
 
         final long DUMMYNANOTIME = 123;
         Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
         log.info("Use dummy nano clock");
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock, "using SystemNanoClock");
+        assertInstanceOf(DummyNanoClock.class, Log4jLogEvent.getNanoClock(), "using SystemNanoClock");
 
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 

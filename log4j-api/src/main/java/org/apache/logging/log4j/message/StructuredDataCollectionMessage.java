@@ -23,6 +23,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
  * A collection of StructuredDataMessages.
+ * @since 2.9.0
  */
 public class StructuredDataCollectionMessage
         implements StringBuilderFormattable, MessageCollectionMessage<StructuredDataMessage> {

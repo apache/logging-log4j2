@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 /**
  * <em>Consider this class private.</em>
+ * @since 2.3
  */
 @InternalApi
 public final class Chars {
@@ -34,7 +35,10 @@ public final class Chars {
     /** Line Feed. */
     public static final char LF = '\n';
 
-    /** NUL. */
+    /**
+     * NUL.
+     * @since 2.11.0
+     */
     public static final char NUL = 0;
 
     /** Single Quote [']. */
@@ -51,6 +55,7 @@ public final class Chars {
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid
+     * @since 2.8.2
      */
     public static char getUpperCaseHex(final int digit) {
         if (digit < 0 || digit >= 16) {
@@ -64,6 +69,7 @@ public final class Chars {
      *
      * @param digit a number 0 - 15
      * @return the hex character for that digit or '\0' if invalid
+     * @since 2.8.2
      */
     public static char getLowerCaseHex(final int digit) {
         if (digit < 0 || digit >= 16) {

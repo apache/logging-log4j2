@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spi;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Convenience class to be used as an {@link ExtendedLogger} registry by {@code LoggerContext} implementations.
+ * @since 2.6
  */
 @NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
@@ -52,6 +53,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Data structure contract for the internal storage of admitted loggers.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
@@ -68,6 +70,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link ConcurrentHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
@@ -93,6 +96,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * {@link MapFactory} implementation using {@link WeakHashMap}.
      *
      * @param <T> subtype of {@code ExtendedLogger}
+     * @since 2.6
      * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
     @Deprecated
@@ -171,19 +175,19 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers() {
-        return getLoggers(new ArrayList<>());
+        readLock.lock();
+        try {
+            return loggerByMessageFactoryByName.values().stream()
+                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
+                    .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {
         requireNonNull(destination, "destination");
-        readLock.lock();
-        try {
-            loggerByMessageFactoryByName.values().stream()
-                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
-                    .forEach(destination::add);
-        } finally {
-            readLock.unlock();
-        }
+        destination.addAll(getLoggers());
         return destination;
     }
 

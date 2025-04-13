@@ -32,7 +32,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Test;
 
-public class TraceLoggingTest extends AbstractLogger {
+class TraceLoggingTest extends AbstractLogger {
     static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
     private int charSeqCount;
     private int objectCount;
@@ -323,7 +323,7 @@ public class TraceLoggingTest extends AbstractLogger {
     }
 
     @Test
-    public void testTraceEntryExit() {
+    void testTraceEntryExit() {
         currentLevel = Level.TRACE;
         final FlowMessageFactory fact = new DefaultFlowMessageFactory();
 
@@ -348,7 +348,7 @@ public class TraceLoggingTest extends AbstractLogger {
     }
 
     @Test
-    public void testTraceEntryMessage() {
+    void testTraceEntryMessage() {
         currentLevel = Level.TRACE;
         final FlowMessageFactory fact = new DefaultFlowMessageFactory();
 

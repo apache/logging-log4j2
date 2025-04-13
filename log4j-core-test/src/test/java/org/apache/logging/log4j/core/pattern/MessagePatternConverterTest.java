@@ -31,10 +31,10 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
 
-public class MessagePatternConverterTest {
+class MessagePatternConverterTest {
 
     @Test
-    public void testPattern() {
+    void testPattern() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
         Message msg = new SimpleMessage("Hello!");
         LogEvent event = Log4jLogEvent.newBuilder() //
@@ -65,7 +65,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testPatternAndParameterizedMessageDateLookup() {
+    void testPatternAndParameterizedMessageDateLookup() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
         final Message msg = new ParameterizedMessage("${date:now:buhu}");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -79,7 +79,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testDefaultDisabledLookup() {
+    void testDefaultDisabledLookup() {
         final Configuration config =
                 new DefaultConfigurationBuilder().addProperty("foo", "bar").build(true);
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
@@ -95,7 +95,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testDisabledLookup() {
+    void testDisabledLookup() {
         final Configuration config =
                 new DefaultConfigurationBuilder().addProperty("foo", "bar").build(true);
         final MessagePatternConverter converter =
@@ -112,7 +112,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final Configuration config =
                 new DefaultConfigurationBuilder().addProperty("foo", "bar").build(true);
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, new String[] {"lookups"});
@@ -128,7 +128,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testPatternWithConfiguration() {
+    void testPatternWithConfiguration() {
         final Configuration config = new DefaultConfiguration();
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
         Message msg = new SimpleMessage("Hello!");
@@ -160,7 +160,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testMapMessageFormatJson() {
+    void testMapMessageFormatJson() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"json"});
         final Message msg = new StringMapMessage().with("key", "val");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -174,7 +174,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testMapMessageFormatXml() {
+    void testMapMessageFormatXml() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"xml"});
         final Message msg = new StringMapMessage().with("key", "val");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -188,7 +188,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testMapMessageFormatDefault() {
+    void testMapMessageFormatDefault() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, null);
         final Message msg = new StringMapMessage().with("key", "val");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -202,7 +202,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testStructuredDataFormatFull() {
+    void testStructuredDataFormatFull() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"FULL"});
         final Message msg = new StructuredDataMessage("id", "message", "type").with("key", "val");
         final LogEvent event = Log4jLogEvent.newBuilder() //

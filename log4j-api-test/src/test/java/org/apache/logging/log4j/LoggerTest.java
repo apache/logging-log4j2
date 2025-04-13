@@ -53,7 +53,7 @@ import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 @ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 @ReadsSystemProperty
-public class LoggerTest {
+class LoggerTest {
 
     private static class TestParameterizedMessageFactory {
         // empty
@@ -68,7 +68,7 @@ public class LoggerTest {
     private final List<String> results = logger.getEntries();
 
     @Test
-    public void builder() {
+    void builder() {
         logger.atDebug().withLocation().log("Hello");
         logger.atError().withMarker(marker).log("Hello {}", "John");
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
@@ -89,7 +89,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void basicFlow() {
+    void basicFlow() {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
@@ -98,7 +98,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingMessage() {
+    void flowTracingMessage() {
         final Properties props = new Properties();
         props.setProperty("foo", "bar");
         logger.traceEntry(new JsonMessage(props));
@@ -110,7 +110,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingString_ObjectArray1() {
+    void flowTracingString_ObjectArray1() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
         assertThat(results).hasSize(2);
@@ -119,7 +119,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingExitValueOnly() {
+    void flowTracingExitValueOnly() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(3);
         assertThat(results).hasSize(2);
@@ -128,7 +128,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingString_ObjectArray2() {
+    void flowTracingString_ObjectArray2() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
         assertThat(results).hasSize(2);
@@ -137,7 +137,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingVoidReturn() {
+    void flowTracingVoidReturn() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
         assertThat(results).hasSize(2);
@@ -146,7 +146,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingNoExitArgs() {
+    void flowTracingNoExitArgs() {
         logger.traceEntry();
         logger.traceExit();
         assertThat(results).hasSize(2);
@@ -155,7 +155,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingNoArgs() {
+    void flowTracingNoArgs() {
         final EntryMessage message = logger.traceEntry();
         logger.traceExit(message);
         assertThat(results).hasSize(2);
@@ -164,7 +164,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingString_SupplierOfObjectMessages() {
+    void flowTracingString_SupplierOfObjectMessages() {
         final EntryMessage msg = logger.traceEntry(
                 "doFoo(a={}, b={})", (Supplier<Message>) () -> new ObjectMessage(1), (Supplier<Message>)
                         () -> new ObjectMessage(2));
@@ -175,7 +175,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingString_SupplierOfStrings() {
+    void flowTracingString_SupplierOfStrings() {
         final EntryMessage msg =
                 logger.traceEntry("doFoo(a={}, b={})", (Supplier<String>) () -> "1", (Supplier<String>) () -> "2");
         logger.traceExit(msg, 3);
@@ -185,7 +185,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void flowTracingNoFormat() {
+    void flowTracingNoFormat() {
         logger.traceEntry(null, 1, "2", new ObjectMessage(3));
         logger.traceExit((String) null, 4);
         assertThat(results).hasSize(2);
@@ -194,7 +194,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void catching() {
+    void catching() {
         try {
             throw new NullPointerException();
         } catch (final Exception e) {
@@ -208,28 +208,28 @@ public class LoggerTest {
     }
 
     @Test
-    public void debug() {
+    void debug() {
         logger.debug("Debug message");
         assertEquals(1, results.size());
         assertTrue(results.get(0).startsWith(" DEBUG Debug message"), "Incorrect message");
     }
 
     @Test
-    public void debugObject() {
+    void debugObject() {
         logger.debug(new Date());
         assertEquals(1, results.size());
         assertTrue(results.get(0).length() > 7, "Invalid length");
     }
 
     @Test
-    public void debugWithParms() {
+    void debugWithParms() {
         logger.debug("Hello, {}", "World");
         assertEquals(1, results.size());
         assertTrue(results.get(0).startsWith(" DEBUG Hello, World"), "Incorrect substitution");
     }
 
     @Test
-    public void debugWithParmsAndThrowable() {
+    void debugWithParmsAndThrowable() {
         logger.debug("Hello, {}", "World", new RuntimeException("Test Exception"));
         assertEquals(1, results.size());
         assertTrue(
@@ -239,7 +239,7 @@ public class LoggerTest {
 
     @Test
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
-    public void getFormatterLogger() {
+    void getFormatterLogger() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger();
@@ -257,7 +257,7 @@ public class LoggerTest {
 
     @Test
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
-    public void getFormatterLogger_Class() {
+    void getFormatterLogger_Class() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final TestLogger testLogger =
@@ -281,7 +281,7 @@ public class LoggerTest {
 
     @Test
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
-    public void getFormatterLogger_Object() {
+    void getFormatterLogger_Object() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final TestLogger testLogger =
@@ -298,7 +298,7 @@ public class LoggerTest {
 
     @Test
     @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
-    public void getFormatterLogger_String() {
+    void getFormatterLogger_String() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger =
                 (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
@@ -313,7 +313,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_Class_ParameterizedMessageFactory() {
+    void getLogger_Class_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
@@ -327,7 +327,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_Class_StringFormatterMessageFactory() {
+    void getLogger_Class_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final TestLogger testLogger = (TestLogger)
@@ -342,7 +342,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_Object_ParameterizedMessageFactory() {
+    void getLogger_Object_ParameterizedMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
@@ -364,7 +364,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_Object_StringFormatterMessageFactory() {
+    void getLogger_Object_StringFormatterMessageFactory() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
@@ -380,7 +380,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_MessageFactoryMismatch() {
+    void getLogger_String_MessageFactoryMismatch() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger =
                 (TestLogger) LogManager.getLogger("getLogger_String_MessageFactoryMismatch", messageFactory);
@@ -400,7 +400,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_ParameterizedMessageFactory() {
+    void getLogger_String_ParameterizedMessageFactory() {
         final ParameterizedMessageFactory messageFactory = ParameterizedMessageFactory.INSTANCE;
         final TestLogger testLogger =
                 (TestLogger) LogManager.getLogger("getLogger_String_ParameterizedMessageFactory", messageFactory);
@@ -412,7 +412,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_SimpleMessageFactory() {
+    void getLogger_String_SimpleMessageFactory() {
         final SimpleMessageFactory messageFactory = SimpleMessageFactory.INSTANCE;
         final TestLogger testLogger =
                 (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory", messageFactory);
@@ -424,7 +424,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_StringFormatterMessageFactory() {
+    void getLogger_String_StringFormatterMessageFactory() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger =
                 (TestLogger) LogManager.getLogger("getLogger_String_StringFormatterMessageFactory", messageFactory);
@@ -438,38 +438,38 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLoggerByClass() {
+    void getLoggerByClass() {
         final Logger classLogger = LogManager.getLogger(LoggerTest.class);
         assertNotNull(classLogger);
     }
 
     @Test
-    public void getLoggerByNullClass() {
+    void getLoggerByNullClass() {
         // Returns a SimpleLogger
         assertNotNull(LogManager.getLogger((Class<?>) null));
     }
 
     @Test
-    public void getLoggerByNullObject() {
+    void getLoggerByNullObject() {
         // Returns a SimpleLogger
         assertNotNull(LogManager.getLogger((Object) null));
     }
 
     @Test
-    public void getLoggerByNullString() {
+    void getLoggerByNullString() {
         // Returns a SimpleLogger
         assertNotNull(LogManager.getLogger((String) null));
     }
 
     @Test
-    public void getLoggerByObject() {
+    void getLoggerByObject() {
         final Logger classLogger = LogManager.getLogger(this);
         assertNotNull(classLogger);
         assertEquals(classLogger, LogManager.getLogger(LoggerTest.class));
     }
 
     @Test
-    public void getRootLogger() {
+    void getRootLogger() {
         assertNotNull(LogManager.getRootLogger());
         assertNotNull(LogManager.getLogger(Strings.EMPTY));
         assertNotNull(LogManager.getLogger(LogManager.ROOT_LOGGER_NAME));
@@ -478,100 +478,100 @@ public class LoggerTest {
     }
 
     @Test
-    public void isAllEnabled() {
+    void isAllEnabled() {
         assertTrue(logger.isEnabled(Level.ALL), "Incorrect level");
     }
 
     @Test
-    public void isDebugEnabled() {
+    void isDebugEnabled() {
         assertTrue(logger.isDebugEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.DEBUG), "Incorrect level");
     }
 
     @Test
-    public void isErrorEnabled() {
+    void isErrorEnabled() {
         assertTrue(logger.isErrorEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.ERROR), "Incorrect level");
     }
 
     @Test
-    public void isFatalEnabled() {
+    void isFatalEnabled() {
         assertTrue(logger.isFatalEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.FATAL), "Incorrect level");
     }
 
     @Test
-    public void isInfoEnabled() {
+    void isInfoEnabled() {
         assertTrue(logger.isInfoEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.INFO), "Incorrect level");
     }
 
     @Test
-    public void isOffEnabled() {
+    void isOffEnabled() {
         assertTrue(logger.isEnabled(Level.OFF), "Incorrect level");
     }
 
     @Test
-    public void isTraceEnabled() {
+    void isTraceEnabled() {
         assertTrue(logger.isTraceEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.TRACE), "Incorrect level");
     }
 
     @Test
-    public void isWarnEnabled() {
+    void isWarnEnabled() {
         assertTrue(logger.isWarnEnabled(), "Incorrect level");
         assertTrue(logger.isEnabled(Level.WARN), "Incorrect level");
     }
 
     @Test
-    public void isAllEnabledWithMarker() {
+    void isAllEnabledWithMarker() {
         assertTrue(logger.isEnabled(Level.ALL, marker), "Incorrect level");
     }
 
     @Test
-    public void isDebugEnabledWithMarker() {
+    void isDebugEnabledWithMarker() {
         assertTrue(logger.isDebugEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.DEBUG, marker), "Incorrect level");
     }
 
     @Test
-    public void isErrorEnabledWithMarker() {
+    void isErrorEnabledWithMarker() {
         assertTrue(logger.isErrorEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.ERROR, marker), "Incorrect level");
     }
 
     @Test
-    public void isFatalEnabledWithMarker() {
+    void isFatalEnabledWithMarker() {
         assertTrue(logger.isFatalEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.FATAL, marker), "Incorrect level");
     }
 
     @Test
-    public void isInfoEnabledWithMarker() {
+    void isInfoEnabledWithMarker() {
         assertTrue(logger.isInfoEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.INFO, marker), "Incorrect level");
     }
 
     @Test
-    public void isOffEnabledWithMarker() {
+    void isOffEnabledWithMarker() {
         assertTrue(logger.isEnabled(Level.OFF, marker), "Incorrect level");
     }
 
     @Test
-    public void isTraceEnabledWithMarker() {
+    void isTraceEnabledWithMarker() {
         assertTrue(logger.isTraceEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.TRACE, marker), "Incorrect level");
     }
 
     @Test
-    public void isWarnEnabledWithMarker() {
+    void isWarnEnabledWithMarker() {
         assertTrue(logger.isWarnEnabled(marker), "Incorrect level");
         assertTrue(logger.isEnabled(Level.WARN, marker), "Incorrect level");
     }
 
     @Test
     @UsingThreadContextMap
-    public void mdc() {
+    void mdc() {
         ThreadContext.put("TestYear", Integer.toString(2010));
         logger.debug("Debug message");
         final String testYear = ThreadContext.get("TestYear");
@@ -588,7 +588,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void printf() {
+    void printf() {
         logger.printf(Level.DEBUG, "Debug message %d", 1);
         logger.printf(Level.DEBUG, MarkerManager.getMarker("Test"), "Debug message %d", 2);
         assertEquals(2, results.size());
@@ -597,12 +597,12 @@ public class LoggerTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         results.clear();
     }
 
     @Test
-    public void structuredData() {
+    void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
@@ -621,7 +621,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void throwing() {
+    void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         assertEquals(1, results.size());
         assertThat(

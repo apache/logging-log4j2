@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+/**
+ * @since 2.22.0
+ */
 @InternalApi
 public final class Cast {
 

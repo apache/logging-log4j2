@@ -37,6 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @see RuntimePermission
  * @see Thread#getContextClassLoader()
  * @see ClassLoader#getSystemClassLoader()
+ * @since 2.0.1
  */
 @InternalApi
 public final class LoaderUtil {
@@ -86,11 +87,15 @@ public final class LoaderUtil {
      * Returns the ClassLoader to use.
      *
      * @return the ClassLoader.
+     * @since 2.22.0
      */
     public static ClassLoader getClassLoader() {
         return getClassLoader(LoaderUtil.class, null);
     }
 
+    /**
+     * @since 2.22.0
+     */
     // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
         PrivilegedAction<ClassLoader> action = () -> {
@@ -349,7 +354,7 @@ public final class LoaderUtil {
      * @throws IllegalAccessException      if the class can't be instantiated through a public constructor
      * @throws InstantiationException      if the provided class is abstract or an interface
      * @throws InvocationTargetException   if an exception is thrown by the constructor
-     * @since 2.22
+     * @since 2.22.0
      */
     public static <T> T newCheckedInstanceOfProperty(
             final String propertyName, final Class<T> clazz, final Supplier<T> defaultSupplier)

@@ -26,28 +26,28 @@ import org.apache.logging.log4j.jul.Constants;
 import org.apache.logging.log4j.jul.CoreLoggerAdapter;
 import org.apache.logging.log4j.jul.LogManager;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class CoreLoggerTest extends AbstractLoggerTest {
+class CoreLoggerTest extends AbstractLoggerTest {
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
         System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, CoreLoggerAdapter.class.getName());
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
         System.clearProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         // Reset the logger context
         LoggerContext.getContext(false).reconfigure();
 
@@ -62,8 +62,8 @@ public class CoreLoggerTest extends AbstractLoggerTest {
         assertThat(stringAppender).isNotNull();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (eventAppender != null) {
             eventAppender.clear();
         }
@@ -76,7 +76,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
     }
 
     @Test
-    public void testRootSetLevelToNull() {
+    void testRootSetLevelToNull() {
         final Logger rootLogger = Logger.getLogger(Strings.EMPTY);
         assertThat(rootLogger.getLevel()).isEqualTo(Level.SEVERE);
         assertThat(getEffectiveLevel(rootLogger)).isEqualTo(Level.SEVERE);
@@ -91,7 +91,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
     }
 
     @Test
-    public void testSetLevel() {
+    void testSetLevel() {
         final Logger a = Logger.getLogger("a");
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
@@ -112,7 +112,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
     }
 
     @Test
-    public void testSetLevelToNull() {
+    void testSetLevelToNull() {
         final Logger childLogger = Logger.getLogger(LOGGER_NAME + ".NullChild");
         assertThat(childLogger.getLevel()).isNull();
         assertThat(getEffectiveLevel(childLogger)).isEqualTo(Level.FINE);

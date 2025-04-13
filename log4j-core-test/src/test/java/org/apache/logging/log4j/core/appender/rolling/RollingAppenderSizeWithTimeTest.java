@@ -53,7 +53,7 @@ public class RollingAppenderSizeWithTimeTest {
     private Logger logger;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingAppenderSizeWithTimeTest.class.getName());
     }
 

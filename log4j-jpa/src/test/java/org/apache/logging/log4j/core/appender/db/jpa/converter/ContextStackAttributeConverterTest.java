@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class ContextStackAttributeConverterTest {
+class ContextStackAttributeConverterTest {
     private ContextStackAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new ContextStackAttributeConverter();
     }
 
     @Test
-    public void testConvertToDatabaseColumn01() {
+    void testConvertToDatabaseColumn01() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("value1", "another2"));
 
         assertEquals(
@@ -47,7 +47,7 @@ public class ContextStackAttributeConverterTest {
     }
 
     @Test
-    public void testConvertToDatabaseColumn02() {
+    void testConvertToDatabaseColumn02() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("key1", "value2", "my3"));
 
         assertEquals(
@@ -57,12 +57,12 @@ public class ContextStackAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertToEntityAttribute() {
+    void testConvertToEntityAttribute() {
         assertThrows(UnsupportedOperationException.class, () -> this.converter.convertToEntityAttribute(null));
     }
 }

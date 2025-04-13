@@ -16,31 +16,20 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.jul.LevelTranslator;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests that all Log4j levels are mapped to a JUL level.
  */
-@RunWith(Parameterized.class)
-public class Log4jLevelTranslatorTest {
+class Log4jLevelTranslatorTest {
 
-    private final java.util.logging.Level javaLevel;
-    private final Level log4jLevel;
-
-    public Log4jLevelTranslatorTest(final java.util.logging.Level javaLevel, final Level log4jLevel) {
-        this.javaLevel = javaLevel;
-        this.log4jLevel = log4jLevel;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             // Some JUL levels, All 8 Log4j levels
@@ -57,8 +46,9 @@ public class Log4jLevelTranslatorTest {
         });
     }
 
-    @Test
-    public void testToJavaLevel() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testToJavaLevel(final java.util.logging.Level javaLevel, final Level log4jLevel) {
         final java.util.logging.Level actualLevel = LevelTranslator.toJavaLevel(log4jLevel);
         assertEquals(javaLevel, actualLevel);
     }
