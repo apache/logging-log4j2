@@ -41,7 +41,6 @@ import org.apache.logging.log4j.core.config.CustomLevelConfig;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -55,8 +54,7 @@ class ConfigurationAssemblerTest {
         try {
             System.setProperty(
                     Constants.LOG4J_CONTEXT_SELECTOR, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-            final ConfigurationBuilder<BuiltConfiguration> builder =
-                    ConfigurationBuilderFactory.newConfigurationBuilder();
+            final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
             CustomConfigurationFactory.addTestFixtures("config name", builder);
             final Configuration configuration = builder.build();
             try (final LoggerContext ctx = Configurator.initialize(configuration)) {

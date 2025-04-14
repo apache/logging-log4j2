@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.jupiter.api.Test;
 
 class ConfigurationBuilderTest {
@@ -33,38 +32,37 @@ class ConfigurationBuilderTest {
     private static final String INDENT = "  ";
     private static final String EOL = System.lineSeparator();
 
-    private void addTestFixtures(final String name, final ConfigurationBuilder<BuiltConfiguration> builder) {
+    private void addTestFixtures(final String name, final ConfigurationBuilder<?> builder) {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.setShutdownTimeout(5000, TimeUnit.MILLISECONDS);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
-                .addIsWatched(true));
+                .setIsWatchedAttribute(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
-                .addAttribute("level", Level.DEBUG));
+                .setAttribute("level", Level.DEBUG));
 
         final AppenderComponentBuilder appenderBuilder =
-                builder.newAppender("Stdout", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+                builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(
-                builder.newLayout("PatternLayout").addAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
+                builder.newLayout("PatternLayout").setAttribute("pattern", "%d [%t] %-5level: %msg%n%throwable"));
         appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
-                .addAttribute("marker", "FLOW"));
+                .setAttribute("marker", "FLOW"));
         builder.add(appenderBuilder);
 
         final AppenderComponentBuilder appenderBuilder2 =
-                builder.newAppender("Kafka", "Kafka").addAttribute("topic", "my-topic");
+                builder.newAppender("Kafka", "Kafka").setAttribute("topic", "my-topic");
         appenderBuilder2.addComponent(builder.newProperty("bootstrap.servers", "localhost:9092"));
         appenderBuilder2.add(builder.newLayout("GelfLayout")
-                .addAttribute("host", "my-host")
+                .setAttribute("host", "my-host")
                 .addComponent(builder.newKeyValuePair("extraField", "extraValue")));
         builder.add(appenderBuilder2);
 
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
                 .add(builder.newAppenderRef("Stdout"))
-                .addAttribute("additivity", false));
+                .setAdditivityAttribute(false));
         builder.add(builder.newLogger("org.apache.logging.log4j.core").add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
-
-        builder.addProperty("MyKey", "MyValue");
+        builder.add(builder.newProperty("MyKey", "MyValue"));
         builder.add(builder.newCustomLevel("Panic", 17));
         builder.setPackages("foo,bar");
     }
@@ -113,7 +111,7 @@ class ConfigurationBuilderTest {
 
     @Test
     void testXmlConstructing() {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
         assertEquals(expectedXml, xmlConfiguration);

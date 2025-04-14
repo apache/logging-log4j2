@@ -16,24 +16,40 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Holds the Appender Component attributes and subcomponents.
+ * A default implementation of the {@link AppenderRefComponentBuilder} interface for building
+ * an {@link AppenderRef} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
  *
  * @since 2.4
  */
+@ProviderType
 class DefaultAppenderRefComponentBuilder extends DefaultComponentAndConfigurationBuilder<AppenderRefComponentBuilder>
         implements AppenderRefComponentBuilder {
 
-    public DefaultAppenderRefComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String ref) {
+    /**
+     * Constructs a new component builder instance.
+     * @param builder the configuration builder
+     * @throws NullPointerException if tthe {@code builder} argument is {@code null}
+     */
+    public DefaultAppenderRefComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder) {
         super(builder, "AppenderRef");
-        addAttribute("ref", ref);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
     @Override
     public AppenderRefComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
