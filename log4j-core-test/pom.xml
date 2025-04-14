@@ -320,13 +320,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- JUnit, naturally -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Used for Kafka appender -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
