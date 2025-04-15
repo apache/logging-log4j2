@@ -19,12 +19,5 @@
 # For details see:
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 #
-# This list includes in the same order, committers of Log4j listed on:
-# https://logging.apache.org/support.html#sponsors
-github:
-  - carterkozak
-  - garydgregory
-  - jvz
-  - ppkarwasz
-  - rgoers
-  - vy
+custom: "https://logging.apache.org/support.html#sponsors"
+tidelift: "maven/org.apache.logging.log4j:log4j-core"
