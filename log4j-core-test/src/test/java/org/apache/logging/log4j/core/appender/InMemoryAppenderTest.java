@@ -31,10 +31,10 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-public class InMemoryAppenderTest {
+class InMemoryAppenderTest {
 
     @Test
-    public void testAppender() {
+    void testAppender() {
         final Layout<String> layout = PatternLayout.createDefaultLayout();
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
@@ -43,7 +43,7 @@ public class InMemoryAppenderTest {
     }
 
     @Test
-    public void testHeaderRequested() {
+    void testHeaderRequested() {
         final PatternLayout layout =
                 PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
         final boolean writeHeader = true;
@@ -53,7 +53,7 @@ public class InMemoryAppenderTest {
     }
 
     @Test
-    public void testHeaderSuppressed() {
+    void testHeaderSuppressed() {
         final PatternLayout layout =
                 PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
         final boolean writeHeader = false;

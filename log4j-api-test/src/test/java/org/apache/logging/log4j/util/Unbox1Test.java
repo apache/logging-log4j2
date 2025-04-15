@@ -29,19 +29,19 @@ import org.junit.jupiter.api.parallel.Resources;
  * Tests the Unbox class.
  */
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
-public class Unbox1Test {
+class Unbox1Test {
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.clearProperty("log4j.unbox.ringbuffer.size");
     }
 
     @Test
-    public void testBoxClaimsItHas32Slots() {
+    void testBoxClaimsItHas32Slots() {
         assertEquals(32, Unbox.getRingbufferSize());
     }
 
     @Test
-    public void testBoxHas32Slots() {
+    void testBoxHas32Slots() {
         final int MAX = 32;
         final StringBuilder[] probe = new StringBuilder[MAX * 3];
         for (int i = 0; i <= probe.length - 8; ) {
@@ -63,13 +63,13 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxBoolean() {
+    void testBoxBoolean() {
         assertEquals("true", Unbox.box(true).toString());
         assertEquals("false", Unbox.box(false).toString());
     }
 
     @Test
-    public void testBoxByte() {
+    void testBoxByte() {
         assertEquals("0", Unbox.box((byte) 0).toString());
         assertEquals("1", Unbox.box((byte) 1).toString());
         assertEquals("127", Unbox.box((byte) 127).toString());
@@ -78,14 +78,14 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxChar() {
+    void testBoxChar() {
         assertEquals("a", Unbox.box('a').toString());
         assertEquals("b", Unbox.box('b').toString());
         assertEquals("字", Unbox.box('字').toString());
     }
 
     @Test
-    public void testBoxDouble() {
+    void testBoxDouble() {
         assertEquals("3.14", Unbox.box(3.14).toString());
         assertEquals(
                 Double.toString(Double.MAX_VALUE), Unbox.box(Double.MAX_VALUE).toString());
@@ -94,14 +94,14 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxFloat() {
+    void testBoxFloat() {
         assertEquals("3.14", Unbox.box(3.14F).toString());
         assertEquals(Float.toString(Float.MAX_VALUE), Unbox.box(Float.MAX_VALUE).toString());
         assertEquals(Float.toString(Float.MIN_VALUE), Unbox.box(Float.MIN_VALUE).toString());
     }
 
     @Test
-    public void testBoxInt() {
+    void testBoxInt() {
         assertEquals("0", Unbox.box(0).toString());
         assertEquals("1", Unbox.box(1).toString());
         assertEquals("127", Unbox.box(127).toString());
@@ -116,7 +116,7 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxLong() {
+    void testBoxLong() {
         assertEquals("0", Unbox.box(0L).toString());
         assertEquals("1", Unbox.box(1L).toString());
         assertEquals("127", Unbox.box(127L).toString());
@@ -127,7 +127,7 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxShort() {
+    void testBoxShort() {
         assertEquals("0", Unbox.box((short) 0).toString());
         assertEquals("1", Unbox.box((short) 1).toString());
         assertEquals("127", Unbox.box((short) 127).toString());
@@ -138,7 +138,7 @@ public class Unbox1Test {
     }
 
     @Test
-    public void testBoxIsThreadLocal() throws Exception {
+    void testBoxIsThreadLocal() throws Exception {
         final StringBuilder[] probe = new StringBuilder[16 * 3];
         populate(0, probe);
         final Thread t1 = new Thread(() -> populate(16, probe));

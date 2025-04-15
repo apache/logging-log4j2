@@ -33,25 +33,25 @@ import org.junit.jupiter.api.Test;
 /**
  *
  */
-public class MarkerTest {
+class MarkerTest {
 
     private static final String CHILD_MAKER_NAME = MarkerTest.class.getSimpleName() + "-TEST";
     private static final String PARENT_MARKER_NAME = MarkerTest.class.getSimpleName() + "-PARENT";
     private static Log4jMarkerFactory markerFactory;
 
     @BeforeAll
-    public static void startup() {
+    static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
     }
 
     @BeforeEach
     @AfterEach
-    public void clearMarkers() {
+    void clearMarkers() {
         MarkerManager.clear();
     }
 
     @Test
-    public void testAddMarker() {
+    void testAddMarker() {
         final String childMakerName = CHILD_MAKER_NAME + "-AM";
         final String parentMarkerName = PARENT_MARKER_NAME + "-AM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);
@@ -74,7 +74,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testAddNullMarker() {
+    void testAddNullMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ANM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ANM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -100,7 +100,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testAddSameMarker() {
+    void testAddSameMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ASM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ASM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -122,7 +122,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ASM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ASM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -139,7 +139,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testContainsNullMarker() {
+    void testContainsNullMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-CM";
         final String parentMakerName = PARENT_MARKER_NAME + "-CM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -165,7 +165,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testContainsNullString() {
+    void testContainsNullString() {
         final String childMarkerName = CHILD_MAKER_NAME + "-CS";
         final String parentMakerName = PARENT_MARKER_NAME + "-CS";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -181,7 +181,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testRemoveNullMarker() {
+    void testRemoveNullMarker() {
         final String childMakerName = CHILD_MAKER_NAME + "-CM";
         final String parentMakerName = PARENT_MARKER_NAME + "-CM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);

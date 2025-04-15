@@ -25,18 +25,17 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.test.util.Profiler;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Use this class to analyze performance between Log4j and other logging frameworks.
  */
-@Category(PerformanceTests.class)
-public class PerformanceComparison {
+@Tag("PerformanceTests")
+class PerformanceComparison {
 
     private final Logger logger = LogManager.getLogger(PerformanceComparison.class.getName());
     private final org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(PerformanceComparison.class);
@@ -54,15 +53,15 @@ public class PerformanceComparison {
     private static final String LOGBACK_CONF = "logback.configurationFile";
     private static final String LOG4J_CONF = "log4j.configuration";
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeAll
+    static void setupClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
         System.setProperty(LOG4J_CONF, LOG4J_CONFIG);
     }
 
-    @AfterClass
-    public static void cleanupClass() {
+    @AfterAll
+    static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         System.clearProperty(LOGBACK_CONF);
         System.clearProperty(LOG4J_CONF);
@@ -72,7 +71,7 @@ public class PerformanceComparison {
     }
 
     @Test
-    public void testPerformance() throws Exception {
+    void testPerformance() {
 
         log4j(WARMUP);
         logback(WARMUP);

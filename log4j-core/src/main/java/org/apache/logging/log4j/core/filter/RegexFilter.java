@@ -148,7 +148,8 @@ public final class RegexFilter extends AbstractFilter {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        return new RegexFilter(useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), match, mismatch);
+        return new RegexFilter(
+                Boolean.TRUE.equals(useRawMsg), Pattern.compile(regex, toPatternFlags(patternFlags)), match, mismatch);
     }
 
     private static int toPatternFlags(final String[] patternFlags)

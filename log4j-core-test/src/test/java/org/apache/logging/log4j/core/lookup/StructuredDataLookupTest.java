@@ -30,17 +30,17 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class StructuredDataLookupTest {
+class StructuredDataLookupTest {
 
     private StructuredDataLookup dataLookup;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         dataLookup = new StructuredDataLookup();
     }
 
     @Test
-    public void testCorrectEvent() {
+    void testCorrectEvent() {
         final Message msg = new StructuredDataMessage("TestId", "This is a test", "Audit");
         final LogEvent event =
                 Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
@@ -54,7 +54,7 @@ public class StructuredDataLookupTest {
     }
 
     @Test
-    public void testNullLookup() {
+    void testNullLookup() {
         assertNull(dataLookup.lookup(null, null));
         assertNull(dataLookup.lookup(null));
     }

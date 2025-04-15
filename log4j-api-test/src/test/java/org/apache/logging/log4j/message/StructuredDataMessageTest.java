@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 /**
  *
  */
-public class StructuredDataMessageTest {
+class StructuredDataMessageTest {
 
     @Test
-    public void testMsg() {
+    void testMsg() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
         msg.put("message", testMsg);
@@ -41,7 +41,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testMsgNonFull() {
+    void testMsgNonFull() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
         msg.put("message", testMsg);
@@ -54,7 +54,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testMsgXml() {
+    void testMsgXml() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
         msg.put("message", testMsg);
@@ -74,7 +74,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testBuilder() {
+    void testBuilder() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert")
                 .with("message", testMsg)
@@ -87,7 +87,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testMsgWithKeyTooLong() {
+    void testMsgWithKeyTooLong() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
         assertThrows(
@@ -96,7 +96,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testMutableByDesign() { // LOG4J2-763
+    void testMutableByDesign() { // LOG4J2-763
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@1", testMsg, "Alert");
 
@@ -116,7 +116,7 @@ public class StructuredDataMessageTest {
     }
 
     @Test
-    public void testEnterpriseNoAsOidFragment() {
+    void testEnterpriseNoAsOidFragment() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage structuredDataMessage =
                 new StructuredDataMessage("XX_DATA@1234.55.6.7", testMsg, "Nothing");

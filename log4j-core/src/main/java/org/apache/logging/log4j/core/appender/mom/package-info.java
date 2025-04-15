@@ -21,7 +21,7 @@
  * @since 2.1
  */
 @Export
-@Version("2.20.1")
+@Version("2.25.0")
 package org.apache.logging.log4j.core.appender.mom;
 
 import org.osgi.annotation.bundle.Export;

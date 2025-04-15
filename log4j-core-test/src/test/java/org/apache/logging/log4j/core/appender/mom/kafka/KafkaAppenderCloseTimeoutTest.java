@@ -66,7 +66,7 @@ public class KafkaAppenderCloseTimeoutTest {
             };
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         KafkaManager.producerFactory = config -> kafka;
     }
 
@@ -74,12 +74,12 @@ public class KafkaAppenderCloseTimeoutTest {
     public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderCloseTimeoutTest.xml");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         kafka.clear();
     }
 
     @Test(timeout = 2000)
-    public void testClose() throws Exception {
+    public void testClose() {
         final Appender appender = ctx.getRequiredAppender("KafkaAppender");
         appender.stop();
     }

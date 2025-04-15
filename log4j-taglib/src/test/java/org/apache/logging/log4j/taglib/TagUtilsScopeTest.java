@@ -16,27 +16,16 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
 import javax.servlet.jsp.PageContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class TagUtilsScopeTest {
 
-    private final int scope;
-    private final String scopeName;
-
-    public TagUtilsScopeTest(final int scope, final String scopeName) {
-        this.scope = scope;
-        this.scopeName = scopeName;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {PageContext.APPLICATION_SCOPE, "application"},
@@ -47,8 +36,9 @@ public class TagUtilsScopeTest {
         });
     }
 
-    @Test
-    public void testGetScope() throws Exception {
-        assertEquals("The scope is not correct.", scope, TagUtils.getScope(scopeName));
+    @MethodSource("data")
+    @ParameterizedTest
+    void testGetScope(final int scope, final String scopeName) {
+        assertEquals(scope, TagUtils.getScope(scopeName), "The scope is not correct.");
     }
 }

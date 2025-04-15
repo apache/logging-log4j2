@@ -41,7 +41,7 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
     private static MongoCollection<Document> getOrCreateMongoCollection(
             final MongoDatabase database, final String collectionName, final boolean isCapped, final Long sizeInBytes) {
         try {
-            LOGGER.debug("Gettting collection '{}'...", collectionName);
+            LOGGER.debug("Getting collection '{}'...", collectionName);
             // throws IllegalArgumentException if collectionName is invalid
             final MongoCollection<Document> found = database.getCollection(collectionName);
             LOGGER.debug("Got collection {}", found);
@@ -63,15 +63,29 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
     private final MongoCollection<Document> collection;
     private final MongoClient mongoClient;
 
+    /**
+     * @deprecated Use {@link #MongoDb4Connection(ConnectionString, MongoClient, MongoDatabase, String, boolean, Long)} instead
+     */
+    @Deprecated
     public MongoDb4Connection(
             final ConnectionString connectionString,
             final MongoClient mongoClient,
             final MongoDatabase mongoDatabase,
             final boolean isCapped,
             final Integer sizeInBytes) {
-        this(connectionString, mongoClient, mongoDatabase, isCapped, Long.valueOf(sizeInBytes));
+        this(
+                connectionString,
+                mongoClient,
+                mongoDatabase,
+                connectionString.getCollection(),
+                isCapped,
+                Long.valueOf(sizeInBytes));
     }
 
+    /**
+     * @deprecated Use {@link #MongoDb4Connection(ConnectionString, MongoClient, MongoDatabase, String, boolean, Long)} instead
+     */
+    @Deprecated
     public MongoDb4Connection(
             final ConnectionString connectionString,
             final MongoClient mongoClient,
@@ -82,6 +96,18 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
         this.mongoClient = mongoClient;
         this.collection =
                 getOrCreateMongoCollection(mongoDatabase, connectionString.getCollection(), isCapped, sizeInBytes);
+    }
+
+    public MongoDb4Connection(
+            final ConnectionString connectionString,
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final String collectionName,
+            final boolean isCapped,
+            final Long sizeInBytes) {
+        this.connectionString = connectionString;
+        this.mongoClient = mongoClient;
+        this.collection = getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
 
     @Override

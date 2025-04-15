@@ -137,18 +137,27 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return null;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
         init(messagePattern, arguments == null ? 0 : arguments.length, arguments);
         varargs = arguments;
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(final String messagePattern, final Object p0) {
         params[0] = p0;
         init(messagePattern, 1, params);
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(final String messagePattern, final Object p0, final Object p1) {
         params[0] = p0;
         params[1] = p1;
@@ -156,6 +165,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern, final Object p0, final Object p1, final Object p2) {
         params[0] = p0;
@@ -165,6 +177,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern, final Object p0, final Object p1, final Object p2, final Object p3) {
         params[0] = p0;
@@ -175,6 +190,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -191,6 +209,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -209,6 +230,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -229,6 +253,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -251,6 +278,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -275,6 +305,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return this;
     }
 
+    /**
+     * @since 2.24.0
+     */
     public ReusableParameterizedMessage set(
             final String messagePattern,
             final Object p0,
@@ -371,6 +404,9 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                 + ", throwableProvided=" + (getThrowable() != null) + ']';
     }
 
+    /**
+     * @since 2.11.1
+     */
     @Override
     public void clear() { // LOG4J2-1583
         // This method does not clear parameter values, those are expected to be swapped to a

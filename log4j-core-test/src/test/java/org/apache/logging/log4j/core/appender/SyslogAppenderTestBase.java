@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,11 +41,10 @@ import org.apache.logging.log4j.core.test.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 
 @UsingStatusListener
-public abstract class SyslogAppenderTestBase {
+abstract class SyslogAppenderTestBase {
     protected static final String line1 =
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]"
                     + "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
@@ -57,7 +57,7 @@ public abstract class SyslogAppenderTestBase {
     protected boolean includeNewLine = true;
 
     @BeforeAll
-    public static void setupClass() throws Exception {
+    public static void setupClass() {
         LoggerContext.getContext().reconfigure();
     }
 
@@ -110,26 +110,26 @@ public abstract class SyslogAppenderTestBase {
 
     protected void checkTheNumberOfSentAndReceivedMessages() throws InterruptedException {
         assertEquals(
-                "The number of received messages should be equal with the number of sent messages",
                 sentMessages.size(),
-                getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size());
+                getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size(),
+                "The number of received messages should be equal with the number of sent messages");
     }
 
     protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {
         final List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
 
-        assertNotNull("No messages received", receivedMessages);
+        assertNotNull(receivedMessages, "No messages received");
         for (int i = 0; i < receivedMessages.size(); i++) {
             final String receivedMessage = receivedMessages.get(i);
             final String sentMessage = sentMessages.get(i);
             final String suffix = includeNewLine ? "\n" : Strings.EMPTY;
             assertTrue(
-                    "Incorrect message received: " + receivedMessage,
-                    receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
+                    receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage),
+                    "Incorrect message received: " + receivedMessage);
             final int expectedPriority = Priority.getPriority(getExpectedFacility(), expectedLevel);
             assertTrue(
-                    "Expected facility " + expectedPriority + " in message " + receivedMessage,
-                    receivedMessage.startsWith("<" + expectedPriority + ">"));
+                    receivedMessage.startsWith("<" + expectedPriority + ">"),
+                    "Expected facility " + expectedPriority + " in message " + receivedMessage);
         }
     }
 
@@ -166,15 +166,15 @@ public abstract class SyslogAppenderTestBase {
         } else if (layout instanceof Rfc5424Layout) {
             validate((Rfc5424Layout) layout);
         } else {
-            Assert.fail("Unexpected layout: " + layout);
+            fail("Unexpected layout: " + layout);
         }
     }
 
     protected void validate(final Rfc5424Layout layout) {
-        Assert.assertEquals(getExpectedFacility(), layout.getFacility());
+        assertEquals(getExpectedFacility(), layout.getFacility());
     }
 
     protected void validate(final SyslogLayout layout) {
-        Assert.assertEquals(getExpectedFacility(), layout.getFacility());
+        assertEquals(getExpectedFacility(), layout.getFacility());
     }
 }

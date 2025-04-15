@@ -23,16 +23,16 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the Integers class.
  */
-public class IntegersTest {
+class IntegersTest {
 
     @Test
-    public void testCeilingNextPowerOfTwoReturnsNextPowerOfTwo() {
+    void testCeilingNextPowerOfTwoReturnsNextPowerOfTwo() {
         final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1000);
         assertEquals(1024, powerOfTwo);
     }
 
     @Test
-    public void testCeilingNextPowerOfTwoReturnsExactPowerOfTwo() {
+    void testCeilingNextPowerOfTwoReturnsExactPowerOfTwo() {
         final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1024);
         assertEquals(1024, powerOfTwo);
     }

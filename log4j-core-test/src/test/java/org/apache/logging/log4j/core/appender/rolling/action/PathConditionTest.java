@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
-public class PathConditionTest {
+class PathConditionTest {
 
     private static final PathCondition[] EMPTY_FIXTURE = {};
     private static final PathCondition[] NULL_FIXTURE = null;
 
     @Test
-    public void testCopy() {
+    void testCopy() {
         assertArrayEquals(EMPTY_FIXTURE, PathCondition.copy(NULL_FIXTURE));
         assertArrayEquals(EMPTY_FIXTURE, PathCondition.copy(EMPTY_FIXTURE));
         assertArrayEquals(EMPTY_FIXTURE, PathCondition.copy(PathCondition.EMPTY_ARRAY));

@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the {@code DeleteAction} class.
  */
-public class DeleteActionTest {
+class DeleteActionTest {
 
     private static DeleteAction createAnyFilter(
             final String path, final boolean followLinks, final int maxDepth, final boolean testMode) {
@@ -57,7 +57,7 @@ public class DeleteActionTest {
     }
 
     @Test
-    public void testGetBasePathResolvesLookups() {
+    void testGetBasePathResolvesLookups() {
         final DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1, false);
 
         final Path actual = delete.getBasePath();
@@ -67,31 +67,31 @@ public class DeleteActionTest {
     }
 
     @Test
-    public void testGetBasePathStringReturnsOriginalParam() {
+    void testGetBasePathStringReturnsOriginalParam() {
         final DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1, false);
         assertEquals("${sys:user.home}/a/b/c", delete.getBasePathString());
     }
 
     @Test
-    public void testGetMaxDepthReturnsConstructorValue() {
+    void testGetMaxDepthReturnsConstructorValue() {
         final DeleteAction delete = createAnyFilter("any", false, 23, false);
         assertEquals(23, delete.getMaxDepth());
     }
 
     @Test
-    public void testGetOptionsReturnsEmptySetIfNotFollowingLinks() {
+    void testGetOptionsReturnsEmptySetIfNotFollowingLinks() {
         final DeleteAction delete = createAnyFilter("any", false, 0, false);
         assertEquals(Collections.emptySet(), delete.getOptions());
     }
 
     @Test
-    public void testGetOptionsReturnsSetWithFollowLinksIfFollowingLinks() {
+    void testGetOptionsReturnsSetWithFollowLinksIfFollowingLinks() {
         final DeleteAction delete = createAnyFilter("any", true, 0, false);
         assertEquals(EnumSet.of(FileVisitOption.FOLLOW_LINKS), delete.getOptions());
     }
 
     @Test
-    public void testGetFiltersReturnsConstructorValue() {
+    void testGetFiltersReturnsConstructorValue() {
         final PathCondition[] filters = {new FixedCondition(true), new FixedCondition(false)};
 
         final DeleteAction delete = create("any", true, 0, false, filters);
@@ -99,14 +99,14 @@ public class DeleteActionTest {
     }
 
     @Test
-    public void testCreateFileVisitorReturnsDeletingVisitor() {
+    void testCreateFileVisitorReturnsDeletingVisitor() {
         final DeleteAction delete = createAnyFilter("any", true, 0, false);
         final FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
         assertThat(visitor, instanceOf(DeletingVisitor.class));
     }
 
     @Test
-    public void testCreateFileVisitorTestModeIsActionTestMode() {
+    void testCreateFileVisitorTestModeIsActionTestMode() {
         final DeleteAction delete = createAnyFilter("any", true, 0, false);
         assertFalse(delete.isTestMode());
         final FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());

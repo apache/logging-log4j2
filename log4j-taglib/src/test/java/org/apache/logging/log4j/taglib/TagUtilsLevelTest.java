@@ -17,27 +17,16 @@
 package org.apache.logging.log4j.taglib;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.logging.log4j.Level;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class TagUtilsLevelTest {
 
-    private final Level level;
-    private final String levelName;
-
-    public TagUtilsLevelTest(final Level level, final String levelName) {
-        this.level = level;
-        this.levelName = levelName;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         final Collection<Object[]> params = new ArrayList<>();
         // this is perhaps the laziest way to test all the known levels
@@ -47,13 +36,15 @@ public class TagUtilsLevelTest {
         return params;
     }
 
-    @Test
-    public void testResolveLevelName() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testResolveLevelName(final Level level, final String levelName) {
         assertEquals(level, TagUtils.resolveLevel(levelName));
     }
 
-    @Test
-    public void testResolveLevelEnum() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testResolveLevelEnum(final Level level, final String levelName) {
         assertEquals(level, TagUtils.resolveLevel(level));
     }
 }

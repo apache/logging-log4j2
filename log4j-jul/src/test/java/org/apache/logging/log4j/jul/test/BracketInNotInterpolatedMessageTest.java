@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.jul.test;
 
 import static java.util.logging.Level.INFO;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.logging.LogRecord;
@@ -27,24 +27,24 @@ import java.util.logging.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.LogManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class BracketInNotInterpolatedMessageTest {
+class BracketInNotInterpolatedMessageTest {
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
     }
 
     @Test
-    public void noInterpolation() {
+    void noInterpolation() {
         final Logger logger = Logger.getLogger("Test");
         logger.info("{raw}");
         logger.log(

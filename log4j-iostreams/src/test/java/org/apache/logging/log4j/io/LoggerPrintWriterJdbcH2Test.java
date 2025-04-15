@@ -61,7 +61,7 @@ public class LoggerPrintWriterJdbcH2Test {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.setListAppender(context.getListAppender("List").clear());
         Assert.assertEquals(0, this.getListAppender().getMessages().size());
     }
@@ -78,7 +78,7 @@ public class LoggerPrintWriterJdbcH2Test {
         try (final Connection conn = dataSource.getConnection()) {
             conn.prepareCall("select 1");
         }
-        Assert.assertTrue(this.getListAppender().getMessages().size() > 0);
+        Assert.assertTrue(!this.getListAppender().getMessages().isEmpty());
     }
 
     @Test
@@ -90,6 +90,6 @@ public class LoggerPrintWriterJdbcH2Test {
         } finally {
             DriverManager.setLogWriter(null);
         }
-        Assert.assertTrue(this.getListAppender().getMessages().size() > 0);
+        Assert.assertTrue(!this.getListAppender().getMessages().isEmpty());
     }
 }

@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
 @LoggerContextSource
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
-    public void testClassLogger() throws Exception {
+    void testClassLogger() {
         final SLF4JLogger logger = (SLF4JLogger) LogManager.getLogger("ClassLogger");
         final StringListAppender<ILoggingEvent> app = TestUtil.getListAppender(logger, "Class");
         logger.info("Ignored message contents.");
@@ -44,7 +44,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger() throws Exception {
+    void testMethodLogger() {
         final SLF4JLogger logger = (SLF4JLogger) LogManager.getLogger("MethodLogger");
         final StringListAppender<ILoggingEvent> app = TestUtil.getListAppender(logger, "Method");
         logger.info("More messages.");

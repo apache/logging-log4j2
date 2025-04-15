@@ -26,9 +26,9 @@ import org.junit.jupiter.api.Test;
  * LOG4J2-1409
  */
 // test must be in log4j-core but in org.apache.logging.log4j.message package because it calls package-private methods
-public class MutableLogEventWithReusableParamMsgTest {
+class MutableLogEventWithReusableParamMsgTest {
     @Test
-    public void testInteractionWithReusableParameterizedMessage() {
+    void testInteractionWithReusableParameterizedMessage() {
         final MutableLogEvent evt = new MutableLogEvent();
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         msg.set("Hello {} {} {}", 1, 2, 3);

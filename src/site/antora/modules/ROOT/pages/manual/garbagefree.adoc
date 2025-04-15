@@ -71,6 +71,8 @@ include::partial$manual/systemproperties/properties-garbage-collection.adoc[leve
 
 include::partial$manual/systemproperties/properties-thread-context-core.adoc[leveloffset=+2,tag=gcfree]
 
+include::partial$manual/systemproperties/properties-log4j-core-misc.adoc[leveloffset=+2,tag=clock]
+
 [#Layouts]
 === Layouts
 

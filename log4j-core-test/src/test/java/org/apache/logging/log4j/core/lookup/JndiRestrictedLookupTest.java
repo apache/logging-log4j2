@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
@@ -109,7 +108,7 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
-    public void testDnsLookup() throws Exception {
+    public void testDnsLookup() {
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup("dns:/" + DOMAIN);
         if (result != null) {
@@ -124,7 +123,7 @@ public class JndiRestrictedLookupTest {
             fruit = f;
         }
 
-        public Reference getReference() throws NamingException {
+        public Reference getReference() {
 
             return new Reference(
                     Fruit.class.getName(),

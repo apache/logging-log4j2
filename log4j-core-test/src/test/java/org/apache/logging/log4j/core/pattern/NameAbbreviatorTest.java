@@ -16,29 +16,18 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  *  Unit tests for {@link NameAbbreviator} which abbreviates dot-delimited strings such as logger and class names.
  */
-@RunWith(Parameterized.class)
-public class NameAbbreviatorTest {
+class NameAbbreviatorTest {
 
-    private final String pattern;
-    private final String expected;
-
-    public NameAbbreviatorTest(final String pattern, final String expected) {
-        this.pattern = pattern;
-        this.expected = expected;
-    }
-
-    @Parameterized.Parameters(name = "pattern=\"{0}\", expected={1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             // { pattern, expected }
@@ -56,18 +45,20 @@ public class NameAbbreviatorTest {
         });
     }
 
-    @Test
-    public void testAbbreviatorPatterns() throws Exception {
-        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+    @MethodSource("data")
+    @ParameterizedTest(name = "pattern=\"{0}\", expected={1}")
+    void testAbbreviatorPatterns(final String pattern, final String expected) {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(pattern);
         final StringBuilder destination = new StringBuilder();
         abbreviator.abbreviate(this.getClass().getName(), destination);
         final String actual = destination.toString();
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void testAbbreviatorPatternsAppendLongPrefix() throws Exception {
-        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+    @MethodSource("data")
+    @ParameterizedTest(name = "pattern=\"{0}\", expected={1}")
+    void testAbbreviatorPatternsAppendLongPrefix(final String pattern, final String expected) {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(pattern);
         final String PREFIX = "some random text big enough to be larger than abbreviated string ";
         final StringBuilder destination = new StringBuilder(PREFIX);
         abbreviator.abbreviate(this.getClass().getName(), destination);
@@ -75,9 +66,10 @@ public class NameAbbreviatorTest {
         assertEquals(PREFIX + expected, actual);
     }
 
-    @Test
-    public void testAbbreviatorPatternsAppend() throws Exception {
-        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(this.pattern);
+    @MethodSource("data")
+    @ParameterizedTest(name = "pattern=\"{0}\", expected={1}")
+    void testAbbreviatorPatternsAppend(final String pattern, final String expected) {
+        final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator(pattern);
         final String PREFIX = "some random text";
         final StringBuilder destination = new StringBuilder(PREFIX);
         abbreviator.abbreviate(this.getClass().getName(), destination);

@@ -24,7 +24,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.io.IOException;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -195,7 +194,7 @@ class RingBufferLogEventTest {
     }
 
     @Test
-    void testSerializationDeserialization() throws IOException, ClassNotFoundException {
+    void testSerializationDeserialization() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         final String loggerName = "logger.name";
         final Marker marker = null;

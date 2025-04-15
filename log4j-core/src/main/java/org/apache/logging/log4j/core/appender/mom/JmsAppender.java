@@ -37,11 +37,14 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.net.JndiManager;
 
 /**
- * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
- * configurations set up for the 2.0 version of the JMS appenders will still work.
+ * Javax JMS Appender plugin. This Appender replaces the previous split classes.
+ * Configurations set up for the 2.0 version of the JMS appenders will still work.
+ *
+ * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsAppender}.
  */
-@Plugin(name = "JMS", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
-@PluginAliases({"JMSQueue", "JMSTopic"})
+@Deprecated
+@Plugin(name = "JMS-Javax", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@PluginAliases({"JMS", "JMSQueue", "JMSTopic"})
 public class JmsAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>

@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
  * Class Description goes here.
  * Created by rgoers on 11/15/15
  */
-public class CronExpressionTest {
+class CronExpressionTest {
 
     @Test
-    public void testDayOfMonth() throws Exception {
+    void testDayOfMonth() throws Exception {
         final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 * * ?");
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
@@ -40,7 +40,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testDayOfWeek() throws Exception {
+    void testDayOfWeek() throws Exception {
         final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 ? * Fri");
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
@@ -49,7 +49,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testNextMonth() throws Exception {
+    void testNextMonth() throws Exception {
         final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 1 * ?");
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
@@ -58,7 +58,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testLastDayOfMonth() throws Exception {
+    void testLastDayOfMonth() throws Exception {
         final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
@@ -67,7 +67,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testNextDay() throws Exception {
+    void testNextDay() throws Exception {
         final CronExpression parser = new CronExpression("0 0 0 * * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
@@ -76,7 +76,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testPrevFireTime1() throws Exception {
+    void testPrevFireTime1() throws Exception {
         final CronExpression parser = new CronExpression("0 */15,12 7-11,13-17 L * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -85,7 +85,7 @@ public class CronExpressionTest {
     }
 
     @Test
-    public void testPrevFireTime2() throws Exception {
+    void testPrevFireTime2() throws Exception {
         final CronExpression parser = new CronExpression("0 0/5 14,18 * * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -97,7 +97,7 @@ public class CronExpressionTest {
      * 35,45, and 55 minutes past the hour every hour.
      */
     @Test
-    public void testPrevFireTime3() throws Exception {
+    void testPrevFireTime3() throws Exception {
         final CronExpression parser = new CronExpression("0 35/10 * * * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -110,7 +110,7 @@ public class CronExpressionTest {
      * 10:15 every day.
      */
     @Test
-    public void testPrevFireTimeTenFifteen() throws Exception {
+    void testPrevFireTimeTenFifteen() throws Exception {
         final CronExpression parser = new CronExpression("0 15 10 * * ? *");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -122,7 +122,7 @@ public class CronExpressionTest {
      * Every day from 2 pm to 2:59 pm
      */
     @Test
-    public void testPrevFireTimeTwoPM() throws Exception {
+    void testPrevFireTimeTwoPM() throws Exception {
         final CronExpression parser = new CronExpression("0 * 14 * * ?");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -134,7 +134,7 @@ public class CronExpressionTest {
      *  2:10pm and at 2:44pm every Wednesday in the month of March.
      */
     @Test
-    public void testPrevFireTimeMarch() throws Exception {
+    void testPrevFireTimeMarch() throws Exception {
         final CronExpression parser = new CronExpression("0 10,44 14 ? 3 WED");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -146,7 +146,7 @@ public class CronExpressionTest {
      *  Fire at 10:15am on the third Friday of every month.
      */
     @Test
-    public void testPrevFireTimeThirdFriday() throws Exception {
+    void testPrevFireTimeThirdFriday() throws Exception {
         final CronExpression parser = new CronExpression("0 15 10 ? * 6#3");
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
@@ -159,7 +159,7 @@ public class CronExpressionTest {
      * scheduled time.
      */
     @Test
-    public void testTimeBeforeMilliseconds() throws Exception {
+    void testTimeBeforeMilliseconds() throws Exception {
         final CronExpression parser = new CronExpression("0 0 0 * * ?");
         final GregorianCalendar cal = new GregorianCalendar(2015, 10, 2, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 100);

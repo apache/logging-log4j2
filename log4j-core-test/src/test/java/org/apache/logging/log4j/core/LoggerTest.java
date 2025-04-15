@@ -58,7 +58,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 @LoggerContextSource(value = LoggerTest.CONFIG, reconfigure = ReconfigurationPolicy.AFTER_EACH)
-public class LoggerTest {
+class LoggerTest {
 
     static final String CONFIG = "log4j-test2.xml";
 
@@ -117,7 +117,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void basicFlow() {
+    void basicFlow() {
         logger.traceEntry();
         logger.traceExit();
         final List<LogEvent> events = app.getEvents();
@@ -125,7 +125,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void builder() {
+    void builder() {
         logger.atDebug().withLocation().log("Hello");
         final Marker marker = MarkerManager.getMarker("test");
         logger.atError().withMarker(marker).log("Hello {}", "John");
@@ -143,7 +143,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void catching() {
+    void catching() {
         try {
             throw new NullPointerException();
         } catch (final Exception e) {
@@ -154,14 +154,14 @@ public class LoggerTest {
     }
 
     @Test
-    public void debug() {
+    void debug() {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
     }
 
     @Test
-    public void debugChangeLevel_ForClass() {
+    void debugChangeLevel_ForClass() {
         loggerClass.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(LoggerTest.class, Level.OFF);
@@ -173,7 +173,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevel_ForLogger() {
+    void debugChangeLevel_ForLogger() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger, Level.OFF);
@@ -185,7 +185,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevel_ForLoggerName() {
+    void debugChangeLevel_ForLoggerName() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger.getName(), Level.OFF);
@@ -197,7 +197,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelAllChildrenLoggers() {
+    void debugChangeLevelAllChildrenLoggers() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -216,7 +216,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelChildLogger_ForLogger() {
+    void debugChangeLevelChildLogger_ForLogger() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -235,7 +235,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelChildLogger_ForLoggerName() {
+    void debugChangeLevelChildLogger_ForLoggerName() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -254,7 +254,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelName_ForLoggerName() {
+    void debugChangeLevelName_ForLoggerName() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger.getName(), Level.OFF.name());
@@ -266,7 +266,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelNameChildLogger_ForLoggerName() {
+    void debugChangeLevelNameChildLogger_ForLoggerName() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -285,7 +285,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelNameChildLoggers_ForLoggerName(final LoggerContext context) {
+    void debugChangeLevelNameChildLoggers_ForLoggerName(final LoggerContext context) {
         final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
@@ -303,7 +303,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsChildLoggers_ForLogger(final LoggerContext context) {
+    void debugChangeLevelsChildLoggers_ForLogger(final LoggerContext context) {
         final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
@@ -321,7 +321,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsChildLoggers_ForLoggerName(final LoggerContext context) {
+    void debugChangeLevelsChildLoggers_ForLoggerName(final LoggerContext context) {
         final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
@@ -339,7 +339,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsMap() {
+    void debugChangeLevelsMap() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         final Map<String, Level> map = new HashMap<>();
@@ -354,7 +354,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsMapChildLoggers() {
+    void debugChangeLevelsMapChildLoggers() {
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 C");
         loggerGrandchild.debug("Debug message 1 GC");
@@ -379,7 +379,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeRootLevel() {
+    void debugChangeRootLevel() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setRootLevel(Level.OFF);
@@ -391,21 +391,21 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugObject() {
+    void debugObject() {
         logger.debug(new Date());
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
     }
 
     @Test
-    public void debugWithParms() {
+    void debugWithParms() {
         logger.debug("Hello, {}", "World");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
     }
 
     @Test
-    public void getLogger_String_MessageFactoryMismatch(final TestInfo testInfo) {
+    void getLogger_String_MessageFactoryMismatch(final TestInfo testInfo) {
         final Logger testLogger = testMessageFactoryMismatch(
                 testInfo.getTestMethod().map(Method::getName).orElseThrow(AssertionError::new),
                 StringFormatterMessageFactory.INSTANCE,
@@ -419,7 +419,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLogger_String_MessageFactoryMismatchNull(final TestInfo testInfo) {
+    void getLogger_String_MessageFactoryMismatchNull(final TestInfo testInfo) {
         final Logger testLogger = testMessageFactoryMismatch(
                 testInfo.getTestMethod().map(Method::getName).orElseThrow(AssertionError::new),
                 StringFormatterMessageFactory.INSTANCE,
@@ -433,7 +433,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void mdc() {
+    void mdc() {
         ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
         ThreadContext.clearMap();
@@ -443,7 +443,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void paramWithExceptionTest() throws Exception {
+    void paramWithExceptionTest() {
         logger.error("Throwing with parameters {}", "TestParam", new NullPointerException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
         assertNotNull(events, "Log event list not returned");
@@ -458,7 +458,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void simpleFlow() {
+    void simpleFlow() {
         logger.entry(CONFIG);
         logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
@@ -466,7 +466,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void simpleFlowDepreacted() {
+    void simpleFlowDepreacted() {
         logger.entry(CONFIG);
         logger.exit(0);
         final List<LogEvent> events = app.getEvents();
@@ -474,7 +474,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void structuredData() {
+    void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());
@@ -489,7 +489,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void testAdditivity(final LoggerContext context) throws Exception {
+    void testAdditivity(final LoggerContext context) {
         final Logger localLogger = context.getLogger("org.apache.test");
         localLogger.error("Test parent additivity");
         final List<LogEvent> events = app.getEvents();
@@ -497,7 +497,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void testImpliedThrowable(final LoggerContext context) {
+    void testImpliedThrowable(final LoggerContext context) {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.hosttest");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = host.getMessages();
@@ -507,21 +507,21 @@ public class LoggerTest {
     }
 
     @Test
-    public void testLevelInheritance(final LoggerContext context) throws Exception {
+    void testLevelInheritance(final LoggerContext context) {
         final Configuration config = context.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig("org.apache.logging.log4j.core.LoggerTest");
         assertNotNull(loggerConfig);
-        assertEquals(loggerConfig.getName(), "org.apache.logging.log4j.core.LoggerTest");
-        assertEquals(loggerConfig.getLevel(), Level.DEBUG);
+        assertEquals("org.apache.logging.log4j.core.LoggerTest", loggerConfig.getName());
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
         final Logger localLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
         assertSame(
-                localLogger.getLevel(),
                 Level.DEBUG,
+                localLogger.getLevel(),
                 "Incorrect level - expected DEBUG, actual " + localLogger.getLevel());
     }
 
     @Test
-    public void testReconfiguration(final LoggerContext context) throws Exception {
+    void testReconfiguration(final LoggerContext context) throws Exception {
         final Configuration oldConfig = context.getConfiguration();
         final int MONITOR_INTERVAL_SECONDS = 5;
         final File file = new File("target/test-classes/" + CONFIG);
@@ -545,7 +545,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void testSuppressedThrowable(final LoggerContext context) {
+    void testSuppressedThrowable(final LoggerContext context) {
         final org.apache.logging.log4j.Logger testLogger = context.getLogger("org.apache.logging.log4j.nothrown");
         testLogger.debug("This is a test", new Throwable("Testing"));
         final List<String> msgs = noThrown.getMessages();
@@ -555,7 +555,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void throwing() {
+    void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);

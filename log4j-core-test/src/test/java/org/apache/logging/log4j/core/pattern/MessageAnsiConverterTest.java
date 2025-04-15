@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-message-ansi.xml")
-public class MessageAnsiConverterTest {
+class MessageAnsiConverterTest {
 
     private static final String EXPECTED =
             "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31mfire!\u001B[m" + Strings.LINE_SEPARATOR;
@@ -40,13 +40,13 @@ public class MessageAnsiConverterTest {
     private ListAppender app;
 
     @BeforeEach
-    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
+    void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
         this.logger = context.getLogger("LoggerTest");
         this.app = app.clear();
     }
 
     @Test
-    public void testReplacement() {
+    void testReplacement() {
         // See https://www.javadoc.io/doc/org.jline/jline/latest/org/jline/jansi/AnsiRenderer.html
         logger.error("@|red,bold Warning!|@ Pants on @|red fire!|@");
 

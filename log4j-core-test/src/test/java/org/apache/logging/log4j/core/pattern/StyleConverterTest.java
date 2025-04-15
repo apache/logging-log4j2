@@ -39,20 +39,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class StyleConverterTest {
+class StyleConverterTest {
 
     private static final String EXPECTED =
             "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
                     + Strings.LINE_SEPARATOR;
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
     }
 
     @Test
     @LoggerContextSource("log4j-style.xml")
-    public void testReplacement(final LoggerContext context, @Named("List") final ListAppender app) {
+    void testReplacement(final LoggerContext context, @Named("List") final ListAppender app) {
         final Logger logger = context.getLogger("LoggerTest");
         logger.error(this.getClass().getName());
 
@@ -65,13 +65,13 @@ public class StyleConverterTest {
     }
 
     @Test
-    public void testNull() {
+    void testNull() {
         assertNull(StyleConverter.newInstance(null, null));
     }
 
     @ParameterizedTest
     @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
-    public void testHighlightConverterCompatibility(final String color, final String escape) {
+    void testHighlightConverterCompatibility(final String color, final String escape) {
         final StyleConverter converter = StyleConverter.newInstance(null, new String[] {"Hello!", color});
         final StringBuilder sb = new StringBuilder();
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
@@ -81,7 +81,7 @@ public class StyleConverterTest {
 
     @ParameterizedTest
     @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
-    public void testLegacyCommaSeparator(final String color, final String escape) {
+    void testLegacyCommaSeparator(final String color, final String escape) {
         final StyleConverter converter =
                 StyleConverter.newInstance(null, new String[] {"Hello!", color.replaceAll("\\s+", ",")});
         final StringBuilder sb = new StringBuilder();
@@ -92,7 +92,7 @@ public class StyleConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiNoWarnings(final ListStatusListener listener) {
+    void testNoAnsiNoWarnings(final ListStatusListener listener) {
         StyleConverter converter = StyleConverter.newInstance(null, new String[] {"", "disableAnsi=true"});
         assertThat(converter).isNotNull();
         converter = StyleConverter.newInstance(null, new String[] {"", "noConsoleNoAnsi=true"});

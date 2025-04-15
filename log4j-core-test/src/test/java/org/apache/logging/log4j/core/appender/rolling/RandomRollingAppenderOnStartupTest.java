@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -61,7 +61,7 @@ public class RandomRollingAppenderOnStartupTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = this.loggerContextRule.getLogger(RandomRollingAppenderOnStartupTest.class.getName());
     }
 
@@ -86,9 +86,10 @@ public class RandomRollingAppenderOnStartupTest {
                     size = Files.size(path);
                 } else {
                     final long fileSize = Files.size(path);
-                    assertTrue(
+                    assertEquals(
                             "Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
-                            size == fileSize);
+                            size,
+                            fileSize);
                 }
                 Files.delete(path);
             }
@@ -97,7 +98,7 @@ public class RandomRollingAppenderOnStartupTest {
     }
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender() {
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }

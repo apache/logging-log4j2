@@ -39,7 +39,7 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  */
 @LoggerContextSource("log4j-test1.xml")
-public class LoggerTest {
+class LoggerTest {
 
     private final Logger logger;
     private final LoggerContext ctx;
@@ -50,13 +50,13 @@ public class LoggerTest {
     }
 
     @Test
-    public void debug() {
+    void debug() {
         logger.debug("Debug message");
         verify("o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
-    public void debugNoParms() {
+    void debugNoParms() {
         logger.debug("Debug message {}");
         verify("o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Debug message {}", (Object[]) null);
@@ -67,13 +67,13 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugWithParms() {
+    void debugWithParms() {
         logger.debug("Hello, {}", "World");
         verify("o.a.l.s.LoggerTest Hello, World MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
-    public void mdc() {
+    void mdc() {
 
         MDC.put("TestYear", "2010");
         logger.debug("Debug message");
@@ -87,27 +87,27 @@ public class LoggerTest {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-793">LOG4J2-793</a>
      */
     @Test
-    public void supportsCustomSLF4JMarkers() {
+    void supportsCustomSLF4JMarkers() {
         final Marker marker = new CustomFlatMarker("TEST");
         logger.debug(marker, "Test");
         verify("o.a.l.s.LoggerTest Test MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
-    public void testRootLogger() {
+    void testRootLogger() {
         final Logger l = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         assertNotNull(l, "No Root Logger");
         assertEquals(Logger.ROOT_LOGGER_NAME, l.getName());
     }
 
     @Test
-    public void doubleSubst() {
+    void doubleSubst() {
         logger.debug("Hello, {}", "Log4j {}");
         verify("o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     @Test
-    public void testThrowable() {
+    void testThrowable() {
         final Throwable expected = new RuntimeException();
         logger.debug("Hello {}", expected);
         verifyThrowable(expected);
@@ -166,8 +166,7 @@ public class LoggerTest {
 
     @BeforeEach
     @AfterEach
-    public void cleanup(
-            @Named("List") final ListAppender list, @Named("UnformattedList") final ListAppender unformattedList) {
+    void cleanup(@Named("List") final ListAppender list, @Named("UnformattedList") final ListAppender unformattedList) {
         MDC.clear();
         list.clear();
         unformattedList.clear();

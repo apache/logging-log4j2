@@ -45,12 +45,14 @@ public final class Strings {
 
     /**
      * The empty array.
+     * @since 2.15.0
      */
     public static final String[] EMPTY_ARRAY = {};
 
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
+     * @since 2.7
      */
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
@@ -59,6 +61,7 @@ public final class Strings {
      *
      * @param str a String
      * @return {@code "str"}
+     * @since 2.3
      */
     public static String dquote(final String str) {
         return Chars.DQUOTE + str + Chars.DQUOTE;
@@ -70,6 +73,7 @@ public final class Strings {
      *
      * @param s the String to check, may be {@code null}
      * @return {@code true} if the String is {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}
+     * @since 2.0.1
      */
     public static boolean isBlank(final String s) {
         if (s == null || s.isEmpty()) {
@@ -118,6 +122,7 @@ public final class Strings {
      *
      * @param s the String to check, may be {@code null}
      * @return {@code true} if the String is non-{@code null} and has content after being trimmed.
+     * @since 2.0.1
      */
     public static boolean isNotBlank(final String s) {
         return !isBlank(s);
@@ -157,6 +162,7 @@ public final class Strings {
      * @param iterable  the {@code Iterable} providing the values to join together, may be null
      * @param separator  the separator character to use
      * @return the joined String, {@code null} if null iterator input
+     * @since 2.7
      */
     public static String join(final Iterable<?> iterable, final char separator) {
         if (iterable == null) {
@@ -175,6 +181,7 @@ public final class Strings {
      * @param iterator  the {@code Iterator} of values to join together, may be null
      * @param separator  the separator character to use
      * @return the joined String, {@code null} if null iterator input
+     * @since 2.7
      */
     public static String join(final Iterator<?> iterator, final char separator) {
 
@@ -207,6 +214,9 @@ public final class Strings {
         return buf.toString();
     }
 
+    /**
+     * @since 2.17.2
+     */
     public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
@@ -234,6 +244,7 @@ public final class Strings {
      * @param str  the String to get the leftmost characters from, may be null
      * @param len  the length of the required String
      * @return the leftmost characters, {@code null} if null String input
+     * @since 2.11.2
      */
     public static String left(final String str, final int len) {
         if (str == null) {
@@ -253,6 +264,7 @@ public final class Strings {
      *
      * @param str a String
      * @return {@code 'str'}
+     * @since 2.3
      */
     public static String quote(final String str) {
         return Chars.QUOTE + str + Chars.QUOTE;
@@ -296,6 +308,7 @@ public final class Strings {
      * @param str The string to upper case.
      * @return a new string
      * @see String#toLowerCase(Locale)
+     * @since 2.17.2
      */
     public static String toRootLowerCase(final String str) {
         return str.toLowerCase(Locale.ROOT);
@@ -306,6 +319,7 @@ public final class Strings {
      * @param str The string to lower case.
      * @return a new string
      * @see String#toLowerCase(Locale)
+     * @since 2.6
      */
     public static String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);
@@ -316,6 +330,7 @@ public final class Strings {
      * @param str1 the first string.
      * @param str2 the second string.
      * @return the concatenated String.
+     * @since 2.15.0
      */
     public static String concat(final String str1, final String str2) {
         if (isEmpty(str1)) {
@@ -338,6 +353,7 @@ public final class Strings {
      * @param count the repetition count
      * @return the new string
      * @throws IllegalArgumentException if either {@code str} is null or {@code count} is negative
+     * @since 2.14.0
      */
     public static String repeat(final String str, final int count) {
         Objects.requireNonNull(str, "str");

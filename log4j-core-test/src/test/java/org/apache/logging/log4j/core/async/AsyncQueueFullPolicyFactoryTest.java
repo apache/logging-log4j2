@@ -17,36 +17,36 @@
 package org.apache.logging.log4j.core.async;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the AsyncQueueFullPolicyFactory class.
  */
-@Category(AsyncLoggers.class)
-public class AsyncQueueFullPolicyFactoryTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncQueueFullPolicyFactoryTest {
 
-    @Before
-    @After
-    public void resetProperties() throws Exception {
+    @BeforeEach
+    @AfterEach
+    void resetProperties() {
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
     }
 
     @Test
-    public void testCreateReturnsDefaultRouterByDefault() throws Exception {
+    void testCreateReturnsDefaultRouterByDefault() {
         final AsyncQueueFullPolicy router = AsyncQueueFullPolicyFactory.create();
         assertEquals(DefaultAsyncQueueFullPolicy.class, router.getClass());
     }
 
     @Test
-    public void testCreateReturnsDiscardingRouterIfSpecified() throws Exception {
+    void testCreateReturnsDiscardingRouterIfSpecified() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
@@ -70,7 +70,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     }
 
     @Test
-    public void testCreateDiscardingRouterDefaultThresholdLevelInfo() throws Exception {
+    void testCreateDiscardingRouterDefaultThresholdLevelInfo() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
@@ -80,7 +80,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     }
 
     @Test
-    public void testCreateDiscardingRouterCaseInsensitive() {
+    void testCreateDiscardingRouterCaseInsensitive() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 toRootLowerCase(AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER));
@@ -90,7 +90,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     }
 
     @Test
-    public void testCreateDiscardingRouterThresholdLevelCustomizable() throws Exception {
+    void testCreateDiscardingRouterThresholdLevelCustomizable() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
@@ -114,7 +114,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     public static class DoesNotImplementInterface {}
 
     @Test
-    public void testCreateReturnsCustomRouterIfSpecified() throws Exception {
+    void testCreateReturnsCustomRouterIfSpecified() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 CustomRouterDefaultConstructor.class.getName());
@@ -124,7 +124,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     }
 
     @Test
-    public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() throws Exception {
+    void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() {
         System.setProperty(
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 DoesNotImplementInterface.class.getName());

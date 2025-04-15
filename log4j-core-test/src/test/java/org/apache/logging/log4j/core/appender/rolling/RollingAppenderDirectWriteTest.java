@@ -36,7 +36,7 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
-public class RollingAppenderDirectWriteTest {
+class RollingAppenderDirectWriteTest {
 
     private final Pattern FILE_PATTERN = Pattern.compile("test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log(\\.gz)?");
     private final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
@@ -46,7 +46,7 @@ public class RollingAppenderDirectWriteTest {
 
     @Test
     @LoggerContextSource
-    public void testAppender(final LoggerContext ctx) throws Exception {
+    void testAppender(final LoggerContext ctx) throws Exception {
         final Logger logger = ctx.getLogger(getClass());
         final int count = 100;
         for (int i = 0; i < count; ++i) {

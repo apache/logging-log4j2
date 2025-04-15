@@ -57,7 +57,7 @@ public class Log4j2EventListenerTest {
     private ApplicationEventPublisher publisher;
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         final AtomicInteger count = new AtomicInteger(0);
         final Source source = new Source(new File("test.java"));
         loggerContextRule

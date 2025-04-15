@@ -37,10 +37,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests the HighlightConverter.
  */
-public class HighlightConverterTest {
+class HighlightConverterTest {
 
     @Test
-    public void testAnsiEmpty() {
+    void testAnsiEmpty() {
         final String[] options = {
             "", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI + "=false"
         };
@@ -58,7 +58,7 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testAnsiNonEmpty() {
+    void testAnsiNonEmpty() {
         final String[] options = {
             "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI + "=false"
         };
@@ -76,7 +76,7 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testLevelNamesBad() {
+    void testLevelNamesBad() {
         final String colorName = "red";
         final String[] options = {
             "%-5level: %msg",
@@ -90,7 +90,7 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testLevelNamesGood() {
+    void testLevelNamesGood() {
         final String colorName = "red";
         final String[] options = {
             "%-5level: %msg",
@@ -115,7 +115,7 @@ public class HighlightConverterTest {
 
     @ParameterizedTest
     @MethodSource("colors")
-    public void testColors(final String colorName, final String escape) {
+    void testColors(final String colorName, final String escape) {
         final String[] options = {
             "%-5level: %msg",
             PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI + "=false, " + "INFO="
@@ -131,7 +131,7 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testLevelNamesUnknown() {
+    void testLevelNamesUnknown() {
         final String colorName = "blue";
         final String[] options = {
             "%level",
@@ -164,7 +164,7 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testLevelNamesNone() {
+    void testLevelNamesNone() {
         final String[] options = {
             "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI + "=false"
         };
@@ -176,7 +176,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiEmpty(final ListStatusListener listener) {
+    void testNoAnsiEmpty(final ListStatusListener listener) {
         final String[] options = {"", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
@@ -194,7 +194,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiNonEmpty(final ListStatusListener listener) {
+    void testNoAnsiNonEmpty(final ListStatusListener listener) {
         final String[] options = {"%-5level: %msg", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
@@ -215,7 +215,7 @@ public class HighlightConverterTest {
      */
     @Test
     @UsingStatusListener
-    public void testBadStyleOption(final ListStatusListener listener) {
+    void testBadStyleOption(final ListStatusListener listener) {
         String defaultWarnColor = "yellow";
         String defaultInfoColor = "green";
         final String[] options = {

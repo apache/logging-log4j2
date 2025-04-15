@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.PreciseClock;
+
 /**
  * Implementation of the {@code Clock} interface that returns the system time.
  */
-public final class SystemClock implements Clock {
+public final class SystemClock implements Clock, PreciseClock {
 
     /**
      * Returns the system time.
@@ -28,5 +32,11 @@ public final class SystemClock implements Clock {
     @Override
     public long currentTimeMillis() {
         return System.currentTimeMillis();
+    }
+
+    @Override
+    public void init(final MutableInstant mutableInstant) {
+        final Instant instant = java.time.Clock.systemUTC().instant();
+        mutableInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());
     }
 }

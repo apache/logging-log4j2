@@ -16,10 +16,11 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +43,12 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test reconfiguring with an XML configuration.
  */
-public class PropertiesReconfigurationTest {
+class PropertiesReconfigurationTest {
 
     private class TestListener implements ConfigurationListener {
 
@@ -97,7 +98,7 @@ public class PropertiesReconfigurationTest {
             final FailableConsumer<String, IOException> configurator)
             throws IOException {
         final File file = new File(configPath);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -109,7 +110,7 @@ public class PropertiesReconfigurationTest {
 
     private void checkConfigureFileAppender(final String configPath, final boolean expectAppend) throws IOException {
         final File file = new File(configPath);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -176,7 +177,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring CUSTOM appenders properly pick up different settings.
      */
     @Test
-    public void testCustomAppenders_TestConfigurator() throws IOException {
+    void testCustomAppenders_TestConfigurator() throws IOException {
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", TestConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_2, false, 2, "B", TestConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", TestConfigurator::configure);
@@ -187,7 +188,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring CUSTOM appenders properly pick up different settings.
      */
     @Test
-    public void testCustomAppenders_PropertyConfigurator() throws IOException {
+    void testCustomAppenders_PropertyConfigurator() throws IOException {
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", PropertyConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_2, false, 2, "B", PropertyConfigurator::configure);
         checkConfigureCustomAppenders(CONFIG_CUSTOM_APPENDERS_1, true, 1, "A", PropertyConfigurator::configure);
@@ -198,7 +199,7 @@ public class PropertiesReconfigurationTest {
      * Tests that configuring and reconfiguring STOCK file appenders properly pick up different settings.
      */
     @Test
-    public void testFileAppenders() throws Exception {
+    void testFileAppenders() throws Exception {
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_1, false);
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_2, true);
         checkConfigureFileAppender(CONFIG_FILE_APPENDER_1, false);
@@ -206,12 +207,12 @@ public class PropertiesReconfigurationTest {
     }
 
     @Test
-    public void testTestListener() throws Exception {
+    void testTestListener() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG_FILE_APPENDER_1);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         final long configMillis = file.lastModified();
-        assertTrue("Unable to modified file time", file.setLastModified(configMillis - FIVE_MINUTES.toMillis()));
+        assertTrue(file.setLastModified(configMillis - FIVE_MINUTES.toMillis()), "Unable to modified file time");
         try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -229,7 +230,7 @@ public class PropertiesReconfigurationTest {
                 fail("Reconfiguration interupted");
             }
             final Configuration updated = context.getConfiguration();
-            assertTrue("Configurations are the same", original != updated);
+            assertNotEquals(original, updated, "Configurations are the same");
         }
     }
 }

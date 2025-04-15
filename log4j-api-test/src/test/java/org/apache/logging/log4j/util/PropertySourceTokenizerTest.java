@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class PropertySourceTokenizerTest {
+class PropertySourceTokenizerTest {
 
     public static Object[][] data() {
         return new Object[][] {
@@ -52,7 +52,7 @@ public class PropertySourceTokenizerTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testTokenize(final String value, final List<CharSequence> expectedTokens) {
+    void testTokenize(final String value, final List<CharSequence> expectedTokens) {
         final List<CharSequence> tokens = PropertySource.Util.tokenize(value);
         assertEquals(expectedTokens, tokens);
     }

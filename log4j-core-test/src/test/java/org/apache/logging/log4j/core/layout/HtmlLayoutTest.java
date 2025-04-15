@@ -51,7 +51,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class HtmlLayoutTest {
+class HtmlLayoutTest {
     private static class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
 
@@ -87,14 +87,14 @@ public class HtmlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -104,13 +104,13 @@ public class HtmlLayoutTest {
     private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
 
     @Test
-    public void testDefaultContentType() {
+    void testDefaultContentType() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         assertEquals("text/html; charset=UTF-8", layout.getContentType());
     }
 
     @Test
-    public void testContentType() {
+    void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
                 .withContentType("text/html; charset=UTF-16")
                 .build();
@@ -120,7 +120,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testDefaultCharset() {
+    void testDefaultCharset() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
@@ -129,16 +129,16 @@ public class HtmlLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayoutIncludeLocationNo() throws Exception {
+    void testLayoutIncludeLocationNo() throws Exception {
         testLayout(false);
     }
 
     @Test
-    public void testLayoutIncludeLocationYes() throws Exception {
+    void testLayoutIncludeLocationYes() throws Exception {
         testLayout(true);
     }
 
-    private void testLayout(final boolean includeLocation) throws Exception {
+    private void testLayout(final boolean includeLocation) {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -184,9 +184,9 @@ public class HtmlLayoutTest {
         assertEquals("<title>Log4j Log Messages</title>", list.get(4), "Incorrect title");
         assertEquals("</body></html>", list.get(list.size() - 1), "Incorrect footer");
         if (includeLocation) {
-            assertEquals(list.get(50), multiLine, "Incorrect multiline");
+            assertEquals(multiLine, list.get(50), "Incorrect multiline");
             assertTrue(html.contains("HtmlLayoutTest.java:"), "Missing location");
-            assertEquals(list.get(71), body, "Incorrect body");
+            assertEquals(body, list.get(71), "Incorrect body");
         } else {
             assertFalse(html.contains("<td>HtmlLayoutTest.java:"), "Location should not be in the output table");
         }
@@ -196,7 +196,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithoutDataPattern() {
+    void testLayoutWithoutDataPattern() {
         final HtmlLayout layout = HtmlLayout.newBuilder().build();
 
         final MyLogEvent event = new MyLogEvent();
@@ -207,7 +207,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternJvmElapseTime() {
+    void testLayoutWithDatePatternJvmElapseTime() {
         final HtmlLayout layout =
                 HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
 
@@ -219,7 +219,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternUnix() {
+    void testLayoutWithDatePatternUnix() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX").build();
 
         final MyLogEvent event = new MyLogEvent();
@@ -229,7 +229,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternUnixMillis() {
+    void testLayoutWithDatePatternUnixMillis() {
         final HtmlLayout layout =
                 HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
 
@@ -240,7 +240,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternFixedFormat() {
+    void testLayoutWithDatePatternFixedFormat() {
         for (final String timeZone : new String[] {"GMT+8", "GMT+0530", "UTC", null}) {
             for (final FixedFormat format : FixedFormat.values()) {
                 testLayoutWithDatePatternFixedFormat(format, timeZone);

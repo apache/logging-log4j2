@@ -23,23 +23,23 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class SystemPropertiesLookupTest {
+class SystemPropertiesLookupTest {
 
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
     @BeforeAll
-    public static void before() {
+    static void before() {
         System.setProperty(TESTKEY, TESTVAL);
     }
 
     @AfterAll
-    public static void after() {
+    static void after() {
         System.clearProperty(TESTKEY);
     }
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final StrLookup lookup = new SystemPropertiesLookup();
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);

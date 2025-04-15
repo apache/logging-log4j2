@@ -29,6 +29,10 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
 
+/**
+ * @deprecated As of version {@code 2.25.0}, planned to be removed!
+ */
+@Deprecated
 public final class RecyclerFactories {
 
     private RecyclerFactories() {}

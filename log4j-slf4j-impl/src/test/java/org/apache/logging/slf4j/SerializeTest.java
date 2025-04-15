@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 @LoggerContextSource("log4j-test1.xml")
-public class SerializeTest {
+class SerializeTest {
 
     Logger logger = LoggerFactory.getLogger("LoggerTest");
 
     @Test
-    public void testLogger() throws Exception {
+    void testLogger() {
         assertThat((Serializable) logger, serializesRoundTrip());
     }
 }

@@ -32,6 +32,9 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     private static final String ENTRY_DEFAULT_PREFIX = "Enter";
     private static final long serialVersionUID = 8578655591131397576L;
 
+    /**
+     * @since 2.24.0
+     */
     public static final FlowMessageFactory INSTANCE = new DefaultFlowMessageFactory();
 
     private final String entryText;

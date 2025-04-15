@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link LocalizedMessageFactory}.
  */
-public class LocalizedMessageFactoryTest {
+class LocalizedMessageFactoryTest {
 
     @Test
-    public void testMessageMarkersDataNo() {
+    void testMessageMarkersDataNo() {
         final LocalizedMessageFactory localizedMessageFactory =
                 new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("msg1");
@@ -36,7 +36,7 @@ public class LocalizedMessageFactoryTest {
     }
 
     @Test
-    public void testMessageMarkersNoDataYes() {
+    void testMessageMarkersNoDataYes() {
         final LocalizedMessageFactory localizedMessageFactory =
                 new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("msg1", 1, "two");
@@ -44,7 +44,7 @@ public class LocalizedMessageFactoryTest {
     }
 
     @Test
-    public void testNewMessage() {
+    void testNewMessage() {
         final LocalizedMessageFactory localizedMessageFactory =
                 new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("hello_world");
@@ -52,7 +52,7 @@ public class LocalizedMessageFactoryTest {
     }
 
     @Test
-    public void testNoMatch() {
+    void testNoMatch() {
         final LocalizedMessageFactory localizedMessageFactory =
                 new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("no match");
@@ -60,7 +60,7 @@ public class LocalizedMessageFactoryTest {
     }
 
     @Test
-    public void testNoMatchPercentInMessageNoArgsNo() {
+    void testNoMatchPercentInMessageNoArgsNo() {
         // LOG4J2-3458 LocalizedMessage causes a lot of noise on the console
         //
         // ERROR StatusLogger Unable to format msg: C:/Program%20Files/Some%20Company/Some%20Product%20Name/
@@ -87,7 +87,7 @@ public class LocalizedMessageFactoryTest {
     }
 
     @Test
-    public void testNoMatchPercentInMessageArgsYes() {
+    void testNoMatchPercentInMessageArgsYes() {
         final LocalizedMessageFactory localizedMessageFactory =
                 new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage(

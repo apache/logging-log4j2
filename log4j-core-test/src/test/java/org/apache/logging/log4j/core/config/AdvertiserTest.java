@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class AdvertiserTest {
+class AdvertiserTest {
 
     private static final String CONFIG = "log4j-advertiser.xml";
     private static final String STATUS_LOG = "target/status.log";
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         final File file = new File(STATUS_LOG);
         file.delete();
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
@@ -53,7 +53,7 @@ public class AdvertiserTest {
     }
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
@@ -91,12 +91,12 @@ public class AdvertiserTest {
     }
 
     @Test
-    public void testAdvertisementsFound() {
+    void testAdvertisementsFound() {
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
     }
 
     @Test
-    public void testAdvertisementsRemovedOnConfigStop() {
+    void testAdvertisementsRemovedOnConfigStop() {
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
 
         final LoggerContext ctx = LoggerContext.getContext();
@@ -110,7 +110,7 @@ public class AdvertiserTest {
     }
 
     @Test
-    public void testAdvertisementsAddedOnReconfigAfterStop() {
+    void testAdvertisementsAddedOnReconfigAfterStop() {
         verifyExpectedEntriesAdvertised(InMemoryAdvertiser.getAdvertisedEntries());
 
         final LoggerContext ctx = LoggerContext.getContext();

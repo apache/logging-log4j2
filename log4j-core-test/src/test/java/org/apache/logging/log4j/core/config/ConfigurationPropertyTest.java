@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class ConfigurationPropertyTest {
+class ConfigurationPropertyTest {
 
     private LoggerContext loggerContext;
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         if (loggerContext != null) {
             LogManager.shutdown(loggerContext);
         }
@@ -40,7 +40,7 @@ public class ConfigurationPropertyTest {
     }
 
     @Test
-    public void testInitializeFromSystemProperty() {
+    void testInitializeFromSystemProperty() {
         System.setProperty("log4j2.configurationFile", "src/test/resources/log4j-list.xml");
         loggerContext = (LoggerContext) LogManager.getContext(false);
         final Configuration configuration = loggerContext.getConfiguration();

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-test2.xml")
-public class LoggerUpdateTest {
+class LoggerUpdateTest {
 
     private final ListAppender app;
 
@@ -39,7 +39,7 @@ public class LoggerUpdateTest {
     }
 
     @Test
-    public void resetLevel(final LoggerContext context) {
+    void resetLevel(final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("com.apache.test");
         logger.traceEntry();
         List<LogEvent> events = app.getEvents();
@@ -59,7 +59,7 @@ public class LoggerUpdateTest {
     }
 
     @Test
-    public void testUpdateLoggersPropertyListeners(final LoggerContext context) throws Exception {
+    void testUpdateLoggersPropertyListeners(final LoggerContext context) {
         context.addPropertyChangeListener(evt -> {
             assertEquals(LoggerContext.PROPERTY_CONFIG, evt.getPropertyName());
             assertSame(context, evt.getSource());

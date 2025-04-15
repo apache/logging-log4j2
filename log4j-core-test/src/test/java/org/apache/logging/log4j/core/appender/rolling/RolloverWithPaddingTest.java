@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * Tests that zero-padding in rolled files works correctly.
  */
 @UsingStatusListener
-public class RolloverWithPaddingTest {
+class RolloverWithPaddingTest {
 
     private static final String[] EXPECTED_FILES = {
         "rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log"
@@ -50,7 +50,7 @@ public class RolloverWithPaddingTest {
 
     @Test
     @LoggerContextSource
-    public void testPadding(final LoggerContext context) throws Exception {
+    void testPadding(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
@@ -64,7 +64,7 @@ public class RolloverWithPaddingTest {
 
     @Test
     @LoggerContextSource
-    public void testOldFileDeleted(final LoggerContext context) throws Exception {
+    void testOldFileDeleted(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         // Prepare directory
         for (int i = 1; i <= 5; i++) {

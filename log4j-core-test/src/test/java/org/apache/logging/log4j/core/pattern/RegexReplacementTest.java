@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-replace.xml")
 @UsingThreadContextMap
-public class RegexReplacementTest {
+class RegexReplacementTest {
     private final ListAppender app;
     private final ListAppender app2;
     private final org.apache.logging.log4j.Logger logger;
@@ -51,7 +51,7 @@ public class RegexReplacementTest {
     }
 
     @Test
-    public void testReplacement() {
+    void testReplacement() {
         logger.error(this.getClass().getName());
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
@@ -62,7 +62,7 @@ public class RegexReplacementTest {
     }
 
     @Test
-    public void testMessageReplacement() {
+    void testMessageReplacement() {
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
         final List<String> msgs = app.getMessages();
@@ -72,7 +72,7 @@ public class RegexReplacementTest {
     }
 
     @Test
-    public void testConverter() {
+    void testConverter() {
         logger2.error(this.getClass().getName());
         final List<String> msgs = app2.getMessages();
         assertNotNull(msgs);

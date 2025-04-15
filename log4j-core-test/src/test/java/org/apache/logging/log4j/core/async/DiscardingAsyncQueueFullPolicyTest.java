@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the DiscardingAsyncQueueFullPolicy class..
  */
-@Category(AsyncLoggers.class)
-public class DiscardingAsyncQueueFullPolicyTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class DiscardingAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {
         return Thread.currentThread().getId();
@@ -38,83 +39,84 @@ public class DiscardingAsyncQueueFullPolicyTest {
         return -1;
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testConstructorDisallowsNullThresholdLevel() {
-        new DiscardingAsyncQueueFullPolicy(null);
+    @Test
+    void testConstructorDisallowsNullThresholdLevel() {
+        assertThrows(NullPointerException.class, () -> {
+            new DiscardingAsyncQueueFullPolicy(null);
+        });
     }
 
     @Test
-    public void testThresholdLevelIsConstructorValue() {
+    void testThresholdLevelIsConstructorValue() {
         assertSame(Level.ALL, new DiscardingAsyncQueueFullPolicy(Level.ALL).getThresholdLevel());
         assertSame(Level.OFF, new DiscardingAsyncQueueFullPolicy(Level.OFF).getThresholdLevel());
         assertSame(Level.INFO, new DiscardingAsyncQueueFullPolicy(Level.INFO).getThresholdLevel());
     }
 
     @Test
-    public void testGetRouteDiscardsIfThresholdCapacityReachedAndLevelEqualOrLessSpecificThanThreshold()
-            throws Exception {
+    void testGetRouteDiscardsIfThresholdCapacityReachedAndLevelEqualOrLessSpecificThanThreshold() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL}) {
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(otherThreadId(), level));
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(otherThreadId(), level));
+            assertEquals(EventRoute.DISCARD, router.getRoute(currentThreadId(), level), level.name());
+            assertEquals(EventRoute.DISCARD, router.getRoute(otherThreadId(), level), level.name());
+            assertEquals(EventRoute.DISCARD, router.getRoute(currentThreadId(), level), level.name());
+            assertEquals(EventRoute.DISCARD, router.getRoute(otherThreadId(), level), level.name());
         }
     }
 
     @Test
-    public void testGetRouteDiscardsIfQueueFullAndLevelEqualOrLessSpecificThanThreshold() throws Exception {
+    void testGetRouteDiscardsIfQueueFullAndLevelEqualOrLessSpecificThanThreshold() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.WARN, Level.INFO, Level.DEBUG, Level.TRACE, Level.ALL}) {
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.DISCARD, router.getRoute(otherThreadId(), level));
+            assertEquals(EventRoute.DISCARD, router.getRoute(currentThreadId(), level), level.name());
+            assertEquals(EventRoute.DISCARD, router.getRoute(otherThreadId(), level), level.name());
         }
     }
 
     @Test
-    public void testGetRouteEnqueuesIfThresholdCapacityReachedButLevelMoreSpecificThanThreshold() throws Exception {
+    void testGetRouteEnqueuesIfThresholdCapacityReachedButLevelMoreSpecificThanThreshold() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
-            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
-            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
+            assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level), level.name());
+            assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level), level.name());
+            assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level), level.name());
+            assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level), level.name());
         }
     }
 
     @Test
-    public void testGetRouteEnqueueIfOtherThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
+    void testGetRouteEnqueueIfOtherThreadQueueFullAndLevelMoreSpecificThanThreshold() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
-            assertEquals(level.name(), EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level));
+            assertEquals(EventRoute.ENQUEUE, router.getRoute(otherThreadId(), level), level.name());
         }
     }
 
     @Test
-    public void testGetRouteSynchronousIfCurrentThreadQueueFullAndLevelMoreSpecificThanThreshold() throws Exception {
+    void testGetRouteSynchronousIfCurrentThreadQueueFullAndLevelMoreSpecificThanThreshold() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.WARN);
 
         for (final Level level : new Level[] {Level.ERROR, Level.FATAL, Level.OFF}) {
-            assertEquals(level.name(), EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level));
+            assertEquals(EventRoute.SYNCHRONOUS, router.getRoute(currentThreadId(), level), level.name());
         }
     }
 
     @Test
-    public void testGetDiscardCount() throws Exception {
+    void testGetDiscardCount() {
         final DiscardingAsyncQueueFullPolicy router = new DiscardingAsyncQueueFullPolicy(Level.INFO);
-        assertEquals("initially", 0, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
+        assertEquals(0, DiscardingAsyncQueueFullPolicy.getDiscardCount(router), "initially");
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 1, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
+        assertEquals(1, DiscardingAsyncQueueFullPolicy.getDiscardCount(router), "increase");
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 2, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
+        assertEquals(2, DiscardingAsyncQueueFullPolicy.getDiscardCount(router), "increase");
 
         assertEquals(EventRoute.DISCARD, router.getRoute(-1L, Level.INFO));
-        assertEquals("increase", 3, DiscardingAsyncQueueFullPolicy.getDiscardCount(router));
+        assertEquals(3, DiscardingAsyncQueueFullPolicy.getDiscardCount(router), "increase");
     }
 }

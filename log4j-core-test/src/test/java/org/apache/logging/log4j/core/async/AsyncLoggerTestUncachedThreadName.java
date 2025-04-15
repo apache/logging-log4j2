@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,31 +26,31 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerTestUncachedThreadName {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerTestUncachedThreadName {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty("AsyncLogger.ThreadNameStrategy", "UNCACHED");
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerTest.xml");
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
     @Test
-    public void testAsyncLogUsesCurrentThreadName() throws Exception {
+    void testAsyncLogUsesCurrentThreadName() throws Exception {
         final File file = new File("target", "AsyncLoggerTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
@@ -68,9 +68,9 @@ public class AsyncLoggerTestUncachedThreadName {
         // System.out.println(line2);
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
-        assertTrue("line1", line1.endsWith(" INFO c.f.Bar [main]   Async logger msg "));
-        assertTrue("line2", line2.endsWith(" INFO c.f.Bar [MODIFIED-THREADNAME]   Async logger msg "));
+        assertNotNull(line1, "line1");
+        assertNotNull(line2, "line2");
+        assertTrue(line1.endsWith(" INFO c.f.Bar [main]   Async logger msg "), "line1");
+        assertTrue(line2.endsWith(" INFO c.f.Bar [MODIFIED-THREADNAME]   Async logger msg "), "line2");
     }
 }

@@ -107,6 +107,9 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
         return charSequence.subSequence(start, end);
     }
 
+    /**
+     * @since 2.11.1
+     */
     @Override
     public void clear() {
         charSequence = null;

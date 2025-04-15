@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests that ThreadDumpMessage uses ExtendedThreadInformation when available.
  */
-public class ExtendedThreadInformationTest {
+class ExtendedThreadInformationTest {
     @Test
-    public void testMessage() {
+    void testMessage() {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Testing");
 
         final String message = msg.getFormattedMessage();

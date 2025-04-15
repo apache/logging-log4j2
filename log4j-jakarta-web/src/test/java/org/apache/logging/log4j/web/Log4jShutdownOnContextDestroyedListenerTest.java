@@ -29,7 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jShutdownOnContextDestroyedListenerTest {
+class Log4jShutdownOnContextDestroyedListenerTest {
     @Mock(lenient = true)
     private ServletContextEvent event;
 
@@ -41,7 +41,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     private Log4jShutdownOnContextDestroyedListener listener;
 
-    public void setUp(final boolean mockInitializer) {
+    void setUp(final boolean mockInitializer) {
         this.listener = new Log4jShutdownOnContextDestroyedListener();
         given(event.getServletContext()).willReturn(servletContext);
         if (mockInitializer) {
@@ -51,7 +51,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     }
 
     @Test
-    public void testInitAndDestroy() throws Exception {
+    void testInitAndDestroy() {
         setUp(true);
         this.listener.contextInitialized(this.event);
 
@@ -65,7 +65,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     }
 
     @Test
-    public void testDestroy() throws Exception {
+    void testDestroy() {
         setUp(true);
         this.listener.contextDestroyed(this.event);
 
@@ -74,7 +74,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     }
 
     @Test
-    public void whenNoInitializerInContextTheContextInitializedShouldThrowAnException() {
+    void whenNoInitializerInContextTheContextInitializedShouldThrowAnException() {
         setUp(false);
 
         assertThrows(IllegalStateException.class, () -> {

@@ -112,7 +112,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param pattern a formatting pattern
      * @param args arguments to be formatted
      * @param throwable a {@link Throwable}
-     * @deprecated Use {@link #ParameterizedMessage(String, Object[], Throwable)} instead
+     * @deprecated Since 2.6, use {@link #ParameterizedMessage(String, Object[], Throwable)} instead
      */
     @InlineMe(
             replacement = "this(pattern, Arrays.stream(args).toArray(Object[]::new), throwable)",

@@ -39,7 +39,7 @@ import org.mockito.Mock.Strictness;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jServletContextListenerTest {
+class Log4jServletContextListenerTest {
     /* event and servletContext are marked lenient because they aren't used in the
      * testDestroyWithNoInit but are only accessed during initialization
      */
@@ -55,7 +55,7 @@ public class Log4jServletContextListenerTest {
     private final AtomicReference<Object> count = new AtomicReference<>();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         given(event.getServletContext()).willReturn(servletContext);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
 
@@ -67,7 +67,7 @@ public class Log4jServletContextListenerTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3})
-    public void testInitAndDestroy(final int listenerCount) throws Exception {
+    void testInitAndDestroy(final int listenerCount) {
         final Log4jServletContextListener[] listeners = new Log4jServletContextListener[listenerCount];
         for (int idx = 0; idx < listenerCount; idx++) {
             final Log4jServletContextListener listener = new Log4jServletContextListener();
@@ -96,7 +96,7 @@ public class Log4jServletContextListenerTest {
     }
 
     @Test
-    public void testInitFailure() throws Exception {
+    void testInitFailure() {
         willThrow(new IllegalStateException(Strings.EMPTY)).given(initializer).start();
         final Log4jServletContextListener listener = new Log4jServletContextListener();
 
@@ -107,14 +107,14 @@ public class Log4jServletContextListenerTest {
     }
 
     @Test
-    public void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTrue() throws Exception {
+    void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTrue() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
                 .willReturn("true");
         ensureInitializingFailsWhenAuthShutdownIsEnabled();
     }
 
     @Test
-    public void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTRUE() throws Exception {
+    void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTRUE() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
                 .willReturn("TRUE");
         ensureInitializingFailsWhenAuthShutdownIsEnabled();

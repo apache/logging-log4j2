@@ -20,19 +20,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 /**
  *
  */
-@Category(PerformanceTests.class)
-public class FilterPerformanceComparison {
+@Tag("PerformanceTests")
+class FilterPerformanceComparison {
 
     private final Logger logger = LogManager.getLogger(FilterPerformanceComparison.class.getName());
     private final org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(FilterPerformanceComparison.class);
@@ -47,30 +46,30 @@ public class FilterPerformanceComparison {
 
     private static final String LOGBACK_CONF = "logback.configurationFile";
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeAll
+    static void setupClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
     }
 
-    @AfterClass
-    public static void cleanupClass() {
+    @AfterAll
+    static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         System.clearProperty(LOGBACK_CONF);
     }
 
-    @After
-    public void after() {
+    @AfterEach
+    void after() {
         ThreadContext.clearAll();
     }
 
     @Test
-    public void testPerformanceEmptyContext() throws Exception {
-        testPerformance(Collections.<String, String>emptyMap());
+    void testPerformanceEmptyContext() throws Exception {
+        testPerformance(Collections.emptyMap());
     }
 
     @Test
-    public void testPerformanceNonEmptyContext() throws Exception {
+    void testPerformanceNonEmptyContext() throws Exception {
         testPerformance(createNonEmptyContextData());
     }
 
@@ -88,7 +87,7 @@ public class FilterPerformanceComparison {
         }
     }
 
-    private void testPerformance(final Map<String, String> contextData) throws Exception {
+    private void testPerformance(final Map<String, String> contextData) {
         putContextData(contextData);
         Target.LOGBACK.timedLoop(logger, logbacklogger, WARMUP);
         Target.LOG4J2.timedLoop(logger, logbacklogger, WARMUP);
@@ -109,12 +108,12 @@ public class FilterPerformanceComparison {
     }
 
     @Test
-    public void testThreadsEmptyContext() throws Exception {
-        testThreads(Collections.<String, String>emptyMap());
+    void testThreadsEmptyContext() throws Exception {
+        testThreads(Collections.emptyMap());
     }
 
     @Test
-    public void testThreadsNonEmptyContext() throws Exception {
+    void testThreadsNonEmptyContext() throws Exception {
         testThreads(createNonEmptyContextData());
     }
 

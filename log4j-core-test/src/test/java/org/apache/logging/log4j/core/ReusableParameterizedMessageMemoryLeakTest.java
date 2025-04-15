@@ -22,10 +22,10 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
 
-public class ReusableParameterizedMessageMemoryLeakTest {
+class ReusableParameterizedMessageMemoryLeakTest {
 
     @Test
-    public void parameters_should_be_garbage_collected() throws Exception {
+    void parameters_should_be_garbage_collected() throws Exception {
         awaitGarbageCollection(() -> {
             final ParameterObject parameter = new ParameterObject("paramValue");
             final ReusableMessage message =

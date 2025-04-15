@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class ProcessIdUtilTest {
+class ProcessIdUtilTest {
 
     @Test
-    public void processIdTest() {
+    void processIdTest() {
         final String processId = ProcessIdUtil.getProcessId();
-        assertNotEquals(processId, ProcessIdUtil.DEFAULT_PROCESSID, "ProcessId is default");
+        assertNotEquals(ProcessIdUtil.DEFAULT_PROCESSID, processId, "ProcessId is default");
     }
 }

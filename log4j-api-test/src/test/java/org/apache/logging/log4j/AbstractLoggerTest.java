@@ -48,7 +48,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 @ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 @SetSystemProperty(key = "log4j2.status.entries", value = "200")
 @SetSystemProperty(key = "log4j2.StatusLogger.level", value = "WARN")
-public class AbstractLoggerTest {
+class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
 
@@ -94,7 +94,7 @@ public class AbstractLoggerTest {
     };
 
     @Test
-    public void testDebug() {
+    void testDebug() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.DEBUG);
 
@@ -149,7 +149,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testError() {
+    void testError() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.ERROR);
 
@@ -204,7 +204,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testFatal() {
+    void testFatal() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.FATAL);
 
@@ -259,7 +259,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testInfo() {
+    void testInfo() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.INFO);
 
@@ -314,7 +314,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogDebug() {
+    void testLogDebug() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.DEBUG);
 
@@ -369,7 +369,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogError() {
+    void testLogError() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.ERROR);
 
@@ -424,7 +424,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogFatal() {
+    void testLogFatal() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.FATAL);
 
@@ -479,7 +479,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogInfo() {
+    void testLogInfo() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.INFO);
 
@@ -534,7 +534,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogTrace() {
+    void testLogTrace() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.TRACE);
 
@@ -589,7 +589,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testLogWarn() {
+    void testLogWarn() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.WARN);
 
@@ -644,7 +644,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testTrace() {
+    void testTrace() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.TRACE);
 
@@ -699,7 +699,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testWarn() {
+    void testWarn() {
         final CountingLogger logger = new CountingLogger();
         logger.setCurrentLevel(Level.WARN);
 
@@ -754,7 +754,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testMessageWithThrowable() {
+    void testMessageWithThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
         final ThrowableMessage message = new ThrowableMessage(t);
 
@@ -776,7 +776,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testMessageWithoutThrowable() {
+    void testMessageWithoutThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         final ThrowableMessage message = new ThrowableMessage(null);
 
@@ -798,7 +798,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testMessageSupplierWithThrowable() {
+    void testMessageSupplierWithThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
         final ThrowableMessage message = new ThrowableMessage(t);
         final MessageSupplier supplier = () -> message;
@@ -821,7 +821,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testMessageSupplierWithoutThrowable() {
+    void testMessageSupplierWithoutThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         final ThrowableMessage message = new ThrowableMessage(null);
         final MessageSupplier supplier = () -> message;
@@ -844,7 +844,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testSupplierWithThrowable() {
+    void testSupplierWithThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(true);
         final ThrowableMessage message = new ThrowableMessage(t);
         final Supplier<Message> supplier = () -> message;
@@ -867,7 +867,7 @@ public class AbstractLoggerTest {
     }
 
     @Test
-    public void testSupplierWithoutThrowable() {
+    void testSupplierWithoutThrowable() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         final ThrowableMessage message = new ThrowableMessage(null);
         final Supplier<Message> supplier = () -> message;
@@ -891,7 +891,7 @@ public class AbstractLoggerTest {
 
     @Test
     @ResourceLock("log4j2.StatusLogger")
-    public void testMessageThrows() {
+    void testMessageThrows() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         logger.error(new TestMessage(
                 () -> {
@@ -909,7 +909,7 @@ public class AbstractLoggerTest {
 
     @Test
     @ResourceLock("log4j2.StatusLogger")
-    public void testMessageThrowsAndNullFormat() {
+    void testMessageThrowsAndNullFormat() {
         final ThrowableExpectingLogger logger = new ThrowableExpectingLogger(false);
         logger.error(new TestMessage(
                 () -> {

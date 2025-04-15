@@ -147,7 +147,7 @@ class ParameterFormatterTest {
     }
 
     @Test
-    public void testDeepToString() {
+    void testDeepToString() {
         final List<Object> list = new ArrayList<>();
         list.add(1);
         // noinspection CollectionAddedToSelf
@@ -159,7 +159,7 @@ class ParameterFormatterTest {
     }
 
     @Test
-    public void testDeepToStringUsingNonRecursiveButConsequentObjects() {
+    void testDeepToStringUsingNonRecursiveButConsequentObjects() {
         final List<Object> list = new ArrayList<>();
         final Object item = Collections.singletonList(0);
         list.add(1);
@@ -173,7 +173,7 @@ class ParameterFormatterTest {
     }
 
     @Test
-    public void testIdentityToString() {
+    void testIdentityToString() {
         final List<Object> list = new ArrayList<>();
         list.add(1);
         // noinspection CollectionAddedToSelf

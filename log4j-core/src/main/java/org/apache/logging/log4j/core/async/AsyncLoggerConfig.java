@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +91,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     isAdditivity(),
                     getProperties(),
                     getConfig(),
-                    includeLocation(getIncludeLocation()));
+                    shouldIncludeLocation(getIncludeLocation()));
         }
     }
 
@@ -123,6 +124,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     @Override
+    @SuppressWarnings("BoxedPrimitiveEquality")
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301
         if (predicate == LoggerConfigPredicate.ALL
@@ -274,7 +276,14 @@ public class AsyncLoggerConfig extends LoggerConfig {
         final boolean additive = Booleans.parseBoolean(additivity, true);
 
         return new AsyncLoggerConfig(
-                name, appenderRefs, filter, level, additive, properties, config, includeLocation(includeLocation));
+                name,
+                appenderRefs,
+                filter,
+                level,
+                additive,
+                properties,
+                config,
+                shouldIncludeLocation(includeLocation));
     }
 
     /**
@@ -292,6 +301,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * @since 3.0
      */
     @Deprecated
+    @SuppressFBWarnings("HSM_HIDING_METHOD")
     public static LoggerConfig createLogger(
             @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
             @PluginAttribute("level") final Level level,
@@ -311,11 +321,20 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 additivity,
                 properties,
                 config,
-                includeLocation(includeLocation));
+                shouldIncludeLocation(includeLocation));
+    }
+
+    /**
+     * @deprecated since 2.25.0. The method will become private in version 3.0.
+     */
+    @Deprecated
+    @SuppressFBWarnings(value = "HSM_HIDING_METHOD", justification = "Should be private.")
+    protected static boolean includeLocation(final String includeLocationConfigValue) {
+        return shouldIncludeLocation(includeLocationConfigValue);
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE
-    protected static boolean includeLocation(final String includeLocationConfigValue) {
+    private static boolean shouldIncludeLocation(final String includeLocationConfigValue) {
         return Boolean.parseBoolean(includeLocationConfigValue);
     }
 
@@ -344,7 +363,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                         isAdditivity(),
                         getProperties(),
                         getConfig(),
-                        AsyncLoggerConfig.includeLocation(getIncludeLocation()));
+                        shouldIncludeLocation(getIncludeLocation()));
             }
         }
 
@@ -377,7 +396,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     additive,
                     properties,
                     config,
-                    AsyncLoggerConfig.includeLocation(includeLocation));
+                    shouldIncludeLocation(includeLocation));
         }
 
         /**
@@ -403,7 +422,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     additive,
                     properties,
                     config,
-                    AsyncLoggerConfig.includeLocation(includeLocation));
+                    shouldIncludeLocation(includeLocation));
         }
     }
 }

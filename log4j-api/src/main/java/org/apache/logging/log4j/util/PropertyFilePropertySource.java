@@ -37,6 +37,9 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         this(fileName, true);
     }
 
+    /**
+     * @since 2.18.0
+     */
     public PropertyFilePropertySource(final String fileName, final boolean useTccl) {
         super(loadPropertiesFile(fileName, useTccl));
     }

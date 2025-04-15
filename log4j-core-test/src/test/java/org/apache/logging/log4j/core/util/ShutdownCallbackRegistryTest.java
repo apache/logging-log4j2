@@ -35,23 +35,23 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class ShutdownCallbackRegistryTest {
+class ShutdownCallbackRegistryTest {
 
     @BeforeAll
-    public static void setUpClass() {
+    static void setUpClass() {
         System.setProperty("log4j2.shutdownHookEnabled", "true");
         System.setProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, Registry.class.getName());
     }
 
     @AfterAll
-    public static void afterClass() {
+    static void afterClass() {
         System.clearProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
         System.clearProperty("log4j2.shutdownHookEnabled");
     }
 
     @Test
     @LoggerContextSource("ShutdownCallbackRegistryTest.xml")
-    public void testShutdownCallbackRegistry(final LoggerContext context) {
+    void testShutdownCallbackRegistry(final LoggerContext context) {
         assertTrue(context.isStarted(), "LoggerContext should be started");
         assertThat(Registry.CALLBACKS, hasSize(1));
         Registry.shutdown();

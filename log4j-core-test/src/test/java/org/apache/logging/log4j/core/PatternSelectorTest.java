@@ -31,12 +31,12 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "bsh, Javascript")
 @LoggerContextSource("log4j-patternSelector.xml")
-public class PatternSelectorTest {
+class PatternSelectorTest {
 
     private static final int CURRENT_LINE = 36;
 
     @Test
-    public void testMarkerPatternSelector(@Named("List") final ListAppender app) {
+    void testMarkerPatternSelector(@Named("List") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestMarkerPatternSelector");
         logger.traceEntry();
         logger.info("Hello World");
@@ -57,7 +57,7 @@ public class PatternSelectorTest {
     }
 
     @Test
-    public void testScriptPatternSelector(@Named("List2") final ListAppender app) {
+    void testScriptPatternSelector(@Named("List2") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("NoLocation");
         logger.traceEntry();
@@ -85,7 +85,7 @@ public class PatternSelectorTest {
     }
 
     @Test
-    public void testJavaScriptPatternSelector(@Named("List3") final ListAppender app) {
+    void testJavaScriptPatternSelector(@Named("List3") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestJavaScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("JavascriptNoLocation");
         logger.traceEntry();

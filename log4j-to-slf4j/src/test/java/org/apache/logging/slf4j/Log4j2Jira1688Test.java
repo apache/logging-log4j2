@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
-public class Log4j2Jira1688Test {
+class Log4j2Jira1688Test {
 
     @Test
-    public void testLog4j2() {
+    void testLog4j2() {
 
         // Argument-array creation
         final int limit = 37;

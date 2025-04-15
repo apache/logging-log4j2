@@ -30,18 +30,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class ThreadContextTest {
+class ThreadContextTest {
 
     @Test
-    public void testPush() {
+    void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextTest.class.getSimpleName(), "running");
-        assertEquals(ThreadContext.pop(), "ThreadContextTest is running", "Incorrect parameterized stack value");
-        assertEquals(ThreadContext.pop(), "Hello", "Incorrect simple stack value");
+        assertEquals("ThreadContextTest is running", ThreadContext.pop(), "Incorrect parameterized stack value");
+        assertEquals("Hello", ThreadContext.pop(), "Incorrect simple stack value");
     }
 
     @Test
-    public void testInheritanceSwitchedOffByDefault() throws Exception {
+    void testInheritanceSwitchedOffByDefault() throws Exception {
         ThreadContext.put("Greeting", "Hello");
         StringBuilder sb = new StringBuilder();
         TestThread thread = new TestThread(sb);
@@ -59,47 +59,47 @@ public class ThreadContextTest {
 
     @Test
     @Tag("performance")
-    public void perfTest() {
+    void perfTest() {
         ThreadContextUtilityClass.perfTest();
     }
 
     @Test
-    public void testGetContextReturnsEmptyMapIfEmpty() {
+    void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
-    public void testGetContextReturnsMutableCopy() {
+    void testGetContextReturnsMutableCopy() {
         ThreadContextUtilityClass.testGetContextReturnsMutableCopy();
     }
 
     @Test
-    public void testGetImmutableContextReturnsEmptyMapIfEmpty() {
+    void testGetImmutableContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
-    public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
+    void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
     }
 
     @Test
-    public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
+    void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
     }
 
     @Test
-    public void testGetImmutableStackReturnsEmptyStackIfEmpty() {
+    void testGetImmutableStackReturnsEmptyStackIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableStackReturnsEmptyStackIfEmpty();
     }
 
     @Test
-    public void testPut() {
+    void testPut() {
         ThreadContextUtilityClass.testPut();
     }
 
     @Test
-    public void testPutIfNotNull() {
+    void testPutIfNotNull() {
         ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
@@ -111,7 +111,7 @@ public class ThreadContextTest {
     }
 
     @Test
-    public void testPutAll() {
+    void testPutAll() {
         assertTrue(ThreadContext.isEmpty());
         assertFalse(ThreadContext.containsKey("key"));
         final int mapSize = 10;
@@ -128,7 +128,7 @@ public class ThreadContextTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
@@ -139,7 +139,7 @@ public class ThreadContextTest {
     }
 
     @Test
-    public void testRemoveAll() {
+    void testRemoveAll() {
         ThreadContext.put("testKey1", "testValue1");
         ThreadContext.put("testKey2", "testValue2");
         assertEquals("testValue1", ThreadContext.get("testKey1"));
@@ -153,7 +153,7 @@ public class ThreadContextTest {
     }
 
     @Test
-    public void testContainsKey() {
+    void testContainsKey() {
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertTrue(ThreadContext.containsKey("testKey"));

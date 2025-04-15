@@ -27,12 +27,12 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 
 @CleanUpDirectories(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.DIR)
-public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
+class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
     public static final String DIR = "target/rolling-random-direct-switch-director";
 
     @Test
     @LoggerContextSource(value = "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
-    public void testAppender(final LoggerContext context) throws Exception {
+    void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
         final LocalTime start = LocalTime.now();
         LocalTime end;

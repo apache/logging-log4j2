@@ -35,13 +35,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class ContextDataProviderTest {
+class ContextDataProviderTest {
 
     private static Logger logger;
     private static ListAppender appender;
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         ThreadContextDataInjector.contextDataProviders.add(new TestContextDataProvider());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j-contextData.xml");
         final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
@@ -51,7 +51,7 @@ public class ContextDataProviderTest {
     }
 
     @Test
-    public void testContextProvider() {
+    void testContextProvider() {
         ThreadContext.put("loginId", "jdoe");
         logger.debug("This is a test");
         final List<String> messages = appender.getMessages();

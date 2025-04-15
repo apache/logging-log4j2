@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.dsl.Disruptor;
 import java.util.List;
@@ -62,6 +63,10 @@ import org.apache.logging.log4j.util.StringMap;
  * and they will flush to disk at the end of each batch. This means that even with immediateFlush=false, there will
  * never be any items left in the buffer; all log events will all be written to disk in a very efficient manner.
  */
+// We changed the constructor from `public` to package-private.
+// The constructor was effectively package-private, since the {@link AsyncLoggerDisruptor} class in its signature is
+// package-private, without any public implementation.
+@BaselineIgnore("2.24.3")
 public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBufferLogEvent> {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
@@ -86,16 +91,14 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     /**
      * Constructs an {@code AsyncLogger} with the specified context, name and message factory.
      *
-     * @param context context of this logger
-     * @param name name of this logger
-     * @param messageFactory message factory of this logger
-     * @param loggerDisruptor helper class that logging can be delegated to. This object owns the Disruptor.
+     * @param context The {@link LoggerContext} this logger is associated with, never {@code null}.
+     * @param name The logger name, never {@code null}.
+     * @param messageFactory The message factory to be used.
+     *                       Passing a {@code null} value is deprecated, but supported for backward compatibility.
+     * @param loggerDisruptor Helper class that logging can be delegated to. This object owns the Disruptor.
      */
-    public AsyncLogger(
-            final LoggerContext context,
-            final String name,
-            final MessageFactory messageFactory,
-            final AsyncLoggerDisruptor loggerDisruptor) {
+    AsyncLogger(
+            LoggerContext context, String name, MessageFactory messageFactory, AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
         includeLocation = privateConfig.loggerConfig.isIncludeLocation();
@@ -145,7 +148,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         getTranslatorType().log(fqcn, location, level, marker, message, throwable);
     }
 
-    abstract class TranslatorType {
+    abstract static class TranslatorType {
         abstract void log(
                 final String fqcn,
                 final StackTraceElement location,
@@ -391,7 +394,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         if (!isReused(message)) {
             InternalAsyncUtil.makeMessageImmutable(message);
         }
-        StackTraceElement location = null;
+        StackTraceElement location;
         // calls the translateTo method on this AsyncLogger
         if (!disruptor
                 .getRingBuffer()

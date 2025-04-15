@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
+import java.lang.reflect.Method;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -27,23 +31,21 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.NoMarkerFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests {@link OutputStreamAppender}.
  */
-public class OutputStreamAppenderTest {
+class OutputStreamAppenderTest {
 
     private static final String TEST_MSG = "FOO ERROR";
 
-    @Rule
-    public TestName testName = new TestName();
+    public String testName;
 
     private String getName(final OutputStream out) {
-        return out.getClass().getSimpleName() + "." + testName.getMethodName();
+        return out.getClass().getSimpleName() + "." + testName;
     }
 
     /**
@@ -61,19 +63,19 @@ public class OutputStreamAppenderTest {
     }
 
     @Test
-    public void testBuildFilter() {
+    void testBuildFilter() {
         final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         // @formatter:off
         final OutputStreamAppender.Builder builder =
                 OutputStreamAppender.newBuilder().setName("test").setFilter(filter);
         // @formatter:on
-        Assert.assertEquals(filter, builder.getFilter());
+        assertEquals(filter, builder.getFilter());
         final OutputStreamAppender appender = builder.build();
-        Assert.assertEquals(filter, appender.getFilter());
+        assertEquals(filter, appender.getFilter());
     }
 
     @Test
-    public void testOutputStreamAppenderToBufferedOutputStream() throws SQLException {
+    void testOutputStreamAppenderToBufferedOutputStream() {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final OutputStream os = new BufferedOutputStream(out);
         final String name = getName(out);
@@ -81,18 +83,18 @@ public class OutputStreamAppenderTest {
         addAppender(os, name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertTrue(actual.contains(TEST_MSG), actual);
     }
 
     @Test
-    public void testOutputStreamAppenderToByteArrayOutputStream() throws SQLException {
+    void testOutputStreamAppenderToByteArrayOutputStream() {
         final OutputStream out = new ByteArrayOutputStream();
         final String name = getName(out);
         final Logger logger = LogManager.getLogger(name);
         addAppender(out, name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertTrue(actual.contains(TEST_MSG), actual);
     }
 
     /**
@@ -101,7 +103,7 @@ public class OutputStreamAppenderTest {
      * new Writer appender.
      */
     @Test
-    public void testUpdatePatternWithFileAppender() {
+    void testUpdatePatternWithFileAppender() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         // @formatter:off
@@ -119,5 +121,11 @@ public class OutputStreamAppenderTest {
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);
         LogManager.getLogger().error("FOO MSG");
+    }
+
+    @BeforeEach
+    public void setup(TestInfo testInfo) {
+        Optional<Method> testMethod = testInfo.getTestMethod();
+        testMethod.ifPresent(method -> this.testName = method.getName());
     }
 }

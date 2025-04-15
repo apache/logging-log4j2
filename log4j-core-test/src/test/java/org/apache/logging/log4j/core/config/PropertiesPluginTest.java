@@ -20,15 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class PropertiesPluginTest {
+class PropertiesPluginTest {
 
     @Test
-    public void testUnescape() {
+    void testUnescape() {
         assertEquals("${foo}", PropertiesPlugin.unescape("$${foo}"));
     }
 
     @Test
-    public void testUnescapeNotEscapedWithDefault() {
+    void testUnescapeNotEscapedWithDefault() {
         final String value = "${foo:-bar}";
         assertEquals(value, PropertiesPlugin.unescape(value));
     }

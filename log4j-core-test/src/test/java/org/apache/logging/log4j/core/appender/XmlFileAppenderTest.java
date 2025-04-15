@@ -16,34 +16,34 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
-@Category(Layouts.Xml.class)
-public class XmlFileAppenderTest {
+@Tag("Layouts.Xml")
+class XmlFileAppenderTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "XmlFileAppenderTest.xml");
     }
 
     @Test
-    public void testFlushAtEndOfBatch() throws Exception {
+    void testFlushAtEndOfBatch() throws Exception {
         final File file = new File("target", "XmlFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
         file.delete();
@@ -52,7 +52,7 @@ public class XmlFileAppenderTest {
         log.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        final List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         file.delete();
 
         final String[] expect = {
@@ -65,11 +65,11 @@ public class XmlFileAppenderTest {
 
         for (int i = 0; i < expect.length; i++) {
             assertTrue(
-                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i),
-                    lines.get(i).contains(expect[i]));
+                    lines.get(i).contains(expect[i]),
+                    "Expected line " + i + " to contain " + expect[i] + " but got: " + lines.get(i));
         }
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !lines.get(0).contains(location));
+        assertFalse(lines.get(0).contains(location), "no location");
     }
 }

@@ -77,7 +77,7 @@ public class CassandraRule extends ExternalResource {
         Files.copy(getClass().getResourceAsStream("/cassandra.yaml"), config);
         System.setProperty("cassandra.native_transport_port", "0");
         System.setProperty("cassandra.storage_port", "0");
-        System.setProperty("cassandra.config", "file:" + config.toString());
+        System.setProperty("cassandra.config", "file:" + config);
         System.setProperty("cassandra.storagedir", root.toString());
         System.setProperty("cassandra-foreground", "true"); // prevents Cassandra from closing stdout/stderr
         THREAD_FACTORY.newThread(embeddedCassandra).start();
@@ -166,7 +166,7 @@ public class CassandraRule extends ExternalResource {
                 serversField.setAccessible(true);
                 @SuppressWarnings("unchecked")
                 final Collection<Server> servers = (Collection<Server>) serversField.get(nativeService);
-                if (servers.size() > 0) {
+                if (!servers.isEmpty()) {
                     final Server server = servers.iterator().next();
                     final Field trackerField = Server.class.getDeclaredField("connectionTracker");
                     trackerField.setAccessible(true);

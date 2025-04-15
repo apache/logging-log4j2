@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class CyclicBufferTest {
+class CyclicBufferTest {
 
     @Test
-    public void testSize0() {
+    void testSize0() {
         final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(Integer.class, 0);
 
         assertTrue(buffer.isEmpty());
@@ -47,7 +47,7 @@ public class CyclicBufferTest {
     }
 
     @Test
-    public void testSize1() {
+    void testSize1() {
         final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(Integer.class, 1);
 
         assertTrue(buffer.isEmpty());
@@ -68,7 +68,7 @@ public class CyclicBufferTest {
     }
 
     @Test
-    public void testSize3() {
+    void testSize3() {
         final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(Integer.class, 3);
 
         assertTrue(buffer.isEmpty());
@@ -89,7 +89,7 @@ public class CyclicBufferTest {
     }
 
     @Test
-    public void testSizeNegative() {
+    void testSizeNegative() {
         assertThrows(IllegalArgumentException.class, () -> new CyclicBuffer<>(Integer.class, -1));
     }
 }

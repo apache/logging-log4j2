@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
  */
 @Tag("allocation")
 @Tag("functional")
-public class GcFreeAsynchronousLoggingTest {
+class GcFreeAsynchronousLoggingTest {
 
     @Test
-    public void testNoAllocationDuringSteadyStateLogging() throws Throwable {
+    void testNoAllocationDuringSteadyStateLogging() throws Throwable {
         GcFreeLoggingTestUtil.runTest(getClass());
     }
 

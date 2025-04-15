@@ -42,7 +42,7 @@ class JeroMqTestClient implements Callable<List<String>> {
     }
 
     @Override
-    public List<String> call() throws Exception {
+    public List<String> call() {
         try (final ZMQ.Socket subscriber = context.socket(SocketType.SUB)) {
             LOGGER.info("Starting JeroMqTestClient.");
             subscriber.connect(endpoint);

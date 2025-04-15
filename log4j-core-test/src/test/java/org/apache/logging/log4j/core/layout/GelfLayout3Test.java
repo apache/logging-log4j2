@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 @LoggerContextSource("GelfLayout3Test.xml")
 @UsingAnyThreadContext
 @Tag("json")
-public class GelfLayout3Test {
+class GelfLayout3Test {
 
     @Test
-    public void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
+    void gelfLayout(final LoggerContext context, @Named final ListAppender list) throws IOException {
         list.clear();
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put("loginId", "rgoers");
@@ -66,7 +66,7 @@ public class GelfLayout3Test {
     }
 
     @Test
-    public void mapMessage(final LoggerContext context, @Named final ListAppender list) throws IOException {
+    void mapMessage(final LoggerContext context, @Named final ListAppender list) throws IOException {
         list.clear();
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put("loginId", "rgoers");

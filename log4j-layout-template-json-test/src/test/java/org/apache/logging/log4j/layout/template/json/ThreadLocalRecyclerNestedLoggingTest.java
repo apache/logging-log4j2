@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2368">LOG4J2-2368</a>
  */
-public class ThreadLocalRecyclerNestedLoggingTest {
+class ThreadLocalRecyclerNestedLoggingTest {
 
     private static final class ThrowableLoggingInGetMessage extends RuntimeException {
 
@@ -55,7 +55,7 @@ public class ThreadLocalRecyclerNestedLoggingTest {
 
     @Test
     @LoggerContextSource("threadLocalRecyclerNestedLogging.xml")
-    public void nested_logging_should_not_pollute_thread_local(
+    void nested_logging_should_not_pollute_thread_local(
             final LoggerContext loggerContext,
             final @Named(value = "List1") ListAppender appender1,
             final @Named(value = "List2") ListAppender appender2) {

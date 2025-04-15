@@ -51,7 +51,7 @@ import org.junit.jupiter.api.condition.OS;
  * LOG4J2-1766.
  */
 @UsingStatusListener
-public class RollingAppenderTempCompressedFilePatternTest {
+class RollingAppenderTempCompressedFilePatternTest {
 
     private static Logger LOGGER = StatusLogger.getLogger();
 
@@ -61,7 +61,7 @@ public class RollingAppenderTempCompressedFilePatternTest {
     @Test
     @DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher isn't fast enough to work properly.")
     @LoggerContextSource
-    public void testAppender(final LoggerContext context) throws Exception {
+    void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         final Path logsDir = loggingPath.resolve("logs");
         final Path tmpDir = loggingPath.resolve("tmp");

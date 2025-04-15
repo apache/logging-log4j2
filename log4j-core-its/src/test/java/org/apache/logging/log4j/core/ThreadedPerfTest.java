@@ -20,16 +20,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.util.Timer;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-@Category(PerformanceTests.class)
-public class ThreadedPerfTest {
+@Tag("PerformanceTests")
+class ThreadedPerfTest {
 
     private static final org.apache.logging.log4j.Logger logger =
             LogManager.getLogger(ThreadedPerfTest.class.getName());
@@ -38,7 +37,7 @@ public class ThreadedPerfTest {
     private static final int THREADS = 10;
 
     @Test
-    public void debugDisabled() {
+    void debugDisabled() {
         final Timer timer = new Timer("DebugDisabled", LOOP_CNT * THREADS);
         final Runnable runnable = new DebugDisabledRunnable();
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
@@ -48,11 +47,11 @@ public class ThreadedPerfTest {
         }
         pool.shutdown();
         timer.stop();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     @Test
-    public void debugLogger() {
+    void debugLogger() {
         final Timer timer = new Timer("DebugLogger", LOOP_CNT * THREADS);
         final Runnable runnable = new DebugLoggerRunnable();
         final ExecutorService pool = Executors.newFixedThreadPool(THREADS);
@@ -62,7 +61,7 @@ public class ThreadedPerfTest {
         }
         pool.shutdown();
         timer.stop();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     public static class DebugDisabledRunnable implements Runnable {

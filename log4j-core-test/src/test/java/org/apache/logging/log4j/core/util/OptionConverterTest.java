@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link OptionConverter}.
  */
-public class OptionConverterTest {
+class OptionConverterTest {
 
     @Test
-    public void testSubstVars() {
+    void testSubstVars() {
         final Properties props = new Properties();
         props.setProperty("key", "${key}");
         props.setProperty("testKey", "Log4j");
@@ -43,7 +43,7 @@ public class OptionConverterTest {
      * Verify that substVars doesn't construct dynamic keys.
      */
     @Test
-    public void testAppend() {
+    void testAppend() {
         final Properties props = new Properties();
         props.setProperty("key", "Key");
         props.setProperty("testKey", "Hello");
@@ -55,7 +55,7 @@ public class OptionConverterTest {
      * Verify that substVars will treat the second expression up to the first '}' as part of the key.
      */
     @Test
-    public void testAppend2() {
+    void testAppend2() {
         final Properties props = new Properties();
         props.setProperty("test${key", "Hello");
         assertEquals(
@@ -63,7 +63,7 @@ public class OptionConverterTest {
     }
 
     @Test
-    public void testRecursion() {
+    void testRecursion() {
         final Properties props = new RecursiveProperties();
         props.setProperty("name", "Neo");
         props.setProperty("greeting", "Hello ${name}");

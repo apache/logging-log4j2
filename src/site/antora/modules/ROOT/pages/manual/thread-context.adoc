@@ -104,8 +104,8 @@ List<String> ndc = ThreadContext.getImmutableStack().asList(); // <1>
 
 executor.submit(() -> {
     try (CloseableThreadContext.Instance ignored = CloseableThreadContext
-            .putAll(values) // <2>
-            .pushAll(messages)) { // <2>
+            .putAll(mdc) // <2>
+            .pushAll(ndc)) { // <2>
 
         LOGGER.debug("Processing for user started");
         // ...
@@ -159,7 +159,22 @@ You can provide a custom `ContextDataProvider` implementation as follows:
 ----
 META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider
 ----
-. Write the fully-qualified class name of your custom implementation (e.g., `com.mycompany.CustomContextDataProvider`) to the file created in the previous step
+. Write the fully-qualified class name of your custom implementation (e.g., `com.mycompany.CustomContextDataProvider`) to the file created in the previous step.
+
+==== Third-party custom thread context data providers
+
+[IMPORTANT]
+====
+These context data providers are supplied by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
+====
+
+https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/log4j/log4j-context-data/log4j-context-data-2.17/library-autoconfigure[OpenTelemetry Context Data Provider]::
+Injects trace context data into log events.
+
+https://oss.copernik.eu/tomcat/3.x/components/log4j-tomcat#TomcatContextDataProvider[Copernik.eu Tomcat Context Data Provider]::
+Injects the name of the currently active Tomcat engine, host and web application into log events.
 
 [#custom-ThreadContextMap]
 === Custom thread context map

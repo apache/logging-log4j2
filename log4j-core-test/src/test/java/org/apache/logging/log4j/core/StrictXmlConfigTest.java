@@ -31,7 +31,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-strict1.xml")
-public class StrictXmlConfigTest {
+class StrictXmlConfigTest {
 
     org.apache.logging.log4j.Logger logger;
     private ListAppender app;
@@ -42,7 +42,7 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void basicFlow() {
+    void basicFlow() {
         final EntryMessage entry = logger.traceEntry();
         logger.traceExit(entry);
         final List<LogEvent> events = app.getEvents();
@@ -50,7 +50,7 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void basicFlowDeprecated() {
+    void basicFlowDeprecated() {
         logger.traceEntry();
         logger.traceExit();
         final List<LogEvent> events = app.getEvents();
@@ -58,7 +58,7 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void simpleFlow() {
+    void simpleFlow() {
         logger.traceEntry();
         logger.traceExit(0);
         final List<LogEvent> events = app.getEvents();
@@ -66,14 +66,14 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void throwing() {
+    void throwing() {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 
     @Test
-    public void catching() {
+    void catching() {
         try {
             throw new NullPointerException();
         } catch (final Exception e) {
@@ -84,28 +84,28 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void debug() {
+    void debug() {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 
     @Test
-    public void debugObject() {
+    void debugObject() {
         logger.debug(new Date());
         final List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 
     @Test
-    public void debugWithParms() {
+    void debugWithParms() {
         logger.debug("Hello, {}", "World");
         final List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 
     @Test
-    public void mdc() {
+    void mdc() {
         ThreadContext.put("TestYear", "2010");
         logger.debug("Debug message");
         ThreadContext.clearMap();
@@ -115,7 +115,7 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void structuredData() {
+    void structuredData() {
         ThreadContext.put("loginId", "JohnDoe");
         ThreadContext.put("ipAddress", "192.168.0.120");
         ThreadContext.put("locale", Locale.US.getDisplayName());

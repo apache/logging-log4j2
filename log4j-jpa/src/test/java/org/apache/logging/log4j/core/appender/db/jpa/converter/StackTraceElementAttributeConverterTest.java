@@ -27,16 +27,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class StackTraceElementAttributeConverterTest {
+class StackTraceElementAttributeConverterTest {
     private StackTraceElementAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new StackTraceElementAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final StackTraceElement element =
                 new StackTraceElement("TestNoPackage", "testConvert01", "TestNoPackage.java", 1234);
 
@@ -59,7 +59,7 @@ public class StackTraceElementAttributeConverterTest {
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         final StackTraceElement element = new StackTraceElement(
                 "org.apache.logging.TestWithPackage", "testConvert02", "TestWithPackage.java", -1);
 
@@ -82,7 +82,7 @@ public class StackTraceElementAttributeConverterTest {
     }
 
     @Test
-    public void testConvert03() {
+    void testConvert03() {
         final StackTraceElement element =
                 new StackTraceElement("org.apache.logging.TestNoSource", "testConvert03", null, -1);
 
@@ -99,13 +99,13 @@ public class StackTraceElementAttributeConverterTest {
         assertNotNull(reversed, "The reversed value should not be null.");
         assertEquals("org.apache.logging.TestNoSource", reversed.getClassName(), "The class name is not correct.");
         assertEquals("testConvert03", reversed.getMethodName(), "The method name is not correct.");
-        assertEquals(null, reversed.getFileName(), "The file name is not correct.");
+        assertNull(reversed.getFileName(), "The file name is not correct.");
         assertEquals(-1, reversed.getLineNumber(), "The line number is not correct.");
         assertFalse(reversed.isNativeMethod(), "The native flag should be false.");
     }
 
     @Test
-    public void testConvert04() {
+    void testConvert04() {
         final StackTraceElement element =
                 new StackTraceElement("org.apache.logging.TestIsNativeMethod", "testConvert04", null, -2);
 
@@ -123,18 +123,18 @@ public class StackTraceElementAttributeConverterTest {
         assertEquals(
                 "org.apache.logging.TestIsNativeMethod", reversed.getClassName(), "The class name is not correct.");
         assertEquals("testConvert04", reversed.getMethodName(), "The method name is not correct.");
-        assertEquals(null, reversed.getFileName(), "The file name is not correct.");
+        assertNull(reversed.getFileName(), "The file name is not correct.");
         assertEquals(-2, reversed.getLineNumber(), "The line number is not correct.");
         assertTrue(reversed.isNativeMethod(), "The native flag should be true.");
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
+    void testConvertNullOrBlankToEntityAttribute() {
         assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }

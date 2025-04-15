@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests AbstractStringLayout.
  */
-public class AbstractStringLayoutTest {
+class AbstractStringLayoutTest {
 
     // Configuration explicitly null
     private static final Serializer serializer = new SerializerBuilder()
@@ -57,7 +57,7 @@ public class AbstractStringLayoutTest {
     }
 
     @Test
-    public void testGetStringBuilderCapacityRestrictedToMax() throws Exception {
+    void testGetStringBuilderCapacityRestrictedToMax() {
         final StringBuilder sb = ConcreteStringLayout.getStringBuilder();
         final int initialCapacity = sb.capacity();
         assertEquals(ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity(), "initial capacity");
@@ -93,7 +93,7 @@ public class AbstractStringLayoutTest {
     }
 
     @Test
-    public void testNullConfigurationIsAllowed() {
+    void testNullConfigurationIsAllowed() {
         try {
             final ConcreteStringLayout layout = new ConcreteStringLayout();
             layout.serializeToString(serializer);

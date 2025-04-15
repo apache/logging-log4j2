@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the AbstractFilter test.
  */
-public class AbstractFilterTest {
+class AbstractFilterTest {
 
     @Test
-    public void testUnrolledBackwardsCompatible() {
+    void testUnrolledBackwardsCompatible() {
         final ConcreteFilter filter = new ConcreteFilter();
         final Filter.Result expected = Filter.Result.DENY;
         verifyMethodsWithUnrolledVarargs(filter, Filter.Result.DENY);

@@ -16,38 +16,38 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class ExceptionAwareTagSupportTest {
+class ExceptionAwareTagSupportTest {
     private ExceptionAwareTagSupport tag;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.tag = new ExceptionAwareTagSupport() {
             private static final long serialVersionUID = 1L;
         };
     }
 
     @Test
-    public void testException() {
-        assertNull("The exception should be null (1).", this.tag.getException());
+    void testException() {
+        assertNull(this.tag.getException(), "The exception should be null (1).");
 
         Exception e = new Exception();
         this.tag.setException(e);
-        assertSame("The exception is not correct (1).", e, this.tag.getException());
+        assertSame(e, this.tag.getException(), "The exception is not correct (1).");
 
         this.tag.init();
-        assertNull("The exception should be null (2).", this.tag.getException());
+        assertNull(this.tag.getException(), "The exception should be null (2).");
 
         e = new RuntimeException();
         this.tag.setException(e);
-        assertSame("The exception is not correct (2).", e, this.tag.getException());
+        assertSame(e, this.tag.getException(), "The exception is not correct (2).");
     }
 }

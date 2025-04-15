@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
  * </p>
  */
 @LoggerContextSource("log4j2-744.xml")
-public class TimestampMessageTest {
+class TimestampMessageTest {
     private ListAppender app;
 
     public TimestampMessageTest(@Named("List") final ListAppender app) {
@@ -51,18 +51,18 @@ public class TimestampMessageTest {
     }
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(ClockFactory.PROPERTY_NAME, PoisonClock.class.getName());
     }
 
     @AfterAll
-    public static void afterClass() throws IllegalAccessException {
+    static void afterClass() throws IllegalAccessException {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
         ClockFactoryTest.resetClocks();
     }
 
     @Test
-    public void testTimestampMessage(final LoggerContext context) {
+    void testTimestampMessage(final LoggerContext context) {
         final Logger log = context.getLogger("TimestampMessageTest");
         log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
         final List<String> msgs = app.getMessages();

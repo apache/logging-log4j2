@@ -38,7 +38,7 @@ import org.junit.jupiter.api.parallel.Resources;
  * @since 2.6
  */
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
-public class CloseableThreadContextTest {
+class CloseableThreadContextTest {
 
     private final String key = "key";
     private final String value = "value";
@@ -50,7 +50,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldAddAnEntryToTheMap() {
+    void shouldAddAnEntryToTheMap() {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
             assertNotNull(ignored);
             assertEquals(value, ThreadContext.get(key));
@@ -58,7 +58,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldAddTwoEntriesToTheMap() {
+    void shouldAddTwoEntriesToTheMap() {
         final String key2 = "key2";
         final String value2 = "value2";
         try (final CloseableThreadContext.Instance ignored =
@@ -70,7 +70,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldNestEntries() {
+    void shouldNestEntries() {
         final String oldValue = "oldValue";
         final String innerValue = "innerValue";
         ThreadContext.put(key, oldValue);
@@ -87,7 +87,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldPreserveOldEntriesFromTheMapWhenAutoClosed() {
+    void shouldPreserveOldEntriesFromTheMapWhenAutoClosed() {
         final String oldValue = "oldValue";
         ThreadContext.put(key, oldValue);
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
@@ -98,7 +98,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void ifTheSameKeyIsAddedTwiceTheOriginalShouldBeUsed() {
+    void ifTheSameKeyIsAddedTwiceTheOriginalShouldBeUsed() {
         final String oldValue = "oldValue";
         final String secondValue = "innerValue";
         ThreadContext.put(key, oldValue);
@@ -111,7 +111,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldPushAndPopAnEntryToTheStack() {
+    void shouldPushAndPopAnEntryToTheStack() {
         final String message = "message";
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.push(message)) {
             assertNotNull(ignored);
@@ -121,7 +121,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldPushAndPopTwoEntriesToTheStack() {
+    void shouldPushAndPopTwoEntriesToTheStack() {
         final String message1 = "message1";
         final String message2 = "message2";
         try (final CloseableThreadContext.Instance ignored =
@@ -133,7 +133,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldPushAndPopAParameterizedEntryToTheStack() {
+    void shouldPushAndPopAParameterizedEntryToTheStack() {
         final String parameterizedMessage = "message {}";
         final String parameterizedMessageParameter = "param";
         final String formattedMessage = parameterizedMessage.replace("{}", parameterizedMessageParameter);
@@ -146,7 +146,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldRemoveAnEntryFromTheMapWhenAutoClosed() {
+    void shouldRemoveAnEntryFromTheMapWhenAutoClosed() {
         try (final CloseableThreadContext.Instance ignored = CloseableThreadContext.put(key, value)) {
             assertNotNull(ignored);
             assertEquals(value, ThreadContext.get(key));
@@ -155,7 +155,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void shouldAddEntriesToBothStackAndMap() {
+    void shouldAddEntriesToBothStackAndMap() {
         final String stackValue = "something";
         try (final CloseableThreadContext.Instance ignored =
                 CloseableThreadContext.put(key, value).push(stackValue)) {
@@ -168,7 +168,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void canReuseCloseableThreadContext() {
+    void canReuseCloseableThreadContext() {
         final String stackValue = "something";
         // Create a ctc and close it
         final CloseableThreadContext.Instance ctc =
@@ -195,7 +195,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void closeIsIdempotent() {
+    void closeIsIdempotent() {
 
         final String originalMapValue = "map to keep";
         final String originalStackValue = "stack to keep";
@@ -218,7 +218,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void putAllWillPutAllValues() {
+    void putAllWillPutAllValues() {
 
         final String oldValue = "oldValue";
         ThreadContext.put(key, oldValue);
@@ -234,7 +234,7 @@ public class CloseableThreadContextTest {
     }
 
     @Test
-    public void pushAllWillPushAllValues() {
+    void pushAllWillPushAllValues() {
 
         ThreadContext.push(key);
         final List<String> messages = ThreadContext.getImmutableStack().asList();

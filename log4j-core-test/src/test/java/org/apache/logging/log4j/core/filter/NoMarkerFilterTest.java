@@ -28,16 +28,16 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-public class NoMarkerFilterTest {
+class NoMarkerFilterTest {
 
     @Test
-    public void testMarkers() {
+    void testMarkers() {
         final Marker sampleMarker = MarkerManager.getMarker("SampleMarker");
         final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, null, sampleMarker, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, null, sampleMarker, (Object) null, null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, null, (Object) null, null));
         filter.stop();
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //

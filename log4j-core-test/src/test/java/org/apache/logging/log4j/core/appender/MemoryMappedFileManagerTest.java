@@ -33,13 +33,13 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 2.1
  */
-public class MemoryMappedFileManagerTest {
+class MemoryMappedFileManagerTest {
 
     @TempDir
     File tempDir;
 
     @Test
-    public void testRemapAfterInitialMapSizeExceeded() throws IOException {
+    void testRemapAfterInitialMapSizeExceeded() throws IOException {
         final int mapSize = 64; // very small, on purpose
         final File file = new File(tempDir, "memory-mapped-file.bin");
 
@@ -65,7 +65,7 @@ public class MemoryMappedFileManagerTest {
     }
 
     @Test
-    public void testAppendDoesNotOverwriteExistingFile() throws IOException {
+    void testAppendDoesNotOverwriteExistingFile() throws IOException {
         final File file = new File(tempDir, "memory-mapped-file.bin");
 
         final int initialLength = 4 * 1024;

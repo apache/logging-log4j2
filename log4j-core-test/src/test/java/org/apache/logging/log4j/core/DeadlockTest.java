@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-deadlock.xml")
 @Tag("concurrency")
-public class DeadlockTest {
+class DeadlockTest {
 
     @Test
-    public void deadlockOnReconfigure(final LoggerContext context) {
+    void deadlockOnReconfigure(final LoggerContext context) {
         context.reconfigure();
     }
 }

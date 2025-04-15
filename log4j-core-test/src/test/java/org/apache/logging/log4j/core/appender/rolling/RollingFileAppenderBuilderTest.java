@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RollingFileAppenderBuilderTest {
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.junit.jupiter.api.Test;
+
+class RollingFileAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1620
      */
     @Test
-    public void testDefaultImmediateFlush() {
-        Assert.assertTrue(RollingFileAppender.newBuilder().isImmediateFlush());
+    void testDefaultImmediateFlush() {
+        assertTrue(RollingFileAppender.newBuilder().isImmediateFlush());
     }
 }

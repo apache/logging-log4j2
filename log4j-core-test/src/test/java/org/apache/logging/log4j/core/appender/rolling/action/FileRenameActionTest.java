@@ -24,18 +24,18 @@ import java.io.PrintStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-public class FileRenameActionTest {
+class FileRenameActionTest {
 
     static File tempDir = new File("./target");
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         final File file = new File(tempDir, "newFile.log");
         file.delete();
     }
 
     @Test
-    public void testRename1() throws Exception {
+    void testRename1() throws Exception {
         final File file = new File(tempDir, "fileRename.log");
         try (final PrintStream pos = new PrintStream(file)) {
             for (int i = 0; i < 100; ++i) {
@@ -52,7 +52,7 @@ public class FileRenameActionTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
+    void testEmpty() throws Exception {
         final File file = new File(tempDir, "fileRename.log");
         try (final PrintStream pos = new PrintStream(file)) {
             // do nothing
@@ -67,7 +67,7 @@ public class FileRenameActionTest {
     }
 
     @Test
-    public void testRenameEmpty() throws Exception {
+    void testRenameEmpty() throws Exception {
         final File file = new File(tempDir, "fileRename.log");
         try (final PrintStream pos = new PrintStream(file)) {
             // do nothing
@@ -82,7 +82,7 @@ public class FileRenameActionTest {
     }
 
     @Test
-    public void testNoParent() throws Exception {
+    void testNoParent() throws Exception {
         final File file = new File("fileRename.log");
         try (final PrintStream pos = new PrintStream(file)) {
             for (int i = 0; i < 100; ++i) {

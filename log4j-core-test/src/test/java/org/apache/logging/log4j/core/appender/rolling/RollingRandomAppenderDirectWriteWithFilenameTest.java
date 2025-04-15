@@ -44,12 +44,12 @@ public class RollingRandomAppenderDirectWriteWithFilenameTest {
     private Logger logger;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingRandomAppenderDirectWriteWithFilenameTest.class.getName());
     }
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender() {
         final File dir = new File(DIR);
         assertFalse("Directory created", dir.exists());
     }

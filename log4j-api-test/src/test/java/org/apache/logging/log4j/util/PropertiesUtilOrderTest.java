@@ -70,7 +70,7 @@ class PropertiesUtilOrderTest {
     private final Properties properties = new Properties();
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         try (final InputStream is = ClassLoader.getSystemResourceAsStream("PropertiesUtilOrderTest.properties")) {
             properties.load(is);
         }
@@ -102,9 +102,9 @@ class PropertiesUtilOrderTest {
         final PropertiesUtil util = new PropertiesUtil(properties);
         // Same result for both a legacy property and a normalized property
         assertFalse(util.hasProperty("Log4jNormalizedProperty"));
-        assertEquals(null, util.getStringProperty("Log4jNormalizedProperty"));
+        assertNull(util.getStringProperty("Log4jNormalizedProperty"));
         assertFalse(util.hasProperty("log4j2.normalizedProperty"));
-        assertEquals(null, util.getStringProperty("log4j2.normalizedProperty"));
+        assertNull(util.getStringProperty("log4j2.normalizedProperty"));
 
         properties.setProperty("log4j2.normalizedProperty", "props.normalized");
         assertTrue(util.hasProperty("Log4jNormalizedProperty"));

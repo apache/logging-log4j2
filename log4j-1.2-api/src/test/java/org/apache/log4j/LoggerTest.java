@@ -16,13 +16,16 @@
  */
 package org.apache.log4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,15 +38,15 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Used for internal unit testing the Logger class.
  */
-public class LoggerTest {
+class LoggerTest {
 
     Appender a1;
     Appender a2;
@@ -57,27 +60,27 @@ public class LoggerTest {
 
     static ConfigurationFactory configurationFactory = new BasicConfigurationFactory();
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    static void setUpAll() {
         rbUS = ResourceBundle.getBundle("L7D", new Locale("en", "US"));
         assertNotNull(rbUS);
 
         rbFR = ResourceBundle.getBundle("L7D", new Locale("fr", "FR"));
-        assertNotNull("Got a null resource bundle.", rbFR);
+        assertNotNull(rbFR, "Got a null resource bundle.");
 
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
-        assertNotNull("Got a null resource bundle.", rbCH);
+        assertNotNull(rbCH, "Got a null resource bundle.");
 
         ConfigurationFactory.setConfigurationFactory(configurationFactory);
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterAll
+    static void tearDownAll() {
         ConfigurationFactory.removeConfigurationFactory(configurationFactory);
     }
 
-    @Before
-    public void resetTest() {
+    @BeforeEach
+    void resetTest() {
         Objects.requireNonNull(LogManager.getHierarchy()).resetConfiguration();
         a1 = null;
         a2 = null;
@@ -120,7 +123,7 @@ public class LoggerTest {
      * Test if logger a.b inherits its appender from a.
      */
     @Test
-    public void testAdditivity1() {
+    void testAdditivity1() {
         final Logger loggerA = Logger.getLogger("a");
         final Logger loggerAB = Logger.getLogger("a.b");
         final CountingAppender coutingAppender = new CountingAppender();
@@ -147,7 +150,7 @@ public class LoggerTest {
      * Test multiple additivity.
      */
     @Test
-    public void testAdditivity2() {
+    void testAdditivity2() {
         final Logger a = Logger.getLogger("a");
         final Logger ab = Logger.getLogger("a.b");
         final Logger abc = Logger.getLogger("a.b.c");
@@ -162,20 +165,20 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(ca1);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(ca2);
 
-            assertEquals(ca1.counter, 0);
-            assertEquals(ca2.counter, 0);
+            assertEquals(0, ca1.counter);
+            assertEquals(0, ca2.counter);
 
             ab.debug(MSG);
-            assertEquals(ca1.counter, 1);
-            assertEquals(ca2.counter, 0);
+            assertEquals(1, ca1.counter);
+            assertEquals(0, ca2.counter);
 
             abc.debug(MSG);
-            assertEquals(ca1.counter, 2);
-            assertEquals(ca2.counter, 1);
+            assertEquals(2, ca1.counter);
+            assertEquals(1, ca2.counter);
 
             x.debug(MSG);
-            assertEquals(ca1.counter, 2);
-            assertEquals(ca2.counter, 1);
+            assertEquals(2, ca1.counter);
+            assertEquals(1, ca2.counter);
             ca1.stop();
             ca2.stop();
         } finally {
@@ -188,7 +191,7 @@ public class LoggerTest {
      * Test additivity flag.
      */
     @Test
-    public void testAdditivity3() {
+    void testAdditivity3() {
         final Logger root = Logger.getRootLogger();
         final Logger a = Logger.getLogger("a");
         final Logger ab = Logger.getLogger("a.b");
@@ -206,26 +209,26 @@ public class LoggerTest {
             ((org.apache.logging.log4j.core.Logger) a.getLogger()).addAppender(caA);
             ((org.apache.logging.log4j.core.Logger) abc.getLogger()).addAppender(caABC);
 
-            assertEquals(caRoot.counter, 0);
-            assertEquals(caA.counter, 0);
-            assertEquals(caABC.counter, 0);
+            assertEquals(0, caRoot.counter);
+            assertEquals(0, caA.counter);
+            assertEquals(0, caABC.counter);
 
             ab.setAdditivity(false);
 
             a.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 0);
+            assertEquals(1, caRoot.counter);
+            assertEquals(1, caA.counter);
+            assertEquals(0, caABC.counter);
 
             ab.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 0);
+            assertEquals(1, caRoot.counter);
+            assertEquals(1, caA.counter);
+            assertEquals(0, caABC.counter);
 
             abc.debug(MSG);
-            assertEquals(caRoot.counter, 1);
-            assertEquals(caA.counter, 1);
-            assertEquals(caABC.counter, 1);
+            assertEquals(1, caRoot.counter);
+            assertEquals(1, caA.counter);
+            assertEquals(1, caABC.counter);
             caRoot.stop();
             caA.stop();
             caABC.stop();
@@ -301,7 +304,7 @@ public class LoggerTest {
     }  */
 
     @Test
-    public void testRB1() {
+    void testRB1() {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
@@ -320,11 +323,11 @@ public class LoggerTest {
     }
 
     @Test
-    public void testRB2() {
+    void testRB2() {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertEquals(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -340,11 +343,11 @@ public class LoggerTest {
     }
 
     @Test
-    public void testRB3() {
+    void testRB3() {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertEquals(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -361,7 +364,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void testExists() {
+    void testExists() {
         final Logger a = Logger.getLogger("a");
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
@@ -376,6 +379,7 @@ public class LoggerTest {
         t = LogManager.exists("a.b.c");
         assertSame(a_b_c, t);
     }
+
     /* Don't support hierarchy
     public void testHierarchy1() {
         Hierarchy h = new Hierarchy(new RootLogger((Level) Level.ERROR));
@@ -392,7 +396,7 @@ public class LoggerTest {
      * Tests logger.trace(Object).
      */
     @Test
-    public void testTrace() {
+    void testTrace() {
         final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
@@ -419,7 +423,7 @@ public class LoggerTest {
      * Tests logger.trace(Object, Exception).
      */
     @Test
-    public void testTraceWithException() {
+    void testTraceWithException() {
         final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
@@ -450,7 +454,7 @@ public class LoggerTest {
      * Tests isTraceEnabled.
      */
     @Test
-    public void testIsTraceEnabled() {
+    void testIsTraceEnabled() {
         final ListAppender appender = new ListAppender("List");
         appender.start();
         final Logger root = Logger.getRootLogger();
@@ -471,7 +475,7 @@ public class LoggerTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    public void testLog() {
+    void testLog() {
         final PatternLayout layout =
                 PatternLayout.newBuilder().withPattern("%d %C %L %m").build();
         final ListAppender appender = new ListAppender("List", null, layout, false, false);
@@ -485,9 +489,9 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertTrue("Incorrect number of messages", msgs.size() == 3);
+            assertEquals(3, msgs.size(), "Incorrect number of messages");
             final String msg = msgs.get(0);
-            assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+            assertTrue(msg.contains(LoggerTest.class.getName()), "Message contains incorrect class name: " + msg);
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
@@ -495,49 +499,52 @@ public class LoggerTest {
     }
 
     @Test
-    public void testSetLevel() {
+    void testSetLevel() {
         final Logger a = Logger.getLogger("a");
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
         // test default for this test
-        assertThat(a.getLevel()).isNull();
-        assertThat(a_b.getLevel()).isNull();
-        assertThat(a_b_c.getLevel()).isNull();
-        assertThat(a.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b_c.getEffectiveLevel()).isEqualTo(Level.DEBUG);
+        assertThat(a.getLevel(), nullValue());
+        assertThat(a_b.getLevel(), nullValue());
+        assertThat(a_b_c.getLevel(), nullValue());
+        assertThat(a.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b_c.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+
         // all
         for (final Level level :
                 new Level[] {Level.DEBUG, Level.ERROR, Level.FATAL, Level.INFO, Level.TRACE, Level.WARN}) {
             a.setLevel(level);
-            assertThat(a.getLevel()).isEqualTo(level);
-            assertThat(a_b.getLevel()).isNull();
-            assertThat(a_b.getEffectiveLevel()).isEqualTo(level);
-            assertThat(a_b.getLevel()).isNull();
-            assertThat(a_b_c.getEffectiveLevel()).isEqualTo(level);
+            assertThat(a.getLevel(), is(equalTo(level)));
+            assertThat(a_b.getLevel(), nullValue());
+            assertThat(a_b.getEffectiveLevel(), is(equalTo(level)));
+            assertThat(a_b_c.getLevel(), nullValue());
+            assertThat(a_b_c.getEffectiveLevel(), is(equalTo(level)));
         }
     }
 
     @Test
-    public void testSetPriority() {
+    void testSetPriority() {
         final Logger a = Logger.getLogger("a");
         final Logger a_b = Logger.getLogger("a.b");
         final Logger a_b_c = Logger.getLogger("a.b.c");
         // test default for this test
-        assertThat(a.getPriority()).isNull();
-        assertThat(a_b.getPriority()).isNull();
-        assertThat(a_b_c.getPriority()).isNull();
-        assertThat(a.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b.getEffectiveLevel()).isEqualTo(Level.DEBUG);
-        assertThat(a_b_c.getEffectiveLevel()).isEqualTo(Level.DEBUG);
+        assertThat(a.getPriority(), nullValue());
+        assertThat(a_b.getPriority(), nullValue());
+        assertThat(a_b_c.getPriority(), nullValue());
+
+        assertThat(a.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+        assertThat(a_b_c.getEffectiveLevel(), is(equalTo(Level.DEBUG)));
+
         // all
         for (final Priority level : Level.getAllPossiblePriorities()) {
             a.setPriority(level);
-            assertThat(a.getPriority()).isEqualTo(level);
-            assertThat(a_b.getPriority()).isNull();
-            assertThat(a_b.getEffectiveLevel()).isEqualTo(level);
-            assertThat(a_b.getPriority()).isNull();
-            assertThat(a_b_c.getEffectiveLevel()).isEqualTo(level);
+            assertThat(a.getPriority(), is(equalTo(level)));
+            assertThat(a_b.getPriority(), nullValue());
+            assertThat(a_b.getEffectiveLevel(), is(equalTo(level)));
+            assertThat(a_b.getPriority(), nullValue());
+            assertThat(a_b_c.getEffectiveLevel(), is(equalTo(level)));
         }
     }
 

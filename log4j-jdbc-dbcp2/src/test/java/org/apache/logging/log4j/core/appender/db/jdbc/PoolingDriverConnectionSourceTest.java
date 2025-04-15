@@ -25,10 +25,13 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.junit.jupiter.api.Test;
 
-public class PoolingDriverConnectionSourceTest {
+/**
+ * Tests {@link PoolingDriverConnectionSource}.
+ */
+class PoolingDriverConnectionSourceTest {
 
     @Test
-    public void testH2Properties() throws SQLException {
+    void testH2Properties() throws SQLException {
         final Property[] properties = new Property[] {
             // @formatter:off
             Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
@@ -46,7 +49,7 @@ public class PoolingDriverConnectionSourceTest {
     }
 
     @Test
-    public void testH2PropertiesAndPoolName() throws SQLException {
+    void testH2PropertiesAndPoolName() throws SQLException {
         final Property[] properties = new Property[] {
             // @formatter:off
             Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
@@ -64,7 +67,7 @@ public class PoolingDriverConnectionSourceTest {
     }
 
     @Test
-    public void testH2UserAndPassword() throws SQLException {
+    void testH2UserAndPassword() throws SQLException {
         // @formatter:off
         final PoolingDriverConnectionSource source =
                 PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
@@ -86,7 +89,7 @@ public class PoolingDriverConnectionSourceTest {
     }
 
     @Test
-    public void testH2UserPasswordAndPoolName() throws SQLException {
+    void testH2UserPasswordAndPoolName() throws SQLException {
         // @formatter:off
         final PoolingDriverConnectionSource source =
                 PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
@@ -100,7 +103,7 @@ public class PoolingDriverConnectionSourceTest {
     }
 
     @Test
-    public void testPoolableConnectionFactoryConfig() throws SQLException {
+    void testPoolableConnectionFactoryConfig() throws SQLException {
         final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig =
                 PoolableConnectionFactoryConfig.newBuilder()
                         .setMaxConnLifetimeMillis(30000)

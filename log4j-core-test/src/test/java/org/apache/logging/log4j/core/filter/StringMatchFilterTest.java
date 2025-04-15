@@ -20,25 +20,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link StringMatchFilter}.
  */
-public class StringMatchFilterTest {
+class StringMatchFilterTest {
 
     /**
      * Test that if no match-string is set on the builder, the '{@link StringMatchFilter.Builder#build()}' returns
      * {@code null}.
      */
     @Test
-    public void testFilterBuilderFailsWithNullText() {
-        Assertions.assertNull(StringMatchFilter.newBuilder().build());
+    void testFilterBuilderFailsWithNullText() {
+        assertNull(StringMatchFilter.newBuilder().build());
     }
 
     /**
@@ -46,8 +46,8 @@ public class StringMatchFilterTest {
      */
     @Test
     void testFilterBuilderFailsWithExceptionOnNullText() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
-                .setMatchString(null));
+        assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
+                .setText(null));
     }
 
     /**
@@ -55,8 +55,8 @@ public class StringMatchFilterTest {
      */
     @Test
     void testFilterBuilderFailsWithExceptionOnEmptyText() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
-                .setMatchString(""));
+        assertThrows(IllegalArgumentException.class, () -> StringMatchFilter.newBuilder()
+                .setText(""));
     }
 
     /**

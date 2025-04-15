@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Path;
 import org.apache.logging.log4j.Level;
@@ -39,7 +38,7 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
-public class CustomConfigurationTest {
+class CustomConfigurationTest {
 
     @TempLoggingDir
     private static Path loggingPath;
@@ -48,14 +47,14 @@ public class CustomConfigurationTest {
     @SetTestProperty(key = "log4j.level", value = "INFO")
     @SetTestProperty(key = "log.level", value = "INFO")
     @LoggerContextSource
-    public void testConfig(final LoggerContext ctx) throws IOException {
+    void testConfig(final LoggerContext ctx) {
         final Path logFile = loggingPath.resolve("test.log");
         // don't bother using "error" since that's the default; try another level
         final Configuration config = ctx.getConfiguration();
         assertThat(config).isInstanceOf(XmlConfiguration.class);
         for (final StatusListener listener : StatusLogger.getLogger().getListeners()) {
             if (listener instanceof StatusConsoleListener) {
-                assertSame(listener.getStatusLevel(), Level.INFO);
+                assertSame(Level.INFO, listener.getStatusLevel());
                 break;
             }
         }

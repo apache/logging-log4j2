@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
@@ -29,17 +31,16 @@ import org.osgi.framework.launch.FrameworkFactory;
 /**
  * JUnit rule to initialize and shutdown an OSGi framework.
  */
-class OsgiRule extends ExternalResource {
-
+class OsgiExt implements AfterEachCallback, BeforeEachCallback {
     private final FrameworkFactory factory;
     private Framework framework;
 
-    OsgiRule(final FrameworkFactory factory) {
+    OsgiExt(final FrameworkFactory factory) {
         this.factory = factory;
     }
 
     @Override
-    protected void after() {
+    public void afterEach(ExtensionContext context) {
         if (framework != null) {
             try {
                 framework.stop();
@@ -52,8 +53,8 @@ class OsgiRule extends ExternalResource {
     }
 
     @Override
-    protected void before() throws Throwable {
-        try (final InputStream is = OsgiRule.class.getResourceAsStream("/osgi.properties")) {
+    public void beforeEach(ExtensionContext context) throws Exception {
+        try (final InputStream is = OsgiExt.class.getResourceAsStream("/osgi.properties")) {
             final Properties props = new Properties();
             props.load(is);
             final Map<String, String> configMap = props.entrySet().stream()
@@ -74,6 +75,6 @@ class OsgiRule extends ExternalResource {
 
     @Override
     public String toString() {
-        return "OsgiRule [factory=" + factory + ", framework=" + framework + "]";
+        return "OsgiExt [factory=" + factory + ", framework=" + framework + "]";
     }
 }

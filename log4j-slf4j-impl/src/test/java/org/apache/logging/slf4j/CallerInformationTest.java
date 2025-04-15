@@ -27,10 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @LoggerContextSource("log4j2-calling-class.xml")
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
-    public void testClassLogger(@Named("Class") final ListAppender app) throws Exception {
+    void testClassLogger(@Named("Class") final ListAppender app) {
         app.clear();
         final Logger logger = LoggerFactory.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
@@ -44,7 +44,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger(@Named("Method") final ListAppender app) throws Exception {
+    void testMethodLogger(@Named("Method") final ListAppender app) {
         app.clear();
         final Logger logger = LoggerFactory.getLogger("MethodLogger");
         logger.info("More messages.");

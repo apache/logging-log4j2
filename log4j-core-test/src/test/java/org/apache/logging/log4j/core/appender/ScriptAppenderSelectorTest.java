@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "Groovy, Javascript")
-public class ScriptAppenderSelectorTest {
+class ScriptAppenderSelectorTest {
 
     @Test
     @LoggerContextSource("log4j-appender-selector-javascript.xml")

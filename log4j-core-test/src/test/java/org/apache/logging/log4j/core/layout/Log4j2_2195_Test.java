@@ -32,10 +32,10 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("LOG4J-2195/log4j2.xml")
-public class Log4j2_2195_Test {
+class Log4j2_2195_Test {
 
     @Test
-    public void test(final LoggerContext context, @Named("ListAppender") final ListAppender listAppender) {
+    void test(final LoggerContext context, @Named("ListAppender") final ListAppender listAppender) {
         listAppender.clear();
         context.getLogger(getClass()).info("This is a test.", new Exception("Test exception!"));
         assertNotNull(listAppender);

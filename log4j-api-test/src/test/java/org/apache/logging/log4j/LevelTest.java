@@ -25,17 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class LevelTest {
+class LevelTest {
 
     @Test
-    public void testDefault() {
+    void testDefault() {
         final Level level = Level.toLevel("Information", Level.ERROR);
         assertNotNull(level);
         assertEquals(Level.ERROR, level);
     }
 
     @Test
-    public void testForNameEquals() {
+    void testForNameEquals() {
         final String name = "Foo";
         final int intValue = 1;
         final Level level = Level.forName(name, intValue);
@@ -47,7 +47,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testThrowsOnNull() {
+    void testThrowsOnNull() {
         assertThrowsExactly(IllegalArgumentException.class, () -> Level.forName(null, 100));
         assertThrowsExactly(IllegalArgumentException.class, () -> Level.getLevel(null));
         // the intLevel should be checked only if we create a new level
@@ -56,14 +56,14 @@ public class LevelTest {
     }
 
     @Test
-    public void testGoodLevels() {
+    void testGoodLevels() {
         final Level level = Level.toLevel("INFO");
         assertNotNull(level);
         assertEquals(Level.INFO, level);
     }
 
     @Test
-    public void testIsInRangeErrorToDebug() {
+    void testIsInRangeErrorToDebug() {
         assertFalse(Level.OFF.isInRange(Level.ERROR, Level.DEBUG));
         assertFalse(Level.FATAL.isInRange(Level.ERROR, Level.DEBUG));
         assertTrue(Level.ERROR.isInRange(Level.ERROR, Level.DEBUG));
@@ -75,7 +75,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testIsInRangeFatalToTrace() {
+    void testIsInRangeFatalToTrace() {
         assertFalse(Level.OFF.isInRange(Level.FATAL, Level.TRACE));
         assertTrue(Level.FATAL.isInRange(Level.FATAL, Level.TRACE));
         assertTrue(Level.ERROR.isInRange(Level.FATAL, Level.TRACE));
@@ -87,7 +87,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testIsInRangeOffToAll() {
+    void testIsInRangeOffToAll() {
         assertTrue(Level.OFF.isInRange(Level.OFF, Level.ALL));
         assertTrue(Level.FATAL.isInRange(Level.OFF, Level.ALL));
         assertTrue(Level.ERROR.isInRange(Level.OFF, Level.ALL));
@@ -99,7 +99,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testIsInRangeSameLevels() {
+    void testIsInRangeSameLevels() {
         // Level.OFF
         assertTrue(Level.OFF.isInRange(Level.OFF, Level.OFF));
         assertFalse(Level.OFF.isInRange(Level.FATAL, Level.FATAL));
@@ -175,7 +175,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testIsInRangeWarnToInfo() {
+    void testIsInRangeWarnToInfo() {
         assertFalse(Level.OFF.isInRange(Level.WARN, Level.INFO));
         assertFalse(Level.FATAL.isInRange(Level.WARN, Level.INFO));
         assertFalse(Level.ERROR.isInRange(Level.WARN, Level.INFO));
@@ -187,7 +187,7 @@ public class LevelTest {
     }
 
     @Test
-    public void testIsLessSpecificThan() {
+    void testIsLessSpecificThan() {
         // Level.OFF
         assertTrue(Level.OFF.isLessSpecificThan(Level.OFF));
         assertFalse(Level.OFF.isLessSpecificThan(Level.FATAL));

@@ -176,7 +176,7 @@ class LogstashIT {
     }
 
     @BeforeAll
-    public static void initEsClient() {
+    static void initEsClient() {
 
         LOGGER.info(LOG_PREFIX + "instantiating the ES client");
         final String hostUri =
@@ -196,7 +196,7 @@ class LogstashIT {
     }
 
     @BeforeAll
-    public static void waitForLsInputSockets() {
+    static void waitForLsInputSockets() {
         waitForSocketBinding(MavenHardcodedConstants.LS_GELF_INPUT_PORT, "Logstash GELF input");
         waitForSocketBinding(MavenHardcodedConstants.LS_TCP_INPUT_PORT, "Logstash TCP input");
     }
@@ -229,7 +229,7 @@ class LogstashIT {
     }
 
     @AfterAll
-    public static void stopClient() throws Exception {
+    static void stopClient() throws Exception {
         ES_TRANSPORT.close();
         REST_CLIENT.close();
     }

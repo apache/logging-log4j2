@@ -51,7 +51,7 @@ import org.zeromq.ZMonitor.ZEvent;
 @Timeout(value = 20, unit = TimeUnit.SECONDS)
 @UsingStatusListener
 @LoggerContextSource(value = "JeroMqAppenderTest.xml", timeout = 60)
-public class JeroMqAppenderTest {
+class JeroMqAppenderTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -60,14 +60,14 @@ public class JeroMqAppenderTest {
     private static final int DEFAULT_TIMEOUT_MS = 5000;
 
     @Test
-    public void testAppenderLifeCycle() throws Exception {
+    void testAppenderLifeCycle() {
         // do nothing to make sure the appender starts and stops without
         // locking up resources.
         assertNotNull(JeroMqManager.getContext());
     }
 
     @Test
-    public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
+    void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
         addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
@@ -106,7 +106,7 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
+    void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
         addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
@@ -159,7 +159,7 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) {
+    void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) {
         addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         appender.resetSendRcs();

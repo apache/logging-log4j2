@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.filter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,10 +36,10 @@ import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 
 @UsingThreadContextMap
-public class DynamicThresholdFilterTest {
+class DynamicThresholdFilterTest {
 
     @Test
-    public void testFilter() {
+    void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "apache");
         final KeyValuePair[] pairs =
@@ -47,8 +48,8 @@ public class DynamicThresholdFilterTest {
                 DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, null));
         ThreadContext.clearMap();
         ThreadContext.put("userid", "JohnDoe");
         ThreadContext.put("organization", "apache");
@@ -66,7 +67,7 @@ public class DynamicThresholdFilterTest {
     }
 
     @Test
-    public void testFilterWorksWhenParamsArePassedAsArguments() {
+    void testFilterWorksWhenParamsArePassedAsArguments() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "apache");
         final KeyValuePair[] pairs =
@@ -85,10 +86,10 @@ public class DynamicThresholdFilterTest {
 
     @Test
     @LoggerContextSource("log4j2-dynamicfilter.xml")
-    public void testConfig(final Configuration config) {
+    void testConfig(final Configuration config) {
         final Filter filter = config.getFilter();
         assertNotNull(filter, "No DynamicThresholdFilter");
-        assertTrue(filter instanceof DynamicThresholdFilter, "Not a DynamicThresholdFilter");
+        assertInstanceOf(DynamicThresholdFilter.class, filter, "Not a DynamicThresholdFilter");
         final DynamicThresholdFilter dynamic = (DynamicThresholdFilter) filter;
         final String key = dynamic.getKey();
         assertNotNull(key, "Key is null");

@@ -27,16 +27,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
-public class ContextDataAttributeConverterTest {
+class ContextDataAttributeConverterTest {
     private ContextDataAttributeConverter converter;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.converter = new ContextDataAttributeConverter();
     }
 
     @Test
-    public void testConvertToDatabaseColumn01() {
+    void testConvertToDatabaseColumn01() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
@@ -46,7 +46,7 @@ public class ContextDataAttributeConverterTest {
     }
 
     @Test
-    public void testConvertToDatabaseColumn02() {
+    void testConvertToDatabaseColumn02() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
@@ -57,12 +57,12 @@ public class ContextDataAttributeConverterTest {
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
+    void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertToEntityAttribute() {
+    void testConvertToEntityAttribute() {
         assertThrows(UnsupportedOperationException.class, () -> this.converter.convertToEntityAttribute(null));
     }
 }

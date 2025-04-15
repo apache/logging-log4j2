@@ -43,7 +43,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jServletContainerInitializerTest {
+class Log4jServletContainerInitializerTest {
     @Mock
     private ServletContext servletContext;
 
@@ -59,19 +59,19 @@ public class Log4jServletContainerInitializerTest {
     private Log4jServletContainerInitializer containerInitializer;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.containerInitializer = new Log4jServletContainerInitializer();
     }
 
     @Test
-    public void testOnStartupWithServletVersion2_x() throws Exception {
+    void testOnStartupWithServletVersion2_x() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(2);
 
         this.containerInitializer.onStartup(null, this.servletContext);
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_xEffectiveVersion2_x() throws Exception {
+    void testOnStartupWithServletVersion3_xEffectiveVersion2_x() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(2);
 
@@ -79,7 +79,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTrue() throws Exception {
+    void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTrue() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
@@ -89,7 +89,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xShutdownDisabled() throws Exception {
+    void testOnStartupWithServletVersion3_xEffectiveVersion3_xShutdownDisabled() throws Exception {
         final FilterRegistration.Dynamic registration = mock(FilterRegistration.Dynamic.class);
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
@@ -115,7 +115,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTRUE() throws Exception {
+    void testOnStartupWithServletVersion3_xEffectiveVersion3_xDisabledTRUE() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
@@ -125,7 +125,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
+    void testOnStartupWithServletVersion3_xEffectiveVersion3_x() throws Exception {
         final FilterRegistration.Dynamic registration = mock(FilterRegistration.Dynamic.class);
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
@@ -156,7 +156,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
+    void testOnStartupCanceledDueToPreExistingFilter() throws Exception {
         given(servletContext.getMajorVersion()).willReturn(3);
         given(servletContext.getEffectiveMajorVersion()).willReturn(3);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_INITIALIZATION_DISABLED)))
@@ -171,7 +171,7 @@ public class Log4jServletContainerInitializerTest {
     }
 
     @Test
-    public void testOnStartupFailedDueToInitializerFailure() throws Exception {
+    void testOnStartupFailedDueToInitializerFailure() throws Exception {
         final FilterRegistration.Dynamic registration = mock(FilterRegistration.Dynamic.class);
         final IllegalStateException exception = new IllegalStateException(Strings.EMPTY);
         given(servletContext.getMajorVersion()).willReturn(3);

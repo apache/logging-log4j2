@@ -24,6 +24,7 @@ import java.util.function.Supplier;
  * Provides a lazily-initialized value from a {@code Supplier<T>}.
  *
  * @param <T> type of value
+ * @since 2.22.0
  */
 public interface Lazy<T> extends Supplier<T> {
     /**

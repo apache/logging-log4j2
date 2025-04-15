@@ -56,7 +56,7 @@ public class BoundedFIFOTestCase extends TestCase {
     }
 
     int min(final int a, final int b) {
-        return a < b ? a : b;
+        return Math.min(a, b);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class BoundedFIFOTestCase extends TestCase {
                     bf.put(e[j]);
                     assertEquals(bf.length(), j < size ? j + 1 : size);
                 }
-                final int max = size < j ? size : j;
+                final int max = Math.min(size, j);
                 j--;
                 for (k = 0; k <= j; k++) {
                     // System.out.println("max="+max+", j="+j+", k="+k);
-                    assertEquals(bf.length(), max - k > 0 ? max - k : 0);
+                    assertEquals(bf.length(), Math.max(max - k, 0));
                     final Object r = bf.get();
                     // System.out.println("Got "+r);
                     if (k >= size) {
@@ -112,19 +112,19 @@ public class BoundedFIFOTestCase extends TestCase {
         assertNull(bf.get());
 
         bf.put(e[1]);
-        assertEquals(bf.length(), 1);
+        assertEquals(1, bf.length());
         bf.put(e[2]);
-        assertEquals(bf.length(), 2);
+        assertEquals(2, bf.length());
         bf.put(e[3]);
-        assertEquals(bf.length(), 3);
+        assertEquals(3, bf.length());
         assertEquals(bf.get(), e[1]);
-        assertEquals(bf.length(), 2);
+        assertEquals(2, bf.length());
         assertEquals(bf.get(), e[2]);
-        assertEquals(bf.length(), 1);
+        assertEquals(1, bf.length());
         assertEquals(bf.get(), e[3]);
-        assertEquals(bf.length(), 0);
+        assertEquals(0, bf.length());
         assertNull(bf.get());
-        assertEquals(bf.length(), 0);
+        assertEquals(0, bf.length());
     }
 
     /**

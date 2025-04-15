@@ -48,6 +48,7 @@ public interface ExtendedLogger extends Logger {
      * @param message The message.
      * @param t A Throwable.
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(Level level, Marker marker, CharSequence message, Throwable t);
 
@@ -102,6 +103,7 @@ public interface ExtendedLogger extends Logger {
      * @param message The message.
      * @param p0 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(Level level, Marker marker, String message, Object p0);
 
@@ -114,6 +116,7 @@ public interface ExtendedLogger extends Logger {
      * @param p0 the message parameters
      * @param p1 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1);
 
@@ -127,6 +130,7 @@ public interface ExtendedLogger extends Logger {
      * @param p1 the message parameters
      * @param p2 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -141,6 +145,7 @@ public interface ExtendedLogger extends Logger {
      * @param p2 the message parameters
      * @param p3 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
@@ -156,6 +161,7 @@ public interface ExtendedLogger extends Logger {
      * @param p3 the message parameters
      * @param p4 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4);
@@ -173,6 +179,7 @@ public interface ExtendedLogger extends Logger {
      * @param p4 the message parameters
      * @param p5 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level,
@@ -199,6 +206,7 @@ public interface ExtendedLogger extends Logger {
      * @param p5 the message parameters
      * @param p6 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level,
@@ -227,6 +235,7 @@ public interface ExtendedLogger extends Logger {
      * @param p6 the message parameters
      * @param p7 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level,
@@ -257,6 +266,7 @@ public interface ExtendedLogger extends Logger {
      * @param p7 the message parameters
      * @param p8 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level,
@@ -289,6 +299,7 @@ public interface ExtendedLogger extends Logger {
      * @param p8 the message parameters
      * @param p9 the message parameters
      * @return True if logging is enabled, false otherwise.
+     * @since 2.6
      */
     boolean isEnabled(
             Level level,
@@ -326,6 +337,7 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param message The CharSequence message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.6
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, CharSequence message, Throwable t);
 
@@ -385,6 +397,7 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param message The message format.
      * @param p0 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0);
 
@@ -398,6 +411,7 @@ public interface ExtendedLogger extends Logger {
      * @param message The message format.
      * @param p0 the message parameters
      * @param p1 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1);
 
@@ -412,6 +426,7 @@ public interface ExtendedLogger extends Logger {
      * @param p0 the message parameters
      * @param p1 the message parameters
      * @param p2 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2);
 
@@ -427,6 +442,7 @@ public interface ExtendedLogger extends Logger {
      * @param p1 the message parameters
      * @param p2 the message parameters
      * @param p3 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
@@ -444,6 +460,7 @@ public interface ExtendedLogger extends Logger {
      * @param p2 the message parameters
      * @param p3 the message parameters
      * @param p4 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -470,6 +487,7 @@ public interface ExtendedLogger extends Logger {
      * @param p3 the message parameters
      * @param p4 the message parameters
      * @param p5 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -498,6 +516,7 @@ public interface ExtendedLogger extends Logger {
      * @param p4 the message parameters
      * @param p5 the message parameters
      * @param p6 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -528,6 +547,7 @@ public interface ExtendedLogger extends Logger {
      * @param p5 the message parameters
      * @param p6 the message parameters
      * @param p7 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -560,6 +580,7 @@ public interface ExtendedLogger extends Logger {
      * @param p6 the message parameters
      * @param p7 the message parameters
      * @param p8 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -594,6 +615,7 @@ public interface ExtendedLogger extends Logger {
      * @param p7 the message parameters
      * @param p8 the message parameters
      * @param p9 the message parameters
+     * @since 2.6
      */
     void logIfEnabled(
             String fqcn,
@@ -633,6 +655,7 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
@@ -645,6 +668,7 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param message The message format.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+     * @since 2.4
      */
     @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
@@ -658,6 +682,7 @@ public interface ExtendedLogger extends Logger {
      * @param marker A Marker or null.
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
+     * @since 2.4
      */
     @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);

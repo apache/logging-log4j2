@@ -26,6 +26,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleRevision;
 
+/**
+ * @since 2.18.0
+ */
 public class OsgiServiceLocator {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

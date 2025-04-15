@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,36 +31,36 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests system property condition processing.
  */
-public class SystemPropertyArbiterTest {
+class SystemPropertyArbiterTest {
 
     static final String CONFIG = "log4j2-systemPropertyArbiters.xml";
     static LoggerContext loggerContext = null;
 
     @AfterEach
-    public void after() {
+    void after() {
         loggerContext.stop();
         loggerContext = null;
         System.clearProperty("env");
     }
 
     @Test
-    public void prodTest() {
+    void prodTest() {
         System.setProperty("env", "prod");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
+        assertInstanceOf(ListAppender.class, app);
     }
 
     @Test
-    public void devTest() {
+    void devTest() {
         System.setProperty("env", "dev");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
-        assertTrue(app instanceof ConsoleAppender);
+        assertInstanceOf(ConsoleAppender.class, app);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SystemPropertyArbiterTest {
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("ShouldExist");
         assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
+        assertInstanceOf(ListAppender.class, app);
         app = loggerContext.getConfiguration().getAppender("ShouldNotExist");
         assertNull(app);
     }

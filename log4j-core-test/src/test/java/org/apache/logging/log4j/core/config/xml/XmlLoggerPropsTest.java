@@ -32,7 +32,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class XmlLoggerPropsTest {
+class XmlLoggerPropsTest {
 
     @BeforeAll
     static void setupClass() {
@@ -46,7 +46,7 @@ public class XmlLoggerPropsTest {
 
     @Test
     @LoggerContextSource("log4j-loggerprops.xml")
-    public void testWithProps(final LoggerContext context, @Named("List") final ListAppender listAppender) {
+    void testWithProps(final LoggerContext context, @Named("List") final ListAppender listAppender) {
         assertThat(context.getConfiguration(), is(instanceOf(XmlConfiguration.class)));
         context.getLogger(getClass()).debug("Test with props");
         context.getLogger("tiny.bubbles").debug("Test on root");

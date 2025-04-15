@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RollingFileAppenderAccessTest {
+class RollingFileAppenderAccessTest {
 
     /**
      * Not a real test, just make sure we can compile access to the typed manager.
@@ -32,7 +33,7 @@ public class RollingFileAppenderAccessTest {
      * @throws IOException
      */
     @Test
-    public void testAccessManagerWithBuilder() throws IOException {
+    void testAccessManagerWithBuilder() throws IOException {
         try (final LoggerContext ctx = LoggerContext.getContext(false)) {
             final Configuration config = ctx.getConfiguration();
             final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
@@ -49,8 +50,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            assertNotNull(manager.getRolloverStrategy());
+            assertNotNull(manager.getTriggeringPolicy());
         }
     }
 
@@ -60,7 +61,7 @@ public class RollingFileAppenderAccessTest {
      * @throws IOException
      */
     @Test
-    public void testAccessManagerWithStrings() throws IOException {
+    void testAccessManagerWithStrings() throws IOException {
         try (final LoggerContext ctx = LoggerContext.getContext(false)) {
             final Configuration config = ctx.getConfiguration();
             final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
@@ -84,8 +85,8 @@ public class RollingFileAppenderAccessTest {
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.
-            Assert.assertNotNull(manager.getRolloverStrategy());
-            Assert.assertNotNull(manager.getTriggeringPolicy());
+            assertNotNull(manager.getRolloverStrategy());
+            assertNotNull(manager.getTriggeringPolicy());
         }
     }
 }

@@ -46,11 +46,11 @@ import org.junit.jupiter.api.Test;
     "target/MemoryMappedFileAppenderRemapTest.log",
     "target/MemoryMappedFileAppenderLocationTest.log"
 })
-public class MemoryMappedFileAppenderTest {
+class MemoryMappedFileAppenderTest {
 
     @Test
     @LoggerContextSource("MemoryMappedFileAppenderTest.xml")
-    public void testMemMapBasics(final LoggerContext context) throws Exception {
+    void testMemMapBasics(final LoggerContext context) throws Exception {
         final Logger log = context.getLogger(getClass());
         final Path logFile = Paths.get("target", "MemoryMappedFileAppenderTest.log");
         try {
@@ -71,7 +71,7 @@ public class MemoryMappedFileAppenderTest {
 
     @Test
     @LoggerContextSource("MemoryMappedFileAppenderRemapTest.xml")
-    public void testMemMapExtendsIfNeeded(final LoggerContext context) throws Exception {
+    void testMemMapExtendsIfNeeded(final LoggerContext context) throws Exception {
         final Logger log = context.getLogger(getClass());
         final Path logFile = Paths.get("target", "MemoryMappedFileAppenderRemapTest.log");
         final char[] text = new char[256];

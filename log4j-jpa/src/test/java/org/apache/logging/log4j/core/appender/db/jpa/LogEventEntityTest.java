@@ -29,10 +29,10 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.junit.jupiter.api.Test;
 
-public class LogEventEntityTest {
+class LogEventEntityTest {
 
     @Test
-    public void testToImmutable_AbstractLogEventWrapperEntity() {
+    void testToImmutable_AbstractLogEventWrapperEntity() {
         final LogEvent logEvent = new AbstractLogEventWrapperEntity() {
 
             private static final long serialVersionUID = 1L;
@@ -121,7 +121,7 @@ public class LogEventEntityTest {
     }
 
     @Test
-    public void testToImmutable_TestBaseEntity() {
+    void testToImmutable_TestBaseEntity() {
         final LogEvent logEvent = new TestBaseEntity();
         assertNotSame(logEvent, logEvent.toImmutable());
     }

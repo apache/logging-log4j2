@@ -28,10 +28,10 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("SequenceNumberPatternConverterZeroPaddedTest.yaml")
-public class SequenceNumberPatternConverterZeroPaddedTest {
+class SequenceNumberPatternConverterZeroPaddedTest {
 
     @Test
-    public void testPaddedSequence(final LoggerContext context, @Named("Padded") final ListAppender app) {
+    void testPaddedSequence(final LoggerContext context, @Named("Padded") final ListAppender app) {
         app.clear();
         final Logger logger = context.getLogger(getClass().getName());
         logger.info("Message 1");

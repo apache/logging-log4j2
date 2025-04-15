@@ -162,17 +162,17 @@ Appender -[#green,thickness=6]-> AbstractManager
 @enduml
 ....
 
-At a really high level,
+At a high level,
 
 * A <<LoggerContext>>, the composition anchor, gets created in combination with a <<Configuration>>.
-Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.
+Both can be created directly (i.e., programmatically) or indirectly at first interaction with Log4j.
 * `LoggerContext` creates <<Logger>>s that users interact with for logging purposes.
 * <<Appender>> delivers a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events and an <<AbstractManager>> to handle the lifecycle of the target resource.
-* <<LoggerConfig>> encapsulates configuration for a `Logger`, as `AppenderControl` and `AppenderRef` for ``Appender``s.
+* <<LoggerConfig>> encapsulates configuration for a `Logger,` as `AppenderControl` and `AppenderRef` for ``Appender``s.
 * <<Configuration>> is equipped with <<StrSubstitutor>> to allow property substitution in `String`-typed values.
 * A typical `log()` call triggers a chain of invocations through classes `Logger`, `LoggerConfig`, `AppenderControl`, `Appender`, and `AbstractManager` in order – this is depicted using green arrows in xref:architecture-diagram[xrefstyle=short].
 
-Following sections examine this interplay in detail.
+The following sections examine this interplay in detail.
 
 [#LoggerContext]
 == `LoggerContext`
@@ -716,9 +716,9 @@ In xref:#appender-additivity-diagram[xrefstyle=short], the effective appenders f
 
 | `root`
 | ✅
-| ✅
-| ✅
-| ✅
+| ❌
+| ❌
+| ❌
 | ✅
 | ❌
 

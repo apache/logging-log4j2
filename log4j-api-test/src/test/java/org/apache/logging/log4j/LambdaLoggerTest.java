@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the AbstractLogger implementation of the Logger2 interface.
  */
-public class LambdaLoggerTest {
+class LambdaLoggerTest {
 
     private static class LogEvent {
         @SuppressWarnings("unused")
@@ -275,14 +275,14 @@ public class LambdaLoggerTest {
     final Supplier[] supplierArray2 = new Supplier[] {supplier, supplier2};
 
     @BeforeEach
-    public void beforeEachTest() {
+    void beforeEachTest() {
         logger2.list.clear();
         supplier.invoked = false;
         messageSupplier.invoked = false;
     }
 
     @Test
-    public void testDebugMarkerMessageSupplier() {
+    void testDebugMarkerMessageSupplier() {
         logger2.disable().debug(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -298,7 +298,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMessageSupplier() {
+    void testDebugMessageSupplier() {
         logger2.disable().debug(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -313,7 +313,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMarkerMessageSupplierThrowable() {
+    void testDebugMarkerMessageSupplierThrowable() {
         logger2.disable().debug(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -330,7 +330,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMessageSupplierThrowable() {
+    void testDebugMessageSupplierThrowable() {
         logger2.disable().debug(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -346,7 +346,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMarkerSupplier() {
+    void testDebugMarkerSupplier() {
         logger2.disable().debug(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -362,7 +362,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugSupplier() {
+    void testDebugSupplier() {
         logger2.disable().debug(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -377,7 +377,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMarkerSupplierThrowable() {
+    void testDebugMarkerSupplierThrowable() {
         logger2.disable().debug(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -394,7 +394,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugSupplierThrowable() {
+    void testDebugSupplierThrowable() {
         logger2.disable().debug(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -410,7 +410,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugStringParamSupplier() {
+    void testDebugStringParamSupplier() {
         logger2.disable().debug("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -425,7 +425,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testDebugMarkerStringParamSupplier() {
+    void testDebugMarkerStringParamSupplier() {
         logger2.disable().debug(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -441,7 +441,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMarkerMessageSupplier() {
+    void testErrorMarkerMessageSupplier() {
         logger2.disable().error(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -457,7 +457,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMessageSupplier() {
+    void testErrorMessageSupplier() {
         logger2.disable().error(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -472,7 +472,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMarkerMessageSupplierThrowable() {
+    void testErrorMarkerMessageSupplierThrowable() {
         logger2.disable().error(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -489,7 +489,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMessageSupplierThrowable() {
+    void testErrorMessageSupplierThrowable() {
         logger2.disable().error(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -505,7 +505,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMarkerSupplier() {
+    void testErrorMarkerSupplier() {
         logger2.disable().error(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -521,7 +521,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorSupplier() {
+    void testErrorSupplier() {
         logger2.disable().error(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -536,7 +536,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMarkerSupplierThrowable() {
+    void testErrorMarkerSupplierThrowable() {
         logger2.disable().error(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -553,7 +553,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorSupplierThrowable() {
+    void testErrorSupplierThrowable() {
         logger2.disable().error(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -569,7 +569,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorStringParamSupplier() {
+    void testErrorStringParamSupplier() {
         logger2.disable().error("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -584,7 +584,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testErrorMarkerStringParamSupplier() {
+    void testErrorMarkerStringParamSupplier() {
         logger2.disable().error(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -600,7 +600,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMarkerMessageSupplier() {
+    void testFatalMarkerMessageSupplier() {
         logger2.disable().fatal(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -616,7 +616,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMessageSupplier() {
+    void testFatalMessageSupplier() {
         logger2.disable().fatal(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -631,7 +631,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMarkerMessageSupplierThrowable() {
+    void testFatalMarkerMessageSupplierThrowable() {
         logger2.disable().fatal(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -648,7 +648,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMessageSupplierThrowable() {
+    void testFatalMessageSupplierThrowable() {
         logger2.disable().fatal(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -664,7 +664,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMarkerSupplier() {
+    void testFatalMarkerSupplier() {
         logger2.disable().fatal(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -680,7 +680,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalSupplier() {
+    void testFatalSupplier() {
         logger2.disable().fatal(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -695,7 +695,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMarkerSupplierThrowable() {
+    void testFatalMarkerSupplierThrowable() {
         logger2.disable().fatal(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -712,7 +712,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalSupplierThrowable() {
+    void testFatalSupplierThrowable() {
         logger2.disable().fatal(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -728,7 +728,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalStringParamSupplier() {
+    void testFatalStringParamSupplier() {
         logger2.disable().fatal("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -743,7 +743,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalStringParam2Suppliers() {
+    void testFatalStringParam2Suppliers() {
         logger2.disable().fatal("abc {}{}", supplierArray2);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -760,7 +760,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testFatalMarkerStringParamSupplier() {
+    void testFatalMarkerStringParamSupplier() {
         logger2.disable().fatal(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -776,7 +776,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMarkerMessageSupplier() {
+    void testInfoMarkerMessageSupplier() {
         logger2.disable().info(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -792,7 +792,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMessageSupplier() {
+    void testInfoMessageSupplier() {
         logger2.disable().info(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -807,7 +807,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMarkerMessageSupplierThrowable() {
+    void testInfoMarkerMessageSupplierThrowable() {
         logger2.disable().info(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -824,7 +824,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMessageSupplierThrowable() {
+    void testInfoMessageSupplierThrowable() {
         logger2.disable().info(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -840,7 +840,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMarkerSupplier() {
+    void testInfoMarkerSupplier() {
         logger2.disable().info(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -856,7 +856,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoSupplier() {
+    void testInfoSupplier() {
         logger2.disable().info(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -871,7 +871,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMarkerSupplierThrowable() {
+    void testInfoMarkerSupplierThrowable() {
         logger2.disable().info(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -888,7 +888,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoSupplierThrowable() {
+    void testInfoSupplierThrowable() {
         logger2.disable().info(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -904,7 +904,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoStringParamSupplier() {
+    void testInfoStringParamSupplier() {
         logger2.disable().info("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -919,7 +919,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testInfoMarkerStringParamSupplier() {
+    void testInfoMarkerStringParamSupplier() {
         logger2.disable().info(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -935,7 +935,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMarkerMessageSupplier() {
+    void testTraceMarkerMessageSupplier() {
         logger2.disable().trace(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -951,7 +951,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMessageSupplier() {
+    void testTraceMessageSupplier() {
         logger2.disable().trace(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -966,7 +966,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMarkerMessageSupplierThrowable() {
+    void testTraceMarkerMessageSupplierThrowable() {
         logger2.disable().trace(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -983,7 +983,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMessageSupplierThrowable() {
+    void testTraceMessageSupplierThrowable() {
         logger2.disable().trace(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -999,7 +999,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMarkerSupplier() {
+    void testTraceMarkerSupplier() {
         logger2.disable().trace(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1015,7 +1015,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceSupplier() {
+    void testTraceSupplier() {
         logger2.disable().trace(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1030,7 +1030,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMarkerSupplierThrowable() {
+    void testTraceMarkerSupplierThrowable() {
         logger2.disable().trace(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1047,7 +1047,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceSupplierThrowable() {
+    void testTraceSupplierThrowable() {
         logger2.disable().trace(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1063,7 +1063,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceStringParamSupplier() {
+    void testTraceStringParamSupplier() {
         logger2.disable().trace("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1078,7 +1078,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testTraceMarkerStringParamSupplier() {
+    void testTraceMarkerStringParamSupplier() {
         logger2.disable().trace(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1094,7 +1094,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMarkerMessageSupplier() {
+    void testWarnMarkerMessageSupplier() {
         logger2.disable().warn(marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1110,7 +1110,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMessageSupplier() {
+    void testWarnMessageSupplier() {
         logger2.disable().warn(messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1125,7 +1125,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMarkerMessageSupplierThrowable() {
+    void testWarnMarkerMessageSupplierThrowable() {
         logger2.disable().warn(marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1142,7 +1142,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMessageSupplierThrowable() {
+    void testWarnMessageSupplierThrowable() {
         logger2.disable().warn(messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1158,7 +1158,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMarkerSupplier() {
+    void testWarnMarkerSupplier() {
         logger2.disable().warn(marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1174,7 +1174,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnSupplier() {
+    void testWarnSupplier() {
         logger2.disable().warn(supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1189,7 +1189,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMarkerSupplierThrowable() {
+    void testWarnMarkerSupplierThrowable() {
         logger2.disable().warn(marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1206,7 +1206,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnSupplierThrowable() {
+    void testWarnSupplierThrowable() {
         logger2.disable().warn(supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1222,7 +1222,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnStringParamSupplier() {
+    void testWarnStringParamSupplier() {
         logger2.disable().warn("abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1237,7 +1237,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testWarnMarkerStringParamSupplier() {
+    void testWarnMarkerStringParamSupplier() {
         logger2.disable().warn(marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1253,7 +1253,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMarkerMessageSupplier() {
+    void testLogMarkerMessageSupplier() {
         logger2.disable().log(Level.WARN, marker, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1269,7 +1269,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMessageSupplier() {
+    void testLogMessageSupplier() {
         logger2.disable().log(Level.WARN, messageSupplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1284,7 +1284,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMarkerMessageSupplierThrowable() {
+    void testLogMarkerMessageSupplierThrowable() {
         logger2.disable().log(Level.WARN, marker, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1301,7 +1301,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMessageSupplierThrowable() {
+    void testLogMessageSupplierThrowable() {
         logger2.disable().log(Level.WARN, messageSupplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(messageSupplier.invoked);
@@ -1317,7 +1317,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMarkerSupplier() {
+    void testLogMarkerSupplier() {
         logger2.disable().log(Level.WARN, marker, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1333,7 +1333,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogSupplier() {
+    void testLogSupplier() {
         logger2.disable().log(Level.WARN, supplier);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1348,7 +1348,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMarkerSupplierThrowable() {
+    void testLogMarkerSupplierThrowable() {
         logger2.disable().log(Level.WARN, marker, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1365,7 +1365,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogSupplierThrowable() {
+    void testLogSupplierThrowable() {
         logger2.disable().log(Level.WARN, supplier, throwable);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1381,7 +1381,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogStringParamSupplier() {
+    void testLogStringParamSupplier() {
         logger2.disable().log(Level.WARN, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);
@@ -1396,7 +1396,7 @@ public class LambdaLoggerTest {
     }
 
     @Test
-    public void testLogMarkerStringParamSupplier() {
+    void testLogMarkerStringParamSupplier() {
         logger2.disable().log(Level.WARN, marker, "abc {}", supplierArray1);
         assertTrue(logger2.list.isEmpty());
         assertFalse(supplier.invoked);

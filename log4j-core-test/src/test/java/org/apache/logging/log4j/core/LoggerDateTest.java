@@ -34,7 +34,7 @@ public class LoggerDateTest {
     }
 
     @Test
-    public void testFileName() {
+    void testFileName() {
         final String name = fileApp.getFileName();
         final int year = Calendar.getInstance().get(Calendar.YEAR);
         assertTrue(name.contains(Integer.toString(year)), "Date was not substituted: " + name);

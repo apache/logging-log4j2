@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CronTriggeringPolicyTest {
+class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
 
@@ -37,7 +37,7 @@ public class CronTriggeringPolicyTest {
     // public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
     @BeforeEach
-    public void before() {
+    void before() {
         configuration = new NullConfiguration();
     }
 
@@ -68,7 +68,7 @@ public class CronTriggeringPolicyTest {
      * true.
      */
     @Test
-    public void testBuilderOnce() {
+    void testBuilderOnce() {
         testBuilder();
     }
 
@@ -76,7 +76,7 @@ public class CronTriggeringPolicyTest {
      * Tests LOG4J2-1740 Add CronTriggeringPolicy programmatically leads to NPE
      */
     @Test
-    public void testLoggerContextAndBuilder() {
+    void testLoggerContextAndBuilder() {
         Configurator.initialize(configuration);
         testBuilder();
     }
@@ -85,7 +85,7 @@ public class CronTriggeringPolicyTest {
      * Tests LOG4J2-1740 Add CronTriggeringPolicy programmatically leads to NPE
      */
     @Test
-    public void testRollingRandomAccessFileAppender() {
+    void testRollingRandomAccessFileAppender() {
         // @formatter:off
         RollingRandomAccessFileAppender.newBuilder()
                 .setName("test2")
@@ -103,7 +103,7 @@ public class CronTriggeringPolicyTest {
      * true.
      */
     @Test
-    public void testBuilderSequence() {
+    void testBuilderSequence() {
         testBuilder();
         testBuilder();
     }
@@ -139,12 +139,12 @@ public class CronTriggeringPolicyTest {
      * true.
      */
     @Test
-    public void testFactoryMethodOnce() {
+    void testFactoryMethodOnce() {
         testFactoryMethod();
     }
 
     @Test
-    public void testFactoryMethodSequence() {
+    void testFactoryMethodSequence() {
         testFactoryMethod();
         testFactoryMethod();
     }

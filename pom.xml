@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>11.3.0</version>
+    <version>12.1.0</version>
     <relativePath />
   </parent>
 
@@ -249,6 +249,7 @@
     <module>log4j-docker</module>
     <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
+    <module>log4j-jakarta-jms</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
@@ -308,9 +309,9 @@
     <!-- project version -->
     <revision>2.25.0-SNAPSHOT</revision>
     <!-- Versions used on the site: no snapshots! -->
-    <site-log4j-api.version>2.24.1</site-log4j-api.version>
-    <site-log4j-core.version>2.24.1</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.24.1</site-log4j-layout-template-json.version>
+    <site-log4j-api.version>2.24.3</site-log4j-api.version>
+    <site-log4j-core.version>2.24.3</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.24.3</site-log4j-layout-template-json.version>
 
     <!-- =================
          Common properties
@@ -324,7 +325,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2024-09-24T13:33:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-12-10T10:15:05Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
@@ -339,23 +340,24 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <site-commons-compress.version>1.27.1</site-commons-compress.version>
-    <site-commons-csv.version>1.12.0</site-commons-csv.version>
-    <site-commons-logging.version>1.3.4</site-commons-logging.version>
+    <site-commons-csv.version>1.14.0</site-commons-csv.version>
+    <site-commons-logging.version>1.3.5</site-commons-logging.version>
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jackson.version>2.18.1</site-jackson.version>
+    <site-jackson.version>2.18.3</site-jackson.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
-    <site-kafka.version>3.8.1</site-kafka.version>
-    <site-logback.version>1.5.5</site-logback.version>
-    <site-slf4j.version>2.0.16</site-slf4j.version>
+    <site-kafka.version>3.9.0</site-kafka.version>
+    <site-logback.version>1.3.15</site-logback.version>
+    <site-slf4j.version>2.0.17</site-slf4j.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
+    <jspecify.version>1.0.0</jspecify.version>
     <log4j-docgen.version>0.9.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
@@ -369,7 +371,7 @@
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
-    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `ge.apache.org` -->
+    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `develocity.apache.org` -->
     <version.maven-surefire>3.2.5</version.maven-surefire>
   </properties>
 
@@ -443,6 +445,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-iostreams</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-jms</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -554,23 +562,6 @@
   <build>
 
     <plugins>
-
-      <!-- Enable BOM flattening -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <version>${flatten-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>flatten-bom</id>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <inherited>false</inherited>
-          </execution>
-        </executions>
-      </plugin>
 
       <!-- Apache RAT (Release Audit Tool) check to verify licenses.
            `apache-rat-plugin`: https://creadur.apache.org/rat/apache-rat-plugin/
@@ -986,6 +977,7 @@
           <groupId>org.jspecify</groupId>
           <artifactId>jspecify</artifactId>
           <version>${jspecify.version}</version>
+          <scope>test</scope>
         </dependency>
       </dependencies>
 
@@ -1052,7 +1044,7 @@
           <plugin>
             <groupId>org.openrewrite.maven</groupId>
             <artifactId>rewrite-maven-plugin</artifactId>
-            <version>5.15.0</version>
+            <version>6.0.1</version>
             <configuration>
               <activeRecipes>
                 <activeRecipe>org.openrewrite.java.logging.log4j.ParameterizedLogging</activeRecipe>
@@ -1062,12 +1054,12 @@
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-migrate-java</artifactId>
-                <version>2.4.0</version>
+                <version>3.0.0</version>
               </dependency>
               <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-logging-frameworks</artifactId>
-                <version>2.3.0</version>
+                <version>3.2.0</version>
               </dependency>
             </dependencies>
           </plugin>

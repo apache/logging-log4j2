@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests logging during shutdown.
  */
-public class Log4j1222Test {
+class Log4j1222Test {
 
     @Test
-    public void homepageRendersSuccessfully() {
+    void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }

@@ -60,7 +60,12 @@ public class FakePlugin {
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<FakePlugin> {
 
         @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter")
         private int attribute;
+
+        @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter")
+        private int attributeWithoutPublicSetterButWithSuppressAnnotation;
 
         @PluginElement("layout")
         private Layout<? extends Serializable> layout;

@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
  * This test attempts to validate that logging rolls after the max files are already written
  * will succeed on a restart.
  */
-public class RollingDirectSize3490Test implements RolloverListener {
+class RollingDirectSize3490Test implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-3490.xml";
     private static final String[] set1 = {"This is file 1"};
@@ -48,7 +48,7 @@ public class RollingDirectSize3490Test implements RolloverListener {
     private boolean rolloverTriggered = false;
 
     @BeforeAll
-    public static void clean() throws Exception {
+    static void clean() {
         final File dir = new File(DIR);
         if (dir.exists()) {
             final File[] files = dir.listFiles();
@@ -62,7 +62,7 @@ public class RollingDirectSize3490Test implements RolloverListener {
     }
 
     @Test
-    public void rolloverTest() throws Exception {
+    void rolloverTest() throws Exception {
         final File parent = new File(DIR);
         parent.mkdirs();
         final Path app1 = new File(parent, "app-21.log").toPath();

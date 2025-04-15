@@ -31,10 +31,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the ReusableLogEventFactory class.
  */
-public class ReusableLogEventFactoryTest {
+class ReusableLogEventFactoryTest {
 
     @Test
-    public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
+    void testCreateEventReturnsDifferentInstanceIfNotReleased() {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
@@ -44,7 +44,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsSameInstance() throws Exception {
+    void testCreateEventReturnsSameInstance() {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         ReusableLogEventFactory.release(event1);
@@ -58,7 +58,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventOverwritesFields() throws Exception {
+    void testCreateEventOverwritesFields() {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         assertEquals("a", event1.getLoggerName(), "logger");
@@ -87,7 +87,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsThreadLocalInstance() throws Exception {
+    void testCreateEventReturnsThreadLocalInstance() throws Exception {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final AtomicReference<LogEvent> event1 = new AtomicReference<>();
         final AtomicReference<LogEvent> event2 = new AtomicReference<>();
@@ -127,7 +127,7 @@ public class ReusableLogEventFactoryTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testCreateEventInitFieldsProperly() throws Exception {
+    void testCreateEventInitFieldsProperly() {
         final ReusableLogEventFactory factory = new ReusableLogEventFactory();
         final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
         try {
