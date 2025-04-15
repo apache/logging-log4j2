@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.apache.logging.log4j.core.appender.db.jpa"},{"l":"org.apache.logging.log4j.core.appender.db.jpa.converter"}];updateSearchResults();
