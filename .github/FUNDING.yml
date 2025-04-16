@@ -19,5 +19,7 @@
 # For details see:
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 #
+# WARNING: the `github` key accepts only 4 GitHub user ids, so we can not use this feature.
+#
 custom: "https://logging.apache.org/support.html#sponsors"
 tidelift: "maven/org.apache.logging.log4j:log4j-core"
