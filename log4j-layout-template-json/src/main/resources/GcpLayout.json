@@ -51,8 +51,11 @@
   },
   "logging.googleapis.com/trace_sampled": true,
   "exception": {
-    "$resolver": "pattern",
-    "pattern": "%xEx"
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stackTrace": {
+      "stringified": true
+    }
   },
   "thread": {
     "$resolver": "thread",
