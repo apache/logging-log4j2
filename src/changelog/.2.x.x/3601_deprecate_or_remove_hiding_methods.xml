@@ -2,7 +2,9 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="3595" link="https://github.com/apache/logging-log4j2/pull/3595"/>
-  <description format="asciidoc">Update `com.google.guava:guava` to version `33.4.7-jre`</description>
+       type="fixed">
+  <issue id="3601" link="https://github.com/apache/logging-log4j2/issues/3601"/>
+  <description format="asciidoc">
+    Deprecate or remove static hiding methods.
+  </description>
 </entry>
