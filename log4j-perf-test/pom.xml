@@ -40,7 +40,7 @@
 
     <!-- Dependency versions -->
     <reload4j.version>1.2.26</reload4j.version>
-    <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
+    <log4j2-ecs-layout.version>1.7.0</log4j2-ecs-layout.version>
     <logback.version>1.5.18</logback.version>
     <slf4j2.version>2.0.17</slf4j2.version>
   </properties>
