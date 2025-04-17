@@ -21,11 +21,6 @@ import static org.apache.logging.log4j.layout.template.json.TestHelpers.JAVA_BAS
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -43,9 +38,6 @@ class GcpLayoutTest {
             .build();
 
     private static final int LOG_EVENT_COUNT = 1_000;
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     @Test
     void test_lite_log_events() {
@@ -84,8 +76,9 @@ class GcpLayoutTest {
         usingSerializedLogEventAccessor(LAYOUT, logEvent, accessor -> {
 
             // Verify timestamp.
-            final String expectedTimestamp = formatLogEventInstant(logEvent);
-            assertThat(accessor.getString("timestamp")).isEqualTo(expectedTimestamp);
+            final org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
+            assertThat(accessor.getInteger("timestampSeconds")).isEqualTo(instant.getEpochSecond());
+            assertThat(accessor.getInteger("timestampNanos")).isEqualTo(instant.getNanoOfSecond());
 
             // Verify severity.
             final Level level = logEvent.getLevel();
@@ -168,12 +161,5 @@ class GcpLayoutTest {
             // Verify logger name.
             assertThat(accessor.getString("logger")).isEqualTo(logEvent.getLoggerName());
         });
-    }
-
-    private static String formatLogEventInstant(final LogEvent logEvent) {
-        final org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
-        final ZonedDateTime dateTime = Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond())
-                .atZone(ZoneId.of("UTC"));
-        return DATE_TIME_FORMATTER.format(dateTime);
     }
 }
