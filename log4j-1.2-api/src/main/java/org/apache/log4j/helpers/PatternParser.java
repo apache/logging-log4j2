@@ -316,7 +316,7 @@ public class PatternParser {
                 currentLiteral.setLength(0);
                 break;
             default:
-                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion patterrn.");
+                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion pattern.");
                 pc = new LiteralPatternConverter(currentLiteral.toString());
                 currentLiteral.setLength(0);
         }
