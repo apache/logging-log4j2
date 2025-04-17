@@ -38,7 +38,7 @@ public final class ExceptionResolverFactory implements EventResolverFactory {
 
     @Override
     public String getName() {
-        return ExceptionResolver.getName();
+        return "exception";
     }
 
     @Override

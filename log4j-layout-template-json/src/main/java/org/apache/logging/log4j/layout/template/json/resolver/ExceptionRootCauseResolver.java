@@ -36,10 +36,6 @@ public final class ExceptionRootCauseResolver extends ExceptionResolver {
         super(context, config);
     }
 
-    static String getName() {
-        return "exceptionRootCause";
-    }
-
     @Override
     Throwable extractThrowable(final LogEvent logEvent) {
         final Throwable thrown = logEvent.getThrown();
