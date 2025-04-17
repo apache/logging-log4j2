@@ -189,7 +189,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         switch (formatters.size()) {
 
-                // If found an empty pattern, return an empty formatter
+            // If found an empty pattern, return an empty formatter
             case 0:
                 return new AbstractFormatter(pattern, locale, timeZone, ChronoUnit.FOREVER) {
                     @Override
@@ -198,11 +198,11 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     }
                 };
 
-                // If extracted a single formatter, return it as is
+            // If extracted a single formatter, return it as is
             case 1:
                 return formatters.get(0);
 
-                // Combine all extracted formatters into one
+            // Combine all extracted formatters into one
             default:
                 final ChronoUnit precision = new CompositePatternSequence(sequences).precision;
                 return new AbstractFormatter(pattern, locale, timeZone, precision) {
