@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -79,10 +80,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
     private static class PrivateLogManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = Hierarchy.class.getName();
 
+        @SuppressFBWarnings(
+                value = "HSM_HIDING_METHOD",
+                justification = "The class is private, no confusion can arise.")
         public static LoggerContext getContext() {
             return getContext(FQCN, false);
         }
 
+        @SuppressFBWarnings(
+                value = "HSM_HIDING_METHOD",
+                justification = "The class is private, no confusion can arise.")
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }
