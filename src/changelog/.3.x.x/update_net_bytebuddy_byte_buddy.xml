@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3470" link="https://github.com/apache/logging-log4j2/pull/3470"/>
-  <description format="asciidoc">Update `net.bytebuddy:byte-buddy` to version `1.17.1`</description>
+  <issue id="3632" link="https://github.com/apache/logging-log4j2/pull/3632"/>
+  <description format="asciidoc">Update `net.bytebuddy:byte-buddy` to version `1.17.5`</description>
 </entry>
