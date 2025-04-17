@@ -78,11 +78,10 @@ public final class ClockFactory {
         }
         return switch (configuration.clock()) {
             case "SystemMillisClock" -> logSupportedPrecision(new SystemMillisClock());
-            case "CachedClock", "org.apache.logging.log4j.core.time.internal.CachedClock" -> logSupportedPrecision(
-                    CachedClock.instance());
-            case "CoarseCachedClock",
-                    "org.apache.logging.log4j.core.time.internal.CoarseCachedClock" -> logSupportedPrecision(
-                    CoarseCachedClock.instance());
+            case "CachedClock", "org.apache.logging.log4j.core.time.internal.CachedClock" ->
+                logSupportedPrecision(CachedClock.instance());
+            case "CoarseCachedClock", "org.apache.logging.log4j.core.time.internal.CoarseCachedClock" ->
+                logSupportedPrecision(CoarseCachedClock.instance());
             default -> logSupportedPrecision(new SystemClock());
         };
     }
