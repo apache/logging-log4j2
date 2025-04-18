@@ -78,6 +78,8 @@ include::partial$manual/api-best-practice-exception-as-last-argument.adoc[]
 
 include::partial$manual/api-best-practice-dont-use-string-concat.adoc[]
 
+include::partial$manual/api-best-practice-dont-mix-concat-and-params.adoc[]
+
 [#best-practice-supplier]
 === Use ``Supplier``s to pass computationally expensive arguments
 
