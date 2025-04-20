@@ -152,7 +152,7 @@ class GcpLayoutTest {
                         .contains("at org.junit.platform.engine");
 
             } else {
-                assertThat(accessor.getString("exception")).isEmpty();
+                assertThat(accessor.getString("exception")).isNull();
             }
 
             // Verify thread name.
