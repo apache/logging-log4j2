@@ -331,7 +331,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         getConfigurationSource(),
                         uris,
                         watchManager.getIntervalSeconds());
-                watchManager.addMonitorUris(configurationSource.getSource(), uris);
+                watchMonitorUris();
             } else {
                 LOGGER.info(
                         "Start watching for changes to {} every {} seconds",
@@ -356,6 +356,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         super.start();
         LOGGER.info("Configuration {} started.", this);
+    }
+
+    private void watchMonitorUris() {
+        if (this instanceof Reconfigurable) {
+            uris.stream().forEach(uri -> {
+                Source source = new Source(uri);
+                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
+                        this, (Reconfigurable) this, listeners, source.getFile().lastModified());
+                watchManager.watch(source, watcher);
+            });
+        }
     }
 
     private boolean hasAsyncLoggers() {
