@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="3586" link="https://github.com/apache/logging-log4j2/pull/3586"/>
+  <description format="asciidoc">
+    Adjust GcpLayout JSON template to support automatic timestamp recognition by the Google Cloud Logging. This also changes `exception`, `thread`, `logger` fields a bit, and removes `insertId` field.
+  </description>
+</entry>
