@@ -371,7 +371,7 @@ xref:manual/installation.adoc#impl-logback[Log4j API-to-SLF4J]
 bridges are tested for compatibility with Android.
 
 [#android-native]
-Log4j API-to-Android logging API bridge::
+Bridge Log4j to Android's native Logcat::
 +
 If you wish to bridge Log4j API to
 https://developer.android.com/reference/android/util/Log[Android's native logging API]
@@ -379,3 +379,19 @@ directly, you can use the **third-party** `com.celeral:log4j2-android` artifact.
 See the
 https://github.com/Celeral/log4j2-android[`log4j2-android` project website]
 for more information.
+
+[#android-log4j2]
+Android Log4J2::
++
+A full integration with Android which provides a Logcat appender while keeping other features like Console appender and loglevel control. 
++
+Features:
++
+* Seamless integration of Log4J over SLF4J into your Android application
+* File-based configuration of logging for fine control - just like in proper Java
+* Separate configurations for Debug, Release, JUnit tests, and Android tests
+* Extension for JUnit 5
+* Rule for JUnit 4
+
++
+See GitHub repo https://github.com/neboskreb/android-log4j2[`android-log4j2`] 
