@@ -5,6 +5,6 @@
        type="changed">
   <issue id="3586" link="https://github.com/apache/logging-log4j2/pull/3586"/>
   <description format="asciidoc">
-    Adjust GcpLayout JSON template to support automatic timestamp recognition by the Google Cloud Logging. This also changes `exception`, `thread`, `logger` fields a bit, and removes `insertId` field.
+    Update `GcpLayout.json` JSON Template Layout event template to support automatic timestamp recognition by the Google Cloud Logging. This also changes `exception`, `thread`, `logger` fields, and removes `insertId` field.
   </description>
 </entry>
