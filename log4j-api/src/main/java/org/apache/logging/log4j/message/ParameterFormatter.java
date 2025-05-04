@@ -257,12 +257,12 @@ final class ParameterFormatter {
             }
         }
 
-        // Fast-path for patterns containing no escapes
+        // Slow-path for patterns containing escapes
         if (analysis.escapedCharFound) {
             formatMessageContainingEscapes(buffer, pattern, args, argCount, analysis);
         }
 
-        // Slow-path for patterns containing escapes
+        // Fast-path for patterns containing no escapes
         else {
             formatMessageContainingNoEscapes(buffer, pattern, args, argCount, analysis);
         }
@@ -487,21 +487,21 @@ final class ParameterFormatter {
     private static void appendArray(
             final Object o, final StringBuilder str, final Set<Object> dejaVu, final Class<?> oClass) {
         if (oClass == byte[].class) {
-            str.append(Arrays.toString((byte[]) o));
+            appendArray((byte[]) o, str);
         } else if (oClass == short[].class) {
-            str.append(Arrays.toString((short[]) o));
+            appendArray((short[]) o, str);
         } else if (oClass == int[].class) {
-            str.append(Arrays.toString((int[]) o));
+            appendArray((int[]) o, str);
         } else if (oClass == long[].class) {
-            str.append(Arrays.toString((long[]) o));
+            appendArray((long[]) o, str);
         } else if (oClass == float[].class) {
-            str.append(Arrays.toString((float[]) o));
+            appendArray((float[]) o, str);
         } else if (oClass == double[].class) {
-            str.append(Arrays.toString((double[]) o));
+            appendArray((double[]) o, str);
         } else if (oClass == boolean[].class) {
-            str.append(Arrays.toString((boolean[]) o));
+            appendArray((boolean[]) o, str);
         } else if (oClass == char[].class) {
-            str.append(Arrays.toString((char[]) o));
+            appendArray((char[]) o, str);
         } else {
             // special handling of container Object[]
             final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
@@ -642,5 +642,213 @@ final class ParameterFormatter {
             return null;
         }
         return obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj));
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(byte[])
+     */
+    private static void appendArray(final byte[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(short[])
+     */
+    private static void appendArray(final short[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(int[])
+     */
+    private static void appendArray(final int[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(long[])
+     */
+    private static void appendArray(final long[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(float[])
+     */
+    private static void appendArray(final float[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(double[])
+     */
+    private static void appendArray(final double[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(boolean[])
+     */
+    private static void appendArray(final boolean[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
+    }
+
+    /**
+     * Adds a string representation of the contents of the specified array to the buffer.
+     *
+     * @param a      the array to convert (not null)
+     * @param str    the {@code StringBuilder} that {@code a} will be appended to
+     *
+     * @see Arrays#toString(char[])
+     */
+    private static void appendArray(char[] a, final StringBuilder str) {
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            str.append("[]");
+            return;
+        }
+
+        str.append('[');
+        for (int i = 0; ; i++) {
+            str.append(a[i]);
+            if (i == iMax) {
+                str.append(']');
+                return;
+            }
+            str.append(", ");
+        }
     }
 }
