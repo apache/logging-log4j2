@@ -281,8 +281,8 @@ it doesn't have a LoggerConfig with a name that exactly matches. It too
 inherits its logging level from LoggerConfig X.
 
 The table below illustrates how Level filtering works. In the table,
-the vertical header shows the Level of the LogEvent, while the horizontal
-header shows the Level associated with the appropriate LoggerConfig. The
+the vertical header shows the Level associated with the appropriate LoggerConfig, while the horizontal
+header shows the Level of the LogEvent. The
 intersection identifies whether the LogEvent would be allowed to pass
 for further processing (Yes) or discarded (No).
 
