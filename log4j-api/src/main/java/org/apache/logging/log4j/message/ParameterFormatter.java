@@ -645,210 +645,130 @@ final class ParameterFormatter {
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(byte[])
      */
     private static void appendArray(final byte[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(short[])
      */
     private static void appendArray(final short[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(int[])
      */
     private static void appendArray(final int[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(long[])
      */
     private static void appendArray(final long[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(float[])
      */
     private static void appendArray(final float[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(double[])
      */
     private static void appendArray(final double[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(boolean[])
      */
     private static void appendArray(final boolean[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 
     /**
-     * Adds a string representation of the contents of the specified array to the buffer.
-     *
-     * @param a      the array to convert (not null)
-     * @param str    the {@code StringBuilder} that {@code a} will be appended to
-     *
      * @see Arrays#toString(char[])
      */
     private static void appendArray(char[] a, final StringBuilder str) {
-        int iMax = a.length - 1;
-        if (iMax == -1) {
+        int len = a.length;
+        if (len == 0) {
             str.append("[]");
             return;
         }
-
-        str.append('[');
-        for (int i = 0; ; i++) {
-            str.append(a[i]);
-            if (i == iMax) {
-                str.append(']');
-                return;
-            }
-            str.append(", ");
+        str.append('[').append(a[0]);
+        for (int i = 1; i < len; i++) {
+            str.append(", ").append(a[i]);
         }
+        str.append(']');
     }
 }

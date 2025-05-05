@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.status.StatusData;
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -147,6 +149,18 @@ class ParameterFormatterTest {
     }
 
     @Test
+    void testIdentityToString() {
+        final List<Object> list = new ArrayList<>();
+        list.add(1);
+        // noinspection CollectionAddedToSelf
+        list.add(list);
+        list.add(2);
+        final String actual = ParameterFormatter.identityToString(list);
+        final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     void testDeepToString() {
         final List<Object> list = new ArrayList<>();
         list.add(1);
@@ -172,63 +186,22 @@ class ParameterFormatterTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void testIdentityToString() {
-        final List<Object> list = new ArrayList<>();
-        list.add(1);
-        // noinspection CollectionAddedToSelf
-        list.add(list);
-        list.add(2);
-        final String actual = ParameterFormatter.identityToString(list);
-        final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
+    @ParameterizedTest
+    @MethodSource("deepToStringArgumentsPrimitiveArrays")
+    void testDeepToStringPrimitiveArrays(Object obj, String expected) {
+        final String actual = ParameterFormatter.deepToString(obj);
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void testDeepToStringArrayInt() {
-        final int[] array = new int[] {0, 1, 2, 3, 4};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[0, 1, 2, 3, 4]";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void testDeepToStringArrayLong() {
-        final long[] array = new long[] {0, 1, 2, 3, 4};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[0, 1, 2, 3, 4]";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void testDeepToStringArrayFloat() {
-        final float[] array = new float[] {0, 1, 2, 3, 4};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[0.0, 1.0, 2.0, 3.0, 4.0]";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void testDeepToStringArrayDouble() {
-        final double[] array = new double[] {0, 1, 2, 3, 4};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[0.0, 1.0, 2.0, 3.0, 4.0]";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void testDeepToStringArrayBoolean() {
-        final boolean[] array = new boolean[] {false, true};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[false, true]";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void testDeepToStringArrayChar() {
-        final char[] array = new char[] {'a', 'b', 'c'};
-        final String actual = ParameterFormatter.deepToString(array);
-        final String expected = "[a, b, c]";
-        assertThat(actual).isEqualTo(expected);
+    static Stream<Arguments> deepToStringArgumentsPrimitiveArrays() {
+        return Stream.of(
+                Arguments.of(new byte[] {0, 1, 2, 3, 4}, "[0, 1, 2, 3, 4]"),
+                Arguments.of(new short[] {0, 1, 2, 3, 4}, "[0, 1, 2, 3, 4]"),
+                Arguments.of(new int[] {0, 1, 2, 3, 4}, "[0, 1, 2, 3, 4]"),
+                Arguments.of(new long[] {0, 1, 2, 3, 4}, "[0, 1, 2, 3, 4]"),
+                Arguments.of(new float[] {0, 1, 2, 3, 4}, "[0.0, 1.0, 2.0, 3.0, 4.0]"),
+                Arguments.of(new double[] {0, 1, 2, 3, 4}, "[0.0, 1.0, 2.0, 3.0, 4.0]"),
+                Arguments.of(new char[] {'a', 'b', 'c'}, "[a, b, c]"),
+                Arguments.of(new boolean[] {false, true}, "[false, true]"));
     }
 }
