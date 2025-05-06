@@ -679,7 +679,8 @@ final class ParameterFormatter {
     /**
      * @see Arrays#toString(int[])
      */
-    private static void appendArray(final int[] a, final StringBuilder str) {
+    // package protected to allow access from ParameterFormatterBenchmark
+    static void appendArray(final int[] a, final StringBuilder str) {
         int len = a.length;
         if (len == 0) {
             str.append("[]");

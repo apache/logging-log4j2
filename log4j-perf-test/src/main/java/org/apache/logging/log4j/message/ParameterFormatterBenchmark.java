@@ -112,21 +112,7 @@ public class ParameterFormatterBenchmark {
     public int appendArrayStringBuilder(final ThreadState state) {
         StringBuilder buffer = state.buffer;
         buffer.setLength(0);
-        appendArray(INT_ARRAY, buffer);
+        ParameterFormatter.appendArray(INT_ARRAY, buffer);
         return state.buffer.length();
-    }
-
-    // Copied as method is static
-    private static void appendArray(final int[] a, final StringBuilder str) {
-        int len = a.length;
-        if (len == 0) {
-            str.append("[]");
-            return;
-        }
-        str.append('[').append(a[0]);
-        for (int i = 1; i < len; i++) {
-            str.append(", ").append(a[i]);
-        }
-        str.append(']');
     }
 }
