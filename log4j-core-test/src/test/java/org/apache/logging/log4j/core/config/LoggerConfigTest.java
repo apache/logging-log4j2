@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
@@ -136,5 +139,19 @@ class LoggerConfigTest {
         config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
         verify(appender, times(1)).append(any());
         verify(filter, times(1)).filter(any());
+    }
+
+    @Test
+    void testLevelAndRefsWithoutAppenderRef() {
+        final Configuration configuration = mock(PropertiesConfiguration.class);
+        final LoggerConfig.Builder builder = LoggerConfig.newBuilder()
+                .withLoggerName(FQCN)
+                .withConfig(configuration)
+                .withLevelAndRefs(Level.INFO.name());
+
+        final LoggerConfig loggerConfig = builder.build();
+
+        assertNotNull(loggerConfig.getAppenderRefs());
+        assertTrue(loggerConfig.getAppenderRefs().isEmpty());
     }
 }
