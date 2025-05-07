@@ -37,7 +37,7 @@
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Dependency properties -->
-    <mongodb.version>5.4.0</mongodb.version>
+    <mongodb.version>5.5.0</mongodb.version>
     <slf4j2.version>2.0.17</slf4j2.version>
   </properties>
 
