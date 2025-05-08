@@ -119,7 +119,7 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case WAITING: {
-                final StackTraceElement element = info.getStackTrace()[0];
+                final StackTraceElement element = getStackTraceElement(info);
                 final String className = element.getClassName();
                 final String method = element.getMethodName();
                 if (className.equals("java.lang.Object") && method.equals("wait")) {
@@ -144,7 +144,7 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case TIMED_WAITING: {
-                final StackTraceElement element = info.getStackTrace()[0];
+                final StackTraceElement element = getStackTraceElement(info);
                 final String className = element.getClassName();
                 final String method = element.getMethodName();
                 if (className.equals("java.lang.Object") && method.equals("wait")) {
@@ -173,5 +173,15 @@ class ExtendedThreadInformation implements ThreadInformation {
             default:
                 break;
         }
+    }
+
+    private static StackTraceElement getStackTraceElement(final ThreadInfo info) {
+        final StackTraceElement[] stackTrace = info.getStackTrace();
+        if (stackTrace == null || stackTrace.length < 1) {
+            final String textualInfo = "Unknown";
+            return new StackTraceElement(textualInfo, textualInfo, textualInfo, -1);
+        }
+
+        return stackTrace[0];
     }
 }
