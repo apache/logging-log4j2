@@ -55,6 +55,9 @@ github:
     - logger
     - api
     - syslog
+  # People helping with triaging and Project Management
+  collaborators:
+    - basemax
 
   # Enforce squashing while merging PRs.
   # Otherwise, the git log gets polluted severely.
