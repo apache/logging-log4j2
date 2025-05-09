@@ -15,24 +15,20 @@
     limitations under the License.
 ////
 
-* [ ] Don't use `String` concatenation to format arguments:
-the log message will be formatted, even if the logger is not enabled, and you will suffer a performance penalty!
+If you are mixing `String` concatenation and parameterized logging, you are doing something very wrong and dangerous!
+
+* [ ] The format string of a parameterized statement should be a compile time constant!
+An attacker could mangle your logs by inserting `{}` placeholders in the values!
+Try these examples with `userId="{}\nbadUser"` and `reason="root logged in successfully"`
 +
 [source,java]
 ----
-/* BAD! */ LOGGER.info("failed for user ID: " + userId);
+/* BAD! */ LOGGER.info("User " + userId + " logged out: {}", reason);
 ----
 
 * [x] Use message parameters
 +
 [source,java]
 ----
-/* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
-----
-
-* [x] Use message lambdas
-+
-[source,java]
-----
-/* GOOD */ LOGGER.info(() -> "failed for user ID: " + userId);
+/* GOOD */ LOGGER.info("User {} logged out: {}", userId, reason);
 ----
