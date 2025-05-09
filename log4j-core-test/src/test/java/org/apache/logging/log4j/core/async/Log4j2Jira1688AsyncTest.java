@@ -16,54 +16,49 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
+@Tag(Tags.ASYNC_LOGGERS)
 public class Log4j2Jira1688AsyncTest {
 
-    @BeforeClass
+    private ListAppender listAppender;
+
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j-list.xml");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
-
-    private ListAppender listAppender;
-
-    @Before
-    public void before() {
-        listAppender = context.getListAppender("List");
+    @BeforeEach
+    public void before(LoggerContext context) {
+        listAppender = context.getConfiguration().getAppender("List");
     }
 
     private static Object[] createArray(final int size) {
@@ -75,7 +70,8 @@ public class Log4j2Jira1688AsyncTest {
     }
 
     @Test
-    public void testLog4j2Only() throws InterruptedException {
+    @LoggerContextSource("log4j-list.xml")
+    public void testLog4j2Only(LoggerContext context) throws InterruptedException {
         final org.apache.logging.log4j.Logger log4JLogger = LogManager.getLogger(this.getClass());
         final int limit = 11; // more than unrolled varargs
         final Object[] args = createArray(limit);
@@ -85,9 +81,9 @@ public class Log4j2Jira1688AsyncTest {
         ((ExtendedLogger) log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
 
         listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertArrayEquals(originalArgs, args, Arrays.toString(args));
 
         ((ExtendedLogger) log4JLogger).logIfEnabled("test", Level.ERROR, null, "test {}", args);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertArrayEquals(originalArgs, args, Arrays.toString(args));
     }
 }

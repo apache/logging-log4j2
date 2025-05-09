@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * This test attempts to validate that logging rolls when the file size exceeds 5KB or every second.
@@ -43,20 +43,21 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-size-time-new-directory";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingDirectSizeTimeNewDirectoryTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private final Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
 
     @Test
-    public void streamClosedError() throws Exception {
-        ((RollingFileAppender) loggerContextRule.getAppender("RollingFile"))
+    public void streamClosedError(final LoggerContext loggerContext) throws Exception {
+        ((RollingFileAppender) loggerContext.getConfiguration().getAppender("RollingFile"))
                 .getManager()
                 .addRolloverListener(this);
-        final Logger logger = loggerContextRule.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
+        final Logger logger = loggerContext.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
@@ -66,10 +67,10 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        assertTrue("A time based rollover did not occur", rolloverFiles.size() > 1);
+        assertTrue(rolloverFiles.size() > 1, "A time based rollover did not occur");
         final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get))
                 .get();
-        assertTrue("No size based rollovers occurred", maxFiles > 1);
+        assertTrue(maxFiles > 1, "No size based rollovers occurred");
     }
 
     @Override
