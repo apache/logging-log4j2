@@ -236,11 +236,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         }
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + "]";
-    }
-
     /**
      * The error that occurred.
      */
@@ -260,11 +255,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             this.name = name;
             this.node = node;
             this.errorType = errorType;
-        }
-
-        @Override
-        public String toString() {
-            return "Status [name=" + name + ", errorType=" + errorType + ", node=" + node + "]";
         }
     }
 }
