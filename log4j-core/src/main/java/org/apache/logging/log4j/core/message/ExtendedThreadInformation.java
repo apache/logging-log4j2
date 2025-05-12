@@ -23,6 +23,7 @@ import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import org.apache.logging.log4j.message.ThreadInformation;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides information on locks and monitors in the thread dump. This class requires Java 1.6 to compile and
@@ -119,17 +120,17 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case WAITING: {
-                final StackTraceElement element = getStackTraceElement(info);
-                final String className = element.getClassName();
-                final String method = element.getMethodName();
-                if (className.equals("java.lang.Object") && method.equals("wait")) {
+                final StackTraceElement element = getFirstStackTraceElement(info);
+                final String className = element != null ? element.getClassName() : null;
+                final String method = element != null ? element.getMethodName() : null;
+                if ("java.lang.Object".equals(className) && "wait".equals(method)) {
                     sb.append(" (on object monitor");
                     if (info.getLockOwnerName() != null) {
                         sb.append(" owned by \"");
                         sb.append(info.getLockOwnerName()).append("\" Id=").append(info.getLockOwnerId());
                     }
                     sb.append(')');
-                } else if (className.equals("java.lang.Thread") && method.equals("join")) {
+                } else if ("java.lang.Thread".equals(className) && "join".equals(method)) {
                     sb.append(" (on completion of thread ")
                             .append(info.getLockOwnerId())
                             .append(')');
@@ -144,19 +145,19 @@ class ExtendedThreadInformation implements ThreadInformation {
                 break;
             }
             case TIMED_WAITING: {
-                final StackTraceElement element = getStackTraceElement(info);
-                final String className = element.getClassName();
-                final String method = element.getMethodName();
-                if (className.equals("java.lang.Object") && method.equals("wait")) {
+                final StackTraceElement element = getFirstStackTraceElement(info);
+                final String className = element != null ? element.getClassName() : null;
+                final String method = element != null ? element.getMethodName() : null;
+                if ("java.lang.Object".equals(className) && "wait".equals(method)) {
                     sb.append(" (on object monitor");
                     if (info.getLockOwnerName() != null) {
                         sb.append(" owned by \"");
                         sb.append(info.getLockOwnerName()).append("\" Id=").append(info.getLockOwnerId());
                     }
                     sb.append(')');
-                } else if (className.equals("java.lang.Thread") && method.equals("sleep")) {
+                } else if ("java.lang.Thread".equals(className) && "sleep".equals(method)) {
                     sb.append(" (sleeping)");
-                } else if (className.equals("java.lang.Thread") && method.equals("join")) {
+                } else if ("java.lang.Thread".equals(className) && "join".equals(method)) {
                     sb.append(" (on completion of thread ")
                             .append(info.getLockOwnerId())
                             .append(')');
@@ -175,13 +176,9 @@ class ExtendedThreadInformation implements ThreadInformation {
         }
     }
 
-    private static StackTraceElement getStackTraceElement(final ThreadInfo info) {
+    @Nullable
+    private static StackTraceElement getFirstStackTraceElement(final ThreadInfo info) {
         final StackTraceElement[] stackTrace = info.getStackTrace();
-        if (stackTrace == null || stackTrace.length < 1) {
-            final String textualInfo = "Unknown";
-            return new StackTraceElement(textualInfo, textualInfo, textualInfo, -1);
-        }
-
-        return stackTrace[0];
+        return stackTrace != null && stackTrace.length > 0 ? stackTrace[0] : null;
     }
 }
