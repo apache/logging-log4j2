@@ -1,0 +1,15 @@
+{
+  "Configuration": {
+    "monitorInterval": "30",
+    "MonitorUris": {
+      "Uri": [
+        {
+          "uri": "to-be-monitored-1.file"
+        },
+        {
+          "uri": "to-be-monitored-2.file"
+        }
+      ]
+    }
+  }
+}

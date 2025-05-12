@@ -62,6 +62,15 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
+     * Adds a MonitorUri component.
+     * @param builder The MonitorUriComponentBuilder with all of its attributes set.
+     * @return this builder instance.
+     */
+    default ConfigurationBuilder<T> add(MonitorUriComponentBuilder builder) {
+        return this;
+    }
+
+    /**
      * Adds a Filter component.
      * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
      * @return this builder instance.
@@ -271,6 +280,15 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return A new CustomLevelComponentBuilder.
      */
     CustomLevelComponentBuilder newCustomLevel(String name, int level);
+
+    /**
+     * Returns a builder for creating MonitorUris
+     * @param uri The URI.
+     * @return A new MonitorUriComponentBuilder.
+     */
+    default MonitorUriComponentBuilder newMonitorUri(String uri) {
+        return null;
+    }
 
     /**
      * Returns a builder for creating Filters.
