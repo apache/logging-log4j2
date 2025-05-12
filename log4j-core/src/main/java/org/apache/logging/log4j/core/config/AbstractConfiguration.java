@@ -269,6 +269,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        watchMonitorUris();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
     }
@@ -325,19 +326,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
         if (watchManager.getIntervalSeconds() >= 0) {
-            if (uris != null && uris.size() > 0) {
-                LOGGER.info(
-                        "Start watching for changes to {} and {} every {} seconds",
-                        getConfigurationSource(),
-                        uris,
-                        watchManager.getIntervalSeconds());
-                watchMonitorUris();
-            } else {
-                LOGGER.info(
-                        "Start watching for changes to {} every {} seconds",
-                        getConfigurationSource(),
-                        watchManager.getIntervalSeconds());
-            }
+            LOGGER.info(
+                    "Start watching for changes to {} every {} seconds",
+                    watchManager.getConfigurationWatchers().keySet(),
+                    watchManager.getIntervalSeconds());
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
@@ -359,7 +351,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private void watchMonitorUris() {
-        if (this instanceof Reconfigurable) {
+        if (this instanceof Reconfigurable && watchManager.getIntervalSeconds() >= 0) {
             uris.stream().forEach(uri -> {
                 Source source = new Source(uri);
                 final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
@@ -802,7 +794,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             try {
                 javaNetUris.add(new URI(uri.getUri()));
             } catch (URISyntaxException e) {
-                LOGGER.error("Error parsing monitor URI: " + uri, e);
+                throw new ConfigurationException("Invalid URI provided for MonitorUri " + uri);
             }
         }
         return javaNetUris;
