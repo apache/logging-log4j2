@@ -137,16 +137,16 @@ public interface InstantPatternFormatter extends InstantFormatter {
             // Wrap the formatter with caching, if necessary
             switch (formatter.getPrecision()) {
 
-                    // It is not worth caching when a precision equal to or higher than microsecond is requested
+                // It is not worth caching when a precision equal to or higher than microsecond is requested
                 case NANOS:
                 case MICROS:
                     return formatter;
 
-                    // Millisecond precision cache
+                // Millisecond precision cache
                 case MILLIS:
                     return InstantPatternThreadLocalCachedFormatter.ofMilliPrecision(formatter);
 
-                    // Cache everything else with second precision
+                // Cache everything else with second precision
                 default:
                     return InstantPatternThreadLocalCachedFormatter.ofSecondPrecision(formatter);
             }

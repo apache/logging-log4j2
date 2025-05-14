@@ -18,6 +18,7 @@ package org.apache.logging.log4j.appserver.tomcat;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -163,6 +164,7 @@ public class TomcatLogger implements Log {
      */
     private static class PrivateManager extends LogManager {
 
+        @SuppressFBWarnings("HSM_HIDING_METHOD")
         public static LoggerContext getContext() {
             final ClassLoader cl = TomcatLogger.class.getClassLoader();
             URI uri = null;

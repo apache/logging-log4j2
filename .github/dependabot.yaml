@@ -159,6 +159,9 @@ updates:
       # SLF4J should not perform major version upgrades
       - dependency-name: "org.slf4j:slf4j-api"
         update-types: [ "version-update:semver-major" ]
+      # Kafka 4.x is not compatible with our appender
+      - dependency-name: "org.apache.kafka:*"
+        versions: [ "[4,)" ]
 
   - package-ecosystem: maven
     directories:

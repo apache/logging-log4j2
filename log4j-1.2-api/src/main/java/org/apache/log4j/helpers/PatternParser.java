@@ -299,12 +299,12 @@ public class PatternParser {
                 // formattingInfo.dump();
                 currentLiteral.setLength(0);
                 break;
-                /*
-                 * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
-                 * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
-                 * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
-                 * +cNext+" at position "+i); } break;
-                 */
+            /*
+             * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
+             * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
+             * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
+             * +cNext+" at position "+i); } break;
+             */
             case 'x':
                 pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
                 // LogLog.debug("NDC converter.");
@@ -316,7 +316,7 @@ public class PatternParser {
                 currentLiteral.setLength(0);
                 break;
             default:
-                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion patterrn.");
+                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion pattern.");
                 pc = new LiteralPatternConverter(currentLiteral.toString());
                 currentLiteral.setLength(0);
         }

@@ -1,7 +1,8 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
+# The ASF licenses this file to you under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
 #
@@ -12,33 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-.project
-.idea
-**/*.iml
-.vscode
-/.metadata/
-/.mvn/wrapper/maven-wrapper.jar
-/.mvn/.develocity
-.flattened-pom.xml
-.project
-.settings
-.surefire-*
-**/target
-target/
-.settings
-.classpath
-.cache-main
-.cache-tests
-.toDelete
-.factorypath
-.surefire-*
-velocity.log
-felix-cache/
-/.metadata/
-.DS_Store
-node
-node_modules
-package-lock.json
-# Maven extensions
-/.mvn/extensions.xml
+#
+##
+# This file controls the "Sponsor" button in this repo.
+# For details see:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+#
+# WARNING: the `github` key accepts only 4 GitHub user ids, so we can not use this feature.
+#
+custom: "https://logging.apache.org/support.html#sponsors"
+tidelift: "maven/org.apache.logging.log4j:log4j-core"

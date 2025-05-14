@@ -2,7 +2,9 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="3592" link="https://github.com/apache/logging-log4j2/pull/3592"/>
-  <description format="asciidoc">Update `io.fabric8:docker-maven-plugin` to version `0.46.0`</description>
+       type="fixed">
+  <issue id="3601" link="https://github.com/apache/logging-log4j2/issues/3601"/>
+  <description format="asciidoc">
+    Deprecate or remove static hiding methods.
+  </description>
 </entry>

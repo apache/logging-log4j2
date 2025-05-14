@@ -51,7 +51,7 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <docker-maven-plugin.version>0.45.1</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.46.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.14.0</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
@@ -73,7 +73,7 @@
     <commons-compress.version>1.27.1</commons-compress.version>
     <commons-csv.version>1.14.0</commons-csv.version>
     <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
-    <commons-io.version>2.18.0</commons-io.version>
+    <commons-io.version>2.19.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.5</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
@@ -82,7 +82,7 @@
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>4.0.26</groovy.version>
-    <guava.version>33.4.5-jre</guava.version>
+    <guava.version>33.4.8-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
@@ -109,14 +109,14 @@
     <jmdns.version>3.6.1</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.12.1</junit-jupiter.version>
+    <junit-jupiter.version>5.12.2</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.9.0</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <log4j.version>1.2.17</log4j.version>
     <log4j-transform.version>0.2.0</log4j-transform.version>
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
-    <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
+    <log4j2-ecs-layout.version>1.7.0</log4j2-ecs-layout.version>
     <logback.version>1.3.15</logback.version>
     <maven.version>3.9.9</maven.version>
     <mockito.version>4.11.0</mockito.version>
@@ -154,6 +154,16 @@
     <httpcore.version>4.4.16</httpcore.version>
     <jna.version>5.17.0</jna.version>
 
+    <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
+         to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
+         Overrides parent's 'bnd-jpms-module-info' and hence re-defines '$[bnd-module-name];access=0' -->
+    <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
+      biz.aQute.bnd.annotation,
+      com.google.errorprone.annotations,
+      com.github.spotbugs.annotations,
+      org.osgi.annotation.bundle,
+      org.osgi.annotation.versioning
+      "</bnd-jpms-module-info>
   </properties>
 
   <dependencyManagement>
@@ -991,19 +1001,6 @@
         </executions>
       </plugin>
 
-      <!-- REMOVE THIS `m-c-p` OVERRIDE with the next `logging-parent` update!
-           This is a temporary fix for the Error Prone `2.36.0` issue:
-           https://github.com/apache/logging-parent/commit/c98462c444eda72d5fe8e7a0b8112949142b7a0a -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs combine.children="append">
-            <arg>--should-stop=ifError=FLOW</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-
       <!--
         ~ Some external logging bridges can interfere with our tests, giving false negatives.
         -->
@@ -1084,6 +1081,58 @@
               ]]></script>
               </scripts>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Add annotation library dependencies (defined as <scope>provided</scope> in this file) as compileOnlyApi
+           dependencies for Gradle consumers. This makes the Jars automatically available at compile time to make
+           the '-Xlint:classfile' check of javac pass.-->
+      <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <configuration>
+          <compileOnlyApiDependencies>
+            <dependency>
+              <groupId>org.jspecify</groupId>
+              <artifactId>jspecify</artifactId>
+              <version>${jspecify.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>biz.aQute.bnd</groupId>
+              <artifactId>biz.aQute.bnd.annotation</artifactId>
+              <version>${bnd.annotation.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_annotations</artifactId>
+              <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <!-- Note: 'org.osgi.annotation.bundle' and 'osgi.annotation' overlap. We do not want to add
+                   both. As 'org.osgi.annotation.bundle' has an Automatic-Module-Name, it is preferred. -->
+              <artifactId>org.osgi.annotation.bundle</artifactId>
+              <version>${osgi.annotation.bundle.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+              <version>${osgi.annotation.versioning.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs-annotations</artifactId>
+              <version>${spotbugs-annotations.version}</version>
+            </dependency>
+          </compileOnlyApiDependencies>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gmm</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
