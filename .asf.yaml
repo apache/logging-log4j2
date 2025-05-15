@@ -56,6 +56,16 @@ github:
     - api
     - syslog
 
+  # Pull Request settings:
+  # https://github.com/apache/infrastructure-asfyaml#pull-request-settings
+  pull_requests:
+    # allow auto-merge
+    allow_auto_merge: true
+    # enable updating head branches of pull requests
+    allow_update_branch: true
+    # auto-delete head branches after being merged
+    del_branch_on_merge: true
+
   # Enforce squashing while merging PRs.
   # Otherwise, the git log gets polluted severely.
   enabled_merge_buttons:
