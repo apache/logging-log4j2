@@ -1012,14 +1012,13 @@ public class Log4jLogEvent implements LogEvent {
      * @return a new immutable copy of the data in this {@code Log4jLogEvent}
      */
     public static Log4jLogEvent createMemento(final LogEvent event, final boolean includeLocation) {
-        // In the case `includeLocation` is false, we temporarily disable its computation.
-        if (event.isIncludeLocation() && !includeLocation) {
-            event.setIncludeLocation(false);
-            Log4jLogEvent memento = (Log4jLogEvent) createMemento(event);
-            event.setIncludeLocation(true);
-            return memento;
+        Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder(event);
+        // In the case `includeLocation` is false, we disable its computation.
+        // Otherwise, we keep the original value from `event`.
+        if (!includeLocation) {
+            builder.setIncludeLocation(false);
         }
-        return (Log4jLogEvent) createMemento(event);
+        return builder.build();
     }
 
     @Override
