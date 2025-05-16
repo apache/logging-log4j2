@@ -395,11 +395,63 @@ For instance, <code>log4j-slf4j2-impl</code> <em>bridges</em> SLF4J calls to Log
 <div class="paragraph">
 <p>To make things a little bit more tangible, consider the following visualization of a typical Log4j Core installation with bridges for an application:</p>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
+<div class="title">Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges</div>
 <div class="content">
-<img src="_images/diag-a51b68065f249459078382aa4c61888857f01b2c.svg" alt="Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges">
+<pre>@startuml
+
+frame "Compile time" {
+  [Application] --&gt; [Log4j API] : logs to
+
+  [Log4j API] #Cyan
+
+  [SLF4J] #Cyan
+
+  [Library 1] --&gt; [SLF4J] : logs to
+  [Application] --&gt; [Library 1] : uses
+  [Application] --&gt; [Library 2] : uses
+  [Application] --&gt; [Library 3] : uses
+}
+
+frame Runtime {
+
+  [Log4j Core] &lt;.. [Log4j API] : is implemented by
+  [Log4j Core] &lt;.. (log4j2.xml) : is provided to
+  [Log4j Core] #LightGreen
+
+  [JPL-to-Log4j] ..&gt; [Log4j Core] : forwards to
+  [JPL-to-Log4j] #Yellow
+
+  [SLF4J-to-Log4j] ..&gt; [Log4j Core] : forwards to
+  [SLF4J-to-Log4j] #Yellow
+
+  [JUL-to-Log4j] ..&gt; [Log4j Core] : forwards to
+  [JUL-to-Log4j] #Yellow
+
+  frame JRE {
+    [JPL] #Cyan
+    [JUL] #Cyan
+  }
+
+}
+
+[Library 2] --&gt; [JUL] : logs to
+[Library 3] --&gt; [JPL] : logs to
+
+[JPL] ..&gt; [JPL-to-Log4j] : is implemented by
+[JUL] ..&gt; [JUL-to-Log4j] : is implemented by
+[SLF4J] ..&gt; [SLF4J-to-Log4j] : is implemented by
+
+legend top right
+  | &lt;#LightGreen&gt; | Logging implementation |
+  | &lt;#Yellow&gt; | Logging bridge |
+  | &lt;#Cyan&gt; | Logging API |
+  | &lt;size:18&gt;&lt;U+2192&gt;&lt;/size&gt; | Compile-time usage |
+  | &lt;size:18&gt;&lt;U+21E2&gt;&lt;/size&gt; | Runtime usage |
+endlegend
+
+@enduml</pre>
 </div>
-<div class="title">Figure 1. Visualization of a typical Log4j Core installation with SLF4J, JUL, and JPL bridges</div>
 </div>
 </div>
 </details>
