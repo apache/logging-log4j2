@@ -86,6 +86,8 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
     @Override
     public Message memento() {
         SimpleMessage message = new SimpleMessage(charSequence);
+        // Since `toString()` methods are not always pure functions and might depend on the thread and other context
+        // values, we format the message and cache the result.
         message.getFormattedMessage();
         return message;
     }
