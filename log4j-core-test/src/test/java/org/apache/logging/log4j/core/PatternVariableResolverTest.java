@@ -16,37 +16,35 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class Description goes here.
  */
+@LoggerContextSource("log4j2-pattern-layout.xml")
 public class PatternVariableResolverTest {
 
-    private static final String CONFIG = "log4j2-pattern-layout.xml";
     private ListAppender listAppender;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        listAppender = context.getRequiredAppender("list", ListAppender.class);
+    @BeforeEach
+    public void beforeEach(@Named("list") final ListAppender appender) {
+        listAppender = appender;
     }
 
     @Test
-    public void testFileName() {
+    public void testFileName(LoggerContext context) {
         final Logger logger = context.getLogger(PatternVariableResolverTest.class);
         logger.info("This is a test");
         final List<String> messages = listAppender.getMessages();
-        assertTrue("No messages returned", messages != null && !messages.isEmpty());
+        assertTrue(messages != null && !messages.isEmpty(), "No messages returned");
         final String message = messages.get(0);
         System.out.println(message);
     }

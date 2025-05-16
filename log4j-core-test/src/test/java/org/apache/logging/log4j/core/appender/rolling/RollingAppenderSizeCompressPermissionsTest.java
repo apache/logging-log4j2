@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * LOG4J2-1699.
@@ -43,26 +43,27 @@ public class RollingAppenderSizeCompressPermissionsTest {
 
     private static final String DIR = "target/rollingpermissions1";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderSizeCompressPermissionsTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private Logger logger;
 
-    @BeforeClass
-    public static void beforeClass() {
-        Assume.assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
+    @BeforeAll
+    public static void beforeAll() {
+        Assumptions.assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
     }
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderSizeCompressPermissionsTest.class.getName());
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderSizeCompressPermissionsTest.class.getName());
     }
 
     @Test
-    public void testAppenderCompressPermissions() throws Exception {
+    public void testAppenderCompressPermissions(final LoggerContext loggerContext) throws Exception {
         for (int i = 0; i < 500; ++i) {
             final String message = "This is test message number " + i;
             logger.debug(message);
@@ -70,11 +71,11 @@ public class RollingAppenderSizeCompressPermissionsTest {
                 Thread.sleep(500);
             }
         }
-        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
+        if (!loggerContext.stop(30, TimeUnit.SECONDS)) {
+            System.err.println("Could not stop cleanly " + loggerContext + " for " + this);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertTrue(dir.exists(), "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         int gzippedFiles1 = 0;
@@ -97,8 +98,8 @@ public class RollingAppenderSizeCompressPermissionsTest {
                 assertEquals("rwx------", PosixFilePermissions.toString(Files.getPosixFilePermissions(file.toPath())));
             }
         }
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
-        assertTrue("Files 1 gzipped not rolled : " + gzippedFiles1, gzippedFiles1 > 0);
-        assertTrue("Files 2 gzipped not rolled : " + gzippedFiles2, gzippedFiles2 > 0);
+        assertTrue(files.length > 2, "Files not rolled : " + files.length);
+        assertTrue(gzippedFiles1 > 0, "Files 1 gzipped not rolled : " + gzippedFiles1);
+        assertTrue(gzippedFiles2 > 0, "Files 2 gzipped not rolled : " + gzippedFiles2);
     }
 }

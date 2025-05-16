@@ -21,39 +21,34 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
+@LoggerContextSource(value = "log4j-empty.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
 public class SocketAppenderBufferSizeTest {
 
     private TcpSocketTestServer tcpServer;
 
-    private LoggerContext loggerContext;
     private Logger logger;
 
-    @Rule
-    public LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-empty.xml");
-
-    @Before
-    public void setup() throws Exception {
+    @BeforeEach
+    public void setUp(LoggerContext context) throws Exception {
         tcpServer = new TcpSocketTestServer(AvailablePortFinder.getNextAvailable());
         tcpServer.start();
         ThreadContext.clearAll();
-        loggerContext = loggerContextRule.getLoggerContext();
-        logger = loggerContext.getLogger(SocketAppenderBufferSizeTest.class.getName());
+        this.logger = context.getLogger(SocketAppenderBufferSizeTest.class.getName());
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         tcpServer.shutdown();
-        loggerContext = null;
         logger = null;
         tcpServer.reset();
         ThreadContext.clearAll();

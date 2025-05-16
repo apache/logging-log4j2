@@ -16,60 +16,33 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-@RunWith(Parameterized.class)
 public class RollingAppenderNoUnconditionalDeleteTest {
 
-    private final File directory;
+    private File directory;
     private Logger logger;
 
-    @Parameterized.Parameters(name = "{0} \u2192 {1}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { //
-            // @formatter:off
-            {"log4j-rolling-with-custom-delete-unconditional1.xml", "target/rolling-unconditional-delete1/test"}, //
-            {"log4j-rolling-with-custom-delete-unconditional2.xml", "target/rolling-unconditional-delete2/test"}, //
-            {"log4j-rolling-with-custom-delete-unconditional3.xml", "target/rolling-unconditional-delete3/test"}, //
-            // @formatter:on
-        });
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderNoUnconditionalDeleteTest.class.getName());
     }
 
-    @Rule
-    public LoggerContextRule loggerContextRule;
-
-    public RollingAppenderNoUnconditionalDeleteTest(final String configFile, final String dir) {
-        this.directory = new File(dir);
-        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
-        deleteDir();
-        deleteDirParent();
-    }
-
-    @Before
-    public void setUp() {
-        this.logger = this.loggerContextRule.getLogger();
-    }
-
-    @Test
-    public void testAppender() throws Exception {
+    void testAppender() throws Exception {
         final int LINECOUNT = 18; // config has max="100"
         for (int i = 0; i < LINECOUNT; ++i) {
             // 30 chars per message: each message triggers a rollover
@@ -77,15 +50,46 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         }
         Thread.sleep(100); // Allow time for rollover to complete
 
-        assertTrue("Dir " + directory + " should exist", directory.exists());
-        assertTrue("Dir " + directory + " should contain files", directory.listFiles().length > 0);
+        assertTrue(directory.exists(), "Dir " + directory + " should exist");
+        assertTrue(directory.listFiles().length > 0, "Dir " + directory + " should contain files");
 
         int total = 0;
         for (final File file : directory.listFiles()) {
             final List<String> lines = Files.readAllLines(file.toPath(), Charset.defaultCharset());
             total += lines.size();
         }
-        assertEquals("rolled over lines", LINECOUNT - 1, total);
+        assertEquals(LINECOUNT - 1, total, "rolled over lines");
+
+        cleanUp();
+    }
+
+    void cleanUp() {
+        deleteDir();
+        deleteDirParent();
+    }
+
+    @Test
+    @LoggerContextSource(value = "log4j-rolling-with-custom-delete-unconditional1.xml", timeout = 10)
+    public void RollingWithCustomUnconditionalDeleteTest1() throws Exception {
+        final String dir = "target/rolling-unconditional-delete1/test";
+        this.directory = new File(dir);
+        testAppender();
+    }
+
+    @Test
+    @LoggerContextSource(value = "log4j-rolling-with-custom-delete-unconditional2.xml", timeout = 10)
+    public void RollingWithCustomUnconditionalDeleteTest2() throws Exception {
+        final String dir = "target/rolling-unconditional-delete2/test";
+        this.directory = new File(dir);
+        testAppender();
+    }
+
+    @Test
+    @LoggerContextSource(value = "log4j-rolling-with-custom-delete-unconditional3.xml", timeout = 10)
+    public void RollingWithCustomUnconditionalDeleteTest3() throws Exception {
+        final String dir = "target/rolling-unconditional-delete3/test";
+        this.directory = new File(dir);
+        testAppender();
     }
 
     private void deleteDir() {
