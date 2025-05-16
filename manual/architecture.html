@@ -359,146 +359,11 @@
 In this section we will try to explain major pillars its architecture stands on.
 An overview these major classes can be depicted as follows:</p>
 </div>
-<div id="architecture-diagram" class="literalblock kroki-error">
-<div class="title">An overview of major classes and their relation</div>
+<div id="architecture-diagram" class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-
-class LoggerContext {
-  Configuration config
-  Logger[] loggers
-  Logger getLogger(String name)
-}
-
-note left of LoggerContext {
-  Anchor for the logging system
-}
-
-LoggerContext --&gt; "0..*" Logger
-
-package "Configuration" as c {
-
-    class Configuration {
-      Appender[] appenders
-      Filter filter
-      LoggerConfig[] loggerConfigs
-      LoggerConfig getLoggerConfig(String name)
-      StrSubstitutor substitutor
-    }
-
-    note left of Configuration
-      Encapsulates components compiled
-      from a user-provided configuration
-      file (e.g., `log4j2.xml`)
-    end note
-
-    Configuration --&gt; Filter
-
-    Configuration --&gt; "0..*" Appender
-
-    Configuration --&gt; "0..*" LoggerConfig
-
-    Configuration --&gt; StrSubstitutor
-
-    class Appender {
-      AbstractManager manager
-      Layout layout
-      Filter filter
-      void append(LogEvent)
-    }
-
-    Appender --&gt; Layout
-
-    Appender --&gt; Filter
-
-    class Layout {
-      byte[] encode(LogEvent)
-    }
-
-    class Filter {
-      Result filter(LogEvent)
-    }
-
-    note right of Filter
-      Note that a `Filter` can
-      be provided at 4 levels:
-      1. `Configuration`
-      2. `LoggerConfig`
-      3. `AppenderControl`
-      4. `Appender`
-    end note
-
-    class LoggerConfig {
-      AppenderControl[] appenderControls
-      Level level
-      Filter filter
-      void log(LogEvent)
-    }
-
-    LoggerConfig -[#green,thickness=6]-&gt; "0..*" AppenderControl
-
-    LoggerConfig --&gt; Filter
-
-    class AppenderControl {
-      Appender appender
-      Filter filter
-      void append(LogEvent)
-    }
-
-    note right of AppenderControl
-      Decorates an `Appender`
-      with a `Filter`
-    end note
-
-    AppenderControl -[#green,thickness=6]-&gt; Appender
-
-    AppenderControl --&gt; Filter
-
-    class StrSubstitutor {
-      Interpolator interpolator
-      String replace(String input)
-    }
-
-    note right of StrSubstitutor
-      Responsible for
-      property substitution
-      (e.g., `${env:USER}`)
-    end note
-
-    StrSubstitutor --&gt; Interpolator
-
-    class Interpolator {
-      StrLookup[] lookups
-      String lookup(String input)
-    }
-
-    Interpolator --&gt; "0..*" StrLookup
-
-    class StrLookup {
-      String lookup(String input)
-    }
-}
-
-LoggerContext --&gt; Configuration
-
-class Logger {
-  void log(Level level, Message message)
-}
-
-note right of Logger
-  The main API entry point
-  users interact with
-end note
-
-Logger -[#green,thickness=6]-&gt; LoggerConfig : delegates `log()`
-
-class AbstractManager {
-}
-
-Appender -[#green,thickness=6]-&gt; AbstractManager
-
-@enduml</pre>
+<img src="../_images/diag-3f8a04c810525cc09a5e7564abf3aa14ed1f7c81.svg" alt="An overview of major classes and their relation">
 </div>
+<div class="title">Figure 1. An overview of major classes and their relation</div>
 </div>
 <div class="paragraph">
 <p>At a high level,</p>
@@ -522,7 +387,7 @@ Both can be created directly (i.e., programmatically) or indirectly at first int
 <p><a href="#Configuration"><code>Configuration</code></a> is equipped with <a href="#StrSubstitutor"><code>StrSubstitutor</code> et al.</a> to allow property substitution in <code>String</code>-typed values.</p>
 </li>
 <li>
-<p>A typical <code>log()</code> call triggers a chain of invocations through classes <code>Logger</code>, <code>LoggerConfig</code>, <code>AppenderControl</code>, <code>Appender</code>, and <code>AbstractManager</code> in order – this is depicted using green arrows in <a href="#architecture-diagram">An overview of major classes and their relation</a>.</p>
+<p>A typical <code>log()</code> call triggers a chain of invocations through classes <code>Logger</code>, <code>LoggerConfig</code>, <code>AppenderControl</code>, <code>Appender</code>, and <code>AbstractManager</code> in order – this is depicted using green arrows in <a href="#architecture-diagram">Figure 1</a>.</p>
 </li>
 </ul>
 </div>
@@ -542,7 +407,7 @@ It is associated with an active <a href="#Configuration"><code>Configuration</co
 <div class="content">
 <img src="../_images/diag-fd71b342bbb89cd55a1ddb592976b9ac26b6348e.svg" alt="`LoggerContext` and other directly related classes">
 </div>
-<div class="title">Figure 1. <code>LoggerContext</code> and other directly related classes</div>
+<div class="title">Figure 2. <code>LoggerContext</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>In most cases, applications have a single global <code>LoggerContext</code>.
@@ -562,7 +427,7 @@ It models the configuration of all appenders, layouts, filters, loggers, and con
 <div class="content">
 <img src="../_images/diag-5ffe377615be9b0375b26533bbf7b10507dc946b.svg" alt="`Configuration` and other directly related classes">
 </div>
-<div class="title">Figure 2. <code>Configuration</code> and other directly related classes</div>
+<div class="title">Figure 3. <code>Configuration</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>Configuration of Log4j Core is typically done at application initialization.
@@ -603,7 +468,7 @@ Threads that already started processing a log event will either:</p>
 <div class="content">
 <img src="../_images/diag-01168003b98f120d2f0736e5172de8e1218f189e.svg" alt="Overview of the reconfiguration process">
 </div>
-<div class="title">Figure 3. Overview of the reconfiguration process</div>
+<div class="title">Figure 4. Overview of the reconfiguration process</div>
 </div>
 </div>
 </div>
@@ -621,7 +486,7 @@ It simply has a name and is associated with a <a href="#LoggerConfig"><code>Logg
 <div class="content">
 <img src="../_images/diag-77a13b00749af95e3ed0eefd605a73f25d70973c.svg" alt="`Logger` and other directly related classes">
 </div>
-<div class="title">Figure 4. <code>Logger</code> and other directly related classes</div>
+<div class="title">Figure 5. <code>Logger</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>The hierarchy between <a href="#LoggerConfig"><code>LoggerConfig</code></a>s, implies the very same hierarchy between <code>Logger</code>s too.
@@ -663,7 +528,7 @@ A <code>LoggerConfig</code> essentially contains</p>
 <div class="content">
 <img src="../_images/diag-73365a4d8197b5441a98fd1d661b07760da178be.svg" alt="`LoggerConfig` and other directly related classes">
 </div>
-<div class="title">Figure 5. <code>LoggerConfig</code> and other directly related classes</div>
+<div class="title">Figure 6. <code>LoggerConfig</code> and other directly related classes</div>
 </div>
 <div class="sect2">
 <h3 id="logger-hierarchy"><a class="anchor" href="#logger-hierarchy"></a>Logger hierarchy</h3>
@@ -672,13 +537,13 @@ A <code>LoggerConfig</code> essentially contains</p>
 A <code>LoggerConfig</code> called <code>child</code> is said to be parented by <code>parent</code>, if <code>parent</code> has the <em>longest prefix match</em> on name.
 This match is case-sensitive and performed after tokenizing the name by splitting it from <code>.</code> (dot) characters.
 For a positive name match, tokens must match exhaustively.
-See <a href="#logger-hiearchy-diagram">Figure 6</a> for an example.</p>
+See <a href="#logger-hiearchy-diagram">Figure 7</a> for an example.</p>
 </div>
 <div id="logger-hiearchy-diagram" class="imageblock kroki">
 <div class="content">
 <img src="../_images/diag-892fd9dbd9ea6bece55c1d4078ae1de2edd5c689.svg" alt="Example hierarchy of loggers named `X`, `X.Y`, `X.Y.Z`, and `X.YZ`">
 </div>
-<div class="title">Figure 6. Example hierarchy of loggers named <code>X</code>, <code>X.Y</code>, <code>X.Y.Z</code>, and <code>X.YZ</code></div>
+<div class="title">Figure 7. Example hierarchy of loggers named <code>X</code>, <code>X.Y</code>, <code>X.Y.Z</code>, and <code>X.YZ</code></div>
 </div>
 <div class="paragraph">
 <p>If a <code>LoggerConfig</code> is not provided an explicit level, it will be inherited from its parent.
@@ -924,7 +789,7 @@ That is, we will examine the effective level of a <code>Logger</code> in various
 <div class="content">
 <img src="../_images/diag-581e854ee8ecdb00104bac5affda10a653d8f76d.svg" alt="`Filter` and other directly related classes">
 </div>
-<div class="title">Figure 7. <code>Filter</code> and other directly related classes</div>
+<div class="title">Figure 8. <code>Filter</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>Refer to <a href="filters.html" class="xref page">Filters</a> for further information.</p>
@@ -943,7 +808,7 @@ See <a href="appenders.html" class="xref page">Appenders</a> for the complete gu
 <div class="content">
 <img src="../_images/diag-63d449f3bcd24cfa522a41f6e2f545416de30322.svg" alt="`Appender` and other directly related classes">
 </div>
-<div class="title">Figure 8. <code>Appender</code> and other directly related classes</div>
+<div class="title">Figure 9. <code>Appender</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>An <code>Appender</code> can be added to a <a href="#Logger"><code>Logger</code></a> by calling the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)"><code>addLoggerAppender()</code></a> method of the current <a href="#Configuration"><code>Configuration</code></a>.
@@ -970,13 +835,13 @@ However, if an ancestor of the <code>LoggerConfig</code> associated with <code>L
 <div class="content">
 <img src="../_images/diag-58c484caf8cd616db4f1c7ed31b51c123b5859d4.svg" alt="Example hierarchy of logger configurations to demonstrate appender additivity">
 </div>
-<div class="title">Figure 9. Example hierarchy of logger configurations to demonstrate appender additivity</div>
+<div class="title">Figure 10. Example hierarchy of logger configurations to demonstrate appender additivity</div>
 </div>
 <div class="paragraph">
-<p>In <a href="#appender-additivity-diagram">Figure 9</a>, the effective appenders for each logger configuration are as follows:</p>
+<p>In <a href="#appender-additivity-diagram">Figure 10</a>, the effective appenders for each logger configuration are as follows:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Effective appenders of logger configurations in <a href="#appender-additivity-diagram">Figure 9</a></caption>
+<caption class="title">Table 6. Effective appenders of logger configurations in <a href="#appender-additivity-diagram">Figure 10</a></caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -1112,7 +977,7 @@ Since during a <a href="#reconfiguration">reconfiguration event</a> multiple ins
 <div class="content">
 <img src="../_images/diag-232cdf1d44336897239fa03f6521cc730f38f32d.svg" alt="`Layout` and other directly related classes">
 </div>
-<div class="title">Figure 10. <code>Layout</code> and other directly related classes</div>
+<div class="title">Figure 11. <code>Layout</code> and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>Refer to <a href="layouts.html" class="xref page">Layouts</a> for details.</p>
@@ -1131,7 +996,7 @@ It accepts an <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/looku
 <div class="content">
 <img src="../_images/diag-7a08e5a79432e9299cc0d9671bd39677be5618e8.svg" alt="`StrSubstitutor` et al. and other directly related classes">
 </div>
-<div class="title">Figure 11. <code>StrSubstitutor</code> et al. and other directly related classes</div>
+<div class="title">Figure 12. <code>StrSubstitutor</code> et al. and other directly related classes</div>
 </div>
 <div class="paragraph">
 <p>See <a href="configuration.html#property-substitution" class="xref page">how property substitution works</a> and <a href="lookups.html" class="xref page">the predefined lookups</a> for further information.</p>
