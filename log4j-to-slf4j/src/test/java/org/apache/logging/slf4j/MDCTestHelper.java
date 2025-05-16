@@ -14,15 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.slf4j;
+package org.apache.logging.slf4j;
 
+import java.lang.reflect.Field;
+import org.slf4j.MDC;
 import org.slf4j.spi.MDCAdapter;
 
-public class MDCTestHelper {
+class MDCTestHelper {
 
-    public static MDCAdapter replaceMDCAdapter(final MDCAdapter adapter) {
-        final MDCAdapter old = MDC.mdcAdapter;
-        MDC.mdcAdapter = adapter;
+    static MDCAdapter replaceMDCAdapter(final MDCAdapter adapter) throws Exception {
+        Field mdcAdapterField = MDC.class.getDeclaredField("MDC_ADAPTER");
+        mdcAdapterField.setAccessible(true);
+        final MDCAdapter old = (MDCAdapter) mdcAdapterField.get(null);
+        mdcAdapterField.set(null, adapter);
         return old;
     }
 }

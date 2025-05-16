@@ -1000,13 +1000,13 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 }
                 final String[] parts = Strings.splitList(levelAndRefs);
                 result.level = Level.getLevel(parts[0]);
+                final List<AppenderRef> refList = new ArrayList<>();
                 if (parts.length > 1) {
-                    final List<AppenderRef> refList = new ArrayList<>();
                     Arrays.stream(parts)
                             .skip(1)
                             .forEach((ref) -> refList.add(AppenderRef.createAppenderRef(ref, null, null)));
-                    result.refs = refList;
                 }
+                result.refs = refList;
             } else {
                 LOGGER.warn("levelAndRefs are only allowed in a properties configuration. The value is ignored.");
                 result.level = level;

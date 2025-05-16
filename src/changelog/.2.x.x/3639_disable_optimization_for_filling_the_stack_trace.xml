@@ -2,7 +2,9 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="3646" link="https://github.com/apache/logging-log4j2/pull/3646"/>
-  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.7-3`</description>
+       type="fixed">
+  <issue id="3639" link="https://github.com/apache/logging-log4j2/issues/3639"/>
+  <description format="asciidoc">
+    Verify the capability of SecurityManager so that platforms not (fully) supporting it will not poison the stack trace
+  </description>
 </entry>
