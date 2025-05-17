@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -88,10 +87,9 @@ class EventParameterMemoryLeakTest {
 
     @SuppressWarnings("SameParameterValue")
     private static Configuration createConfiguration(final String appenderName) {
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
         final LayoutComponentBuilder layoutComponentBuilder =
-                configBuilder.newLayout("PatternLayout").addAttribute("pattern", "%m");
+                configBuilder.newLayout("PatternLayout").setAttribute("pattern", "%m");
         final AppenderComponentBuilder appenderComponentBuilder =
                 configBuilder.newAppender(appenderName, "List").add(layoutComponentBuilder);
         final RootLoggerComponentBuilder loggerComponentBuilder =
