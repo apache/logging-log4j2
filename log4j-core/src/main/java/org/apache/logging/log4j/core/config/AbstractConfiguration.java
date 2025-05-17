@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1185,6 +1186,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             map.put(child.getName(), object);
         }
         return map;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
+                + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
     }
 
     private static Collection<?> createPluginCollection(final Node node) {
