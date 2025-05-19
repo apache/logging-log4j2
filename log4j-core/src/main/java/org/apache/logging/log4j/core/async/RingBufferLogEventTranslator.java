@@ -33,6 +33,9 @@ import org.apache.logging.log4j.util.StringMap;
  * the ringbuffer {@code RingBufferLogEvent}. After this translator populated
  * the ringbuffer event, the disruptor will update the sequence number so that
  * the event can be consumed by another thread.
+ * <p>
+ *   <strong>Usage note:</strong> This class is only used on the thread that created it.
+ * </p>
  */
 public class RingBufferLogEventTranslator implements EventTranslator<RingBufferLogEvent> {
 
@@ -45,12 +48,14 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     protected Message message;
     protected Throwable thrown;
     private ContextStack contextStack;
-    private long threadId = Thread.currentThread().getId();
-    private String threadName = Thread.currentThread().getName();
-    private int threadPriority = Thread.currentThread().getPriority();
     private StackTraceElement location;
     private Clock clock;
     private NanoClock nanoClock;
+
+    // Due to the usage pattern of this class, these are effectively final
+    private long threadId = Thread.currentThread().getId();
+    private String threadName = Thread.currentThread().getName();
+    private int threadPriority = Thread.currentThread().getPriority();
 
     // @Override
     @Override
@@ -124,6 +129,11 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
         this.nanoClock = aNanoClock;
     }
 
+    /**
+     * @deprecated since 2.25.0. {@link RingBufferLogEventTranslator} instances should only be used on the thread that
+     * created it.
+     */
+    @Deprecated
     public void updateThreadValues() {
         final Thread currentThread = Thread.currentThread();
         this.threadId = currentThread.getId();
