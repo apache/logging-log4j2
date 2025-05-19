@@ -181,20 +181,24 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        final Object[] state = localState.get();
-        result = prime * result + ((state == null) ? 0 : getMap(state).hashCode());
-        return result;
+        return toMap().hashCode();
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj == null) {
             return false;
+        }
+        if (obj instanceof ReadOnlyStringMap) {
+            if (size() != ((ReadOnlyStringMap) obj).size()) {
+                return false;
+            }
+
+            // Convert to maps and compare
+            obj = ((ReadOnlyStringMap) obj).toMap();
         }
         if (!(obj instanceof ThreadContextMap)) {
             return false;

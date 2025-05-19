@@ -213,5 +213,24 @@ public class LogEventWrapper implements LogEvent {
         public <V> V getValue(final String key) {
             return (V) super.get(key);
         }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof ReadOnlyStringMap) {
+                // Convert to maps and compare
+                final Map<String, String> thisMap = toMap();
+                final Map<String, String> otherMap = ((ReadOnlyStringMap) obj).toMap();
+                return thisMap.equals(otherMap);
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return toMap().hashCode();
+        }
     }
 }
