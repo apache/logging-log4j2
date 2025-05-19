@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterableComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggableComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.MonitorUriComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
@@ -125,10 +125,10 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        final Map<String, Properties> monitorUris =
-                PropertiesUtil.partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "monitorUri"));
-        for (final Map.Entry<String, Properties> entry : monitorUris.entrySet()) {
-            builder.add(createMonitorUri(entry.getKey().trim(), entry.getValue()));
+        final Map<String, Properties> monitorResources = PropertiesUtil.partitionOnCommonPrefixes(
+                PropertiesUtil.extractSubset(rootProperties, "monitorResources"));
+        for (final Map.Entry<String, Properties> entry : monitorResources.entrySet()) {
+            builder.add(createMonitorResource(entry.getKey().trim(), entry.getValue()));
         }
 
         final String filterProp = rootProperties.getProperty("filters");
@@ -257,12 +257,12 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return addFiltersToComponent(appenderRefBuilder, properties);
     }
 
-    private MonitorUriComponentBuilder createMonitorUri(final String key, final Properties properties) {
+    private MonitorResourceComponentBuilder createMonitorResource(final String key, final Properties properties) {
         final String uri = (String) properties.remove("uri");
         if (Strings.isEmpty(uri)) {
-            throw new ConfigurationException("No uri attribute provided for MonitorUri " + key);
+            throw new ConfigurationException("No uri attribute provided for MonitorResource " + key);
         }
-        return builder.newMonitorUri(uri);
+        return builder.newMonitorResource(uri);
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {

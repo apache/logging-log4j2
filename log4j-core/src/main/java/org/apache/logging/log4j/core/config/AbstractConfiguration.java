@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -133,7 +132,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
-    private List<URI> uris = Collections.emptyList();
+    private Set<MonitorResource> monitorResources = Collections.emptySet();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
@@ -269,7 +268,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
-        watchMonitorUris();
+        watchMonitorResources();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
     }
@@ -350,10 +349,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.info("Configuration {} started.", this);
     }
 
-    private void watchMonitorUris() {
+    private void watchMonitorResources() {
         if (this instanceof Reconfigurable && watchManager.getIntervalSeconds() >= 0) {
-            uris.stream().forEach(uri -> {
-                Source source = new Source(uri);
+            monitorResources.forEach(monitorResource -> {
+                Source source = new Source(monitorResource.getUri());
                 final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
                         this, (Reconfigurable) this, listeners, source.getFile().lastModified());
                 watchManager.watch(source, watcher);
@@ -743,8 +742,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
                 final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
-            } else if (child.isInstanceOf(MonitorUris.class)) {
-                uris = convertToJavaNetUris(child.getObject(MonitorUris.class).getUris());
+            } else if (child.isInstanceOf(MonitorResources.class)) {
+                monitorResources = child.getObject(MonitorResources.class).getResources();
             } else {
                 final List<String> expected = Arrays.asList(
                         "\"Appenders\"",
@@ -752,7 +751,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         "\"Properties\"",
                         "\"Scripts\"",
                         "\"CustomLevels\"",
-                        "\"MonitorUris\"");
+                        "\"MonitorResources\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
@@ -786,18 +785,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
 
         setParents();
-    }
-
-    private List<URI> convertToJavaNetUris(final List<Uri> uris) {
-        final List<URI> javaNetUris = new ArrayList<>();
-        for (Uri uri : uris) {
-            try {
-                javaNetUris.add(new URI(uri.getUri()));
-            } catch (URISyntaxException e) {
-                throw new ConfigurationException("Invalid URI provided for MonitorUri " + uri);
-            }
-        }
-        return javaNetUris;
     }
 
     public static Level getDefaultLevel() {

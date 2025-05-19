@@ -2,7 +2,8 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
+       type="added">
   <issue id="3074" link="https://github.com/apache/logging-log4j2/issues/3074"/>
-  <description format="asciidoc">Support configuration option to provide URIs to monitor in addition to the config file.</description>
+  <issue id="3501" link="https://github.com/apache/logging-log4j2/pull/3501"/>
+  <description format="asciidoc">Add `MonitorResource` configuration option to support the monitoring of external files in addition to the configuration file itself.</description>
 </entry>

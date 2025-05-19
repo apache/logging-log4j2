@@ -14,9 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.config.builder.api;
+package org.apache.logging.log4j.core.config.builder.impl;
 
-/**
- * Assembler for constructing MonitorUri Components.
- */
-public interface MonitorUriComponentBuilder extends ComponentBuilder<MonitorUriComponentBuilder> {}
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
+
+class DefaultMonitorResourceComponentBuilder
+        extends DefaultComponentAndConfigurationBuilder<MonitorResourceComponentBuilder>
+        implements MonitorResourceComponentBuilder {
+
+    public DefaultMonitorResourceComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String uri) {
+        super(builder, "MonitorResource");
+        addAttribute("uri", uri);
+    }
+}

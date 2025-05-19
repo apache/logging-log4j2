@@ -46,7 +46,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component propertiesComponent;
     private Component customLevelsComponent;
     private Component scriptsComponent;
-    private Component monitorUriComponent;
+    private Component monitorResourcesComponent;
     private String contentType = "text";
 
     public BuiltConfiguration(
@@ -79,8 +79,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
                     customLevelsComponent = component;
                     break;
                 }
-                case "MonitorUris": {
-                    monitorUriComponent = component;
+                case "MonitorResources": {
+                    monitorResourcesComponent = component;
                     break;
                 }
             }
@@ -100,8 +100,8 @@ public class BuiltConfiguration extends AbstractConfiguration {
         if (customLevelsComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, customLevelsComponent));
         }
-        if (monitorUriComponent.getComponents().size() > 0) {
-            children.add(convertToNode(rootNode, monitorUriComponent));
+        if (monitorResourcesComponent.getComponents().size() > 0) {
+            children.add(convertToNode(rootNode, monitorResourcesComponent));
         }
         children.add(convertToNode(rootNode, loggersComponent));
         children.add(convertToNode(rootNode, appendersComponent));

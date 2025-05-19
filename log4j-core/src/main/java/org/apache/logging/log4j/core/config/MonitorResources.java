@@ -16,43 +16,39 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.ArrayList;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Container for MonitorUri objects.
+ * Container for the {@code MonitorResources} element.
  */
-@Plugin(name = "MonitorUris", category = Core.CATEGORY_NAME, printObject = true)
-public final class MonitorUris {
+@Plugin(name = "MonitorResources", category = Core.CATEGORY_NAME, printObject = true)
+public final class MonitorResources {
 
-    private final List<Uri> uris;
+    private final Set<MonitorResource> resources;
 
-    private MonitorUris(final Uri[] uris) {
-        this.uris = new ArrayList<>(Arrays.asList(uris));
+    private MonitorResources(final Set<MonitorResource> resources) {
+        this.resources = requireNonNull(resources, "resources");
     }
 
-    /**
-     * Create a MonitorUris object to contain all the URIs to be monitored.
-     *
-     * @param uris An array of URIs.
-     * @return A MonitorUris object.
-     */
     @PluginFactory
-    public static MonitorUris createMonitorUris( //
-            @PluginElement("Uris") final Uri[] uris) {
-        return new MonitorUris(uris == null ? Uri.EMPTY_ARRAY : uris);
+    public static MonitorResources createMonitorResources(
+            @PluginElement("monitorResource") final MonitorResource[] resources) {
+        requireNonNull(resources, "resources");
+        final LinkedHashSet<MonitorResource> distinctResources =
+                Arrays.stream(resources).collect(Collectors.toCollection(LinkedHashSet::new));
+        return new MonitorResources(distinctResources);
     }
 
-    /**
-     * Returns a list of the {@code Uri} objects created during configuration.
-     * @return the URIs to be monitored
-     */
-    public List<Uri> getUris() {
-        return uris;
+    public Set<MonitorResource> getResources() {
+        return resources;
     }
 }

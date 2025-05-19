@@ -55,7 +55,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.MonitorUriComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
@@ -78,7 +78,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component properties;
     private Component customLevels;
     private Component scripts;
-    private Component monitorUris;
+    private final Component monitorResources;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;
@@ -126,8 +126,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         components.add(appenders);
         loggers = new Component("Loggers");
         components.add(loggers);
-        monitorUris = new Component("MonitorUris");
-        components.add(monitorUris);
+        monitorResources = new Component("MonitorResources");
+        components.add(monitorResources);
     }
 
     protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
@@ -141,8 +141,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ConfigurationBuilder<T> add(final MonitorUriComponentBuilder builder) {
-        return add(monitorUris, builder);
+    public ConfigurationBuilder<T> add(final MonitorResourceComponentBuilder builder) {
+        return add(monitorResources, builder);
     }
 
     @Override
@@ -300,7 +300,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
         writeXmlSection(xmlWriter, customLevels);
-        writeXmlSection(xmlWriter, monitorUris);
+        writeXmlComponent(xmlWriter, monitorResources);
         if (filters.getComponents().size() == 1) {
             writeXmlComponent(xmlWriter, filters.getComponents().get(0));
         } else if (filters.getComponents().size() > 1) {
@@ -463,8 +463,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public MonitorUriComponentBuilder newMonitorUri(final String uri) {
-        return new DefaultMonitorUriComponentBuilder(this, uri);
+    public MonitorResourceComponentBuilder newMonitorResource(final String uri) {
+        return new DefaultMonitorResourceComponentBuilder(this, uri);
     }
 
     @Override

@@ -21,8 +21,8 @@
                    https://logging.apache.org/xml/ns
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd"
                monitorInterval="30">
-  <MonitorUris>
-    <Uri uri="to-be-monitored-1.file"/>
-    <Uri uri="to-be-monitored-2.file"/>
-  </MonitorUris>
+  <MonitorResources>
+    <MonitorResource uri="file://path/to/external-file-1.txt"/>
+    <MonitorResource uri="file://path/to/external-file-2.txt"/>
+  </MonitorResources>
 </Configuration>

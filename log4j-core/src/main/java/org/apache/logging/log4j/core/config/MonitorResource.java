@@ -16,51 +16,37 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+
+import java.net.URI;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Descriptor of a URI object that is created via configuration.
+ * Container for the {@code MonitorResource} element.
  */
-@Plugin(name = "Uri", category = Core.CATEGORY_NAME, printObject = true)
-public final class Uri {
+@Plugin(name = "MonitorResource", category = Core.CATEGORY_NAME, printObject = true)
+public final class MonitorResource {
 
-    /**
-     * The empty array.
-     */
-    static final Uri[] EMPTY_ARRAY = {};
+    private final URI uri;
 
-    private final String uri;
-
-    private Uri(final String uri) {
-        this.uri = Objects.requireNonNull(uri, "uri is null");
+    private MonitorResource(final URI uri) {
+        this.uri = requireNonNull(uri, "uri");
+        if (!"file".equals(uri.getScheme())) {
+            final String message =
+                    String.format("Only `file` scheme is supported in monitor resource URIs! Illegal URI: `%s`", uri);
+            throw new IllegalArgumentException(message);
+        }
     }
 
-    /**
-     * Creates a Uri object.
-     *
-     * @param uri the URI.
-     * @return A Uri object.
-     */
     @PluginFactory
-    public static Uri createUri( // @formatter:off
-            @PluginValue("uri") final String uri) {
-        // @formatter:on
-
-        StatusLogger.getLogger().debug("Creating Uri('{}')", uri);
-        return new Uri(uri);
+    public static MonitorResource createMonitorResource(@PluginAttribute("uri") final URI uri) {
+        return new MonitorResource(uri);
     }
 
-    /**
-     * Returns the URI.
-     *
-     * @return the URI
-     */
-    public String getUri() {
+    public URI getUri() {
         return uri;
     }
 
@@ -74,15 +60,15 @@ public final class Uri {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof Uri)) {
+        if (!(object instanceof MonitorResource)) {
             return false;
         }
-        final Uri other = (Uri) object;
+        final MonitorResource other = (MonitorResource) object;
         return this.uri == other.uri;
     }
 
     @Override
     public String toString() {
-        return "Uri[" + uri + "]";
+        return String.format("MonitorResource{%s}", uri);
     }
 }

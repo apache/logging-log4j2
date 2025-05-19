@@ -988,66 +988,62 @@ include::example$manual/configuration/routing.properties[tag=appender]
 Therefore, the dollar `$` sign needs to be escaped.
 <2> All the attributes of children of the `Route` element have a **deferred** evaluation. Therefore, they need only one `$` sign.
 
-[#monitorUris]
-== Monitor URIs
+[#monitorResources]
+== Monitor Resources
 
-Log4j can be configured to poll for changes to resources (in addition to the configuration file) using the `MonitorUris` element of the configuration. If a change is detected in any of the specifed resources, Log4j automatically reconfigures the logger context.
+Log4j can be configured to poll for changes to resources (in addition to the configuration file) using the `MonitorResources` element of the configuration.
+If a change is detected in any of the specified resources, Log4j automatically reconfigures the logger context.
+This feature helps with monitoring external resources (e.g., TLS certificates) that the configuration is dependent on.
 
-The polling interval is determined by the value of the <<configuration-attribute-monitorInterval>> attribute. If set to 0, polling is disabled. See <<configuration-attribute-monitorInterval>> for further details. 
+The polling interval is determined by the value of the <<configuration-attribute-monitorInterval>> attribute.
+If set to 0, polling is disabled.
+See <<configuration-attribute-monitorInterval>> for further details.
 
-This may be useful where the configuration is dependent on a resource that is external to the configuration file. 
+A configuration can have either zero or one `MonitorResources` element at its root.
+`MonitorResources` can have zero or more `MonitorResource` elements, which can be configured following attributes:
 
-The MonitorUris component supports the following nested element: 
-
-[#MonitorUris-elements]
+.`MonitorResource` configuration attributes
 [cols="1m,1,4"]
 |===
-| Type | Multiplicity | Description
+| Attribute | Type | Description
 
-| `Uri`
-| one or more
-| Specifies the URI of a resouce to be polled for changes.
-|===
-
-The Uri component supports the following attribute:
-[#uri-attributes-name]
-=== `uri`
-
-[cols="1h,5"]
-|===
-| Type          | `String`
+| `uri`
+| URI
+a| A https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`java.net.URI`] reference to the external resource.
+Note that only URIs of scheme `file` are accepted.
 |===
 
 See example below:
 
+.`MonitorResources` configuration example
 [tabs]
 ====
 XML::
 +
 [source,xml]
 ----
-include::example$manual/configuration/monitoruris.xml[lines=18..]
+include::example$manual/configuration/monitor-resources.xml[lines=18..]
 ----
 
 JSON::
 +
 [source,json]
 ----
-include::example$manual/configuration/monitoruris.json[]
+include::example$manual/configuration/monitor-resources.json[]
 ----
 
 YAML::
 +
 [source,yaml]
 ----
-include::example$manual/configuration/monitoruris.yaml[lines=17..]
+include::example$manual/configuration/monitor-resources.yaml[lines=17..]
 ----
 
 Properties::
 +
 [source,properties]
 ----
-include::example$manual/configuration/monitoruris.properties[lines=18..]
+include::example$manual/configuration/monitor-resources.properties[lines=18..]
 ----
 ====
 
