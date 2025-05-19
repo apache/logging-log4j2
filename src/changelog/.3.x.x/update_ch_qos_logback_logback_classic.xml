@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3315" link="https://github.com/apache/logging-log4j2/pull/3315"/>
-  <description format="asciidoc">Update `ch.qos.logback:logback-classic` to version `1.5.14`</description>
+  <issue id="3550" link="https://github.com/apache/logging-log4j2/pull/3550"/>
+  <description format="asciidoc">Update `ch.qos.logback:logback-classic` to version `1.5.18`</description>
 </entry>

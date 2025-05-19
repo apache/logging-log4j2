@@ -120,6 +120,7 @@ public final class AsyncLoggerConfig extends LoggerConfig {
     }
 
     @Override
+    @SuppressWarnings("BoxedPrimitiveEquality")
     protected void log(final LogEvent event, final Predicate<LoggerConfig> predicate) {
         // See LOG4J2-2301
         if (predicate == null

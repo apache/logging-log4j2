@@ -57,24 +57,55 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
 
 /**
- * Annotation processor for pre-scanning Log4j plugins. This generates implementation classes extending
- * {@link org.apache.logging.log4j.plugins.model.PluginService} with a list of {@link PluginEntry} instances
- * discovered from plugin annotations. By default, this will use the most specific package name it can derive
- * from where the annotated plugins are located in a subpackage {@code plugins}. The output base package name
- * can be overridden via the {@code pluginPackage} annotation processor option.
+ * Annotation processor to generate a {@link org.apache.logging.log4j.plugins.model.PluginService} implementation.
+ * <p>
+ *     This generates a {@link org.apache.logging.log4j.plugins.model.PluginService} implementation with a list of
+ *     {@link PluginEntry} instances.
+ *     The fully qualified class name of the generated service is:
+ * </p>
+ * <pre>
+ *     {@code <log4j.plugin.package>.plugins.Log4jPlugins}
+ * </pre>
+ * <p>
+ *     where {@code <log4j.plugin.package>} is the effective value of the {@link #PLUGIN_PACKAGE} option.
+ * </p>
  */
+@NullMarked
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 public class PluginProcessor extends AbstractProcessor {
 
-    // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
+    /**
+     * Option name to enable or disable the generation of {@link aQute.bnd.annotation.spi.ServiceConsumer} annotations.
+     * <p>
+     *     The default behavior depends on the presence of {@code biz.aQute.bnd.annotation} on the classpath.
+     * </p>
+     */
+    public static final String ENABLE_BND_ANNOTATIONS = "log4j.plugin.enableBndAnnotations";
+
+    /**
+     * Option name to determine the package containing the generated {@link org.apache.logging.log4j.plugins.model.PluginService}
+     * <p>
+     *     If absent, the value of this option is the common prefix of all Log4j Plugin classes.
+     * </p>
+     */
+    public static final String PLUGIN_PACKAGE = "log4j.plugin.package";
 
     private static final String SERVICE_FILE_NAME =
             "META-INF/services/org.apache.logging.log4j.plugins.model.PluginService";
 
+    private boolean enableBndAnnotations;
+    private String packageName = "";
+
     public PluginProcessor() {}
+
+    @Override
+    public Set<String> getSupportedOptions() {
+        return Set.of(ENABLE_BND_ANNOTATIONS, PLUGIN_PACKAGE);
+    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
@@ -83,15 +114,14 @@ public class PluginProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        final Map<String, String> options = processingEnv.getOptions();
-        String packageName = options.get("pluginPackage");
+        handleOptions(processingEnv.getOptions());
         final Messager messager = processingEnv.getMessager();
         messager.printMessage(Kind.NOTE, "Processing Log4j annotations");
         try {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
             if (elements.isEmpty()) {
                 messager.printMessage(Kind.NOTE, "No elements to process");
-                return false;
+                return true;
             }
             messager.printMessage(Kind.NOTE, "Retrieved " + elements.size() + " Plugin elements");
             final List<PluginEntry> list = new ArrayList<>();
@@ -115,14 +145,12 @@ public class PluginProcessor extends AbstractProcessor {
 
     private String collectPlugins(
             String packageName, final Iterable<? extends Element> elements, final List<PluginEntry> list) {
-        final boolean calculatePackage = packageName == null;
+        final boolean calculatePackage = packageName.isEmpty();
         final var pluginVisitor = new PluginElementVisitor();
         final var pluginAliasesVisitor = new PluginAliasesElementVisitor();
         for (final Element element : elements) {
-            final Plugin plugin = element.getAnnotation(Plugin.class);
-            if (plugin == null) {
-                continue;
-            }
+            // The elements must be annotated with `Plugin`
+            Plugin plugin = element.getAnnotation(Plugin.class);
             final var entry = element.accept(pluginVisitor, plugin);
             list.add(entry);
             if (calculatePackage) {
@@ -135,11 +163,11 @@ public class PluginProcessor extends AbstractProcessor {
 
     private String calculatePackage(Element element, String packageName) {
         final Name name = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName();
-        if (name == null) {
-            return null;
+        if (name.isEmpty()) {
+            return "";
         }
         final String pkgName = name.toString();
-        if (packageName == null) {
+        if (packageName.isEmpty()) {
             return pkgName;
         }
         if (pkgName.length() == packageName.length()) {
@@ -158,6 +186,7 @@ public class PluginProcessor extends AbstractProcessor {
                 .createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY, SERVICE_FILE_NAME);
         try (final PrintWriter writer =
                 new PrintWriter(new BufferedWriter(new OutputStreamWriter(fileObject.openOutputStream(), UTF_8)))) {
+            writer.println("# Generated by " + PluginProcessor.class.getName());
             writer.println(createFqcn(pkgName));
         }
     }
@@ -167,12 +196,16 @@ public class PluginProcessor extends AbstractProcessor {
         try (final PrintWriter writer = createSourceFile(fqcn)) {
             writer.println("package " + pkg + ".plugins;");
             writer.println("");
-            writer.println("import aQute.bnd.annotation.Resolution;");
-            writer.println("import aQute.bnd.annotation.spi.ServiceProvider;");
+            if (enableBndAnnotations) {
+                writer.println("import aQute.bnd.annotation.Resolution;");
+                writer.println("import aQute.bnd.annotation.spi.ServiceProvider;");
+            }
             writer.println("import org.apache.logging.log4j.plugins.model.PluginEntry;");
             writer.println("import org.apache.logging.log4j.plugins.model.PluginService;");
             writer.println("");
-            writer.println("@ServiceProvider(value = PluginService.class, resolution = Resolution.OPTIONAL)");
+            if (enableBndAnnotations) {
+                writer.println("@ServiceProvider(value = PluginService.class, resolution = Resolution.OPTIONAL)");
+            }
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
             writer.println("  private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
@@ -280,6 +313,21 @@ public class PluginProcessor extends AbstractProcessor {
             }
         }
         return str1.substring(0, minLength);
+    }
+
+    private boolean isServiceConsumerClassPresent() {
+        // Looks for the presence of the annotation on the classpath, not the annotation processor path.
+        return processingEnv.getElementUtils().getTypeElement("aQute.bnd.annotation.spi.ServiceConsumer") != null;
+    }
+
+    private void handleOptions(Map<String, String> options) {
+        packageName = options.getOrDefault(PLUGIN_PACKAGE, "");
+        String enableBndAnnotationsOption = options.get(ENABLE_BND_ANNOTATIONS);
+        if (enableBndAnnotationsOption != null) {
+            this.enableBndAnnotations = !"false".equals(enableBndAnnotationsOption);
+        } else {
+            this.enableBndAnnotations = isServiceConsumerClassPresent();
+        }
     }
 
     /**

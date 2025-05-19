@@ -31,7 +31,9 @@ jobs:
     steps:
 
       - name: Setup Build Scan link capture
-        uses: gradle/develocity-actions/maven-setup@b8d3a572314ffff3b940a2c1b7b384d4983d422d   # 1.3
+        uses: gradle/develocity-actions/setup-maven@b8d3a572314ffff3b940a2c1b7b384d4983d422d   # 1.3
+        with:
+          capture-build-scan-links: true
 
       - name: Publish Build Scans
         uses: gradle/develocity-actions/maven-publish-build-scan@b8d3a572314ffff3b940a2c1b7b384d4983d422d   # 1.3

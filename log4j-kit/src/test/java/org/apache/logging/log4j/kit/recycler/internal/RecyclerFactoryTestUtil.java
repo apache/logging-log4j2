@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.kit.recycler.internal;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -27,6 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.jspecify.annotations.Nullable;
 
+@ServiceConsumer(value = RecyclerFactoryProvider.class, cardinality = Cardinality.MULTIPLE)
 final class RecyclerFactoryTestUtil {
 
     private RecyclerFactoryTestUtil() {}
