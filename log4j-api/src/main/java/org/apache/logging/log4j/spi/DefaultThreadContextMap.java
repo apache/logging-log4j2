@@ -24,6 +24,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -181,11 +182,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        final Object[] state = localState.get();
-        result = prime * result + ((state == null) ? 0 : getMap(state).hashCode());
-        return result;
+        return ReadOnlyStringMapUtil.hashCode(this);
     }
 
     @Override
@@ -195,6 +192,9 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         if (obj == null) {
             return false;
+        }
+        if (obj instanceof ReadOnlyStringMap) {
+            return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) obj);
         }
         if (!(obj instanceof ThreadContextMap)) {
             return false;

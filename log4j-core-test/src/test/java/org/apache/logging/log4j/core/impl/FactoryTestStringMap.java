@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -113,5 +114,21 @@ public class FactoryTestStringMap implements IndexedStringMap {
     @Override
     public Map<String, String> toMap() {
         return null;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ReadOnlyStringMap)) {
+            return false;
+        }
+        return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return ReadOnlyStringMapUtil.hashCode(this);
     }
 }

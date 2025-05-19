@@ -36,6 +36,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -212,6 +213,22 @@ public class LogEventWrapper implements LogEvent {
         @Override
         public <V> V getValue(final String key) {
             return (V) super.get(key);
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof ReadOnlyStringMap) {
+                return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) obj);
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return ReadOnlyStringMapUtil.hashCode(this);
         }
     }
 }

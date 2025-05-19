@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.impl;
 import java.util.Map;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -81,4 +82,20 @@ public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
 
     @Override
     public void remove(final String key) {}
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ReadOnlyStringMap)) {
+            return false;
+        }
+        return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return ReadOnlyStringMapUtil.hashCode(this);
+    }
 }

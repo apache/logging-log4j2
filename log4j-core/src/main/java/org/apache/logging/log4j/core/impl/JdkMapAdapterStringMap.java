@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -219,15 +220,14 @@ public class JdkMapAdapterStringMap implements StringMap {
         if (object == this) {
             return true;
         }
-        if (!(object instanceof JdkMapAdapterStringMap)) {
+        if (!(object instanceof ReadOnlyStringMap)) {
             return false;
         }
-        final JdkMapAdapterStringMap other = (JdkMapAdapterStringMap) object;
-        return map.equals(other.map) && immutable == other.immutable;
+        return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) object);
     }
 
     @Override
     public int hashCode() {
-        return map.hashCode() + (immutable ? 31 : 0);
+        return ReadOnlyStringMapUtil.hashCode(this);
     }
 }
