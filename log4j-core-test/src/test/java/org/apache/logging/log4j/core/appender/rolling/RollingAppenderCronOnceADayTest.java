@@ -19,10 +19,10 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -31,15 +31,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Calendar;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.hamcrest.Matcher;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * This test currently takes about a minute to run.
@@ -58,8 +58,8 @@ public class RollingAppenderCronOnceADayTest {
     private static String cronExpression;
     private static long remainingTime;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
+    @BeforeAll
+    public static void beforeAll() throws Exception {
         final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
         String content = new String(Files.readAllBytes(src), StandardCharsets.UTF_8);
         final Calendar cal = Calendar.getInstance();
@@ -74,26 +74,28 @@ public class RollingAppenderCronOnceADayTest {
         StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
     }
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG_TARGET);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG_TARGET,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = loggerContext.getLogger(RollingAppenderCronOnceADayTest.class.getName());
         final File file = new File(FILE);
-        assertTrue("Log file does not exist", file.exists());
+        assertTrue(file.exists(), "Log file does not exist");
         logger.debug("This is test message number 1, waiting for rolling");
 
         final RollingFileAppender app =
-                loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
+                (RollingFileAppender) loggerContext.getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
-        assertNotNull("No triggering policy", policy);
-        assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
+        assertNotNull(policy, "No triggering policy");
+        assertTrue(policy instanceof CronTriggeringPolicy, "Incorrect policy type");
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
-        assertEquals("Incorrect cron expresion", cronExpression, expression.getCronExpression());
+        assertEquals(cronExpression, expression.getCronExpression(), "Incorrect cron expression");
         logger.debug("Cron expression will be {}", expression.getCronExpression());
 
         // force a reconfiguration
@@ -103,7 +105,7 @@ public class RollingAppenderCronOnceADayTest {
 
         Thread.sleep(remainingTime);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
 
         for (int i = 1; i < 5; i++) {
             logger.debug("Adding some more event {}", i);
@@ -118,7 +120,7 @@ public class RollingAppenderCronOnceADayTest {
             }
         }
 
-        assertNotEquals("No compressed files found", 0, count);
-        assertEquals("Multiple files found", 1, count);
+        assertNotEquals(0, count, "No compressed files found");
+        assertEquals(1, count, "Multiple files found");
     }
 }
