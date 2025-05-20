@@ -16,10 +16,17 @@
  */
 package org.apache.logging.log4j.core.message;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.lang.management.ThreadInfo;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  * Tests that ThreadDumpMessage uses ExtendedThreadInformation when available.
@@ -32,5 +39,43 @@ class ExtendedThreadInformationTest {
         final String message = msg.getFormattedMessage();
         // System.out.print(message);
         assertTrue(message.contains(" Id="), "No header");
+    }
+
+    @ParameterizedTest
+    @EnumSource(Thread.State.class)
+    void testMessageWithNullStackTrace(final Thread.State state) {
+        obtainMessageWithMissingStackTrace(state, null);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Thread.State.class)
+    void testMessageWithEmptyStackTrace(final Thread.State state) {
+        obtainMessageWithMissingStackTrace(state, new StackTraceElement[0]);
+    }
+
+    private void obtainMessageWithMissingStackTrace(final Thread.State state, final StackTraceElement[] stackTrace) {
+        // setup
+        final String threadName = "the thread name";
+        final long threadId = 23523L;
+
+        final ThreadInfo threadInfo = mock(ThreadInfo.class);
+        when(threadInfo.getStackTrace()).thenReturn(stackTrace);
+        when(threadInfo.getThreadName()).thenReturn(threadName);
+        when(threadInfo.getThreadId()).thenReturn(threadId);
+        when(threadInfo.isSuspended()).thenReturn(true);
+        when(threadInfo.isInNative()).thenReturn(true);
+        when(threadInfo.getThreadState()).thenReturn(state);
+
+        // given
+        final ExtendedThreadInformation sut = new ExtendedThreadInformation(threadInfo);
+
+        // when
+        final StringBuilder result = new StringBuilder();
+        sut.printThreadInfo(result);
+
+        // then
+        assertThat(result.toString(), containsString(threadName));
+        assertThat(result.toString(), containsString(state.name()));
+        assertThat(result.toString(), containsString(String.valueOf(threadId)));
     }
 }

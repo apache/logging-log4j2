@@ -82,7 +82,7 @@ jobs:
     with:
       nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || 'https://repository.apache.org/content/groups/snapshots' }}
       # Encode the `runs-on` input as JSON array
-      runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
+      runs-on: '["ubuntu-latest", "macos-latest"]'
 
   # Run integration-tests automatically after a snapshot or RC is published
   integration-test:
