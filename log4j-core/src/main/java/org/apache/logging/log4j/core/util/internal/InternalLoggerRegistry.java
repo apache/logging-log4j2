@@ -23,6 +23,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
@@ -66,36 +67,31 @@ public final class InternalLoggerRegistry {
     public InternalLoggerRegistry() {}
 
     /**
-     * Expunges stale logger references from the registry.
+     * Expunges stale entries for logger references and message factories.
      */
     private void expungeStaleEntries() {
-        Reference<? extends Logger> loggerRef;
-        while ((loggerRef = staleLoggerRefs.poll()) != null) {
-            removeLogger(loggerRef);
-        }
-    }
+        Reference<? extends Logger> loggerRef = staleLoggerRefs.poll();
 
-    /**
-     * Removes a logger from the registry.
-     */
-    private void removeLogger(Reference<? extends Logger> loggerRef) {
-        Logger logger = loggerRef.get();
-        if (logger == null) return; // Logger already cleared
-
-        MessageFactory messageFactory = logger.getMessageFactory();
-        String name = logger.getName();
-
-        writeLock.lock();
-        try {
-            Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
-            if (loggerRefByName != null) {
-                loggerRefByName.remove(name);
-                if (loggerRefByName.isEmpty()) {
-                    loggerRefByNameByMessageFactory.remove(messageFactory); // Cleanup
+        if (loggerRef != null) {
+            writeLock.lock();
+            try {
+                while (staleLoggerRefs.poll() != null) {
+                    // Clear refQueue
                 }
+
+                Iterator<Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>>> outerIt =
+                        loggerRefByNameByMessageFactory.entrySet().iterator();
+                while (outerIt.hasNext()) {
+                    Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>> outerEntry = outerIt.next();
+                    Map<String, WeakReference<Logger>> innerMap = outerEntry.getValue();
+                    innerMap.values().removeIf(weakRef -> weakRef.get() == null);
+                    if (innerMap.isEmpty()) {
+                        outerIt.remove();
+                    }
+                }
+            } finally {
+                writeLock.unlock();
             }
-        } finally {
-            writeLock.unlock();
         }
     }
 
