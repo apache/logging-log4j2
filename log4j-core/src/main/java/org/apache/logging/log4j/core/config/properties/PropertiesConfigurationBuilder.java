@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.builder.api.FilterableComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggableComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
@@ -121,6 +122,26 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (levelProps.size() > 0) {
             for (final String key : levelProps.stringPropertyNames()) {
                 builder.add(builder.newCustomLevel(key, Integers.parseInt(levelProps.getProperty(key))));
+            }
+        }
+
+        Properties monitorResources = PropertiesUtil.extractSubset(rootProperties, "monitorResources");
+        if (monitorResources.size() > 0) {
+            final String monitorResourcesType = (String) monitorResources.remove("type");
+            if (!"MonitorResources".equals(monitorResourcesType)) {
+                throw new ConfigurationException(
+                        "No or invalid type provided for monitorResouces - must be MonitorResources");
+            }
+            final Map<String, Properties> monitorResourceMap =
+                    PropertiesUtil.partitionOnCommonPrefixes(monitorResources);
+            for (final Map.Entry<String, Properties> entry : monitorResourceMap.entrySet()) {
+                final Properties monitorResourceProps = entry.getValue();
+                final String monitorResourceType = (String) monitorResourceProps.remove("type");
+                if (!"MonitorResource".equals(monitorResourceType)) {
+                    throw new ConfigurationException(
+                            "No or invalid type provided for monitorResouce - must be MonitorResource");
+                }
+                builder.add(createMonitorResource(entry.getKey().trim(), entry.getValue()));
             }
         }
 
@@ -248,6 +269,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             appenderRefBuilder.addAttribute("level", level);
         }
         return addFiltersToComponent(appenderRefBuilder, properties);
+    }
+
+    private MonitorResourceComponentBuilder createMonitorResource(final String key, final Properties properties) {
+        final String uri = (String) properties.remove("uri");
+        if (Strings.isEmpty(uri)) {
+            throw new ConfigurationException("No uri attribute provided for MonitorResource " + key);
+        }
+        return builder.newMonitorResource(uri);
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
