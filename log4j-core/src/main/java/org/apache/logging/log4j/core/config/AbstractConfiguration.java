@@ -324,7 +324,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() >= 0) {
+        if (isConfigurationMonitoringEnabled()) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
                     watchManager.getConfigurationWatchers().keySet(),
@@ -349,8 +349,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.info("Configuration {} started.", this);
     }
 
+    private boolean isConfigurationMonitoringEnabled() {
+        return this instanceof Reconfigurable && watchManager.getIntervalSeconds() > 0;
+    }
+
     private void watchMonitorResources() {
-        if (this instanceof Reconfigurable && watchManager.getIntervalSeconds() >= 0) {
+        if (isConfigurationMonitoringEnabled()) {
             monitorResources.forEach(monitorResource -> {
                 Source source = new Source(monitorResource.getUri());
                 final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(

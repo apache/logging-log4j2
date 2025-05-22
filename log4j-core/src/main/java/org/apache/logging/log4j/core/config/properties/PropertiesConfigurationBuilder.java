@@ -125,10 +125,24 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        final Map<String, Properties> monitorResources = PropertiesUtil.partitionOnCommonPrefixes(
-                PropertiesUtil.extractSubset(rootProperties, "monitorResources"));
-        for (final Map.Entry<String, Properties> entry : monitorResources.entrySet()) {
-            builder.add(createMonitorResource(entry.getKey().trim(), entry.getValue()));
+        Properties monitorResources = PropertiesUtil.extractSubset(rootProperties, "monitorResources");
+        if (monitorResources.size() > 0) {
+            final String monitorResourcesType = (String) monitorResources.remove("type");
+            if (!"MonitorResources".equals(monitorResourcesType)) {
+                throw new ConfigurationException(
+                        "No or invalid type provided for monitorResouces - must be MonitorResources");
+            }
+            final Map<String, Properties> monitorResourceMap =
+                    PropertiesUtil.partitionOnCommonPrefixes(monitorResources);
+            for (final Map.Entry<String, Properties> entry : monitorResourceMap.entrySet()) {
+                final Properties monitorResourceProps = entry.getValue();
+                final String monitorResourceType = (String) monitorResourceProps.remove("type");
+                if (!"MonitorResource".equals(monitorResourceType)) {
+                    throw new ConfigurationException(
+                            "No or invalid type provided for monitorResouce - must be MonitorResource");
+                }
+                builder.add(createMonitorResource(entry.getKey().trim(), entry.getValue()));
+            }
         }
 
         final String filterProp = rootProperties.getProperty("filters");
