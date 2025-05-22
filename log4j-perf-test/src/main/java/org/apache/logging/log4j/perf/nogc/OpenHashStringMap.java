@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMapUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -301,27 +301,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         if (!(obj instanceof ReadOnlyStringMap)) {
             return false;
         }
-        final ReadOnlyStringMap other = (ReadOnlyStringMap) obj;
-        if (other.size() != size()) {
-            return false;
-        }
-        int pos = arraySize;
-        if (containsNullKey) {
-            if (!Objects.equals(getObjectValue(null), other.getValue(null))) {
-                return false;
-            }
-        }
-        --pos;
-        final K myKeys[] = this.keys;
-        for (; pos >= 0; pos--) {
-            K k;
-            if ((k = myKeys[pos]) != null) {
-                if (!Objects.equals(values[pos], other.getValue((String) k))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return ReadOnlyStringMapUtil.equals(this, (ReadOnlyStringMap) obj);
     }
 
     @Override
@@ -699,25 +679,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
      */
     @Override
     public int hashCode() {
-        int result = 0;
-        for (int j = realSize(), i = 0, t = 0; j-- != 0; ) {
-            while (keys[i] == null) {
-                i++;
-            }
-            if (this != keys[i]) {
-                t = keys[i].hashCode();
-            }
-            if (this != values[i]) {
-                t ^= (values[i] == null ? 0 : values[i].hashCode());
-            }
-            result += t;
-            i++;
-        }
-        // Zero / null keys have hash zero.
-        if (containsNullKey) {
-            result += (values[arraySize] == null ? 0 : values[arraySize].hashCode());
-        }
-        return result;
+        return ReadOnlyStringMapUtil.hashCode(this);
     }
 
     @SuppressWarnings("unchecked")
