@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.test.util;
+package org.apache.logging.log4j.core.util.internal;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.util.internal.InternalLoggerRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -71,7 +70,7 @@ class InternalLoggerRegistryTest {
     @Test
     void testComputeIfAbsentCreatesLogger() {
         Logger logger = registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
         assertNotNull(logger);
         assertEquals("testLogger", logger.getName());
     }
@@ -79,7 +78,7 @@ class InternalLoggerRegistryTest {
     @Test
     void testGetLoggerRetrievesExistingLogger() {
         Logger logger = registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
         assertSame(logger, registry.getLogger("testLogger", messageFactory));
     }
 
@@ -87,7 +86,7 @@ class InternalLoggerRegistryTest {
     void testHasLoggerReturnsCorrectStatus() {
         assertFalse(registry.hasLogger("testLogger", messageFactory));
         registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
         assertTrue(registry.hasLogger("testLogger", messageFactory));
     }
 
@@ -98,7 +97,9 @@ class InternalLoggerRegistryTest {
 
         for (int i = 0; i < numberOfLoggers; i++) {
             Logger logger = registry.computeIfAbsent(
-                    loggerNamePrefix + i, messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                    loggerNamePrefix + i,
+                    messageFactory,
+                    (name, factory) -> new MockLogger(loggerContext, name, factory));
             logger.info("Using logger {}", logger.getName());
         }
 
@@ -106,7 +107,7 @@ class InternalLoggerRegistryTest {
             System.gc();
             System.runFinalization();
             registry.computeIfAbsent(
-                    "triggerExpunge", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                    "triggerExpunge", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
 
             Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
                     reflectAndGetLoggerMapFromRegistry();
@@ -127,20 +128,21 @@ class InternalLoggerRegistryTest {
 
     @Test
     void testExpungeStaleMessageFactoryEntry() {
+        SimpleMessageFactory mockMessageFactory = new SimpleMessageFactory();
         Logger logger = registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                "testLogger", mockMessageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
         logger.info("Using logger {}", logger.getName());
         logger = null;
 
         await().atMost(10, SECONDS).pollInterval(100, MILLISECONDS).untilAsserted(() -> {
             System.gc();
             System.runFinalization();
-            registry.getLogger("testLogger", messageFactory);
+            registry.getLogger("triggerExpunge", mockMessageFactory);
 
             Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
                     reflectAndGetLoggerMapFromRegistry();
             assertNull(
-                    loggerRefByNameByMessageFactory.get(messageFactory),
+                    loggerRefByNameByMessageFactory.get(mockMessageFactory),
                     "Stale MessageFactory entry was not removed from the outer map");
         });
     }
@@ -154,7 +156,7 @@ class InternalLoggerRegistryTest {
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 registry.computeIfAbsent(
-                        "testLogger", messageFactory, (name, factory) -> loggerContext.getLogger(name, factory));
+                        "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
                 latch.countDown();
             });
         }
@@ -176,5 +178,12 @@ class InternalLoggerRegistryTest {
         Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerMap =
                 (Map<MessageFactory, Map<String, WeakReference<Logger>>>) loggerMapField.get(registry);
         return loggerMap;
+    }
+
+    private class MockLogger extends Logger {
+
+        protected MockLogger(LoggerContext context, String name, MessageFactory messageFactory) {
+            super(context, name, messageFactory);
+        }
     }
 }
