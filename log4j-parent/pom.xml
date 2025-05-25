@@ -140,7 +140,7 @@
     <spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
     <system-stubs.version>2.1.8</system-stubs.version>
     <velocity.version>1.7</velocity.version>
-    <xmlunit.version>2.10.1</xmlunit.version>
+    <xmlunit.version>2.10.2</xmlunit.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
