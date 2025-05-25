@@ -47,11 +47,16 @@ class LoggerConfigTest {
     private static final String FQCN = LoggerConfigTest.class.getName();
 
     private static LoggerConfig createForProperties(final Property[] properties) {
-        return LoggerConfig.createLogger(
-                true, Level.INFO, "name", "false", new AppenderRef[0], properties, new NullConfiguration(), null);
+        return LoggerConfig.newBuilder()
+                .withConfig(new NullConfiguration())
+                .withAdditivity(true)
+                .withLevel(Level.INFO)
+                .withLoggerName("name")
+                .withIncludeLocation("false")
+                .withProperties(properties)
+                .build();
     }
 
-    @SuppressWarnings({"deprecation"})
     @Test
     void testPropertiesWithoutSubstitution() {
         assertNull(createForProperties(null).getPropertyList(), "null propertiesList");
@@ -129,7 +134,7 @@ class LoggerConfigTest {
                 .withLoggerName(FQCN)
                 .withConfig(configuration)
                 .withLevel(Level.INFO)
-                .withFilter(filter)
+                .setFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);
         when(appender.isStarted()).thenReturn(true);
