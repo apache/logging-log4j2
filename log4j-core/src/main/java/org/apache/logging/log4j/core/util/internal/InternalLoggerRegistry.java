@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util.internal;
 
 import static java.util.Objects.requireNonNull;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +42,9 @@ import org.jspecify.annotations.Nullable;
  * A registry of {@link Logger}s namespaced by name and message factory.
  * This class is internally used by {@link LoggerContext}.
  * <p>
- * We don't use {@linkplain org.apache.logging.log4j.spi.LoggerRegistry the registry from Log4j API} to keep Log4j Core independent from the version of Log4j API at runtime.
+ * We don't use {@linkplain org.apache.logging.log4j.spi.LoggerRegistry the
+ * registry from Log4j API} to keep Log4j Core independent from the version of
+ * Log4j API at runtime.
  * This also allows Log4j Core to evolve independently from Log4j API.
  * </p>
  *
@@ -53,12 +57,47 @@ public final class InternalLoggerRegistry {
             new WeakHashMap<>();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
     private final Lock readLock = lock.readLock();
-
     private final Lock writeLock = lock.writeLock();
 
+    // ReferenceQueue to track stale WeakReferences
+    private final ReferenceQueue<Logger> staleLoggerRefs = new ReferenceQueue<>();
+
     public InternalLoggerRegistry() {}
+
+    /**
+     * Expunges stale logger references from the registry.
+     */
+    private void expungeStaleEntries() {
+        Reference<? extends Logger> loggerRef;
+        while ((loggerRef = staleLoggerRefs.poll()) != null) {
+            removeLogger(loggerRef);
+        }
+    }
+
+    /**
+     * Removes a logger from the registry.
+     */
+    private void removeLogger(Reference<? extends Logger> loggerRef) {
+        Logger logger = loggerRef.get();
+        if (logger == null) return; // Logger already cleared
+
+        MessageFactory messageFactory = logger.getMessageFactory();
+        String name = logger.getName();
+
+        writeLock.lock();
+        try {
+            Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
+            if (loggerRefByName != null) {
+                loggerRefByName.remove(name);
+                if (loggerRefByName.isEmpty()) {
+                    loggerRefByNameByMessageFactory.remove(messageFactory); // Cleanup
+                }
+            }
+        } finally {
+            writeLock.unlock();
+        }
+    }
 
     /**
      * Returns the logger associated with the given name and message factory.
@@ -70,6 +109,8 @@ public final class InternalLoggerRegistry {
     public @Nullable Logger getLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
+        expungeStaleEntries(); // Clean up before retrieving
+
         readLock.lock();
         try {
             final Map<String, WeakReference<Logger>> loggerRefByName =
@@ -87,6 +128,8 @@ public final class InternalLoggerRegistry {
     }
 
     public Collection<Logger> getLoggers() {
+        expungeStaleEntries(); // Clean up before retrieving
+
         readLock.lock();
         try {
             // Return a new collection to allow concurrent iteration over the loggers
@@ -127,6 +170,8 @@ public final class InternalLoggerRegistry {
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         requireNonNull(name, "name");
         requireNonNull(messageFactoryClass, "messageFactoryClass");
+        expungeStaleEntries(); // Clean up before checking
+
         readLock.lock();
         try {
             return loggerRefByNameByMessageFactory.entrySet().stream()
@@ -146,6 +191,8 @@ public final class InternalLoggerRegistry {
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
         requireNonNull(loggerSupplier, "loggerSupplier");
+
+        expungeStaleEntries(); // Clean up before adding a new logger
 
         // Read lock fast path: See if logger already exists
         @Nullable Logger logger = getLogger(name, messageFactory);
@@ -194,9 +241,10 @@ public final class InternalLoggerRegistry {
             if (loggerRefByName == null) {
                 loggerRefByNameByMessageFactory.put(messageFactory, loggerRefByName = new HashMap<>());
             }
+
             final WeakReference<Logger> loggerRef = loggerRefByName.get(name);
             if (loggerRef == null || (logger = loggerRef.get()) == null) {
-                loggerRefByName.put(name, new WeakReference<>(logger = newLogger));
+                loggerRefByName.put(name, new WeakReference<>(logger = newLogger, staleLoggerRefs));
             }
             return logger;
         } finally {
