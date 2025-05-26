@@ -38,13 +38,13 @@ public class ScriptRef extends AbstractScript {
 
     @Override
     public String getLanguage() {
-        final AbstractScript script = this.scriptManager.getScript(getName());
+        final AbstractScript script = this.scriptManager.getScript(getId());
         return script != null ? script.getLanguage() : null;
     }
 
     @Override
     public String getScriptText() {
-        final AbstractScript script = this.scriptManager.getScript(getName());
+        final AbstractScript script = this.scriptManager.getScript(getId());
         return script != null ? script.getScriptText() : null;
     }
 
@@ -62,6 +62,6 @@ public class ScriptRef extends AbstractScript {
 
     @Override
     public String toString() {
-        return "ref=" + getName();
+        return "ref=" + getId();
     }
 }

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.script;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Container for the language and body of a script.
@@ -30,11 +31,13 @@ public abstract class AbstractScript {
     private final String language;
     private final String scriptText;
     private final String name;
+    private final String id;
 
     public AbstractScript(final String name, final String language, final String scriptText) {
         this.language = language;
         this.scriptText = scriptText;
-        this.name = name == null ? this.toString() : name;
+        this.name = name;
+        this.id = Strings.isBlank(name) ? this.toString() : name;
     }
 
     public String getLanguage() {
@@ -47,5 +50,9 @@ public abstract class AbstractScript {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getId() {
+        return this.id;
     }
 }
