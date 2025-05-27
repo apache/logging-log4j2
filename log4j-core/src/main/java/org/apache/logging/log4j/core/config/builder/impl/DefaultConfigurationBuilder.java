@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -55,7 +56,6 @@ import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
@@ -78,7 +78,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private Component properties;
     private Component customLevels;
     private Component scripts;
-    private final Component monitorResources;
     private final Class<T> clazz;
     private ConfigurationSource source;
     private int monitorInterval;
@@ -126,8 +125,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         components.add(appenders);
         loggers = new Component("Loggers");
         components.add(loggers);
-        monitorResources = new Component("MonitorResources");
-        components.add(monitorResources);
     }
 
     protected ConfigurationBuilder<T> add(final Component parent, final ComponentBuilder<?> builder) {
@@ -141,8 +138,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public ConfigurationBuilder<T> add(final MonitorResourceComponentBuilder builder) {
-        return add(monitorResources, builder);
+    public ConfigurationBuilder<T> addComponent(ComponentBuilder<?> builder) {
+        return add(root, builder);
+    }
+
+    private Optional<Component> getTopLevelComponent(final String pluginType) {
+        return root.getComponents().stream()
+                .filter(component -> component.getPluginType().equals(pluginType))
+                .findAny();
     }
 
     @Override
@@ -300,8 +303,14 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
         writeXmlSection(xmlWriter, customLevels);
-        if (!monitorResources.getComponents().isEmpty()) {
-            writeXmlComponent(xmlWriter, monitorResources);
+        Optional<Component> monitorResourcesComponent = getTopLevelComponent("MonitorResources");
+        if (monitorResourcesComponent.isPresent()
+                && !monitorResourcesComponent.get().getComponents().isEmpty()) {
+            writeXmlComponent(xmlWriter, monitorResourcesComponent.get());
+        }
+        Optional<Component> asyncWaitStrategyFactoryComponent = getTopLevelComponent("AsyncWaitStrategyFactory");
+        if (asyncWaitStrategyFactoryComponent.isPresent()) {
+            writeXmlComponent(xmlWriter, asyncWaitStrategyFactoryComponent.get());
         }
         if (filters.getComponents().size() == 1) {
             writeXmlComponent(xmlWriter, filters.getComponents().get(0));
@@ -462,11 +471,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public CustomLevelComponentBuilder newCustomLevel(final String name, final int level) {
         return new DefaultCustomLevelComponentBuilder(this, name, level);
-    }
-
-    @Override
-    public MonitorResourceComponentBuilder newMonitorResource(final String uri) {
-        return new DefaultMonitorResourceComponentBuilder(this, uri);
     }
 
     @Override

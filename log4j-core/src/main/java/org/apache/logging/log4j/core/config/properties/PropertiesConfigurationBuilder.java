@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.builder.api.FilterableComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggableComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.MonitorResourceComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
@@ -125,26 +124,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        Properties monitorResources = PropertiesUtil.extractSubset(rootProperties, "monitorResources");
-        if (monitorResources.size() > 0) {
-            final String monitorResourcesType = (String) monitorResources.remove("type");
-            if (!"MonitorResources".equals(monitorResourcesType)) {
-                throw new ConfigurationException(
-                        "No or invalid type provided for monitorResouces - must be MonitorResources");
-            }
-            final Map<String, Properties> monitorResourceMap =
-                    PropertiesUtil.partitionOnCommonPrefixes(monitorResources);
-            for (final Map.Entry<String, Properties> entry : monitorResourceMap.entrySet()) {
-                final Properties monitorResourceProps = entry.getValue();
-                final String monitorResourceType = (String) monitorResourceProps.remove("type");
-                if (!"MonitorResource".equals(monitorResourceType)) {
-                    throw new ConfigurationException(
-                            "No or invalid type provided for monitorResouce - must be MonitorResource");
-                }
-                builder.add(createMonitorResource(entry.getKey().trim(), entry.getValue()));
-            }
-        }
-
         final String filterProp = rootProperties.getProperty("filters");
         if (filterProp != null) {
             final String[] filterNames = filterProp.split(",");
@@ -208,9 +187,28 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             builder.add(createRootLogger(props));
         }
 
+        processRemainingProperties(builder, rootProperties);
+
         builder.setLoggerContext(loggerContext);
 
         return builder.build(false);
+    }
+
+    private void processRemainingProperties(
+            final ConfigurationBuilder<PropertiesConfiguration> builder, final Properties properties) {
+        while (properties.size() > 0) {
+            final String propertyName =
+                    properties.stringPropertyNames().iterator().next();
+            final int index = propertyName.indexOf('.');
+            if (index > 0) {
+                final String prefix = propertyName.substring(0, index);
+                final Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
+                ComponentBuilder<?> componentBuilder = createComponent(builder, prefix, componentProperties);
+                builder.addComponent(componentBuilder);
+            } else {
+                properties.remove(propertyName);
+            }
+        }
     }
 
     private ScriptComponentBuilder createScript(final Properties properties) {
@@ -269,14 +267,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             appenderRefBuilder.addAttribute("level", level);
         }
         return addFiltersToComponent(appenderRefBuilder, properties);
-    }
-
-    private MonitorResourceComponentBuilder createMonitorResource(final String key, final Properties properties) {
-        final String uri = (String) properties.remove("uri");
-        if (Strings.isEmpty(uri)) {
-            throw new ConfigurationException("No uri attribute provided for MonitorResource " + key);
-        }
-        return builder.newMonitorResource(uri);
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
@@ -361,12 +351,17 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     private static <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(
             final ComponentBuilder<?> parent, final String key, final Properties properties) {
+        return createComponent(parent.getBuilder(), key, properties);
+    }
+
+    private static <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(
+            final ConfigurationBuilder<?> parentBuilder, final String key, final Properties properties) {
         final String name = (String) properties.remove(CONFIG_NAME);
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
-        final ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
+        final ComponentBuilder<B> componentBuilder = parentBuilder.newComponent(name, type);
         return processRemainingProperties(componentBuilder, properties);
     }
 

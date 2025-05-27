@@ -44,6 +44,17 @@ class AsyncWaitStrategyFactoryConfigTest {
                 "factory is YieldingWaitStrategyFactory",
                 asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
     }
+    
+    @Test
+    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.properties")
+    void testConfigWaitStrategyFactoryFromProperties(final LoggerContext context) {
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                context.getConfiguration().getAsyncWaitStrategyFactory();
+        assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
+        assertThat(
+                "factory is YieldingWaitStrategyFactory",
+                asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
+    }
 
     @Test
     @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")

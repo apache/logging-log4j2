@@ -61,7 +61,12 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      */
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
-    default ConfigurationBuilder<T> add(MonitorResourceComponentBuilder builder) {
+    /**
+     * Adds a top level component.
+     * @param builder The ComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     */
+    default ConfigurationBuilder<T> addComponent(ComponentBuilder<?> builder) {
         throw new UnsupportedOperationException();
     }
 
@@ -275,10 +280,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return A new CustomLevelComponentBuilder.
      */
     CustomLevelComponentBuilder newCustomLevel(String name, int level);
-
-    default MonitorResourceComponentBuilder newMonitorResource(String uri) {
-        throw new UnsupportedOperationException();
-    }
 
     /**
      * Returns a builder for creating Filters.

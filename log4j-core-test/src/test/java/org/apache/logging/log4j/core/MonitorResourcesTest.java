@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
@@ -51,13 +52,21 @@ public class MonitorResourcesTest {
         final Path externalResourceFile2 = tempDir.resolve("external-resource-2.txt");
         final ConfigurationSource configSource = new ConfigurationSource(new Source(configFile), new byte[] {}, 0);
         final int monitorInterval = 3;
+
+        ComponentBuilder<?> monitorResourcesComponent = configBuilder.newComponent("MonitorResources");
+        monitorResourcesComponent.addComponent(monitorResourcesComponent
+                .getBuilder()
+                .newComponent("MonitorResource")
+                .addAttribute("uri", externalResourceFile1.toUri().toString()));
+        monitorResourcesComponent.addComponent(monitorResourcesComponent
+                .getBuilder()
+                .newComponent("MonitorResource")
+                .addAttribute("uri", externalResourceFile2.toUri().toString()));
+
         final Configuration config = configBuilder
                 .setConfigurationSource(configSource)
                 .setMonitorInterval(String.valueOf(monitorInterval))
-                .add(configBuilder.newMonitorResource(
-                        externalResourceFile1.toUri().toString()))
-                .add(configBuilder.newMonitorResource(
-                        externalResourceFile2.toUri().toString()))
+                .addComponent(monitorResourcesComponent)
                 .build();
 
         try (final LoggerContext loggerContext = Configurator.initialize(config)) {

@@ -47,6 +47,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private Component customLevelsComponent;
     private Component scriptsComponent;
     private Component monitorResourcesComponent;
+    private Component asyncWaitStrategyFactoryComponent;
     private String contentType = "text";
 
     public BuiltConfiguration(
@@ -83,6 +84,10 @@ public class BuiltConfiguration extends AbstractConfiguration {
                     monitorResourcesComponent = component;
                     break;
                 }
+                case "AsyncWaitStrategyFactory": {
+                    asyncWaitStrategyFactoryComponent = component;
+                    break;
+                }
             }
         }
         this.rootComponent = rootComponent;
@@ -100,8 +105,12 @@ public class BuiltConfiguration extends AbstractConfiguration {
         if (customLevelsComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, customLevelsComponent));
         }
-        if (monitorResourcesComponent.getComponents().size() > 0) {
+        if (monitorResourcesComponent != null
+                && monitorResourcesComponent.getComponents().size() > 0) {
             children.add(convertToNode(rootNode, monitorResourcesComponent));
+        }
+        if (asyncWaitStrategyFactoryComponent != null) {
+            children.add(convertToNode(rootNode, asyncWaitStrategyFactoryComponent));
         }
         children.add(convertToNode(rootNode, loggersComponent));
         children.add(convertToNode(rootNode, appendersComponent));

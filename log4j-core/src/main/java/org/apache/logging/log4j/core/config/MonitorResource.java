@@ -21,8 +21,9 @@ import static java.util.Objects.requireNonNull;
 import java.net.URI;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  * Container for the {@code MonitorResource} element.
@@ -32,6 +33,31 @@ public final class MonitorResource {
 
     private final URI uri;
 
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Builds MonitorResource instances.
+     */
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<MonitorResource> {
+
+        @PluginBuilderAttribute
+        @Required(message = "No URI provided")
+        private URI uri;
+
+        public Builder withUri(final URI uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        @Override
+        public MonitorResource build() {
+            return new MonitorResource(uri);
+        }
+    }
+
     private MonitorResource(final URI uri) {
         this.uri = requireNonNull(uri, "uri");
         if (!"file".equals(uri.getScheme())) {
@@ -39,11 +65,6 @@ public final class MonitorResource {
                     String.format("Only `file` scheme is supported in monitor resource URIs! Illegal URI: `%s`", uri);
             throw new IllegalArgumentException(message);
         }
-    }
-
-    @PluginFactory
-    public static MonitorResource createMonitorResource(@PluginAttribute("uri") final URI uri) {
-        return new MonitorResource(uri);
     }
 
     public URI getUri() {
