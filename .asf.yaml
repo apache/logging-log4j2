@@ -54,6 +54,9 @@ github:
     - logger
     - api
     - syslog
+  # People helping with triaging and Project Management
+  collaborators:
+    - basemax
 
   # Pull Request settings:
   # https://github.com/apache/infrastructure-asfyaml#pull-request-settings
