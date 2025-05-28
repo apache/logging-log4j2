@@ -41,13 +41,13 @@ public final class MonitorResource {
     /**
      * Builds MonitorResource instances.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<MonitorResource> {
+    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<MonitorResource> {
 
         @PluginBuilderAttribute
         @Required(message = "No URI provided")
         private URI uri;
 
-        public Builder withUri(final URI uri) {
+        public Builder setUri(final URI uri) {
             this.uri = uri;
             return this;
         }
