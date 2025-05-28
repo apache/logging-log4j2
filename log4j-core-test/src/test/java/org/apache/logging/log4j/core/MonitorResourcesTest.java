@@ -53,14 +53,10 @@ public class MonitorResourcesTest {
         final ConfigurationSource configSource = new ConfigurationSource(new Source(configFile), new byte[] {}, 0);
         final int monitorInterval = 3;
 
-        ComponentBuilder<?> monitorResourcesComponent = configBuilder.newComponent("MonitorResources");
-        monitorResourcesComponent.addComponent(monitorResourcesComponent
-                .getBuilder()
-                .newComponent("MonitorResource")
+        final ComponentBuilder<?> monitorResourcesComponent = configBuilder.newComponent("MonitorResources");
+        monitorResourcesComponent.addComponent(configBuilder.newComponent("MonitorResource")
                 .addAttribute("uri", externalResourceFile1.toUri().toString()));
-        monitorResourcesComponent.addComponent(monitorResourcesComponent
-                .getBuilder()
-                .newComponent("MonitorResource")
+        monitorResourcesComponent.addComponent(configBuilder.newComponent("MonitorResource")
                 .addAttribute("uri", externalResourceFile2.toUri().toString()));
 
         final Configuration config = configBuilder
