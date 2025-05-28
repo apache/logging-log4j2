@@ -44,7 +44,7 @@ class AsyncWaitStrategyFactoryConfigTest {
                 "factory is YieldingWaitStrategyFactory",
                 asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
     }
-    
+
     @Test
     @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.properties")
     void testConfigWaitStrategyFactoryFromProperties(final LoggerContext context) {
