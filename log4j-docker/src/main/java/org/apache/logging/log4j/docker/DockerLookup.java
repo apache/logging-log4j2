@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.docker;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -33,6 +31,8 @@ import org.apache.logging.log4j.docker.model.Network;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Looks up keys for a Docker container.

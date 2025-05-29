@@ -36,11 +36,6 @@
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-extra-module-options>
-      <!-- Non detected module names -->
-      com.fasterxml.jackson.core;substitute="jackson-core",
-      com.fasterxml.jackson.databind;substitute="jackson-databind"
-    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
@@ -59,11 +54,11 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>

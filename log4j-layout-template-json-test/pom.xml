@@ -97,9 +97,11 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Needed by elasticsearch-java for testing -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson2.test.version}</version>
       <scope>test</scope>
     </dependency>
 
