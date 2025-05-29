@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.config.properties;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import org.apache.logging.log4j.config.jackson.AbstractJacksonConfiguration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.javaprop.JavaPropsMapper;
 
 /**
  * Creates a Node hierarchy from a properties file.
@@ -41,7 +40,6 @@ public class JavaPropsConfiguration extends AbstractJacksonConfiguration {
 
     protected ObjectMapper getObjectMapper() {
         return JavaPropsMapper.builder()
-                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
                 .nodeFactory(SortingNodeFactory.INSTANCE)
                 .build();
     }
