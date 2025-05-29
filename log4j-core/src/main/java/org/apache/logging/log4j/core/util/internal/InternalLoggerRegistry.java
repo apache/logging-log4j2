@@ -70,7 +70,7 @@ public final class InternalLoggerRegistry {
      * Expunges stale entries for logger references and message factories.
      */
     private void expungeStaleEntries() {
-        Reference<? extends Logger> loggerRef = staleLoggerRefs.poll();
+        final Reference<? extends Logger> loggerRef = staleLoggerRefs.poll();
 
         if (loggerRef != null) {
             writeLock.lock();
@@ -79,14 +79,17 @@ public final class InternalLoggerRegistry {
                     // Clear refQueue
                 }
 
-                Iterator<Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>>> outerIt =
-                        loggerRefByNameByMessageFactory.entrySet().iterator();
-                while (outerIt.hasNext()) {
-                    Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>> outerEntry = outerIt.next();
-                    Map<String, WeakReference<Logger>> innerMap = outerEntry.getValue();
-                    innerMap.values().removeIf(weakRef -> weakRef.get() == null);
-                    if (innerMap.isEmpty()) {
-                        outerIt.remove();
+                final Iterator<Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>>>
+                        loggerRefByNameByMessageFactoryEntryIt =
+                                loggerRefByNameByMessageFactory.entrySet().iterator();
+                while (loggerRefByNameByMessageFactoryEntryIt.hasNext()) {
+                    final Map.Entry<MessageFactory, Map<String, WeakReference<Logger>>>
+                            loggerRefByNameByMessageFactoryEntry = loggerRefByNameByMessageFactoryEntryIt.next();
+                    final Map<String, WeakReference<Logger>> loggerRefByName =
+                            loggerRefByNameByMessageFactoryEntry.getValue();
+                    loggerRefByName.values().removeIf(weakRef -> weakRef.get() == null);
+                    if (loggerRefByName.isEmpty()) {
+                        loggerRefByNameByMessageFactoryEntryIt.remove();
                     }
                 }
             } finally {
@@ -105,7 +108,7 @@ public final class InternalLoggerRegistry {
     public @Nullable Logger getLogger(final String name, final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
-        expungeStaleEntries(); // Clean up before retrieving
+        expungeStaleEntries();
 
         readLock.lock();
         try {
@@ -124,7 +127,7 @@ public final class InternalLoggerRegistry {
     }
 
     public Collection<Logger> getLoggers() {
-        expungeStaleEntries(); // Clean up before retrieving
+        expungeStaleEntries();
 
         readLock.lock();
         try {
@@ -166,7 +169,7 @@ public final class InternalLoggerRegistry {
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         requireNonNull(name, "name");
         requireNonNull(messageFactoryClass, "messageFactoryClass");
-        expungeStaleEntries(); // Clean up before checking
+        expungeStaleEntries();
 
         readLock.lock();
         try {
@@ -187,8 +190,7 @@ public final class InternalLoggerRegistry {
         requireNonNull(name, "name");
         requireNonNull(messageFactory, "messageFactory");
         requireNonNull(loggerSupplier, "loggerSupplier");
-
-        expungeStaleEntries(); // Clean up before adding a new logger
+        // Skipping `expungeStaleEntries()`, it will be invoked by the `getLogger()` invocation below
 
         // Read lock fast path: See if logger already exists
         @Nullable Logger logger = getLogger(name, messageFactory);

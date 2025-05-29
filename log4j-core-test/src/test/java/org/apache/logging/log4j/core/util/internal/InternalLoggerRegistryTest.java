@@ -29,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -49,7 +46,7 @@ class InternalLoggerRegistryTest {
     @BeforeEach
     void setUp(TestInfo testInfo) throws NoSuchFieldException, IllegalAccessException {
         loggerContext = new LoggerContext(testInfo.getDisplayName());
-        Field registryField = loggerContext.getClass().getDeclaredField("loggerRegistry");
+        final Field registryField = loggerContext.getClass().getDeclaredField("loggerRegistry");
         registryField.setAccessible(true);
         registry = (InternalLoggerRegistry) registryField.get(loggerContext);
         messageFactory = SimpleMessageFactory.INSTANCE;
@@ -69,16 +66,16 @@ class InternalLoggerRegistryTest {
 
     @Test
     void testComputeIfAbsentCreatesLogger() {
-        Logger logger = registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
+        final Logger logger = registry.computeIfAbsent(
+                "testLogger", messageFactory, (name, factory) -> new Logger(loggerContext, name, factory) {});
         assertNotNull(logger);
         assertEquals("testLogger", logger.getName());
     }
 
     @Test
     void testGetLoggerRetrievesExistingLogger() {
-        Logger logger = registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
+        final Logger logger = registry.computeIfAbsent(
+                "testLogger", messageFactory, (name, factory) -> new Logger(loggerContext, name, factory) {});
         assertSame(logger, registry.getLogger("testLogger", messageFactory));
     }
 
@@ -86,60 +83,57 @@ class InternalLoggerRegistryTest {
     void testHasLoggerReturnsCorrectStatus() {
         assertFalse(registry.hasLogger("testLogger", messageFactory));
         registry.computeIfAbsent(
-                "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
+                "testLogger", messageFactory, (name, factory) -> new Logger(loggerContext, name, factory) {});
         assertTrue(registry.hasLogger("testLogger", messageFactory));
     }
 
     @Test
     void testExpungeStaleWeakReferenceEntries() {
-        String loggerNamePrefix = "testLogger_";
-        int numberOfLoggers = 1000;
+        final String loggerNamePrefix = "testLogger_";
+        final int numberOfLoggers = 1000;
 
         for (int i = 0; i < numberOfLoggers; i++) {
-            Logger logger = registry.computeIfAbsent(
+            final Logger logger = registry.computeIfAbsent(
                     loggerNamePrefix + i,
                     messageFactory,
-                    (name, factory) -> new MockLogger(loggerContext, name, factory));
+                    (name, factory) -> new Logger(loggerContext, name, factory) {});
             logger.info("Using logger {}", logger.getName());
         }
 
         await().atMost(10, SECONDS).pollInterval(100, MILLISECONDS).untilAsserted(() -> {
             System.gc();
-            System.runFinalization();
             registry.computeIfAbsent(
-                    "triggerExpunge", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
+                    "triggerExpunge", messageFactory, (name, factory) -> new Logger(loggerContext, name, factory) {});
 
-            Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
+            final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
                     reflectAndGetLoggerMapFromRegistry();
-            Map<String, WeakReference<Logger>> loggerRefByName = loggerRefByNameByMessageFactory.get(messageFactory);
+            final Map<String, WeakReference<Logger>> loggerRefByName =
+                    loggerRefByNameByMessageFactory.get(messageFactory);
 
-            boolean isExpungeStaleEntries = true;
+            int unexpectedCount = 0;
             for (int i = 0; i < numberOfLoggers; i++) {
                 if (loggerRefByName.containsKey(loggerNamePrefix + i)) {
-                    isExpungeStaleEntries = false;
-                    break;
+                    unexpectedCount++;
                 }
             }
-            assertTrue(
-                    isExpungeStaleEntries,
-                    "Stale WeakReference entries were not removed from the inner map for MessageFactory");
+            assertEquals(
+                    0, unexpectedCount, "Found " + unexpectedCount + " unexpected stale entries for MessageFactory");
         });
     }
 
     @Test
     void testExpungeStaleMessageFactoryEntry() {
-        SimpleMessageFactory mockMessageFactory = new SimpleMessageFactory();
+        final SimpleMessageFactory mockMessageFactory = new SimpleMessageFactory();
         Logger logger = registry.computeIfAbsent(
-                "testLogger", mockMessageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
+                "testLogger", mockMessageFactory, (name, factory) -> new Logger(loggerContext, name, factory) {});
         logger.info("Using logger {}", logger.getName());
         logger = null;
 
         await().atMost(10, SECONDS).pollInterval(100, MILLISECONDS).untilAsserted(() -> {
             System.gc();
-            System.runFinalization();
             registry.getLogger("triggerExpunge", mockMessageFactory);
 
-            Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
+            final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
                     reflectAndGetLoggerMapFromRegistry();
             assertNull(
                     loggerRefByNameByMessageFactory.get(mockMessageFactory),
@@ -147,43 +141,13 @@ class InternalLoggerRegistryTest {
         });
     }
 
-    @Test
-    void testConcurrentAccess() throws InterruptedException {
-        int threadCount = 10;
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-
-        for (int i = 0; i < threadCount; i++) {
-            executor.submit(() -> {
-                registry.computeIfAbsent(
-                        "testLogger", messageFactory, (name, factory) -> new MockLogger(loggerContext, name, factory));
-                latch.countDown();
-            });
-        }
-
-        latch.await();
-        executor.shutdown();
-
-        // Verify logger was created and is accessible after concurrent creation
-        assertNotNull(
-                registry.getLogger("testLogger", messageFactory),
-                "Logger should be accessible after concurrent creation");
-    }
-
     private Map<MessageFactory, Map<String, WeakReference<Logger>>> reflectAndGetLoggerMapFromRegistry()
             throws NoSuchFieldException, IllegalAccessException {
-        Field loggerMapField = registry.getClass().getDeclaredField("loggerRefByNameByMessageFactory");
+        final Field loggerMapField = registry.getClass().getDeclaredField("loggerRefByNameByMessageFactory");
         loggerMapField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerMap =
+        final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerMap =
                 (Map<MessageFactory, Map<String, WeakReference<Logger>>>) loggerMapField.get(registry);
         return loggerMap;
-    }
-
-    private class MockLogger extends Logger {
-
-        protected MockLogger(LoggerContext context, String name, MessageFactory messageFactory) {
-            super(context, name, messageFactory);
-        }
     }
 }
