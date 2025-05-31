@@ -34,7 +34,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Source;
 import org.junit.jupiter.api.Test;
@@ -45,8 +45,8 @@ public class MonitorResourcesTest {
 
     @Test
     void test_reconfiguration(@TempDir(cleanup = CleanupMode.ON_SUCCESS) final Path tempDir) throws IOException {
-        final ConfigurationBuilder<PropertiesConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder(PropertiesConfiguration.class);
+        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
+                ConfigurationBuilderFactory.newConfigurationBuilder();
         final Path configFile = tempDir.resolve("log4j.xml");
         final Path externalResourceFile1 = tempDir.resolve("external-resource-1.txt");
         final Path externalResourceFile2 = tempDir.resolve("external-resource-2.txt");
