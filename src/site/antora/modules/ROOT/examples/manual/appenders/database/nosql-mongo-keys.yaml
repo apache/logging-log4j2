@@ -20,7 +20,9 @@ Configuration:
     NoSql:
       name: "MONGO"
       MongoDb:
-        connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+        connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017"
+        databaseName: "logging"
+        collectionName: "logs"
       KeyValuePair:
         - key: "startTime"
           value: "${date:yyyy-MM-dd hh:mm:ss.SSS}" # <1>
