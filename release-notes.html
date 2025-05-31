@@ -582,6 +582,9 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Minimize lock usage in <code>InternalLoggerRegistry</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3399">3399</a>)</p>
 </li>
 <li>
+<p>Improved expunging of stale entries in <code>InternalLoggerRegistry</code> to prevent potential memory leaks (<a href="https://github.com/apache/logging-log4j2/issues/3430">3430</a>, <a href="https://github.com/apache/logging-log4j2/pull/3681">3681</a>)</p>
+</li>
+<li>
 <p>Make annotation libraries visible transitively at compile time for Gradle users through Gradle Module Metadata and for JPMS users through <code>requires static</code> directives in <code>module-info.java</code> files. (<a href="https://github.com/apache/logging-log4j2/issues/3437">3437</a>)</p>
 </li>
 <li>
