@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.mongodb;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoCollection;
@@ -42,35 +41,38 @@ class MongoDbProviderTest {
                 .setDatabaseName(DB_NAME)
                 .setCollectionName(COLL_NAME)
                 .build();
-        assertNotNull(provider);
         final MongoNamespace namespace = getNamespace(provider.getConnection());
-        assertEquals(COLL_NAME, namespace.getCollectionName());
-        assertEquals(DB_NAME, namespace.getDatabaseName());
+        assertThat(namespace.getCollectionName()).isEqualTo(COLL_NAME);
+        assertThat(namespace.getDatabaseName()).isEqualTo(DB_NAME);
     }
 
     @Test
     void createProviderWithoutDatabaseName() {
-        final MongoDbProvider provider =
-                MongoDbProvider.newBuilder().setConnectionStringSource(CS_WO_DB).build();
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDbProvider.newBuilder()
+                        .setConnectionStringSource(CS_WO_DB)
+                        .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Invalid MongoDB database name");
     }
 
     @Test
     void createProviderWithoutDatabaseNameWithCollectionName() {
-        final MongoDbProvider provider = MongoDbProvider.newBuilder()
-                .setConnectionStringSource(CS_WO_DB)
-                .setCollectionName(COLL_NAME)
-                .build();
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDbProvider.newBuilder()
+                        .setConnectionStringSource(CS_WO_DB)
+                        .setCollectionName(COLL_NAME)
+                        .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Invalid MongoDB database name");
     }
 
     @Test
     void createProviderWithoutCollectionName() {
-        final MongoDbProvider provider = MongoDbProvider.newBuilder()
-                .setConnectionStringSource(CS_WO_DB)
-                .setDatabaseName(DB_NAME)
-                .build();
-        assertNull(provider);
+        assertThatThrownBy(() -> MongoDbProvider.newBuilder()
+                        .setConnectionStringSource(CS_WO_DB)
+                        .setDatabaseName(DB_NAME)
+                        .build())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Invalid MongoDB collection name");
     }
 
     @Test
@@ -79,10 +81,9 @@ class MongoDbProviderTest {
                 .setConnectionStringSource(CS_W_DB)
                 .setCollectionName(COLL_NAME)
                 .build();
-        assertNotNull(provider);
         final MongoNamespace namespace = getNamespace(provider.getConnection());
-        assertEquals(COLL_NAME, namespace.getCollectionName());
-        assertEquals("logging", namespace.getDatabaseName());
+        assertThat(namespace.getCollectionName()).isEqualTo(COLL_NAME);
+        assertThat(namespace.getDatabaseName()).isEqualTo("logging");
     }
 
     @Test
@@ -92,10 +93,9 @@ class MongoDbProviderTest {
                 .setCollectionName(COLL_NAME)
                 .setDatabaseName(DB_NAME)
                 .build();
-        assertNotNull(provider);
         final MongoNamespace namespace = getNamespace(provider.getConnection());
-        assertEquals(COLL_NAME, namespace.getCollectionName());
-        assertEquals(DB_NAME, namespace.getDatabaseName());
+        assertThat(namespace.getCollectionName()).isEqualTo(COLL_NAME);
+        assertThat(namespace.getDatabaseName()).isEqualTo(DB_NAME);
     }
 
     private static MongoNamespace getNamespace(final MongoDbConnection connection) {
