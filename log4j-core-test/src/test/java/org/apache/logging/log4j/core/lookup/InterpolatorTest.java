@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.core.lookup;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 import java.text.SimpleDateFormat;
@@ -39,12 +39,12 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerContextAware;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.test.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.JndiExtension;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junitpioneer.jupiter.Issue;
 
 /**
@@ -60,24 +60,28 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
-    @ClassRule
-    public static final RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
-                @Override
-                protected void before() {
-                    System.setProperty(TESTKEY, TESTVAL);
-                    System.setProperty(TESTKEY2, TESTVAL);
-                    System.setProperty("log4j2.enableJndiLookup", "true");
-                }
+    @RegisterExtension
+    public final JndiExtension ext = new JndiExtension(createBindings());
 
-                @Override
-                protected void after() {
-                    System.clearProperty(TESTKEY);
-                    System.clearProperty(TESTKEY2);
-                    System.clearProperty("log4j2.enableJndiLookup");
-                }
-            })
-            .around(new JndiRule(
-                    JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty(TESTKEY, TESTVAL);
+        System.setProperty(TESTKEY2, TESTVAL);
+        System.setProperty("log4j2.enableJndiLookup", "true");
+    }
+
+    private Map<String, Object> createBindings() {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
+        return map;
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        System.clearProperty(TESTKEY);
+        System.clearProperty(TESTKEY2);
+        System.clearProperty("log4j2.enableJndiLookup");
+    }
 
     @Test
     public void testGetDefaultLookup() {

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,49 +27,42 @@ import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.CleanFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
  */
-@RunWith(Parameterized.class)
-@Category(Layouts.Xml.class)
+@Tag("Layouts.Xml")
 public class XmlCompleteFileAppenderTest {
 
-    public XmlCompleteFileAppenderTest(final Class<ContextSelector> contextSelector) {
-        this.loggerContextRule = new LoggerContextRule("XmlCompleteFileAppenderTest.xml", contextSelector);
-        this.cleanFiles = new CleanFiles(logFile);
-        this.ruleChain = RuleChain.outerRule(cleanFiles).around(loggerContextRule);
-    }
-
-    @Parameters(name = "{0}")
-    public static Class<?>[] getParameters() {
-        return CoreContextSelectors.CLASSES;
+    @MethodSource
+    public static Stream<Class<?>> getParameters() {
+        return Stream.of(CoreContextSelectors.CLASSES);
     }
 
     private final File logFile = new File("target", "XmlCompleteFileAppenderTest.log");
-    private final LoggerContextRule loggerContextRule;
-    private final CleanFiles cleanFiles;
 
-    @Rule
-    public RuleChain ruleChain;
+    @RegisterExtension
+    CleanFiles cleanFiles = new CleanFiles(logFile);
 
-    @Test
-    public void testFlushAtEndOfBatch() throws Exception {
-        final Logger logger = this.loggerContextRule.getLogger("com.foo.Bar");
+    @ParameterizedTest
+    @MethodSource("getParameters")
+    @LoggerContextSource("XmlCompleteFileAppenderTest.xml")
+    public void testFlushAtEndOfBatch(final Class<ContextSelector> contextSelector, final LoggerContext loggerContext)
+            throws Exception {
+        loggerContext.setExternalContext(contextSelector);
+        final Logger logger = loggerContext.getLogger("com.foo.Bar");
         final String logMsg = "Message flushed with immediate flush=false";
         logger.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
@@ -91,26 +84,26 @@ public class XmlCompleteFileAppenderTest {
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertEquals("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', msg1, line1);
+        assertEquals(msg1, line1, "line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']');
 
         assertNotNull("line2", line2);
         final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
-        assertEquals("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', msg2, line2);
+        assertEquals(msg2, line2, "line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']');
 
         assertNotNull("line3", line3);
         final String msg3 = "<Event ";
-        assertTrue("line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']', line3.contains(msg3));
+        assertTrue(line3.contains(msg3), "line3 incorrect: [" + line3 + "], does not contain: [" + msg3 + ']');
 
         assertNotNull("line4", line4);
         final String msg4 = "<Instant epochSecond=";
-        assertTrue("line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']', line4.contains(msg4));
+        assertTrue(line4.contains(msg4), "line4 incorrect: [" + line4 + "], does not contain: [" + msg4 + ']');
 
         assertNotNull("line5", line5);
         final String msg5 = logMsg;
-        assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']', line5.contains(msg5));
+        assertTrue(line5.contains(msg5), "line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']');
 
         final String location = "testFlushAtEndOfBatch";
-        assertFalse("no location", line1.contains(location));
+        assertFalse(line1.contains(location), "no location");
     }
 
     /**
@@ -133,9 +126,12 @@ public class XmlCompleteFileAppenderTest {
      * </pre>
      * @throws Exception
      */
-    @Test
-    public void testChildElementsAreCorrectlyIndented() throws Exception {
-        final Logger logger = this.loggerContextRule.getLogger("com.foo.Bar");
+    @ParameterizedTest
+    @MethodSource("getParameters")
+    @LoggerContextSource("XmlCompleteFileAppenderTest.xml")
+    public void testChildElementsAreCorrectlyIndented(
+            final Class<ContextSelector> contextSelector, final LoggerContext loggerContext) throws Exception {
+        final Logger logger = loggerContext.getLogger("com.foo.Bar");
         final String firstLogMsg = "First Msg tag must be in level 2 after correct indentation";
         logger.info(firstLogMsg);
         final String secondLogMsg = "Second Msg tag must also be in level 2 after correct indentation";
@@ -165,7 +161,7 @@ public class XmlCompleteFileAppenderTest {
         };
         final List<String> lines1 = Files.readAllLines(logFile.toPath(), StandardCharsets.UTF_8);
 
-        assertEquals("number of lines", indentations.length, lines1.size());
+        assertEquals(indentations.length, lines1.size(), "number of lines");
         for (int i = 0; i < indentations.length; i++) {
             final String line = lines1.get(i);
             if (line.trim().isEmpty()) {
@@ -173,7 +169,7 @@ public class XmlCompleteFileAppenderTest {
             } else {
                 final String padding = "        ".substring(0, indentations[i]);
                 assertTrue(
-                        "Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
+                        line.startsWith(padding), "Expected " + indentations[i] + " leading spaces but got: " + line);
             }
         }
     }

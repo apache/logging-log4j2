@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -40,17 +40,16 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.SerialUtil;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Kafka.class)
+@Tag("Appenders.Kafka")
 public class KafkaAppenderTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
@@ -100,22 +99,20 @@ public class KafkaAppenderTest {
                 .build();
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    public static void setUpAll() {
         KafkaManager.producerFactory = config -> kafka;
     }
 
-    @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderTest.xml");
-
-    @Before
+    @BeforeEach
     public void setUp() {
         kafka.clear();
     }
 
     @Test
-    public void testAppendWithLayout() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithLayout");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppendWithLayout(@Named("KafkaAppenderWithLayout") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderWithLayout was null.");
         appender.append(createLogEvent());
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
         assertEquals(1, history.size());
@@ -127,8 +124,9 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithSerializedLayout() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithSerializedLayout");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppendWithSerializedLayout(@Named("KafkaAppenderWithSerializedLayout") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderWithSerializedLayout was null.");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
@@ -143,8 +141,9 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAsyncAppend() {
-        final Appender appender = ctx.getRequiredAppender("AsyncKafkaAppender");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAsyncAppend(@Named("AsyncKafkaAppender") final Appender appender) {
+        assertNotNull(appender, "Appender named AsyncKafkaAppender was null.");
         appender.append(createLogEvent());
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
         assertEquals(1, history.size());
@@ -156,8 +155,9 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithKey() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKey");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppendWithKey(@Named("KafkaAppenderWithKey") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderWithKey was null.");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
@@ -172,8 +172,9 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithKeyLookup() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppendWithKeyLookup(@Named("KafkaAppenderWithKeyLookup") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderWithKeyLookup was null.");
         final LogEvent logEvent = createLogEvent();
         final Date date = new Date();
         final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -190,10 +191,11 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppendWithRetryCount() {
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppendWithRetryCount(@Named("KafkaAppenderWithRetryCount") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderWithRetryCount was null.");
         try {
             ThreadContext.put("KafkaAppenderWithRetryCount", "true");
-            final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
             final LogEvent logEvent = createLogEvent();
             appender.append(logEvent);
 
@@ -207,8 +209,9 @@ public class KafkaAppenderTest {
     }
 
     @Test
-    public void testAppenderNoEventTimestamp() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppenderNoEventTimestamp");
+    @LoggerContextSource("KafkaAppenderTest.xml")
+    public void testAppenderNoEventTimestamp(@Named("KafkaAppenderNoEventTimestamp") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppenderNoEventTimestamp was null.");
         final LogEvent logEvent = createLogEvent();
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();

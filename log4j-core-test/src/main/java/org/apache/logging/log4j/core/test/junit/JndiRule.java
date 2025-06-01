@@ -19,6 +19,9 @@ package org.apache.logging.log4j.core.test.junit;
 import java.util.Collections;
 import java.util.Map;
 import javax.naming.Context;
+import javax.naming.NamingException;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -29,7 +32,7 @@ import org.springframework.mock.jndi.SimpleNamingContextBuilder;
  *
  * @since 2.8
  */
-public class JndiRule implements TestRule {
+public class JndiRule implements TestRule, BeforeEachCallback {
 
     private final Map<String, Object> initialBindings;
 
@@ -46,12 +49,21 @@ public class JndiRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                final SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
-                for (final Map.Entry<String, Object> entry : initialBindings.entrySet()) {
-                    builder.bind(entry.getKey(), entry.getValue());
-                }
+                before();
                 base.evaluate();
             }
         };
+    }
+
+    private void before() throws NamingException {
+        final SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+        for (final Map.Entry<String, Object> entry : initialBindings.entrySet()) {
+            builder.bind(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) throws Exception {
+        before();
     }
 }

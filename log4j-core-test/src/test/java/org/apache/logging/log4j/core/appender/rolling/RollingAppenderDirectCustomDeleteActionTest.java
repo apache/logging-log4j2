@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -38,18 +38,19 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     private static final String CONFIG = "log4j-rolling-direct-with-custom-delete.xml";
     private static final String DIR = "target/rolling-direct-with-delete/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDirectCustomDeleteActionTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private boolean fileFound = false;
 
     @Test
-    public void testAppender() throws Exception {
-        final Logger logger = loggerContextRule.getLogger();
-        final RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
+        final Logger logger = loggerContext.getLogger(RollingAppenderDirectCustomDeleteActionTest.class.getName());
+        final RollingFileAppender app = loggerContext.getConfiguration().getAppender("RollingFile");
         assertNotNull(app, "No RollingFileAppender");
         app.getManager().addRolloverListener(this);
         // Trigger the rollover
@@ -60,8 +61,8 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
+        assertTrue(dir.listFiles().length > 0, "Dir " + DIR + " should contain files");
 
         final File[] files = dir.listFiles();
         assertNotNull(files, "No fiels");
@@ -69,8 +70,8 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
         final long count = Arrays.stream(files)
                 .filter((f) -> f.getName().endsWith("test-4.log"))
                 .count();
-        assertTrue("Deleted file was not created", fileFound);
-        assertEquals("File count expected: 0, actual: " + count, 0, count);
+        assertTrue(fileFound, "Deleted file was not created");
+        assertEquals(0, count, "File count expected: 0, actual: " + count);
     }
 
     public static void main(final String[] args) {

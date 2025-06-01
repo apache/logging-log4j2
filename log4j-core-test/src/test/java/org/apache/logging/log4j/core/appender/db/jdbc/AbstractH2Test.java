@@ -18,16 +18,16 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.IOException;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Abstracts H2 test clean up.
  */
 public abstract class AbstractH2Test {
 
-    @AfterClass
-    @BeforeClass
+    @AfterAll
+    @BeforeAll
     public static void classDeleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }

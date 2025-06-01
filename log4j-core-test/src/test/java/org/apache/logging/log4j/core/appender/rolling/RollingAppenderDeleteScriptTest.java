@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -37,20 +37,21 @@ public class RollingAppenderDeleteScriptTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script.xml";
     private static final String DIR = "target/rolling-with-delete-script/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, Javascript");
     }
 
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
-        final Logger logger = loggerContextRule.getLogger();
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
+        final Logger logger = loggerContext.getLogger(RollingAppenderDeleteScriptTest.class.getName());
         // Trigger the rollover
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
@@ -59,19 +60,19 @@ public class RollingAppenderDeleteScriptTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
+        assertTrue(dir.listFiles().length > 0, "Dir " + DIR + " should contain files");
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
             System.out.println(file);
         }
         for (final File file : files) {
-            assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
-            assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
+            assertTrue(file.getName().startsWith("test-"), file.getName() + " starts with 'test-'");
+            assertTrue(file.getName().endsWith(".log"), file.getName() + " ends with '.log'");
             final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
             final int index = Integers.parseInt(strIndex);
-            assertEquals(file + " should have odd index", 1, index % 2);
+            assertEquals(1, index % 2, file + " should have odd index");
         }
     }
 }
