@@ -18,7 +18,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 = F.A.Q.
 
 This page compiles a list of frequently asked questions.
-If you don't find the answer to your question, please consult to link:{logging-services-url}/support.html[the support page].
+If you don't find the answer to your question, please consult the link:{logging-services-url}/support.html[the support page].
 
 [#config_location]
 == How do I specify the configuration file location?
@@ -28,13 +28,13 @@ By default, Log4j looks for a configuration file named `log4j2.xml`, `log4j2.pro
 [WARNING]
 ====
 Log4j 1 (which has reached its end-of-life in 2015!) uses `log4j.xml`.
-Log4j 2 and onwards use `log4j2.xml`.
+Log4j 2 and onwards, use `log4j2.xml`.
 ====
 
 You can also specify the full path of the configuration file using a system property: +
 `-Dlog4j2.configurationFile=/path/to/log4j2.xml`
 
-That property can also be included in a classpath resource file named `log4j2.component.properties`.
+Including that property in a classpath resource file named `log4j2.component.properties` is also possible.
 
 Web applications can specify the Log4j configuration file location with a servlet context parameter.
 See xref:jakarta.adoc#log4jConfiguration[the related page on web applications].
@@ -63,11 +63,11 @@ Configurator.reconfigure(configSourceUri);
 [#shutdown]
 == How do I shut down Log4j programmatically?
 
-Normally there is no need to do this manually.
+Typically, there is no need to do this manually.
 Each `LoggerContext` registers a shutdown hook that takes care of releasing resources when the JVM exits, unless the `log4j.shutdownHookEnabled` system property is set to `false`.
-Likewise, xref:jakarta.adoc[Web applications] replace the shutdown hook with their own resource management mechanisms.
-That is, they clean up necessary resources when the web application is stopped.
-However, if you need to manually shut down Log4j, you can use one of the `shutdown()` methods of link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
+Likewise, xref:jakarta.adoc[Web applications] replace the shutdown hook with their resource management mechanisms.
+They clean up necessary resources when the web application stops.
+However, if you need to shut down Log4j manually, you can use one of the `shutdown()` methods of link:javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#shutdown()[`LogManager`].
 
 [#reconfig_level_from_code]
 == How do I set a logger level programmatically?
@@ -78,7 +78,7 @@ You can set the level of a logger using link:javadoc/log4j-core/org/apache/loggi
 ----
 import org.apache.logging.log4j.core.config.Configurator;
 
-// Set the level of particular logger associated with a class
+// Set the level of a particular logger associated with a class
 Configurator.setLevel("com.example.Foo", Level.DEBUG);
 
 // Set the level of the root logger
@@ -97,8 +97,8 @@ You can set the logging level on the `AppenderRef` element.
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="https://logging.apache.org/xml/ns"
                xsi:schemaLocation="
-                       https://logging.apache.org/xml/ns
-                       https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+ https://logging.apache.org/xml/ns
+ https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <appenders>
     <File name="file" fileName="app.log">
       <PatternLayout pattern="%d %p %c{1.} [%t] %m %ex%n"/>
@@ -122,7 +122,7 @@ You can set the logging level on the `AppenderRef` element.
 . Make sure you have xref:manual/installation.adoc[the right JAR files] on your classpath.
 
 . Check the name of your configuration file.
-By default, Log4j looks for a configuration file named `log4j2.xml` on the classpath.
+Log4j looks for a configuration file named `log4j2.xml` on the classpath by default.
 Note the `2` in the file name!
 (See xref:manual/configuration.adoc[the Configuration page] for more details.)
 
@@ -130,7 +130,7 @@ Note the `2` in the file name!
 `-Dlog4j2.statusLoggerLevel=TRACE`
 
 . Enable all internal debug logging: `-Dlog4j2.debug`.
-This disables level-based xref:manual/status-logger.adoc[] filtering and effectively allows all status logs.
+This turns-off level-based xref:manual/status-logger.adoc[] filtering and effectively allows all status logs.
 
 [#separate_log_files]
 == How do I dynamically write to separate log files?
@@ -142,9 +142,9 @@ You can use xref:manual/appenders/delegating.adoc#RoutingAppender[the routing ap
 
 Log4j API and SLF4J have a lot in common.
 They both share the objective of cleanly separating the logging API from the implementation.
-We believe that Log4j API can help make your application more performant while offering more functionality and more flexibility.
+Log4j API can help make your application more performant while offering more functionality and flexibility.
 
-There may be a concern that using the Log4j API will tightly couple your application to Log4j.
+There may be a concern that the Log4j API will tightly couple your application to Log4j.
 This is not the case: applications coded to Log4j API always have the option to use any SLF4J-compliant logging implementation with the `log4j-to-slf4j` bridge.
 See xref:manual/installation.adoc[the Installation page] for details.
 
@@ -152,10 +152,10 @@ There are several advantages to using Log4j API:
 
 * SLF4J forces your application to log ``String``s.
 Log4j API supports logging any `CharSequence` if you want to log text, but also supports logging any `Object` as is.
-It is the responsibility of the logging _implementation_ to handle this object, and we consider it a design mistake to limit applications to logging ``String``s.
+The logging _implementation_ is responsible for handling this object, and we consider it a design mistake to limit applications to logging ``Strings``.
 * Log4j API offers support for logging xref:manual/messages.adoc[`Message` objects].
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
-Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.
+Users are free to create their own message types and write custom layouts, filters, and lookups to manipulate them.
 * Log4j API supports xref:manual/api.adoc#fluent-api[lambda expressions] both in its plain and fluent API.
 * Log4j API has better support for xref:manual/garbagefree.adoc[garbage-free logging]: it avoids creating `vararg` arrays and avoids creating ``String``s when logging ``CharSequence``s.
 
@@ -167,7 +167,7 @@ The `log4j-slf4j-impl` and `log4j-slf4j2-impl` bridges (together with `log4j-cor
 However, bear in mind that there are some limitations:
 
 * The SLF4J API only offers up to two parameters for a parameterized message.
-More than that uses ``vararg``s, which create a temporary object for the parameter array.
+More than that, it uses ``vararg``s, which creates a temporary object for the parameter array.
 In contrast, Log4j API has methods for up to ten unrolled parameters.
 
 * SLF4J forces your application to log ``String``s.
@@ -181,25 +181,25 @@ It creates a new message object for each call.
 == How do I log my domain object without creating garbage?
 
 One option is to let the domain object implement `CharSequence`.
-However, for many domain objects it may not be trivial to implement this without allocating temporary objects.
+However, for many domain objects, it may not be trivial to implement this without allocating temporary objects.
 
-An alternative is to implement the `org.apache.logging.log4j.util.StringBuilderFormattable` interface.
-If an object is logged that implements this interface, its `formatTo(StringBuilder)` method is called instead of `toString()`.
+An alternative is implementing the `org.apache.logging.log4j.util.StringBuilderFormattable` interface.
+If an object that implements this interface is logged, its `formatTo(StringBuilder)` method is called instead of `toString().`
 
 [#logger-wrapper]
 == How do I create a custom logger wrapper that shows the correct class, method, and line number?
 
-Log4j remembers the fully qualified class name (FQCN) of the logger and uses this to walk the stack trace for every log event when configured to print location.
+Log4j remembers the logger's fully qualified class name (FQCN) and uses this to walk the stack trace for every log event when configured to print location.
 
 [WARNING]
 ====
 Be aware that logging with location is slow and may impact the performance of your application.
 ====
 
-The problem with custom logger wrappers is that they have a different FQCN than the actual logger, so Log4j can't find the place where your custom logger was called.
+The problem with custom logger wrappers is that they have a different FQCN than the actual logger, so Log4j can't find where your custom logger was called.
 
 The solution is to provide the correct FQCN.
-The easiest way to do this is to let Log4j generate the logger wrapper for you.
+The easiest way is to let Log4j generate the logger wrapper for you.
 Log4j comes with a Logger wrapper generator tool.
 This tool was originally meant to support custom log levels and was moved to the
 {logging-services-url}/log4j/transform/latest/index.html[Log4j Transform subproject].
@@ -246,7 +246,7 @@ META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat
 
 file on the classpath of the Java applications.
 
-Starting with Log4j version `2.24.0`, you will receive a warning if a plugin is not registered properly.
+Starting with Log4j version `2.24.0`, you will receive a warning if a plugin is not registered correctly.
 The common causes for improperly registered plugins are:
 
 * One of the xref:components.adoc[Log4j artifacts] might be corrupted.
@@ -262,12 +262,12 @@ There are two ways to create single-JAR applications: you can create
 <<jar-in-jar,JAR-in-JAR executable packages>>
 or
 <<shading,shaded JARs>>.
-See the sections below on how to properly use these techniques with Log4j Core.
+See the sections below on properly using these techniques with Log4j Core.
 
 [#jar-in-jar]
 === Jar-in-Jar
 
-The easiest and recommended way to create single-JAR applications containing Log4j Core is to include **unmodified** versions of Log4j artifacts inside the JAR file of your application.
+The easiest and recommended way to create single-JAR applications containing Log4j Core is to include **unmodified** versions of Log4j artifacts inside the application's JAR file.
 You can do it with the following build tool plugins:
 
 * https://docs.spring.io/spring-boot/maven-plugin/packaging.html[Spring Boot Maven Plugin],
@@ -277,17 +277,17 @@ You can do it with the following build tool plugins:
 [#shading]
 === Shading/Shadowing
 
-The shading process unwraps all the files contained in dependency JARs and copies them to the JAR containing the application.
-Since multiple JARs can contain files with the same name, you need to properly resolve the file naming conflicts that arise.
+The shading process unwraps all the files in dependency JARs and copies them to the JAR containing the application.
+Since multiple JARs can contain files with the same name, you need to resolve the file naming conflicts that arise properly.
 
-If your application uses Log4j Core, the following conflicts must be resolved:
+If your application uses Log4j Core, you must resolve the following conflicts:
 
 .Click to list the possible file name conflicts
 [%collapsible]
 ====
 `module-info.class`::
-If you are writing a JPMS application, you need to propertly merge these files.
-Otherwise, they should be discarded.
+If you are writing a JPMS application, you must merge these files properly.
+Otherwise, you should discard them.
 
 `META-INF/MANIFEST.MF`::
 +
@@ -317,7 +317,7 @@ These files contain Log4j plugin descriptors and need to be properly merged usin
 
 https://maven.apache.org/plugins/maven-assembly-plugin/[Maven Assembly Plugin]:::
 https://github.com/sbt/sbt-assembly[SBT Assembly Plugin]:::
-We are not aware of any resource transformers capable of merging Log4j plugin descriptors.
+We are unaware of any resource transformers capable of merging Log4j plugin descriptors.
 
 https://maven.apache.org/plugins/maven-shade-plugin/[Maven Shade Plugin]:::
 You need to use the
@@ -331,7 +331,7 @@ https://gradleup.com/shadow/configuration/merging/#merging-log4j2-plugin-cache-f
 [#android]
 == Can I use Log4j with Android?
 
-Of course, you can!
+Of course you can!
 Since version `2.25.0` both the Log4j API and our three Log4j API implementations are tested for compatibility with the Android platform.
 
 If you use
