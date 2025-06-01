@@ -25,9 +25,15 @@ public interface FilterableComponentBuilder<T extends ComponentBuilder<T>> exten
 
     /**
      * Adds a Filter to the component.
+     * <p>
+     *   Note: the provided {@code builder} will be built by this method; therefore, it must be fully configured
+     *   <i>before</i> calling this method.  Changes to the builder after calling this method will not have
+     *   any effect.
+     * </p>
      *
-     * @param assembler The FilterComponentBuilder with all of its attributes and sub components set.
-     * @return this Assembler.
+     * @param builder The {@code FilterComponentBuilder} with all of its attributes and subcomponents set.
+     * @return this component builder (for chaining)
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
      */
-    T add(FilterComponentBuilder assembler);
+    T add(FilterComponentBuilder builder);
 }

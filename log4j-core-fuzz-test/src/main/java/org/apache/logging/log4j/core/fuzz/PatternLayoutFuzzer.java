@@ -34,7 +34,7 @@ public final class PatternLayoutFuzzer {
                 createLoggerContext(loggerContextName, EncodingAppender.PLUGIN_NAME, configBuilder -> configBuilder
                         .newLayout("PatternLayout")
                         // Enforce using a single message-based converter, i.e., `MessagePatternConverter`
-                        .addAttribute("pattern", "%m"))) {
+                        .setAttribute("pattern", "%m"))) {
             final ExtendedLogger logger = loggerContext.getLogger(PatternLayoutFuzzer.class);
             final LoggerFacade loggerFacade = new Log4jLoggerFacade(logger);
             fuzzLogger(loggerFacade, dataProvider);

@@ -16,8 +16,58 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.jspecify.annotations.Nullable;
+
 /**
- * Assembler for constructing AppenderRef Components.
+ * A builder interface for constructing and configuring {@link AppenderRef} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.4
  */
-public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<AppenderRefComponentBuilder> {}
+public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<AppenderRefComponentBuilder> {
+
+    /**
+     * Sets the "{@code level}" attribute on the appender-reference component.
+     * <p>
+     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param level the level
+     * @return this builder (for chaining)
+     */
+    default AppenderRefComponentBuilder setLevelAttribute(@Nullable String level) {
+        return setAttribute("level", level);
+    }
+
+    /**
+     * Sets the "{@code level}" attribute on the appender reference component.
+     * <p>
+     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param level the level
+     * @return this builder (for chaining)
+     */
+    default AppenderRefComponentBuilder setLevelAttribute(@Nullable Level level) {
+        return setAttribute("level", level);
+    }
+
+    /**
+     * Sets the "{@code ref}" attribute on the appender reference component.
+     * <p>
+     *   If the given {@code refAppenderName} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param refAppenderName the name of the appender being referenced
+     * @return this builder (for chaining)
+     */
+    default AppenderRefComponentBuilder setRefAttribute(@Nullable String refAppenderName) {
+        return setAttribute("ref", refAppenderName);
+    }
+}
