@@ -2630,6 +2630,135 @@ Therefore, the dollar <code>$</code> sign needs to be escaped.</td>
 </div>
 </div>
 <div class="sect1">
+<h2 id="monitorResources"><a class="anchor" href="#monitorResources"></a>Monitor Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j can be configured to poll for changes to resources (in addition to the configuration file) using the <code>MonitorResources</code> element of the configuration.
+If a change is detected in any of the specified resources, Log4j automatically reconfigures the logger context.
+This feature helps with monitoring external resources (e.g., TLS certificates) that the configuration is dependent on.</p>
+</div>
+<div class="paragraph">
+<p>The polling interval is determined by the value of the <a href="#configuration-attribute-monitorInterval"> <code>monitorInterval</code></a> attribute.
+If set to 0, polling is disabled.
+See <a href="#configuration-attribute-monitorInterval"> <code>monitorInterval</code></a> for further details.</p>
+</div>
+<div class="paragraph">
+<p>A configuration can have either zero or one <code>MonitorResources</code> element at its root.
+<code>MonitorResources</code> can have zero or more <code>MonitorResource</code> elements, which can be configured following attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>MonitorResource</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>uri</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>java.net.URI</code></a> reference to the external resource.
+Note that only URIs of scheme <code>file</code> are accepted.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>See example below:</p>
+</div>
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div class="title"><code>MonitorResources</code> configuration example</div>
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_12_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_12_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_12_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"
+               monitorInterval="30"&gt;
+  &lt;MonitorResources&gt;
+    &lt;MonitorResource uri="file://path/to/external-file-1.txt"/&gt;
+    &lt;MonitorResource uri="file://path/to/external-file-2.txt"/&gt;
+  &lt;/MonitorResources&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "monitorInterval": "30",
+    "MonitorResources": {
+      "MonitorResource": [
+        {
+          "uri": "file://path/to/external-file-1.txt"
+        },
+        {
+          "uri": "file://path/to/external-file-2.txt"
+        }
+      ]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  monitorInterval: '30'
+  MonitorResources:
+    MonitorResource:
+      - uri: "file://path/to/external-file-1.txt"
+      - uri: "file://path/to/external-file-2.txt"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">monitorResources.type = MonitorResources
+monitorResources.0.type = MonitorResource
+monitorResources.0.uri = file://path/to/external-file-1.txt
+monitorResources.1.type = MonitorResource
+monitorResources.1.uri = file://path/to/external-file-2.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="arbiters"><a class="anchor" href="#arbiters"></a><a id="Arbiters"></a> Arbiters</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2655,25 +2784,25 @@ and
 <div class="paragraph">
 <p>For example, you might want to use a different layout in a production and development environment:</p>
 </div>
-<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_12_xml" class="tab">
+<li id="_tabs_13_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_12_json" class="tab">
+<li id="_tabs_13_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_12_yaml" class="tab">
+<li id="_tabs_13_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_12_properties" class="tab">
+<li id="_tabs_13_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -2690,7 +2819,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -2719,7 +2848,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -2738,7 +2867,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
@@ -2783,25 +2912,25 @@ rootLogger.appenderRef.0.ref = MAIN</code></pre>
 <code>DefaultArbiter</code> element.
 If none of the arbiters match, the configuration from the <code>DefaultArbiter</code> element will be used:</p>
 </div>
-<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_13_xml" class="tab">
+<li id="_tabs_14_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_13_json" class="tab">
+<li id="_tabs_14_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_13_yaml" class="tab">
+<li id="_tabs_14_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_13_properties" class="tab">
+<li id="_tabs_14_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
+<div id="_tabs_14_xml--panel" class="tabpanel" aria-labelledby="_tabs_14_xml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
@@ -2816,7 +2945,7 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div id="_tabs_14_json--panel" class="tabpanel" aria-labelledby="_tabs_14_json">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.json"><code>log4j2.json</code></a></div>
 <div class="content">
@@ -2833,7 +2962,7 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div id="_tabs_14_yaml--panel" class="tabpanel" aria-labelledby="_tabs_14_yaml">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
@@ -2847,7 +2976,7 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div id="_tabs_14_properties--panel" class="tabpanel" aria-labelledby="_tabs_14_properties">
 <div class="listingblock">
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
