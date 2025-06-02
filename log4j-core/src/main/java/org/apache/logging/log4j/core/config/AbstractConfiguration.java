@@ -133,6 +133,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
+    private Set<MonitorResource> monitorResources = Collections.emptySet();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
@@ -268,6 +269,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        watchMonitorResources();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
     }
@@ -323,10 +325,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() >= 0) {
+        if (isConfigurationMonitoringEnabled()) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
-                    getConfigurationSource(),
+                    watchManager.getConfigurationWatchers().keySet(),
                     watchManager.getIntervalSeconds());
             watchManager.start();
         }
@@ -346,6 +348,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         super.start();
         LOGGER.info("Configuration {} started.", this);
+    }
+
+    private boolean isConfigurationMonitoringEnabled() {
+        return this instanceof Reconfigurable && watchManager.getIntervalSeconds() > 0;
+    }
+
+    private void watchMonitorResources() {
+        if (isConfigurationMonitoringEnabled()) {
+            monitorResources.forEach(monitorResource -> {
+                Source source = new Source(monitorResource.getUri());
+                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
+                        this, (Reconfigurable) this, listeners, source.getFile().lastModified());
+                watchManager.watch(source, watcher);
+            });
+        }
     }
 
     private boolean hasAsyncLoggers() {
@@ -730,9 +747,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
                 final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
+            } else if (child.isInstanceOf(MonitorResources.class)) {
+                monitorResources = child.getObject(MonitorResources.class).getResources();
             } else {
                 final List<String> expected = Arrays.asList(
-                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                        "\"Appenders\"",
+                        "\"Loggers\"",
+                        "\"Properties\"",
+                        "\"Scripts\"",
+                        "\"CustomLevels\"",
+                        "\"MonitorResources\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
