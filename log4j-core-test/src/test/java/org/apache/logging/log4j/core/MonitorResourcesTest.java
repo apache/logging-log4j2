@@ -34,19 +34,22 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Source;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 
-public class MonitorResourcesTest {
+class MonitorResourcesTest {
 
     @Test
     void test_reconfiguration(@TempDir(cleanup = CleanupMode.ON_SUCCESS) final Path tempDir) throws IOException {
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder(
+                // Explicitly deviating from `BuiltConfiguration`, since it is not `Reconfigurable`, and this
+                // results in `instanceof Reconfigurable` checks in `AbstractConfiguration` to fail while arming
+                // the watcher. Hence, using `PropertiesConfiguration`, which is `Reconfigurable`, instead.
+                PropertiesConfiguration.class);
         final Path configFile = tempDir.resolve("log4j.xml");
         final Path externalResourceFile1 = tempDir.resolve("external-resource-1.txt");
         final Path externalResourceFile2 = tempDir.resolve("external-resource-2.txt");
@@ -65,7 +68,7 @@ public class MonitorResourcesTest {
                 .setConfigurationSource(configSource)
                 .setMonitorInterval(String.valueOf(monitorInterval))
                 .addComponent(monitorResourcesComponent)
-                .build();
+                .build(false);
 
         try (final LoggerContext loggerContext = Configurator.initialize(config)) {
             assertMonitorResourceFileNames(
