@@ -114,4 +114,27 @@ public class FactoryTestStringMap implements IndexedStringMap {
     public Map<String, String> toMap() {
         return null;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ReadOnlyStringMap)) {
+            return false;
+        }
+        if (size() != ((ReadOnlyStringMap) obj).size()) {
+            return false;
+        }
+
+        // Convert to maps and compare
+        final Map<String, String> thisMap = toMap();
+        final Map<String, String> otherMap = ((ReadOnlyStringMap) obj).toMap();
+        return thisMap.equals(otherMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return toMap().hashCode();
+    }
 }
