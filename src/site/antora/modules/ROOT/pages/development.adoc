@@ -83,12 +83,10 @@ Pitch it in a {logging-services-url}/support.html#discussions-maintainer[maintai
 [#committer]
 == I am a committer. How shall I push my changes?
 
-. Is it something trivial?
-Go ahead and push it.
+As per https://lists.apache.org/thread/rx2hgc5mwql06yzwz2j8wkp8z6nmdcqk[the PMC resolution on 2025-04-10], all changes must be submitted in a pull request and undergo peer review.
 
-. Otherwise, submit a pull request.
-Make sure a changelog entry is attached and `./mvnw verify site` succeeds.
-+
+Make sure a changelog entry is attached, and `./mvnw verify site` succeeds.
+
 [TIP]
 ====
 You are strongly advised to spar with another maintainer first (see {logging-services-url}/support.html#discussions-maintainer[maintainer discussion channels]) before starting to code.
