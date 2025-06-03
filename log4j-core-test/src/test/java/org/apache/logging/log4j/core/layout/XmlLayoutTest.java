@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -332,8 +334,9 @@ public class XmlLayoutTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str, str.contains("<KEY1>VALUE1</KEY1>"));
-        assertTrue(str, str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"));
+
+        assertThat(str, hasXPath("//KEY1[text()='VALUE1']"));
+        assertThat(str, hasXPath("//KEY2[text()='" + new JavaLookup().getRuntime() + "']"));
     }
 
     @Test
