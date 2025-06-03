@@ -257,8 +257,7 @@
                 <include>org.apache.logging.log4j.osgi.tests.DisruptorTest</include>
               </includes>
               <systemPropertyVariables>
-                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
-                </log4j2.contextSelector>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</log4j2.contextSelector>
               </systemPropertyVariables>
             </configuration>
           </execution>
@@ -292,8 +291,7 @@
                 <include>org.apache.logging.log4j.osgi.tests.DisruptorTest</include>
               </includes>
               <systemPropertyVariables>
-                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
-                </log4j2.contextSelector>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector</log4j2.contextSelector>
               </systemPropertyVariables>
             </configuration>
           </execution>
