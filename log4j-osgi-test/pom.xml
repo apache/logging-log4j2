@@ -87,6 +87,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
@@ -233,7 +238,28 @@
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.FelixLoadApiBundleTest</exclude>
+                <exclude>org.apache.logging.log4j.osgi.tests.DisruptorTest</exclude>
               </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-equinox-disruptor</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <!-- Ensure that Disruptor is not accidentally loaded from the parent classpath -->
+                <exclude>com.lmax.disruptor:disruptor</exclude>
+                <exclude>org.apache.felix:org.apache.felix.framework</exclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>org.apache.logging.log4j.osgi.tests.DisruptorTest</include>
+              </includes>
+              <systemPropertyVariables>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
+                </log4j2.contextSelector>
+              </systemPropertyVariables>
             </configuration>
           </execution>
           <execution>
@@ -247,7 +273,28 @@
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.EquinoxLoadApiBundleTest</exclude>
+                <exclude>org.apache.logging.log4j.osgi.tests.DisruptorTest</exclude>
               </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-felix-disruptor</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes combine.children="append">
+                <!-- Ensure that Disruptor is not accidentally loaded from the parent classpath -->
+                <exclude>com.lmax.disruptor:disruptor</exclude>
+                <exclude>org.eclipse.platform:org.eclipse.osgi</exclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>org.apache.logging.log4j.osgi.tests.DisruptorTest</include>
+              </includes>
+              <systemPropertyVariables>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector
+                </log4j2.contextSelector>
+              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
