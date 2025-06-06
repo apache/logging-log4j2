@@ -89,8 +89,8 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
                 return null;
             }
             if (script instanceof ScriptRef) {
-                if (configuration.getScriptManager().getScript(script.getName()) == null) {
-                    LOGGER.error("No script with name {} has been declared.", script.getName());
+                if (configuration.getScriptManager().getScript(script.getId()) == null) {
+                    LOGGER.error("No script with name {} has been declared.", script.getId());
                     return null;
                 }
             } else {
@@ -262,7 +262,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         bindings.put("logEvent", event);
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         if (object == null) {
             return defaultFormatters;
         }
