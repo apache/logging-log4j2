@@ -682,13 +682,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         preConfigure(rootNode);
         configurationScheduler.start();
         // Find the "Properties" node first
+        final List<Node> children = rootNode.getChildren();
         boolean hasProperties = false;
-        for (final Node node : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(node.getName())) {
+        for (final Node child : children) {
+            if ("Properties".equalsIgnoreCase(child.getName())) {
                 hasProperties = true;
-                createConfiguration(node, null);
-                if (node.getObject() != null) {
-                    final StrLookup lookup = node.getObject();
+                createConfiguration(child, null);
+                if (child.getObject() != null) {
+                    final StrLookup lookup = child.getObject();
                     runtimeStrSubstitutor.setVariableResolver(lookup);
                     configurationStrSubstitutor.setVariableResolver(lookup);
                 }
@@ -705,10 +706,28 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
+        for (final Node child : children) {
+            if ("Scripts".equalsIgnoreCase(child.getName())) {
+                createConfiguration(child, null);
+                if (child.getObject() != null) {
+                    for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
+                        if (script instanceof ScriptRef) {
+                            LOGGER.error(
+                                    "Script reference to {} not added. Scripts definition cannot contain script references",
+                                    script.getName());
+                        } else if (scriptManager != null) {
+                            scriptManager.addScript(script);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
         boolean setLoggers = false;
         boolean setRoot = false;
-        for (final Node child : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(child.getName())) {
+        for (final Node child : children) {
+            if ("Properties".equalsIgnoreCase(child.getName()) || "Scripts".equalsIgnoreCase(child.getName())) {
                 // We already used this node
                 continue;
             }
@@ -716,17 +735,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (child.getObject() == null) {
                 continue;
             }
-            if ("Scripts".equalsIgnoreCase(child.getName())) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error(
-                                "Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else if (scriptManager != null) {
-                        scriptManager.addScript(script);
-                    }
-                }
-            } else if ("Appenders".equalsIgnoreCase(child.getName())) {
+            if ("Appenders".equalsIgnoreCase(child.getName())) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
