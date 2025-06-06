@@ -501,7 +501,8 @@ public class StatusLogger extends AbstractLogger {
          * @return {@code true}, if the property name is relevant; {@code false}, otherwise
          */
         private static boolean isRelevantPropertyName(@Nullable final Object propertyName) {
-            return propertyName instanceof String && LOG4J_PREFIX.matcher((String) propertyName).matches();
+            return propertyName instanceof String
+                    && LOG4J_PREFIX.matcher((String) propertyName).matches();
         }
 
         /**
