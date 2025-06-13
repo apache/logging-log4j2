@@ -30,6 +30,14 @@ https://www.graalvm.org/latest/reference-manual/native-image/metadata/[GraalVM r
 enabling seamless generation of native images with GraalVM out of the box—no manual configuration required.
 For more information, refer to our xref:graalvm.adoc[GraalVM guide].
 
+[NOTE]
+====
+When building third-party Log4j plugins, using the new `GraalVmProcessor`
+introduced in version `2.25.0` will automatically generate the required reachability metadata for GraalVM native images.
+However, the processor will fail the build if the required `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` parameters are not provided.
+For detailed instructions, see xref:manual/plugins.adoc#plugin-registry[Registering plugins].
+====
+
 [#release-notes-2-25-0-PL-ex]
 === Exception Handling in Pattern Layout
 
@@ -39,7 +47,7 @@ Key improvements include:
 
 * Stack traces are now consistently prefixed with a newline instead of other whitespace.
 * The default exception converter has changed from xref:manual/pattern-layout.adoc#converter-exception-extended[extended] to xref:manual/pattern-layout.adoc#converter-exception[plain], offering better performance.
-* Support for the `{ansi}` option in exception converters has been removed.
+* Support for the `\{ansi}` option in exception converters has been removed.
 
 [#release-notes-2-25-0-instant-format]
 === Date & Time Formatting
@@ -51,7 +59,7 @@ These are now deprecated in favor of Java’s standard
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
 
 If you encounter formatting issues after upgrading—particularly with `n` or `x` directives—you can temporarily revert to the legacy formatters by setting the xref:manual/systemproperties.adoc#log4j2.instantFormatter[`log4j2.instantFormatter`] property to `legacy`.
-Please report any issues via our {logging-services-url}/support.html#issues\[issue tracker].
+Please report any issues via our {logging-services-url}/support.html#issues[issue tracker].
 
 [#release-notes-2-25-0-windows-ansi]
 === ANSI Support on Windows
