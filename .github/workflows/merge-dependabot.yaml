@@ -42,7 +42,7 @@ jobs:
 
   merge-dependabot:
     needs: build
-    uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@rel/12.1.0
+    uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@rel/12.1.1
     with:
       java-version: 17
     permissions:
