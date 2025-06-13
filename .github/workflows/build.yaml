@@ -50,7 +50,7 @@ jobs:
   deploy-release:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
-    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/12.1.0
+    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/12.1.1
     # Secrets for deployments
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
