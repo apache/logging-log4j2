@@ -30,7 +30,7 @@ jobs:
 
   build:
     if: github.actor != 'dependabot[bot]'
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/12.1.0
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/12.1.1
     secrets:
       DV_ACCESS_TOKEN: ${{ startsWith(github.ref_name, 'release/') && '' || secrets.GE_ACCESS_TOKEN }}
     with:
