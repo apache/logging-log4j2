@@ -1957,6 +1957,22 @@ for its format.</p>
 <p class="tableblock"><strong>Required</strong></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-databaseName"></a>databaseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the name of the database for the appender to use.</p>
+<p class="tableblock">Overrides the value provided in the connection string if present.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-collectionName"></a>collectionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It specifies the name of the collection for the appender to use.
+For backward compatibility, the collection name can also be specified in the
+<a href="https://mongodb.github.io/mongo-java-driver/5.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html">Java-specific connection string</a>.
+If collection name is specified in both places, the value provided here will be used.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MongoDbProvider-attr-capped"></a>capped</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
@@ -2046,7 +2062,7 @@ will be used.</p></td>
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
-  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017" databaseName="logging" collectionName="logs"/&gt;
 &lt;/NoSql&gt;</code></pre>
 </div>
 </div>
@@ -2058,7 +2074,9 @@ will be used.</p></td>
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
   "name": "MONGO",
   "MongoDb": {
-    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017",
+    "databaseName" : "logging",
+    "collectionName": "logs"
   }
 }</code></pre>
 </div>
@@ -2071,7 +2089,9 @@ will be used.</p></td>
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
   name: "MONGO"
   MongoDb:
-    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"</code></pre>
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017"
+    databaseName: "logging"
+    collectionName: "logs"</code></pre>
 </div>
 </div>
 </div>
@@ -2082,7 +2102,9 @@ will be used.</p></td>
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.1.type = NoSql
 Appenders.1.name = MONGO
 Appenders.1.provider.type = MongoDB
-Appenders.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs</code></pre>
+Appenders.1.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017
+Appenders.1.provider.databaseName = logging
+Appenders.1.provider.collectionName = logs</code></pre>
 </div>
 </div>
 </div>
@@ -2250,7 +2272,7 @@ Loggers.Logger[2].AppenderRef.ref = FILE</code></pre>
 <div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/main/src/site/antora/modules/ROOT/examples/manual/appenders/database/nosql-mongo-keys.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;NoSql name="MONGO"&gt;
-  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/&gt;
+  &lt;MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017" databaseName="logging" collectionName="logs"/&gt;
   &lt;KeyValuePair key="startTime" value="${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="1"></i><b>(1)</b>
   &lt;KeyValuePair key="currentTime" value="$${date:yyyy-MM-dd hh:mm:ss.SSS}"/&gt; <i class="conum" data-value="2"></i><b>(2)</b>
 &lt;/NoSql&gt;</code></pre>
@@ -2264,7 +2286,9 @@ Loggers.Logger[2].AppenderRef.ref = FILE</code></pre>
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"NoSql": {
   "name": "MONGO",
   "MongoDb": {
-    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    "connection": "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017",
+    "databaseName": "logging",
+    "collectionName": "logs"
   },
   "KeyValuePair": [
     {
@@ -2287,7 +2311,9 @@ Loggers.Logger[2].AppenderRef.ref = FILE</code></pre>
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">NoSql:
   name: "MONGO"
   MongoDb:
-    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"
+    connection: "mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017"
+    databaseName: "logging"
+    collectionName: "logs"
   KeyValuePair:
     - key: "startTime"
       value: "${date:yyyy-MM-dd hh:mm:ss.SSS}" <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2303,7 +2329,9 @@ Loggers.Logger[2].AppenderRef.ref = FILE</code></pre>
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">Appenders.0.type = NoSql
 Appenders.0.name = MONGO
 Appenders.0.provider.type = MongoDB
-Appenders.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs
+Appenders.0.provider.connection = mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017
+Appenders.0.provider.databaseName = logging
+Appenders.0.provider.collectionName = logs
 
 Appenders.0.kv[0].type = KeyValuePair
 Appenders.0.kv[0].key = startTime
