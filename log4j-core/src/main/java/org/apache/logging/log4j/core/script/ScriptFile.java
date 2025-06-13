@@ -123,8 +123,8 @@ public class ScriptFile extends AbstractScript {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        if (!(getName().equals(filePath.toString()))) {
-            sb.append("name=").append(getName()).append(", ");
+        if (!(getId().equals(filePath.toString()))) {
+            sb.append("name=").append(getId()).append(", ");
         }
         sb.append("path=").append(filePath);
         if (getLanguage() != null) {

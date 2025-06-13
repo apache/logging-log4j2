@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A  container of Scripts.
@@ -37,7 +40,18 @@ public final class ScriptsPlugin {
      */
     @PluginFactory
     public static AbstractScript[] createScripts(@PluginElement("Scripts") final AbstractScript[] scripts) {
+        if (scripts == null || scripts.length == 0) {
+            return scripts;
+        }
 
-        return scripts;
+        final List<AbstractScript> validScripts = new ArrayList<>(scripts.length);
+        for (final AbstractScript script : scripts) {
+            if (Strings.isBlank(script.getName())) {
+                throw new ConfigurationException("A script defined in <Scripts> lacks an explicit 'name' attribute");
+            } else {
+                validScripts.add(script);
+            }
+        }
+        return validScripts.toArray(new AbstractScript[0]);
     }
 }

@@ -180,7 +180,7 @@ public final class Routes {
             final Bindings bindings = scriptManager.createBindings(patternScript);
             bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
             bindings.put(LOG_EVENT_KEY, event);
-            final Object object = scriptManager.execute(patternScript.getName(), bindings);
+            final Object object = scriptManager.execute(patternScript.getId(), bindings);
             bindings.remove(LOG_EVENT_KEY);
             return Objects.toString(object, null);
         }
