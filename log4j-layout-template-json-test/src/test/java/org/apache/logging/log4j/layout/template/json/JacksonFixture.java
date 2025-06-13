@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 public final class JacksonFixture {
 
