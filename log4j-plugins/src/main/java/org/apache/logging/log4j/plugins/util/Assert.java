@@ -18,6 +18,8 @@ package org.apache.logging.log4j.plugins.util;
 
 import java.util.Collection;
 import java.util.Map;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class providing common validation logic.
@@ -36,26 +38,23 @@ public final class Assert {
      * </ul>
      *
      * @param o value to check for emptiness
-     * @return true if the value is empty, false otherwise
+     * @return {@code true} if the value is empty; otherwise, {@code false}
      * @since 2.8
      */
     public static boolean isEmpty(final Object o) {
         if (o == null) {
             return true;
-        }
-        if (o instanceof CharSequence) {
-            return ((CharSequence) o).length() == 0;
-        }
-        if (o.getClass().isArray()) {
+        } else if (o instanceof CharSequence charSequence) {
+            return charSequence.isEmpty();
+        } else if (o.getClass().isArray()) {
             return ((Object[]) o).length == 0;
+        } else if (o instanceof Collection<?> collection) {
+            return collection.isEmpty();
+        } else if (o instanceof Map<?, ?> map) {
+            return map.isEmpty();
+        } else {
+            return false;
         }
-        if (o instanceof Collection) {
-            return ((Collection<?>) o).isEmpty();
-        }
-        if (o instanceof Map) {
-            return ((Map<?, ?>) o).isEmpty();
-        }
-        return false;
     }
 
     /**
@@ -77,7 +76,7 @@ public final class Assert {
      * @return the provided value if non-empty
      * @since 2.8
      */
-    public static <T> T requireNonEmpty(final T value) {
+    public static <T> T requireNonEmpty(final @Nullable T value) {
         return requireNonEmpty(value, "");
     }
 
@@ -90,7 +89,7 @@ public final class Assert {
      * @return the provided value if non-empty
      * @since 2.8
      */
-    public static <T> T requireNonEmpty(final T value, final String message) {
+    public static <T> @NonNull T requireNonEmpty(final @Nullable T value, final @Nullable String message) {
         if (isEmpty(value)) {
             throw new IllegalArgumentException(message);
         }
