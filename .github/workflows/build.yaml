@@ -78,7 +78,7 @@ jobs:
     needs: [ deploy-snapshot, deploy-release ]
     if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
     name: "verify-reproducibility (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
-    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@rel/12.1.0
+    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@rel/12.1.1
     with:
       nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || 'https://repository.apache.org/content/groups/snapshots' }}
       # Encode the `runs-on` input as JSON array
