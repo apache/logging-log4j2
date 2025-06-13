@@ -18,16 +18,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
 
-/**
- * Tests https://issues.apache.org/jira/browse/LOG4J2-1967
- */
-public class RollingFileAppenderReconfigureTest {
+@LoggerContextSource("log4j-rolling-size-max-width-1.xml")
+public class RollingAppenderSizeMaxWidthTest1 extends RollingAppenderSizeMaxWidthTest {
 
-    @Test
-    @LoggerContextSource(value = "rolling-file-appender-reconfigure.xml")
-    public void testReconfigure(final LoggerContext loggerContext) {
-        loggerContext.reconfigure();
+    public RollingAppenderSizeMaxWidthTest1(LoggerContext context) {
+        super(context);
     }
 }
