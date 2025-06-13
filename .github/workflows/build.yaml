@@ -44,7 +44,7 @@ jobs:
   deploy-snapshot:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@rel/12.1.0
+    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@rel/12.1.1
     # Secrets for deployments
     secrets:
       NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
