@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -525,7 +528,7 @@ Event templates themselves are also JSON documents, where objects containing <co
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:MyLayout.json"/&gt;</code></pre>
 </div>
@@ -533,7 +536,7 @@ Event templates themselves are also JSON documents, where objects containing <co
 </div>
 <div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
   "eventTemplateUri": "classpath:MyLayout.json"
@@ -543,7 +546,7 @@ Event templates themselves are also JSON documents, where objects containing <co
 </div>
 <div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
   eventTemplateUri: "classpath:MyLayout.json"</code></pre>
@@ -552,7 +555,7 @@ Event templates themselves are also JSON documents, where objects containing <co
 </div>
 <div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
 appender.0.layout.eventTemplateUri = classpath:MyLayout.json</code></pre>
@@ -1069,7 +1072,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json"&gt;
   &lt;EventTemplateAdditionalField
@@ -1093,7 +1096,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
   "eventTemplateUri": "classpath:GelfLayout.json",
@@ -1124,7 +1127,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
   eventTemplateUri: "classpath:GelfLayout.json"
@@ -1145,7 +1148,7 @@ Accepted values are:</p>
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/event-template-additional-field/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
 appender.0.layout.eventTemplateUri = classpath:GelfLayout.json
@@ -1234,16 +1237,16 @@ JSON Template Layout contains the following predefined event templates:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/resources/EcsLayout.json"><code>EcsLayout.json</code></a></dt>
 <dd>
 <p>The <strong>default event template</strong> modelling
 <a href="https://www.elastic.co/guide/en/ecs/current/ecs-reference.html">the Elastic Common Schema (ECS) specification</a></p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json"><code>LogstashJsonEventLayoutV1.json</code></a></dt>
 <dd>
 <p>Models <a href="https://github.com/logstash/log4j-jsonevent-layout">Logstash <code>json_event</code> pattern for Log4j</a></p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/resources/GelfLayout.json"><code>GelfLayout.json</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/resources/GelfLayout.json"><code>GelfLayout.json</code></a></dt>
 <dd>
 <p>Models <a href="https://go2docs.graylog.org/current/getting_in_log_data/gelf.html#GELFPayloadSpecification">the Graylog Extended Log Format (GELF) payload specification</a> with additional <code>_thread</code> and <code>_logger</code> fields.</p>
 <div class="admonitionblock tip">
@@ -1261,12 +1264,12 @@ JSON Template Layout contains the following predefined event templates:</p>
 </table>
 </div>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/resources/GcpLayout.json"><code>GcpLayout.json</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/resources/GcpLayout.json"><code>GcpLayout.json</code></a></dt>
 <dd>
 <p>Models the structure described by <a href="https://cloud.google.com/logging/docs/structured-logging">Google Cloud Platform structured logging</a> with additional <code>_thread</code>, <code>_logger</code> and <code>_exception</code> fields.
 The exception trace, if any, is written to the <code>_exception</code> field as well as the <code>message</code> field – the former is useful for explicitly searching/analyzing structured exception information, while the latter is Google&#8217;s expected place for the exception, and integrates with <a href="https://cloud.google.com/error-reporting">Google Error Reporting</a>.</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/resources/JsonLayout.json"><code>JsonLayout.json</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/resources/JsonLayout.json"><code>JsonLayout.json</code></a></dt>
 <dd>
 <p>Models the exact structure generated by the deprecated <a href="layouts.html#JSONLayout" class="xref page"><code>JsonLayout</code></a> with the exception of <code>thrown</code> field.
 <code>JsonLayout</code> serializes the <code>Throwable</code> as is via Jackson <code>ObjectMapper</code>, whereas <code>JsonLayout.json</code> event template employs the <code>StackTraceElementLayout.json</code> stack trace template for stack traces to generate a document-store-friendly flat structure.</p>
@@ -2293,6 +2296,23 @@ unit          = "unit" -&gt; (
 rounded       = "rounded" -&gt; boolean</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The resolvers based on the <code>epochConfig</code> expression are garbage-free.</p>
+</div>
+<div class="paragraph">
+<p>The resolvers based on the <code>patternConfig</code> expression are low-garbage and generate temporary objects only once a minute.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <details>
 <summary class="title">See examples</summary>
 <div class="content">
@@ -2806,7 +2826,7 @@ Consider the following example:</p>
 </div>
 <div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplate='{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}'&gt; <i class="conum" data-value="1"></i><b>(1)</b>
   &lt;EventTemplateAdditionalField
@@ -2819,7 +2839,7 @@ Consider the following example:</p>
 </div>
 <div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
   "eventTemplate": "{\"instant\": {\"$resolver\": \"pattern\", \"pattern\": \"${env:LOG4J_DATE_PATTERN:-%d}\"}}", <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2836,7 +2856,7 @@ Consider the following example:</p>
 </div>
 <div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
   eventTemplate: '{"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}}' <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2849,7 +2869,7 @@ Consider the following example:</p>
 </div>
 <div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/property-substitution/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
 appender.0.layout.eventTemplate = {"instant": {"$resolver": "pattern", "pattern": "${env:LOG4J_DATE_PATTERN:-%d}"}} <i class="conum" data-value="1"></i><b>(1)</b>

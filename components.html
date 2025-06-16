@@ -71,7 +71,7 @@
     <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="release-notes.html">Release Notes</a>
+    <a class="nav-link" href="release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -265,6 +265,9 @@
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="graalvm.html">Building GraalVM native images</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -381,7 +384,7 @@ You can import the BOM in your build tool of preference:</p>
     &lt;dependency&gt;
       &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
       &lt;artifactId&gt;log4j-bom&lt;/artifactId&gt;
-      &lt;version&gt;2.24.3&lt;/version&gt;
+      &lt;version&gt;2.25.0&lt;/version&gt;
       &lt;scope&gt;import&lt;/scope&gt;
       &lt;type&gt;pom&lt;/type&gt;
     &lt;/dependency&gt;
@@ -394,7 +397,7 @@ You can import the BOM in your build tool of preference:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.24.3')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.0')
 }</code></pre>
 </div>
 </div>
@@ -962,7 +965,7 @@ for more information.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
   &lt;artifactId&gt;log4j-docker&lt;/artifactId&gt;
-  &lt;version&gt;2.24.3&lt;/version&gt;
+  &lt;version&gt;2.25.0&lt;/version&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -974,7 +977,7 @@ for more information.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-docker:2.24.3'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-docker:2.25.0'</code></pre>
 </div>
 </div>
 </div>

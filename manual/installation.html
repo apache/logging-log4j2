@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -507,7 +510,7 @@ You can import the BOM in your build tool of preference:</p>
     &lt;dependency&gt;
       &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
       &lt;artifactId&gt;log4j-bom&lt;/artifactId&gt;
-      &lt;version&gt;2.24.3&lt;/version&gt;
+      &lt;version&gt;2.25.0&lt;/version&gt;
       &lt;scope&gt;import&lt;/scope&gt;
       &lt;type&gt;pom&lt;/type&gt;
     &lt;/dependency&gt;
@@ -520,7 +523,7 @@ You can import the BOM in your build tool of preference:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.24.3')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.0')
 }</code></pre>
 </div>
 </div>
@@ -1065,7 +1068,7 @@ See <a href="../log4j-jul.html" class="xref page">JUL-to-Log4j bridge</a> for mo
   &lt;dependency&gt;
     &lt;groupId&gt;commons-logging&lt;/groupId&gt;
     &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
-    &lt;version&gt;1.3.4&lt;/version&gt;
+    &lt;version&gt;1.3.5&lt;/version&gt;
   &lt;/dependency&gt;
 &lt;/dependencyManagement&gt;</code></pre>
 </div>
@@ -1198,6 +1201,14 @@ See <a href="https://docs.spring.io/spring-boot/reference/features/logging.html"
 </div>
 </div>
 <div class="sect3">
+<h4 id="impl-core-graalvm"><a class="anchor" href="#impl-core-graalvm"></a>Installing Log4j Core for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-core" class="xref page">Using Log4j Core</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use Log4j Core.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="impl-core-config"><a class="anchor" href="#impl-core-config"></a>Configuring Log4j Core</h4>
 <div class="paragraph">
 <p>As with any other logging implementation, Log4j Core needs to be properly configured.
@@ -1231,19 +1242,16 @@ A basic configuration can be obtained by adding one of these files to your appli
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-2.xsd"&gt;
-
-  &lt;appenders&gt;
+  &lt;Appenders&gt;
     &lt;Console name="CONSOLE"&gt;
       &lt;PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
     &lt;/Console&gt;
-  &lt;/appenders&gt;
-
-  &lt;loggers&gt;
-    &lt;root level="INFO"&gt;
+  &lt;/Appenders&gt;
+  &lt;Loggers&gt;
+    &lt;Root level="INFO"&gt;
       &lt;AppenderRef ref="CONSOLE"/&gt;
-    &lt;/root&gt;
-  &lt;/loggers&gt;
-
+    &lt;/Root&gt;
+  &lt;/Loggers&gt;
 &lt;/Configuration&gt;</code></pre>
 </div>
 </div>
@@ -1368,7 +1376,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;2.18.0&lt;/version&gt;
+    &lt;version&gt;2.19.0&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1377,7 +1385,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div id="_tabs_14_gradle--panel" class="tabpanel" aria-labelledby="_tabs_14_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -1403,7 +1411,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;2.18.0&lt;/version&gt;
+    &lt;version&gt;2.19.0&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1412,7 +1420,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <div id="_tabs_15_gradle--panel" class="tabpanel" aria-labelledby="_tabs_15_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -1477,7 +1485,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
   &lt;dependency&gt;
     &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
     &lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
-    &lt;version&gt;2.0.16&lt;/version&gt;
+    &lt;version&gt;2.0.17&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
   &lt;/dependency&gt;
 
@@ -1491,7 +1499,7 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-to-jul' // Log4j-to-JUL bridge
-runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
+runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.17' // SLF4J-to-JUL bridge</code></pre>
 </div>
 </div>
 </div>
@@ -1509,6 +1517,14 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
 <p><a href="../log4j-to-jul.html" class="xref page">Log4j-to-JUL bridge</a> to learn more about the <code>log4j-to-jul</code> artifact.</p>
 </li>
 </ul>
+</div>
+<div class="sect3">
+<h4 id="impl-jul-graalvm"><a class="anchor" href="#impl-jul-graalvm"></a>Installing JUL for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-jul" class="xref page">Using JUL</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use JUL.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1555,7 +1571,7 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.16' // SLF4J-to-JUL bridge</code></pre>
 <div id="_tabs_17_gradle--panel" class="tabpanel" aria-labelledby="_tabs_17_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'ch.qos.logback:logback-classic:1.5.5'
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'ch.qos.logback:logback-classic:1.3.15'
 runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge</code></pre>
 </div>
 </div>
@@ -1564,6 +1580,14 @@ runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge</
 </div>
 <div class="paragraph">
 <p>To configure Logback, see <a href="https://logback.qos.ch/manual/configuration.html">Logback&#8217;s configuration documentation</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="impl-jul-logback"><a class="anchor" href="#impl-jul-logback"></a>Installing Logback for GraalVM applications</h4>
+<div class="paragraph">
+<p>See
+<a href="../graalvm.html#impl-logback" class="xref page">Using Logback</a>
+in our GraalVM guide for more details on how to create GraalVM native applications that use Logback.</p>
+</div>
 </div>
 </div>
 </div>

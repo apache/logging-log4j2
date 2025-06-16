@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -1112,7 +1115,7 @@ you can use a configuration snippet like:</p>
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;AppenderRef ref="CONSOLE"&gt;
   &lt;TimeFilter start="08:00:00" end="16:00:00"/&gt;
@@ -1125,7 +1128,7 @@ you can use a configuration snippet like:</p>
 </div>
 <div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"AppenderRef": [
   {
@@ -1148,7 +1151,7 @@ you can use a configuration snippet like:</p>
 </div>
 <div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">AppenderRef:
   - ref: "CONSOLE"
@@ -1164,7 +1167,7 @@ you can use a configuration snippet like:</p>
 </div>
 <div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/TimeFilter.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.appenderRef.0.ref = CONSOLE
 rootLogger.appenderRef.0.filter.0.type = TimeFilter
@@ -1456,7 +1459,7 @@ you can use this configuration to apply different thresholds to different users:
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DynamicThresholdFilter key="loginId"
                         defaultThreshold="ERROR"&gt; <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1468,7 +1471,7 @@ you can use this configuration to apply different thresholds to different users:
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"DynamicThresholdFilter": {
   "key": "loginId", <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1489,7 +1492,7 @@ you can use this configuration to apply different thresholds to different users:
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">DynamicThresholdFilter:
   key: "loginId"
@@ -1504,7 +1507,7 @@ you can use this configuration to apply different thresholds to different users:
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/DynamicThresholdFilter.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = DynamicThresholdFilter
 filter.0.key = loginId
@@ -2087,7 +2090,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MapFilter operator="AND"&gt;
   &lt;KeyValuePair key="eventType" value="authentication"/&gt;
@@ -2099,7 +2102,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MapFilter": {
   "operator": "AND",
@@ -2123,7 +2126,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MapFilter:
   operator: "AND"
@@ -2139,7 +2142,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MapFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MapFilter
 filter.0.operator = AND
@@ -2326,7 +2329,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;StructuredDataFilter operator="AND"&gt;
   &lt;KeyValuePair key="id" value="authentication"/&gt;
@@ -2338,7 +2341,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"StructuredDataFilter": {
   "operator": "AND",
@@ -2362,7 +2365,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">StructuredDataFilter:
   operator: "AND"
@@ -2378,7 +2381,7 @@ you can use the following configuration:</p>
 </div>
 <div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/StructuredDataFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = StructuredDataFilter
 filter.0.operator = AND
@@ -2521,7 +2524,7 @@ you can filter the log events generated by users <code>alice</code> and <code>bo
 </div>
 <div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ContextMapFilter operator="AND"&gt;
   &lt;KeyValuePair key="clientId" value="1234"/&gt;
@@ -2533,7 +2536,7 @@ you can filter the log events generated by users <code>alice</code> and <code>bo
 </div>
 <div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"ContextMapFilter": {
   "operator": "AND",
@@ -2557,7 +2560,7 @@ you can filter the log events generated by users <code>alice</code> and <code>bo
 </div>
 <div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ContextMapFilter:
   operator: "AND"
@@ -2573,7 +2576,7 @@ you can filter the log events generated by users <code>alice</code> and <code>bo
 </div>
 <div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = ContextMapFilter
 filter.0.operator = AND
@@ -2735,7 +2738,7 @@ this filter always uses the <a href="#matching-mode-or">OR</a> matching mode.</p
 </div>
 <div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MutableContextMapFilter
     configLocation="https://server.example/configs.json"
@@ -2745,7 +2748,7 @@ this filter always uses the <a href="#matching-mode-or">OR</a> matching mode.</p
 </div>
 <div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MutableContextMapFilter": {
   "configLocation": "https://server.example/configs.json",
@@ -2756,7 +2759,7 @@ this filter always uses the <a href="#matching-mode-or">OR</a> matching mode.</p
 </div>
 <div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MutableContextMapFilter:
   configLocation: "https://server.example/configs.json"
@@ -2766,7 +2769,7 @@ this filter always uses the <a href="#matching-mode-or">OR</a> matching mode.</p
 </div>
 <div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/MutableContextMapFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MutableContextMapFilter
 filter.0.configLocation = https://server.example/configs.json
@@ -2968,7 +2971,7 @@ you can use a simple Groovy script:</p>
 </div>
 <div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root level="ALL"&gt;
   &lt;ScriptFilter&gt;
@@ -2981,7 +2984,7 @@ you can use a simple Groovy script:</p>
 </div>
 <div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
   "level": "ALL",
@@ -3000,7 +3003,7 @@ you can use a simple Groovy script:</p>
 </div>
 <div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
   level: "ALL"
@@ -3015,7 +3018,7 @@ you can use a simple Groovy script:</p>
 </div>
 <div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = ALL
 
@@ -3066,7 +3069,7 @@ return actualThrowable instanceof DataAccessException</code></pre>
 </div>
 <div id="_tabs_9_xml--panel" class="tabpanel" aria-labelledby="_tabs_9_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;ScriptFilter&gt;
   &lt;ScriptFile language="groovy" path="scripts/global.groovy"/&gt;
@@ -3076,7 +3079,7 @@ return actualThrowable instanceof DataAccessException</code></pre>
 </div>
 <div id="_tabs_9_json--panel" class="tabpanel" aria-labelledby="_tabs_9_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"ScriptFilter": {
   "ScriptFile": {
@@ -3089,7 +3092,7 @@ return actualThrowable instanceof DataAccessException</code></pre>
 </div>
 <div id="_tabs_9_yaml--panel" class="tabpanel" aria-labelledby="_tabs_9_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ScriptFilter:
   ScriptFile:
@@ -3100,7 +3103,7 @@ return actualThrowable instanceof DataAccessException</code></pre>
 </div>
 <div id="_tabs_9_properties--panel" class="tabpanel" aria-labelledby="_tabs_9_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/filters/ScriptFilter.yaml"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = ScriptFilter
 filter.0.script.type = ScriptFile
@@ -3181,10 +3184,10 @@ While annotating your filter with <code>@Plugin</code>, you need to make sure th
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java"><code>MarkerFilter.java</code></a> – <a href="#MarkerFilter"><code>MarkerFilter</code></a> matching on markers associated with the effective <code>LogEvent</code> in the context</p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/MarkerFilter.java"><code>MarkerFilter.java</code></a> – <a href="#MarkerFilter"><code>MarkerFilter</code></a> matching on markers associated with the effective <code>LogEvent</code> in the context</p>
 </li>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java"><code>RegexFilter.java</code></a> – <a href="#RegexFilter"><code>RegexFilter</code></a> matching on the message associated with the effective <code>LogEvent</code> in the context</p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/filter/RegexFilter.java"><code>RegexFilter.java</code></a> – <a href="#RegexFilter"><code>RegexFilter</code></a> matching on the message associated with the effective <code>LogEvent</code> in the context</p>
 </li>
 </ul>
 </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Release Notes :: Apache Log4j</title>
+    <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
     <meta name="generator" content="Antora 3.2.0-alpha.8">
 <link rel="stylesheet" href="./_/css/site.css">
@@ -71,7 +71,7 @@
     <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="release-notes.html">Release Notes</a>
+    <a class="nav-link" href="release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -265,6 +265,9 @@
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="graalvm.html">Building GraalVM native images</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -337,7 +340,7 @@
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="download.html">Download</a></li>
-    <li><a href="release-notes.html">Release Notes</a></li>
+    <li><a href="release-notes.html">Release notes</a></li>
   </ul>
 </nav>
 <div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/release-notes.adoc">Edit this Page</a></div>
@@ -347,7 +350,386 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Release Notes</h1>
+<h1 class="page">Release notes</h1>
+<div class="sect1">
+<h2 id="release-notes-2-25-0"><a class="anchor" href="#release-notes-2-25-0"></a>2.25.0</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-06-13</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This minor release introduces bug fixes, behavior improvements, and complete support for GraalVM native image generation.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-graalvm"><a class="anchor" href="#release-notes-2-25-0-graalvm"></a>GraalVM Reachability Metadata</h3>
+<div class="paragraph">
+<p>Log4j Core and all extension modules now include embedded
+<a href="https://www.graalvm.org/latest/reference-manual/native-image/metadata/">GraalVM reachability metadata</a>,
+enabling seamless generation of native images with GraalVM out of the box—no manual configuration required.
+For more information, refer to our <a href="graalvm.html" class="xref page">GraalVM guide</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When building third-party Log4j plugins, using the new <code>GraalVmProcessor</code>
+introduced in version <code>2.25.0</code> will automatically generate the required reachability metadata for GraalVM native images.
+However, the processor will fail the build if the required <code>log4j.graalvm.groupId</code> and <code>log4j.graalvm.artifactId</code> parameters are not provided.
+For detailed instructions, see <a href="manual/plugins.html#plugin-registry" class="xref page">Registering plugins</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-PL-ex"><a class="anchor" href="#release-notes-2-25-0-PL-ex"></a>Exception Handling in Pattern Layout</h3>
+<div class="paragraph">
+<p>Exception handling in <a href="manual/pattern-layout.html" class="xref page">Pattern Layout</a> has undergone a significant rewrite.
+This update resolves several bugs and ensures consistent behavior across all exception converters.
+Key improvements include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Stack traces are now consistently prefixed with a newline instead of other whitespace.</p>
+</li>
+<li>
+<p>The default exception converter has changed from <a href="manual/pattern-layout.html#converter-exception-extended" class="xref page">extended</a> to <a href="manual/pattern-layout.html#converter-exception" class="xref page">plain</a>, offering better performance.</p>
+</li>
+<li>
+<p>Support for the <code>{ansi}</code> option in exception converters has been removed.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-instant-format"><a class="anchor" href="#release-notes-2-25-0-instant-format"></a>Date &amp; Time Formatting</h3>
+<div class="paragraph">
+<p>Log4j has historically provided custom date and time formatters for performance, such as
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html"><code>FixedDateFormat</code></a> and
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html"><code>FastDateFormat</code></a>.
+These are now deprecated in favor of Java’s standard
+<a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>If you encounter formatting issues after upgrading—particularly with <code>n</code> or <code>x</code> directives—you can temporarily revert to the legacy formatters by setting the <a href="manual/systemproperties.html#log4j2.instantFormatter" class="xref page"><code>log4j2.instantFormatter</code></a> property to <code>legacy</code>.
+Please report any issues via our <a href="https://logging.apache.org/support.html#issues">issue tracker</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-windows-ansi"><a class="anchor" href="#release-notes-2-25-0-windows-ansi"></a>ANSI Support on Windows</h3>
+<div class="paragraph">
+<p>Modern Windows versions (10 and newer) provide native ANSI escape sequence support.
+As a result, dependency on the outdated JAnsi 1.x library has been removed.
+For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on Windows</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-jakarta-jms"><a class="anchor" href="#release-notes-2-25-0-jakarta-jms"></a>Jakarta JMS Appender</h3>
+<div class="paragraph">
+<p>A Jakarta-compatible version of the <a href="manual/appenders/message-queue.html#JmsAppender" class="xref page">JMS Appender</a> is now included in the core distribution.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-added"><a class="anchor" href="#release-notes-2-25-0-added"></a>Added</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Add Google OSS-Fuzz integration (<a href="https://github.com/apache/logging-log4j2/pull/2949">2949</a>)</p>
+</li>
+<li>
+<p>Add a <code>GraalVmProcessor</code> annotation processor to generate GraalVM reachability metadata. (<a href="https://github.com/apache/logging-log4j2/pull/3053">3053</a>)</p>
+</li>
+<li>
+<p>Add <code>MonitorResource</code> configuration option to support the monitoring of external files in addition to the configuration file itself. (<a href="https://github.com/apache/logging-log4j2/issues/3074">3074</a>, <a href="https://github.com/apache/logging-log4j2/pull/3501">3501</a>)</p>
+</li>
+<li>
+<p>Fixed typo in "LoggerConfig.RootLogger.Builder#withtFilter(&#8230;&#8203;)" method. Created new corrected 'withFilter()' method and deprecated old method. (<a href="https://github.com/apache/logging-log4j2/issues/3369">3369</a>)</p>
+</li>
+<li>
+<p>Add <code>collectionName</code> and <code>databaseName</code> arguments to the MongoDB appender (<a href="https://github.com/apache/logging-log4j2/pull/3467">3467</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-changed"><a class="anchor" href="#release-notes-2-25-0-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove JAnsi library support. Windows 10 console has supported ANSI escapes since 2017. (<a href="https://github.com/apache/logging-log4j2/issues/1736">1736</a>)</p>
+</li>
+<li>
+<p>Consolidate exception rendering logic and improve circular reference support in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>, <a href="https://github.com/apache/logging-log4j2/pull/3123">3123</a>)</p>
+</li>
+<li>
+<p>Rewrite <code>JAnsiTextRenderer</code> to work without JAnsi library. (<a href="https://github.com/apache/logging-log4j2/pull/2916">2916</a>)</p>
+</li>
+<li>
+<p>Switch prefixing stack traces in Pattern Layout from whitespace to newline (<a href="https://github.com/apache/logging-log4j2/pull/3045">3045</a>)</p>
+</li>
+<li>
+<p>Changes the layout used by the <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration">default configuration</a>. (<a href="https://github.com/apache/logging-log4j2/pull/3118">3118</a>)</p>
+</li>
+<li>
+<p>Switch to using Java&#8217;s <code>DateTimeFormatter</code> for date &amp; time formatting of log event instants (<a href="https://github.com/apache/logging-log4j2/pull/3121">3121</a>, <a href="https://github.com/apache/logging-log4j2/issues/2943">2943</a>)</p>
+</li>
+<li>
+<p>Switch the default exception converter from <a href="manual/pattern-layout.html#converter-exception-extended" class="xref page">the extended exception converter</a> to <a href="manual/pattern-layout.html#converter-exception" class="xref page">the plain exception converter</a> (<a href="https://github.com/apache/logging-log4j2/pull/3123">3123</a>)</p>
+</li>
+<li>
+<p>Don&#8217;t close StringReaders because of batching. (<a href="https://github.com/apache/logging-log4j2/issues/3127">3127</a>)</p>
+</li>
+<li>
+<p>Switch prefixing stack traces in Status Logger from whitespace to newline (<a href="https://github.com/apache/logging-log4j2/pull/3149">3149</a>)</p>
+</li>
+<li>
+<p>The MongoDb Appender shouldn&#8217;t log a deprecation warning, GitHub issue #3151. (<a href="https://github.com/apache/logging-log4j2/issues/3151">3149</a>)</p>
+</li>
+<li>
+<p>Add improved validation to StringMatchFilter for null/empty text. GitHub issue #3153. (<a href="https://github.com/apache/logging-log4j2/issues/3153">3153</a>)</p>
+</li>
+<li>
+<p>Currently Java 8 users do not have access to timestamps with sub-millisecond precision. This change moves the SystemClock implementation from log4j-core-java9 to log4j-core, overriding the current one, so that java 8 users can benefit from it. (<a href="https://github.com/apache/logging-log4j2/pull/3217">3217</a>)</p>
+</li>
+<li>
+<p>Don&#8217;t overwrite configured configuration name if the configuration has no loggers / no root logger. (<a href="https://github.com/apache/logging-log4j2/issues/3431">3431</a>)</p>
+</li>
+<li>
+<p>Update <code>GcpLayout.json</code> JSON Template Layout event template to support automatic timestamp recognition by the Google Cloud Logging. This also changes <code>exception</code>, <code>thread</code>, <code>logger</code> fields, and removes <code>insertId</code> field. (<a href="https://github.com/apache/logging-log4j2/pull/3586">3586</a>)</p>
+</li>
+<li>
+<p>Have org.apache.logging.log4j.util.Base64Util invoke java.util.Base64 directly instead of reflectively. (<a href="https://github.com/apache/logging-log4j2/issues/3686">3686</a>)</p>
+</li>
+<li>
+<p>Improve implementations of <code>LogEvent.toImmutable()</code> and <code>ReusableMessage.memento()</code> and remove usage of <code>ThrowableProxy</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-deprecated"><a class="anchor" href="#release-notes-2-25-0-deprecated"></a>Deprecated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Deprecate <code>ThrowableProxy</code> and all its usages (<a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>, <a href="https://github.com/apache/logging-log4j2/pull/3123">3123</a>)</p>
+</li>
+<li>
+<p>Deprecate <code>AbstractLogger.checkMessageFactory()</code>, since all created <code>Logger</code>s are already <code>MessageFactory</code>-namespaced (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+<li>
+<p>Deprecated <code>FixedDateTime</code>, <code>FastDateTime</code>, and supporting classes (<a href="https://github.com/apache/logging-log4j2/pull/3121">3121</a>)</p>
+</li>
+<li>
+<p>Use hard references to <code>Logger`s in `LoggerRegistry</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3143">3143</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-fixed"><a class="anchor" href="#release-notes-2-25-0-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch MongoDB tests to use Docker. (<a href="https://github.com/apache/logging-log4j2/issues/2229">2229</a>)</p>
+</li>
+<li>
+<p>Add a Jakarta-based JMS Appender module log4j-jakarta-jms and deprecate the Javax version. (<a href="https://github.com/apache/logging-log4j2/issues/2995">2995</a>)</p>
+</li>
+<li>
+<p>Fix <code>RollingFileManager</code> to reopen the log file when the rollover was unsuccessful (<a href="https://github.com/apache/logging-log4j2/issues/2592">2592</a>)</p>
+</li>
+<li>
+<p>Fix certain exception rendering issues in Pattern Layout (<a href="https://issues.apache.org/jira/browse/LOG4J2-2170">LOG4J2-2170</a>, <a href="https://issues.apache.org/jira/browse/LOG4J2-3627">LOG4J2-3627</a>, <a href="https://github.com/apache/logging-log4j2/issues/1729">1729</a>, <a href="https://github.com/apache/logging-log4j2/pull/2691">2691</a>)</p>
+</li>
+<li>
+<p>Reload key &amp; trust stores while reconfiguring network appenders containing a TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
+</li>
+<li>
+<p>Simplify the <code>SSLContext</code> instantiation for the TLS (formerly known as SSL) configuration (<a href="https://issues.apache.org/jira/browse/LOG4J2-2988">LOG4J2-2988</a>, <a href="https://github.com/apache/logging-log4j2/pull/2767">2767</a>)</p>
+</li>
+<li>
+<p>Adding a compilation warning for Plugin Builder Attributes that do not have a public setter. (<a href="https://github.com/apache/logging-log4j2/issues/2769">2769</a>)</p>
+</li>
+<li>
+<p>Fix reloading of the configuration from an HTTP(S) source (<a href="https://github.com/apache/logging-log4j2/issues/2937">2937</a>)</p>
+</li>
+<li>
+<p>Fix <code>putAll()</code> in the default thread context map implementation (<a href="https://github.com/apache/logging-log4j2/pull/2942">2942</a>)</p>
+</li>
+<li>
+<p>Improves validation of HTTP Appender. (<a href="https://github.com/apache/logging-log4j2/issues/3011">3011</a>)</p>
+</li>
+<li>
+<p>Fix <code>getLogger()</code> source incompatibility in Log4j 1 to Log4j 2 API Bridge (i.e., <code>log4j-1.2-api</code>) (<a href="https://github.com/apache/logging-log4j2/pull/3030">3030</a>)</p>
+</li>
+<li>
+<p>Fix property extraction from the root exception in Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/3045">3045</a>)</p>
+</li>
+<li>
+<p>Fix key removal issues in Thread Context (<a href="https://github.com/apache/logging-log4j2/pull/3048">3048</a>)</p>
+</li>
+<li>
+<p>Fix Android-related issues in Log4j Core. (<a href="https://github.com/apache/logging-log4j2/issues/3056">3056</a>)</p>
+</li>
+<li>
+<p>Fix the leak of non-Log4j dependencies in <code>log4j-bom</code> (<a href="https://github.com/apache/logging-log4j2/issues/3066">3066</a>, <a href="https://github.com/apache/logging-parent/pull/265">logging-parent#265</a>)</p>
+</li>
+<li>
+<p>Fix the conversion of <code>o.a.l.Priority</code> classes to Log4j 2 levels. (<a href="https://github.com/apache/logging-log4j2/pull/3085">3085</a>)</p>
+</li>
+<li>
+<p>Ensures synchronization between <code>j.u.l.Logger.getLevel()</code> and <code>j.u.l.Logger.setLevel()</code> methods. (<a href="https://github.com/apache/logging-log4j2/issues/3119">3119</a>)</p>
+</li>
+<li>
+<p>Add improved validation to AsyncWaitStrategyFactoryConfig for null/empty factoryClassName. (<a href="https://github.com/apache/logging-log4j2/issues/3159">3159</a>)</p>
+</li>
+<li>
+<p>Fix NullPointerException when using <code>rootLogger = LEVEL</code> shorthand in properties without appender. (<a href="https://github.com/apache/logging-log4j2/issues/3206">3206</a>)</p>
+</li>
+<li>
+<p>Fix <code>ArrayIndexOutOfBoundsException</code> in JSON Template Layout truncated exception resolver (<a href="https://github.com/apache/logging-log4j2/pull/3212">3212</a>)</p>
+</li>
+<li>
+<p>Properly handle null 'replacement' parameter in RegexReplacement#createRegexReplacement. (<a href="https://github.com/apache/logging-log4j2/issues/3215">3215</a>)</p>
+</li>
+<li>
+<p>Fix detection of location requirements in <code>AsyncAppender</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3257">3257</a>)</p>
+</li>
+<li>
+<p>Fix detection of location requirements in <code>FailoverAppender</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3257">3257</a>)</p>
+</li>
+<li>
+<p>Corrected @return javadoc for AbstractFilterable#isFiltered(). (<a href="https://github.com/apache/logging-log4j2/issues/3300">3300</a>)</p>
+</li>
+<li>
+<p>TypeConverters convert for "Level" incorrectly documented behaviour for invalid value - updated javadoc. (<a href="https://github.com/apache/logging-log4j2/issues/3359">3359</a>)</p>
+</li>
+<li>
+<p>Fix loading of the effective <code>RecyclerFactoryConverter</code> in JSON Template Layout (<a href="https://github.com/apache/logging-log4j2/pull/3398">3398</a>)</p>
+</li>
+<li>
+<p>Minimize lock usage in <code>InternalLoggerRegistry</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3399">3399</a>)</p>
+</li>
+<li>
+<p>Improved expunging of stale entries in <code>InternalLoggerRegistry</code> to prevent potential memory leaks (<a href="https://github.com/apache/logging-log4j2/issues/3430">3430</a>, <a href="https://github.com/apache/logging-log4j2/pull/3681">3681</a>)</p>
+</li>
+<li>
+<p>Make annotation libraries visible transitively at compile time for Gradle users through Gradle Module Metadata and for JPMS users through <code>requires static</code> directives in <code>module-info.java</code> files. (<a href="https://github.com/apache/logging-log4j2/issues/3437">3437</a>)</p>
+</li>
+<li>
+<p>Fix shutdownDisable configuration does not take effect (<a href="https://github.com/apache/logging-log4j2/issues/2614">2614</a>)</p>
+</li>
+<li>
+<p>Fix <code>ArrayIndexOutOfBoundsException</code> on <code>StatusData#getFormattedStatus</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3562">3562</a>)</p>
+</li>
+<li>
+<p>Deprecate or remove static hiding methods. (<a href="https://github.com/apache/logging-log4j2/issues/3601">3601</a>)</p>
+</li>
+<li>
+<p>Verify the capability of SecurityManager so that platforms not (fully) supporting it will not poison the stack trace (<a href="https://github.com/apache/logging-log4j2/issues/3639">3639</a>)</p>
+</li>
+<li>
+<p>Improve performance and avoid memory consumption if logging primitive arrays as parameters (<a href="https://github.com/apache/logging-log4j2/pull/3645">3645</a>)</p>
+</li>
+<li>
+<p>Fix <code>ArrayIndexOutOfBoundsException</code> on invocation of <code>Message.getFormattedMessage()</code> when any thread has no stack trace, which occurs on some JVM implementations. (<a href="https://github.com/apache/logging-log4j2/pull/3655">3655</a>)</p>
+</li>
+<li>
+<p>StatusLogger now writes to standard error by default. This fixes a regression introduced in 2.23.0. (<a href="https://github.com/apache/logging-log4j2/issues/3665">3665</a>)</p>
+</li>
+<li>
+<p>The ReadOnlyStringMap implementations now support equality comparisons against each other. (<a href="https://github.com/apache/logging-log4j2/issues/3669">3669</a>)</p>
+</li>
+<li>
+<p>Fixes OSGi descriptor to accept Disruptor 4. (<a href="https://github.com/apache/logging-log4j2/issues/3706">3706</a>)</p>
+</li>
+<li>
+<p>Avoid surrogate character handling in <code>JsonWriter</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-removed"><a class="anchor" href="#release-notes-2-25-0-removed"></a>Removed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove support for the <code>{ansi}</code> option in Pattern Layout exception converters (<a href="https://github.com/apache/logging-log4j2/pull/3045">3045</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-updated"><a class="anchor" href="#release-notes-2-25-0-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>actions/stale</code> to version <code>9.1.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3625">3625</a>)</p>
+</li>
+<li>
+<p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.15</code> (<a href="https://github.com/apache/logging-log4j2/pull/3354">3354</a>)</p>
+</li>
+<li>
+<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.19.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3708">3708</a>)</p>
+</li>
+<li>
+<p>Update <code>com.github.spotbugs:spotbugs-annotations</code> to version <code>4.9.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3545">3545</a>)</p>
+</li>
+<li>
+<p>Update <code>io.fabric8:docker-maven-plugin</code> to version <code>0.46.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3592">3592</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.cassandra:cassandra-all</code> to version <code>3.11.19</code> (<a href="https://github.com/apache/logging-log4j2/pull/3440">3440</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.commons:commons-csv</code> to version <code>1.14.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3559">3559</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.commons:commons-dbcp2</code> to version <code>2.13.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3271">3271</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.commons:commons-pool2</code> to version <code>2.12.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3422">3422</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.9.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3678">3678</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.logging:logging-parent</code> to version <code>12.1.1</code></p>
+</li>
+<li>
+<p>Update <code>org.apache.tomcat:tomcat-juli</code> to version <code>10.1.30</code> (<a href="https://github.com/apache/logging-log4j2/pull/2999">2999</a>)</p>
+</li>
+<li>
+<p>Update <code>org.eclipse.jetty:jetty-util</code> to version <code>9.4.57.v20241219</code> (<a href="https://github.com/apache/logging-log4j2/pull/3377">3377</a>)</p>
+</li>
+<li>
+<p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3544">3544</a>)</p>
+</li>
+<li>
+<p>Update <code>org.mongodb:bson</code> to version <code>5.5.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3722">3722</a>)</p>
+</li>
+<li>
+<p>Update <code>org.slf4j:slf4j-api</code> to version <code>2.0.17</code> (<a href="https://github.com/apache/logging-log4j2/pull/3499">3499</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3700">3700</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="release-notes-2-24-3"><a class="anchor" href="#release-notes-2-24-3"></a>2.24.3</h2>
 <div class="sectionbody">
@@ -368,6 +750,9 @@
 <ul>
 <li>
 <p>Fix <code>ConcurrentModificationException</code>, if multiple threads modify loggers concurrently. This bug affects users that modify logger levels programmatically. (<a href="https://github.com/apache/logging-log4j2/issues/3234">3234</a>)</p>
+</li>
+<li>
+<p>Fix for RegexCreator NPE, the constructor expects a boolean primitive, but the createFilter static method was boxed. Fixed that to remove the NPE issues. (<a href="https://github.com/apache/logging-log4j2/issues/3239">3239</a>)</p>
 </li>
 <li>
 <p>Protects <code>PropertiesUtil</code> against property sources that call <code>PropertiesUtil</code> recursively. In some cases such a property source can even cause deadlocks. (<a href="https://github.com/apache/logging-log4j2/issues/3252">3252</a>)</p>
@@ -499,7 +884,7 @@ users are encouraged to upgrade to
 </dl>
 </div>
 <div class="paragraph">
-<p>This release contains improvements and changes in several areas of Apache Log4j:</p>
+<p>This release contains improvements and changes in several areas of Log4j:</p>
 </div>
 <div class="sect2">
 <h3 id="_log4j_api"><a class="anchor" href="#_log4j_api"></a>Log4j API</h3>
@@ -525,7 +910,7 @@ Check your configuration for typos.</p>
 <div class="sect2">
 <h3 id="_documentation"><a class="anchor" href="#_documentation"></a>Documentation</h3>
 <div class="paragraph">
-<p>The <a href="index.html" class="xref page">Apache Log4j 2</a> website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.</p>
+<p>The project website has been almost entirely rewritten to provide improved documentation and faster access to the information you need.</p>
 </div>
 </div>
 <div class="sect2">
@@ -828,7 +1213,7 @@ system property.</p>
 <p>Fix <code>StatusLogger</code> log level filtering when debug mode is enabled (<a href="https://github.com/apache/logging-log4j2/issues/2337">2337</a>)</p>
 </li>
 <li>
-<p>Add <a href="#manual/statusLogger.adoc#log4j2.statusLoggerDateFormatZone" class="xref unresolved"><code>log4j2.statusLoggerDateFormatZone</code></a> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
+<p>Add <a href="manual/status-logger.html#log4j2.statusLoggerDateFormatZone" class="xref page"><code>log4j2.statusLoggerDateFormatZone</code></a> system property to set the time-zone <code>StatusLogger</code> uses to format <code>java.time.Instant</code>. Without this, formatting patterns accessing to time-zone-specific fields (e.g., year-of-era) cause failures. (<a href="https://github.com/apache/logging-log4j2/pull/2322">2322</a>)</p>
 </li>
 <li>
 <p>Fix <code>StatusLogger</code> to correctly read <code>log4j2.StatusLogger.properties</code> resource (<a href="https://github.com/apache/logging-log4j2/pull/2354">2354</a>)</p>
@@ -891,7 +1276,7 @@ system property.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Added support for LMAX Disruptor 4.x (<a href="https://github.com/apache/logging-log4j2/pull/1821">1821</a>)</p>
+<p>Added support for LMAX Disruptor 4.x (<a href="https://github.com/apache/logging-log4j2/issues/1829">1829</a>)</p>
 </li>
 </ul>
 </div>
@@ -1227,12 +1612,12 @@ for details.</p>
 <p>The Log4j 2.21.1 API, as well as the other artifacts, maintains binary compatibility with the previous release.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.21.1 requires Java 8 to run.
+<p>Log4j 2.21.1 requires Java 8 to run.
 The build requires JDK 11 and generates reproducible binaries.</p>
 </div>
 <div class="paragraph">
-<p>For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see
-<a href="https://logging.apache.org/log4j/2.x/index.html">the Apache Log4j 2 website</a>.</p>
+<p>For complete information on Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see
+<a href="https://logging.apache.org/log4j/2.x/index.html">the Log4j 2 website</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="release-notes-2-21-1-fixed"><a class="anchor" href="#release-notes-2-21-1-fixed"></a>Fixed</h3>
@@ -1268,12 +1653,12 @@ which is shared in
 <p>The Log4j 2.21.0 API, as well as the other artifacts, maintains binary compatibility with the previous release.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.21.0 requires Java 8 to run.
+<p>Log4j 2.21.0 requires Java 8 to run.
 The build requires JDK 11 and generates reproducible binaries.</p>
 </div>
 <div class="paragraph">
-<p>For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see
-<a href="https://logging.apache.org/log4j/2.x/index.html">the Apache Log4j 2 website</a>.</p>
+<p>For complete information on Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see
+<a href="https://logging.apache.org/log4j/2.x/index.html">the Log4j 2 website</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="_osgi_changes"><a class="anchor" href="#_osgi_changes"></a>OSGi changes</h3>
@@ -1556,7 +1941,7 @@ See <a href="https://issues.apache.org/jira/browse/LOG4J2-2975">LOG4J2-2975</a> 
 <p>The Log4j 2.20.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.20.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.20.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.</p>
@@ -1705,7 +2090,7 @@ See <a href="https://issues.apache.org/jira/browse/LOG4J2-2975">LOG4J2-2975</a> 
 <p>The Log4j 2.19.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.19.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.19.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.</p>
@@ -1830,7 +2215,7 @@ See <a href="https://issues.apache.org/jira/browse/LOG4J2-2975">LOG4J2-2975</a> 
 <p>The Log4j 2.18.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.18.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.18.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.</p>
@@ -2044,7 +2429,7 @@ See <a href="https://issues.apache.org/jira/browse/LOG4J2-2975">LOG4J2-2975</a> 
 <p>The Log4j 2.17.2 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.17.2 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.17.2 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.</p>
@@ -2393,7 +2778,7 @@ See <a href="https://issues.apache.org/jira/browse/LOG4J2-2975">LOG4J2-2975</a> 
 <p>The Log4j 2.17.1 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.17.1 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.17.1 requires a minimum of Java 8 to build and run.
 Log4j 2.12.2 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.</p>
 </div>
@@ -2478,7 +2863,7 @@ and
 <p>The Log4j 2.17.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.17.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.17.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.2 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.</p>
 </div>
@@ -2554,7 +2939,7 @@ This behavior is no longer the default and must be enabled by specifying <code>%
 <p>The Log4j 2.16.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.16.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.16.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.1 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.</p>
 </div>
@@ -2660,7 +3045,7 @@ LDAP also no longer supports classes that implement the <code>Referenceable</cod
 <p>The Log4j 2.15.0 API, as well as many core components, maintains binary compatibility with previous releases.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.15.0 requires a minimum of Java 8 to build and run.
+<p>Log4j 2.15.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.1 is the last release to support Java 7.
 Java 7 is no longer supported by the Log4j team.</p>
 </div>
@@ -7515,7 +7900,7 @@ It contains several bugfixes and new features.
 Log4j 2 requires a minimum of Java 7.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.4.1 requires a minimum of Java 7 to build and run.
+<p>Log4j 2.4.1 requires a minimum of Java 7 to build and run.
 Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.</p>
 </div>
 <div class="paragraph">
@@ -7624,7 +8009,7 @@ It contains several bugfixes and new features.
 As of this release Log4j now requires a minimum of Java 7.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.4 requires a minimum of Java 7 to build and run.
+<p>Log4j 2.4 requires a minimum of Java 7 to build and run.
 Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.</p>
 </div>
 <div class="paragraph">
@@ -7912,7 +8297,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 It contains several bugfixes and new features.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.3 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.3 requires a minimum of Java 6 to build and run.
 This will be the last release of Log4j 2 to support Java 6.
 Future releases will require a minimum of Java 7.</p>
 </div>
@@ -8044,7 +8429,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 It contains several bugfixes and new features.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.2 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.2 requires a minimum of Java 6 to build and run.
 Future releases may require a minimum of Java 7.</p>
 </div>
 <div class="paragraph">
@@ -8188,7 +8573,7 @@ There are two new Maven artifacts in this release: <code>log4j-jul</code> and <c
 Both components are API-based with optional Core features.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.1 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.1 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the <code>log4j-1.2-api</code> component, however it does
 not implement some of the very implementation specific classes and methods.
 The package names and Maven <code>groupId</code> have been changed to <code>org.apache.logging.log4j</code> to avoid any conflicts with Log4j 1.x.</p>
@@ -8396,7 +8781,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 <p>This is the third GA release which contains several bugfixes from the previous release.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.0.2 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.0.2 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the <code>log4j-1.2-api</code> component, however it does
 not implement some of the very implementation specific classes and methods.
 The package names and Maven <code>groupId</code> have been changed to <code>org.apache.logging.log4j</code> to avoid any conflicts with Log4j 1.x.</p>
@@ -8474,7 +8859,7 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 <p>This is the first patch release of Log4j 2.0 which contains numerous bug fixes.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.0.1 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.0.1 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the <code>log4j-1.2-api</code> component, however it does
 not implement some of the very implementation specific classes and methods.
 The package names and Maven <code>groupId</code> have been changed to <code>org.apache.logging.log4j</code> to avoid any conflicts with Log4j 1.x.</p>
@@ -8583,14 +8968,14 @@ The package names and Maven <code>groupId</code> have been changed to <code>org.
 <p>This is the first GA release, after thirteen prior releases over the last 4 years.</p>
 </div>
 <div class="paragraph">
-<p>Apache Log4j 2.0 requires a minimum of Java 6 to build and run.
+<p>Log4j 2.0 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the <code>log4j-1.2-api</code> component, however it does not implement some of the very implementation specific classes and methods.
 The package names and Maven <code>groupId</code> have been changed to <code>org.apache.logging.log4j</code> to avoid any conflicts with Log4j 1.x.</p>
 </div>
 <div class="paragraph">
-<p>For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
+<p>For complete information on Log4j 2, including instructions on how to submit bug reports,
 patches, or suggestions for improvement, see
-<a href="https://logging.apache.org/log4j/2.x/index.html">the Apache Log4j 2 website</a>.</p>
+<a href="https://logging.apache.org/log4j/2.x/index.html">the Log4j 2 website</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="release-notes-2-0-added"><a class="anchor" href="#release-notes-2-0-added"></a>Added</h3>

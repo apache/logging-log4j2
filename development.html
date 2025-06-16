@@ -71,7 +71,7 @@
     <a class="nav-link" href="download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="release-notes.html">Release Notes</a>
+    <a class="nav-link" href="release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -265,6 +265,9 @@
     <a class="nav-link" href="migrate-from-slf4j.html">Migrating from SLF4J</a>
   </li>
   <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="graalvm.html">Building GraalVM native images</a>
+  </li>
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="hibernate.html">Integrating with Hibernate</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -381,7 +384,7 @@ Please refer to <a href="https://logging.apache.org/support.html">the Support pa
 <dl>
 <dt class="hdlist1">Source code repository</dt>
 <dd>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x" class="bare">https://github.com/apache/logging-log4j2/tree/2.x</a></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0" class="bare">https://github.com/apache/logging-log4j2/tree/rel/2.25.0</a></p>
 </dd>
 <dt class="hdlist1">Issue tracker</dt>
 <dd>
@@ -445,7 +448,7 @@ See <a href="https://logging.apache.org/logging-parent/usage.html#website">the L
 <h2 id="building"><a class="anchor" href="#building"></a>How can I build the project?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/BUILDING.adoc">the build instructions</a>.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/BUILDING.adoc">the build instructions</a>.</p>
 </div>
 </div>
 </div>
@@ -453,7 +456,7 @@ See <a href="https://logging.apache.org/logging-parent/usage.html#website">the L
 <h2 id="fuzzing"><a class="anchor" href="#fuzzing"></a>How can I run fuzz tests?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/2.x/FUZZING.adoc">the fuzzing instructions</a>.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/FUZZING.adoc">the fuzzing instructions</a>.</p>
 </div>
 </div>
 </div>
@@ -478,15 +481,12 @@ Pitch it in a <a href="https://logging.apache.org/support.html#discussions-maint
 <div class="sect1">
 <h2 id="committer"><a class="anchor" href="#committer"></a>I am a committer. How shall I push my changes?</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Is it something trivial?
-Go ahead and push it.</p>
-</li>
-<li>
-<p>Otherwise, submit a pull request.
-Make sure a changelog entry is attached and <code>./mvnw verify site</code> succeeds.</p>
+<div class="paragraph">
+<p>As per <a href="https://lists.apache.org/thread/rx2hgc5mwql06yzwz2j8wkp8z6nmdcqk">the PMC resolution on 2025-04-10</a>, all changes must be submitted in a pull request and undergo peer review.</p>
+</div>
+<div class="paragraph">
+<p>Make sure a changelog entry is attached, and <code>./mvnw verify site</code> succeeds.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -500,9 +500,6 @@ Make sure a changelog entry is attached and <code>./mvnw verify site</code> succ
 </td>
 </tr>
 </table>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>

@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -552,7 +555,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-    &lt;version&gt;2.18.0&lt;/version&gt;
+    &lt;version&gt;2.19.0&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -561,7 +564,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -587,7 +590,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
     &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-    &lt;version&gt;2.18.0&lt;/version&gt;
+    &lt;version&gt;2.19.0&lt;/version&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -596,7 +599,7 @@ That is, for instance, XML file format will be checked last, as a fallback.</p>
 <div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -977,7 +980,7 @@ In the examples of this chapter, we will only use <a href="pattern-layout.html" 
 </div>
 <div id="_tabs_5_xml--panel" class="tabpanel" aria-labelledby="_tabs_5_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Configuration xmlns="https://logging.apache.org/xml/ns"
@@ -1011,7 +1014,7 @@ In the examples of this chapter, we will only use <a href="pattern-layout.html" 
 </div>
 <div id="_tabs_5_json--panel" class="tabpanel" aria-labelledby="_tabs_5_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
   "Configuration": {
@@ -1065,7 +1068,7 @@ In the examples of this chapter, we will only use <a href="pattern-layout.html" 
 </div>
 <div id="_tabs_5_yaml--panel" class="tabpanel" aria-labelledby="_tabs_5_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
   Appenders:
@@ -1088,17 +1091,17 @@ In the examples of this chapter, we will only use <a href="pattern-layout.html" 
         - ref: "CONSOLE"
           level: "WARN"
         - ref: "MAIN"
-      Logger: <i class="conum" data-value="5"></i><b>(5)</b>
-        name: "org.example"
-        level: "DEBUG"
-        AppenderRef:
-          ref: "DEBUG_LOG"</code></pre>
+    Logger: <i class="conum" data-value="5"></i><b>(5)</b>
+      name: "org.example"
+      level: "DEBUG"
+      AppenderRef:
+        ref: "DEBUG_LOG"</code></pre>
 </div>
 </div>
 </div>
 <div id="_tabs_5_properties--panel" class="tabpanel" aria-labelledby="_tabs_5_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/main-elements.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console <i class="conum" data-value="1"></i><b>(1)</b>
 appender.0.name = CONSOLE
@@ -1432,7 +1435,7 @@ in your application is assigned to one of these logger configurations (see
 </div>
 <div id="_tabs_6_xml--panel" class="tabpanel" aria-labelledby="_tabs_6_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Loggers&gt;
   &lt;Root level="INFO"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1453,7 +1456,7 @@ in your application is assigned to one of these logger configurations (see
 </div>
 <div id="_tabs_6_json--panel" class="tabpanel" aria-labelledby="_tabs_6_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Loggers": {
   "Root": { <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1491,7 +1494,7 @@ in your application is assigned to one of these logger configurations (see
 </div>
 <div id="_tabs_6_yaml--panel" class="tabpanel" aria-labelledby="_tabs_6_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Loggers:
   Root: <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1516,7 +1519,7 @@ in your application is assigned to one of these logger configurations (see
 </div>
 <div id="_tabs_6_properties--panel" class="tabpanel" aria-labelledby="_tabs_6_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/loggers.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.level = INFO <i class="conum" data-value="1"></i><b>(1)</b>
 rootLogger.appenderRef.0.ref = APPENDER1
@@ -1805,7 +1808,7 @@ methods.</p>
 </div>
 <div id="_tabs_7_xml--panel" class="tabpanel" aria-labelledby="_tabs_7_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Root&gt;
   &lt;Property name="client.address" value="$${web:request.remoteAddress}"/&gt;
@@ -1821,7 +1824,7 @@ methods.</p>
 </div>
 <div id="_tabs_7_json--panel" class="tabpanel" aria-labelledby="_tabs_7_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Root": {
   "Property": {
@@ -1848,7 +1851,7 @@ methods.</p>
 </div>
 <div id="_tabs_7_yaml--panel" class="tabpanel" aria-labelledby="_tabs_7_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Root:
   Property:
@@ -1868,7 +1871,7 @@ Logger:
 </div>
 <div id="_tabs_7_properties--panel" class="tabpanel" aria-labelledby="_tabs_7_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/logger-properties.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">rootLogger.property.type = Property
 rootLogger.property.name = client.address
@@ -1983,7 +1986,7 @@ Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div id="_tabs_8_xml--panel" class="tabpanel" aria-labelledby="_tabs_8_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/properties.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Configuration xmlns="https://logging.apache.org/xml/ns"
@@ -1999,7 +2002,7 @@ Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div id="_tabs_8_json--panel" class="tabpanel" aria-labelledby="_tabs_8_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/properties.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
   "Configuration": {
@@ -2020,7 +2023,7 @@ Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div id="_tabs_8_yaml--panel" class="tabpanel" aria-labelledby="_tabs_8_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/properties.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
   Properties:
@@ -2034,7 +2037,7 @@ Log events that are less severe than this setting will be filtered out.</p>
 </div>
 <div id="_tabs_8_properties--panel" class="tabpanel" aria-labelledby="_tabs_8_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/properties.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/properties.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">property.log.dir = /var/log
 property.log.file = ${log.dir}/app.log</code></pre>
@@ -2524,7 +2527,7 @@ The attributes of its children are expanded at runtime, but are not expanded at 
 </div>
 <div id="_tabs_11_xml--panel" class="tabpanel" aria-labelledby="_tabs_11_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/routing.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Routing name="ROUTING"&gt;
   &lt;Routes pattern="$${sd:type}"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2544,7 +2547,7 @@ The attributes of its children are expanded at runtime, but are not expanded at 
 </div>
 <div id="_tabs_11_json--panel" class="tabpanel" aria-labelledby="_tabs_11_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/routing.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Routing": {
   "name": "ROUTING",
@@ -2569,7 +2572,7 @@ The attributes of its children are expanded at runtime, but are not expanded at 
 </div>
 <div id="_tabs_11_yaml--panel" class="tabpanel" aria-labelledby="_tabs_11_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/routing.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Routing:
   name: "ROUTING"
@@ -2588,7 +2591,7 @@ The attributes of its children are expanded at runtime, but are not expanded at 
 </div>
 <div id="_tabs_11_properties--panel" class="tabpanel" aria-labelledby="_tabs_11_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/routing.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/routing.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Routing
 appender.0.name = ROUTING
@@ -2627,6 +2630,135 @@ Therefore, the dollar <code>$</code> sign needs to be escaped.</td>
 </div>
 </div>
 <div class="sect1">
+<h2 id="monitorResources"><a class="anchor" href="#monitorResources"></a>Monitor Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Log4j can be configured to poll for changes to resources (in addition to the configuration file) using the <code>MonitorResources</code> element of the configuration.
+If a change is detected in any of the specified resources, Log4j automatically reconfigures the logger context.
+This feature helps with monitoring external resources (e.g., TLS certificates) that the configuration is dependent on.</p>
+</div>
+<div class="paragraph">
+<p>The polling interval is determined by the value of the <a href="#configuration-attribute-monitorInterval"> <code>monitorInterval</code></a> attribute.
+If set to 0, polling is disabled.
+See <a href="#configuration-attribute-monitorInterval"> <code>monitorInterval</code></a> for further details.</p>
+</div>
+<div class="paragraph">
+<p>A configuration can have either zero or one <code>MonitorResources</code> element at its root.
+<code>MonitorResources</code> can have zero or more <code>MonitorResource</code> elements, which can be configured following attributes:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. <code>MonitorResource</code> configuration attributes</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>uri</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html"><code>java.net.URI</code></a> reference to the external resource.
+Note that only URIs of scheme <code>file</code> are accepted.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>See example below:</p>
+</div>
+<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div class="title"><code>MonitorResources</code> configuration example</div>
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_12_xml" class="tab">
+<p>XML</p>
+</li>
+<li id="_tabs_12_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_12_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd"
+               monitorInterval="30"&gt;
+  &lt;MonitorResources&gt;
+    &lt;MonitorResource uri="file://path/to/external-file-1.txt"/&gt;
+    &lt;MonitorResource uri="file://path/to/external-file-2.txt"/&gt;
+  &lt;/MonitorResources&gt;
+&lt;/Configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Configuration": {
+    "monitorInterval": "30",
+    "MonitorResources": {
+      "MonitorResource": [
+        {
+          "uri": "file://path/to/external-file-1.txt"
+        },
+        {
+          "uri": "file://path/to/external-file-2.txt"
+        }
+      ]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Configuration:
+  monitorInterval: '30'
+  MonitorResources:
+    MonitorResource:
+      - uri: "file://path/to/external-file-1.txt"
+      - uri: "file://path/to/external-file-2.txt"</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">monitorResources.type = MonitorResources
+monitorResources.0.type = MonitorResource
+monitorResources.0.uri = file://path/to/external-file-1.txt
+monitorResources.1.type = MonitorResource
+monitorResources.1.uri = file://path/to/external-file-2.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="arbiters"><a class="anchor" href="#arbiters"></a><a id="Arbiters"></a> Arbiters</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -2652,27 +2784,27 @@ and
 <div class="paragraph">
 <p>For example, you might want to use a different layout in a production and development environment:</p>
 </div>
-<div id="_tabs_12" class="openblock tabs is-sync is-loading">
+<div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_12_xml" class="tab">
+<li id="_tabs_13_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_12_json" class="tab">
+<li id="_tabs_13_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_12_yaml" class="tab">
+<li id="_tabs_13_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_12_properties" class="tab">
+<li id="_tabs_13_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
+<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
   &lt;File name="MAIN" fileName="logs/app.log"&gt;
@@ -2687,9 +2819,9 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
+<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
   "File": {
@@ -2716,9 +2848,9 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
+<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
   File:
@@ -2735,7 +2867,7 @@ and
 </div>
 </div>
 </div>
-<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
+<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = File
@@ -2780,27 +2912,27 @@ rootLogger.appenderRef.0.ref = MAIN</code></pre>
 <code>DefaultArbiter</code> element.
 If none of the arbiters match, the configuration from the <code>DefaultArbiter</code> element will be used:</p>
 </div>
-<div id="_tabs_13" class="openblock tabs is-sync is-loading">
+<div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_13_xml" class="tab">
+<li id="_tabs_14_xml" class="tab">
 <p>XML</p>
 </li>
-<li id="_tabs_13_json" class="tab">
+<li id="_tabs_14_json" class="tab">
 <p>JSON</p>
 </li>
-<li id="_tabs_13_yaml" class="tab">
+<li id="_tabs_14_yaml" class="tab">
 <p>YAML</p>
 </li>
-<li id="_tabs_13_properties" class="tab">
+<li id="_tabs_14_properties" class="tab">
 <p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_13_xml--panel" class="tabpanel" aria-labelledby="_tabs_13_xml">
+<div id="_tabs_14_xml--panel" class="tabpanel" aria-labelledby="_tabs_14_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Select&gt;
   &lt;SystemPropertyArbiter propertyName="env" propertyValue="dev"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2813,9 +2945,9 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_json--panel" class="tabpanel" aria-labelledby="_tabs_13_json">
+<div id="_tabs_14_json--panel" class="tabpanel" aria-labelledby="_tabs_14_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Select": {
   "SystemPropertyArbiter": { <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2830,9 +2962,9 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_yaml--panel" class="tabpanel" aria-labelledby="_tabs_13_yaml">
+<div id="_tabs_14_yaml--panel" class="tabpanel" aria-labelledby="_tabs_14_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Select:
   SystemPropertyArbiter: <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2844,9 +2976,9 @@ If none of the arbiters match, the configuration from the <code>DefaultArbiter</
 </div>
 </div>
 </div>
-<div id="_tabs_13_properties--panel" class="tabpanel" aria-labelledby="_tabs_13_properties">
+<div id="_tabs_14_properties--panel" class="tabpanel" aria-labelledby="_tabs_14_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/arbiters-select.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.select.type = Select
 
@@ -3022,7 +3154,7 @@ The list of <code>XInclude</code> and <code>XPath</code> features supported depe
 <p>Here is an example <code>log4j2.xml</code> file that includes two other files:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-main.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-main.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Configuration xmlns="https://logging.apache.org/xml/ns"
@@ -3040,7 +3172,7 @@ The list of <code>XInclude</code> and <code>XPath</code> features supported depe
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-appenders.xml"><code>xinclude-appenders.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-appenders.xml"><code>xinclude-appenders.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Appenders&gt;
@@ -3054,7 +3186,7 @@ The list of <code>XInclude</code> and <code>XPath</code> features supported depe
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-loggers.xml"><code>xinclude-loggers.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-loggers.xml"><code>xinclude-loggers.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;Loggers&gt;
@@ -3211,7 +3343,7 @@ This procedure can be summarized as follows:</p>
 <p>If <a href="systemproperties.html#log4j2.configurationFactory" class="xref page">the <code>log4j2.configurationFactory</code> system property</a> is defined, it will be used before any other factory implementations.</p>
 </div>
 <div class="paragraph">
-<p>For an example, see <a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/config/json/JsonConfigurationFactory.java"><code>JsonConfigurationFactory.java</code></a> on how Log4j Core implements JSON-formatted configuration file read.</p>
+<p>For an example, see <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/config/json/JsonConfigurationFactory.java"><code>JsonConfigurationFactory.java</code></a> on how Log4j Core implements JSON-formatted configuration file read.</p>
 </div>
 <div class="admonitionblock tip">
 <table>

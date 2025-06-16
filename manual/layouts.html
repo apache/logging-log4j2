@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -713,7 +716,7 @@ Generated CSV records will be composed of following fields in the given order:</
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
   &lt;artifactId&gt;commons-csv&lt;/artifactId&gt;
-  &lt;version&gt;1.11.0&lt;/version&gt;
+  &lt;version&gt;1.14.0&lt;/version&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -722,7 +725,7 @@ Generated CSV records will be composed of following fields in the given order:</
 <div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.commons:commons-csv:1.11.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.commons:commons-csv:1.14.0'</code></pre>
 </div>
 </div>
 </div>
@@ -914,7 +917,7 @@ Thread context fields specified here that have no value will be omitted.</p></td
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Console name="CONSOLE"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
   &lt;GelfLayout messagePattern="%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n"
@@ -937,7 +940,7 @@ Thread context fields specified here that have no value will be omitted.</p></td
 </div>
 <div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Console": {
   "name": "CONSOLE",
@@ -988,7 +991,7 @@ Thread context fields specified here that have no value will be omitted.</p></td
 </div>
 <div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">Console:
   name: "CONSOLE"
@@ -1028,7 +1031,7 @@ SocketUdp: <i class="conum" data-value="3"></i><b>(3)</b>
 </div>
 <div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/gelf-layout/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.type = Console <i class="conum" data-value="1"></i><b>(1)</b>
 appender.0.name = CONSOLE
@@ -1374,7 +1377,7 @@ It defaults to <code>false</code>, in which case the thread context map is inclu
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
   &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
-  &lt;version&gt;2.18.0&lt;/version&gt;
+  &lt;version&gt;2.19.0&lt;/version&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1383,7 +1386,7 @@ It defaults to <code>false</code>, in which case the thread context map is inclu
 <div id="_tabs_3_gradle--panel" class="tabpanel" aria-labelledby="_tabs_3_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.core:jackson-databind:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -1456,7 +1459,7 @@ It encodes <code>LogEvent</code>s according to the structure described by the JS
 </div>
 <div id="_tabs_4_xml--panel" class="tabpanel" aria-labelledby="_tabs_4_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;JsonTemplateLayout eventTemplateUri="classpath:MyLayout.json"/&gt;</code></pre>
 </div>
@@ -1464,7 +1467,7 @@ It encodes <code>LogEvent</code>s according to the structure described by the JS
 </div>
 <div id="_tabs_4_json--panel" class="tabpanel" aria-labelledby="_tabs_4_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"JsonTemplateLayout": {
   "eventTemplateUri": "classpath:MyLayout.json"
@@ -1474,7 +1477,7 @@ It encodes <code>LogEvent</code>s according to the structure described by the JS
 </div>
 <div id="_tabs_4_yaml--panel" class="tabpanel" aria-labelledby="_tabs_4_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">JsonTemplateLayout:
   eventTemplateUri: "classpath:MyLayout.json"</code></pre>
@@ -1483,7 +1486,7 @@ It encodes <code>LogEvent</code>s according to the structure described by the JS
 </div>
 <div id="_tabs_4_properties--panel" class="tabpanel" aria-labelledby="_tabs_4_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/json-template-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = JsonTemplateLayout
 appender.0.layout.eventTemplateUri = classpath:MyLayout.json</code></pre>
@@ -1934,7 +1937,7 @@ XML Layout users are strongly advised to migrate to another layout!</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
   &lt;artifactId&gt;jackson-dataformat-xml&lt;/artifactId&gt;
-  &lt;version&gt;2.18.0&lt;/version&gt;
+  &lt;version&gt;2.19.0&lt;/version&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -1943,7 +1946,7 @@ XML Layout users are strongly advised to migrate to another layout!</p>
 <div id="_tabs_5_gradle--panel" class="tabpanel" aria-labelledby="_tabs_5_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -2059,7 +2062,7 @@ source:
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.fasterxml.jackson.dataformat&lt;/groupId&gt;
   &lt;artifactId&gt;jackson-dataformat-yaml&lt;/artifactId&gt;
-  &lt;version&gt;2.18.0&lt;/version&gt;
+  &lt;version&gt;2.19.0&lt;/version&gt;
   &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -2068,7 +2071,7 @@ source:
 <div id="_tabs_6_gradle--panel" class="tabpanel" aria-labelledby="_tabs_6_gradle">
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.0'</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.19.0'</code></pre>
 </div>
 </div>
 </div>
@@ -2136,10 +2139,10 @@ While annotating your layout with <code>@Plugin</code>, you need to make sure th
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java"><code>SyslogLayout.java</code></a> – simple, single-file, extending from <code>AbstractStringLayout</code></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java"><code>SyslogLayout.java</code></a> – simple, single-file, extending from <code>AbstractStringLayout</code></p>
 </li>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/2.x/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> – advanced, using plugins for composing several of its features, contains <em>recycler</em> concept for <a href="garbagefree.html" class="xref page">garbage-free</a> operation, extends from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/StringLayout.html"><code>StringLayout</code></a></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> – advanced, using plugins for composing several of its features, contains <em>recycler</em> concept for <a href="garbagefree.html" class="xref page">garbage-free</a> operation, extends from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/StringLayout.html"><code>StringLayout</code></a></p>
 </li>
 </ul>
 </div>

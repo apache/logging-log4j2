@@ -71,7 +71,7 @@
     <a class="nav-link" href="../download.html">Download</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../release-notes.html">Release Notes</a>
+    <a class="nav-link" href="../release-notes.html">Release notes</a>
   </li>
 </ul>
   </li>
@@ -263,6 +263,9 @@
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../migrate-from-slf4j.html">Migrating from SLF4J</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../graalvm.html">Building GraalVM native images</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../hibernate.html">Integrating with Hibernate</a>
@@ -678,7 +681,7 @@ In the example configurations below, we will employ a <a href="pattern-layout.ht
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
-<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.xml">log4j2.xml</a> snippet</div>
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.xml">log4j2.xml</a> snippet</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;MarkerFilter marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/&gt;<i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -697,7 +700,7 @@ In the example configurations below, we will employ a <a href="pattern-layout.ht
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
-<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.json">log4j2.json</a> snippet</div>
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.json">log4j2.json</a> snippet</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"MarkerFilter": { <i class="conum" data-value="1"></i><b>(1)</b>
   "marker": "FLOW",
@@ -730,7 +733,7 @@ In the example configurations below, we will employ a <a href="pattern-layout.ht
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
-<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.yaml">log4j2.yaml</a> snippet</div>
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.yaml">log4j2.yaml</a> snippet</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">MarkerFilter: <i class="conum" data-value="1"></i><b>(1)</b>
   marker: "FLOW"
@@ -753,7 +756,7 @@ Appenders:
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
-<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.properties">log4j2.properties</a> snippet</div>
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examplesmanual/flowtracing/log4j2.properties">log4j2.properties</a> snippet</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">filter.0.type = MarkerFilter <i class="conum" data-value="1"></i><b>(1)</b>
 filter.0.marker = FLOW
@@ -807,7 +810,7 @@ Using Log4j-to-SLF4J bridge, Logback can be <a href="installation.html#impl-logb
 <p>Below we will use a combination of <code>EvaluatorFilter</code>, <code>MarkerFilter</code>, and <code>OnMarkerEvaluator</code> in Logback to adapt the formatting pattern of messages written to console based on flow tracing specific markers:</p>
 </div>
 <div class="listingblock">
-<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/2.x/src/site/antora/modules/ROOT/examplesmanual/flowtracing/logback.xml">logback.xml</a> snippet</div>
+<div class="title"><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examplesmanual/flowtracing/logback.xml">logback.xml</a> snippet</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;turboFilter class="MarkerFilter"&gt;<i class="conum" data-value="1"></i><b>(1)</b>
   &lt;Marker&gt;FLOW&lt;/Marker&gt;
