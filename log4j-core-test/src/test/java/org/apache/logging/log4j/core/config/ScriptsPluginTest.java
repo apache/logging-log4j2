@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,18 +27,18 @@ import org.junit.jupiter.api.Test;
 class ScriptsPluginTest {
 
     @Test
-    public void testCreateScriptsNullInput() {
-        assertNull(ScriptsPlugin.createScripts(null), "Should return null");
+    void testCreateScriptsNullInput() {
+        assertThrows(NullPointerException.class, () -> ScriptsPlugin.createScripts(null));
     }
 
     @Test
-    public void testCreateScriptsEmptyInput() {
+    void testCreateScriptsEmptyInput() {
         AbstractScript[] emptyArray = new AbstractScript[0];
         assertSame(emptyArray, ScriptsPlugin.createScripts(emptyArray), "Should return empty array");
     }
 
     @Test
-    public void testCreateScriptsAllExplicitNames() {
+    void testCreateScriptsAllExplicitNames() {
         AbstractScript script1 = new MockScript("script1", "JavaScript", "text");
         AbstractScript script2 = new MockScript("script2", "Groovy", "text");
         AbstractScript[] input = {script1, script2};
@@ -49,21 +48,21 @@ class ScriptsPluginTest {
     }
 
     @Test
-    public void testCreateScriptsImplicitName() {
+    void testCreateScriptsImplicitName() {
         AbstractScript script = new MockScript(null, "JavaScript", "text");
         AbstractScript[] input = {script};
         assertThrows(ConfigurationException.class, () -> ScriptsPlugin.createScripts(input));
     }
 
     @Test
-    public void testCreateScriptsBlankName() {
+    void testCreateScriptsBlankName() {
         AbstractScript script = new MockScript("  ", "JavaScript", "text");
         AbstractScript[] input = {script};
         assertThrows(ConfigurationException.class, () -> ScriptsPlugin.createScripts(input));
     }
 
     @Test
-    public void testCreateScriptsMixedExplicitAndImplicitNames() {
+    void testCreateScriptsMixedExplicitAndImplicitNames() {
         AbstractScript explicitScript = new MockScript("script", "Python", "text");
         AbstractScript implicitScript = new MockScript(null, "JavaScript", "text");
         AbstractScript[] input = {explicitScript, implicitScript};

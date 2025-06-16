@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.script;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import org.junit.jupiter.api.Test;
 class AbstractScriptTest {
 
     @Test
-    public void testConstructorAndGettersWithExplicitName() {
+    void testConstructorAndGettersWithExplicitName() {
         final String lang = "JavaScript";
         final String text = "text";
         final String name = "script";
@@ -37,7 +38,7 @@ class AbstractScriptTest {
     }
 
     @Test
-    public void testConstructorAndGettersWithImplicitName() {
+    void testConstructorAndGettersWithImplicitName() {
         final String lang = "JavaScript";
         final String text = "text";
         final AbstractScript script = new MockScript(null, lang, text);
@@ -45,11 +46,11 @@ class AbstractScriptTest {
         assertEquals(lang, script.getLanguage(), "Language should match");
         assertEquals(text, script.getScriptText(), "Script text should match");
         assertNull(script.getName(), "Name should be null");
-        assertEquals(script.toString(), script.getId(), "Id should match its toString()");
+        assertNotNull(script.getId(), "Id should not be null");
     }
 
     @Test
-    public void testConstructorAndGettersWithBlankName() {
+    void testConstructorAndGettersWithBlankName() {
         final String lang = "JavaScript";
         final String text = "text";
         final String name = "  ";
@@ -58,7 +59,7 @@ class AbstractScriptTest {
         assertEquals(lang, script.getLanguage(), "Language should match");
         assertEquals(text, script.getScriptText(), "Script text should match");
         assertEquals(name, script.getName(), "Name should be blank");
-        assertEquals(script.toString(), script.getId(), "Id should match its toString()");
+        assertNotNull(script.getId(), "Id should not be null");
     }
 
     private class MockScript extends AbstractScript {

@@ -18,16 +18,19 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A  container of Scripts.
  */
+@NullMarked
 @Plugin(name = "Scripts", category = Core.CATEGORY_NAME)
 public final class ScriptsPlugin {
 
@@ -40,7 +43,8 @@ public final class ScriptsPlugin {
      */
     @PluginFactory
     public static AbstractScript[] createScripts(@PluginElement("Scripts") final AbstractScript[] scripts) {
-        if (scripts == null || scripts.length == 0) {
+        Objects.requireNonNull(scripts, "Scripts array cannot be null");
+        if (scripts.length == 0) {
             return scripts;
         }
 

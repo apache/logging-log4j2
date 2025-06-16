@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.script;
 
+import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -37,7 +38,7 @@ public abstract class AbstractScript {
         this.language = language;
         this.scriptText = scriptText;
         this.name = name;
-        this.id = Strings.isBlank(name) ? this.toString() : name;
+        this.id = Strings.isBlank(name) ? Integer.toHexString(Objects.hashCode(this)) : name;
     }
 
     public String getLanguage() {
