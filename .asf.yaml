@@ -1,5 +1,4 @@
 publish:
-  profile: ~
   whoami: 2.x-site-pro-out
   subdir: content/log4j/2.x
 
