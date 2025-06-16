@@ -459,7 +459,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * Creation method for new calender instances.
+     * Creation method for new calendar instances.
      * @return a new Calendar instance.
      */
     private Calendar newCalendar() {

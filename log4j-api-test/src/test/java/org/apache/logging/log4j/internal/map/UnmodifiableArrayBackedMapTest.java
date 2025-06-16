@@ -394,23 +394,4 @@ class UnmodifiableArrayBackedMapTest {
         actualMap = actualMap.copyAndRemoveAll(Collections.singleton("inner"));
         Assertions.assertThat(actualMap).isEqualTo(expectedMap);
     }
-
-    @Test
-    void copyAndRemoveAll_should_work() {
-
-        // Create the actual map
-        UnmodifiableArrayBackedMap actualMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
-        actualMap = actualMap.copyAndPut("outer", "two");
-        actualMap = actualMap.copyAndPut("inner", "one");
-        actualMap = actualMap.copyAndPut("not-in-closeable", "true");
-
-        // Create the expected map
-        UnmodifiableArrayBackedMap expectedMap = UnmodifiableArrayBackedMap.EMPTY_MAP;
-        expectedMap = expectedMap.copyAndPut("outer", "two");
-        expectedMap = expectedMap.copyAndPut("not-in-closeable", "true");
-
-        // Remove the key and verify
-        actualMap = actualMap.copyAndRemoveAll(Collections.singleton("inner"));
-        Assertions.assertThat(actualMap).isEqualTo(expectedMap);
-    }
 }

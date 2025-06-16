@@ -152,7 +152,7 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      * Secure Socket Extension Reference Guide for information these names.
      * @return a new TrustStoreConfiguration
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
-     * @deprecated Use createKeyStoreConfiguration(String, char[], String, String)
+     * @deprecated Use {@link #createKeyStoreConfiguration(String, char[], String, String, String, String)}
      */
     @Deprecated
     public static TrustStoreConfiguration createKeyStoreConfiguration(
@@ -172,6 +172,10 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
                 trustManagerFactoryAlgorithm);
     }
 
+    /**
+     * @deprecated Planned to be removed in the next major release
+     */
+    @Deprecated
     public TrustManagerFactory initTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
         final TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(this.trustManagerFactoryAlgorithm);
         tmFactory.init(this.getKeyStore());

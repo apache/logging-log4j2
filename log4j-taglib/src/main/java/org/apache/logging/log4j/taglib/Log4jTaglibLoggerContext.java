@@ -28,6 +28,8 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This bridge between the tag library and the Log4j API ensures that instances of {@link Log4jTaglibLogger} are
@@ -35,6 +37,7 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
  *
  * @since 2.0
  */
+@NullMarked
 final class Log4jTaglibLoggerContext implements LoggerContext {
 
     private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
@@ -67,7 +70,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     }
 
     @Override
-    public Log4jTaglibLogger getLogger(final String name, final MessageFactory messageFactory) {
+    public Log4jTaglibLogger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         final Log4jTaglibLogger oldLogger = loggerRegistry.getLogger(name, effectiveMessageFactory);
@@ -91,7 +94,7 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
         final MessageFactory effectiveMessageFactory =
                 messageFactory != null ? messageFactory : DEFAULT_MESSAGE_FACTORY;
         return loggerRegistry.hasLogger(name, effectiveMessageFactory);

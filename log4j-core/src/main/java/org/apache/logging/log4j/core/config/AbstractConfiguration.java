@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -279,9 +281,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
-                if (configSource.getFile() != null) {
-                    final Source cfgSource = new Source(configSource);
-                    final long lastModified = configSource.getFile().lastModified();
+                File file = configSource.getFile();
+                if (file != null) {
+                    final Source cfgSource = new Source(file);
+                    final long lastModified = file.lastModified();
                     final ConfigurationFileWatcher watcher =
                             new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
@@ -297,8 +300,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
-        if (configSource.getLastModified() > 0) {
-            final Source cfgSource = new Source(configSource);
+        URI uri = configSource.getURI();
+        if (uri != null && configSource.getLastModified() > 0) {
+            File file = configSource.getFile();
+            final Source cfgSource = file != null ? new Source(file) : new Source(uri);
             final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
