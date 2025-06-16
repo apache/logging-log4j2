@@ -16,31 +16,31 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public final class BasicContextSelectorTest {
+class BasicContextSelectorTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BasicContextSelector.class.getName());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    static void afterClass() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
     }
 
     @Test
-    public void testLogManagerShutdown() {
+    void testLogManagerShutdown() {
         final LoggerContext context = (LoggerContext) LogManager.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
         LogManager.shutdown();
@@ -48,7 +48,7 @@ public final class BasicContextSelectorTest {
     }
 
     @Test
-    public void testNotDependentOnClassLoader() {
+    void testNotDependentOnClassLoader() {
         assertFalse(LogManager.getFactory().isClassLoaderDependent());
     }
 }

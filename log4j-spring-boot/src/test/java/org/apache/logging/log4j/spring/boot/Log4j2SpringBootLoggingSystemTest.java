@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -28,10 +29,10 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 
-public class Log4j2SpringBootLoggingSystemTest {
+class Log4j2SpringBootLoggingSystemTest {
 
     @Test
-    public void getStandardConfigLocations() {
+    void getStandardConfigLocations() {
         final String customLog4j2Location = "classpath:my_custom_log4j2.properties";
         final LoggerContext lc =
                 LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to
@@ -45,14 +46,14 @@ public class Log4j2SpringBootLoggingSystemTest {
 
     @Test
     @SetSystemProperty(key = Log4j2SpringBootLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
-    public void testUseLog4j2LoggingSystem() {
+    void testUseLog4j2LoggingSystem() {
         final LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
-        assertTrue(loggingSystem.getClass().equals(Log4J2LoggingSystem.class));
+        assertEquals(Log4J2LoggingSystem.class, loggingSystem.getClass());
     }
 
     @Test
-    public void testLoggingSystemEnabled() {
+    void testLoggingSystemEnabled() {
         final LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
-        assertTrue(loggingSystem.getClass().equals(Log4j2SpringBootLoggingSystem.class));
+        assertEquals(Log4j2SpringBootLoggingSystem.class, loggingSystem.getClass());
     }
 }

@@ -42,7 +42,7 @@ This is the fourth GA release which contains several bugfixes and new features.
 There are two new Maven artifacts in this release: `log4j-jul` and `log4j-iostreams`.
 Both components are API-based with optional Core features.
 
-Apache Log4j 2.1 requires a minimum of Java 6 to build and run.
+Log4j 2.1 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
 not implement some of the very implementation specific classes and methods.
 The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.

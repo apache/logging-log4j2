@@ -233,7 +233,7 @@ It supports following formats:
 
 Some appenders handle ``MapMessage``s differently when there is no layout:
 
-* JMS Appender converts to a JMS `javax.jms.MapMessage`
+* JMS Appender converts to a JMS `javax.jms.MapMessage` or `jakarta.jms.MapMessage`
 * xref:manual/appenders/database.adoc#JdbcAppender[JDBC Appender] converts to values in an `SQL INSERT` statement
 * xref:manual/appenders/database.adoc#MongoDbProvider[MongoDB NoSQL provider] converts to fields in a MongoDB object
 

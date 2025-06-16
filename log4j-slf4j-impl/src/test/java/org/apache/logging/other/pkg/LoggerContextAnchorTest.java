@@ -16,7 +16,7 @@
  */
 package org.apache.logging.other.pkg;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,29 +24,29 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 /**
  * Test LoggerContext lookups by verifying the anchor class representing calling code.
  */
-public class LoggerContextAnchorTest {
+class LoggerContextAnchorTest {
     private static final String PREFIX = "Log4jLoggerFactory.getContext() found anchor class ";
 
     @Test
-    public void testLoggerFactoryLookupClass() {
+    void testLoggerFactoryLookupClass() {
         final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger(LoggerContextAnchorTest.class));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
-    public void testLoggerFactoryLookupString() {
+    void testLoggerFactoryLookupString() {
         final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
-    public void testLoggerFactoryGetILoggerFactoryLookup() {
+    void testLoggerFactoryGetILoggerFactoryLookup() {
         final String fqcn =
                 getAnchorFqcn(() -> LoggerFactory.getILoggerFactory().getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);

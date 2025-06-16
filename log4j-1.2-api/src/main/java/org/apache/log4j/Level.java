@@ -115,8 +115,7 @@ public class Level extends Priority implements Serializable {
             final String levelStr,
             final int syslogEquivalent,
             final org.apache.logging.log4j.Level version2Equivalent) {
-        super(level, levelStr, syslogEquivalent);
-        this.version2Level = version2Equivalent != null ? version2Equivalent : OptionConverter.createLevel(this);
+        super(level, levelStr, syslogEquivalent, version2Equivalent);
     }
 
     /**
@@ -222,6 +221,7 @@ public class Level extends Priority implements Serializable {
         if (levelStr == null) {
             levelStr = Strings.EMPTY;
         }
+        version2Level = OptionConverter.createLevel(this);
     }
 
     /**

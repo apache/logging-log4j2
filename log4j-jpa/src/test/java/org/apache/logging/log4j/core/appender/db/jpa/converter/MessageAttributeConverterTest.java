@@ -16,51 +16,50 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
-public class MessageAttributeConverterTest {
+@Tag("Appenders.Jpa")
+class MessageAttributeConverterTest {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private MessageAttributeConverter converter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.converter = new MessageAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final Message message = LOGGER.getMessageFactory().newMessage("Message #{} said [{}].", 3, "Hello");
 
         final String converted = this.converter.convertToDatabaseColumn(message);
 
-        assertNotNull("The converted value should not be null.", converted);
-        assertEquals("The converted value is not correct.", "Message #3 said [Hello].", converted);
+        assertNotNull(converted, "The converted value should not be null.");
+        assertEquals("Message #3 said [Hello].", converted, "The converted value is not correct.");
 
         final Message reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", "Message #3 said [Hello].", reversed.getFormattedMessage());
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals("Message #3 said [Hello].", reversed.getFormattedMessage(), "The reversed value is not correct.");
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    void testConvertNullToDatabaseColumn() {
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    void testConvertNullOrBlankToEntityAttribute() {
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 }

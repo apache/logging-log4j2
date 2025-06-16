@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-public class UuidTest {
+class UuidTest {
 
     private static final int COUNT = 200;
     private static final int THREADS = 10;
@@ -30,7 +30,7 @@ public class UuidTest {
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
 
     @Test
-    public void testTimeBaseUuid() {
+    void testTimeBaseUuid() {
         final UUID uuid = UuidUtil.getTimeBasedUuid();
         // final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
@@ -62,7 +62,7 @@ public class UuidTest {
     }
 
     @Test
-    public void testInitialize() {
+    void testInitialize() {
         // Test if no ArrayIndexOutOfBoundsException is thrown when Mac address array is null
         UuidUtil.initialize(null);
 
@@ -78,7 +78,7 @@ public class UuidTest {
     }
 
     @Test
-    public void testThreads() throws Exception {
+    void testThreads() throws Exception {
         final Thread[] threads = new Thread[THREADS];
         final UUID[] uuids = new UUID[COUNT * THREADS];
         final long[] elapsed = new long[THREADS];

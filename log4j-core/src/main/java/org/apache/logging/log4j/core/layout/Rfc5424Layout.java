@@ -850,6 +850,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @since 2.25.0
+         */
+        public Rfc5424LayoutBuilder setEnterpriseNumber(Integer enterpriseNumber) {
+            this.enterpriseNumber = enterpriseNumber;
+            return this;
+        }
+
         @Override
         public Rfc5424Layout build() {
             if (includes != null && excludes != null) {

@@ -26,7 +26,11 @@
 | link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ContextSelector.html[`Class<? extends ContextSelector>`]
 
 | Default value
-| link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`]
+|
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/ClassLoaderContextSelector.html[`ClassLoaderContextSelector`]
+
+(on Android)
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/selector/BasicContextSelector.html[`BasicContextSelector`]
 |===
 
 Specifies the fully qualified class name of the

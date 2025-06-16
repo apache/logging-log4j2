@@ -16,18 +16,19 @@
  */
 package org.apache.logging.log4j.jul.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.jul.DefaultLevelConverter;
 import org.apache.logging.log4j.jul.LevelTranslator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link DefaultLevelConverter} for custom JUL levels.
  *
  * @since 2.4
  */
-public class DefaultLevelConverterCustomJulLevelsTest {
+class DefaultLevelConverterCustomJulLevelsTest {
 
     static class CustomLevel extends java.util.logging.Level {
 
@@ -66,81 +67,81 @@ public class DefaultLevelConverterCustomJulLevelsTest {
     private final DefaultLevelConverter converter = new DefaultLevelConverter();
 
     @Test
-    public void testCustomJulLevelNearAll() {
+    void testCustomJulLevelNearAll() {
         // Sanity check:
-        Assert.assertEquals(Level.ALL, converter.toLevel(java.util.logging.Level.ALL));
+        assertEquals(Level.ALL, converter.toLevel(java.util.logging.Level.ALL));
         // Test:
-        Assert.assertEquals(Level.ALL, converter.toLevel(CustomLevel.ALL_P_1));
+        assertEquals(Level.ALL, converter.toLevel(CustomLevel.ALL_P_1));
     }
 
     @Test
-    public void testCustomJulLevelNearFinest() {
+    void testCustomJulLevelNearFinest() {
         // Sanity check:
-        Assert.assertEquals(LevelTranslator.FINEST, converter.toLevel(java.util.logging.Level.FINEST));
+        assertEquals(LevelTranslator.FINEST, converter.toLevel(java.util.logging.Level.FINEST));
         // Test:
-        Assert.assertEquals(LevelTranslator.FINEST, converter.toLevel(CustomLevel.FINEST_P_1));
-        Assert.assertEquals(LevelTranslator.FINEST, converter.toLevel(CustomLevel.FINEST_M_1));
+        assertEquals(LevelTranslator.FINEST, converter.toLevel(CustomLevel.FINEST_P_1));
+        assertEquals(LevelTranslator.FINEST, converter.toLevel(CustomLevel.FINEST_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearFiner() {
+    void testCustomJulLevelNearFiner() {
         // Sanity check:
-        Assert.assertEquals(Level.TRACE, converter.toLevel(java.util.logging.Level.FINER));
+        assertEquals(Level.TRACE, converter.toLevel(java.util.logging.Level.FINER));
         // Test:
-        Assert.assertEquals(Level.TRACE, converter.toLevel(CustomLevel.FINER_P_1));
-        Assert.assertEquals(Level.TRACE, converter.toLevel(CustomLevel.FINER_M_1));
+        assertEquals(Level.TRACE, converter.toLevel(CustomLevel.FINER_P_1));
+        assertEquals(Level.TRACE, converter.toLevel(CustomLevel.FINER_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearFine() {
+    void testCustomJulLevelNearFine() {
         // Sanity check:
-        Assert.assertEquals(Level.DEBUG, converter.toLevel(java.util.logging.Level.FINE));
+        assertEquals(Level.DEBUG, converter.toLevel(java.util.logging.Level.FINE));
         // Test:
-        Assert.assertEquals(Level.DEBUG, converter.toLevel(CustomLevel.FINE_P_1));
-        Assert.assertEquals(Level.DEBUG, converter.toLevel(CustomLevel.FINE_M_1));
+        assertEquals(Level.DEBUG, converter.toLevel(CustomLevel.FINE_P_1));
+        assertEquals(Level.DEBUG, converter.toLevel(CustomLevel.FINE_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearConfig() {
+    void testCustomJulLevelNearConfig() {
         // Sanity check:
-        Assert.assertEquals(LevelTranslator.CONFIG, converter.toLevel(java.util.logging.Level.CONFIG));
+        assertEquals(LevelTranslator.CONFIG, converter.toLevel(java.util.logging.Level.CONFIG));
         // Test:
-        Assert.assertEquals(LevelTranslator.CONFIG, converter.toLevel(CustomLevel.CONFIG_P_1));
-        Assert.assertEquals(LevelTranslator.CONFIG, converter.toLevel(CustomLevel.CONFIG_M_1));
+        assertEquals(LevelTranslator.CONFIG, converter.toLevel(CustomLevel.CONFIG_P_1));
+        assertEquals(LevelTranslator.CONFIG, converter.toLevel(CustomLevel.CONFIG_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearInfo() {
+    void testCustomJulLevelNearInfo() {
         // Sanity check:
-        Assert.assertEquals(Level.INFO, converter.toLevel(java.util.logging.Level.INFO));
+        assertEquals(Level.INFO, converter.toLevel(java.util.logging.Level.INFO));
         // Test:
-        Assert.assertEquals(Level.INFO, converter.toLevel(CustomLevel.INFO_P_1));
-        Assert.assertEquals(Level.INFO, converter.toLevel(CustomLevel.INFO_M_1));
+        assertEquals(Level.INFO, converter.toLevel(CustomLevel.INFO_P_1));
+        assertEquals(Level.INFO, converter.toLevel(CustomLevel.INFO_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearWarning() {
+    void testCustomJulLevelNearWarning() {
         // Sanity check:
-        Assert.assertEquals(Level.WARN, converter.toLevel(java.util.logging.Level.WARNING));
+        assertEquals(Level.WARN, converter.toLevel(java.util.logging.Level.WARNING));
         // Test:
-        Assert.assertEquals(Level.WARN, converter.toLevel(CustomLevel.WARNING_P_1));
-        Assert.assertEquals(Level.WARN, converter.toLevel(CustomLevel.WARNING_M_1));
+        assertEquals(Level.WARN, converter.toLevel(CustomLevel.WARNING_P_1));
+        assertEquals(Level.WARN, converter.toLevel(CustomLevel.WARNING_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearSevere() {
+    void testCustomJulLevelNearSevere() {
         // Sanity check:
-        Assert.assertEquals(Level.ERROR, converter.toLevel(java.util.logging.Level.SEVERE));
+        assertEquals(Level.ERROR, converter.toLevel(java.util.logging.Level.SEVERE));
         // Test:
-        Assert.assertEquals(Level.ERROR, converter.toLevel(CustomLevel.SEVERE_P_1));
-        Assert.assertEquals(Level.ERROR, converter.toLevel(CustomLevel.SEVERE_M_1));
+        assertEquals(Level.ERROR, converter.toLevel(CustomLevel.SEVERE_P_1));
+        assertEquals(Level.ERROR, converter.toLevel(CustomLevel.SEVERE_M_1));
     }
 
     @Test
-    public void testCustomJulLevelNearOff() {
+    void testCustomJulLevelNearOff() {
         // Sanity check:
-        Assert.assertEquals(Level.OFF, converter.toLevel(java.util.logging.Level.OFF));
+        assertEquals(Level.OFF, converter.toLevel(java.util.logging.Level.OFF));
         // Test:
-        Assert.assertEquals(Level.OFF, converter.toLevel(CustomLevel.OFF_M_1));
+        assertEquals(Level.OFF, converter.toLevel(CustomLevel.OFF_M_1));
     }
 }

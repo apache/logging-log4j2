@@ -27,27 +27,27 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-public class EqualsReplacementConverterTest {
+class EqualsReplacementConverterTest {
 
     private static final String TEST_MESSAGE = "This is a test";
 
     @Test
-    public void testMarkerReplacement() {
+    void testMarkerReplacement() {
         testReplacement("%marker", Strings.EMPTY);
     }
 
     @Test
-    public void testMarkerSimpleNameReplacement() {
+    void testMarkerSimpleNameReplacement() {
         testReplacement("%markerSimpleName", Strings.EMPTY);
     }
 
     @Test
-    public void testLoggerNameReplacement() {
+    void testLoggerNameReplacement() {
         testReplacement("%logger", "[" + EqualsReplacementConverterTest.class.getName() + "]");
     }
 
     @Test
-    public void testMarkerReplacementWithMessage() {
+    void testMarkerReplacementWithMessage() {
         testReplacement(TEST_MESSAGE, new String[] {"[%marker]", "[]", "%msg"});
     }
 
@@ -72,23 +72,23 @@ public class EqualsReplacementConverterTest {
     }
 
     @Test
-    public void testParseSubstitutionWithPattern() {
+    void testParseSubstitutionWithPattern() {
         testParseSubstitution("%msg", TEST_MESSAGE);
     }
 
     @Test
-    public void testParseSubstitutionWithoutPattern() {
+    void testParseSubstitutionWithoutPattern() {
         final String substitution = "test";
         testParseSubstitution(substitution, substitution);
     }
 
     @Test
-    public void testParseSubstitutionEmpty() {
+    void testParseSubstitutionEmpty() {
         testParseSubstitution("", "");
     }
 
     @Test
-    public void testParseSubstitutionWithWhiteSpaces() {
+    void testParseSubstitutionWithWhiteSpaces() {
         testParseSubstitution(" ", " ");
     }
 

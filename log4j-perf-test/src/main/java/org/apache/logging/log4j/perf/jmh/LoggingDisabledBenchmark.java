@@ -30,22 +30,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
-// import com.newrelic.api.agent.Trace;
-
-/**
- * Benchmark logging with logging disabled.
- * // ============================== HOW TO RUN THIS TEST: ====================================
- * //
- * // single thread:
- * // java -jar log4j-perf/target/benchmarks.jar ".*LoggingDisabledBenchmark.*" -f 1 -wi 5 -i 10
- * //
- * // multiple threads (for example, 4 threads):
- * // java -jar log4j-perf/target/benchmarks.jar ".*LoggingDisabledBenchmark.*" -f 1 -wi 5 -i 10 -t 4 -si true
- * //
- * // Usage help:
- * // java -jar log4j-perf/target/benchmarks.jar -help
- * //
- */
 @State(Scope.Thread)
 public class LoggingDisabledBenchmark {
 

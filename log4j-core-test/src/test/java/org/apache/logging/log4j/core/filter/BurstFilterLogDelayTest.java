@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit test for <code>BurstFilter</code>.
  */
-public class BurstFilterLogDelayTest {
+class BurstFilterLogDelayTest {
 
     @Test
-    public void testCompareToOverflow() {
+    void testCompareToOverflow() {
         // no overflow, but close
         final Delayed d1 =
                 BurstFilter.createLogDelay(Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10) - System.nanoTime());

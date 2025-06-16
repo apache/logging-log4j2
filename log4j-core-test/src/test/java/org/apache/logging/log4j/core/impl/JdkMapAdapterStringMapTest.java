@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,15 +45,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests the JdkMapAdapterStringMap class.
  */
-public class JdkMapAdapterStringMapTest {
+class JdkMapAdapterStringMapTest {
 
     @Test
-    public void testConstructorDisallowsNull() {
+    void testConstructorDisallowsNull() {
         assertThrows(NullPointerException.class, () -> new JdkMapAdapterStringMap(null, false));
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("a2", "bvalue");
@@ -63,7 +64,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testSerialization() throws Exception {
+    void testSerialization() throws Exception {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -89,7 +90,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll() throws Exception {
+    void testPutAll() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -110,7 +111,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_overwritesSameKeys2() throws Exception {
+    void testPutAll_overwritesSameKeys2() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -136,7 +137,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInLargeOriginal() throws Exception {
+    void testPutAll_nullKeyInLargeOriginal() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -161,7 +162,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInSmallOriginal() throws Exception {
+    void testPutAll_nullKeyInSmallOriginal() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -184,7 +185,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInSmallAdditional() throws Exception {
+    void testPutAll_nullKeyInSmallAdditional() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -209,7 +210,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInLargeAdditional() throws Exception {
+    void testPutAll_nullKeyInLargeAdditional() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -232,7 +233,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInBoth_LargeOriginal() throws Exception {
+    void testPutAll_nullKeyInBoth_LargeOriginal() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -258,7 +259,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_nullKeyInBoth_SmallOriginal() throws Exception {
+    void testPutAll_nullKeyInBoth_SmallOriginal() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue(null, "nullORIG");
         original.putValue("a", "aORIG");
@@ -282,7 +283,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_overwritesSameKeys1() throws Exception {
+    void testPutAll_overwritesSameKeys1() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aORIG");
         original.putValue("b", "bORIG");
@@ -304,7 +305,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -332,7 +333,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testToMap() throws Exception {
+    void testToMap() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -353,7 +354,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_KeepsExistingValues() {
+    void testPutAll_KeepsExistingValues() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -383,7 +384,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_sizePowerOfTwo() {
+    void testPutAll_sizePowerOfTwo() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -418,7 +419,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAll_largeAddition() {
+    void testPutAll_largeAddition() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue(null, "nullVal");
         original.putValue("a", "aaa");
@@ -446,7 +447,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testPutAllSelfDoesNotModify() {
+    void testPutAllSelfDoesNotModify() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "bbb");
@@ -462,7 +463,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationBiConsumerPut() {
+    void testNoConcurrentModificationBiConsumerPut() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -473,7 +474,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationBiConsumerPutValue() {
+    void testNoConcurrentModificationBiConsumerPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -484,7 +485,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationBiConsumerRemove() {
+    void testNoConcurrentModificationBiConsumerRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -493,7 +494,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationBiConsumerClear() {
+    void testNoConcurrentModificationBiConsumerClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -504,7 +505,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationTriConsumerPut() {
+    void testNoConcurrentModificationTriConsumerPut() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -514,7 +515,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationTriConsumerPutValue() {
+    void testNoConcurrentModificationTriConsumerPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -525,7 +526,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationTriConsumerRemove() {
+    void testNoConcurrentModificationTriConsumerRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -534,7 +535,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNoConcurrentModificationTriConsumerClear() {
+    void testNoConcurrentModificationTriConsumerClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.putValue("b", "aaa");
@@ -544,12 +545,12 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testInitiallyNotFrozen() {
+    void testInitiallyNotFrozen() {
         assertFalse(new JdkMapAdapterStringMap().isFrozen());
     }
 
     @Test
-    public void testIsFrozenAfterCallingFreeze() {
+    void testIsFrozenAfterCallingFreeze() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         assertFalse(original.isFrozen(), "before freeze");
         original.freeze();
@@ -557,14 +558,14 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testFreezeProhibitsPutValue() {
+    void testFreezeProhibitsPutValue() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.freeze();
         assertThrows(UnsupportedOperationException.class, () -> original.putValue("a", "aaa"));
     }
 
     @Test
-    public void testFreezeProhibitsRemove() {
+    void testFreezeProhibitsRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("b", "bbb");
         original.freeze();
@@ -574,7 +575,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsRemoveOfNonExistingKey() {
+    void testFreezeAllowsRemoveOfNonExistingKey() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("b", "bbb");
         original.freeze();
@@ -582,14 +583,14 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsRemoveIfEmpty() {
+    void testFreezeAllowsRemoveIfEmpty() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.freeze();
         original.remove("a"); // no exception
     }
 
     @Test
-    public void testFreezeProhibitsClear() {
+    void testFreezeProhibitsClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "aaa");
         original.freeze();
@@ -597,14 +598,14 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testFreezeAllowsClearIfEmpty() {
+    void testFreezeAllowsClearIfEmpty() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.freeze();
         original.clear();
     }
 
     @Test
-    public void testNullKeysAllowed() {
+    void testNullKeysAllowed() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -631,7 +632,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNullKeysCopiedToAsMap() {
+    void testNullKeysCopiedToAsMap() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -670,7 +671,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
@@ -686,7 +687,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testRemoveWhenFull() throws Exception {
+    void testRemoveWhenFull() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("b", "bvalue");
@@ -696,7 +697,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testNullValuesArePreserved() {
+    void testNullValuesArePreserved() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         assertEquals(1, original.size());
@@ -712,7 +713,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testGet() throws Exception {
+    void testGet() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -730,7 +731,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testClear() throws Exception {
+    void testClear() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -742,7 +743,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testContainsKey() throws Exception {
+    void testContainsKey() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         assertFalse(original.containsKey("a"), "a");
         assertFalse(original.containsKey("B"), "B");
@@ -775,7 +776,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testSizeAndIsEmpty() throws Exception {
+    void testSizeAndIsEmpty() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         assertEquals(0, original.size());
         assertTrue(original.isEmpty(), "initial");
@@ -806,7 +807,7 @@ public class JdkMapAdapterStringMapTest {
     }
 
     @Test
-    public void testForEachBiConsumer() throws Exception {
+    void testForEachBiConsumer() throws Exception {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -838,7 +839,7 @@ public class JdkMapAdapterStringMapTest {
     };
 
     @Test
-    public void testForEachTriConsumer() throws Exception {
+    void testForEachTriConsumer() {
         final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
@@ -848,6 +849,26 @@ public class JdkMapAdapterStringMapTest {
         state.data = original;
         original.forEach(COUNTER, state);
         assertEquals(state.count, original.size());
+    }
+
+    @Test
+    void testEqualityWithOtherImplementations() {
+        final JdkMapAdapterStringMap left = new JdkMapAdapterStringMap();
+        final SortedArrayStringMap right = new SortedArrayStringMap();
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
+
+        left.putValue("a", "avalue");
+        left.putValue("B", "Bvalue");
+        right.putValue("B", "Bvalue");
+        right.putValue("a", "avalue");
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
+
+        left.remove("a");
+        right.remove("a");
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
     }
 
     static Stream<Arguments> testImmutability() {

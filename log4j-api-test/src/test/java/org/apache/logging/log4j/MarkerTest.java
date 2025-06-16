@@ -28,21 +28,21 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @ResourceLock(value = Log4jStaticResources.MARKER_MANAGER, mode = ResourceAccessMode.READ_WRITE)
-public class MarkerTest {
+class MarkerTest {
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MarkerManager.clear();
     }
 
     @Test
-    public void testGetMarker() {
+    void testGetMarker() {
         final Marker expected = MarkerManager.getMarker("A");
         assertNull(expected.getParents());
     }
 
     @Test
-    public void testGetMarkerWithParents() {
+    void testGetMarkerWithParents() {
         final Marker expected = MarkerManager.getMarker("A");
         final Marker p1 = MarkerManager.getMarker("P1");
         p1.addParents(MarkerManager.getMarker("PP1"));
@@ -53,7 +53,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testHasParents() {
+    void testHasParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
         assertFalse(existing.hasParents());
@@ -62,7 +62,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testMarker() {
+    void testMarker() {
         // root (level 1)
         final Marker parent = MarkerManager.getMarker("PARENT");
         // level 2
@@ -83,7 +83,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testMarkerSharedIntermediaryMarker() {
+    void testMarkerSharedIntermediaryMarker() {
         final Marker parent1 = MarkerManager.getMarker("PARENT1");
         final Marker parent2 = MarkerManager.getMarker("PARENT2");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent1, parent2);
@@ -96,7 +96,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testMultipleParents() {
+    void testMultipleParents() {
         final Marker parent1 = MarkerManager.getMarker("PARENT1");
         final Marker parent2 = MarkerManager.getMarker("PARENT2");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent1, parent2);
@@ -112,7 +112,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testAddToExistingParents() {
+    void testAddToExistingParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);
@@ -124,7 +124,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testDuplicateParents() {
+    void testDuplicateParents() {
         final Marker parent = MarkerManager.getMarker("PARENT");
         final Marker existing = MarkerManager.getMarker("EXISTING");
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);

@@ -16,32 +16,36 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockPageContext;
 
 /**
  *
  */
+@LoggerContextSource("log4j-test1.xml")
 public class CatchingTagTest {
-    private static final String CONFIG = "log4j-test1.xml";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    private final Logger logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    private final LoggerContext context;
+    private final Logger logger;
     private CatchingTag tag;
 
-    @Before
+    public CatchingTagTest(final LoggerContext context) {
+        this.context = context;
+        this.logger = context.getLogger("LoggingMessageTagSupportTestLogger");
+    }
+
+    @BeforeEach
     public void setUp() {
         this.tag = new CatchingTag();
         this.tag.setPageContext(new MockPageContext());
@@ -52,8 +56,8 @@ public class CatchingTagTest {
     public void testDoEndTag() throws Exception {
         this.tag.setException(new Exception("This is a test."));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching ERROR M-CATCHING[ EXCEPTION ] E java.lang.Exception: This is a test.");
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
+        verify("Catching ERROR M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Exception: This is a test.");
     }
 
     @Test
@@ -61,8 +65,9 @@ public class CatchingTagTest {
         this.tag.setLevel("info");
         this.tag.setException(new RuntimeException("This is another test."));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching INFO M-CATCHING[ EXCEPTION ] E java.lang.RuntimeException: This is another test.");
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
+        verify("Catching INFO M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR
+                + "java.lang.RuntimeException: This is another test.");
     }
 
     @Test
@@ -70,16 +75,16 @@ public class CatchingTagTest {
         this.tag.setLevel(Level.WARN);
         this.tag.setException(new Error("This is the last test."));
 
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, this.tag.doEndTag());
-        verify("Catching WARN M-CATCHING[ EXCEPTION ] E java.lang.Error: This is the last test.");
+        assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
+        verify("Catching WARN M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Error: This is the last test.");
     }
 
     private void verify(final String expected) {
-        final ListAppender listApp = context.getListAppender("List");
+        final ListAppender listApp = context.getConfiguration().getAppender("List");
         final List<String> events = listApp.getMessages();
         try {
-            assertEquals("Incorrect number of messages.", 1, events.size());
-            assertEquals("Incorrect message.", "o.a.l.l.t.CatchingTagTest " + expected, events.get(0));
+            assertEquals(1, events.size(), "Incorrect number of messages.");
+            assertEquals("o.a.l.l.t.CatchingTagTest " + expected + LINE_SEPARATOR, events.get(0), "Incorrect message.");
         } finally {
             listApp.clear();
         }

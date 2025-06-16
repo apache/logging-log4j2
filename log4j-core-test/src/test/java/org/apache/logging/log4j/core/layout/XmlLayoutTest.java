@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.HasXPathMatcher.hasXPath;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -237,7 +239,7 @@ public class XmlLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    public void testLayout() {
         final Map<String, Appender> appenders = this.rootLogger.getAppenders();
         for (final Appender appender : appenders.values()) {
             this.rootLogger.removeAppender(appender);
@@ -281,8 +283,8 @@ public class XmlLayoutTest {
         final List<String> list = appender.getMessages();
 
         final String string = list.get(0);
-        assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
+        assertEquals("Incorrect header: " + string, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string);
+        assertEquals("Incorrect footer", "</Events>", list.get(list.size() - 1));
         this.checkContains("loggerFqcn=\"" + AbstractLogger.class.getName() + "\"", list);
         this.checkContains("level=\"DEBUG\"", list);
         this.checkContains(">starting mdc pattern test</Message>", list);
@@ -320,7 +322,7 @@ public class XmlLayoutTest {
     }
 
     @Test
-    public void testAdditionalFields() throws Exception {
+    public void testAdditionalFields() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setLocationInfo(false)
                 .setProperties(false)
@@ -332,8 +334,9 @@ public class XmlLayoutTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str, str.contains("<KEY1>VALUE1</KEY1>"));
-        assertTrue(str, str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"));
+
+        assertThat(str, hasXPath("//KEY1[text()='VALUE1']"));
+        assertThat(str, hasXPath("//KEY2[text()='" + new JavaLookup().getRuntime() + "']"));
     }
 
     @Test
@@ -352,13 +355,13 @@ public class XmlLayoutTest {
     }
 
     @Test
-    public void testStacktraceAsString() throws Exception {
+    public void testStacktraceAsString() {
         final String str = prepareXMLForStacktraceTests(true);
         assertTrue(str, str.contains("<ExtendedStackTrace>java.lang.NullPointerException"));
     }
 
     @Test
-    public void testStacktraceAsNonString() throws Exception {
+    public void testStacktraceAsNonString() {
         final String str = prepareXMLForStacktraceTests(false);
         assertTrue(str, str.contains("<ExtendedStackTrace><ExtendedStackTraceItem"));
     }
@@ -376,7 +379,7 @@ public class XmlLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterTrue() throws Exception {
+    public void testIncludeNullDelimiterTrue() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setCompact(true)
                 .setIncludeNullDelimiter(true)
@@ -386,7 +389,7 @@ public class XmlLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterFalse() throws Exception {
+    public void testIncludeNullDelimiterFalse() {
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setCompact(true)
                 .setIncludeNullDelimiter(false)

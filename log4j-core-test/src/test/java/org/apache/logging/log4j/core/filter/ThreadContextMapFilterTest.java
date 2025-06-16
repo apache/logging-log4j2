@@ -26,10 +26,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.junit.jupiter.api.Test;
 
-public class ThreadContextMapFilterTest {
+class ThreadContextMapFilterTest {
 
     @Test
-    public void testFilter() {
+    void testFilter() {
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "Apache");
         final KeyValuePair[] pairs =
@@ -38,13 +38,13 @@ public class ThreadContextMapFilterTest {
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.remove("userid");
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.put("userid", "JohnDoe");
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, null));
         ThreadContext.put("organization", "ASF");
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.clearMap();
         filter = ThreadContextMapFilter.createFilter(pairs, "or", null, null);
         assertNotNull(filter);
@@ -52,17 +52,17 @@ public class ThreadContextMapFilterTest {
         assertTrue(filter.isStarted());
         ThreadContext.put("userid", "testuser");
         ThreadContext.put("organization", "Apache");
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.put("organization", "ASF");
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.remove("organization");
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         final KeyValuePair[] single = new KeyValuePair[] {new KeyValuePair("userid", "testuser")};
         filter = ThreadContextMapFilter.createFilter(single, null, null, null);
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
+        assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         ThreadContext.clearMap();
     }
 }

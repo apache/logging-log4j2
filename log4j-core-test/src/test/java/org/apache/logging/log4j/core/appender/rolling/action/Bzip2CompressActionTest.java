@@ -34,20 +34,20 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests Bzip2CompressAction.
  */
-public class Bzip2CompressActionTest {
+class Bzip2CompressActionTest {
 
     @Test
-    public void testConstructorDisallowsNullSource() {
+    void testConstructorDisallowsNullSource() {
         assertThrows(NullPointerException.class, () -> new CommonsCompressAction("bzip2", null, new File("any"), true));
     }
 
     @Test
-    public void testConstructorDisallowsNullDestination() {
+    void testConstructorDisallowsNullDestination() {
         assertThrows(NullPointerException.class, () -> new CommonsCompressAction("bzip2", new File("any"), null, true));
     }
 
     @Test
-    public void testExecuteReturnsFalseIfSourceDoesNotExist() throws IOException {
+    void testExecuteReturnsFalseIfSourceDoesNotExist() throws IOException {
         File source = new File("any");
         while (source.exists()) {
             source = new File(source.getName() + Math.random());
@@ -57,7 +57,7 @@ public class Bzip2CompressActionTest {
     }
 
     @Test
-    public void testExecuteCompressesSourceFileToDestinationFile(@TempDir final File tempDir) throws IOException {
+    void testExecuteCompressesSourceFileToDestinationFile(@TempDir final File tempDir) throws IOException {
         final String LINE1 = "Here is line 1. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final String LINE2 = "Here is line 2. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final String LINE3 = "Here is line 3. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";

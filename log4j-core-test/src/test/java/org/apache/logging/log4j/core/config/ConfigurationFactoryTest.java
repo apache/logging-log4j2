@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -72,10 +73,10 @@ class ConfigurationFactoryTest {
         assertEquals(1, logger.filterCount());
         final Iterator<Filter> filterIterator = logger.getFilters();
         assertTrue(filterIterator.hasNext());
-        assertTrue(filterIterator.next() instanceof ThreadContextMapFilter);
+        assertInstanceOf(ThreadContextMapFilter.class, filterIterator.next());
 
         final Appender appender = appenders.get(APPENDER_NAME);
-        assertTrue(appender instanceof ConsoleAppender);
+        assertInstanceOf(ConsoleAppender.class, appender);
         assertEquals(APPENDER_NAME, appender.getName());
     }
 

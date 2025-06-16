@@ -25,10 +25,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import org.junit.jupiter.api.Test;
 
-public class ThreadDumpMessageTest {
+class ThreadDumpMessageTest {
 
     @Test
-    public void testMessage() {
+    void testMessage() {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Testing");
 
         final String message = msg.getFormattedMessage();
@@ -39,7 +39,7 @@ public class ThreadDumpMessageTest {
     }
 
     @Test
-    public void testMessageWithLocks() throws Exception {
+    void testMessageWithLocks() throws Exception {
         final ReentrantLock lock = new ReentrantLock();
         lock.lock();
         final Thread thread1 = new Thread1(lock);
@@ -66,7 +66,7 @@ public class ThreadDumpMessageTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
         final String actual = msg.toString();
         assertTrue(actual.contains("Test"));
@@ -75,7 +75,7 @@ public class ThreadDumpMessageTest {
     }
 
     @Test
-    public void testUseConstructorThread() throws InterruptedException { // LOG4J2-763
+    void testUseConstructorThread() throws InterruptedException { // LOG4J2-763
         final ThreadDumpMessage msg = new ThreadDumpMessage("Test");
 
         final AtomicReference<String> actual = new AtomicReference<>();
@@ -92,7 +92,7 @@ public class ThreadDumpMessageTest {
     }
 
     @Test
-    public void formatTo_usesCachedMessageString() throws Exception {
+    void formatTo_usesCachedMessageString() throws Exception {
 
         final ThreadDumpMessage message = new ThreadDumpMessage("");
         final String initial = message.getFormattedMessage();

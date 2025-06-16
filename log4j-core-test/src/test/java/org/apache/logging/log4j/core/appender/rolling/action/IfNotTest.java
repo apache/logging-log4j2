@@ -42,7 +42,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 class IfNotTest {
 
     @Test
-    public void test() {
+    void test() {
         assertTrue(new FixedCondition(true).accept(null, null, null));
         assertFalse(IfNot.createNotCondition(new FixedCondition(true)).accept(null, null, null));
 
@@ -51,13 +51,13 @@ class IfNotTest {
     }
 
     @Test
-    public void testEmptyIsFalse() {
+    void testEmptyIsFalse() {
         assertThrows(
                 NullPointerException.class, () -> IfNot.createNotCondition(null).accept(null, null, null));
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfNot not = IfNot.createNotCondition(counter);
         not.beforeFileTreeWalk();
@@ -65,14 +65,14 @@ class IfNotTest {
     }
 
     @Test
-    public void testCreateNotConditionCalledProgrammaticallyThrowsNPEWhenToNegateIsNotSpecified() {
+    void testCreateNotConditionCalledProgrammaticallyThrowsNPEWhenToNegateIsNotSpecified() {
         PathCondition toNegate = null;
         assertThrows(NullPointerException.class, () -> IfNot.createNotCondition(toNegate));
     }
 
     @ParameterizedTest
     @ValueSource(strings = "No condition provided for IfNot")
-    public void testCreateNotConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenToNegateIsNotSpecified(
+    void testCreateNotConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenToNegateIsNotSpecified(
             final String expectedMessage) {
         final PluginEntry nullEntry = null;
         final PluginType<IfNot> type = new PluginType<>(nullEntry, IfNot.class, "Dummy");

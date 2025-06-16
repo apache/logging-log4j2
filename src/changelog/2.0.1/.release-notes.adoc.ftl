@@ -40,7 +40,7 @@
 
 This is the first patch release of Log4j 2.0 which contains numerous bug fixes.
 
-Apache Log4j 2.0.1 requires a minimum of Java 6 to build and run.
+Log4j 2.0.1 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
 not implement some of the very implementation specific classes and methods.
 The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.

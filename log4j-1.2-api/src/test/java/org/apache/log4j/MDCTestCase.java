@@ -16,32 +16,33 @@
  */
 package org.apache.log4j;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MDCTestCase {
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    @Before
-    public void setUp() {
+class MDCTestCase {
+
+    @BeforeEach
+    void setUp() {
         MDC.clear();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         MDC.clear();
     }
 
     @Test
-    public void testPut() {
+    void testPut() {
         MDC.put("key", "some value");
-        Assert.assertEquals("some value", MDC.get("key"));
-        Assert.assertEquals(1, MDC.getContext().size());
+        assertEquals("some value", MDC.get("key"));
+        assertEquals(1, MDC.getContext().size());
     }
 
     @Test
-    public void testRemoveLastKey() {
+    void testRemoveLastKey() {
         MDC.put("key", "some value");
         MDC.remove("key");
     }

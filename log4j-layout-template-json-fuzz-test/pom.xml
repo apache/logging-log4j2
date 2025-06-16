@@ -40,7 +40,7 @@
     <sign.skip>true</sign.skip>
 
     <!-- dependency versions -->
-    <json.version>20240303</json.version>
+    <json.version>20250517</json.version>
 
   </properties>
 

@@ -16,19 +16,19 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.logging.log4j.LoggingException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 /**
  * Tests StackOverflow when slf4j-impl and to-slf4j are both present.
  */
-public class OverflowTest {
+class OverflowTest {
 
     @Test
-    public void log() {
+    void log() {
         try {
             LoggerFactory.getLogger(OverflowTest.class);
             fail("Failed to detect inclusion of log4j-to-slf4j");

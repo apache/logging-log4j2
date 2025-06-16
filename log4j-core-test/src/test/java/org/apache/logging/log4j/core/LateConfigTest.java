@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-public class LateConfigTest {
+class LateConfigTest {
 
     private static final String CONFIG = "/log4j-test1.xml";
     private static LoggerContext context;
@@ -45,28 +45,28 @@ public class LateConfigTest {
     private static Path loggingPath;
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         context = LoggerContext.getContext(false);
     }
 
     @AfterAll
-    public static void tearDownClass() {
+    static void tearDownClass() {
         Configurator.shutdown(context);
         StatusLogger.getLogger().reset();
     }
 
     @Test
-    public void testReconfiguration() throws Exception {
+    void testReconfiguration() throws Exception {
         final Configuration cfg = context.getConfiguration();
         assertNotNull(cfg, "No configuration");
-        assertTrue(cfg instanceof DefaultConfiguration, "Not set to default configuration");
+        assertInstanceOf(DefaultConfiguration.class, cfg, "Not set to default configuration");
         final URI configLocation = LateConfigTest.class.getResource(CONFIG).toURI();
         final LoggerContext loggerContext = LoggerContext.getContext(null, false, configLocation);
         assertNotNull(loggerContext, "No Logger Context");
         assertThat(loggingPath.resolve("test-xml.log")).exists();
         final Configuration newConfig = loggerContext.getConfiguration();
         assertNotSame(cfg, newConfig, "Configuration not reset");
-        assertTrue(newConfig instanceof XmlConfiguration, "Reconfiguration failed");
+        assertInstanceOf(XmlConfiguration.class, newConfig, "Reconfiguration failed");
         context = LoggerContext.getContext(false);
         final Configuration sameConfig = context.getConfiguration();
         assertSame(newConfig, sameConfig, "Configuration should not have been reset");

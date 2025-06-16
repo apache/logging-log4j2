@@ -45,7 +45,7 @@ public class PropertiesFileConfigTest {
     }
 
     @Test
-    public void testReconfiguration(final LoggerContext context) throws Exception {
+    void testReconfiguration(final LoggerContext context) throws Exception {
         final Configuration oldConfig = context.getConfiguration();
         final int MONITOR_INTERVAL_SECONDS = 5;
         final File file = new File(CONFIG);

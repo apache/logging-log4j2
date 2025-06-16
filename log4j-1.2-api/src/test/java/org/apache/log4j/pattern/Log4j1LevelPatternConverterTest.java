@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class Log4j1LevelPatternConverterTest {
+class Log4j1LevelPatternConverterTest {
 
     /**
      * Tests if the converter returns the Log4j 1.x {@code toString()} value of
@@ -35,7 +35,7 @@ public class Log4j1LevelPatternConverterTest {
      */
     @ParameterizedTest
     @MethodSource("org.apache.log4j.helpers.UtilLoggingLevel#getAllPossibleLevels")
-    public void testUtilLoggingLevels(final Level level) {
+    void testUtilLoggingLevels(final Level level) {
         final Log4j1LevelPatternConverter converter = Log4j1LevelPatternConverter.newInstance(null);
         final LogEvent logEvent = mock(LogEvent.class);
         when(logEvent.getLevel()).thenReturn(level.getVersion2Level());

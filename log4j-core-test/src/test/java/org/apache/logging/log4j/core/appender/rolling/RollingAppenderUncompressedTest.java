@@ -58,7 +58,7 @@ public class RollingAppenderUncompressedTest {
     }
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender() {
         for (int i = 0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }

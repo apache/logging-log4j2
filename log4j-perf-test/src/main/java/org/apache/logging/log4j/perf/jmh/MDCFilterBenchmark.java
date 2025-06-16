@@ -31,13 +31,6 @@ import org.slf4j.MDC;
 /**
  * Benchmarks Log4j 2 and Logback ThreadContext/MDC Filter performance.
  */
-// HOW TO RUN THIS TEST
-// single thread:
-// java -jar target/benchmarks.jar ".*MDCFilterBenchmark.*" -f 1 -i 5 -wi 5 -bm sample -tu ns
-//
-// multiple threads (for example, 4 threads):
-// java -jar target/benchmarks.jar ".*MDCFilterBenchmark.*" -f 1 -i 5 -wi 5 -t 4 -si true -bm sample -tu ns
-
 @State(Scope.Benchmark)
 public class MDCFilterBenchmark {
     // Loggers are Benchmark scope, just like in a real application:

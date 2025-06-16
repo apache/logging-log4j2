@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spi;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,15 +27,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * Convenience class to be used as an {@link ExtendedLogger} registry by {@code LoggerContext} implementations.
  * @since 2.6
  */
+@NullMarked
 public class LoggerRegistry<T extends ExtendedLogger> {
 
     private final Map<String, Map<MessageFactory, T>> loggerByMessageFactoryByName = new HashMap<>();
@@ -52,7 +54,9 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param <T> subtype of {@code ExtendedLogger}
      * @since 2.6
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
+    @Deprecated
     public interface MapFactory<T extends ExtendedLogger> {
 
         Map<String, T> createInnerMap();
@@ -67,7 +71,9 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param <T> subtype of {@code ExtendedLogger}
      * @since 2.6
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
+    @Deprecated
     public static class ConcurrentMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
 
         @Override
@@ -91,7 +97,9 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param <T> subtype of {@code ExtendedLogger}
      * @since 2.6
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
+    @Deprecated
     public static class WeakMapFactory<T extends ExtendedLogger> implements MapFactory<T> {
 
         @Override
@@ -116,8 +124,10 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * Constructs an instance <b>ignoring</b> the given the map factory.
      *
      * @param mapFactory a map factory
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
      */
-    public LoggerRegistry(final MapFactory<T> mapFactory) {
+    @Deprecated
+    public LoggerRegistry(@Nullable final MapFactory<T> mapFactory) {
         this();
     }
 
@@ -130,7 +140,10 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return the logger associated with the name
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
+     * Use {@link #getLogger(String, MessageFactory)} instead.
      */
+    @Deprecated
     public @Nullable T getLogger(final String name) {
         requireNonNull(name, "name");
         return getLogger(name, null);
@@ -162,19 +175,19 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers() {
-        return getLoggers(new ArrayList<>());
+        readLock.lock();
+        try {
+            return loggerByMessageFactoryByName.values().stream()
+                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
+                    .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {
         requireNonNull(destination, "destination");
-        readLock.lock();
-        try {
-            loggerByMessageFactoryByName.values().stream()
-                    .flatMap(loggerByMessageFactory -> loggerByMessageFactory.values().stream())
-                    .forEach(destination::add);
-        } finally {
-            readLock.unlock();
-        }
+        destination.addAll(getLoggers());
         return destination;
     }
 
@@ -187,7 +200,10 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      *
      * @param name a logger name
      * @return {@code true}, if the logger exists; {@code false} otherwise.
+     * @deprecated As of version {@code 2.25.0}, planned to be removed!
+     * Use {@link #hasLogger(String, MessageFactory)} instead.
      */
+    @Deprecated
     public boolean hasLogger(final String name) {
         requireNonNull(name, "name");
         final @Nullable T logger = getLogger(name);
@@ -207,7 +223,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @return {@code true}, if the logger exists; {@code false} otherwise.
      * @since 2.5
      */
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, @Nullable final MessageFactory messageFactory) {
         requireNonNull(name, "name");
         final @Nullable T logger = getLogger(name, messageFactory);
         return logger != null;

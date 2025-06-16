@@ -16,7 +16,8 @@
  */
 package org.apache.log4j.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,12 +30,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class SyslogAppenderTest {
+class SyslogAppenderTest {
 
     private static MockSyslogServer syslogServer;
 
     @BeforeAll
-    public static void beforeClass() throws IOException {
+    static void beforeAll() throws IOException {
         initTCPTestEnvironment(null);
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
         System.setProperty(
@@ -42,24 +43,24 @@ public class SyslogAppenderTest {
     }
 
     @AfterAll
-    public static void afterClass() {
+    static void afterAll() {
         System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
         syslogServer.shutdown();
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    void sendMessage() throws Exception {
         final Logger logger = LogManager.getLogger(SyslogAppenderTest.class);
         logger.info("This is a test");
         List<String> messages = null;
         for (int i = 0; i < 5; ++i) {
             Thread.sleep(250);
             messages = syslogServer.getMessageList();
-            if (messages != null && messages.size() > 0) {
+            if (messages != null && !messages.isEmpty()) {
                 break;
             }
         }
-        assertThat(messages).hasSize(1);
+        assertThat(messages, hasSize(1));
     }
 
     protected static void initTCPTestEnvironment(final String messageFormat) throws IOException {

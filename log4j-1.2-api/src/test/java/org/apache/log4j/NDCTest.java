@@ -16,28 +16,29 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Stack;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class NDCTest {
+class NDCTest {
 
     @Test
-    public void testPopEmpty() {
+    void testPopEmpty() {
         NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.pop());
+        assertEquals(Strings.EMPTY, NDC.pop());
     }
 
     @Test
-    public void testPeekEmpty() {
+    void testPeekEmpty() {
         NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.peek());
+        assertEquals(Strings.EMPTY, NDC.peek());
     }
 
     @SuppressWarnings({"rawtypes"})
     @Test
-    public void testCompileCloneToInherit() {
+    void testCompileCloneToInherit() {
         NDC.inherit(NDC.cloneStack());
         final Stack stackRaw = NDC.cloneStack();
         NDC.inherit(stackRaw);

@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
@@ -39,18 +42,23 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for LoggerConfig.
  */
-public class LoggerConfigTest {
+class LoggerConfigTest {
 
     private static final String FQCN = LoggerConfigTest.class.getName();
 
     private static LoggerConfig createForProperties(final Property[] properties) {
-        return LoggerConfig.createLogger(
-                true, Level.INFO, "name", "false", new AppenderRef[0], properties, new NullConfiguration(), null);
+        return LoggerConfig.newBuilder()
+                .withConfig(new NullConfiguration())
+                .withAdditivity(true)
+                .withLevel(Level.INFO)
+                .withLoggerName("name")
+                .withIncludeLocation("false")
+                .withProperties(properties)
+                .build();
     }
 
-    @SuppressWarnings({"deprecation"})
     @Test
-    public void testPropertiesWithoutSubstitution() {
+    void testPropertiesWithoutSubstitution() {
         assertNull(createForProperties(null).getPropertyList(), "null propertiesList");
 
         final Property[] all = new Property[] {
@@ -70,7 +78,7 @@ public class LoggerConfigTest {
     }
 
     @Test
-    public void testPropertiesWithSubstitution() {
+    void testPropertiesWithSubstitution() {
         final Property[] all = new Property[] {
             Property.createProperty("key1", "value1-${sys:user.name}"),
             Property.createProperty("key2", "value2-${sys:user.name}"),
@@ -98,7 +106,7 @@ public class LoggerConfigTest {
     }
 
     @Test
-    public void testLevel() {
+    void testLevel() {
         final Configuration configuration = new DefaultConfiguration();
         final LoggerConfig config1 = LoggerConfig.newBuilder()
                 .withLoggerName("org.apache.logging.log4j.test")
@@ -112,21 +120,21 @@ public class LoggerConfigTest {
                 .withConfig(configuration)
                 .build();
         config1.setParent(config2);
-        assertEquals(config1.getLevel(), Level.ERROR, "Unexpected Level");
-        assertEquals(config1.getExplicitLevel(), Level.ERROR, "Unexpected explicit level");
-        assertEquals(config2.getLevel(), Level.ERROR, "Unexpected Level");
+        assertEquals(Level.ERROR, config1.getLevel(), "Unexpected Level");
+        assertEquals(Level.ERROR, config1.getExplicitLevel(), "Unexpected explicit level");
+        assertEquals(Level.ERROR, config2.getLevel(), "Unexpected Level");
         assertNull(config2.getExplicitLevel(), "Unexpected explicit level");
     }
 
     @Test
-    public void testSingleFilterInvocation() {
+    void testSingleFilterInvocation() {
         final Configuration configuration = new NullConfiguration();
         final Filter filter = mock(Filter.class);
         final LoggerConfig config = LoggerConfig.newBuilder()
                 .withLoggerName(FQCN)
                 .withConfig(configuration)
                 .withLevel(Level.INFO)
-                .withFilter(filter)
+                .setFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);
         when(appender.isStarted()).thenReturn(true);
@@ -136,5 +144,19 @@ public class LoggerConfigTest {
         config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
         verify(appender, times(1)).append(any());
         verify(filter, times(1)).filter(any());
+    }
+
+    @Test
+    void testLevelAndRefsWithoutAppenderRef() {
+        final Configuration configuration = mock(PropertiesConfiguration.class);
+        final LoggerConfig.Builder builder = LoggerConfig.newBuilder()
+                .withLoggerName(FQCN)
+                .withConfig(configuration)
+                .withLevelAndRefs(Level.INFO.name());
+
+        final LoggerConfig loggerConfig = builder.build();
+
+        assertNotNull(loggerConfig.getAppenderRefs());
+        assertTrue(loggerConfig.getAppenderRefs().isEmpty());
     }
 }

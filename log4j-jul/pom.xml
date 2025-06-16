@@ -73,8 +73,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -92,15 +92,6 @@
           <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
         </configuration>
-        <dependencies>
-          <!-- Manual override of the Surefire provider -->
-          <!-- The `surefire-platform` provider initializes JUL before calling our tests -->
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>${surefire.version}</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>default-test</id>
@@ -109,9 +100,12 @@
             </goals>
             <phase>test</phase>
             <configuration>
-              <excludes>
-                <exclude>Log4jBridgeHandlerTest.java</exclude>
-              </excludes>
+              <includes>
+                <include>DefaultLevelConverterCustomJulLevelsTest.java</include>
+                <include>DefaultLevelConverterTest.java</include>
+                <include>JavaLevelTranslatorTest.java</include>
+                <include>Log4jLevelTranslatorTest.java</include>
+              </includes>
             </configuration>
           </execution>
           <execution>
@@ -128,6 +122,56 @@
               <systemPropertyVariables>
                 <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
                 <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>async-logger-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <includes>
+                <include>**/AsyncLoggerThreadsTest.java</include>
+              </includes>
+              <!-- Use custom `j.u.l.LogManager` and an asynchronous selector -->
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.apache.logging.log4j.jul.LogManager</java.util.logging.manager>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.async.AsyncLoggerContextSelector</log4j2.contextSelector>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>log-manager</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <includes>
+                <include>**/*ApiLoggerTest.java</include>
+                <include>**/*BracketInNotInterpolatedMessageTest.java</include>
+                <include>**/*CallerInformationTest.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.apache.logging.log4j.jul.LogManager</java.util.logging.manager>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>core-logger-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <includes>
+                <include>**/CoreLoggerTest.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.apache.logging.log4j.jul.LogManager</java.util.logging.manager>
+                <log4j2.julLoggerAdapter>org.apache.logging.log4j.jul.CoreLoggerAdapter</log4j2.julLoggerAdapter>
               </systemPropertyVariables>
             </configuration>
           </execution>

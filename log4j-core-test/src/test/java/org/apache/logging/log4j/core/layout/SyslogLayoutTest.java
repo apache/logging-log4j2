@@ -37,7 +37,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class SyslogLayoutTest {
+class SyslogLayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
@@ -50,14 +50,14 @@ public class SyslogLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -65,7 +65,7 @@ public class SyslogLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    void testLayout() {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }

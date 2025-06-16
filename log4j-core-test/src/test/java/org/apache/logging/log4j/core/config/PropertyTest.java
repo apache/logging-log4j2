@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
  *  <Property name="" value="" /> not working
  */
 @LoggerContextSource("configPropertyTest.xml")
-public class PropertyTest {
+class PropertyTest {
 
     @Test
-    public void testEmptyAttribute(@Named("List") final ListAppender app) throws Exception {
+    void testEmptyAttribute(@Named("List") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
         logger.info("msg");
 
@@ -70,7 +70,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void testPropertyValues() {
+    void testPropertyValues() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final StrSubstitutor sub = ctx.getConfiguration().getStrSubstitutor();
         // <Property name="emptyElementKey" />
@@ -90,7 +90,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void testLoggerPropertyValues() throws Exception {
+    void testLoggerPropertyValues() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final List<Property> rootLoggerProperties =
                 ctx.getConfiguration().getLoggerConfig(LoggerConfig.ROOT).getPropertyList();
@@ -125,12 +125,12 @@ public class PropertyTest {
     }
 
     @Test
-    public void testNullValueIsConvertedToEmptyString() { // LOG4J2-1313 <Property name="x" /> support
+    void testNullValueIsConvertedToEmptyString() { // LOG4J2-1313 <Property name="x" /> support
         assertEquals("", Property.createProperty("name", null).getValue());
     }
 
     @Test
-    public void testIsValueNeedsLookup() {
+    void testIsValueNeedsLookup() {
         assertTrue(Property.createProperty("", "${").isValueNeedsLookup(), "with ${ as value");
         assertTrue(Property.createProperty("", "blah${blah").isValueNeedsLookup(), "with ${ in value");
         assertFalse(Property.createProperty("", "").isValueNeedsLookup(), "empty value");

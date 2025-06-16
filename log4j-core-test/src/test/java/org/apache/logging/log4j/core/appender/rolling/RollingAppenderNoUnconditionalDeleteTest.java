@@ -64,7 +64,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = this.loggerContextRule.getLogger();
     }
 

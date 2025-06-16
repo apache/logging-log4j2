@@ -32,17 +32,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Tests Log4j2 StringEncoding performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-// (Quick build: mvn -DskipTests=true clean package -pl log4j-perf -am )
-//
-// java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 10
-//
-// Latency numbers instead of throughput:
-// java -jar log4j-perf/target/benchmarks.jar ".*StringEncoding.*" -f 1 -wi 5 -i 10 -tu ns -bm sample
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class StringEncodingBenchmark {
 

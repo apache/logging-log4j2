@@ -26,21 +26,21 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @ResourceLock("log4j2.LoggerContextFactory")
-public class ConfiguratorErrorTest {
+class ConfiguratorErrorTest {
 
     @RegisterExtension
     static final LoggerContextFactoryExtension EXTENSION =
             new LoggerContextFactoryExtension(SimpleLoggerContextFactory.INSTANCE);
 
     @Test
-    public void testErrorNoClassLoader() {
+    void testErrorNoClassLoader() {
         try (final LoggerContext ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml")) {
             assertNull(ctx, "No LoggerContext should have been returned");
         }
     }
 
     @Test
-    public void testErrorNullClassLoader() {
+    void testErrorNullClassLoader() {
         try (final LoggerContext ctx =
                 Configurator.initialize("Test1", null, "target/test-classes/log4j2-config.xml")) {
             assertNull(ctx, "No LoggerContext should have been returned");

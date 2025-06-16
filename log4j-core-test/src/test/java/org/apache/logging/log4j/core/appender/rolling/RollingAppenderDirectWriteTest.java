@@ -36,7 +36,7 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
-public class RollingAppenderDirectWriteTest {
+class RollingAppenderDirectWriteTest {
 
     private final Pattern FILE_PATTERN = Pattern.compile("test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log(\\.gz)?");
     private final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
@@ -46,7 +46,7 @@ public class RollingAppenderDirectWriteTest {
 
     @Test
     @LoggerContextSource
-    public void testAppender(final LoggerContext ctx) throws Exception {
+    void testAppender(final LoggerContext ctx) throws Exception {
         final Logger logger = ctx.getLogger(getClass());
         final int count = 100;
         for (int i = 0; i < count; ++i) {
@@ -62,8 +62,11 @@ public class RollingAppenderDirectWriteTest {
                         final InputStream uncompressed = fileName.endsWith(".gz") ? new GZIPInputStream(is) : is;
                         final BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressed, UTF_8))) {
                     String line;
+                    int lineIndex = 0;
                     while ((line = reader.readLine()) != null) {
-                        assertThat(line).matches(LINE_PATTERN);
+                        assertThat(line)
+                                .as("line %d of file `%s`", ++lineIndex, file)
+                                .matches(LINE_PATTERN);
                         ++found;
                     }
                 }

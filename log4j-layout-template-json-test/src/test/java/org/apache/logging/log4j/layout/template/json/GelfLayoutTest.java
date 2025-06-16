@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.template.json;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -94,16 +93,15 @@ class GelfLayoutTest {
             final Instant logEventInstant,
             final Map<String, Object> jsonTemplateLayoutMap,
             final Map<String, Object> gelfLayoutMap) {
-        final BigDecimal jsonTemplateLayoutTimestamp = (BigDecimal) jsonTemplateLayoutMap.remove("timestamp");
-        final BigDecimal gelfLayoutTimestamp = (BigDecimal) gelfLayoutMap.remove("timestamp");
-        final String description = String.format(
-                "instantEpochSecs=%d.%d, jsonTemplateLayoutTimestamp=%s, gelfLayoutTimestamp=%s",
-                logEventInstant.getEpochSecond(),
-                logEventInstant.getNanoOfSecond(),
-                jsonTemplateLayoutTimestamp,
-                gelfLayoutTimestamp);
-        Assertions.assertThat(jsonTemplateLayoutTimestamp.compareTo(gelfLayoutTimestamp))
-                .as(description)
-                .isEqualTo(0);
+        final Number jsonTemplateLayoutTimestamp = (Number) jsonTemplateLayoutMap.remove("timestamp");
+        final Number gelfLayoutTimestamp = (Number) gelfLayoutMap.remove("timestamp");
+        Assertions.assertThat(jsonTemplateLayoutTimestamp.doubleValue())
+                .as(
+                        "instantEpochSecs=%d.%d, jsonTemplateLayoutTimestamp=%s, gelfLayoutTimestamp=%s",
+                        logEventInstant.getEpochSecond(),
+                        logEventInstant.getNanoOfSecond(),
+                        jsonTemplateLayoutTimestamp,
+                        gelfLayoutTimestamp)
+                .isEqualTo(gelfLayoutTimestamp.doubleValue());
     }
 }

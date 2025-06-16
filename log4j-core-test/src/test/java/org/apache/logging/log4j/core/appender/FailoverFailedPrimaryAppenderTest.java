@@ -43,15 +43,15 @@ public class FailoverFailedPrimaryAppenderTest {
     public static LoggerContextRule init = new LoggerContextRule("log4j-failover.xml");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         app = init.getListAppender("List");
-        foApp = (FailOnceAppender) init.getAppender("Once");
+        foApp = init.getAppender("Once");
         logger = init.getLogger("LoggerTest");
         onceLogger = init.getLogger("Once");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (app != null) {
             app.clear();
         }
@@ -62,12 +62,12 @@ public class FailoverFailedPrimaryAppenderTest {
         logger.error("This is a test");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), events.size(), 1);
+        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), 1, events.size());
         app.clear();
         logger.error("This is a test");
         events = app.getEvents();
         assertNotNull(events);
-        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), events.size(), 1);
+        assertEquals("Incorrect number of events. Should be 1 is " + events.size(), 1, events.size());
     }
 
     @Test
@@ -76,14 +76,14 @@ public class FailoverFailedPrimaryAppenderTest {
         onceLogger.error("Fail again");
         List<LogEvent> events = app.getEvents();
         assertNotNull(events);
-        assertEquals("Incorrect number of events. Should be 2 is " + events.size(), events.size(), 2);
+        assertEquals("Incorrect number of events. Should be 2 is " + events.size(), 2, events.size());
         app.clear();
         Thread.sleep(1100);
         onceLogger.error("Fail after recovery interval");
         onceLogger.error("Second log message");
         events = app.getEvents();
-        assertEquals("Did not recover", events.size(), 0);
+        assertEquals("Did not recover", 0, events.size());
         events = foApp.drainEvents();
-        assertEquals("Incorrect number of events in primary appender", events.size(), 2);
+        assertEquals("Incorrect number of events in primary appender", 2, events.size());
     }
 }

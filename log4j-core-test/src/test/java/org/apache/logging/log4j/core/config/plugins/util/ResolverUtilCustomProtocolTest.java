@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests the ResolverUtil class for custom protocol like bundleresource, vfs, vfszip.
  */
-public class ResolverUtilCustomProtocolTest {
+class ResolverUtilCustomProtocolTest {
 
     static class NoopURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
@@ -59,7 +59,7 @@ public class ResolverUtilCustomProtocolTest {
                 private URLConnection open(final URL url, final Proxy proxy) {
                     return new URLConnection(url) {
                         @Override
-                        public void connect() throws IOException {
+                        public void connect() {
                             // do nothing
                         }
                     };
@@ -141,7 +141,7 @@ public class ResolverUtilCustomProtocolTest {
         }
 
         @Override
-        protected Enumeration<URL> findResources(final String name) throws IOException {
+        protected Enumeration<URL> findResources(final String name) {
             return Collections.enumeration(Arrays.asList(findResource(name)));
         }
     }
@@ -172,41 +172,39 @@ public class ResolverUtilCustomProtocolTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testExtractedPath(final String urlAsString, final String expected) throws Exception {
+    void testExtractedPath(final String urlAsString, final String expected) throws Exception {
         final URL url = new URL(urlAsString);
         assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
-    public void testFindInPackageFromVfsDirectoryURL() throws Exception {
+    void testFindInPackageFromVfsDirectoryURL() throws Exception {
         final File tmpDir = new File(DIR, "resolverutil3");
         try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader(tmpDir, "3")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + tmpDir + "/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin3");
+            assertEquals(1, resolverUtil.getClasses().size(), "Class not found in packages");
             assertEquals(
-                    "Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals(
-                    "Unexpected class resolved",
                     cl.loadClass("customplugin3.FixedString3Layout"),
-                    resolverUtil.getClasses().iterator().next());
+                    resolverUtil.getClasses().iterator().next(),
+                    "Unexpected class resolved");
         }
     }
 
     @Test
-    public void testFindInPackageFromVfsJarURL() throws Exception {
+    void testFindInPackageFromVfsJarURL() throws Exception {
         final File tmpDir = new File(DIR, "resolverutil4");
         try (final URLClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader(tmpDir, "4")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(
                     new SingleURLClassLoader(new URL("vfs:/" + tmpDir + "/customplugin4.jar/customplugin4/"), cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin4");
+            assertEquals(1, resolverUtil.getClasses().size(), "Class not found in packages");
             assertEquals(
-                    "Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals(
-                    "Unexpected class resolved",
                     cl.loadClass("customplugin4.FixedString4Layout"),
-                    resolverUtil.getClasses().iterator().next());
+                    resolverUtil.getClasses().iterator().next(),
+                    "Unexpected class resolved");
         }
     }
 }

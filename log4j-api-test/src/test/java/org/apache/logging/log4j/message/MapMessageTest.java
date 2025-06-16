@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
 /**
  *
  */
-public class MapMessageTest {
+class MapMessageTest {
 
     @Test
-    public void testMap() {
+    void testMap() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -49,7 +49,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testBuilder() {
+    void testBuilder() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg =
                 new StringMapMessage().with("message", testMsg).with("project", "Log4j");
@@ -59,7 +59,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testXML() {
+    void testXML() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -71,7 +71,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testXMLEscape() {
+    void testXMLEscape() {
         final String testMsg = "Test message <foo>";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -81,7 +81,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJSON() {
+    void testJSON() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -92,7 +92,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJSONEscape() {
+    void testJSONEscape() {
         final String testMsg = "Test message \"Hello, World!\"";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -102,7 +102,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJSONEscapeNewlineAndOtherControlCharacters() {
+    void testJSONEscapeNewlineAndOtherControlCharacters() {
         final String testMsg = "hello\tworld\r\nhh\bere is it\f";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("one\ntwo", testMsg);
@@ -112,7 +112,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJsonFormatterNestedObjectSupport() {
+    void testJsonFormatterNestedObjectSupport() {
         final Map<String, Object> map = new LinkedHashMap<>();
         map.put("chars", new char[] {'a', 'b', 'c'});
         map.put("booleans", new boolean[] {true, false});
@@ -157,7 +157,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJsonFormatterInfiniteRecursionPrevention() {
+    void testJsonFormatterInfiniteRecursionPrevention() {
         final List<Object> recursiveValue = Arrays.asList(1, null);
         // noinspection CollectionAddedToSelf
         recursiveValue.set(1, recursiveValue);
@@ -167,13 +167,13 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJsonFormatterMaxDepthViolation() {
+    void testJsonFormatterMaxDepthViolation() {
         assertThrows(
                 IllegalArgumentException.class, () -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1));
     }
 
     @Test
-    public void testJsonFormatterMaxDepthConformance() {
+    void testJsonFormatterMaxDepthConformance() {
         final int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
         final String expectedJson = String.format(
                         "{'key':%s1%s}", StringUtils.repeat("[", depth), StringUtils.repeat("]", depth))
@@ -193,7 +193,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testJava() {
+    void testJava() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
@@ -204,7 +204,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testMutableByDesign() { // LOG4J2-763
+    void testMutableByDesign() { // LOG4J2-763
         final StringMapMessage msg = new StringMapMessage();
 
         // modify parameter before calling msg.getFormattedMessage
@@ -222,21 +222,21 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testGetNonStringValue() {
+    void testGetNonStringValue() {
         final String key = "Key";
         final ObjectMapMessage msg = new ObjectMapMessage().with(key, 1L);
         assertEquals("1", msg.get(key));
     }
 
     @Test
-    public void testRemoveNonStringValue() {
+    void testRemoveNonStringValue() {
         final String key = "Key";
         final ObjectMapMessage msg = new ObjectMapMessage().with(key, 1L);
         assertEquals("1", msg.remove(key));
     }
 
     @Test
-    public void testJSONFormatNonStringValue() {
+    void testJSONFormatNonStringValue() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", 1L);
         final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{'key':1}".replace('\'', '"');
@@ -244,7 +244,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testXMLFormatNonStringValue() {
+    void testXMLFormatNonStringValue() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", 1L);
         final String result = msg.getFormattedMessage(new String[] {"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
@@ -252,7 +252,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testFormatToUsedInOutputXml() {
+    void testFormatToUsedInOutputXml() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[] {"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">formatTo</Entry>\n</Map>";
@@ -260,7 +260,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testFormatToUsedInOutputJson() {
+    void testFormatToUsedInOutputJson() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{\"key\":\"formatTo\"}";
@@ -268,7 +268,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testFormatToUsedInOutputJava() {
+    void testFormatToUsedInOutputJava() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(new String[] {"JAVA"});
         final String expected = "{key=\"formatTo\"}";
@@ -276,7 +276,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testFormatToUsedInOutputDefault() {
+    void testFormatToUsedInOutputDefault() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(null);
         final String expected = "key=\"formatTo\"";
@@ -284,7 +284,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testGetUsesDeepToString() {
+    void testGetUsesDeepToString() {
         final String key = "key";
         final ObjectMapMessage msg = new ObjectMapMessage().with(key, new FormattableTestType());
         final String result = msg.get(key);
@@ -293,7 +293,7 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testRemoveUsesDeepToString() {
+    void testRemoveUsesDeepToString() {
         final String key = "key";
         final ObjectMapMessage msg = new ObjectMapMessage().with(key, new FormattableTestType());
         final String result = msg.remove(key);
@@ -302,14 +302,14 @@ public class MapMessageTest {
     }
 
     @Test
-    public void testTime() throws Exception {
+    void testTime() {
         final Time time = new Time(12, 5, 5);
         final ObjectMapMessage message = new ObjectMapMessage().with("time", time);
-        assertEquals("time=\"" + time.toString() + "\"", message.getFormattedMessage(), "Incorrect time format");
+        assertEquals("time=\"" + time + "\"", message.getFormattedMessage(), "Incorrect time format");
     }
 
     @Test
-    public void testDate() {
+    void testDate() {
         final Date date = new Date(System.currentTimeMillis());
         final ObjectMapMessage message = new ObjectMapMessage().with("date", date);
         assertEquals("date=\"" + date + "\"", message.getFormattedMessage(), "Incorrect date format");

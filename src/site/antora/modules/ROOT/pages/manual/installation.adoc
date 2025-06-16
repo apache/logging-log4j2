@@ -394,6 +394,13 @@ The `spring-boot-starter-log4j2` artifact will automatically install Log4j Core,
 You don't need to add any other dependency or configure JUL anymore.
 See https://docs.spring.io/spring-boot/reference/features/logging.html[Spring Boot Logging documentation] for further information.
 
+[#impl-core-graalvm]
+==== Installing Log4j Core for GraalVM applications
+
+See
+xref:graalvm.adoc#impl-core[Using Log4j Core]
+in our GraalVM guide for more details on how to create GraalVM native applications that use Log4j Core.
+
 [#impl-core-config]
 ==== Configuring Log4j Core
 
@@ -414,19 +421,16 @@ log4j2.xml::
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://logging.apache.org/xml/ns
                                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
-
-  <appenders>
+  <Appenders>
     <Console name="CONSOLE">
       <PatternLayout pattern="%d [%t] %5p %c{1.} - %m%n"/><!--1-->
     </Console>
-  </appenders>
-
-  <loggers>
-    <root level="INFO">
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
       <AppenderRef ref="CONSOLE"/>
-    </root>
-  </loggers>
-
+    </Root>
+  </Loggers>
 </Configuration>
 ----
 
@@ -549,6 +553,13 @@ See also:
 * https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/logging/LogManager.html[`java.util.logging.LogManager`], to learn more about JUL configuration,
 * xref:log4j-to-jul.adoc[] to learn more about the `log4j-to-jul` artifact.
 
+[#impl-jul-graalvm]
+==== Installing JUL for GraalVM applications
+
+See
+xref:graalvm.adoc#impl-jul[Using JUL]
+in our GraalVM guide for more details on how to create GraalVM native applications that use JUL.
+
 [#impl-logback]
 === Installing Logback
 
@@ -592,3 +603,10 @@ runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge
 ====
 
 To configure Logback, see {logback-url}/manual/configuration.html[Logback's configuration documentation].
+
+[#impl-jul-logback]
+==== Installing Logback for GraalVM applications
+
+See
+xref:graalvm.adoc#impl-logback[Using Logback]
+in our GraalVM guide for more details on how to create GraalVM native applications that use Logback.

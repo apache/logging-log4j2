@@ -55,7 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
-public class SocketAppenderReconnectTest {
+class SocketAppenderReconnectTest {
 
     private static final String CLASS_NAME = SocketAppenderReconnectTest.class.getSimpleName();
 
@@ -75,10 +75,11 @@ public class SocketAppenderReconnectTest {
 
             // Start the server.
             server.start("Main", EPHEMERAL_PORT);
-            final int port = server.getServerSocket().getLocalPort();
+            final String serverHost = server.getServerSocket().getInetAddress().getHostAddress();
+            final int serverPort = server.getServerSocket().getLocalPort();
 
             // Initialize the logger context
-            final Configuration config = createConfiguration(port, null);
+            final Configuration config = createConfiguration(serverHost, serverPort, null);
             try (final LoggerContext loggerContext = createStartedLoggerContext(config)) {
 
                 // Configure the error handler
@@ -93,7 +94,7 @@ public class SocketAppenderReconnectTest {
                 verifyLoggingFailure(loggerContext, errorHandler);
 
                 // Start the server again, and verify the logging success.
-                server.start("Main", port);
+                server.start("Main", serverPort);
                 verifyLoggingSuccess(loggerContext, server, errorHandler);
             }
         }
@@ -119,9 +120,9 @@ public class SocketAppenderReconnectTest {
 
                 // Initialize the logger context
                 final Configuration config = createConfiguration(
-                        // Passing an invalid port, since the resolution is supposed to be performed by the mocked host
-                        // resolver anyway.
-                        0, null);
+                        // Passing dummy host & port, since the resolution is supposed to be performed by the mocked
+                        // host resolver anyway.
+                        "localhost", 0, null);
                 try (final LoggerContext loggerContext = createStartedLoggerContext(config)) {
 
                     // Configure the error handler
@@ -213,7 +214,9 @@ public class SocketAppenderReconnectTest {
 
             // Start the 1st server
             server1.start("1st", EPHEMERAL_PORT);
-            final int port = server1.getServerSocket().getLocalPort();
+            final String server1Host =
+                    server1.getServerSocket().getInetAddress().getHostAddress();
+            final int server1Port = server1.getServerSocket().getLocalPort();
 
             // Create the configuration transformer to add the `<Ssl>`, `<KeyStore>`, and `<TrustStore>` elements
             final BiFunction<
@@ -239,7 +242,8 @@ public class SocketAppenderReconnectTest {
                     };
 
             // Initialize the logger context
-            final Configuration config1 = createConfiguration(port, appenderComponentBuilderTransformer);
+            final Configuration config1 =
+                    createConfiguration(server1Host, server1Port, appenderComponentBuilderTransformer);
             try (final LoggerContext loggerContext = createStartedLoggerContext(config1)) {
 
                 // Configure the error handler
@@ -251,7 +255,7 @@ public class SocketAppenderReconnectTest {
 
                 // Stop the 1st server and start the 2nd one (using different SSL configuration!) on the same port
                 server1.close();
-                server2.start("2nd", port);
+                server2.start("2nd", server1Port);
 
                 // Stage the key store files using the 2nd `SSLContext`
                 Files.write(keyStoreFilePath, Files.readAllBytes(Paths.get(keyStore2Location)));
@@ -283,7 +287,8 @@ public class SocketAppenderReconnectTest {
                 //
                 // Hence, the only way is to programmatically build the very same configuration, twice, and use the 1st
                 // one for initialization, and the 2nd one for reconfiguration.
-                final Configuration config2 = createConfiguration(port, appenderComponentBuilderTransformer);
+                final Configuration config2 =
+                        createConfiguration(server1Host, server1Port, appenderComponentBuilderTransformer);
                 loggerContext.reconfigure(config2);
 
                 // Verify the working state on the 2nd server
@@ -293,6 +298,7 @@ public class SocketAppenderReconnectTest {
     }
 
     private static Configuration createConfiguration(
+            final String host,
             final int port,
             @Nullable
                     final BiFunction<
@@ -310,7 +316,7 @@ public class SocketAppenderReconnectTest {
         // Create the appender configuration
         final AppenderComponentBuilder appenderComponentBuilder = configBuilder
                 .newAppender(APPENDER_NAME, "Socket")
-                .addAttribute("host", "localhost")
+                .addAttribute("host", host)
                 .addAttribute("port", port)
                 .addAttribute("ignoreExceptions", false)
                 .addAttribute("reconnectionDelayMillis", 10)
@@ -344,7 +350,7 @@ public class SocketAppenderReconnectTest {
             throws Exception {
 
         // Report status
-        StatusLogger.getLogger().trace("[{}] verifying logging success", CLASS_NAME);
+        StatusLogger.getLogger().debug("[{}] verifying logging success", CLASS_NAME);
 
         // Create messages to log
         final int messageCount = 2;
@@ -361,10 +367,10 @@ public class SocketAppenderReconnectTest {
         await("first socket append")
                 .pollInterval(100, TimeUnit.MILLISECONDS)
                 .atMost(120, TimeUnit.SECONDS)
-                .until(() -> {
+                .ignoreExceptions()
+                .untilAsserted(() -> {
                     final String message = expectedMessages.get(0);
                     logger.info(message);
-                    return true;
                 });
 
         // Reset the error handler
@@ -388,7 +394,7 @@ public class SocketAppenderReconnectTest {
             final LoggerContext loggerContext, final BufferingErrorHandler errorHandler) {
 
         // Report status
-        StatusLogger.getLogger().trace("[{}] verifying logging failure", CLASS_NAME);
+        StatusLogger.getLogger().debug("[{}] verifying logging failure", CLASS_NAME);
 
         // Verify the configuration
         final Logger logger = loggerContext.getRootLogger();

@@ -39,48 +39,48 @@ public class ClockFactoryTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         resetClocks();
     }
 
     @Test
-    public void testDefaultIsSystemClock() {
+    void testDefaultIsSystemClock() {
         System.clearProperty(ClockFactory.PROPERTY_NAME);
         assertSame(SystemClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifySystemClockShort() {
+    void testSpecifySystemClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "SystemClock");
         assertSame(SystemClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifySystemClockLong() {
+    void testSpecifySystemClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, SystemClock.class.getName());
         assertSame(SystemClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifyCachedClockShort() {
+    void testSpecifyCachedClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "CachedClock");
         assertSame(CachedClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifyCachedClockLong() {
+    void testSpecifyCachedClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, CachedClock.class.getName());
         assertSame(CachedClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifyCoarseCachedClockShort() {
+    void testSpecifyCoarseCachedClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "CoarseCachedClock");
         assertSame(CoarseCachedClock.class, ClockFactory.getClock().getClass());
     }
 
     @Test
-    public void testSpecifyCoarseCachedClockLong() {
+    void testSpecifyCoarseCachedClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, CoarseCachedClock.class.getName());
         assertSame(CoarseCachedClock.class, ClockFactory.getClock().getClass());
     }
@@ -93,7 +93,7 @@ public class ClockFactoryTest {
     }
 
     @Test
-    public void testCustomClock() {
+    void testCustomClock() {
         System.setProperty(ClockFactory.PROPERTY_NAME, MyClock.class.getName());
         assertSame(MyClock.class, ClockFactory.getClock().getClass());
     }

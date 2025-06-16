@@ -66,7 +66,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "beanshell, Groovy, Javascript")
 @Tag("functional")
-public class Configurator1Test {
+class Configurator1Test {
 
     private static final String CONFIG_NAME = "TestConfigurator";
 
@@ -91,7 +91,7 @@ public class Configurator1Test {
     };
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (ctx != null) {
             Configurator.shutdown(ctx);
@@ -100,7 +100,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_Name_PathName() throws Exception {
+    void testInitialize_Name_PathName() {
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -116,7 +116,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_Name_ClassLoader_URI() throws Exception {
+    void testInitialize_Name_ClassLoader_URI() {
         ctx = Configurator.initialize(
                 "Test1", null, new File("target/test-classes/log4j2-TestConfigurator.xml").toURI());
         LogManager.getLogger("org.apache.test.TestConfigurator");
@@ -133,7 +133,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_InputStream_File() throws Exception {
+    void testInitialize_InputStream_File() throws Exception {
         final File file = new File("target/test-classes/log4j2-TestConfigurator.xml");
         final InputStream is = new FileInputStream(file);
         final ConfigurationSource source = new ConfigurationSource(is, file);
@@ -152,7 +152,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_InputStream_Path() throws Exception {
+    void testInitialize_InputStream_Path() throws Exception {
         final Path path = Paths.get("target/test-classes/log4j2-TestConfigurator.xml");
         final InputStream is = Files.newInputStream(path);
         final ConfigurationSource source = new ConfigurationSource(is, path);
@@ -171,7 +171,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_NullClassLoader_ConfigurationSourceWithInputStream_NoId() throws Exception {
+    void testInitialize_NullClassLoader_ConfigurationSourceWithInputStream_NoId() throws Exception {
         final InputStream is = new FileInputStream("target/test-classes/log4j2-TestConfigurator.xml");
         final ConfigurationSource source = new ConfigurationSource(is);
         ctx = Configurator.initialize(null, source);
@@ -189,7 +189,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testInitialize_Name_LocationName() throws Exception {
+    void testInitialize_Name_LocationName() {
         ctx = Configurator.initialize("Test1", "log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -205,7 +205,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testFromClassPathProperty() throws Exception {
+    void testFromClassPathProperty() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-TestConfigurator.xml");
         ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
@@ -222,7 +222,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testFromClassPathWithClassPathPrefix() throws Exception {
+    void testFromClassPathWithClassPathPrefix() {
         ctx = Configurator.initialize("Test1", "classpath:log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -238,7 +238,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testFromClassPathWithClassLoaderPrefix() throws Exception {
+    void testFromClassPathWithClassLoaderPrefix() {
         ctx = Configurator.initialize("Test1", "classloader:log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -254,7 +254,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testByName() throws Exception {
+    void testByName() {
         ctx = Configurator.initialize("-TestConfigurator", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -270,7 +270,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testReconfiguration() throws Exception {
+    void testReconfiguration() throws Exception {
         final File file = new File("target/test-classes/log4j2-TestConfigurator.xml");
         assertTrue(file.setLastModified(System.currentTimeMillis() - 120000), "setLastModified should have succeeded.");
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-TestConfigurator.xml");
@@ -307,7 +307,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testEnvironment() throws Exception {
+    void testEnvironment() {
         ctx = Configurator.initialize("-TestConfigurator", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
@@ -327,17 +327,17 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testNoLoggers() throws Exception {
+    void testNoLoggers() {
         ctx = Configurator.initialize("Test1", "bad/log4j-loggers.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
-        final String name = DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(config.hashCode());
+        final String name = "Configurator1Test.testNoLoggers";
         assertEquals(name, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
-    public void testBadStatus() throws Exception {
+    void testBadStatus() {
         ctx = Configurator.initialize("Test1", "bad/log4j-status.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
@@ -349,7 +349,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testBadFilterParam() throws Exception {
+    void testBadFilterParam() {
         ctx = Configurator.initialize("Test1", "bad/log4j-badfilterparam.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
@@ -362,7 +362,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testNoFilters() throws Exception {
+    void testNoFilters() {
         ctx = Configurator.initialize("Test1", "bad/log4j-nofilter.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
@@ -377,7 +377,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testBadLayout() throws Exception {
+    void testBadLayout() {
         ctx = Configurator.initialize("Test1", "bad/log4j-badlayout.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
@@ -386,14 +386,14 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testBadFileName() throws Exception {
+    void testBadFileName() {
         final StringBuilder dir = new StringBuilder("/VeryLongDirectoryName");
 
         for (final String element : CHARS) {
             dir.append(element);
             dir.append(toRootUpperCase(element));
         }
-        final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
+        final String value = FILESEP.equals("/") ? dir + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);
         ctx = Configurator.initialize("Test1", "bad/log4j-badfilename.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
@@ -404,7 +404,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testBuilder() throws Exception {
+    void testBuilder() {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
@@ -429,7 +429,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testRolling() throws Exception {
+    void testRolling() {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
         builder.setStatusLevel(Level.ERROR);
@@ -469,7 +469,7 @@ public class Configurator1Test {
     }
 
     @Test
-    public void testBuilderWithScripts() throws Exception {
+    void testBuilderWithScripts() {
         final String script =
                 "if (logEvent.getLoggerName().equals(\"NoLocation\")) {\n" + "                return \"NoLocation\";\n"
                         + "            } else if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf(\"FLOW\")) {\n"

@@ -47,6 +47,7 @@ import org.apache.logging.log4j.util.Strings;
  * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
  * </p>
  */
+@Deprecated
 public class ThrowableProxy implements Serializable {
 
     private static final char EOL = Chars.LF;

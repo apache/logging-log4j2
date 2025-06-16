@@ -34,17 +34,6 @@ import org.openjdk.jmh.annotations.State;
 /**
  * Tests performance of various clock implementation.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*Clocks.*" -f 1 -wi 5 -i 5 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class ClocksBenchmark {
 

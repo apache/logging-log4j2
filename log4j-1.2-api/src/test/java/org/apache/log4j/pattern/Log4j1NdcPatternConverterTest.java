@@ -16,42 +16,39 @@
  */
 package org.apache.log4j.pattern;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
+import org.junit.jupiter.api.Test;
 
-public class Log4j1NdcPatternConverterTest {
-
-    @Rule
-    public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
+@UsingThreadContextStack
+class Log4j1NdcPatternConverterTest {
 
     @Test
-    public void testEmpty() {
+    void testEmpty() {
         testConverter("");
     }
 
     @Test
-    public void test1() {
+    void test1() {
         ThreadContext.push("foo");
         testConverter("foo");
     }
 
     @Test
-    public void test2() {
+    void test2() {
         ThreadContext.push("foo");
         ThreadContext.push("bar");
         testConverter("foo bar");
     }
 
     @Test
-    public void test3() {
+    void test3() {
         ThreadContext.push("foo");
         ThreadContext.push("bar");
         ThreadContext.push("baz");

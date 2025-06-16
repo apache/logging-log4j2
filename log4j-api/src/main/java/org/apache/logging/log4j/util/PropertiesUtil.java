@@ -501,6 +501,7 @@ public final class PropertiesUtil {
     private static final class Environment {
 
         private final Set<PropertySource> sources = ConcurrentHashMap.newKeySet();
+        private final ThreadLocal<PropertySource> CURRENT_PROPERTY_SOURCE = new ThreadLocal<>();
 
         private Environment(final PropertySource propertySource) {
             final PropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
@@ -552,21 +553,35 @@ public final class PropertiesUtil {
         }
 
         private boolean sourceContainsProperty(final PropertySource source, final String key) {
-            try {
-                return source.containsProperty(key);
-            } catch (final Exception e) {
-                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
-                return false;
+            PropertySource recursiveSource = CURRENT_PROPERTY_SOURCE.get();
+            if (recursiveSource == null) {
+                CURRENT_PROPERTY_SOURCE.set(source);
+                try {
+                    return source.containsProperty(key);
+                } catch (final Exception e) {
+                    LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                } finally {
+                    CURRENT_PROPERTY_SOURCE.remove();
+                }
             }
+            LOGGER.warn("Recursive call to `containsProperty()` from property source {}.", recursiveSource);
+            return false;
         }
 
         private String sourceGetProperty(final PropertySource source, final String key) {
-            try {
-                return source.getProperty(key);
-            } catch (final Exception e) {
-                LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
-                return null;
+            PropertySource recursiveSource = CURRENT_PROPERTY_SOURCE.get();
+            if (recursiveSource == null) {
+                CURRENT_PROPERTY_SOURCE.set(source);
+                try {
+                    return source.getProperty(key);
+                } catch (final Exception e) {
+                    LOGGER.warn("Failed to retrieve Log4j property {} from property source {}.", key, source, e);
+                } finally {
+                    CURRENT_PROPERTY_SOURCE.remove();
+                }
             }
+            LOGGER.warn("Recursive call to `getProperty()` from property source {}.", recursiveSource);
+            return null;
         }
 
         private boolean containsKey(final String key) {

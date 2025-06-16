@@ -16,79 +16,38 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Outputs the Throwable portion of the LoggingEvent as a full stack trace
- * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
- * the number of lines to print is explicitly specified.
- * <p>
- * The extended stack trace will also include the location of where the class was loaded from and the
- * version of the jar if available.
+ * {@link ThrowablePatternConverter} variant where the stack trace causal chain is rendered in reverse order.
  */
+@NullMarked
 @Plugin(name = "RootThrowablePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"rEx", "rThrowable", "rException"})
 public final class RootThrowablePatternConverter extends ThrowablePatternConverter {
 
-    /**
-     * Private constructor.
-     *
-     * @param config the Configuration or {@code null}
-     * @param options Options, may be null.
-     */
-    private RootThrowablePatternConverter(final Configuration config, final String[] options) {
-        super("RootThrowable", "throwable", options, config);
+    private RootThrowablePatternConverter(@Nullable final Configuration config, @Nullable final String[] options) {
+        super(
+                "RootThrowable",
+                "throwable",
+                options,
+                config,
+                ThrowableInvertedPropertyRendererFactory.INSTANCE,
+                ThrowableInvertedStackTraceRendererFactory.INSTANCE);
     }
 
     /**
-     * Gets an instance of the class.
+     * Creates an instance of the class.
      *
-     * @param config The Configuration or {@code null}.
-     * @param options pattern options, may be null.  If first element is "short",
-     *                only the first line of the throwable will be formatted.
-     * @return instance of class.
+     * @param config a configuration
+     * @param options the pattern options
+     * @return a new instance
      */
-    public static RootThrowablePatternConverter newInstance(final Configuration config, final String[] options) {
+    public static RootThrowablePatternConverter newInstance(
+            @Nullable final Configuration config, @Nullable final String[] options) {
         return new RootThrowablePatternConverter(config, options);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final ThrowableProxy proxy = event.getThrownProxy();
-        final Throwable throwable = event.getThrown();
-        if (throwable != null && options.anyLines()) {
-            if (proxy == null) {
-                super.format(event, toAppendTo);
-                return;
-            }
-            final String trace = proxy.getCauseStackTraceAsString(
-                    options.getIgnorePackages(), options.getTextRenderer(), getSuffix(event), options.getSeparator());
-            final int len = toAppendTo.length();
-            if (len > 0 && !Character.isWhitespace(toAppendTo.charAt(len - 1))) {
-                toAppendTo.append(' ');
-            }
-            if (!options.allLines() || !Strings.LINE_SEPARATOR.equals(options.getSeparator())) {
-                final StringBuilder sb = new StringBuilder();
-                final String[] array = trace.split(Strings.LINE_SEPARATOR);
-                final int limit = options.minLines(array.length) - 1;
-                for (int i = 0; i <= limit; ++i) {
-                    sb.append(array[i]);
-                    if (i < limit) {
-                        sb.append(options.getSeparator());
-                    }
-                }
-                toAppendTo.append(sb.toString());
-
-            } else {
-                toAppendTo.append(trace);
-            }
-        }
     }
 }

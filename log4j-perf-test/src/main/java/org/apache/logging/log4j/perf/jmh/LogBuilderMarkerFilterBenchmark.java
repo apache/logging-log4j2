@@ -37,32 +37,11 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 /**
- * <p>
  * Compares {@link Logger} and {@link LogBuilder} in the presence or absence of
  * a global filter. In the absence of a global filter ({@code -Dnofilter}) the
  * {@link Logger} can return a no-op {@link LogBuilder} if the level is
  * disabled. No such an optimization is possible in the presence of a global
  * filter.
- * </p>
- * <p>
- * HOW TO RUN THIS TEST
- * </p>
- * <ul>
- * <li>single thread:
- *
- * <pre>
- * java -jar target/benchmarks.jar ".*LogBuilderMarkerFilterBenchmark.*" -p useFilter=true,false
- * </pre>
- *
- * </li>
- * <li>multiple threads (for example, 4 threads):
- *
- * <pre>
- * java -jar target/benchmarks.jar ".*LogBuilderMarkerFilterBenchmark.*" -p useFilter=true,false -t 4
- * </pre>
- *
- * </li>
- * </ul>
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)

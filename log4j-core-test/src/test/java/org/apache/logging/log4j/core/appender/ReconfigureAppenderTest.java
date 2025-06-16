@@ -32,11 +32,11 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Builder;
 import org.junit.jupiter.api.Test;
 
-public class ReconfigureAppenderTest {
+class ReconfigureAppenderTest {
     private RollingFileAppender appender;
 
     @Test
-    public void addAndRemoveAppenderTest() {
+    void addAndRemoveAppenderTest() {
         // this will create a rolling file appender and add it to the logger
         // of this class. The file manager is created for the first time.
         // see AbstractManager.getManager(...).

@@ -75,8 +75,8 @@ final class JULLogger extends AbstractLogger {
     // ERROR and FATAL.
     private java.util.logging.Level convertLevel(final Level level) {
         switch (level.getStandardLevel()) {
-                // Test in logical order of likely frequency of use
-                // Must be kept in sync with #getLevel()
+            // Test in logical order of likely frequency of use
+            // Must be kept in sync with #getLevel()
             case ALL:
                 return java.util.logging.Level.ALL;
             case TRACE:

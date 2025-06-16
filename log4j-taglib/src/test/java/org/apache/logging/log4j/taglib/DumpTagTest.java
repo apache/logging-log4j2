@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -26,23 +26,23 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockJspWriter;
 import org.springframework.mock.web.MockPageContext;
 
 /**
  *
  */
-public class DumpTagTest {
+class DumpTagTest {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
     private Writer writer;
     private ByteArrayOutputStream output;
     private MockPageContext context;
     private DumpTag tag;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.output = new ByteArrayOutputStream();
         this.writer = new OutputStreamWriter(this.output, UTF8);
 
@@ -60,64 +60,64 @@ public class DumpTagTest {
     }
 
     @Test
-    public void testDoEndTagDefaultPageScopeNoAttributes() throws Exception {
+    void testDoEndTagDefaultPageScopeNoAttributes() throws Exception {
         final int returnValue = this.tag.doEndTag();
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, returnValue);
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
-        assertEquals("The output is not correct.", "<dl></dl>", output);
+        assertEquals("<dl></dl>", output, "The output is not correct.");
     }
 
     @Test
-    public void testDoEndTagDefaultPageScope() throws Exception {
+    void testDoEndTagDefaultPageScope() throws Exception {
         this.context.setAttribute("testAttribute01", "testValue01", PageContext.PAGE_SCOPE);
         this.context.setAttribute("anotherAttribute02", "finalValue02", PageContext.PAGE_SCOPE);
         this.context.setAttribute("badAttribute03", "skippedValue03", PageContext.SESSION_SCOPE);
 
         final int returnValue = this.tag.doEndTag();
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, returnValue);
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
         assertEquals(
-                "The output is not correct.",
                 "<dl>" + "<dt><code>testAttribute01</code></dt><dd><code>testValue01</code></dd>"
                         + "<dt><code>anotherAttribute02</code></dt><dd><code>finalValue02</code></dd>"
                         + "</dl>",
-                output);
+                output,
+                "The output is not correct.");
     }
 
     @Test
-    public void testDoEndTagSessionScopeNoAttributes() throws Exception {
+    void testDoEndTagSessionScopeNoAttributes() throws Exception {
         this.context.setAttribute("badAttribute01", "skippedValue01", PageContext.PAGE_SCOPE);
 
         this.tag.setScope("session");
         final int returnValue = this.tag.doEndTag();
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, returnValue);
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
-        assertEquals("The output is not correct.", "<dl></dl>", output);
+        assertEquals("<dl></dl>", output, "The output is not correct.");
     }
 
     @Test
-    public void testDoEndTagSessionScope() throws Exception {
+    void testDoEndTagSessionScope() throws Exception {
         this.context.setAttribute("otherAttribute03", "lostValue03", PageContext.PAGE_SCOPE);
         this.context.setAttribute("coolAttribute01", "weirdValue01", PageContext.SESSION_SCOPE);
         this.context.setAttribute("testAttribute02", "testValue02", PageContext.SESSION_SCOPE);
 
         this.tag.setScope("session");
         final int returnValue = this.tag.doEndTag();
-        assertEquals("The return value is not correct.", Tag.EVAL_PAGE, returnValue);
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
         assertEquals(
-                "The output is not correct.",
                 "<dl>" + "<dt><code>coolAttribute01</code></dt><dd><code>weirdValue01</code></dd>"
                         + "<dt><code>testAttribute02</code></dt><dd><code>testValue02</code></dd>"
                         + "</dl>",
-                output);
+                output,
+                "The output is not correct.");
     }
 }

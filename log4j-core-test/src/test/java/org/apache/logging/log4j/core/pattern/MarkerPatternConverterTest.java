@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests {@link MarkerPatternConverter}.
  */
-public class MarkerPatternConverterTest {
+class MarkerPatternConverterTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
         final Marker eventMarker = MarkerManager.getMarker("EVENT");
         final Marker auditMarker = MarkerManager.getMarker("AUDIT").setParents(eventMarker);

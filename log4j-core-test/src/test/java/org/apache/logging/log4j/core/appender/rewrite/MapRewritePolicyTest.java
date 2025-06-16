@@ -40,14 +40,14 @@ import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class MapRewritePolicyTest {
+class MapRewritePolicyTest {
     private static final StringMap stringMap = ContextDataFactory.createContextData();
     private static Map<String, String> map = new HashMap<>();
     private static KeyValuePair[] rewrite;
     private static LogEvent logEvent0, logEvent1, logEvent2, logEvent3;
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         stringMap.putValue("test1", "one");
         stringMap.putValue("test2", "two");
         map = stringMap.toMap();
@@ -91,7 +91,7 @@ public class MapRewritePolicyTest {
     }
 
     @Test
-    public void addTest() {
+    void addTest() {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy("Add", rewrite);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
@@ -111,7 +111,7 @@ public class MapRewritePolicyTest {
     }
 
     @Test
-    public void updateTest() {
+    void updateTest() {
         final MapRewritePolicy updatePolicy = MapRewritePolicy.createPolicy("Update", rewrite);
         LogEvent rewritten = updatePolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
@@ -131,7 +131,7 @@ public class MapRewritePolicyTest {
     }
 
     @Test
-    public void defaultIsAdd() {
+    void defaultIsAdd() {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy(null, rewrite);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
@@ -163,7 +163,6 @@ public class MapRewritePolicyTest {
         assertThat("wrong size", updatedMap, hasSize(2));
     }
 
-    @SuppressWarnings("deprecation")
     private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
         // Ensure that everything but the Mapped Data is still the same
         assertEquals(orig.getLoggerName(), changed.getLoggerName(), "LoggerName changed");
@@ -171,8 +170,8 @@ public class MapRewritePolicyTest {
         assertEquals(orig.getLoggerFqcn(), changed.getLoggerFqcn(), "FQCN changed");
         assertEquals(orig.getLevel(), changed.getLevel(), "Level changed");
         assertArrayEquals(
-                orig.getThrown() == null ? null : orig.getThrownProxy().getExtendedStackTrace(),
-                changed.getThrown() == null ? null : changed.getThrownProxy().getExtendedStackTrace(),
+                orig.getThrown() == null ? null : orig.getThrown().getStackTrace(),
+                changed.getThrown() == null ? null : changed.getThrown().getStackTrace(),
                 "Throwable changed");
         assertEquals(orig.getContextData(), changed.getContextData(), "ContextData changed");
         assertEquals(orig.getContextStack(), changed.getContextStack(), "ContextStack changed");

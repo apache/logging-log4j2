@@ -17,13 +17,14 @@
 package org.apache.logging.log4j.core.appender;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
@@ -90,11 +91,11 @@ public class XmlCompleteFileAppenderTest {
         }
         assertNotNull("line1", line1);
         final String msg1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        assertTrue("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', line1.equals(msg1));
+        assertEquals("line1 incorrect: [" + line1 + "], does not contain: [" + msg1 + ']', msg1, line1);
 
         assertNotNull("line2", line2);
         final String msg2 = "<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">";
-        assertTrue("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', line2.equals(msg2));
+        assertEquals("line2 incorrect: [" + line2 + "], does not contain: [" + msg2 + ']', msg2, line2);
 
         assertNotNull("line3", line3);
         final String msg3 = "<Event ";
@@ -109,7 +110,7 @@ public class XmlCompleteFileAppenderTest {
         assertTrue("line5 incorrect: [" + line5 + "], does not contain: [" + msg5 + ']', line5.contains(msg5));
 
         final String location = "testFlushAtEndOfBatch";
-        assertTrue("no location", !line1.contains(location));
+        assertFalse("no location", line1.contains(location));
     }
 
     /**
@@ -162,7 +163,7 @@ public class XmlCompleteFileAppenderTest {
             2, // "  </Event>\n" +
             0, // "</Events>\n";
         };
-        final List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
+        final List<String> lines1 = Files.readAllLines(logFile.toPath(), StandardCharsets.UTF_8);
 
         assertEquals("number of lines", indentations.length, lines1.size());
         for (int i = 0; i < indentations.length; i++) {

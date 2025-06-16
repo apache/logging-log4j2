@@ -51,43 +51,43 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <docker-maven-plugin.version>0.45.0</docker-maven-plugin.version>
-    <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
+    <docker-maven-plugin.version>0.46.0</docker-maven-plugin.version>
+    <exam-maven-plugin.version>4.14.0</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.5.0</surefire.version>
+    <surefire.version>3.5.2</surefire.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>6.1.3</activemq.version>
+    <activemq.version>6.1.6</activemq.version>
     <angus-activation.version>2.0.2</angus-activation.version>
     <angus-mail.version>2.0.3</angus-mail.version>
-    <assertj.version>3.26.3</assertj.version>
-    <awaitility.version>4.2.2</awaitility.version>
+    <assertj.version>3.27.3</assertj.version>
+    <awaitility.version>4.3.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <bnd.annotation.version>7.1.0</bnd.annotation.version>
-    <cassandra.version>3.11.18</cassandra.version>
+    <cassandra.version>3.11.19</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
-    <commons-codec.version>1.17.1</commons-codec.version>
+    <commons-codec.version>1.18.0</commons-codec.version>
     <commons-compress.version>1.27.1</commons-compress.version>
-    <commons-csv.version>1.11.0</commons-csv.version>
-    <commons-dbcp2.version>2.12.0</commons-dbcp2.version>
-    <commons-io.version>2.17.0</commons-io.version>
+    <commons-csv.version>1.14.0</commons-csv.version>
+    <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
+    <commons-io.version>2.19.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
-    <commons-logging.version>1.3.4</commons-logging.version>
+    <commons-logging.version>1.3.5</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.22</groovy.version>
-    <guava.version>33.3.0-jre</guava.version>
+    <groovy.version>4.0.27</groovy.version>
+    <guava.version>33.4.8-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
-    <hsqldb.version>2.7.3</hsqldb.version>
-    <jackson-bom.version>2.18.0</jackson-bom.version>
+    <hsqldb.version>2.7.4</hsqldb.version>
+    <jackson-bom.version>2.19.0</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.3</jakarta-activation.version>
     <jakarta-mail.version>2.1.3</jakarta-mail.version>
@@ -101,29 +101,27 @@
     <javax-persistence.version>2.2</javax-persistence.version>
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
-    <jansi.version>2.4.1</jansi.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
-    <jazzer.version>0.22.1</jazzer.version>
+    <jazzer.version>0.24.0</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
-    <jmdns.version>3.5.12</jmdns.version>
+    <jmdns.version>3.6.1</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.40.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.10.3</junit-jupiter.version>
+    <junit-jupiter.version>5.13.1</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
-    <kafka.version>3.8.0</kafka.version>
+    <kafka.version>3.9.1</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <log4j.version>1.2.17</log4j.version>
-    <log4j-transform.version>0.1.0</log4j-transform.version>
+    <log4j-transform.version>0.2.0</log4j-transform.version>
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
-    <log4j2-ecs-layout.version>1.6.0</log4j2-ecs-layout.version>
-    <logback.version>1.3.14</logback.version>
-    <maven.version>3.9.9</maven.version>
+    <log4j2-ecs-layout.version>1.7.0</log4j2-ecs-layout.version>
+    <logback.version>1.3.15</logback.version>
+    <maven.version>3.9.10</maven.version>
     <mockito.version>4.11.0</mockito.version>
-    <nashorn.version>15.4</nashorn.version>
-    <org.eclipse.osgi.version>3.21.0</org.eclipse.osgi.version>
+    <nashorn.version>15.6</nashorn.version>
+    <org.eclipse.osgi.version>3.23.100</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.15</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports: -->
@@ -132,15 +130,15 @@
     <osgi.annotation.versioning.version>1.1.2</osgi.annotation.versioning.version>
     <pax-exam.version>4.14.0</pax-exam.version>
     <plexus-utils.version>3.6.0</plexus-utils.version>
-    <spotbugs-annotations.version>4.9.1</spotbugs-annotations.version>
+    <spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
-    <xmlunit.version>2.10.0</xmlunit.version>
+    <xmlunit.version>2.10.2</xmlunit.version>
     <xz.version>1.10</xz.version>
-    <zstd.version>1.5.6-6</zstd.version>
+    <zstd.version>1.5.7-3</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -151,11 +149,21 @@
          ===================================================== -->
     <asm.version>9.6</asm.version>
     <byte-buddy.version>1.14.9</byte-buddy.version>
-    <commons-pool2.version>2.12.0</commons-pool2.version>
+    <commons-pool2.version>2.12.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jna.version>5.15.0</jna.version>
+    <jna.version>5.17.0</jna.version>
 
+    <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
+         to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
+         Overrides parent's 'bnd-jpms-module-info' and hence re-defines '$[bnd-module-name];access=0' -->
+    <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
+      biz.aQute.bnd.annotation,
+      com.google.errorprone.annotations,
+      com.github.spotbugs.annotations,
+      org.osgi.annotation.bundle,
+      org.osgi.annotation.versioning
+      "</bnd-jpms-module-info>
   </properties>
 
   <dependencyManagement>
@@ -273,6 +281,12 @@
       <dependency>
         <groupId>com.code-intelligence</groupId>
         <artifactId>jazzer</artifactId>
+        <version>${jazzer.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.code-intelligence</groupId>
+        <artifactId>jazzer-api</artifactId>
         <version>${jazzer.version}</version>
       </dependency>
 
@@ -476,12 +490,6 @@
         <version>${jakarta-mail.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.fusesource.jansi</groupId>
-        <artifactId>jansi</artifactId>
-        <version>${jansi.version}</version>
-      </dependency>
-
       <!-- Used for garbage-free tests: -->
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
@@ -578,12 +586,6 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit</artifactId>
-        <version>${json-unit.version}</version>
       </dependency>
 
       <dependency>
@@ -999,16 +1001,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs combine.children="append">
-            <arg>--should-stop=ifError=FLOW</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-
       <!--
         ~ Some external logging bridges can interfere with our tests, giving false negatives.
         -->
@@ -1089,6 +1081,58 @@
               ]]></script>
               </scripts>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Add annotation library dependencies (defined as <scope>provided</scope> in this file) as compileOnlyApi
+           dependencies for Gradle consumers. This makes the Jars automatically available at compile time to make
+           the '-Xlint:classfile' check of javac pass.-->
+      <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <configuration>
+          <compileOnlyApiDependencies>
+            <dependency>
+              <groupId>org.jspecify</groupId>
+              <artifactId>jspecify</artifactId>
+              <version>${jspecify.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>biz.aQute.bnd</groupId>
+              <artifactId>biz.aQute.bnd.annotation</artifactId>
+              <version>${bnd.annotation.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_annotations</artifactId>
+              <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <!-- Note: 'org.osgi.annotation.bundle' and 'osgi.annotation' overlap. We do not want to add
+                   both. As 'org.osgi.annotation.bundle' has an Automatic-Module-Name, it is preferred. -->
+              <artifactId>org.osgi.annotation.bundle</artifactId>
+              <version>${osgi.annotation.bundle.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+              <version>${osgi.annotation.versioning.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs-annotations</artifactId>
+              <version>${spotbugs-annotations.version}</version>
+            </dependency>
+          </compileOnlyApiDependencies>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gmm</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -1213,6 +1257,8 @@
                     <processor>org.apache.logging.log4j.docgen.processor.DescriptorGenerator</processor>
                     <!-- Process sources using `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` to generate `Log4j2Plugins.dat` -->
                     <processor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</processor>
+                    <!-- Generates GraalVM reachability metadata -->
+                    <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
                   </annotationProcessors>
                   <compilerArgs>
                     <!-- Provide `org.apache.logging.log4j.docgen.processor.DescriptorGenerator` arguments: -->
@@ -1222,6 +1268,9 @@
                     <arg>-Alog4j.docgen.version=${project.version}</arg>
                     <arg>-Alog4j.docgen.description=${project.description}</arg>
                     <arg>-Alog4j.docgen.typeFilter.excludePattern=${log4j.docgen.typeFilter.excludePattern}</arg>
+                    <!-- Provide arguments for the GraalVM processor -->
+                    <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+                    <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
                   </compilerArgs>
                   <proc>only</proc>
                 </configuration>

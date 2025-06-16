@@ -41,7 +41,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testFormat() throws Exception {
+    public void testFormat() {
         assertSame(this.print, this.print.format("[%s]", FIRST));
         assertMessages();
         this.print.println();
@@ -50,7 +50,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_boolean() throws Exception {
+    public void testPrint_boolean() {
         this.print.print(true);
         assertMessages();
         this.print.println();
@@ -59,7 +59,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_char() throws Exception {
+    public void testPrint_char() {
         for (final char c : FIRST.toCharArray()) {
             this.print.print(c);
             assertMessages();
@@ -70,7 +70,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_CharacterArray() throws Exception {
+    public void testPrint_CharacterArray() {
         this.print.print(FIRST.toCharArray());
         assertMessages();
         this.print.println();
@@ -79,7 +79,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_int() throws Exception {
+    public void testPrint_int() {
         this.print.print(12);
         assertMessages();
         this.print.println();
@@ -88,7 +88,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_long() throws Exception {
+    public void testPrint_long() {
         this.print.print(12L);
         assertMessages();
         this.print.println();
@@ -97,7 +97,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_Object() throws Exception {
+    public void testPrint_Object() {
         this.print.print((Object) FIRST);
         assertMessages();
         this.print.println();
@@ -106,7 +106,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrint_String() throws Exception {
+    public void testPrint_String() {
         this.print.print(FIRST);
         assertMessages();
         this.print.println();
@@ -115,7 +115,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     }
 
     @Test
-    public void testPrintf() throws Exception {
+    public void testPrintf() {
         assertSame(this.print, this.print.printf("<<<%s>>>", FIRST));
         assertMessages();
         this.print.println();

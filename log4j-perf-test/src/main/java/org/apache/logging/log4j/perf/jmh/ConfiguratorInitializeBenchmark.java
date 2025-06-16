@@ -34,8 +34,6 @@ import org.openjdk.jmh.annotations.State;
  * This benchmark demonstrates how long it takes for a simple XML configuration file to be parsed and initialize a new
  * {@link org.apache.logging.log4j.core.LoggerContext} using that configuration.
  */
-// TO RUN THIS TEST:
-// java -jar target/benchmarks.jar '.*ConfiguratorInitializeBenchmark.*'
 @State(Scope.Thread)
 public class ConfiguratorInitializeBenchmark {
 

@@ -33,17 +33,6 @@ import org.openjdk.jmh.annotations.Warmup;
 /**
  * Tests performance of marker interface vs annotation.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*AnnotationVsMarkerInterface.*" -wi 5 -i 5
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AnnotationVsMarkerInterface.*" -wi 5 -i 5 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)

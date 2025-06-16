@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -46,7 +45,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Tests the ResolverUtil class.
  */
-public class ResolverUtilTest {
+class ResolverUtilTest {
 
     static Stream<Arguments> testExtractedPath() {
         return Stream.of(
@@ -78,13 +77,13 @@ public class ResolverUtilTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testExtractedPath(final String urlAsString, final String expected) throws Exception {
+    void testExtractedPath(final String urlAsString, final String expected) throws Exception {
         final URL url = new URL(urlAsString);
         assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
-    public void testExtractPathFromJarUrlNotDecodedIfFileExists() throws Exception {
+    void testExtractPathFromJarUrlNotDecodedIfFileExists() throws Exception {
         testExtractPathFromJarUrlNotDecodedIfFileExists("/log4j+config+with+plus+characters.xml");
     }
 
@@ -100,13 +99,13 @@ public class ResolverUtilTest {
     }
 
     @Test
-    public void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
+    void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
         final String existingFile = "/s p a c e s/log4j+config+with+plus+characters.xml";
         testExtractPathFromJarUrlNotDecodedIfFileExists(existingFile);
     }
 
     @Test
-    public void testExtractPathFromFileUrlNotDecodedIfFileExists() throws Exception {
+    void testExtractPathFromFileUrlNotDecodedIfFileExists() throws Exception {
         final String existingFile = "/log4j+config+with+plus+characters.xml";
         final URL url = ResolverUtilTest.class.getResource(existingFile);
         assertThat(url).hasProtocol("file");
@@ -115,7 +114,7 @@ public class ResolverUtilTest {
     }
 
     @Test
-    public void testFindInPackageFromDirectoryPath(final @TempDir File tmpDir) throws Exception {
+    void testFindInPackageFromDirectoryPath(final @TempDir File tmpDir) throws Exception {
         try (final URLClassLoader cl = compileAndCreateClassLoader(tmpDir, "1")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
@@ -129,7 +128,7 @@ public class ResolverUtilTest {
     }
 
     @Test
-    public void testFindInPackageFromJarPath(final @TempDir File tmpDir) throws Exception {
+    void testFindInPackageFromJarPath(final @TempDir File tmpDir) throws Exception {
         try (final URLClassLoader cl = compileJarAndCreateClassLoader(tmpDir, "2")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
@@ -142,8 +141,7 @@ public class ResolverUtilTest {
         }
     }
 
-    static URLClassLoader compileJarAndCreateClassLoader(final File tmpDir, final String suffix)
-            throws IOException, Exception {
+    static URLClassLoader compileJarAndCreateClassLoader(final File tmpDir, final String suffix) throws Exception {
         compile(tmpDir, suffix);
         final File jarFile = new File(tmpDir, "customplugin" + suffix + ".jar");
         final URI jarURI = jarFile.toURI();

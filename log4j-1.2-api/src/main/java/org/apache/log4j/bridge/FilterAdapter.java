@@ -69,7 +69,7 @@ public final class FilterAdapter extends AbstractFilter {
         if (first instanceof FilterWrapper && ((FilterWrapper) first).getFilter() instanceof CompositeFilter) {
             composite = (CompositeFilter) ((FilterWrapper) first).getFilter();
         } else {
-            composite = CompositeFilter.createFilters(new org.apache.logging.log4j.core.Filter[] {adapt(first)});
+            composite = CompositeFilter.createFilters(adapt(first));
         }
         return FilterWrapper.adapt(composite.addFilter(adapt(second)));
     }

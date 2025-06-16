@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 /**
  * Mix-in for {@link ThrowableProxy}.
  */
+@Deprecated
 abstract class ThrowableProxyMixIn {
 
     @JsonProperty(JsonConstants.ELT_CAUSE)

@@ -16,35 +16,35 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test configuration from XML.
  */
-public class XmlConfigurationFactoryTest {
+class XmlConfigurationFactoryTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    static void beforeAll() {
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-file.xml");
     }
 
     @Test
-    public void testXML() {
+    void testXML() {
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A1 was not created");
+        assertTrue(file.length() > 0, "File A1 is empty");
         file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A2 was not created");
+        assertTrue(file.length() > 0, "File A2 is empty");
     }
 }

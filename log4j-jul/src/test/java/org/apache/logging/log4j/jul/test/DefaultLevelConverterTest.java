@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.jul.test;
 
-import org.apache.logging.log4j.jul.DefaultLevelConverter;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DefaultLevelConverterTest {
+import org.apache.logging.log4j.jul.DefaultLevelConverter;
+import org.junit.jupiter.api.Test;
+
+class DefaultLevelConverterTest {
 
     /**
      * (LOG4J2-1108) NullPointerException when passing null to java.util.logging.Logger.setLevel().
      */
     @Test
-    public void testJulSetNull() {
-        Assert.assertEquals(null, new DefaultLevelConverter().toLevel(null));
+    void testJulSetNull() {
+        assertNull(new DefaultLevelConverter().toLevel(null));
     }
 }

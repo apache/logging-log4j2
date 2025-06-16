@@ -63,7 +63,7 @@ public class InterpolatorTest {
     @ClassRule
     public static final RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
                 @Override
-                protected void before() throws Throwable {
+                protected void before() {
                     System.setProperty(TESTKEY, TESTVAL);
                     System.setProperty(TESTKEY2, TESTVAL);
                     System.setProperty("log4j2.enableJndiLookup", "true");

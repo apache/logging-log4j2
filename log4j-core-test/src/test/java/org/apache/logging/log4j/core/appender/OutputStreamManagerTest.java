@@ -62,7 +62,7 @@ class OutputStreamManagerTest {
     }
 
     @Test
-    public void testOutputStreamAppenderFlushClearsBufferOnException() {
+    void testOutputStreamAppenderFlushClearsBufferOnException() {
         final IOException exception = new IOException();
         final OutputStream throwingOutputStream = new OutputStream() {
             @Override
@@ -79,7 +79,7 @@ class OutputStreamManagerTest {
             outputStreamManager.getByteBuffer().put((byte) 0);
         }
 
-        assertEquals(outputStreamManager.getByteBuffer().remaining(), 1);
+        assertEquals(1, outputStreamManager.getByteBuffer().remaining());
 
         final AppenderLoggingException appenderLoggingException = assertThrows(
                 AppenderLoggingException.class,

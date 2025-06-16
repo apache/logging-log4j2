@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j2-console-noConsoleNoAnsi.xml")
-public class NoConsoleNoAnsiTest {
+class NoConsoleNoAnsiTest {
 
     private static final String EXPECTED =
             "ERROR LoggerTest o.a.l.l.c.p.NoConsoleNoAnsiTest org.apache.logging.log4j.core.pattern.NoConsoleNoAnsiTest"
@@ -41,13 +41,13 @@ public class NoConsoleNoAnsiTest {
     private ListAppender app;
 
     @BeforeEach
-    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
+    void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
         this.logger = context.getLogger("LoggerTest");
         this.app = app.clear();
     }
 
     @Test
-    public void testReplacement() {
+    void testReplacement() {
         logger.error(this.getClass().getName());
 
         final List<String> msgs = app.getMessages();

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -41,9 +42,11 @@ import org.openjdk.jmh.annotations.State;
 //
 @State(Scope.Benchmark)
 public class ParameterFormatterBenchmark {
-
     private static final Object[] ARGS = {
-        "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10"
+        "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10",
+    };
+    private static final int[] INT_ARRAY = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     };
 
     @State(Scope.Thread)
@@ -90,6 +93,26 @@ public class ParameterFormatterBenchmark {
         state.buffer.setLength(0);
         ParameterFormatter.analyzePattern(pattern, -1, state.analysis);
         ParameterFormatter.formatMessage(state.buffer, pattern, ARGS, state.analysis.placeholderCount, state.analysis);
+        return state.buffer.length();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public int appendArrayToString(final ThreadState state) {
+        StringBuilder buffer = state.buffer;
+        buffer.setLength(0);
+        buffer.append(Arrays.toString(INT_ARRAY));
+        return state.buffer.length();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SampleTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public int appendArrayStringBuilder(final ThreadState state) {
+        StringBuilder buffer = state.buffer;
+        buffer.setLength(0);
+        ParameterFormatter.appendArray(INT_ARRAY, buffer);
         return state.buffer.length();
     }
 }

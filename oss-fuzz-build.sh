@@ -138,13 +138,6 @@ echo "INFO: Produced using the commit ID: $commitId"
 # Switch to the script directory
 cd -- "\$(dirname -- "\${BASH_SOURCE[0]}")"
 
-# Determine JVM args
-if [[ "\$@" =~ (^| )-runs=[0-9]+(\$| ) ]]; then
-  jvmArgs="-Xmx1900m:-Xss900k"
-else
-  jvmArgs="-Xmx2048m:-Xss1024k"
-fi
-
 # Verify the classpath
 classPath="$classPath"
 echo "\$classPath" | sed 's/:/\n/g' | while read classPathFilePath; do
@@ -191,7 +184,6 @@ jazzer_driver \\
   --agent_path=jazzer_agent_deploy.jar \\
   --cp="\$classPath" \\
   --target_class="$fqcn" \\
-  --jvm_args="\$jvmArgs" \\
   \$@ \\
   2>&1 | tee "\$cmdOutputFile" || {
     retCode=\$?;

@@ -16,19 +16,19 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Tests logging during shutdown.
  */
-public class Log4j1222Test {
+class Log4j1222Test {
 
     @Test
-    public void homepageRendersSuccessfully() {
+    void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }
@@ -47,7 +47,10 @@ public class Log4j1222Test {
 
         private void trigger() {
             Holder.LOGGER.info("Attempt to trigger");
-            assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
+            assertInstanceOf(
+                    Log4jLogger.class,
+                    Holder.LOGGER,
+                    "Logger is of type " + Holder.LOGGER.getClass().getName());
         }
     }
 }

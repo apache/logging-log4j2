@@ -37,13 +37,6 @@ import org.openjdk.jmh.infra.Blackhole;
 /**
  * Tests the overhead of disabled logging.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// java -jar log4j-perf/target/benchmarks.jar ".*SimpleBenchmark.*" -f 1 -wi 5 -i 5
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Thread)
 public class SimpleBenchmark {
     private static final String msg = "This is a test";

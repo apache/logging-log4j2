@@ -38,18 +38,15 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests {@link TypeConverters}.
  */
-@RunWith(Parameterized.class)
 public class TypeConvertersTest {
 
     @SuppressWarnings("boxing")
-    @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
         final byte[] byteArray = {
             (byte) 0xc7, (byte) 0x73, (byte) 0x21, (byte) 0x8c, (byte) 0x7e, (byte) 0xc8, (byte) 0xee, (byte) 0x99
@@ -144,11 +141,11 @@ public class TypeConvertersTest {
                     {"123", "123".getBytes(Charset.defaultCharset()), null, byte[].class},
                     {"0xC773218C7EC8EE99", byteArray, null, byte[].class},
                     {"0xc773218c7ec8ee99", byteArray, null, byte[].class},
-                    {"Base64:cGxlYXN1cmUu", "pleasure.".getBytes("US-ASCII"), null, byte[].class},
+                    {"Base64:cGxlYXN1cmUu", "pleasure.".getBytes(StandardCharsets.US_ASCII), null, byte[].class},
                     // JRE
                     // JRE Charset
                     {"UTF-8", StandardCharsets.UTF_8, null, Charset.class},
-                    {"ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class},
+                    {"ASCII", StandardCharsets.US_ASCII, "UTF-8", Charset.class},
                     {"Not a real charset", StandardCharsets.UTF_8, "UTF-8", Charset.class},
                     {null, StandardCharsets.UTF_8, "UTF-8", Charset.class},
                     {null, null, null, Charset.class},
@@ -203,21 +200,9 @@ public class TypeConvertersTest {
                 });
     }
 
-    private final String value;
-    private final Object expected;
-    private final String defaultValue;
-    private final Class<?> clazz;
-
-    public TypeConvertersTest(
-            final String value, final Object expected, final String defaultValue, final Class<?> clazz) {
-        this.value = value;
-        this.expected = expected;
-        this.defaultValue = defaultValue;
-        this.clazz = clazz;
-    }
-
-    @Test
-    public void testConvert() throws Exception {
+    @MethodSource("data")
+    @ParameterizedTest
+    void testConvert(final String value, final Object expected, final String defaultValue, final Class<?> clazz) {
         final Object actual = TypeConverters.convert(value, clazz, defaultValue);
         final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
         assertThat(actual).as(assertionMessage).isEqualTo(expected);

@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class ConstantsTest {
+class ConstantsTest {
 
     @Test
-    public void testJdkVersionDetection() {
+    void testJdkVersionDetection() {
         assertEquals(1, Constants.getMajorVersion("1.1.2"));
         assertEquals(8, Constants.getMajorVersion("1.8.2"));
         assertEquals(9, Constants.getMajorVersion("9.1.1"));

@@ -71,8 +71,7 @@ public class ListAppender extends AppenderSkeleton {
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
-            throws InterruptedException {
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) {
         waitAtMost(timeout, timeUnit).until(() -> messages.size() >= minSize);
         return getMessages();
     }

@@ -43,7 +43,6 @@ import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
@@ -52,7 +51,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 @UsingAnyThreadContext
-public class HtmlLayoutTest {
+class HtmlLayoutTest {
     private static class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
 
@@ -88,14 +87,14 @@ public class HtmlLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @BeforeAll
-    public static void setupClass() {
+    static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
     @AfterAll
-    public static void cleanupClass() {
+    static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -105,13 +104,13 @@ public class HtmlLayoutTest {
     private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
 
     @Test
-    public void testDefaultContentType() {
+    void testDefaultContentType() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         assertEquals("text/html; charset=UTF-8", layout.getContentType());
     }
 
     @Test
-    public void testContentType() {
+    void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
                 .withContentType("text/html; charset=UTF-16")
                 .build();
@@ -121,7 +120,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testDefaultCharset() {
+    void testDefaultCharset() {
         final HtmlLayout layout = HtmlLayout.createDefaultLayout();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
@@ -130,16 +129,16 @@ public class HtmlLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayoutIncludeLocationNo() throws Exception {
+    void testLayoutIncludeLocationNo() throws Exception {
         testLayout(false);
     }
 
     @Test
-    public void testLayoutIncludeLocationYes() throws Exception {
+    void testLayoutIncludeLocationYes() throws Exception {
         testLayout(true);
     }
 
-    private void testLayout(final boolean includeLocation) throws Exception {
+    private void testLayout(final boolean includeLocation) {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -185,9 +184,9 @@ public class HtmlLayoutTest {
         assertEquals("<title>Log4j Log Messages</title>", list.get(4), "Incorrect title");
         assertEquals("</body></html>", list.get(list.size() - 1), "Incorrect footer");
         if (includeLocation) {
-            assertEquals(list.get(50), multiLine, "Incorrect multiline");
+            assertEquals(multiLine, list.get(50), "Incorrect multiline");
             assertTrue(html.contains("HtmlLayoutTest.java:"), "Missing location");
-            assertEquals(list.get(71), body, "Incorrect body");
+            assertEquals(body, list.get(71), "Incorrect body");
         } else {
             assertFalse(html.contains("<td>HtmlLayoutTest.java:"), "Location should not be in the output table");
         }
@@ -197,7 +196,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithoutDataPattern() {
+    void testLayoutWithoutDataPattern() {
         final HtmlLayout layout = HtmlLayout.newBuilder().build();
 
         final MyLogEvent event = new MyLogEvent();
@@ -208,7 +207,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternJvmElapseTime() {
+    void testLayoutWithDatePatternJvmElapseTime() {
         final HtmlLayout layout =
                 HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
 
@@ -220,7 +219,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternUnix() {
+    void testLayoutWithDatePatternUnix() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX").build();
 
         final MyLogEvent event = new MyLogEvent();
@@ -230,7 +229,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternUnixMillis() {
+    void testLayoutWithDatePatternUnixMillis() {
         final HtmlLayout layout =
                 HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
 
@@ -241,7 +240,7 @@ public class HtmlLayoutTest {
     }
 
     @Test
-    public void testLayoutWithDatePatternFixedFormat() {
+    void testLayoutWithDatePatternFixedFormat() {
         for (final String timeZone : new String[] {"GMT+8", "GMT+0530", "UTC", null}) {
             for (final FixedFormat format : FixedFormat.values()) {
                 testLayoutWithDatePatternFixedFormat(format, timeZone);
@@ -284,19 +283,6 @@ public class HtmlLayoutTest {
         final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
                 format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
-
-        final String offset = zonedDateTime.getOffset().toString();
-
-        // Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to
-        // DateTimeFormatter,
-        // One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is
-        // also output, such as '+0130'
-        // ref : https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
-        if (FixedDateFormat.FixedTimeZoneFormat.HH.equals(format.getFixedTimeZoneFormat())
-                && offset.contains(":")
-                && !"00".equals(offset.split(":")[1])) {
-            expected = expected.substring(0, expected.length() - 2);
-        }
 
         assertEquals(
                 "<td>" + expected + "</td>",

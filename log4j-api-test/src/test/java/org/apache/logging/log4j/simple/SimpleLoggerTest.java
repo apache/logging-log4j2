@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("smoke")
-public class SimpleLoggerTest {
+class SimpleLoggerTest {
 
     @RegisterExtension
     public static final LoggerContextFactoryExtension EXTENSION =
@@ -34,17 +34,17 @@ public class SimpleLoggerTest {
     private final Logger logger = LogManager.getLogger("TestError");
 
     @Test
-    public void testString() {
+    void testString() {
         logger.error("Logging without args");
     }
 
     @Test
-    public void testMissingMessageArg() {
+    void testMissingMessageArg() {
         logger.error("Logging without args {}");
     }
 
     @Test
-    public void testEmptyObjectArray() {
+    void testEmptyObjectArray() {
         logger.error(Constants.EMPTY_OBJECT_ARRAY);
     }
 
@@ -52,7 +52,7 @@ public class SimpleLoggerTest {
      * Tests LOG4J2-811.
      */
     @Test
-    public void testMessageWithEmptyObjectArray() {
+    void testMessageWithEmptyObjectArray() {
         logger.error("Logging with an empty Object[] {} {}", Constants.EMPTY_BYTE_ARRAY);
     }
 
@@ -60,7 +60,7 @@ public class SimpleLoggerTest {
      * Tests LOG4J2-811.
      */
     @Test
-    public void testMessageWithShortArray() {
+    void testMessageWithShortArray() {
         logger.error("Logging with a size 1 Object[] {} {}", new Object[] {"only one param"});
     }
 }

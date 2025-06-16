@@ -35,12 +35,12 @@ import org.apache.logging.log4j.test.Service;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
-public class ServiceLoaderUtilTest {
+class ServiceLoaderUtilTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Test
-    public void testServiceResolution() {
+    void testServiceResolution() {
         final List<Object> services = new ArrayList<>();
         ServiceLoaderUtil.safeStream(
                 BetterService.class,
@@ -63,7 +63,7 @@ public class ServiceLoaderUtilTest {
 
     @Test
     @UsingStatusListener
-    public void testBrokenServiceFile(final ListStatusListener listener) {
+    void testBrokenServiceFile(final ListStatusListener listener) {
         final List<Service> services = new ArrayList<>();
         assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(
                         Service.class,
@@ -85,7 +85,7 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
-    public void testOsgiUnavailable() {
+    void testOsgiUnavailable() {
         // OSGI classes are present...
         assertDoesNotThrow(() -> Class.forName("org.osgi.framework.FrameworkUtil"));
         // ...but we don't run in an OSGI container

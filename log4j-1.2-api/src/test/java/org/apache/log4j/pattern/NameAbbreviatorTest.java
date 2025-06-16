@@ -39,7 +39,7 @@ public class NameAbbreviatorTest extends TestCase {
     public void testBlank() {
         final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("   ");
         final NameAbbreviator defaultAbbrev = NameAbbreviator.getDefaultAbbreviator();
-        assertTrue(abbrev == defaultAbbrev);
+        assertSame(abbrev, defaultAbbrev);
     }
 
     /**

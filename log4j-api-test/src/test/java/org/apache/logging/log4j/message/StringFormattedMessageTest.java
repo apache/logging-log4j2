@@ -33,13 +33,13 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class StringFormattedMessageTest {
+class StringFormattedMessageTest {
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
 
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         final String testMsg = "Test message %1s";
         StringFormattedMessage msg = new StringFormattedMessage(testMsg, (Object[]) null);
         String result = msg.getFormattedMessage();
@@ -52,7 +52,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testOneStringArg() {
+    void testOneStringArg() {
         final String testMsg = "Test message %1s";
         final StringFormattedMessage msg = new StringFormattedMessage(testMsg, "Apache");
         final String result = msg.getFormattedMessage();
@@ -61,7 +61,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testOneIntArgLocaleUs() {
+    void testOneIntArgLocaleUs() {
         final String testMsg = "Test e = %+10.4f";
         final StringFormattedMessage msg = new StringFormattedMessage(Locale.US, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
@@ -70,7 +70,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testOneArgLocaleFrance() {
+    void testOneArgLocaleFrance() {
         final String testMsg = "Test e = %+10.4f";
         final StringFormattedMessage msg = new StringFormattedMessage(Locale.FRANCE, testMsg, Math.E);
         final String result = msg.getFormattedMessage();
@@ -79,7 +79,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testException() {
+    void testException() {
         final String testMsg = "Test message {0}";
         final MessageFormatMessage msg = new MessageFormatMessage(testMsg, "Apache", new NullPointerException("Null"));
         final String result = msg.getFormattedMessage();
@@ -90,7 +90,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testUnsafeWithMutableParams() { // LOG4J2-763
+    void testUnsafeWithMutableParams() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final StringFormattedMessage msg = new StringFormattedMessage(testMsg, param);
@@ -102,7 +102,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
+    void testSafeAfterGetFormattedMessageIsCalled() { // LOG4J2-763
         final String testMsg = "Test message %s";
         final Mutable param = new Mutable().set("abc");
         final StringFormattedMessage msg = new StringFormattedMessage(testMsg, param);
@@ -115,7 +115,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    void testSerialization() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
@@ -131,7 +131,7 @@ public class StringFormattedMessageTest {
     }
 
     @Test
-    public void testPercentInMessageNoArgs() {
+    void testPercentInMessageNoArgs() {
         // LOG4J2-3458 LocalizedMessage causes a lot of noise on the console
         //
         // ERROR StatusLogger Unable to format msg: C:/Program%20Files/Some%20Company/Some%20Product%20Name/

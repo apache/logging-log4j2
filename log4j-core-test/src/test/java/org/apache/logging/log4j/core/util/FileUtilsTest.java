@@ -36,12 +36,12 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests the FileUtils class.
  */
-public class FileUtilsTest {
+class FileUtilsTest {
 
     private static final String LOG4J_CONFIG_WITH_PLUS = "log4j+config+with+plus+characters.xml";
 
     @Test
-    public void testFileFromUriWithPlusCharactersInName() throws Exception {
+    void testFileFromUriWithPlusCharactersInName() throws Exception {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
@@ -50,7 +50,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testAbsoluteFileFromUriWithPlusCharactersInName() throws Exception {
+    void testAbsoluteFileFromUriWithPlusCharactersInName() {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
@@ -59,7 +59,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testAbsoluteFileFromUriWithSpacesInName() throws Exception {
+    void testAbsoluteFileFromUriWithSpacesInName() {
         final String config = "target/test-classes/s p a c e s/log4j+config+with+plus+characters.xml";
         final URI uri = new File(config).toURI();
         final File file = FileUtils.fileFromUri(uri);
@@ -68,7 +68,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testAbsoluteFileFromJBossVFSUri() throws Exception {
+    void testAbsoluteFileFromJBossVFSUri() {
         final String config = "target/test-classes/log4j+config+with+plus+characters.xml";
         final String uriStr = new File(config).toURI().toString().replaceAll("^file:", "vfsfile:");
         assertTrue(uriStr.startsWith("vfsfile:"));
@@ -79,7 +79,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
+    void testFileFromUriWithSpacesAndPlusCharactersInName() throws Exception {
         final String config = "target/test-classes/s%20p%20a%20c%20e%20s/log4j%2Bconfig%2Bwith%2Bplus%2Bcharacters.xml";
         final URI uri = new URI(config);
         final File file = FileUtils.fileFromUri(uri);
@@ -93,24 +93,24 @@ public class FileUtilsTest {
         File testDir;
 
         @BeforeEach
-        public void deleteTestDir() throws IOException {
+        void deleteTestDir() throws IOException {
             org.apache.commons.io.FileUtils.deleteDirectory(testDir);
         }
 
         @Test
-        public void testMkdirDoesntExistDontCreate() {
+        void testMkdirDoesntExistDontCreate() {
             assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, false));
         }
 
         @Test
-        public void testMkdirFileAlreadyExistsNotDir() throws IOException {
+        void testMkdirFileAlreadyExistsNotDir() throws IOException {
             Files.createFile(testDir.toPath());
             assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, true));
             Files.delete(testDir.toPath());
         }
 
         @Test
-        public void testMkdirConcurrent() throws InterruptedException {
+        void testMkdirConcurrent() throws InterruptedException {
             final List<Thread> threads = new ArrayList<>();
             final AtomicBoolean anyThreadThrows = new AtomicBoolean(false);
             for (int i = 0; i < 10000; i++) {

@@ -31,11 +31,11 @@ import org.junitpioneer.jupiter.SetSystemProperty;
  * Tests LoggersPlugin.
  */
 @SetSystemProperty(key = "log4j2.status.entries", value = "10")
-public class LoggersPluginTest {
+class LoggersPluginTest {
 
     @Test
     @LoggerContextSource("multipleRootLoggersTest.xml")
-    public void testEmptyAttribute() {
+    void testEmptyAttribute() {
         final Logger logger = LogManager.getLogger();
         logger.info("Test");
         final StatusData data = StatusLogger.getLogger().getStatusData().get(0);

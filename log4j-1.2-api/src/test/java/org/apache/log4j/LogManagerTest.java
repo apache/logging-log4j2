@@ -16,18 +16,18 @@
  */
 package org.apache.log4j;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link LogManager}.
  */
-public class LogManagerTest {
+class LogManagerTest {
 
     private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
 
@@ -38,7 +38,7 @@ public class LogManagerTest {
     }
 
     @Test
-    public void testGetCurrentLoggers() {
+    void testGetCurrentLoggers() {
         Logger.getLogger(SIMPLE_NAME);
         Logger.getLogger(SIMPLE_NAME + ".foo");
         Logger.getLogger(SIMPLE_NAME + ".foo.bar");

@@ -32,14 +32,14 @@ import org.junit.jupiter.api.Test;
  *
  * @since 2.4
  */
-public class MarkerLookupTest {
+class MarkerLookupTest {
 
     private static final String ABSENT_MARKER_NAME = "NONE";
     private final String markerName = "MarkerLookupTest";
     private final StrLookup strLookup = new MarkerLookup();
 
     @Test
-    public void testLookupEventExistant() {
+    void testLookupEventExistant() {
         final Marker marker = MarkerManager.getMarker(markerName);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -53,7 +53,7 @@ public class MarkerLookupTest {
     }
 
     @Test
-    public void testLookupEventNonExistant() {
+    void testLookupEventNonExistant() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -65,7 +65,7 @@ public class MarkerLookupTest {
     }
 
     @Test
-    public void testLookupEventNonExistantKey() {
+    void testLookupEventNonExistantKey() {
         final Marker marker = MarkerManager.getMarker(markerName);
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -79,20 +79,20 @@ public class MarkerLookupTest {
     }
 
     @Test
-    public void testLookupEventNullNonExistant() {
+    void testLookupEventNullNonExistant() {
         final String value = strLookup.lookup(null, ABSENT_MARKER_NAME);
         assertNull(value);
     }
 
     @Test
-    public void testLookupExistant() {
+    void testLookupExistant() {
         final String value =
                 strLookup.lookup(MarkerManager.getMarker(markerName).getName());
         assertEquals(markerName, value);
     }
 
     @Test
-    public void testLookupNonExistant() {
+    void testLookupNonExistant() {
         final String value = strLookup.lookup(ABSENT_MARKER_NAME);
         assertNull(value);
     }

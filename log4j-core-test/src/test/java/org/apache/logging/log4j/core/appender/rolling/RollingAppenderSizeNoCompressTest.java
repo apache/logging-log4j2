@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * LOG4J2-1804.
  */
 @UsingStatusListener
-public class RollingAppenderSizeNoCompressTest {
+class RollingAppenderSizeNoCompressTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -48,7 +48,7 @@ public class RollingAppenderSizeNoCompressTest {
 
     @Test
     @LoggerContextSource
-    public void testAppender(final LoggerContext context) throws Exception {
+    void testAppender(final LoggerContext context) throws Exception {
         final Logger logger = context.getLogger(getClass());
         final List<String> messages = new ArrayList<>();
         for (int i = 0; i < 1000; ++i) {

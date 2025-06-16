@@ -142,7 +142,7 @@ xref:manual/lookups.adoc#event-context[event evaluation context].
 
 [WARNING]
 ====
-If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEX`>> is appended to the pattern.
+If the provided pattern does not contain an exception converter and <<plugin-attr-alwaysWriteExceptions>> is not disabled, an implicit <<converter-exception-extended,`%xEx`>> is appended to the pattern.
 ====
 
 [#plugin-attr-patternSelector]
@@ -176,7 +176,7 @@ If configured, the `replace` element must specify the regular expression to matc
 |Default value |`true`
 |===
 
-If `true` and the user-provided pattern does not contain an exception converter, an implicit <<converter-exception-extended,`%xEX`>> pattern is appended.
+If `true` and the user-provided pattern does not contain an exception converter, an implicit <<converter-exception-extended,`%xEx`>> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to `false` disables this behavior and allows you to exclude exceptions from your pattern output.
 
@@ -209,7 +209,7 @@ The optional footer to include at the bottom of each log file
 |Default value |`false`
 |===
 
-If `true`, do not output ANSI escape codes
+If `true`, do not output ANSI escape codes.
 
 [#plugin-attr-noConsoleNoAnsi]
 ==== `noConsoleNoAnsi`
@@ -220,7 +220,7 @@ If `true`, do not output ANSI escape codes
 |Default value |`false`
 |===
 
-If `true` and `System.console()` is null, do not output ANSI escape codes
+If `true` and `System.console()` is `null`, do not output ANSI escape codes
 
 [#plugin-elements]
 === Plugin elements
@@ -385,7 +385,7 @@ See xref:manual/layouts.adoc#LocationInformation[this section of the layouts pag
 [#converter-date]
 ==== Date
 
-Outputs the date of the log event
+Outputs the instant of the log event
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
 [source,text]
@@ -394,7 +394,7 @@ d{pattern}[{timezone}]
 date{pattern}[{timezone}]
 ----
 
-The date conversion specifier may be followed by a set of braces containing a date and time pattern string per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/text/SimpleDateFormat.html[`SimpleDateFormat`].
+The date conversion specifier may be followed by a set of braces containing a date and time formatting pattern per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
 The predefined _named_ formats are:
 
 [%header,cols="2m,3m"]
@@ -448,8 +448,8 @@ The predefined _named_ formats are:
 |1351866842781
 |===
 
-You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`java.util.TimeZone#getTimeZone(String)`].
-If no date format specifier is given then the `DEFAULT` format is used.
+You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone#getTimeZone(String)`].
+If no date format specifier is given, then the `DEFAULT` format is used.
 
 You can also define custom date formats, see following examples:
 
@@ -461,36 +461,19 @@ You can also define custom date formats, see following examples:
 |%d{HH:mm:ss,SSS}
 |14:34:02,123
 
-|%d{HH:mm:ss,nnnn} to %d{HH:mm:ss,nnnnnnnnn}
-|14:34:02,1234 to 14:34:02,123456789
-
-|%d{dd MMM yyyy HH:mm:ss,SSS}
-|02 Nov 2012 14:34:02,123
-
-|%d{dd MMM yyyy HH:mm:ss,nnnn} to %d{dd MMM yyyy HH:mm:ss,nnnnnnnnn}
-|02 Nov 2012 14:34:02,1234 to 02 Nov 2012 14:34:02,123456789
-
-|%d{HH:mm:ss}{GMT+0}
-|18:34:02
+|%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
+|2012-11-02T14:34:02.123Z
 |===
 
-`%d\{UNIX}` outputs the UNIX time in seconds.
-`%d\{UNIX_MILLIS}` outputs the UNIX time in milliseconds.
-The `UNIX` time is the difference – in seconds for `UNIX` and in milliseconds for `UNIX_MILLIS` – between the current time and 1970-01-01 00:00:00 (UTC).
-While the time unit is milliseconds, the granularity depends on the platform.
-This is an efficient way to output the event time because only a conversion from `long` to `String` takes place, there is no `Date` formatting involved.
+`%d\{UNIX}` outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).
+`%d\{UNIX_MILLIS}` outputs the epoch time in milliseconds.
 
-There is also limited support for timestamps more precise than milliseconds when running on Java 9 or later.
-Note that not all
-https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`]
-formats are supported.
-Only timestamps in the formats mentioned in the table above may use the _nano-of-second_ pattern letter `n` instead of the _fraction-of-second_ pattern letter `S`.
-
+Note that the granularity of the sub-second formatters depends on the platform.
 Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
-Only named date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free.
+Except `UNIX` and `UNIX_MILLIS` named patterns, the rest of the date & time formatters are not garbage-free.
 ====
 
 [#converter-encode]
@@ -595,96 +578,133 @@ equals{pattern}{test}{substitution}
 equalsIgnoreCase{pattern}{test}{substitution}
 ----
 
-For example, `%equals{[%marker]}{[]}\{}` will replace `[]` strings produced by events without markers with an empty string.
+For example, `%equals{[%marker]}{[]}{}` will replace `[]` strings produced by events without markers with an empty string.
 
 The pattern can be arbitrarily complex and in particular can contain multiple conversion keywords.
 
 [#converter-exception]
 ==== Exception
 
-Outputs the `Throwable` attached to the log event
+Outputs information extracted from the `Throwable` attached to the log event.
+It features two modes:
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
-[source,text]
-----
-ex|exception|throwable
-  { "none"
-  | "full"
-  | depth
-  | "short"
-  | "short.className"
-  | "short.fileName"
-  | "short.lineNumber"
-  | "short.methodName"
-  | "short.message"
-  | "short.localizedMessage"
-  }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}
-----
-
-By default this will output the full trace as one would normally find with a call to `Throwable#printStackTrace()`.
-
-You can follow the throwable conversion word with an option in the form `%throwable\{option}`.
-
-`%throwable\{short}` outputs the first line of the `Throwable`.
-
-`%throwable{short.className}` outputs the name of the class where the exception occurred.
-
-`%throwable{short.methodName}` outputs the method name where the exception occurred.
-
-`%throwable{short.fileName}` outputs the name of the class where the exception occurred.
-
-`%throwable{short.lineNumber}` outputs the line number where the exception occurred.
-
-`%throwable{short.message}` outputs the message.
-
-`%throwable{short.localizedMessage}` outputs the localized message.
-
-`%throwable\{n}` outputs the first `n` lines of the stack trace.
-
-Specifying `%throwable\{none}` or `%throwable\{0}` suppresses output of the exception.
-
-Use `{filters(packages)}` where _packages_ is a list of package names to suppress matching stack frames from stack traces.
-
-Use `{suffix(pattern)}` to add the output of _pattern_ at the end of each stack frame.
-
-Use a `{separator(...)}` as the end-of-line string, e.g., `separator(\|)`.
-The default value is the `line.separator` system property, which is operating system dependent.
+. <<converter-exception-stack-trace,Rendering the exception stack trace>> (the default mode)
+. <<converter-exception-property,Extracting an exception property>> (message, class name, line number, etc.)
 
 [WARNING]
 ====
 Exception converter is not garbage-free.
 ====
 
-[#converter-exception-extended]
-==== Exception (Extended)
+[#converter-exception-stack-trace]
+===== Exception stack trace
 
-The same as <<converter-exception,the `%throwable` conversion>>, but also includes class packaging information
+In this mode, the exception stack trace will be rendered according to the configuration provided.
 
-.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar
+[IMPORTANT]
+====
+All rendered exception stack traces are ensured to be prefixed with a new line obtained using `System.lineSeparator()`.
+====
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar **for rendering stack traces**:
 [source,text]
 ----
-xEx|xException|xThrowable
+ex|exception|throwable
   { "none"
-  | "full"
-  | depth
   | "short"
-  | "short.className"
+  | depth
+  | "full"
+  }
+  {filters(package,package,...)}
+  {separator(text)}
+  {suffix(pattern)}
+----
+
+If this mode is employed without any configuration, the output will be identical to the one obtained from `Throwable#printStackTrace()`.
+
+`none`:: Suppress the output of the converter
+
+`short`:: Outputs the first two lines of the stack trace (analogous to `%ex\{2}`)
+
+`depth`:: Outputs the first `depth` lines of the stack trace (`%ex\{0}` is analogous to `%ex\{none}`)
+
+`full`:: Outputs the complete stack trace (analogous to no configuration)
+
+`filters(package,package,...)`:: Suppresses stack trace elements of classes located in packages whose names start with the package names provided.
+Suppressed stack trace elements will be denoted in the output.
+For instance, `%ex{filters(org.junit)}` can be used to suppress JUnit classes in the rendered stack trace.
+
+`separator(text)`::
+`suffix(pattern)`::
++
+--
+You can change the used line separator in multiple ways:
+
+* Use `separator(text)` to set the separator string literal.
+It defaults to `System.lineSeparator()`.
+The contents of `text` will be rendered verbatim without being subject to any processing.
+
+* `suffix(pattern)` is identical to `{separator(text)}` with the exception that the provided `pattern` will be processed as a xref:manual/pattern-layout.adoc[] conversion pattern before being rendered.
+Exception-rendering directives in the `pattern` (`%ex`, `%rEx`, etc.) will be discarded.
+
+`{separator(text)}` and `{suffix(pattern)}` get concatenated to produce _the effective line separator_ as follows:
+
+[source,java]
+----
+String effectiveLineSeparator(String separator, String suffix, LogEvent event) {
+    String formattedSuffix = format(suffix, event);
+    return isNotBlank(formattedSuffix)
+           ? (' ' + formattedSuffix + lineSeparator)
+           : lineSeparator;
+}
+----
+
+[TIP]
+====
+You are strongly advised to avoid using both `separator(text)` and `suffix(pattern)` at the same time; simply use one instead.
+====
+--
+
+[#converter-exception-property]
+===== Exception property
+
+In this mode, extracted attributes of the `Throwable` are injected _verbatim_.
+That is, no newlines, suffixes, prefixes, etc. will be added.
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar **for extracting properties**:
+[source,text]
+----
+ex|exception|throwable
+  { "short.className"
   | "short.fileName"
   | "short.lineNumber"
   | "short.methodName"
   | "short.message"
   | "short.localizedMessage"
   }
-  {filters(package,package,...)}
-  {suffix(pattern)}
-  {separator(separator)}
 ----
 
-Different from <<converter-exception,the `%throwable` conversion>>, at the end of each stack element of the exception, a string containing the name of the JAR file that contains the class or the directory the class is located in and the `Implementation-Version` as found in that JAR's manifest will be added.
-If the information is uncertain, then the class packaging data will be preceded by a `~` (tilde) character.
+`short.className`:: Class name of the first stack trace element in the causal chain
+`short.fileName`:: File name of the first stack trace element in the causal chain
+`short.lineNumber`:: Line number of the first stack trace element in the causal chain
+`short.methodName`:: Method name of the first stack trace element in the causal chain
+`short.message`:: Exception message
+`short.message`:: Localized exception message
+
+[#converter-exception-extended]
+==== Exception (Extended)
+
+The same as <<converter-exception,the `exception` converter>>, but additionally includes class packaging information in the rendered stack traces.
+
+.link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ExtendedThrowablePatternConverter.html[`ExtendedThrowablePatternConverter`] specifier grammar
+[source,text]
+----
+xEx|xException|xThrowable
+  [... same as the exception converter grammar ...]
+----
+
+Each stack trace element is suffixed with a string containing the name of the JAR file that contains the class (or the directory the class is located in) and the `Implementation-Version` as found in that JAR's manifest.
+If the information is uncertain, then the class packaging information will be preceded by a `~` (tilde) character.
 
 [#converter-file]
 ==== File
@@ -1174,35 +1194,20 @@ For instance, `%replace{%logger %msg}{\.}{/}` will replace all dots in the logge
 [#converter-rootException]
 ==== Root exception
 
-The same as <<converter-exception,the `exception` converter>>, but the stack trace is printed starting with the first exception in the causal chain that was thrown followed by each subsequent wrapping exception
+Same as <<converter-exception,the `exception` converter>>, but the stack trace causal chain is processed in reverse order.
 
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/RootThrowablePatternConverter.html[`RootThrowablePatternConverter`] specifier grammar
 [source,text]
 ----
 rEx|rException|rThrowable
-  {
-    ["none" | "short" | "full" | depth]
-    [,filters(package,package,...)]
-    [,separator(separator)]
-  }
-  {ansi(
-    Key=Value,Value,...
-    Key=Value,Value,...
-    ...)
-  }
-  {suffix(pattern)}
+  [... same as the exception converter grammar ...]
 ----
 
-The throwable conversion specifier can be followed by an option in the form `%rEx\{short}`, which will only output the first line of the `Throwable`, or `%rEx\{n}`, where the first `n` lines of the stack trace will be printed.
-
-Specifying `%rEx\{none}` or `%rEx\{0}` will suppress printing of the exception.
-
-Use `filters(packages)`, where `packages` is a list of package names to suppress matching stack frames from stack traces.
-
-Use a `separator` string to separate the lines of a stack trace, e.g., `separator(|)`.
-The default value is the `line.separator` system property, which is platform dependent.
-
-Use `rEx{suffix(pattern)}` to add the output of `pattern` to the output only when there is a `Throwable` to print.
+[IMPORTANT]
+====
+Note that the inverted causal chain will not only affect the stack trace, but also extracted properties.
+That is, for instance, `%rEx{short.className}` and `%ex{short.className}` might yield different results.
+====
 
 [#converter-seq]
 ==== Sequence number
@@ -1576,19 +1581,14 @@ If your terminal supports 24-bit colors, you can specify:
 [#jansi]
 ==== ANSI styling on Windows
 
-ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the
-http://fusesource.github.io/jansi/[Jansi]
-dependency to your application, and set xref:manual/systemproperties.adoc#log4j2.skipJansi[the `log4j2.skipJansi` system property] to `false`.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
+ANSI escape sequences are supported natively on many platforms, but are disabled by default in `cmd.exe` on Windows.
+To enable ANSI escape sequences, create a registry key named `HKEY_CURRENT_USER\Console\VirtualTerminalLevel` of type `DWORD` and set its value to `0x1`.
 
-[NOTE]
-====
-Before Log4j 2.10, Jansi was enabled by default.
-The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader.
-For web applications, this means the Jansi jar has to be in the web container's classpath.
-To avoid causing problems for web applications, Log4j no longer automatically tries to load Jansi without explicit configuration from Log4j 2.10 onward.
-====
+See
+https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/[Understanding Windows Console Host Settings]
+and
+https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences[Console Virtual Terminal Sequences]
+Microsoft documentation for more details.
 
 [#garbage-free]
 === Garbage-free configuration
@@ -1607,7 +1607,9 @@ Format modifiers to control such things as field width, padding, left, and right
 
 |<<converter-date,%d +
 %date>>
-|Only the predefined date formats (`DEFAULT`, `ISO8601`, `UNIX`, `UNIX_MILLIS`, etc.) are garbage-free
+|
+The numeric formats (`UNIX` and `UNIX_MILLIS`) are garbage-free.
+The remaining formats are low-garbage and only generate temporary objects once per minute.
 
 |<<converter-encode,%enc\{pattern} +
 %encode\{pattern}>>

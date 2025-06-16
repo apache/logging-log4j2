@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @UsingStatusListener
 @LoggerContextSource
-public class LogBuilderTest {
+class LogBuilderTest {
 
     private static final CharSequence CHAR_SEQUENCE = "CharSequence";
     private static final String STRING = "String";
@@ -52,7 +52,7 @@ public class LogBuilderTest {
     private static StringListAppender<ILoggingEvent> list;
 
     @BeforeAll
-    public static void setUp() throws Exception {
+    static void setUp() {
         final org.slf4j.Logger slf4jLogger = context.getLogger(LogBuilderTest.class);
         logger = LogManager.getLogger(LogBuilderTest.class);
         assertThat(slf4jLogger).isSameAs(((SLF4JLogger) logger).getLogger());

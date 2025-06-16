@@ -34,13 +34,13 @@ import org.junit.jupiter.api.Test;
 /**
  *
  */
-public class LogEventTest {
+class LogEventTest {
 
     private static final Message MESSAGE = new SimpleMessage("This is a test");
     private static final TestClass TESTER = new TestClass();
 
     @Test
-    public void testSerialization() throws Exception {
+    void testSerialization() throws Exception {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -66,7 +66,7 @@ public class LogEventTest {
     }
 
     @Test
-    public void testNanoTimeIsNotSerialized1() throws Exception {
+    void testNanoTimeIsNotSerialized1() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -85,7 +85,7 @@ public class LogEventTest {
     }
 
     @Test
-    public void testNanoTimeIsNotSerialized2() throws Exception {
+    void testNanoTimeIsNotSerialized2() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -104,7 +104,7 @@ public class LogEventTest {
 
     @Test
     @Disabled
-    public void testEquals() {
+    void testEquals() {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -128,7 +128,7 @@ public class LogEventTest {
     }
 
     @Test
-    public void testLocation() {
+    void testLocation() {
         final StackTraceElement ste = TESTER.getEventSource(this.getClass().getName());
         assertNotNull(ste, "No StackTraceElement");
         assertEquals(this.getClass().getName(), ste.getClassName(), "Incorrect event");

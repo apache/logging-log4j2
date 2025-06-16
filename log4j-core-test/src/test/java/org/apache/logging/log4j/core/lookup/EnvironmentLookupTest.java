@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-public class EnvironmentLookupTest {
+class EnvironmentLookupTest {
 
     @Test
-    public void testLookup() {
+    void testLookup() {
         final StrLookup lookup = new EnvironmentLookup();
         String value = lookup.lookup("PATH");
         assertNotNull(value);

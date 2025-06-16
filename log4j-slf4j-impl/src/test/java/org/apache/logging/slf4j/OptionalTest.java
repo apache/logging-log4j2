@@ -16,16 +16,16 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -35,35 +35,36 @@ import org.slf4j.MarkerFactory;
 /**
  *
  */
-public class OptionalTest {
-
-    private static final String CONFIG = "log4j-test1.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
+@LoggerContextSource(value = "log4j-test1.xml")
+class OptionalTest {
 
     Logger logger = LoggerFactory.getLogger("EventLogger");
     Marker marker = MarkerFactory.getMarker("EVENT");
+    private final LoggerContext CTX;
+
+    public OptionalTest(final LoggerContext context) {
+        this.CTX = context;
+    }
 
     @Test
-    public void testEventLogger() {
+    void testEventLogger() {
         logger.info(marker, "This is a test");
         MDC.clear();
         verify("EventLogger", "o.a.l.s.OptionalTest This is a test" + Strings.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {
-        final ListAppender listApp = CTX.getListAppender(name);
+        final ListAppender listApp = CTX.getConfiguration().getAppender(name);
         final List<String> events = listApp.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size() == 1);
+        assertEquals(1, events.size(), "Incorrect number of messages. Expected 1 Actual " + events.size());
         final String actual = events.get(0);
-        assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
+        assertEquals(expected, actual, "Incorrect message. Expected " + expected + ". Actual " + actual);
         listApp.clear();
     }
 
-    @Before
-    public void cleanup() {
-        CTX.getListAppender("List").clear();
-        CTX.getListAppender("EventLogger").clear();
+    @BeforeEach
+    void cleanup(@Named("List") final ListAppender list, @Named("EventLogger") final ListAppender eventLogger) {
+        list.clear();
+        eventLogger.clear();
     }
 }

@@ -25,13 +25,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.test.TestLogger;
 import org.junit.jupiter.api.Test;
 
-public class DefaultLogBuilderTest {
+class DefaultLogBuilderTest {
 
     private final TestLogger logger1 = (TestLogger) LogManager.getLogger(DefaultLogBuilderTest.class);
     private final TestLogger logger2 = (TestLogger) LogManager.getLogger("second.logger");
 
     @Test
-    public void testConcurrentUsage() {
+    void testConcurrentUsage() {
         logger1.getEntries().clear();
         logger2.getEntries().clear();
         final List<LogBuilder> logBuilders =

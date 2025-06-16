@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
  * Benchmarks Log4j 2, Log4j 1, Logback and JUL using the DEBUG level which is enabled for this test. The configuration
  * for each uses a FileAppender
  */
-// HOW TO RUN THIS TEST
-// java -jar target/benchmarks.jar ".*FileAppenderParamsBenchmark.*" -f 1 -i 10 -wi 20 -bm sample -tu ns
 @State(Scope.Thread)
 public class FileAppenderParamsBenchmark {
     private FileHandler julFileHandler;

@@ -16,57 +16,56 @@
  */
 package org.apache.logging.log4j.smtp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Iterator;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.smtp.SimpleSmtpServer;
 import org.apache.logging.log4j.core.test.smtp.SmtpMessage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class SmtpAppenderAsyncTest {
+class SmtpAppenderAsyncTest {
 
     private static int PORT;
 
     private SimpleSmtpServer smtpServer;
 
-    @BeforeClass
-    public static void setupClass() {
+    @BeforeAll
+    static void setupAll() {
         PORT = AvailablePortFinder.getNextAvailable();
         System.setProperty("smtp.port", String.valueOf(PORT));
     }
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         smtpServer = SimpleSmtpServer.start(PORT);
     }
 
-    @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("SmtpAppenderAsyncTest.xml");
-
     @Test
-    public void testSync() {
-        testSmtpAppender(ctx.getLogger("sync"));
+    @LoggerContextSource("SmtpAppenderAsyncTest.xml")
+    void testSync(final LoggerContext ctx) {
+        testSmtpAppender(ctx.getLogger("sync"), ctx);
     }
 
     @Test
-    public void testAsync() {
-        testSmtpAppender(ctx.getLogger("async"));
+    @LoggerContextSource("SmtpAppenderAsyncTest.xml")
+    void testAsync(final LoggerContext ctx) {
+        testSmtpAppender(ctx.getLogger("async"), ctx);
     }
 
-    private void testSmtpAppender(final Logger logger) {
+    private void testSmtpAppender(final Logger logger, final LoggerContext ctx) {
         ThreadContext.put("MDC1", "mdc1");
         logger.error("the message");
-        ctx.getLoggerContext().stop();
+        ctx.stop();
         smtpServer.stop();
 
         assertEquals(1, smtpServer.getReceivedEmailSize());
@@ -83,15 +82,15 @@ public class SmtpAppenderAsyncTest {
         }
     }
 
-    @After
-    public void teardown() {
+    @AfterEach
+    void teardown() {
         if (smtpServer != null) {
             smtpServer.stop();
         }
     }
 
-    @AfterClass
-    public static void teardownClass() {
+    @AfterAll
+    static void teardownAll() {
         System.clearProperty("smtp.port");
     }
 }

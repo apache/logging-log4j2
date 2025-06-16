@@ -16,48 +16,49 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.Tags;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerContextSelectorTest {
+@Tag(Tags.ASYNC_LOGGERS)
+class AsyncLoggerContextSelectorTest {
 
     private static final String FQCN = AsyncLoggerContextSelectorTest.class.getName();
 
     @Test
-    public void testContextReturnsAsyncLoggerContext() {
+    void testContextReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, context);
     }
 
     @Test
-    public void testContext2ReturnsAsyncLoggerContext() {
+    void testContext2ReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false, null);
 
-        assertTrue(context instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, context);
     }
 
     @Test
-    public void testLoggerContextsReturnsAsyncLoggerContext() {
+    void testLoggerContextsReturnsAsyncLoggerContext() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         selector.getContext(FQCN, null, false);
 
         final List<LoggerContext> list = selector.getLoggerContexts();
         assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        assertInstanceOf(AsyncLoggerContext.class, list.get(0));
     }
 
     @Test
-    public void testContextNameIsAsyncLoggerContextWithClassHashCode() {
+    void testContextNameIsAsyncLoggerContextWithClassHashCode() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
         final int hash = getClass().getClassLoader().hashCode();
@@ -66,7 +67,7 @@ public class AsyncLoggerContextSelectorTest {
     }
 
     @Test
-    public void testDependentOnClassLoader() {
+    void testDependentOnClassLoader() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         assertTrue(selector.isClassLoaderDependent());
     }

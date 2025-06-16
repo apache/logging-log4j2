@@ -25,16 +25,16 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the IfAccumulatedFileCount class.
  */
-public class IfAccumulatedFileCountTest {
+class IfAccumulatedFileCountTest {
 
     @Test
-    public void testGetThresholdCount() {
+    void testGetThresholdCount() {
         assertEquals(123, IfAccumulatedFileCount.createFileCountCondition(123).getThresholdCount());
         assertEquals(456, IfAccumulatedFileCount.createFileCountCondition(456).getThresholdCount());
     }
 
     @Test
-    public void testAccept() {
+    void testAccept() {
         final int[] counts = {3, 5, 9};
         for (final int count : counts) {
             final IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(count);
@@ -49,7 +49,7 @@ public class IfAccumulatedFileCountTest {
     }
 
     @Test
-    public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
+    void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAccumulatedFileCount condition = IfAccumulatedFileCount.createFileCountCondition(3, counter);
 
@@ -65,7 +65,7 @@ public class IfAccumulatedFileCountTest {
     }
 
     @Test
-    public void testBeforeTreeWalk() {
+    void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
         final IfAccumulatedFileCount filter =
                 IfAccumulatedFileCount.createFileCountCondition(30, counter, counter, counter);

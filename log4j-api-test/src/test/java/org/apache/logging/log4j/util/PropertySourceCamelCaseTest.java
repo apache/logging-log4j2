@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class PropertySourceCamelCaseTest {
+class PropertySourceCamelCaseTest {
 
     public static Object[][] data() {
         return new Object[][] {
@@ -37,7 +37,7 @@ public class PropertySourceCamelCaseTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testJoinAsCamelCase(final CharSequence expected, final List<String> tokens) {
+    void testJoinAsCamelCase(final CharSequence expected, final List<String> tokens) {
         assertEquals(expected, PropertySource.Util.joinAsCamelCase(tokens));
     }
 }

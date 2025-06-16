@@ -16,7 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
@@ -27,24 +27,24 @@ import org.junit.jupiter.api.Test;
 
 @UsingStatusListener
 @LoggerContextSource
-public class CallerInformationTest {
+class CallerInformationTest {
 
     @Test
-    public void testClassLogger() throws Exception {
+    void testClassLogger() {
         final SLF4JLogger logger = (SLF4JLogger) LogManager.getLogger("ClassLogger");
         final StringListAppender<ILoggingEvent> app = TestUtil.getListAppender(logger, "Class");
         logger.info("Ignored message contents.");
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.strList;
-        assertEquals("Incorrect number of messages.", 3, messages.size());
+        assertEquals(3, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller class name.", this.getClass().getName(), message);
+            assertEquals(this.getClass().getName(), message, "Incorrect caller class name.");
         }
     }
 
     @Test
-    public void testMethodLogger() throws Exception {
+    void testMethodLogger() {
         final SLF4JLogger logger = (SLF4JLogger) LogManager.getLogger("MethodLogger");
         final StringListAppender<ILoggingEvent> app = TestUtil.getListAppender(logger, "Method");
         logger.info("More messages.");
@@ -53,9 +53,9 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.strList;
-        assertEquals("Incorrect number of messages.", 5, messages.size());
+        assertEquals(5, messages.size(), "Incorrect number of messages.");
         for (final String message : messages) {
-            assertEquals("Incorrect caller method name.", "testMethodLogger", message);
+            assertEquals("testMethodLogger", message, "Incorrect caller method name.");
         }
     }
 }

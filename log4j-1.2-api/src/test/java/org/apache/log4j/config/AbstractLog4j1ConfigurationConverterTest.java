@@ -29,19 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-@RunWith(Parameterized.class)
 public abstract class AbstractLog4j1ConfigurationConverterTest {
 
     protected static List<Path> getPaths(final String root) throws IOException {
         final List<Path> paths = new ArrayList<>();
         Files.walkFileTree(Paths.get(root), new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
                 paths.add(file.toAbsolutePath());
                 return FileVisitResult.CONTINUE;
             }
@@ -49,19 +46,15 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         return paths;
     }
 
-    private final Path pathIn;
-
-    public AbstractLog4j1ConfigurationConverterTest(final Path path) {
-        this.pathIn = path;
-    }
+    public AbstractLog4j1ConfigurationConverterTest() {}
 
     @Test
-    public void test() throws Exception {
+    public void test(Path path) throws Exception {
         final Path tempFile = Files.createTempFile("log4j2", ".xml");
         try {
             final Log4j1ConfigurationConverter.CommandLineArguments cla =
                     new Log4j1ConfigurationConverter.CommandLineArguments();
-            cla.setPathIn(pathIn);
+            cla.setPathIn(path);
             cla.setPathOut(tempFile);
             Log4j1ConfigurationConverter.run(cla);
             checkWellFormedXml(tempFile);

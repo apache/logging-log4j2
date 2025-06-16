@@ -48,10 +48,10 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Test;
 
-public class ConfigurationAssemblerTest {
+class ConfigurationAssemblerTest {
 
     @Test
-    public void testBuildConfiguration() throws Exception {
+    void testBuildConfiguration() {
         try {
             System.setProperty(
                     Constants.LOG4J_CONTEXT_SELECTOR, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
@@ -68,7 +68,7 @@ public class ConfigurationAssemblerTest {
     }
 
     @Test
-    public void testCustomConfigurationFactory() throws Exception {
+    void testCustomConfigurationFactory() {
         try {
             System.setProperty(
                     ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
@@ -88,17 +88,17 @@ public class ConfigurationAssemblerTest {
         assertNotNull(config.getName());
         assertFalse(config.getName().isEmpty());
         assertNotNull(config, "No configuration created");
-        assertEquals(config.getState(), LifeCycle.State.STARTED, "Incorrect State: " + config.getState());
+        assertEquals(LifeCycle.State.STARTED, config.getState(), "Incorrect State: " + config.getState());
         final Map<String, Appender> appenders = config.getAppenders();
         assertNotNull(appenders);
-        assertEquals(appenders.size(), 2, "Incorrect number of Appenders: " + appenders.size());
+        assertEquals(2, appenders.size(), "Incorrect number of Appenders: " + appenders.size());
         final KafkaAppender kafkaAppender = (KafkaAppender) appenders.get("Kafka");
         final GelfLayout gelfLayout = (GelfLayout) kafkaAppender.getLayout();
         final ConsoleAppender consoleAppender = (ConsoleAppender) appenders.get("Stdout");
         final PatternLayout patternLayout = (PatternLayout) consoleAppender.getLayout();
         final Map<String, LoggerConfig> loggers = config.getLoggers();
         assertNotNull(loggers);
-        assertEquals(loggers.size(), 2, "Incorrect number of LoggerConfigs: " + loggers.size());
+        assertEquals(2, loggers.size(), "Incorrect number of LoggerConfigs: " + loggers.size());
         final LoggerConfig rootLoggerConfig = loggers.get("");
         assertEquals(Level.ERROR, rootLoggerConfig.getLevel());
         assertFalse(rootLoggerConfig.isIncludeLocation());

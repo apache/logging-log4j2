@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("smoke")
-public class BasicLoggingTest {
+class BasicLoggingTest {
 
     @Test
-    public void test1() {
+    void test1() {
         final Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
         logger.debug("debug not set");
         logger.error("Test message");

@@ -16,45 +16,44 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
-public class ContextDataJsonAttributeConverterTest {
+@Tag("Appenders.Jpa")
+class ContextDataJsonAttributeConverterTest {
     private ContextDataJsonAttributeConverter converter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.converter = new ContextDataJsonAttributeConverter();
     }
 
     @Test
-    public void testConvert01() {
+    void testConvert01() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("test1", "another1");
         map.putValue("key2", "value2");
 
         final String converted = this.converter.convertToDatabaseColumn(map);
 
-        assertNotNull("The converted value should not be null.", converted);
+        assertNotNull(converted, "The converted value should not be null.");
 
         final ReadOnlyStringMap reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", map, reversed);
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(map, reversed, "The reversed value is not correct.");
     }
 
     @Test
-    public void testConvert02() {
+    void testConvert02() {
         final StringMap map = new SortedArrayStringMap();
         map.putValue("someKey", "coolValue");
         map.putValue("anotherKey", "testValue");
@@ -62,22 +61,22 @@ public class ContextDataJsonAttributeConverterTest {
 
         final String converted = this.converter.convertToDatabaseColumn(map);
 
-        assertNotNull("The converted value should not be null.", converted);
+        assertNotNull(converted, "The converted value should not be null.");
 
         final ReadOnlyStringMap reversed = this.converter.convertToEntityAttribute(converted);
 
-        assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", map, reversed);
+        assertNotNull(reversed, "The reversed value should not be null.");
+        assertEquals(reversed, map, "The reversed value is not correct.");
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    void testConvertNullToDatabaseColumn() {
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
     @Test
-    public void testConvertNullOrBlankToEntityAttribute() {
-        assertNull("The converted attribute should be null (1).", this.converter.convertToEntityAttribute(null));
-        assertNull("The converted attribute should be null (2).", this.converter.convertToEntityAttribute(""));
+    void testConvertNullOrBlankToEntityAttribute() {
+        assertNull(this.converter.convertToEntityAttribute(null), "The converted attribute should be null (1).");
+        assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 }

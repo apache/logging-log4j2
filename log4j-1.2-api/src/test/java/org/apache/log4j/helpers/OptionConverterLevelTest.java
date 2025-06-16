@@ -34,7 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class OptionConverterLevelTest {
+class OptionConverterLevelTest {
 
     static Stream<Arguments> standardLevels() {
         return Arrays.stream(StandardLevel.values())
@@ -47,7 +47,7 @@ public class OptionConverterLevelTest {
      */
     @ParameterizedTest
     @MethodSource("standardLevels")
-    public void testStandardLevelConversion(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
+    void testStandardLevelConversion(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
         assertThat(log4j2Level).isSameAs(OptionConverter.convertLevel(log4j1Level));
         assertThat(log4j1Level).isSameAs(OptionConverter.convertLevel(log4j2Level));
         assertThat(OptionConverter.toLevel(org.apache.logging.log4j.Level.class.getName(), log4j2Level.name(), null))
@@ -59,14 +59,13 @@ public class OptionConverterLevelTest {
      */
     @ParameterizedTest
     @MethodSource("standardLevels")
-    public void testStandardIntLevelConversion(
-            final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
+    void testStandardIntLevelConversion(final Level log4j1Level, final org.apache.logging.log4j.Level log4j2Level) {
         assertEquals(log4j2Level.intLevel(), toLog4j2Level(log4j1Level.toInt()));
         assertEquals(log4j1Level.toInt(), toLog4j1Level(log4j2Level.intLevel()));
     }
 
     @Test
-    public void testMaxMinCutoff() {
+    void testMaxMinCutoff() {
         // The cutoff values are transformed into ALL and OFF
         assertEquals(StandardLevel.ALL.intLevel(), toLog4j2Level(OptionConverter.MIN_CUTOFF_LEVEL));
         assertEquals(StandardLevel.OFF.intLevel(), toLog4j2Level(OptionConverter.MAX_CUTOFF_LEVEL));
@@ -87,7 +86,7 @@ public class OptionConverterLevelTest {
      * correctly.
      */
     @Test
-    public void testUsefulRange() {
+    void testUsefulRange() {
         for (int intLevel = StandardLevel.OFF.intLevel(); intLevel <= StandardLevel.TRACE.intLevel(); intLevel++) {
             assertEquals(intLevel, toLog4j2Level(toLog4j1Level(intLevel)));
         }
@@ -101,7 +100,7 @@ public class OptionConverterLevelTest {
      * used in {@link LogEventAdapter}.
      */
     @Test
-    public void testCustomLog4j2Levels() {
+    void testCustomLog4j2Levels() {
         final int infoDebug = (StandardLevel.INFO.intLevel() + StandardLevel.DEBUG.intLevel()) / 2;
         final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.forName("INFO_DEBUG", infoDebug);
         final Level v1Level =

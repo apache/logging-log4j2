@@ -44,7 +44,6 @@ import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.LocationAware;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -214,15 +213,21 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated Use {@link #withFilter(Filter)} instead
+         * @deprecated Use {@link #setFilter(Filter)} instead
          */
         @Deprecated
         public B withtFilter(final Filter filter) {
-            this.filter = filter;
-            return asBuilder();
+            return setFilter(filter);
         }
 
+        /** @deprecated since 2.25.0. Use {@link #setFilter(Filter)} instead. */
+        @Deprecated
         public B withFilter(final Filter filter) {
+            return setFilter(filter);
+        }
+
+        /** @since 2.25.0 */
+        public B setFilter(final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -611,14 +616,6 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             final Throwable t,
             final List<Property> props) {
         final List<Property> results = new ArrayList<>(props.size());
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setMessage(data)
-                .setMarker(marker)
-                .setLevel(level)
-                .setLoggerName(loggerName)
-                .setLoggerFqcn(fqcn)
-                .setThrown(t)
-                .build();
         for (int i = 0; i < props.size(); i++) {
             final Property prop = props.get(i);
             final String value = prop.evaluate(config.getStrSubstitutor()); // since LOG4J2-1575
@@ -945,7 +942,16 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
+            /**
+             * @deprecated since 2.25.0. Use {@link #setFilter(Filter)} instead.
+             */
+            @Deprecated
             public B withtFilter(final Filter filter) {
+                return setFilter(filter);
+            }
+
+            /** @since 2.25.0 */
+            public B setFilter(final Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
@@ -1009,13 +1015,13 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 }
                 final String[] parts = Strings.splitList(levelAndRefs);
                 result.level = Level.getLevel(parts[0]);
+                final List<AppenderRef> refList = new ArrayList<>();
                 if (parts.length > 1) {
-                    final List<AppenderRef> refList = new ArrayList<>();
                     Arrays.stream(parts)
                             .skip(1)
                             .forEach((ref) -> refList.add(AppenderRef.createAppenderRef(ref, null, null)));
-                    result.refs = refList;
                 }
+                result.refs = refList;
             } else {
                 LOGGER.warn("levelAndRefs are only allowed in a properties configuration. The value is ignored.");
                 result.level = level;

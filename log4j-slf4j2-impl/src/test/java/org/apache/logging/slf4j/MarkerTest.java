@@ -16,41 +16,42 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class MarkerTest {
+class MarkerTest {
 
     private static final String CHILD_MAKER_NAME = MarkerTest.class.getSimpleName() + "-TEST";
     private static final String PARENT_MARKER_NAME = MarkerTest.class.getSimpleName() + "-PARENT";
     private static Log4jMarkerFactory markerFactory;
 
-    @BeforeClass
-    public static void startup() {
+    @BeforeAll
+    static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
     }
 
-    @Before
-    @After
-    public void clearMarkers() {
+    @BeforeEach
+    @AfterEach
+    void clearMarkers() {
         MarkerManager.clear();
     }
 
     @Test
-    public void testAddMarker() {
+    void testAddMarker() {
         final String childMakerName = CHILD_MAKER_NAME + "-AM";
         final String parentMarkerName = PARENT_MARKER_NAME + "-AM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);
@@ -59,21 +60,21 @@ public class MarkerTest {
         final Marker log4jParent = MarkerManager.getMarker(parentMarkerName);
         final Marker log4jMarker = MarkerManager.getMarker(childMakerName);
 
-        assertTrue("Incorrect Marker class", slf4jMarker instanceof Log4jMarker);
+        assertInstanceOf(Log4jMarker.class, slf4jMarker, "Incorrect Marker class");
         assertTrue(
+                log4jMarker.isInstanceOf(log4jParent),
                 String.format(
                         "%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-                        childMakerName, parentMarkerName, log4jMarker, log4jParent),
-                log4jMarker.isInstanceOf(log4jParent));
+                        childMakerName, parentMarkerName, log4jMarker, log4jParent));
         assertTrue(
+                slf4jMarker.contains(slf4jParent),
                 String.format(
                         "%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-                        childMakerName, parentMarkerName, slf4jMarker, slf4jParent),
-                slf4jMarker.contains(slf4jParent));
+                        childMakerName, parentMarkerName, slf4jMarker, slf4jParent));
     }
 
     @Test
-    public void testAddNullMarker() {
+    void testAddNullMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ANM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ANM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -99,7 +100,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testAddSameMarker() {
+    void testAddSameMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ASM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ASM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -109,19 +110,19 @@ public class MarkerTest {
         final Marker log4jParent = MarkerManager.getMarker(parentMakerName);
         final Marker log4jMarker = MarkerManager.getMarker(childMarkerName);
         assertTrue(
+                log4jMarker.isInstanceOf(log4jParent),
                 String.format(
                         "%s (log4jMarker=%s) is not an instance of %s (log4jParent=%s) in Log4j",
-                        childMarkerName, parentMakerName, log4jMarker, log4jParent),
-                log4jMarker.isInstanceOf(log4jParent));
+                        childMarkerName, parentMakerName, log4jMarker, log4jParent));
         assertTrue(
+                slf4jMarker.contains(slf4jParent),
                 String.format(
                         "%s (slf4jMarker=%s) is not an instance of %s (log4jParent=%s) in SLF4J",
-                        childMarkerName, parentMakerName, slf4jMarker, slf4jParent),
-                slf4jMarker.contains(slf4jParent));
+                        childMarkerName, parentMakerName, slf4jMarker, slf4jParent));
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         final String childMarkerName = CHILD_MAKER_NAME + "-ASM";
         final String parentMakerName = PARENT_MARKER_NAME + "-ASM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -138,7 +139,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testContainsNullMarker() {
+    void testContainsNullMarker() {
         final String childMarkerName = CHILD_MAKER_NAME + "-CM";
         final String parentMakerName = PARENT_MARKER_NAME + "-CM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -150,13 +151,13 @@ public class MarkerTest {
         final Log4jMarker log4jSlf4jMarker = new Log4jMarker(markerFactory, log4jMarker);
         final org.slf4j.Marker nullMarker = null;
         try {
-            Assert.assertFalse(log4jSlf4jParent.contains(nullMarker));
+            assertFalse(log4jSlf4jParent.contains(nullMarker));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (final IllegalArgumentException e) {
             // expected
         }
         try {
-            Assert.assertFalse(log4jSlf4jMarker.contains(nullMarker));
+            assertFalse(log4jSlf4jMarker.contains(nullMarker));
             fail("Expected " + IllegalArgumentException.class.getName());
         } catch (final IllegalArgumentException e) {
             // expected
@@ -164,7 +165,7 @@ public class MarkerTest {
     }
 
     @Test
-    public void testContainsNullString() {
+    void testContainsNullString() {
         final String childMarkerName = CHILD_MAKER_NAME + "-CS";
         final String parentMakerName = PARENT_MARKER_NAME + "-CS";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMarkerName);
@@ -175,12 +176,12 @@ public class MarkerTest {
         final Log4jMarker log4jSlf4jParent = new Log4jMarker(markerFactory, log4jParent);
         final Log4jMarker log4jSlf4jMarker = new Log4jMarker(markerFactory, log4jMarker);
         final String nullStr = null;
-        Assert.assertFalse(log4jSlf4jParent.contains(nullStr));
-        Assert.assertFalse(log4jSlf4jMarker.contains(nullStr));
+        assertFalse(log4jSlf4jParent.contains(nullStr));
+        assertFalse(log4jSlf4jMarker.contains(nullStr));
     }
 
     @Test
-    public void testRemoveNullMarker() {
+    void testRemoveNullMarker() {
         final String childMakerName = CHILD_MAKER_NAME + "-CM";
         final String parentMakerName = PARENT_MARKER_NAME + "-CM";
         final org.slf4j.Marker slf4jMarker = org.slf4j.MarkerFactory.getMarker(childMakerName);
@@ -191,7 +192,7 @@ public class MarkerTest {
         final Log4jMarker log4jSlf4jParent = new Log4jMarker(markerFactory, log4jParent);
         final Log4jMarker log4jSlf4jMarker = new Log4jMarker(markerFactory, log4jMarker);
         final org.slf4j.Marker nullMarker = null;
-        Assert.assertFalse(log4jSlf4jParent.remove(nullMarker));
-        Assert.assertFalse(log4jSlf4jMarker.remove(nullMarker));
+        assertFalse(log4jSlf4jParent.remove(nullMarker));
+        assertFalse(log4jSlf4jMarker.remove(nullMarker));
     }
 }

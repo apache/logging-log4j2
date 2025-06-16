@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -34,12 +35,11 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
+@Tag("Appenders.Jpa")
 public abstract class AbstractJpaAppenderTest {
     private final String databaseType;
     private Connection connection;
@@ -68,8 +68,8 @@ public abstract class AbstractJpaAppenderTest {
         try {
             final String appenderName = "databaseAppender";
             final Appender appender = context.getConfiguration().getAppender(appenderName);
-            assertNotNull("The appender '" + appenderName + "' should not be null.", appender);
-            assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
+            assertNotNull(appender, "The appender '" + appenderName + "' should not be null.");
+            assertInstanceOf(JpaAppender.class, appender, "The appender should be a JpaAppender.");
             ((JpaAppender) appender).getManager().close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
@@ -77,7 +77,7 @@ public abstract class AbstractJpaAppenderTest {
             StatusLogger.getLogger().reset();
 
             if (this.connection != null) {
-                try (final Statement statement = this.connection.createStatement(); ) {
+                try (final Statement statement = this.connection.createStatement()) {
                     statement.execute("SHUTDOWN");
                 }
                 this.connection.close();
@@ -108,44 +108,44 @@ public abstract class AbstractJpaAppenderTest {
             final Statement statement = this.connection.createStatement();
             final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaBaseLogEntry ORDER BY id");
 
-            assertTrue("There should be at least one row.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be at least one row.");
 
             long date = resultSet.getTimestamp("eventDate").getTime();
-            assertTrue("The date should be later than pre-logging (1).", date >= millis);
-            assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (1).", "INFO", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (1).", logger1.getName(), resultSet.getString("logger"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (1).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (1).");
+            assertEquals("INFO", resultSet.getString("level"), "The level column is not correct (1).");
+            assertEquals(logger1.getName(), resultSet.getString("logger"), "The logger column is not correct (1).");
             assertEquals(
-                    "The message column is not correct (1).", "Test my message 01.", resultSet.getString("message"));
-            assertNull("The exception column is not correct (1).", resultSet.getString("exception"));
+                    "Test my message 01.", resultSet.getString("message"), "The message column is not correct (1).");
+            assertNull(resultSet.getString("exception"), "The exception column is not correct (1).");
 
-            assertTrue("There should be at least two rows.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be at least two rows.");
 
             date = resultSet.getTimestamp("eventDate").getTime();
-            assertTrue("The date should be later than pre-logging (2).", date >= millis);
-            assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (2).", "ERROR", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (2).", logger1.getName(), resultSet.getString("logger"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (2).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (2).");
+            assertEquals("ERROR", resultSet.getString("level"), "The level column is not correct (2).");
+            assertEquals(logger1.getName(), resultSet.getString("logger"), "The logger column is not correct (2).");
             assertEquals(
-                    "The message column is not correct (2).",
                     "This is another message 02.",
-                    resultSet.getString("message"));
-            assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("exception"));
+                    resultSet.getString("message"),
+                    "The message column is not correct (2).");
+            assertEquals(stackTrace, resultSet.getString("exception"), "The exception column is not correct (2).");
 
-            assertTrue("There should be three rows.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be three rows.");
 
             date = resultSet.getTimestamp("eventDate").getTime();
-            assertTrue("The date should be later than pre-logging (3).", date >= millis);
-            assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (3).", "WARN", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (3).", logger2.getName(), resultSet.getString("logger"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (3).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (3).");
+            assertEquals("WARN", resultSet.getString("level"), "The level column is not correct (3).");
+            assertEquals(logger2.getName(), resultSet.getString("logger"), "The logger column is not correct (3).");
             assertEquals(
-                    "The message column is not correct (3).",
                     "A final warning has been issued.",
-                    resultSet.getString("message"));
-            assertNull("The exception column is not correct (3).", resultSet.getString("exception"));
+                    resultSet.getString("message"),
+                    "The message column is not correct (3).");
+            assertNull(resultSet.getString("exception"), "The exception column is not correct (3).");
 
-            assertFalse("There should not be four rows.", resultSet.next());
+            assertFalse(resultSet.next(), "There should not be four rows.");
         } finally {
             this.tearDown();
         }
@@ -174,43 +174,43 @@ public abstract class AbstractJpaAppenderTest {
             final Statement statement = this.connection.createStatement();
             final ResultSet resultSet = statement.executeQuery("SELECT * FROM jpaBasicLogEntry ORDER BY id");
 
-            assertTrue("There should be at least one row.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be at least one row.");
 
             long date = resultSet.getLong("timemillis");
-            assertTrue("The date should be later than pre-logging (1).", date >= millis);
-            assertTrue("The date should be earlier than now (1).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (1).", "DEBUG", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (1).", logger1.getName(), resultSet.getString("loggerName"));
-            assertEquals("The message column is not correct (1).", "Test my debug 01.", resultSet.getString("message"));
-            assertNull("The exception column is not correct (1).", resultSet.getString("thrown"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (1).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (1).");
+            assertEquals("DEBUG", resultSet.getString("level"), "The level column is not correct (1).");
+            assertEquals(logger1.getName(), resultSet.getString("loggerName"), "The logger column is not correct (1).");
+            assertEquals("Test my debug 01.", resultSet.getString("message"), "The message column is not correct (1).");
+            assertNull(resultSet.getString("thrown"), "The exception column is not correct (1).");
 
-            assertTrue("There should be at least two rows.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be at least two rows.");
 
             date = resultSet.getLong("timemillis");
-            assertTrue("The date should be later than pre-logging (2).", date >= millis);
-            assertTrue("The date should be earlier than now (2).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (2).", "WARN", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (2).", logger1.getName(), resultSet.getString("loggerName"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (2).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (2).");
+            assertEquals("WARN", resultSet.getString("level"), "The level column is not correct (2).");
+            assertEquals(logger1.getName(), resultSet.getString("loggerName"), "The logger column is not correct (2).");
             assertEquals(
-                    "The message column is not correct (2).",
                     "This is another warning 02.",
-                    resultSet.getString("message"));
-            assertEquals("The exception column is not correct (2).", stackTrace, resultSet.getString("thrown"));
+                    resultSet.getString("message"),
+                    "The message column is not correct (2).");
+            assertEquals(stackTrace, resultSet.getString("thrown"), "The exception column is not correct (2).");
 
-            assertTrue("There should be three rows.", resultSet.next());
+            assertTrue(resultSet.next(), "There should be three rows.");
 
             date = resultSet.getLong("timemillis");
-            assertTrue("The date should be later than pre-logging (3).", date >= millis);
-            assertTrue("The date should be earlier than now (3).", date <= System.currentTimeMillis());
-            assertEquals("The level column is not correct (3).", "FATAL", resultSet.getString("level"));
-            assertEquals("The logger column is not correct (3).", logger2.getName(), resultSet.getString("loggerName"));
+            assertTrue(date >= millis, "The date should be later than pre-logging (3).");
+            assertTrue(date <= System.currentTimeMillis(), "The date should be earlier than now (3).");
+            assertEquals("FATAL", resultSet.getString("level"), "The level column is not correct (3).");
+            assertEquals(logger2.getName(), resultSet.getString("loggerName"), "The logger column is not correct (3).");
             assertEquals(
-                    "The message column is not correct (3).",
                     "A fatal warning has been issued.",
-                    resultSet.getString("message"));
-            assertNull("The exception column is not correct (3).", resultSet.getString("thrown"));
+                    resultSet.getString("message"),
+                    "The message column is not correct (3).");
+            assertNull(resultSet.getString("thrown"), "The exception column is not correct (3).");
 
-            assertFalse("There should not be four rows.", resultSet.next());
+            assertFalse(resultSet.next(), "There should not be four rows.");
         } finally {
             this.tearDown();
         }

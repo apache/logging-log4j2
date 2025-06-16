@@ -16,24 +16,21 @@
  */
 package org.apache.log4j.layout;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class Log4j1XmlLayoutTest {
-
-    @Rule
-    public ThreadContextRule threadContextRule = new ThreadContextRule();
+@UsingThreadContextStack
+class Log4j1XmlLayoutTest {
 
     @Test
-    public void testWithoutThrown() {
+    void testWithoutThrown() {
         final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(false, true);
 
         final Log4jLogEvent event = Log4jLogEvent.newBuilder()
@@ -54,7 +51,7 @@ public class Log4j1XmlLayoutTest {
     }
 
     @Test
-    public void testWithPropertiesAndLocationInfo() {
+    void testWithPropertiesAndLocationInfo() {
         final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(true, true);
 
         final StringMap contextMap = ContextDataFactory.createContextData(2);

@@ -41,7 +41,7 @@
 This is the fifth GA release.
 It contains several bugfixes and new features.
 
-Apache Log4j 2.2 requires a minimum of Java 6 to build and run.
+Log4j 2.2 requires a minimum of Java 6 to build and run.
 Future releases may require a minimum of Java 7.
 
 Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does

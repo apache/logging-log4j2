@@ -18,7 +18,6 @@ package org.apache.log4j.builders.layout;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -26,10 +25,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class PatternLayoutBuilderTest {
+class PatternLayoutBuilderTest {
 
     static Stream<Arguments> patterns() {
-        return Arrays.asList(
+        return Stream.of(
                 Arguments.of("%p", "%v1Level"),
                 Arguments.of("%100p", "%100v1Level"),
                 Arguments.of("%-100p", "%-100v1Level"),
@@ -41,13 +40,12 @@ public class PatternLayoutBuilderTest {
                 Arguments.of("%XX", "%XX"),
                 Arguments.of("%p id", "%v1Level id"),
                 Arguments.of("%x Ex", "%ndc Ex"),
-                Arguments.of("%X X", "%properties X"))
-                .stream();
+                Arguments.of("%X X", "%properties X"));
     }
 
     @ParameterizedTest
     @MethodSource("patterns")
-    public void testLevelPatternReplacement(final String v1Pattern, final String v2Pattern) {
+    void testLevelPatternReplacement(final String v1Pattern, final String v2Pattern) {
         final PatternLayoutBuilder builder = new PatternLayoutBuilder();
         final PatternLayout layout = (PatternLayout) LayoutAdapter.adapt(builder.createLayout(v1Pattern, null));
         assertEquals(v2Pattern, layout.getConversionPattern());

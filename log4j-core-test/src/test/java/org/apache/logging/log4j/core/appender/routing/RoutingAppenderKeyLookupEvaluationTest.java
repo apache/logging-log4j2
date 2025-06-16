@@ -38,13 +38,13 @@ public class RoutingAppenderKeyLookupEvaluationTest {
     public final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         ThreadContext.remove(KEY);
         this.app = this.loggerContextRule.getListAppender("List");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.app.clear();
         this.loggerContextRule.getLoggerContext().stop();
         ThreadContext.remove(KEY);

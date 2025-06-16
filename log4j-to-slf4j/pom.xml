@@ -50,7 +50,7 @@
       org.jspecify;transitive=false
     </bnd-extra-module-options>
 
-    <slf4j2.version>2.0.16</slf4j2.version>
+    <slf4j2.version>2.0.17</slf4j2.version>
   </properties>
 
   <dependencyManagement>
@@ -100,11 +100,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

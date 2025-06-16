@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -35,7 +35,7 @@ public class IoBuilderTest {
     public static LoggerContextRule context = new LoggerContextRule("log4j2-streams-calling-info.xml");
 
     @Test
-    public void testNoArgBuilderCallerClassInfo() throws Exception {
+    public void testNoArgBuilderCallerClassInfo() {
         try (final PrintStream ps = IoBuilder.forLogger().buildPrintStream()) {
             ps.println("discarded");
             final ListAppender app = context.getListAppender("IoBuilderTest");

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,14 +61,16 @@ public class RollingAppenderCronOnceADayTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
-        String content = new String(Files.readAllBytes(src), UTF_8);
+        String content = new String(Files.readAllBytes(src), StandardCharsets.UTF_8);
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.SECOND, CRON_DELAY);
         remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
         cronExpression = String.format(
                 "%d %d %d * * ?", cal.get(Calendar.SECOND), cal.get(Calendar.MINUTE), cal.get(Calendar.HOUR_OF_DAY));
         content = content.replace("@CRON_EXPR@", cronExpression);
-        Files.write(FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG_TARGET), content.getBytes(UTF_8));
+        Files.write(
+                FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG_TARGET),
+                content.getBytes(StandardCharsets.UTF_8));
         StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
     }
 
@@ -84,7 +87,7 @@ public class RollingAppenderCronOnceADayTest {
         assertTrue("Log file does not exist", file.exists());
         logger.debug("This is test message number 1, waiting for rolling");
 
-        final RollingFileAppender app = (RollingFileAppender)
+        final RollingFileAppender app =
                 loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
         assertNotNull("No triggering policy", policy);

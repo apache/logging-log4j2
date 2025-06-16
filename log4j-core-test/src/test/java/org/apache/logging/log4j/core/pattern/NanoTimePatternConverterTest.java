@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-public class NanoTimePatternConverterTest {
+class NanoTimePatternConverterTest {
 
     @Test
-    public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
+    void testConverterAppendsLogEventNanoTimeToStringBuilder() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setNanoTime(1234567)
                 .build();

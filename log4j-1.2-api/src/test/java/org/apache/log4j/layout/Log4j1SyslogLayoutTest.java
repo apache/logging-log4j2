@@ -35,7 +35,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class Log4j1SyslogLayoutTest {
+class Log4j1SyslogLayoutTest {
 
     private static final SimpleMessage MESSAGE = new SimpleMessage("Hello world!");
     private static final long TIMESTAMP = LocalDateTime.of(2022, 4, 5, 12, 34, 56)
@@ -68,7 +68,7 @@ public class Log4j1SyslogLayoutTest {
 
     @ParameterizedTest
     @MethodSource("configurations")
-    public void testSimpleLayout(
+    void testSimpleLayout(
             final String expected, final Facility facility, final boolean header, final boolean facilityPrinting) {
         final LogEvent logEvent = createLogEvent();
         StringLayout appenderLayout = Log4j1SyslogLayout.newBuilder()

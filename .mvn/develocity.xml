@@ -2,7 +2,7 @@
 <develocity>
     <projectId>logging-log4j2</projectId>
     <server>
-        <url>https://ge.apache.org</url>
+        <url>https://develocity.apache.org</url>
     </server>
     <buildScan>
         <capture>

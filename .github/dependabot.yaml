@@ -44,7 +44,45 @@ registries:
 updates:
 
   - package-ecosystem: maven
-    directory: "/"
+    directories:
+      - "/log4j-1.2-api"
+      - "/log4j-api-test"
+      - "/log4j-api"
+      - "/log4j-appserver"
+      - "/log4j-cassandra"
+      - "/log4j-core-fuzz-test"
+      - "/log4j-core-its"
+      - "/log4j-core-test"
+      - "/log4j-core"
+      - "/log4j-couchdb"
+      - "/log4j-docker"
+      - "/log4j-fuzz-test"
+      - "/log4j-iostreams"
+      - "/log4j-jakarta-jms"
+      - "/log4j-jakarta-smtp"
+      - "/log4j-jakarta-web"
+      - "/log4j-jcl"
+      - "/log4j-jdbc-dbcp2"
+      - "/log4j-jpa"
+      - "/log4j-jpl"
+      - "/log4j-jul"
+      - "/log4j-layout-template-json-fuzz-test"
+      - "/log4j-layout-template-json-test"
+      - "/log4j-layout-template-json"
+      - "/log4j-mongodb"
+        # `log4j-mongodb4` is in a separate run
+      - "/log4j-osgi-test"
+      - "/log4j-parent"
+      - "/log4j-perf-test"
+        # `log4j-slf4j-impl` is in a separate run
+      - "/log4j-slf4j2-impl-fuzz-test"
+      - "/log4j-slf4j2-impl"
+      - "/log4j-spring-boot"
+      - "/log4j-spring-cloud-config-client"
+      - "/log4j-taglib"
+      - "/log4j-to-jul"
+      - "/log4j-to-slf4j"
+      - "/log4j-web"
     open-pull-requests-limit: 10
     schedule:
       interval: "daily"
@@ -54,31 +92,31 @@ updates:
     ignore:
       # Jetty 10.x does not have an internal logging API
       - dependency-name: "org.eclipse.jetty:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[10,)" ]
       # EclipseLink 3.x is Jakarta EE 9
       - dependency-name: "org.eclipse.persistence:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[3,)" ]
       # Spring 6.x is Jakarta EE 9
       - dependency-name: "org.springframework:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[6,)" ]
       # Spring Boot 3.x is Jakarta EE 9
       - dependency-name: "org.springframework.boot:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[3,)" ]
       # Spring Cloud 2022.x is Jakarta EE 9
       - dependency-name: "org.springframework.cloud:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[2021,)" ]
       # Tomcat Juli 10.1.x requires Java 11
       - dependency-name: "org.apache.tomcat:*"
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+        versions: [ "[10.1,)" ]
       # Keep Logback version 1.2.x
       - dependency-name: "ch.qos.logback:*"
-        update-types: [ "version-update:semver-major", "version-update:semver-minor" ]
+        versions: [ "[1.3,)" ]
       # Mockito 5.x requires Java 11
       - dependency-name: "org.mockito:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[5,)" ]
       # JUnit Pioneer 2.x requires Java 11
       - dependency-name: "org.junit-pioneer:*"
-        update-types: [ "version-update:semver-major" ]
+        versions: [ "[2,)" ]
       # Apache Cassandra: keep version 3.x
       - dependency-name: "org.apache.cassandra:*"
         versions: [ "[4,)" ]
@@ -121,11 +159,13 @@ updates:
       # SLF4J should not perform major version upgrades
       - dependency-name: "org.slf4j:slf4j-api"
         update-types: [ "version-update:semver-major" ]
+      # Kafka 4.x is not compatible with our appender
+      - dependency-name: "org.apache.kafka:*"
+        versions: [ "[4,)" ]
 
   - package-ecosystem: maven
     directories:
       - "/log4j-mongodb4"
-      - "/log4j-slf4j-impl"
     open-pull-requests-limit: 10
     schedule:
       interval: "daily"
@@ -136,9 +176,6 @@ updates:
       # MongoDB 4.x should only upgrade to 4.x
       - dependency-name: "org.mongodb:*"
         versions: [ "[5,)" ]
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"

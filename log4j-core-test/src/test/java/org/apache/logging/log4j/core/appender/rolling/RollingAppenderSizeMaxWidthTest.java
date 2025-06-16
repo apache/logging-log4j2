@@ -96,7 +96,7 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.logger = loggerContextRule.getLogger(RollingAppenderSizeMaxWidthTest.class.getName());
         final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getRequiredAppender("RollingFile");
         app.getManager().addRolloverListener(this);
@@ -133,7 +133,7 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
     }
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender() {
         if (minWidth > 0) {
             assertTrue("min must be greater than or equal to the minimum width", min > -powerOfTen(minWidth));
         }

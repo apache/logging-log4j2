@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -34,10 +35,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the ReusableMessageFactory class.
  */
-public class ReusableMessageFactoryTest {
+class ReusableMessageFactoryTest {
 
     @Test
-    public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
+    void testCreateEventReturnsDifferentInstanceIfNotReleased() {
         final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
         final Message message2 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 9, 8, 7, 6);
@@ -47,7 +48,7 @@ public class ReusableMessageFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsSameInstance() throws Exception {
+    void testCreateEventReturnsSameInstance() {
         final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
 
@@ -62,7 +63,7 @@ public class ReusableMessageFactoryTest {
     }
 
     private void assertReusableParameterizeMessage(final Message message, final String txt, final Object[] params) {
-        assertTrue(message instanceof ReusableParameterizedMessage);
+        assertInstanceOf(ReusableParameterizedMessage.class, message);
         final ReusableParameterizedMessage msg = (ReusableParameterizedMessage) message;
         assertTrue(msg.reserved, "reserved");
 
@@ -75,7 +76,7 @@ public class ReusableMessageFactoryTest {
     }
 
     @Test
-    public void testCreateEventOverwritesFields() throws Exception {
+    void testCreateEventOverwritesFields() {
         final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
         assertReusableParameterizeMessage(message1, "text, p0={} p1={} p2={} p3={}", new Object[] {
@@ -98,7 +99,7 @@ public class ReusableMessageFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsThreadLocalInstance() throws Exception {
+    void testCreateEventReturnsThreadLocalInstance() throws Exception {
         final ReusableMessageFactory factory = new ReusableMessageFactory();
         final AtomicReference<Message> message1 = new AtomicReference<>();
         final AtomicReference<Message> message2 = new AtomicReference<>();

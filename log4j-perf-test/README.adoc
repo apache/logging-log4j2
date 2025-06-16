@@ -20,11 +20,38 @@ You can use the generated fat JAR to run the tests as follows:
 
 [source,bash]
 ----
-java -jar target/log4j-perf-test-*-uber.jar <JMH-ARGS>
+java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main <JMH-ARGS>
 ----
 
 To list the available JMH arguments run:
 [source,bash]
 ----
-java -jar target/log4j-perf-test-*-uber.jar -h
+java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main -h
+----
+
+== Examples
+
+`ThreadLocalVsPoolBenchmark`::
++
+[source,bash]
+----
+java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main \
+  -f 1 -wi 10 -i 20 \
+  -tu ns -bm sample \
+  ".*ThreadLocalVsPoolBenchmark.*"
+----
+
+`JsonTemplateLayoutBenchmark`::
++
+[source,bash]
+----
+java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main \
+  -f 2 \
+  -wi 3 -w 20s \
+  -i 5 -r 30s \
+  -prof gc \
+  -prof perfnorm \
+  -prof "async:libPath=/path/to/libasyncProfiler.so;output=flamegraph" \
+  -rf json -rff log4j-perf-test/target/JsonTemplateLayoutBenchmarkResult.json \
+  ".*JsonTemplateLayoutBenchmark.*"
 ----

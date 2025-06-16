@@ -172,7 +172,7 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testLogJsonArgument() throws InterruptedException {
-        final ListAppender appender = (ListAppender) init.getAppender("List");
+        final ListAppender appender = init.getAppender("List");
         appender.countDownLatch = new CountDownLatch(4);
         appender.clear();
         final Logger logger = (Logger) LogManager.getRootLogger();
@@ -180,7 +180,7 @@ public class CsvParameterLayoutTest {
         logger.error("log:{}", json);
         // wait until background thread finished processing
         final int msgCount = 1;
-        if (appender.getMessages().size() < msgCount) {
+        if (appender.getMessages().isEmpty()) {
             appender.countDownLatch.await(5, TimeUnit.SECONDS);
         }
         assertEquals(

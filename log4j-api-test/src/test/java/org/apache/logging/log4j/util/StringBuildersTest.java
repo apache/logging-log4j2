@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the StringBuilders class.
  */
-public class StringBuildersTest {
+class StringBuildersTest {
     @Test
-    public void trimToMaxSize() {
+    void trimToMaxSize() {
         final StringBuilder sb = new StringBuilder();
         final char[] value = new char[4 * 1024];
         sb.append(value);
@@ -37,7 +37,7 @@ public class StringBuildersTest {
     }
 
     @Test
-    public void trimToMaxSizeWithLargeCapacity() {
+    void trimToMaxSizeWithLargeCapacity() {
         final StringBuilder sb = new StringBuilder();
         final char[] value = new char[4 * 1024];
         sb.append(value);
@@ -49,7 +49,7 @@ public class StringBuildersTest {
     }
 
     @Test
-    public void escapeJsonCharactersCorrectly() {
+    void escapeJsonCharactersCorrectly() {
         final String jsonValueNotEscaped = "{\"field\n1\":\"value_1\"}";
         final String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value_1\\\"}";
 
@@ -68,7 +68,7 @@ public class StringBuildersTest {
     }
 
     @Test
-    public void escapeJsonCharactersISOControl() {
+    void escapeJsonCharactersISOControl() {
         final String jsonValueNotEscaped = "{\"field\n1\":\"value" + (char) 0x8F + "_1\"}";
         final String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value\\u008F_1\\\"}";
 
@@ -80,7 +80,7 @@ public class StringBuildersTest {
     }
 
     @Test
-    public void escapeXMLCharactersCorrectly() {
+    void escapeXMLCharactersCorrectly() {
         final String xmlValueNotEscaped = "<\"Salt&Peppa'\">";
         final String xmlValueEscaped = "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;";
 

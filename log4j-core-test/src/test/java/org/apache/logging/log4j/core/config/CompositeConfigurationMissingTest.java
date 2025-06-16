@@ -25,16 +25,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class CompositeConfigurationMissingTest {
+class CompositeConfigurationMissingTest {
 
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         System.setProperty(
                 "log4j2.configurationFile", "classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
     }
 
     @Test
-    public void testMissingConfig() {
+    void testMissingConfig() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 
         final AbstractConfiguration config = (AbstractConfiguration) ctx.getConfiguration();

@@ -47,17 +47,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests Logback Async Appender performance.
  */
-// ============================== HOW TO RUN THIS TEST: ====================================
-//
-// single thread:
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLogbackBenchmark.*" -f 1 -wi 10 -i 20
-//
-// multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLogbackBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
-//
-// Usage help:
-// java -jar log4j-perf/target/benchmarks.jar -help
-//
 @State(Scope.Benchmark)
 public class AsyncAppenderLogbackBenchmark {
 

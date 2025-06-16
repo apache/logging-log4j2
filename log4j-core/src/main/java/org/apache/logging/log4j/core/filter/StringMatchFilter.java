@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -41,7 +43,7 @@ public final class StringMatchFilter extends AbstractFilter {
 
     private StringMatchFilter(final String text, final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
-        this.text = text;
+        this.text = Assert.requireNonEmpty(text, "text");
     }
 
     @Override
@@ -235,21 +237,37 @@ public final class StringMatchFilter extends AbstractFilter {
 
     public static class Builder extends AbstractFilterBuilder<StringMatchFilter.Builder>
             implements org.apache.logging.log4j.core.util.Builder<StringMatchFilter> {
+
         @PluginBuilderAttribute
-        private String text = "";
+        @Required(message = "No text provided for StringMatchFilter")
+        private String text;
 
         /**
-         * Sets the logging level to use.
-         * @param text the logging level to use
-         * @return this
+         * @deprecated since 2.25.0, use {@link #setText} instead.
          */
+        @Deprecated
         public StringMatchFilter.Builder setMatchString(final String text) {
-            this.text = text;
+            this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be null or empty.");
+            return this;
+        }
+
+        /**
+         * Sets the text to search in event messages.
+         *
+         * @param text the text to search in event messages.
+         * @return this instance.
+         * @since 2.25.0
+         */
+        public StringMatchFilter.Builder setText(final String text) {
+            this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be null or empty.");
             return this;
         }
 
         @Override
         public StringMatchFilter build() {
+            if (!isValid()) {
+                return null;
+            }
             return new StringMatchFilter(this.text, this.getOnMatch(), this.getOnMismatch());
         }
     }

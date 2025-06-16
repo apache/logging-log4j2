@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import javax.mail.Address;
@@ -35,19 +36,18 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.smtp.SimpleSmtpServer;
 import org.apache.logging.log4j.core.test.smtp.SmtpMessage;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Smtp.class)
-public class SmtpAppenderTest {
+@Tag("Smtp")
+class SmtpAppenderTest {
 
     private static final String HOST = "localhost";
 
     @Test
-    public void testMessageFactorySetFrom() throws MessagingException {
+    void testMessageFactorySetFrom() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String address = "testing@example.com";
 
@@ -67,7 +67,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetReplyTo() throws MessagingException {
+    void testMessageFactorySetReplyTo() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
@@ -81,7 +81,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetRecipients() throws MessagingException {
+    void testMessageFactorySetRecipients() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String addresses = "testing1@example.com,testing2@example.com";
 
@@ -95,7 +95,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testMessageFactorySetSubject() throws MessagingException {
+    void testMessageFactorySetSubject() throws MessagingException {
         final MimeMessageBuilder builder = new MimeMessageBuilder(null);
         final String subject = "Test Subject";
 
@@ -109,7 +109,7 @@ public class SmtpAppenderTest {
     }
 
     @Test
-    public void testDelivery() {
+    void testDelivery() {
         final String subjectKey = getClass().getName();
         final String subjectValue = "SubjectValue1";
         ThreadContext.put(subjectKey, subjectValue);
@@ -127,7 +127,7 @@ public class SmtpAppenderTest {
                 .setBufferSize(3)
                 .build();
         assertNotNull(appender);
-        assertTrue(appender.getManager() instanceof SmtpManager);
+        assertInstanceOf(SmtpManager.class, appender.getManager());
         appender.start();
 
         final LoggerContext context = LoggerContext.getContext();
@@ -146,7 +146,7 @@ public class SmtpAppenderTest {
         root.error("Error message #2");
 
         server.stop();
-        assertTrue(server.getReceivedEmailSize() == 2);
+        assertEquals(2, server.getReceivedEmailSize());
         final Iterator<SmtpMessage> messages = server.getReceivedEmail();
         final SmtpMessage email = messages.next();
 

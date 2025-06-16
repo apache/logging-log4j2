@@ -62,7 +62,7 @@ public class JsonLayoutMillisTest {
     public void testTimestamp() {
         logger.info("This is a test message");
         final List<String> message = app.getMessages();
-        assertTrue("No messages", message != null && message.size() > 0);
+        assertTrue("No messages", message != null && !message.isEmpty());
         final String json = message.get(0);
         System.out.println(json);
         assertNotNull("No JSON message", json);

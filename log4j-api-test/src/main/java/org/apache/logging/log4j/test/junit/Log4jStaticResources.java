@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Constants to use the {@link ResourceLock} annotation.
  */
-@BaselineIgnore("2.24.0")
 public final class Log4jStaticResources {
 
     /**

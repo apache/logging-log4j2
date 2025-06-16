@@ -16,24 +16,21 @@
  */
 package org.apache.logging.log4j.smtp;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SmtpAppender;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.net.MailManager;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SmtpManagerTest {
+class SmtpManagerTest {
 
     private void testAdd(final LogEvent event) {
         final SmtpAppender appender = SmtpAppender.newBuilder()
@@ -54,22 +51,19 @@ public class SmtpManagerTest {
                 .setBufferSize(10)
                 .build();
         final MailManager mailManager = appender.getManager();
-        assertThat("is instance of SmtpManager", mailManager instanceof SmtpManager);
+        assertThat(mailManager).isInstanceOf(SmtpManager.class);
         final SmtpManager smtpManager = (SmtpManager) mailManager;
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
         final LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
-        assertThat("unexpected number of buffered events", bufferedEvents.length, is(1));
-        assertThat(
-                "expected the immutable version of the event to be buffered",
-                bufferedEvents[0].getMessage(),
-                is(instanceOf(MementoMessage.class)));
+        assertThat(bufferedEvents).as("Buffered events").hasSize(1);
+        assertThat(bufferedEvents[0].getMessage()).as("Immutable message").isNotInstanceOf(ReusableMessage.class);
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
-    public void testAdd_WhereLog4jLogEventWithReusableMessage() {
+    void testAdd_WhereLog4jLogEventWithReusableMessage() {
         final LogEvent event = new Log4jLogEvent.Builder()
                 .setMessage(getReusableMessage("test message"))
                 .build();
@@ -78,14 +72,14 @@ public class SmtpManagerTest {
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
-    public void testAdd_WhereMutableLogEvent() {
+    void testAdd_WhereMutableLogEvent() {
         final MutableLogEvent event = new MutableLogEvent(new StringBuilder("test message"), null);
         testAdd(event);
     }
 
     // LOG4J2-3172
     @Test
-    public void testAdd_WhereRingBufferLogEvent() {
+    void testAdd_WhereRingBufferLogEvent() {
         final RingBufferLogEvent event = new RingBufferLogEvent();
         event.setValues(
                 null,

@@ -26,14 +26,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -43,17 +43,17 @@ import org.junit.jupiter.api.Test;
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2816">LOG4J2-2816</a>
  */
-@Category(AsyncLoggers.class)
+@Tag(Tags.ASYNC_LOGGERS)
 class AsyncLoggerEventTranslationExceptionTest {
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
         System.setProperty("AsyncLogger.ExceptionHandler", TestExceptionHandler.class.getName());
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         System.clearProperty("AsyncLogger.ExceptionHandler");
     }

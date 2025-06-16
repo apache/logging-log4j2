@@ -22,11 +22,11 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -48,7 +48,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class Log4jWebInitializerImplTest {
+class Log4jWebInitializerImplTest {
     /* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
      * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
      */
@@ -64,7 +64,7 @@ public class Log4jWebInitializerImplTest {
     private Log4jWebInitializerImpl initializerImpl;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(null);
 
         final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
@@ -72,20 +72,20 @@ public class Log4jWebInitializerImplTest {
         then(servletContext).should().setAttribute(eq(Log4jWebSupport.SUPPORT_ATTRIBUTE), initializerCaptor.capture());
         assertNotNull(initializer, "The initializer should not be null.");
         assertSame(initializer, initializerCaptor.getValue(), "The capture is not correct.");
-        assertTrue(initializer instanceof Log4jWebInitializerImpl, "The initializer is not correct.");
+        assertInstanceOf(Log4jWebInitializerImpl.class, initializer, "The initializer is not correct.");
 
         this.initializerImpl = (Log4jWebInitializerImpl) initializer;
     }
 
     @Test
-    public void testDeinitializeBeforeInitialize() {
+    void testDeinitializeBeforeInitialize() {
         assertThrows(IllegalStateException.class, () -> {
             this.initializerImpl.stop();
         });
     }
 
     @Test
-    public void testSetLoggerContextBeforeInitialize() {
+    void testSetLoggerContextBeforeInitialize() {
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
         this.initializerImpl.setLoggerContext();
@@ -94,7 +94,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testClearLoggerContextBeforeInitialize() {
+    void testClearLoggerContextBeforeInitialize() {
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
         this.initializerImpl.clearLoggerContext();
@@ -103,7 +103,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() {
+    void testInitializeWithNoParametersThenSetLoggerContextThenDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -145,7 +145,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() {
+    void testInitializeWithClassLoaderNoParametersThenSetLoggerContextThenDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -189,7 +189,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeIsIdempotent() {
+    void testInitializeIsIdempotent() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -217,7 +217,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeFailsAfterDeinitialize() {
+    void testInitializeFailsAfterDeinitialize() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -246,7 +246,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testDeinitializeIsIdempotent() {
+    void testDeinitializeIsIdempotent() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -272,7 +272,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeUsingJndiSelectorFails() {
+    void testInitializeUsingJndiSelectorFails() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -288,7 +288,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testInitializeUsingJndiSelector() {
+    void testInitializeUsingJndiSelector() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn("helloWorld06");
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -325,7 +325,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testWrapExecutionWithNoParameters() {
+    void testWrapExecutionWithNoParameters() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn(null);
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
@@ -368,7 +368,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testMissingLocationParameterWithNoMatchingResourceSetsNoConfigLocation() {
+    void testMissingLocationParameterWithNoMatchingResourceSetsNoConfigLocation() {
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(new HashSet<String>());
 
         this.initializerImpl.start();
@@ -384,7 +384,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testMissingLocationParameterWithOneMatchingResourceUsesResourceConfigLocation() throws Exception {
+    void testMissingLocationParameterWithOneMatchingResourceUsesResourceConfigLocation() throws Exception {
         given(servletContext.getResourcePaths("/WEB-INF/"))
                 .willReturn(new HashSet<>(singletonList("/WEB-INF/log4j2.xml")));
         given(servletContext.getResource("/WEB-INF/log4j2.xml")).willReturn(new URL("file:/a/b/c/WEB-INF/log4j2.xml"));
@@ -403,7 +403,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testMissingLocationParameterWithManyMatchingResourcesUsesFirstMatchingResourceConfigLocation()
+    void testMissingLocationParameterWithManyMatchingResourcesUsesFirstMatchingResourceConfigLocation()
             throws Exception {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn("mycontext");
@@ -428,7 +428,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration() {
+    void testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))
                 .willReturn(",,,");
 
@@ -445,7 +445,7 @@ public class Log4jWebInitializerImplTest {
     }
 
     @Test
-    public void testCompositeLocationParameterSetsCompositeConfiguration() {
+    void testCompositeLocationParameterSetsCompositeConfiguration() {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONTEXT_NAME)))
                 .willReturn("mycontext");
         given(servletContext.getInitParameter(eq(Log4jWebSupport.LOG4J_CONFIG_LOCATION)))

@@ -31,14 +31,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @StatusLoggerLevel("FATAL")
-public class ValidHostValidatorTest {
+class ValidHostValidatorTest {
 
     private PluginType<HostAndPort> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
         plugin = (PluginType<HostAndPort>) manager.getPluginType("HostAndPort");
@@ -47,12 +47,12 @@ public class ValidHostValidatorTest {
     }
 
     @Test
-    public void testNullHost() throws Exception {
+    void testNullHost() {
         assertNull(buildPlugin());
     }
 
     @Test
-    public void testInvalidIpAddress() throws Exception {
+    void testInvalidIpAddress() {
         node.getAttributes().put("host", "256.256.256.256");
         node.getAttributes().put("port", "1");
         final HostAndPort plugin = buildPlugin();
@@ -60,7 +60,7 @@ public class ValidHostValidatorTest {
     }
 
     @Test
-    public void testLocalhost() throws Exception {
+    void testLocalhost() {
         node.getAttributes().put("host", "localhost");
         node.getAttributes().put("port", "1");
         final HostAndPort hostAndPort = buildPlugin();

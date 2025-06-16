@@ -16,53 +16,53 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@Category(Appenders.Jpa.class)
-public class ContextStackAttributeConverterTest {
+@Tag("Appenders.Jpa")
+class ContextStackAttributeConverterTest {
     private ContextStackAttributeConverter converter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.converter = new ContextStackAttributeConverter();
     }
 
     @Test
-    public void testConvertToDatabaseColumn01() {
+    void testConvertToDatabaseColumn01() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("value1", "another2"));
 
         assertEquals(
-                "The converted value is not correct.",
                 "value1\nanother2",
-                this.converter.convertToDatabaseColumn(stack));
+                this.converter.convertToDatabaseColumn(stack),
+                "The converted value is not correct.");
     }
 
     @Test
-    public void testConvertToDatabaseColumn02() {
+    void testConvertToDatabaseColumn02() {
         final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("key1", "value2", "my3"));
 
         assertEquals(
-                "The converted value is not correct.",
                 "key1\nvalue2\nmy3",
-                this.converter.convertToDatabaseColumn(stack));
+                this.converter.convertToDatabaseColumn(stack),
+                "The converted value is not correct.");
     }
 
     @Test
-    public void testConvertNullToDatabaseColumn() {
-        assertNull("The converted value should be null.", this.converter.convertToDatabaseColumn(null));
+    void testConvertNullToDatabaseColumn() {
+        assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testConvertToEntityAttribute() {
-        this.converter.convertToEntityAttribute(null);
+    @Test
+    void testConvertToEntityAttribute() {
+        assertThrows(UnsupportedOperationException.class, () -> this.converter.convertToEntityAttribute(null));
     }
 }

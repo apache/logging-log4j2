@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevels.xml")
-public class CustomLevelsOverrideTest {
+class CustomLevelsOverrideTest {
 
     private final ListAppender listAppender;
     private final Level warnLevel;
@@ -46,7 +46,7 @@ public class CustomLevelsOverrideTest {
     }
 
     @Test
-    public void testCustomLevelInts() {
+    void testCustomLevelInts() {
         // assertEquals(350, warnLevel.intLevel());
         // assertEquals(450, infoLevel.intLevel());
         // assertEquals(550, debugLevel.intLevel());
@@ -56,21 +56,21 @@ public class CustomLevelsOverrideTest {
     }
 
     @Test
-    public void testCustomLevelPresence() {
+    void testCustomLevelPresence() {
         assertNotNull(warnLevel);
         assertNotNull(infoLevel);
         assertNotNull(debugLevel);
     }
 
     @Test
-    public void testCustomLevelVsStdLevel() {
+    void testCustomLevelVsStdLevel() {
         assertEquals(Level.WARN, warnLevel);
         assertEquals(Level.INFO, infoLevel);
         assertEquals(Level.DEBUG, debugLevel);
     }
 
     @Test
-    public void testLog() {
+    void testLog() {
         assertThat(listAppender.getEvents(), hasSize(0));
         logger.debug("Hello, {}", "World");
         assertThat(listAppender.getEvents(), hasSize(1));

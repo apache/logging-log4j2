@@ -59,7 +59,6 @@ asciidoc:
     disruptor-version: "1.2.3-disruptor"
     flume-version: "1.2.3-flume"
     jackson-version: "1.2.3-jackson"
-    jansi-version: "1.2.3-jansi"
     javax-mail-version: "1.2.3-javax-mail"
     jctools-version: "1.2.3-jctools"
     je-version: "1.2.3-je"

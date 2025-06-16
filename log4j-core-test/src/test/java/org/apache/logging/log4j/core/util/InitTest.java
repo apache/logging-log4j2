@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Test;
  * Test initialization.
  */
 @Disabled
-public class InitTest {
+class InitTest {
 
     @Test
-    public void initTest() {
+    void initTest() {
         final Timer timer = new Timer("Log4j Initialization");
         timer.start();
         final Logger logger = LogManager.getLogger();
         timer.stop();
         final long elapsed = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
+        System.out.println(timer);
         assertTrue(elapsed < 1000000000, "Initialization time exceeded threshold; elapsed " + elapsed);
     }
 }

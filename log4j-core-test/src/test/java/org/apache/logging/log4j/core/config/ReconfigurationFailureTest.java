@@ -31,23 +31,24 @@ import org.junit.jupiter.api.Test;
  * Performs reconfiguration against bad configurations.
  *
  */
-@Disabled // Remove this when LOG4J2-2240 is addressed.
-public class ReconfigurationFailureTest {
+// Remove this when LOG4J2-2240 is addressed.
+@Disabled
+class ReconfigurationFailureTest {
 
     LoggerContext loggerContext;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         loggerContext = (LoggerContext) LogManager.getContext();
     }
 
     @AfterEach
-    public void stopExecutor() throws InterruptedException {
+    void stopExecutor() {
         loggerContext.stop();
     }
 
     @Test
-    public void setNonExistant() throws Exception {
+    void setNonExistant() {
 
         final URI original = loggerContext.getConfigLocation();
         final URI nonExistant = new File("target/file.does.not.exist.xml").toURI();
@@ -56,7 +57,7 @@ public class ReconfigurationFailureTest {
     }
 
     @Test
-    public void setInvalidXML() throws Exception {
+    void setInvalidXML() {
 
         final URI original = loggerContext.getConfigLocation();
         final URI nonExistant = new File("target/InvalidXML.xml").toURI();
@@ -65,7 +66,7 @@ public class ReconfigurationFailureTest {
     }
 
     @Test
-    public void setInvalidConfig() throws Exception {
+    void setInvalidConfig() {
 
         final URI original = loggerContext.getConfigLocation();
         final URI nonExistant = new File("target/InvalidConfig.xml").toURI();

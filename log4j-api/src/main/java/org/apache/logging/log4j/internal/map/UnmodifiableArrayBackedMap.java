@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.internal.map;
 
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -57,7 +56,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * </ul>
  *
  */
-public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements Serializable, ReadOnlyStringMap {
+public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> implements ReadOnlyStringMap {
     /**
      * Implementation of Map.Entry. The implementation is simple since each instance
      * contains an index in the array, then getKey() and getValue() retrieve from
@@ -270,10 +269,6 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
     /**
      * Creates a new instance that contains the same entries as this map, plus the
      * new entries or updated values passed in the parameters.
-     *
-     * @param key
-     * @param value
-     * @return
      */
     public UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
         // create a new array that can hold the maximum output size
@@ -305,10 +300,6 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
     /**
      * Creates a new instance that contains the same entries as this map, minus the
      * entry with the specified key (if such an entry exists).
-     *
-     * @param key
-     * @param value
-     * @return
      */
     public UnmodifiableArrayBackedMap copyAndRemove(String key) {
         int indexToRemove = -1;

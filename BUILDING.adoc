@@ -148,18 +148,83 @@ You can follow below steps for casual development needs:
 ./mvnw verify -DskipTests -pl :log4j-core,:log4j-core-test
 ----
 
-[TIP]
-====
+[#development-ide-debug]
+=== Debugging `./mvnw test` with IDE
+
 You can connect your IDE to a `./mvnw test` run by
 
 . Run `./mvnw test -pl :log4j-core-test -Dtest=FooBarTest -Dmaven.surefire.debug`
 . Use _"Run > Attach to process"_ in IntelliJ IDEA
-====
 
-[#development-faq]
-=== F.A.Q
+[#development-ci]
+=== Activating CI profiles
+
+There are certain Maven profiles activated only for CI.
+As a consequence of this, you can observe certain CI failures that you can't reproduce locally.
+To work around this, you can activate CI profiles by running Maven commands as follows:
+
+[source,bash]
+----
+CI=true ./mvnw ...
+----
 
 [#development-faq-idea-plugin-not-found]
-==== Compilation in IntelliJ IDEA fails with `java: plug-in not found: ErrorProne`
+=== Compilation in IntelliJ IDEA fails with `java: plug-in not found: ErrorProne`
 
 Try removing all _"Override compiler parameters per-module"_ entries in _"Settings > Build, Execution, Deployment > Compiler > Java Compiler"_.
+
+[#development-api-compatibility]
+=== Fixing API compatibility check failures
+
+Log4j uses the
+https://github.com/bndtools/bnd/tree/master/maven-plugins/bnd-baseline-maven-plugin[BND Baseline Maven Plugin]
+to enforce its
+https://semver.org/[semantic versioning policy].
+Following the
+https://bnd.bndtools.org/chapters/170-versioning.html#best-practices[OSGi versioning best practices], both Log4j artifacts and packages are versioned.
+If you modify Log4j's public API, a BND Baseline error like the following will occur:
+
+[source]
+----
+  Name                        Type     Delta      New    Old    Suggest  If Prov.
+  org.apache.logging.foo      PACKAGE  UNCHANGED  2.1.0  2.1.0  ok       -
+* org.apache.logging.foo.bar  PACKAGE  MINOR      2.3.4  2.3.4  2.4.0    -
+  MINOR        PACKAGE    org.apache.logging.foo.bar
+  ...
+----
+
+The solution of the error depends on the change kind (`Delta`):
+
+[#development-api-compatibility-micro]
+`MICRO`::
++
+For patch level changes modify the `package-info.java` file of the `org.apache.logging.foo.bar` package and update the `@Version` annotation to the number suggested by BND: increment just the patch number.
++
+[source,java]
+----
+@Version("2.3.5")
+package org.apache.logging.foo.bar;
+----
+
+[#development-api-compatibility-minor]
+`MINOR`::
++
+Changes of type `MINOR` require more work:
++
+--
+* Make sure that the current Log4j version is a minor upgrade over the last released version.
+If that is not the case (e.g., it is `2.34.5-SNAPSHOT`) modify the `<revision>` property in the main POM file (e.g., change it to `2.35.0-SNAPSHOT`).
+* Make sure to add a
+https://logging.apache.org/log4j/tools/log4j-changelog.html#changelog-entry-file[changelog entry]
+of type `added`, `changed` or `deprecated` to your PR.
+* As in the
+<<development-api-compatibility-micro,`MICRO` case>>
+modify the `package-info.java` file of the package and update the `@Version` annotation to the **next Log4j version** (`2.35.0` in the example) and **not** the minimal version number suggested by BND.
+The purpose of this policy is to have an alignment between package versions and the last Log4j version, where an API change occurred.
+--
+
+[#development-api-compatibility-major]
+`MAJOR`::
++
+Changes of type `MAJOR` (i.e. breaking changes) are not accepted in the `2.x` branch.
+If you believe it is not a breaking change (e.g., you removed a class **documented** as private), the development team will guide you on how to solve it.

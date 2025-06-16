@@ -24,17 +24,17 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the Loader class.
  */
-public class LoaderTest {
+class LoaderTest {
 
     @Test
-    public void testLoadClassWithNullClassloaderReturnNull() throws Exception {
+    void testLoadClassWithNullClassloaderReturnNull() throws Exception {
         assertNull(
                 Loader.loadClass(Loader.class.getCanonicalName(), null),
                 "Expect null return value for null ClassLoader.");
     }
 
     @Test
-    public void testLoadClassReturnClassForExistingClass() throws Exception {
+    void testLoadClassReturnClassForExistingClass() throws Exception {
         assertEquals(
                 Loader.class,
                 Loader.loadClass(Loader.class.getCanonicalName(), Loader.getClassLoader()),

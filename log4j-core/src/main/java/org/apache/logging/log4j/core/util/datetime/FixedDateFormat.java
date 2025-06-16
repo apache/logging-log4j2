@@ -27,11 +27,10 @@ import org.osgi.annotation.versioning.ProviderType;
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
  * in {@link FixedFormat}. For any other date patterns use {@link FastDateFormat}.
- * <p>
- * Related benchmarks: /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/TimeFormatBenchmark.java and
- * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
- * </p>
+ *
+ * @deprecated Starting with version {@code 2.25.0}, this class is assumed to be internal and planned to be removed in the next major release.
  */
+@Deprecated
 @ProviderType
 public class FixedDateFormat {
 

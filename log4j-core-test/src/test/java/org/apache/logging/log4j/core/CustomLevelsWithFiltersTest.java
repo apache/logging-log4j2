@@ -31,19 +31,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevelsWithFilters.xml")
-public class CustomLevelsWithFiltersTest {
+class CustomLevelsWithFiltersTest {
 
     private Level infom1Level;
     private Level infop1Level;
 
     @BeforeEach
-    public void before() {
+    void before() {
         infom1Level = Level.getLevel("INFOM1");
         infop1Level = Level.getLevel("INFOP1");
     }
 
     @Test
-    public void testConfiguration(final Configuration configuration, @Named("info") final FileAppender appender) {
+    void testConfiguration(final Configuration configuration, @Named("info") final FileAppender appender) {
         assertNotNull(configuration);
         assertNotNull(appender);
         final CompositeFilter compFilter = (CompositeFilter) appender.getFilter();
@@ -62,13 +62,13 @@ public class CustomLevelsWithFiltersTest {
     }
 
     @Test
-    public void testCustomLevelInts() {
+    void testCustomLevelInts() {
         assertEquals(399, infom1Level.intLevel());
         assertEquals(401, infop1Level.intLevel());
     }
 
     @Test
-    public void testCustomLevelPresence() {
+    void testCustomLevelPresence() {
         assertNotNull(infom1Level);
         assertNotNull(infop1Level);
     }

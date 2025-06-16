@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -56,7 +54,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
@@ -79,6 +76,7 @@ import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -133,6 +131,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
+    private Set<MonitorResource> monitorResources = Collections.emptySet();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
@@ -268,6 +267,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        watchMonitorResources();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
     }
@@ -320,10 +320,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() >= 0) {
+        if (isConfigurationMonitoringEnabled()) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
-                    getConfigurationSource(),
+                    watchManager.getConfigurationWatchers().keySet(),
                     watchManager.getIntervalSeconds());
             watchManager.start();
         }
@@ -343,6 +343,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         super.start();
         LOGGER.info("Configuration {} started.", this);
+    }
+
+    private boolean isConfigurationMonitoringEnabled() {
+        return this instanceof Reconfigurable && watchManager.getIntervalSeconds() > 0;
+    }
+
+    private void watchMonitorResources() {
+        if (isConfigurationMonitoringEnabled()) {
+            monitorResources.forEach(monitorResource -> {
+                Source source = new Source(monitorResource.getUri());
+                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
+                        this, (Reconfigurable) this, listeners, source.getFile().lastModified());
+                watchManager.watch(source, watcher);
+            });
+        }
     }
 
     private boolean hasAsyncLoggers() {
@@ -727,9 +742,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
                 final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
+            } else if (child.isInstanceOf(MonitorResources.class)) {
+                monitorResources = child.getObject(MonitorResources.class).getResources();
             } else {
                 final List<String> expected = Arrays.asList(
-                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                        "\"Appenders\"",
+                        "\"Loggers\"",
+                        "\"Properties\"",
+                        "\"Scripts\"",
+                        "\"CustomLevels\"",
+                        "\"MonitorResources\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
@@ -772,13 +794,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected void setToDefault() {
-        // LOG4J2-1176 facilitate memory leak investigation
-        setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
-        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(DefaultConfiguration.DEFAULT_PATTERN)
-                .withConfiguration(this)
-                .build();
-        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(layout);
+        // LOG4J2-3431 don't set a default name if one has already been set
+        if (Strings.isBlank(getName())) {
+            // LOG4J2-1176 facilitate memory leak investigation
+            setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
+        }
+        final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(DefaultLayout.INSTANCE);
         appender.start();
         addAppender(appender);
         final LoggerConfig rootLoggerConfig = getRootLogger();

@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverterRegistry;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -93,7 +96,7 @@ public final class JsonTemplateLayoutDefaults {
     }
 
     public static String getEventDelimiter() {
-        return PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.eventDelimiter", System.lineSeparator());
+        return PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.eventDelimiter", LINE_SEPARATOR);
     }
 
     public static boolean isNullEventDelimiterEnabled() {
@@ -114,7 +117,34 @@ public final class JsonTemplateLayoutDefaults {
     }
 
     public static RecyclerFactory getRecyclerFactory() {
-        final String recyclerFactorySpec = PROPERTIES.getStringProperty("log4j.layout.jsonTemplate.recyclerFactory");
-        return RecyclerFactories.ofSpec(recyclerFactorySpec);
+
+        // Get the recycler factory specification
+        final String propertyName = "log4j.layout.jsonTemplate.recyclerFactory";
+        final String recyclerFactorySpec = PROPERTIES.getStringProperty(propertyName);
+
+        // Read the specification
+        @SuppressWarnings("unchecked")
+        final TypeConverter<RecyclerFactory> typeConverter = (TypeConverter<RecyclerFactory>)
+                TypeConverterRegistry.getInstance().findCompatibleConverter(RecyclerFactory.class);
+        final RecyclerFactory recyclerFactory;
+        try {
+            // Using `TypeConverter#convert()` instead of `TypeConverters.convert`.
+            // The latter doesn't pass the converter a null value, which is a valid input.
+            recyclerFactory = typeConverter.convert(recyclerFactorySpec);
+        } catch (final Exception error) {
+            final String message = String.format(
+                    "failed converting the recycler factory specified by the `%s` property: %s",
+                    propertyName, recyclerFactorySpec == null ? null : '`' + recyclerFactorySpec + '`');
+            throw new RuntimeException(message, error);
+        }
+
+        // Verify and return loaded recycler factory
+        if (recyclerFactory == null) {
+            final String message = String.format(
+                    "could not determine the recycler factory specified by the `%s` property: %s",
+                    propertyName, recyclerFactorySpec == null ? null : '`' + recyclerFactorySpec + '`');
+            throw new IllegalArgumentException(message);
+        }
+        return recyclerFactory;
     }
 }

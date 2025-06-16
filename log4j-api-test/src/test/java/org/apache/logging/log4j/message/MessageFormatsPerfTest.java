@@ -29,7 +29,7 @@ import org.junit.jupiter.api.parallel.Resources;
  */
 @Tag("performance")
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class MessageFormatsPerfTest {
+class MessageFormatsPerfTest {
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
@@ -39,7 +39,7 @@ public class MessageFormatsPerfTest {
     private static long formattedTime = 0;
 
     @AfterAll
-    public static void after() {
+    static void after() {
         if (stringTime > paramTime) {
             System.out.println(String.format(
                     "Parameterized is %1$.2f times faster than StringFormat.", ((float) stringTime / paramTime)));
@@ -70,7 +70,7 @@ public class MessageFormatsPerfTest {
     }
 
     @Test
-    public void testStringPerf() {
+    void testStringPerf() {
         final String testMsg = "Test message %1s %2s";
         final Timer timer = new Timer("StringFormat", LOOP_CNT);
         timer.start();
@@ -80,11 +80,11 @@ public class MessageFormatsPerfTest {
         }
         timer.stop();
         stringTime = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     @Test
-    public void testMessageFormatPerf() {
+    void testMessageFormatPerf() {
         final String testMsg = "Test message {0} {1}";
         final Timer timer = new Timer("MessageFormat", LOOP_CNT);
         timer.start();
@@ -94,11 +94,11 @@ public class MessageFormatsPerfTest {
         }
         timer.stop();
         msgFormatTime = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     @Test
-    public void testParameterizedPerf() {
+    void testParameterizedPerf() {
         final String testMsg = "Test message {} {}";
         final Timer timer = new Timer("Parameterized", LOOP_CNT);
         timer.start();
@@ -108,11 +108,11 @@ public class MessageFormatsPerfTest {
         }
         timer.stop();
         paramTime = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 
     @Test
-    public void testFormattedParameterizedPerf() {
+    void testFormattedParameterizedPerf() {
         final String testMsg = "Test message {} {}";
         final Timer timer = new Timer("FormattedParameterized", LOOP_CNT);
         timer.start();
@@ -122,6 +122,6 @@ public class MessageFormatsPerfTest {
         }
         timer.stop();
         formattedTime = timer.getElapsedNanoTime();
-        System.out.println(timer.toString());
+        System.out.println(timer);
     }
 }

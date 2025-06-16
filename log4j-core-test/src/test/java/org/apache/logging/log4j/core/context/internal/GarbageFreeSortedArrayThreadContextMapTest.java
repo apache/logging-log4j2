@@ -28,7 +28,7 @@ import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
-public class GarbageFreeSortedArrayThreadContextMapTest extends ThreadContextMapSuite {
+class GarbageFreeSortedArrayThreadContextMapTest extends ThreadContextMapSuite {
 
     private GarbageFreeSortedArrayThreadContextMap createThreadContextMap() {
         return new GarbageFreeSortedArrayThreadContextMap();

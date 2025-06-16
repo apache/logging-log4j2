@@ -20,7 +20,7 @@
  * @see org.junit.rules.TestRule
  */
 @Export
-@Version("2.23.0")
+@Version("2.23.1")
 package org.apache.logging.log4j.core.test.junit;
 
 import org.osgi.annotation.bundle.Export;
