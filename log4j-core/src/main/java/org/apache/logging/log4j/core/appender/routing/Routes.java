@@ -104,21 +104,57 @@ public final class Routes {
             return routes;
         }
 
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder setPattern(@SuppressWarnings("hiding") final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        public Builder setPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+            this.patternScript = patternScript;
+            return this;
+        }
+
+        public Builder setRoutes(@SuppressWarnings("hiding") final Route[] routes) {
+            this.routes = routes;
+            return this;
+        }
+
+        /**
+         * @deprecated use {@link #setConfiguration(Configuration)}.
+         */
+        @Deprecated
         public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setPattern(String)}.
+         */
+        @Deprecated
         public Builder withPattern(@SuppressWarnings("hiding") final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setPatternScript(AbstractScript)}.
+         */
+        @Deprecated
         public Builder withPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
             this.patternScript = patternScript;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setRoutes(Route[])}.
+         */
+        @Deprecated
         public Builder withRoutes(@SuppressWarnings("hiding") final Route[] routes) {
             this.routes = routes;
             return this;

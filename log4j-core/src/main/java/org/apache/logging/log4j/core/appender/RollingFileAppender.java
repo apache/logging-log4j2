@@ -123,13 +123,13 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             if (strategy == null) {
                 if (fileName != null) {
                     strategy = DefaultRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 } else {
                     strategy = DirectWriteRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
@@ -212,31 +212,85 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return fileGroup;
         }
 
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B setAdvertiseUri(final String advertiseUri) {
+            this.advertiseUri = advertiseUri;
+            return asBuilder();
+        }
+
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
+            return asBuilder();
+        }
+
+        public B setLocking(final boolean locking) {
+            this.locking = locking;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setAdvertise(boolean)}.
+         */
+        @Deprecated
         public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAdvertiseUri(String)}.
+         */
+        @Deprecated
         public B withAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAppend(boolean)}.
+         */
+        @Deprecated
         public B withAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileName(String)}.
+         */
+        @Deprecated
         public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setCreateOnDemand(boolean)}.
+         */
+        @Deprecated
         public B withCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setLocking(boolean)}.
+         */
+        @Deprecated
         public B withLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
@@ -254,31 +308,85 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return strategy;
         }
 
+        public B setFilePattern(final String filePattern) {
+            this.filePattern = filePattern;
+            return asBuilder();
+        }
+
+        public B setPolicy(final TriggeringPolicy policy) {
+            this.policy = policy;
+            return asBuilder();
+        }
+
+        public B setStrategy(final RolloverStrategy strategy) {
+            this.strategy = strategy;
+            return asBuilder();
+        }
+
+        public B setFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B setFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B setFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setFilePattern(String)}.
+         */
+        @Deprecated
         public B withFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setPolicy(TriggeringPolicy)}.
+         */
+        @Deprecated
         public B withPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setStrategy(RolloverStrategy)}.
+         */
+        @Deprecated
         public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFilePermissions(String)}.
+         */
+        @Deprecated
         public B withFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileOwner(String)}.
+         */
+        @Deprecated
         public B withFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileGroup(String)}.
+         */
+        @Deprecated
         public B withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
@@ -406,23 +514,23 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         final int bufferSize = Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE);
         // @formatter:off
         return RollingFileAppender.<B>newBuilder()
-                .withAdvertise(Boolean.parseBoolean(advertise))
-                .withAdvertiseUri(advertiseUri)
-                .withAppend(Booleans.parseBoolean(append, true))
-                .withBufferedIo(Booleans.parseBoolean(bufferedIO, true))
-                .withBufferSize(bufferSize)
+                .setAdvertise(Boolean.parseBoolean(advertise))
+                .setAdvertiseUri(advertiseUri)
+                .setAppend(Booleans.parseBoolean(append, true))
+                .setBufferedIo(Booleans.parseBoolean(bufferedIO, true))
+                .setBufferSize(bufferSize)
                 .setConfiguration(config)
-                .withFileName(fileName)
-                .withFilePattern(filePattern)
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
                 .setFilter(filter)
                 .setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
-                .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
+                .setImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
                 .setLayout(layout)
-                .withCreateOnDemand(false)
-                .withLocking(false)
+                .setCreateOnDemand(false)
+                .setLocking(false)
                 .setName(name)
-                .withPolicy(policy)
-                .withStrategy(strategy)
+                .setPolicy(policy)
+                .setStrategy(strategy)
                 .build();
         // @formatter:on
     }

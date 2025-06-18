@@ -118,21 +118,57 @@ public class ScriptAppenderSelector extends AbstractAppender {
             return script;
         }
 
+        public Builder setAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
+            this.appenderSet = appenderSet;
+            return this;
+        }
+
+        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        public Builder setName(@SuppressWarnings("hiding") final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setScript(@SuppressWarnings("hiding") final AbstractScript script) {
+            this.script = script;
+            return this;
+        }
+
+        /**
+         * @deprecated use {@link #setAppenderNodeSet(AppenderSet)}.
+         */
+        @Deprecated
         public Builder withAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
             this.appenderSet = appenderSet;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setConfiguration(Configuration)}.
+         */
+        @Deprecated
         public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setName(String)}.
+         */
+        @Deprecated
         public Builder withName(@SuppressWarnings("hiding") final String name) {
             this.name = name;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setScript(AbstractScript)}.
+         */
+        @Deprecated
         public Builder withScript(@SuppressWarnings("hiding") final AbstractScript script) {
             this.script = script;
             return this;

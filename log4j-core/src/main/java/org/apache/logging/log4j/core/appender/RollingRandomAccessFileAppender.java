@@ -58,9 +58,9 @@ public final class RollingRandomAccessFileAppender
             implements org.apache.logging.log4j.core.util.Builder<RollingRandomAccessFileAppender> {
 
         public Builder() {
-            withBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            setBufferSize(RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
             setIgnoreExceptions(true);
-            withImmediateFlush(true);
+            setImmediateFlush(true);
         }
 
         @PluginBuilderAttribute("fileName")
@@ -104,13 +104,13 @@ public final class RollingRandomAccessFileAppender
             if (strategy == null) {
                 if (fileName != null) {
                     strategy = DefaultRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 } else {
                     strategy = DirectWriteRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
@@ -168,51 +168,141 @@ public final class RollingRandomAccessFileAppender
                     getPropertyArray());
         }
 
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B setFilePattern(final String filePattern) {
+            this.filePattern = filePattern;
+            return asBuilder();
+        }
+
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B setPolicy(final TriggeringPolicy policy) {
+            this.policy = policy;
+            return asBuilder();
+        }
+
+        public B setStrategy(final RolloverStrategy strategy) {
+            this.strategy = strategy;
+            return asBuilder();
+        }
+
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B setAdvertiseURI(final String advertiseURI) {
+            this.advertiseURI = advertiseURI;
+            return asBuilder();
+        }
+
+        public B setFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B setFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B setFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setFileName(String)}.
+         */
+        @Deprecated
         public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFilePattern(String)}.
+         */
+        @Deprecated
         public B withFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAppend(boolean)}.
+         */
+        @Deprecated
         public B withAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setPolicy(TriggeringPolicy)}.
+         */
+        @Deprecated
         public B withPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setStrategy(RolloverStrategy)}.
+         */
+        @Deprecated
         public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAdvertise(boolean)}.
+         */
+        @Deprecated
         public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAdvertiseURI(String)}.
+         */
+        @Deprecated
         public B withAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFilePermissions(String)}.
+         */
+        @Deprecated
         public B withFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileOwner(String)}.
+         */
+        @Deprecated
         public B withFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileGroup(String)}.
+         */
+        @Deprecated
         public B withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
@@ -353,20 +443,20 @@ public final class RollingRandomAccessFileAppender
         final int bufferSize = Integers.parseInt(bufferSizeStr, RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
         return RollingRandomAccessFileAppender.<B>newBuilder()
-                .withAdvertise(isAdvertise)
-                .withAdvertiseURI(advertiseURI)
-                .withAppend(isAppend)
-                .withBufferSize(bufferSize)
+                .setAdvertise(isAdvertise)
+                .setAdvertiseURI(advertiseURI)
+                .setAppend(isAppend)
+                .setBufferSize(bufferSize)
                 .setConfiguration(configuration)
-                .withFileName(fileName)
-                .withFilePattern(filePattern)
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
                 .setFilter(filter)
                 .setIgnoreExceptions(isIgnoreExceptions)
-                .withImmediateFlush(isImmediateFlush)
+                .setImmediateFlush(isImmediateFlush)
                 .setLayout(layout)
                 .setName(name)
-                .withPolicy(policy)
-                .withStrategy(strategy)
+                .setPolicy(policy)
+                .setStrategy(strategy)
                 .build();
     }
 

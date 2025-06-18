@@ -122,21 +122,56 @@ public final class RoutingAppender extends AbstractAppender {
             return purgePolicy;
         }
 
+        public B setRoutes(@SuppressWarnings("hiding") final Routes routes) {
+            this.routes = routes;
+            return asBuilder();
+        }
+
+        public B setDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
+            this.defaultRouteScript = defaultRouteScript;
+            return asBuilder();
+        }
+
+        public B setRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
+            this.rewritePolicy = rewritePolicy;
+            return asBuilder();
+        }
+
+        public void setPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+            this.purgePolicy = purgePolicy;
+        }
+
+        /**
+         * @deprecated use {@link #setRoutes(Routes)}.
+         */
+        @Deprecated
         public B withRoutes(@SuppressWarnings("hiding") final Routes routes) {
             this.routes = routes;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setDefaultRouteScript(AbstractScript)}.
+         */
+        @Deprecated
         public B withDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setRewritePolicy(RewritePolicy)}.
+         */
+        @Deprecated
         public B withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
             this.rewritePolicy = rewritePolicy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setPurgePolicy(PurgePolicy)}.
+         */
+        @Deprecated
         public void withPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
         }

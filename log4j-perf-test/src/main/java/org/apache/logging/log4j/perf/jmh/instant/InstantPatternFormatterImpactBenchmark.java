@@ -61,10 +61,10 @@ public class InstantPatternFormatterImpactBenchmark {
     }
 
     private static final PatternLayout LAYOUT = PatternLayout.newBuilder()
-            .withConfiguration(new NullConfiguration())
+            .setConfiguration(new NullConfiguration())
             // Use a typical pattern *without* a date & time converter!
-            .withPattern("[%t] %p %-40.40c{1.} %notEmpty{%x }- %m%n")
-            .withAlwaysWriteExceptions(true)
+            .setPattern("[%t] %p %-40.40c{1.} %notEmpty{%x }- %m%n")
+            .setAlwaysWriteExceptions(true)
             .build();
 
     private static final InstantPatternFormatterBenchmark.Formatters FORMATTERS =

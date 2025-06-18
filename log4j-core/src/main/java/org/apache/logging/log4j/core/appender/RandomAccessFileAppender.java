@@ -65,7 +65,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         private String advertiseURI;
 
         public Builder() {
-            this.withBufferSize(RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            this.setBufferSize(RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
         }
 
         @Override
@@ -225,12 +225,12 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                 .setAdvertise(isAdvertise)
                 .setAdvertiseURI(advertiseURI)
                 .setAppend(isAppend)
-                .withBufferSize(bufferSize)
+                .setBufferSize(bufferSize)
                 .setConfiguration(configuration)
                 .setFileName(fileName)
                 .setFilter(filter)
                 .setIgnoreExceptions(ignoreExceptions)
-                .withImmediateFlush(isFlush)
+                .setImmediateFlush(isFlush)
                 .setLayout(layout)
                 .setName(name)
                 .build();

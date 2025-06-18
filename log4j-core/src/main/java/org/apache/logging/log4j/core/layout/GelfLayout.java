@@ -188,16 +188,16 @@ public final class GelfLayout extends AbstractStringLayout {
             }
             if (messagePattern != null) {
                 patternLayout = PatternLayout.newBuilder()
-                        .withPattern(messagePattern)
-                        .withAlwaysWriteExceptions(includeStacktrace)
-                        .withConfiguration(getConfiguration())
+                        .setPattern(messagePattern)
+                        .setAlwaysWriteExceptions(includeStacktrace)
+                        .setConfiguration(getConfiguration())
                         .build();
             }
             if (patternSelector != null) {
                 patternLayout = PatternLayout.newBuilder()
-                        .withPatternSelector(patternSelector)
-                        .withAlwaysWriteExceptions(includeStacktrace)
-                        .withConfiguration(getConfiguration())
+                        .setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(includeStacktrace)
+                        .setConfiguration(getConfiguration())
                         .build();
             }
             return new GelfLayout(

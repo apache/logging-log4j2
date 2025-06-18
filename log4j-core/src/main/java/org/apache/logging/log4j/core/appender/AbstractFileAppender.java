@@ -104,46 +104,127 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
             return fileGroup;
         }
 
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        public B setAdvertiseUri(final String advertiseUri) {
+            this.advertiseUri = advertiseUri;
+            return asBuilder();
+        }
+
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
+            return asBuilder();
+        }
+
+        public B setLocking(final boolean locking) {
+            this.locking = locking;
+            return asBuilder();
+        }
+
+        public B setFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        public B setFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        public B setFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setAdvertise(boolean)}.
+         */
+        @Deprecated
         public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAdvertiseUri(String)}.
+         */
+        @Deprecated
         public B withAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setAppend(boolean)}.
+         */
+        @Deprecated
         public B withAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileName(String)}.
+         */
+        @Deprecated
         public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setCreateOnDemand(boolean)}.
+         */
+        @Deprecated
         public B withCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setLocking(boolean)}.
+         */
+        @Deprecated
         public B withLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFilePermissions(String)}.
+         */
+        @Deprecated
         public B withFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileOwner(String)}.
+         */
+        @Deprecated
         public B withFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
+        /**
+         * @deprecated use {@link #setFileGroup(String)}.
+         */
+        @Deprecated
         public B withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();

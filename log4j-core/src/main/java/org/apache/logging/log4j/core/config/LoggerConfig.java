@@ -140,7 +140,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return additivity == null || additivity;
         }
 
-        public B withAdditivity(final boolean additivity) {
+        public B setAdditivity(final boolean additivity) {
             this.additivity = additivity;
             return asBuilder();
         }
@@ -149,7 +149,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return level;
         }
 
-        public B withLevel(final Level level) {
+        public B setLevel(final Level level) {
             this.level = level;
             return asBuilder();
         }
@@ -158,7 +158,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return levelAndRefs;
         }
 
-        public B withLevelAndRefs(final String levelAndRefs) {
+        public B setLevelAndRefs(final String levelAndRefs) {
             this.levelAndRefs = levelAndRefs;
             return asBuilder();
         }
@@ -167,7 +167,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return loggerName;
         }
 
-        public B withLoggerName(final String loggerName) {
+        public B setLoggerName(final String loggerName) {
             this.loggerName = loggerName;
             return asBuilder();
         }
@@ -176,7 +176,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return includeLocation;
         }
 
-        public B withIncludeLocation(final String includeLocation) {
+        public B setIncludeLocation(final String includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
         }
@@ -185,7 +185,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return refs;
         }
 
-        public B withRefs(final AppenderRef[] refs) {
+        public B setRefs(final AppenderRef[] refs) {
             this.refs = refs;
             return asBuilder();
         }
@@ -194,7 +194,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return properties;
         }
 
-        public B withProperties(final Property[] properties) {
+        public B setProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -203,13 +203,91 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return config;
         }
 
-        public B withConfig(final Configuration config) {
+        public B setConfig(final Configuration config) {
             this.config = config;
             return asBuilder();
         }
 
         public Filter getFilter() {
             return filter;
+        }
+
+        /** @since 2.25.0 */
+        public B setFilter(final Filter filter) {
+            this.filter = filter;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setAdditivity(boolean)}.
+         */
+        @Deprecated
+        public B withAdditivity(final boolean additivity) {
+            this.additivity = additivity;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setLevel(Level)}.
+         */
+        @Deprecated
+        public B withLevel(final Level level) {
+            this.level = level;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setLevelAndRefs(String)}.
+         */
+        @Deprecated
+        public B withLevelAndRefs(final String levelAndRefs) {
+            this.levelAndRefs = levelAndRefs;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setLoggerName(String)}.
+         */
+        @Deprecated
+        public B withLoggerName(final String loggerName) {
+            this.loggerName = loggerName;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setIncludeLocation(String)}.
+         */
+        @Deprecated
+        public B withIncludeLocation(final String includeLocation) {
+            this.includeLocation = includeLocation;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setRefs(AppenderRef[])}.
+         */
+        @Deprecated
+        public B withRefs(final AppenderRef[] refs) {
+            this.refs = refs;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setProperties(Property[])}.
+         */
+        @Deprecated
+        public B withProperties(final Property[] properties) {
+            this.properties = properties;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated use {@link #setConfig(Configuration)}.
+         */
+        @Deprecated
+        public B withConfig(final Configuration config) {
+            this.config = config;
+            return asBuilder();
         }
 
         /**
@@ -224,12 +302,6 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         @Deprecated
         public B withFilter(final Filter filter) {
             return setFilter(filter);
-        }
-
-        /** @since 2.25.0 */
-        public B setFilter(final Filter filter) {
-            this.filter = filter;
-            return asBuilder();
         }
 
         @Override
@@ -879,7 +951,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return additivity;
             }
 
-            public B withAdditivity(final boolean additivity) {
+            public B setAdditivity(final boolean additivity) {
                 this.additivity = additivity;
                 return asBuilder();
             }
@@ -888,7 +960,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return level;
             }
 
-            public B withLevel(final Level level) {
+            public B setLevel(final Level level) {
                 this.level = level;
                 return asBuilder();
             }
@@ -897,7 +969,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return levelAndRefs;
             }
 
-            public B withLevelAndRefs(final String levelAndRefs) {
+            public B setLevelAndRefs(final String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
                 return asBuilder();
             }
@@ -906,7 +978,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return includeLocation;
             }
 
-            public B withIncludeLocation(final String includeLocation) {
+            public B setIncludeLocation(final String includeLocation) {
                 this.includeLocation = includeLocation;
                 return asBuilder();
             }
@@ -915,7 +987,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return refs;
             }
 
-            public B withRefs(final AppenderRef[] refs) {
+            public B setRefs(final AppenderRef[] refs) {
                 this.refs = refs;
                 return asBuilder();
             }
@@ -924,7 +996,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return properties;
             }
 
-            public B withProperties(final Property[] properties) {
+            public B setProperties(final Property[] properties) {
                 this.properties = properties;
                 return asBuilder();
             }
@@ -933,7 +1005,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return config;
             }
 
-            public B withConfig(final Configuration config) {
+            public B setConfig(final Configuration config) {
                 this.config = config;
                 return asBuilder();
             }
@@ -942,18 +1014,81 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
+            /** @since 2.25.0 */
+            public B setFilter(final Filter filter) {
+                this.filter = filter;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setAdditivity(boolean)}.
+             */
+            @Deprecated
+            public B withAdditivity(final boolean additivity) {
+                this.additivity = additivity;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setLevel(Level)}.
+             */
+            @Deprecated
+            public B withLevel(final Level level) {
+                this.level = level;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setLevelAndRefs(String)}.
+             */
+            @Deprecated
+            public B withLevelAndRefs(final String levelAndRefs) {
+                this.levelAndRefs = levelAndRefs;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setIncludeLocation(String)}.
+             */
+            @Deprecated
+            public B withIncludeLocation(final String includeLocation) {
+                this.includeLocation = includeLocation;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setRefs(AppenderRef[])}.
+             */
+            @Deprecated
+            public B withRefs(final AppenderRef[] refs) {
+                this.refs = refs;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setProperties(Property[])}.
+             */
+            @Deprecated
+            public B withProperties(final Property[] properties) {
+                this.properties = properties;
+                return asBuilder();
+            }
+
+            /**
+             * @deprecated use {@link #setConfig(Configuration)}.
+             */
+            @Deprecated
+            public B withConfig(final Configuration config) {
+                this.config = config;
+                return asBuilder();
+            }
+
             /**
              * @deprecated since 2.25.0. Use {@link #setFilter(Filter)} instead.
              */
             @Deprecated
             public B withtFilter(final Filter filter) {
                 return setFilter(filter);
-            }
-
-            /** @since 2.25.0 */
-            public B setFilter(final Filter filter) {
-                this.filter = filter;
-                return asBuilder();
             }
 
             @Override

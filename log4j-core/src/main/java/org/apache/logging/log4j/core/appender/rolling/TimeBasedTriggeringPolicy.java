@@ -62,16 +62,43 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             return maxRandomDelay;
         }
 
+        public Builder setInterval(final int interval) {
+            this.interval = interval;
+            return this;
+        }
+
+        public Builder setModulate(final boolean modulate) {
+            this.modulate = modulate;
+            return this;
+        }
+
+        public Builder setMaxRandomDelay(final int maxRandomDelay) {
+            this.maxRandomDelay = maxRandomDelay;
+            return this;
+        }
+
+        /**
+         * @deprecated use {@link #setInterval(int)}.
+         */
+        @Deprecated
         public Builder withInterval(final int interval) {
             this.interval = interval;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setModulate(boolean)}.
+         */
+        @Deprecated
         public Builder withModulate(final boolean modulate) {
             this.modulate = modulate;
             return this;
         }
 
+        /**
+         * @deprecated use {@link #setMaxRandomDelay(int)}.
+         */
+        @Deprecated
         public Builder withMaxRandomDelay(final int maxRandomDelay) {
             this.maxRandomDelay = maxRandomDelay;
             return this;
@@ -149,8 +176,8 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
     public static TimeBasedTriggeringPolicy createPolicy(
             @PluginAttribute("interval") final String interval, @PluginAttribute("modulate") final String modulate) {
         return newBuilder()
-                .withInterval(Integers.parseInt(interval, 1))
-                .withModulate(Boolean.parseBoolean(modulate))
+                .setInterval(Integers.parseInt(interval, 1))
+                .setModulate(Boolean.parseBoolean(modulate))
                 .build();
     }
 
