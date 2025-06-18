@@ -830,7 +830,7 @@
               <outputDirectory>${maven.multiModuleProjectDirectory}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/site/apidocs</directory>
+                  <directory>${project.build.directory}/reports/apidocs</directory>
                 </resource>
               </resources>
             </configuration>
