@@ -7,6 +7,6 @@
        type="fixed">
     <issue id="3336" link="https://github.com/apache/logging-log4j2/issues/3336"/>
     <description format="asciidoc">
-        Fix script resolution failure when the Scripts element is placed after a ScriptRef in the configuration.
+        Fix script resolution failure when the `Scripts` element is placed after a `ScriptRef` in the configuration.
     </description>
 </entry>
