@@ -49,7 +49,8 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
      * See {@link UuidUtil#UUID_SEQUENCE} how to seed the UUID generation with an integer value.
      * Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
      *
-     * @param options a single option with the value {@code "RANDOM"} or {@code "TIME"}, or an empty array for {@code "TIME"}
+     * @param options An array containing either {@code RANDOM} or {@code TIME}.
+                      If empty, {@code TIME} will be used.
      * @return instance of SequencePatternConverter.
      */
     public static UuidPatternConverter newInstance(final String[] options) {
