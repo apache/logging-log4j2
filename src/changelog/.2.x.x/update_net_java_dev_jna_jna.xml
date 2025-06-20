@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="https://logging.apache.org/xml/ns"
-       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="updated">
-  <issue id="3542" link="https://github.com/apache/logging-log4j2/pull/3542"/>
-  <description format="asciidoc">Update `net.java.dev.jna:jna` to version `5.17.0`</description>
-</entry>

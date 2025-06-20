@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public interface InstantPatternFormatter extends InstantFormatter {
 
     boolean LEGACY_FORMATTERS_ENABLED =
-            "legacy".equalsIgnoreCase(PropertiesUtil.getProperties().getStringProperty("log4j2.instant.formatter"));
+            "legacy".equalsIgnoreCase(PropertiesUtil.getProperties().getStringProperty("log4j2.instantFormatter"));
 
     String getPattern();
 

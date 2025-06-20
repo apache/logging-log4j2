@@ -269,10 +269,6 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
     /**
      * Creates a new instance that contains the same entries as this map, plus the
      * new entries or updated values passed in the parameters.
-     *
-     * @param key
-     * @param value
-     * @return
      */
     public UnmodifiableArrayBackedMap copyAndPutAll(Map<String, String> entriesToAdd) {
         // create a new array that can hold the maximum output size
@@ -304,10 +300,6 @@ public class UnmodifiableArrayBackedMap extends AbstractMap<String, String> impl
     /**
      * Creates a new instance that contains the same entries as this map, minus the
      * entry with the specified key (if such an entry exists).
-     *
-     * @param key
-     * @param value
-     * @return
      */
     public UnmodifiableArrayBackedMap copyAndRemove(String key) {
         int indexToRemove = -1;
