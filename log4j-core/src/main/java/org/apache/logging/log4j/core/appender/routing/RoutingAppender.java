@@ -202,7 +202,7 @@ public final class RoutingAppender extends AbstractAppender {
                 final ScriptManager scriptManager = configuration.getScriptManager();
                 final Bindings bindings = scriptManager.createBindings(defaultRouteScript);
                 bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
-                final Object object = scriptManager.execute(defaultRouteScript.getName(), bindings);
+                final Object object = scriptManager.execute(defaultRouteScript.getId(), bindings);
                 final Route route = routes.getRoute(Objects.toString(object, null));
                 if (route != null) {
                     defaultRoute = route;
