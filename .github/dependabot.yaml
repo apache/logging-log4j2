@@ -90,6 +90,9 @@ updates:
     registries:
       - maven-central
     ignore:
+      # `com.github.spotbugs:spotbugs-annotations:4.9.0` and onwards require Java 11
+      - dependency-name: "com.github.spotbugs:spotbugs-annotations"
+        versions: [ "[4.9.0,)" ]
       # Jetty 10.x does not have an internal logging API
       - dependency-name: "org.eclipse.jetty:*"
         versions: [ "[10,)" ]
