@@ -355,56 +355,121 @@
 <h2 id="release-notes-2-x-x"><a class="anchor" href="#release-notes-2-x-x"></a>2.x.x</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This minor release contains bug fixes, behavioral improvements, and a fully-fledged support for the GraalVM native image generation.</p>
+<p>This release&#8230;&#8203;</p>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-25-0-graalvm"><a class="anchor" href="#release-notes-2-25-0-graalvm"></a>GraalVM reachability metadata</h3>
-<div class="paragraph">
-<p>Log4j Core and all its extension modules have been enriched with embedded
-<a href="https://www.graalvm.org/latest/reference-manual/native-image/metadata/">GraalVM reachability metadata</a>.
-This allows the generation of GraalVM native images out-of-the-box without any additional steps.
-See our <a href="graalvm.html" class="xref page">GraalVM guide</a> for details.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="release-notes-2-25-0-PL-ex"><a class="anchor" href="#release-notes-2-25-0-PL-ex"></a>Exception handling in Pattern Layout</h3>
-<div class="paragraph">
-<p>Exception handling in <a href="manual/pattern-layout.html" class="xref page">Pattern Layout</a> went through a major rewrite.
-This effectively helped with fixing some bugs by matching the feature parity of all exception converters.
-Some important highlights from this rewrite:</p>
-</div>
+<h3 id="release-notes-2-x-x-changed"><a class="anchor" href="#release-notes-2-x-x-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>Rendered stack traces are ensured to be prefixed with a newline, which used to be a whitespace in earlier versions.</p>
-</li>
-<li>
-<p>Switched the default exception converter from <a href="manual/pattern-layout.html#converter-exception-extended" class="xref page">the extended exception converter</a> to <a href="manual/pattern-layout.html#converter-exception" class="xref page">the plain exception converter</a>, which is more performant.</p>
-</li>
-<li>
-<p>The support for the <code>{ansi}</code> option in exception converters is removed.</p>
+<p>Ensured scripts in global <code>Scripts container</code> have explicit names by throwing a <code>ConfigurationException</code> for unnamed ones. Refined script identification with <code>AbstractScript.getId()</code> and clarified <code>AbstractScript.getName()</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3176">3176</a>)</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-25-0-instant-format"><a class="anchor" href="#release-notes-2-25-0-instant-format"></a>Date &amp; time formatting</h3>
+<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix script resolution failure when the <code>Scripts</code> element is placed after a <code>ScriptRef</code> in the configuration. (<a href="https://github.com/apache/logging-log4j2/issues/3336">3336</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-notes-2-25-0"><a class="anchor" href="#release-notes-2-25-0"></a>2.25.0</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-06-13</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p>Historically, Log4j contains custom date &amp; time formatting utilities for performance reasons, i.e., <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html"><code>FixedDateFormat</code></a> and <a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html"><code>FastDateFormat</code></a>.
-These have been deprecated for removal in favor of Java&#8217;s <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>.
-After upgrading, if you experience any date &amp; time formatting problems (in particular, related with the usage of <code>n</code> and <code>x</code> directives), please <a href="https://logging.apache.org/support.html#issues">submit an issue ticket</a> – as a temporary workaround, you can set <a href="manual/systemproperties.html#log4j2.instant.formatter" class="xref page">the <code>log4j2.instant.formatter</code> property</a> to <code>legacy</code> to switch to the old behaviour.</p>
+<p>This minor release introduces bug fixes, behavior improvements, and complete support for GraalVM native image generation.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-graalvm"><a class="anchor" href="#release-notes-2-25-0-graalvm"></a>GraalVM Reachability Metadata</h3>
+<div class="paragraph">
+<p>Log4j Core and all extension modules now include embedded
+<a href="https://www.graalvm.org/latest/reference-manual/native-image/metadata/">GraalVM reachability metadata</a>,
+enabling seamless generation of native images with GraalVM out of the box—no manual configuration required.
+For more information, refer to our <a href="graalvm.html" class="xref page">GraalVM guide</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When building third-party Log4j plugins, using the new <code>GraalVmProcessor</code>
+introduced in version <code>2.25.0</code> will automatically generate the required reachability metadata for GraalVM native images.
+However, the processor will fail the build if the required <code>log4j.graalvm.groupId</code> and <code>log4j.graalvm.artifactId</code> parameters are not provided.
+For detailed instructions, see <a href="manual/plugins.html#plugin-registry" class="xref page">Registering plugins</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ansi_support_on_windows"><a class="anchor" href="#_ansi_support_on_windows"></a>ANSI support on Windows</h3>
+<h3 id="release-notes-2-25-0-PL-ex"><a class="anchor" href="#release-notes-2-25-0-PL-ex"></a>Exception Handling in Pattern Layout</h3>
 <div class="paragraph">
-<p>Since 2017, Windows 10 and newer have offered native support for ANSI escapes.
-The support for the outdated Jansi 1.x library has therefore been removed.
-See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on Windows</a> for more information.</p>
+<p>Exception handling in <a href="manual/pattern-layout.html" class="xref page">Pattern Layout</a> has undergone a significant rewrite.
+This update resolves several bugs and ensures consistent behavior across all exception converters.
+Key improvements include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Stack traces are now consistently prefixed with a newline instead of other whitespace.</p>
+</li>
+<li>
+<p>The default exception converter has changed from <a href="manual/pattern-layout.html#converter-exception-extended" class="xref page">extended</a> to <a href="manual/pattern-layout.html#converter-exception" class="xref page">plain</a>, offering better performance.</p>
+</li>
+<li>
+<p>Support for the <code>{ansi}</code> option in exception converters has been removed.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-added"><a class="anchor" href="#release-notes-2-x-x-added"></a>Added</h3>
+<h3 id="release-notes-2-25-0-instant-format"><a class="anchor" href="#release-notes-2-25-0-instant-format"></a>Date &amp; Time Formatting</h3>
+<div class="paragraph">
+<p>Log4j has historically provided custom date and time formatters for performance, such as
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FixedDateFormat.html"><code>FixedDateFormat</code></a> and
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/util/datetime/FastDateFormat.html"><code>FastDateFormat</code></a>.
+These are now deprecated in favor of Java’s standard
+<a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html"><code>DateTimeFormatter</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>If you encounter formatting issues after upgrading—particularly with <code>n</code> or <code>x</code> directives—you can temporarily revert to the legacy formatters by setting the <a href="manual/systemproperties.html#log4j2.instantFormatter" class="xref page"><code>log4j2.instantFormatter</code></a> property to <code>legacy</code>.
+Please report any issues via our <a href="https://logging.apache.org/support.html#issues">issue tracker</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-windows-ansi"><a class="anchor" href="#release-notes-2-25-0-windows-ansi"></a>ANSI Support on Windows</h3>
+<div class="paragraph">
+<p>Modern Windows versions (10 and newer) provide native ANSI escape sequence support.
+As a result, dependency on the outdated JAnsi 1.x library has been removed.
+For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on Windows</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-jakarta-jms"><a class="anchor" href="#release-notes-2-25-0-jakarta-jms"></a>Jakarta JMS Appender</h3>
+<div class="paragraph">
+<p>A Jakarta-compatible version of the <a href="manual/appenders/message-queue.html#JmsAppender" class="xref page">JMS Appender</a> is now included in the core distribution.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-0-added"><a class="anchor" href="#release-notes-2-25-0-added"></a>Added</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -426,7 +491,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-changed"><a class="anchor" href="#release-notes-2-x-x-changed"></a>Changed</h3>
+<h3 id="release-notes-2-25-0-changed"><a class="anchor" href="#release-notes-2-25-0-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -463,9 +528,6 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Add improved validation to StringMatchFilter for null/empty text. GitHub issue #3153. (<a href="https://github.com/apache/logging-log4j2/issues/3153">3153</a>)</p>
 </li>
 <li>
-<p>Ensured scripts in global <code>Scripts container</code> have explicit names by throwing a <code>ConfigurationException</code> for unnamed ones. Refined script identification with <code>AbstractScript.getId()</code> and clarified <code>AbstractScript.getName()</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3176">3176</a>)</p>
-</li>
-<li>
 <p>Currently Java 8 users do not have access to timestamps with sub-millisecond precision. This change moves the SystemClock implementation from log4j-core-java9 to log4j-core, overriding the current one, so that java 8 users can benefit from it. (<a href="https://github.com/apache/logging-log4j2/pull/3217">3217</a>)</p>
 </li>
 <li>
@@ -484,7 +546,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
+<h3 id="release-notes-2-25-0-deprecated"><a class="anchor" href="#release-notes-2-25-0-deprecated"></a>Deprecated</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -503,7 +565,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
+<h3 id="release-notes-2-25-0-fixed"><a class="anchor" href="#release-notes-2-25-0-fixed"></a>Fixed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -579,9 +641,6 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Corrected @return javadoc for AbstractFilterable#isFiltered(). (<a href="https://github.com/apache/logging-log4j2/issues/3300">3300</a>)</p>
 </li>
 <li>
-<p>Fix script resolution failure when the <code>Scripts</code> element is placed after a <code>ScriptRef</code> in the configuration. (<a href="https://github.com/apache/logging-log4j2/issues/3336">3336</a>)</p>
-</li>
-<li>
 <p>TypeConverters convert for "Level" incorrectly documented behaviour for invalid value - updated javadoc. (<a href="https://github.com/apache/logging-log4j2/issues/3359">3359</a>)</p>
 </li>
 <li>
@@ -630,7 +689,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-removed"><a class="anchor" href="#release-notes-2-x-x-removed"></a>Removed</h3>
+<h3 id="release-notes-2-25-0-removed"><a class="anchor" href="#release-notes-2-25-0-removed"></a>Removed</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -640,7 +699,7 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-updated"><a class="anchor" href="#release-notes-2-x-x-updated"></a>Updated</h3>
+<h3 id="release-notes-2-25-0-updated"><a class="anchor" href="#release-notes-2-25-0-updated"></a>Updated</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -650,49 +709,13 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.15</code> (<a href="https://github.com/apache/logging-log4j2/pull/3354">3354</a>)</p>
 </li>
 <li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>8.17.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3521">3521</a>)</p>
-</li>
-<li>
-<p>Update <code>co.elastic.logging:log4j2-ecs-layout</code> to version <code>1.7.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3615">3615</a>)</p>
-</li>
-<li>
-<p>Update <code>com.code-intelligence:jazzer</code> to version <code>0.24.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3424">3424</a>)</p>
-</li>
-<li>
 <p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.19.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3708">3708</a>)</p>
-</li>
-<li>
-<p>Update <code>com.github.jnr:jnr-ffi</code> to version <code>2.2.17</code> (<a href="https://github.com/apache/logging-log4j2/pull/3082">3082</a>)</p>
-</li>
-<li>
-<p>Update <code>com.github.luben:zstd-jni</code> to version <code>1.5.7-3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3646">3646</a>)</p>
 </li>
 <li>
 <p>Update <code>com.github.spotbugs:spotbugs-annotations</code> to version <code>4.9.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3545">3545</a>)</p>
 </li>
 <li>
-<p>Update <code>com.google.guava:guava</code> to version <code>33.4.8-jre</code> (<a href="https://github.com/apache/logging-log4j2/pull/3614">3614</a>)</p>
-</li>
-<li>
-<p>Update <code>commons-codec:commons-codec</code> to version <code>1.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3421">3421</a>)</p>
-</li>
-<li>
-<p>Update <code>commons-io:commons-io</code> to version <code>2.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3223">3223</a>)</p>
-</li>
-<li>
-<p>Update <code>fast-xml-parser</code> to version <code>5.0.6</code> (<a href="https://github.com/apache/logging-log4j2/pull/3487">3487</a>)</p>
-</li>
-<li>
-<p>Update <code>gradle/develocity-actions</code> to version <code>1.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/3717">3717</a>)</p>
-</li>
-<li>
 <p>Update <code>io.fabric8:docker-maven-plugin</code> to version <code>0.46.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3592">3592</a>)</p>
-</li>
-<li>
-<p>Update <code>net.java.dev.jna:jna</code> to version <code>5.17.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3542">3542</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.activemq:activemq-broker</code> to version <code>6.1.6</code> (<a href="https://github.com/apache/logging-log4j2/pull/3531">3531</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.cassandra:cassandra-all</code> to version <code>3.11.19</code> (<a href="https://github.com/apache/logging-log4j2/pull/3440">3440</a>)</p>
@@ -707,85 +730,28 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Update <code>org.apache.commons:commons-pool2</code> to version <code>2.12.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3422">3422</a>)</p>
 </li>
 <li>
-<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.27</code> (<a href="https://github.com/apache/logging-log4j2/pull/3693">3693</a>)</p>
-</li>
-<li>
 <p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.9.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3678">3678</a>)</p>
 </li>
 <li>
-<p>Update <code>org.apache.logging.log4j:log4j-transform-maven-shade-plugin-extensions</code> to version <code>0.2.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3147">3147</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.logging:logging-parent</code> to version <code>12.0.0</code></p>
-</li>
-<li>
-<p>Update <code>org.apache.maven:maven-core</code> to version <code>3.9.10</code> (<a href="https://github.com/apache/logging-log4j2/pull/3715">3715</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.maven.surefire:surefire-junit47</code> to version <code>3.5.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3162">3162</a>)</p>
+<p>Update <code>org.apache.logging:logging-parent</code> to version <code>12.1.1</code></p>
 </li>
 <li>
 <p>Update <code>org.apache.tomcat:tomcat-juli</code> to version <code>10.1.30</code> (<a href="https://github.com/apache/logging-log4j2/pull/2999">2999</a>)</p>
 </li>
 <li>
-<p>Update <code>org.assertj:assertj-core</code> to version <code>3.27.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3404">3404</a>)</p>
-</li>
-<li>
-<p>Update <code>org.awaitility:awaitility</code> to version <code>4.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3489">3489</a>)</p>
-</li>
-<li>
-<p>Update <code>org.codehaus.plexus:plexus-utils</code> to version <code>3.6.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3297">3297</a>)</p>
-</li>
-<li>
 <p>Update <code>org.eclipse.jetty:jetty-util</code> to version <code>9.4.57.v20241219</code> (<a href="https://github.com/apache/logging-log4j2/pull/3377">3377</a>)</p>
-</li>
-<li>
-<p>Update <code>org.eclipse.platform:org.eclipse.osgi</code> to version <code>3.23.100</code> (<a href="https://github.com/apache/logging-log4j2/pull/3724">3724</a>)</p>
-</li>
-<li>
-<p>Update <code>org.hsqldb:hsqldb</code> to version <code>2.7.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/3163">3163</a>)</p>
 </li>
 <li>
 <p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3544">3544</a>)</p>
 </li>
 <li>
-<p>Update <code>org.json:json</code> to version <code>20250517</code> (<a href="https://github.com/apache/logging-log4j2/pull/3673">3673</a>)</p>
-</li>
-<li>
-<p>Update <code>org.junit:junit-bom</code> to version <code>5.13.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3723">3723</a>)</p>
-</li>
-<li>
 <p>Update <code>org.mongodb:bson</code> to version <code>5.5.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3722">3722</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openjdk.nashorn:nashorn-core</code> to version <code>15.6</code> (<a href="https://github.com/apache/logging-log4j2/pull/3331">3331</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.maven:rewrite-maven-plugin</code> to version <code>6.0.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3397">3397</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.recipe:rewrite-logging-frameworks</code> to version <code>3.2.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3446">3446</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.recipe:rewrite-migrate-java</code> to version <code>3.0.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3390">3390</a>)</p>
-</li>
-<li>
-<p>Update <code>org.ops4j.pax.exam:exam-maven-plugin</code> to version <code>4.14.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3280">3280</a>)</p>
-</li>
-<li>
-<p>Update <code>org.ops4j.pax.exam:pax-exam</code> to version <code>4.14.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3277">3277</a>)</p>
 </li>
 <li>
 <p>Update <code>org.slf4j:slf4j-api</code> to version <code>2.0.17</code> (<a href="https://github.com/apache/logging-log4j2/pull/3499">3499</a>)</p>
 </li>
 <li>
-<p>Update <code>org.slf4j:slf4j-nop</code> to version <code>2.0.17</code> (<a href="https://github.com/apache/logging-log4j2/pull/3490">3490</a>)</p>
-</li>
-<li>
 <p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.3.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3700">3700</a>)</p>
-</li>
-<li>
-<p>Update <code>org.xmlunit:xmlunit-core</code> to version <code>2.10.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/3685">3685</a>)</p>
 </li>
 </ul>
 </div>
