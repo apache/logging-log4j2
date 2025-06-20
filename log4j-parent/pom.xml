@@ -136,7 +136,7 @@
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
-    <xmlunit.version>2.10.2</xmlunit.version>
+    <xmlunit.version>2.10.3</xmlunit.version>
     <xz.version>1.10</xz.version>
     <zstd.version>1.5.7-3</zstd.version>
 
