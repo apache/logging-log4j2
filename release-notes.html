@@ -463,6 +463,9 @@ See <a href="manual/pattern-layout.html#jansi" class="xref page">ANSI styling on
 <p>Add improved validation to StringMatchFilter for null/empty text. GitHub issue #3153. (<a href="https://github.com/apache/logging-log4j2/issues/3153">3153</a>)</p>
 </li>
 <li>
+<p>Ensured scripts in global <code>Scripts container</code> have explicit names by throwing a <code>ConfigurationException</code> for unnamed ones. Refined script identification with <code>AbstractScript.getId()</code> and clarified <code>AbstractScript.getName()</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3176">3176</a>)</p>
+</li>
+<li>
 <p>Currently Java 8 users do not have access to timestamps with sub-millisecond precision. This change moves the SystemClock implementation from log4j-core-java9 to log4j-core, overriding the current one, so that java 8 users can benefit from it. (<a href="https://github.com/apache/logging-log4j2/pull/3217">3217</a>)</p>
 </li>
 <li>
