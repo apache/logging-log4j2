@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.UuidUtil;
 
 /**
- * Formats the event sequence number.
+ * Formats a UUID.
  */
 @Plugin(name = "UuidPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"u", "uuid"})
@@ -39,9 +39,18 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
     }
 
     /**
-     * Obtains an instance of SequencePatternConverter.
+     * Obtains an instance of UuidPatternConverter.
+     * <p>
+     * The {@code "RANDOM"} option generates a type 4 (pseudo randomly generated) UUID. The UUID is generated using
+     * a cryptographically strong pseudo random number generator.
+     * <p>
+     * The {@code "TIME"} option generates a type 1 (date and time based) UUID using the MAC address of each host.
+     * To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between
+     * 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based
+     * UUID generated. See {@link UuidUtil#UUID_SEQUENCE} how to seed the UUID generation with an integer value.
+     * Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
      *
-     * @param options options, currently ignored, may be null.
+     * @param options a single option with the value {@code "RANDOM"} or {@code "TIME"}, or an empty array for {@code "TIME"}
      * @return instance of SequencePatternConverter.
      */
     public static UuidPatternConverter newInstance(final String[] options) {
