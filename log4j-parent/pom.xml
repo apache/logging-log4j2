@@ -108,6 +108,7 @@
     <jeromq.version>0.6.0</jeromq.version>
     <jmdns.version>3.6.1</jmdns.version>
     <jmh.version>1.37</jmh.version>
+    <jspecify.version>1.0.0</jspecify.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.13.1</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
@@ -1141,6 +1142,53 @@
   </build>
 
   <profiles>
+
+    <!-- `java8-tests` profile to force using Java 8 while running tests -->
+    <profile>
+
+      <id>java8-tests</id>
+
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
+           Adding necessary dependencies to workaround them.
+           [1] https://bugs.openjdk.org/browse/JDK-8152174
+           [2] https://github.com/mockito/mockito/issues/1449 -->
+      <dependencies>
+        <dependency>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+          <version>${jspecify.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <!-- Modifies only the `default-test` run -->
+              <execution>
+                <id>default-test</id>
+                <configuration>
+                  <jdkToolchain>
+                    <version>[1.8, 9)</version>
+                  </jdkToolchain>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
 
     <!-- `plugin-processing` profile containing configuration specific to `@Plugin`-annotated members -->
     <profile>
