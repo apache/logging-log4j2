@@ -39,7 +39,7 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
     }
 
     /**
-     * Obtains an instance of UuidPatternConverter.
+     * Creates an instance of {@link UuidPatternConverter}.
      * <p>
      * The {@code "RANDOM"} option generates a type 4 (pseudo randomly generated) UUID. The UUID is generated using
      * a cryptographically strong pseudo random number generator.
