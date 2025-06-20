@@ -51,7 +51,7 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
      *
      * @param options An array containing either {@code RANDOM} or {@code TIME}.
                       If empty, {@code TIME} will be used.
-     * @return instance of SequencePatternConverter.
+     * @return a new {@link UuidPatternConverter} instance
      */
     public static UuidPatternConverter newInstance(final String[] options) {
         if (options.length == 0) {
