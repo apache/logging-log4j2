@@ -41,13 +41,12 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
     /**
      * Creates an instance of {@link UuidPatternConverter}.
      * <p>
-     * The {@code "RANDOM"} option generates a type 4 (pseudo randomly generated) UUID. The UUID is generated using
-     * a cryptographically strong pseudo random number generator.
+     * The {@code RANDOM} option generates a Type 4 (pseudo-randomly generated) UUID.
+     * The UUID is generated using a cryptographically strong pseudo-random number generator.
      * <p>
-     * The {@code "TIME"} option generates a type 1 (date and time based) UUID using the MAC address of each host.
-     * To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between
-     * 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based
-     * UUID generated. See {@link UuidUtil#UUID_SEQUENCE} how to seed the UUID generation with an integer value.
+     * The {@code TIME} option generates a Type 1 (date and time based) UUID using the local network interface's MAC address.
+     * To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
+     * See {@link UuidUtil#UUID_SEQUENCE} how to seed the UUID generation with an integer value.
      * Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
      *
      * @param options a single option with the value {@code "RANDOM"} or {@code "TIME"}, or an empty array for {@code "TIME"}
