@@ -75,8 +75,8 @@ import org.jspecify.annotations.Nullable;
 @SupportedOptions({"log4j.graalvm.groupId", "log4j.graalvm.artifactId"})
 public class GraalVmProcessor extends AbstractProcessor {
 
-    private static final String GROUP_ID = "log4j.graalvm.groupId";
-    private static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
+    static final String GROUP_ID = "log4j.graalvm.groupId";
+    static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
     private static final String PROCESSOR_NAME = GraalVmProcessor.class.getSimpleName();
 
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
@@ -212,18 +212,28 @@ public class GraalVmProcessor extends AbstractProcessor {
         }
     }
 
+    // package-private for testing
+    static String getReachabilityMetadataPath(@Nullable String groupId, @Nullable String artifactId) {
+        StringBuilder pathBuilder = new StringBuilder("META-INF/native-image/log4j-generated");
+        if (groupId != null && artifactId != null) {
+            pathBuilder.append('/').append(groupId).append('/').append(artifactId);
+        }
+        return pathBuilder.append("/reflect-config.json").toString();
+    }
+
     private String getReachabilityMetadataPath() {
         String groupId = processingEnv.getOptions().get(GROUP_ID);
         String artifactId = processingEnv.getOptions().get(ARTIFACT_ID);
         if (groupId == null || artifactId == null) {
             String message = String.format(
-                    "The `%s` annotation processor is missing the required `%s` and `%s` options.%n"
-                            + "The generation of GraalVM reflection metadata for your Log4j Plugins will be disabled.",
+                    "The `%1$s` annotation processor is missing the recommended `%2$s` and `%3$s` options.%n"
+                            + "To follow the GraalVM recommendations, please add the following options to your build tool:%n"
+                            + "  -A%2$s=<groupId>%n"
+                            + "  -A%3$s=<artifactId>%n",
                     PROCESSOR_NAME, GROUP_ID, ARTIFACT_ID);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
-            throw new IllegalArgumentException(message);
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, message);
         }
-        return String.format("META-INF/native-image/%s/%s/reflect-config.json", groupId, artifactId);
+        return getReachabilityMetadataPath(groupId, artifactId);
     }
 
     private void addField(TypeElement parent, VariableElement element) {
