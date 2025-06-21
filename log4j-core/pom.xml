@@ -54,7 +54,7 @@
     <disruptor.support.range>[3.4,5)</disruptor.support.range>
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-extra-package-options>
-      <!-- Annotations only -->
+      <!-- Annotations only: users are allowed to exclude this dependency -->
       org.jspecify.*;resolution:=optional,
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
@@ -109,12 +109,14 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>javax.activation-api</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
+
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
       <groupId>javax.jms</groupId>
@@ -122,6 +124,7 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for SMTPAppender -->
     <dependency>
       <groupId>javax.mail</groupId>
@@ -129,94 +132,112 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>org.jspecify</groupId>
-      <artifactId>jspecify</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
+
     <!-- Used for compressing to formats other than zip and gz -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Used for the CSV layout -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>
       <groupId>com.conversantmedia</groupId>
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for AsyncLoggers -->
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for JSON support -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for JSON support -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for XML layout and receiver support -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Required for YAML support (including JSON requirements) -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
+
     <!-- Used for ZeroMQ JeroMQ appender -->
     <dependency>
       <groupId>org.zeromq</groupId>
       <artifactId>jeromq</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <!--
+      ~ Effectively optional, but included due to its size and the compilation warnings its absence causes.
+      -->
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+    </dependency>
+
     <!-- Used for Kafka appender -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <optional>true</optional>
     </dependency>
+
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
+
   </dependencies>
 
   <build>
