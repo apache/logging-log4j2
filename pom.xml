@@ -357,7 +357,6 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <jspecify.version>1.0.0</jspecify.version>
     <log4j-docgen.version>0.9.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
@@ -830,7 +829,7 @@
               <outputDirectory>${maven.multiModuleProjectDirectory}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/site/apidocs</directory>
+                  <directory>${project.build.directory}/reports/apidocs</directory>
                 </resource>
               </resources>
             </configuration>
@@ -955,53 +954,6 @@
   </build>
 
   <profiles>
-
-    <!-- `java8-tests` profile to force using Java 8 while running tests -->
-    <profile>
-
-      <id>java8-tests</id>
-
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
-
-      <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
-           Adding necessary dependencies to workaround them.
-           [1] https://bugs.openjdk.org/browse/JDK-8152174
-           [2] https://github.com/mockito/mockito/issues/1449 -->
-      <dependencies>
-        <dependency>
-          <groupId>org.jspecify</groupId>
-          <artifactId>jspecify</artifactId>
-          <version>${jspecify.version}</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <executions>
-              <!-- Modifies only the `default-test` run -->
-              <execution>
-                <id>default-test</id>
-                <configuration>
-                  <jdkToolchain>
-                    <version>[1.8, 9)</version>
-                  </jdkToolchain>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-
-    </profile>
 
     <profile>
       <id>rerun-tests</id>
