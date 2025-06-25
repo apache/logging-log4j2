@@ -194,7 +194,7 @@ public class GraalVmProcessor extends AbstractProcessor {
             ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), arrayOutputStream);
         } catch (IOException e) {
             String message = String.format(
-                    "%s: an error occurred while generating reachability metadata" + e.getMessage(), PROCESSOR_NAME);
+                    "%s: an error occurred while generating reachability metadata: %s", PROCESSOR_NAME, e.getMessage());
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
             return;
         }
