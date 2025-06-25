@@ -226,6 +226,17 @@ public class GraalVmProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Returns the path to the reachability metadata file.
+     * <p>
+     *     If the groupId or artifactId is not specified, a warning is printed and a fallback folder name is used.
+     *     The fallback folder name should be reproducible, but unique enough to avoid conflicts.
+     * </p>
+     *
+     * @param groupId The group ID of the plugin.
+     * @param artifactId The artifact ID of the plugin.
+     * @param fallbackFolderName The fallback folder name to use if groupId or artifactId is not specified.
+     */
     String getReachabilityMetadataPath(
             @Nullable String groupId, @Nullable String artifactId, String fallbackFolderName) {
         if (groupId == null || artifactId == null) {
