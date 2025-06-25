@@ -147,9 +147,9 @@ public class ScriptManager implements FileWatcher {
                 return false;
             }
             if (engine.getFactory().getParameter(KEY_THREADING) == null) {
-                scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
+                scriptRunners.put(script.getId(), new ThreadLocalScriptRunner(script));
             } else {
-                scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
+                scriptRunners.put(script.getId(), new MainScriptRunner(engine, script));
             }
 
             if (script instanceof ScriptFile) {
@@ -162,7 +162,7 @@ public class ScriptManager implements FileWatcher {
         } else {
             logger.error(
                     "Unable to add script {}, {} has not been configured as an allowed language",
-                    script.getName(),
+                    script.getId(),
                     script.getLanguage());
             return false;
         }
@@ -173,8 +173,8 @@ public class ScriptManager implements FileWatcher {
         return getScriptRunner(script).createBindings();
     }
 
-    public AbstractScript getScript(final String name) {
-        final ScriptRunner runner = scriptRunners.get(name);
+    public AbstractScript getScript(final String id) {
+        final ScriptRunner runner = scriptRunners.get(id);
         return runner != null ? runner.getScript() : null;
     }
 
@@ -188,16 +188,16 @@ public class ScriptManager implements FileWatcher {
         final ScriptEngine engine = runner.getScriptEngine();
         final AbstractScript script = runner.getScript();
         if (engine.getFactory().getParameter(KEY_THREADING) == null) {
-            scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
+            scriptRunners.put(script.getId(), new ThreadLocalScriptRunner(script));
         } else {
-            scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
+            scriptRunners.put(script.getId(), new MainScriptRunner(engine, script));
         }
     }
 
-    public Object execute(final String name, final Bindings bindings) {
-        final ScriptRunner scriptRunner = scriptRunners.get(name);
+    public Object execute(final String id, final Bindings bindings) {
+        final ScriptRunner scriptRunner = scriptRunners.get(id);
         if (scriptRunner == null) {
-            logger.warn("No script named {} could be found", name);
+            logger.warn("No script named {} could be found", id);
             return null;
         }
         return AccessController.doPrivileged((PrivilegedAction<Object>) () -> scriptRunner.execute(bindings));
@@ -224,7 +224,7 @@ public class ScriptManager implements FileWatcher {
             this.scriptEngine = scriptEngine;
             CompiledScript compiled = null;
             if (scriptEngine instanceof Compilable) {
-                logger.debug("Script {} is compilable", script.getName());
+                logger.debug("Script {} is compilable", script.getId());
                 compiled = AccessController.doPrivileged((PrivilegedAction<CompiledScript>) () -> {
                     try {
                         return ((Compilable) scriptEngine).compile(script.getScriptText());
@@ -252,14 +252,14 @@ public class ScriptManager implements FileWatcher {
                 try {
                     return compiledScript.eval(bindings);
                 } catch (final ScriptException ex) {
-                    logger.error("Error running script " + script.getName(), ex);
+                    logger.error("Error running script " + script.getId(), ex);
                     return null;
                 }
             }
             try {
                 return scriptEngine.eval(script.getScriptText(), bindings);
             } catch (final ScriptException ex) {
-                logger.error("Error running script " + script.getName(), ex);
+                logger.error("Error running script " + script.getId(), ex);
                 return null;
             }
         }
@@ -302,6 +302,6 @@ public class ScriptManager implements FileWatcher {
     }
 
     private ScriptRunner getScriptRunner(final AbstractScript script) {
-        return scriptRunners.get(script.getName());
+        return scriptRunners.get(script.getId());
     }
 }
