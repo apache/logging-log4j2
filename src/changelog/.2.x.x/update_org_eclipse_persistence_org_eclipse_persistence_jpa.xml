@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3082" link="https://github.com/apache/logging-log4j2/pull/3082"/>
-  <description format="asciidoc">Update `com.github.jnr:jnr-ffi` to version `2.2.17`</description>
+  <issue id="3769" link="https://github.com/apache/logging-log4j2/pull/3769"/>
+  <description format="asciidoc">Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.16`</description>
 </entry>
