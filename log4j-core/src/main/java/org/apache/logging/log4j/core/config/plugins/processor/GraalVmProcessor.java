@@ -18,9 +18,11 @@ package org.apache.logging.log4j.core.config.plugins.processor;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +79,8 @@ public class GraalVmProcessor extends AbstractProcessor {
 
     static final String GROUP_ID = "log4j.graalvm.groupId";
     static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
+    private static final String LOCATION_PREFIX = "META-INF/native-image/log4j-generated/";
+    private static final String LOCATION_SUFFIX = "/reflect-config.json";
     private static final String PROCESSOR_NAME = GraalVmProcessor.class.getSimpleName();
 
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
@@ -184,11 +188,21 @@ public class GraalVmProcessor extends AbstractProcessor {
     }
 
     private void writeReachabilityMetadata() {
-        //
-        // Many users will have `log4j-core` on the annotation processor path, but do not have Log4j Plugins.
-        // Therefore, we check for the annotation processor required options only if some elements were processed.
-        //
-        String reachabilityMetadataPath = getReachabilityMetadataPath();
+        // Compute the reachability metadata
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        try {
+            ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), arrayOutputStream);
+        } catch (IOException e) {
+            String message = String.format(
+                    "%s: an error occurred while generating reachability metadata" + e.getMessage(), PROCESSOR_NAME);
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
+            return;
+        }
+        byte[] data = arrayOutputStream.toByteArray();
+
+        Map<String, String> options = processingEnv.getOptions();
+        String reachabilityMetadataPath = getReachabilityMetadataPath(
+                options.get(GROUP_ID), options.get(ARTIFACT_ID), Integer.toHexString(Arrays.hashCode(data)));
         Messager messager = processingEnv.getMessager();
         messager.printMessage(
                 Diagnostic.Kind.NOTE,
@@ -203,7 +217,7 @@ public class GraalVmProcessor extends AbstractProcessor {
                         reachabilityMetadataPath,
                         processedElements.toArray(new Element[0]))
                 .openOutputStream()) {
-            ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), output);
+            output.write(data);
         } catch (IOException e) {
             String message = String.format(
                     "%s: unable to write reachability metadata to file `%s`", PROCESSOR_NAME, reachabilityMetadataPath);
@@ -212,18 +226,8 @@ public class GraalVmProcessor extends AbstractProcessor {
         }
     }
 
-    // package-private for testing
-    static String getReachabilityMetadataPath(@Nullable String groupId, @Nullable String artifactId) {
-        StringBuilder pathBuilder = new StringBuilder("META-INF/native-image/log4j-generated");
-        if (groupId != null && artifactId != null) {
-            pathBuilder.append('/').append(groupId).append('/').append(artifactId);
-        }
-        return pathBuilder.append("/reflect-config.json").toString();
-    }
-
-    private String getReachabilityMetadataPath() {
-        String groupId = processingEnv.getOptions().get(GROUP_ID);
-        String artifactId = processingEnv.getOptions().get(ARTIFACT_ID);
+    String getReachabilityMetadataPath(
+            @Nullable String groupId, @Nullable String artifactId, String fallbackFolderName) {
         if (groupId == null || artifactId == null) {
             String message = String.format(
                     "The `%1$s` annotation processor is missing the recommended `%2$s` and `%3$s` options.%n"
@@ -232,8 +236,9 @@ public class GraalVmProcessor extends AbstractProcessor {
                             + "  -A%3$s=<artifactId>%n",
                     PROCESSOR_NAME, GROUP_ID, ARTIFACT_ID);
             processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, message);
+            return LOCATION_PREFIX + fallbackFolderName + LOCATION_SUFFIX;
         }
-        return getReachabilityMetadataPath(groupId, artifactId);
+        return LOCATION_PREFIX + groupId + '/' + artifactId + LOCATION_SUFFIX;
     }
 
     private void addField(TypeElement parent, VariableElement element) {

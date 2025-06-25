@@ -24,6 +24,7 @@ import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -49,10 +53,12 @@ import javax.tools.ToolProvider;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 class GraalVmProcessorTest {
 
@@ -100,6 +106,7 @@ class GraalVmProcessorTest {
 
     private static final String GROUP_ID = "groupId";
     private static final String ARTIFACT_ID = "artifactId";
+    private static final String FALLBACK_METADATA_FOLDER = "fooBar";
 
     /**
      * Generates a metadata element with just a single no-arg constructor.
@@ -156,7 +163,7 @@ class GraalVmProcessorTest {
     void containsSpecificEntries(String className, Object expectedJson) throws IOException {
         // Read metadata
         Path reachabilityMetadataPath =
-                outputDir.resolve(GraalVmProcessor.getReachabilityMetadataPath(GROUP_ID, ARTIFACT_ID));
+                outputDir.resolve("META-INF/native-image/log4j-generated/groupId/artifactId/reflect-config.json");
         String reachabilityMetadata = new String(Files.readAllBytes(reachabilityMetadataPath), UTF_8);
         assertThatJson(reachabilityMetadata)
                 .inPath(String.format("$[?(@.name == '%s')]", className))
@@ -170,20 +177,28 @@ class GraalVmProcessorTest {
                         "groupId",
                         "artifactId",
                         "META-INF/native-image/log4j-generated/groupId/artifactId/reflect-config.json"),
-                Arguments.of(null, "artifactId", "META-INF/native-image/log4j-generated/reflect-config.json"),
-                Arguments.of("groupId", null, "META-INF/native-image/log4j-generated/reflect-config.json"),
-                Arguments.of(null, null, "META-INF/native-image/log4j-generated/reflect-config.json"));
+                Arguments.of(null, "artifactId", "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"),
+                Arguments.of("groupId", null, "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"),
+                Arguments.of(null, null, "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"));
     }
 
     @ParameterizedTest
     @MethodSource
     void reachabilityMetadataPath(@Nullable String groupId, @Nullable String artifactId, String expected) {
-        assertThat(GraalVmProcessor.getReachabilityMetadataPath(groupId, artifactId))
+        Messager messager = Mockito.mock(Messager.class);
+        Elements elements = Mockito.mock(Elements.class);
+        ProcessingEnvironment processingEnv = Mockito.mock(ProcessingEnvironment.class);
+        when(processingEnv.getMessager()).thenReturn(messager);
+        when(processingEnv.getElementUtils()).thenReturn(elements);
+        GraalVmProcessor processor = new GraalVmProcessor();
+        processor.init(processingEnv);
+        assertThat(processor.getReachabilityMetadataPath(groupId, artifactId, FALLBACK_METADATA_FOLDER))
                 .isEqualTo(expected);
     }
 
     @Test
-    void whenNoGroupIdAndArtifactId_thenWarningIsPrinted(@TempDir Path outputDir) throws Exception {
+    void whenNoGroupIdAndArtifactId_thenWarningIsPrinted(@TempDir(cleanup = CleanupMode.NEVER) Path outputDir)
+            throws Exception {
         List<String> diagnostics = generateDescriptor(sourceDir, null, null, outputDir);
         assertThat(diagnostics).hasSize(1);
         // The warning message should contain the information about the missing groupId and artifactId arguments
@@ -192,8 +207,17 @@ class GraalVmProcessorTest {
                         "recommended",
                         "-A" + GraalVmProcessor.GROUP_ID + "=<groupId>",
                         "-A" + GraalVmProcessor.ARTIFACT_ID + "=<artifactId>");
-        Path reachabilityMetadataPath = outputDir.resolve(GraalVmProcessor.getReachabilityMetadataPath(null, null));
-        assertThat(Files.exists(reachabilityMetadataPath)).isTrue();
+        Path path = outputDir.resolve("META-INF/native-image/log4j-generated");
+        List<Path> reachabilityMetadataFolders;
+        try (Stream<Path> files = Files.list(path)) {
+            reachabilityMetadataFolders = files.filter(Files::isDirectory).collect(Collectors.toList());
+        }
+        // The generated folder name should be deterministic and based solely on the descriptor content.
+        // If the descriptor changes, this test and the expected folder name must be updated accordingly.
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("62162090"));
+        assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
+                .as("Reachability metadata file")
+                .exists();
     }
 
     private static List<String> generateDescriptor(
