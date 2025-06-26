@@ -435,32 +435,50 @@ public final class HtmlLayout extends AbstractStringLayout {
 
         private Builder() {}
 
-        public Builder withLocationInfo(final boolean locationInfo) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setLocationInfo(final boolean locationInfo) {
             this.locationInfo = locationInfo;
             return this;
         }
 
-        public Builder withTitle(final String title) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setTitle(final String title) {
             this.title = title;
             return this;
         }
 
-        public Builder withContentType(final String contentType) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setContentType(final String contentType) {
             this.contentType = contentType;
             return this;
         }
 
-        public Builder withCharset(final Charset charset) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setCharset(final Charset charset) {
             this.charset = charset;
             return this;
         }
 
-        public Builder withFontSize(final FontSize fontSize) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setFontSize(final FontSize fontSize) {
             this.fontSize = fontSize;
             return this;
         }
 
-        public Builder withFontName(final String fontName) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setFontName(final String fontName) {
             this.fontName = fontName;
             return this;
         }
@@ -472,6 +490,60 @@ public final class HtmlLayout extends AbstractStringLayout {
 
         public Builder setTimezone(final String timezone) {
             this.timezone = timezone;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setLocationInfo(boolean)}.
+         */
+        @Deprecated
+        public Builder withLocationInfo(final boolean locationInfo) {
+            this.locationInfo = locationInfo;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setTitle(String)}.
+         */
+        @Deprecated
+        public Builder withTitle(final String title) {
+            this.title = title;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setContentType(String)}.
+         */
+        @Deprecated
+        public Builder withContentType(final String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setCharset(Charset)}.
+         */
+        @Deprecated
+        public Builder withCharset(final Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFontSize(FontSize)}.
+         */
+        @Deprecated
+        public Builder withFontSize(final FontSize fontSize) {
+            this.fontSize = fontSize;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFontName(String)}.
+         */
+        @Deprecated
+        public Builder withFontName(final String fontName) {
+            this.fontName = fontName;
             return this;
         }
 

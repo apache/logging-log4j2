@@ -57,7 +57,7 @@ public class ValidatingPluginWithGenericBuilder {
         @Required(message = "The name given by the builder is null")
         private String name;
 
-        public B withName(final String name) {
+        public B setName(final String name) {
             this.name = name;
             return asBuilder();
         }

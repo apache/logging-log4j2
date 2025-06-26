@@ -70,13 +70,13 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
         final Configuration config = loggerContextRule.getConfiguration();
         final RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingHtml")
-                .withFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
-                .withPolicy(new SizeBasedTriggeringPolicy(500))
-                .withStrategy(DirectWriteRolloverStrategy.newBuilder()
-                        .withConfig(config)
+                .setFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
+                .setPolicy(new SizeBasedTriggeringPolicy(500))
+                .setStrategy(DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(config)
                         .build())
                 .setLayout(HtmlLayout.createDefaultLayout())
-                .withAppend(append)
+                .setAppend(append)
                 .build();
         boolean stopped = false;
         try {

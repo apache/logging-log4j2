@@ -148,10 +148,7 @@ public class PluginProcessor extends AbstractProcessor {
                     final ExecutableElement methodElement = (ExecutableElement) enclosedElement;
                     final String methodName = methodElement.getSimpleName().toString();
 
-                    if ((methodName.toLowerCase(Locale.ROOT).startsWith("set") // Typical pattern for setters
-                                    || methodName
-                                            .toLowerCase(Locale.ROOT)
-                                            .startsWith("with")) // Typical pattern for setters
+                    if (methodName.toLowerCase(Locale.ROOT).startsWith("set") // Typical pattern for setters
                             && methodElement.getParameters().size()
                                     == 1 // It is a weird pattern to not have public setter
                     ) {

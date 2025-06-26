@@ -39,7 +39,7 @@ public class AbstractPluginWithGenericBuilder {
             return thing;
         }
 
-        public B withThing(final String name) {
+        public B setThing(final String name) {
             this.thing = name;
             return asBuilder();
         }

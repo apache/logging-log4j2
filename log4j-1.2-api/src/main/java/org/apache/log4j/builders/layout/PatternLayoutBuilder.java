@@ -83,7 +83,7 @@ public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements Lay
             pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
         }
         return LayoutWrapper.adapt(PatternLayout.newBuilder()
-                .withPattern(pattern
+                .setPattern(pattern
                         // Log4j 2 and Log4j 1 level names differ for custom levels
                         .replaceAll("%([-\\.\\d]*)p(?!\\w)", "%$1v1Level")
                         // Log4j 2's %x (NDC) is not compatible with Log4j 1's
@@ -99,7 +99,7 @@ public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements Lay
                         // Log4j 2: "{foo=bar,hoo=boo}"
                         // Use %properties to get the Log4j 1 format
                         .replaceAll("%([-\\.\\d]*)X(?!\\w)", "%$1properties"))
-                .withConfiguration(config)
+                .setConfiguration(config)
                 .build());
     }
 }

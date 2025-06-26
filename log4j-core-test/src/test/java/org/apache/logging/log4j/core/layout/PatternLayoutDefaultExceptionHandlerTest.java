@@ -65,9 +65,9 @@ class PatternLayoutDefaultExceptionHandlerTest {
     private static AbstractStringAssert<?> assertThatPatternEncodes(
             final String pattern, final boolean alwaysWriteExceptions) {
         final Layout<String> layout = PatternLayout.newBuilder()
-                .withConfiguration(CONFIG)
-                .withPattern(pattern)
-                .withAlwaysWriteExceptions(alwaysWriteExceptions)
+                .setConfiguration(CONFIG)
+                .setPattern(pattern)
+                .setAlwaysWriteExceptions(alwaysWriteExceptions)
                 .build();
         final LogEvent event = Log4jLogEvent.newBuilder().setThrown(EXCEPTION).build();
         return assertThat(layout.toSerializable(event)).as("pattern=`%s`", pattern);
