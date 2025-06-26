@@ -110,7 +110,7 @@ implements <a href="../../../util/Builder.html" title="interface in org.apache.l
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -122,54 +122,124 @@ implements <a href="../../../util/Builder.html" title="interface in org.apache.l
 <div class="block">Builds the object after all configuration has been set.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withBasePath(java.lang.String)" class="member-name-link">withBasePath</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setBasePath(java.lang.String)" class="member-name-link">setBasePath</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define base path to apply condition before execute POSIX file attribute action.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define required configuration, used to retrieve string substituter.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFileGroup(java.lang.String)" class="member-name-link">withFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileGroup(java.lang.String)" class="member-name-link">setFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define file group to apply during action execution eligible files.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFileOwner(java.lang.String)" class="member-name-link">withFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileOwner(java.lang.String)" class="member-name-link">setFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define file owner to apply during action execution eligible files.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFilePermissions(java.util.Set)" class="member-name-link">withFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFilePermissions(java.util.Set)" class="member-name-link">setFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define file permissions to apply during action execution eligible files.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFilePermissionsString(java.lang.String)" class="member-name-link">withFilePermissionsString</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFilePermissionsString(java.lang.String)" class="member-name-link">setFilePermissionsString</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define file permissions in POSIX format to apply during action execution eligible files.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFollowLinks(boolean)" class="member-name-link">withFollowLinks</a><wbr>(boolean&nbsp;followLinks)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFollowLinks(boolean)" class="member-name-link">setFollowLinks</a><wbr>(boolean&nbsp;followLinks)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">True to allow synonyms links during search of eligible files.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withMaxDepth(int)" class="member-name-link">withMaxDepth</a><wbr>(int&nbsp;maxDepth)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setMaxDepth(int)" class="member-name-link">setMaxDepth</a><wbr>(int&nbsp;maxDepth)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define max folder depth to search for eligible files to apply POSIX attribute view.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition%5B%5D)" class="member-name-link">withPathConditions</a><wbr>(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition%5B%5D)" class="member-name-link">setPathConditions</a><wbr>(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define path conditions to filter files in <a href="AbstractPathAction.html#getBasePath()"><code>AbstractPathAction.getBasePath()</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">withSubst</a><wbr>(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">setSubst</a><wbr>(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Define string substituter.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withBasePath(java.lang.String)" class="member-name-link">withBasePath</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setBasePath(java.lang.String)"><code>setBasePath(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFileGroup(java.lang.String)" class="member-name-link">withFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileGroup(java.lang.String)"><code>setFileGroup(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFileOwner(java.lang.String)" class="member-name-link">withFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileOwner(java.lang.String)"><code>setFileOwner(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFilePermissions(java.util.Set)" class="member-name-link">withFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissions(java.util.Set)"><code>setFilePermissions(Set&lt;PosixFilePermission&gt;)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFilePermissionsString(java.lang.String)" class="member-name-link">withFilePermissionsString</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissionsString(java.lang.String)"><code>setFilePermissionsString(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFollowLinks(boolean)" class="member-name-link">withFollowLinks</a><wbr>(boolean&nbsp;followLinks)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFollowLinks(boolean)"><code>setFollowLinks(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withMaxDepth(int)" class="member-name-link">withMaxDepth</a><wbr>(int&nbsp;maxDepth)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setMaxDepth(int)"><code>setMaxDepth(int)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition%5B%5D)" class="member-name-link">withPathConditions</a><wbr>(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition%5B%5D)"><code>setPathConditions(PathCondition[])</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)" class="member-name-link">withSubst</a><wbr>(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)"><code>setSubst(StrSubstitutor)</code></a>.</div>
+</div>
 </div>
 </div>
 </div>
@@ -221,87 +291,99 @@ implements <a href="../../../util/Builder.html" title="interface in org.apache.l
 </section>
 </li>
 <li>
-<section class="detail" id="withConfiguration(org.apache.logging.log4j.core.config.Configuration)">
-<h3>withConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<section class="detail" id="setConfiguration(org.apache.logging.log4j.core.config.Configuration)">
+<h3>setConfiguration</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setConfiguration</span><wbr><span class="parameters">(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
 <div class="block">Define required configuration, used to retrieve string substituter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>configuration</code> - <a href="AbstractPathAction.html#getStrSubstitutor()"><code>AbstractPathAction.getStrSubstitutor()</code></a></dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)">
-<h3>withSubst</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withSubst</span><wbr><span class="parameters">(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</span></div>
+<section class="detail" id="setSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)">
+<h3>setSubst</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setSubst</span><wbr><span class="parameters">(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</span></div>
 <div class="block">Define string substituter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>subst</code> - <a href="AbstractPathAction.html#getStrSubstitutor()"><code>AbstractPathAction.getStrSubstitutor()</code></a></dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withBasePath(java.lang.String)">
-<h3>withBasePath</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withBasePath</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</span></div>
+<section class="detail" id="setBasePath(java.lang.String)">
+<h3>setBasePath</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setBasePath</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</span></div>
 <div class="block">Define base path to apply condition before execute POSIX file attribute action.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>basePath</code> - <a href="AbstractPathAction.html#getBasePath()"><code>AbstractPathAction.getBasePath()</code></a></dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withFollowLinks(boolean)">
-<h3>withFollowLinks</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFollowLinks</span><wbr><span class="parameters">(boolean&nbsp;followLinks)</span></div>
+<section class="detail" id="setFollowLinks(boolean)">
+<h3>setFollowLinks</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setFollowLinks</span><wbr><span class="parameters">(boolean&nbsp;followLinks)</span></div>
 <div class="block">True to allow synonyms links during search of eligible files.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>followLinks</code> - Follow synonyms links</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withMaxDepth(int)">
-<h3>withMaxDepth</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withMaxDepth</span><wbr><span class="parameters">(int&nbsp;maxDepth)</span></div>
+<section class="detail" id="setMaxDepth(int)">
+<h3>setMaxDepth</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setMaxDepth</span><wbr><span class="parameters">(int&nbsp;maxDepth)</span></div>
 <div class="block">Define max folder depth to search for eligible files to apply POSIX attribute view.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>maxDepth</code> - Max search depth</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition[])">
-<h3>withPathConditions</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withPathConditions</span><wbr><span class="parameters">(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</span></div>
+<section class="detail" id="setPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition[])">
+<h3>setPathConditions</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setPathConditions</span><wbr><span class="parameters">(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</span></div>
 <div class="block">Define path conditions to filter files in <a href="AbstractPathAction.html#getBasePath()"><code>AbstractPathAction.getBasePath()</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>pathConditions</code> - <a href="AbstractPathAction.html#getPathConditions()"><code>AbstractPathAction.getPathConditions()</code></a></dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withFilePermissionsString(java.lang.String)">
-<h3>withFilePermissionsString</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFilePermissionsString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</span></div>
+<section class="detail" id="setFilePermissionsString(java.lang.String)">
+<h3>setFilePermissionsString</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setFilePermissionsString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</span></div>
 <div class="block">Define file permissions in POSIX format to apply during action execution eligible files.
 
  Example:
@@ -312,46 +394,154 @@ implements <a href="../../../util/Builder.html" title="interface in org.apache.l
 <dd><code>filePermissionsString</code> - Permissions to apply</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withFilePermissions(java.util.Set)">
-<h3>withFilePermissions</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</span></div>
+<section class="detail" id="setFilePermissions(java.util.Set)">
+<h3>setFilePermissions</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</span></div>
 <div class="block">Define file permissions to apply during action execution eligible files.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>filePermissions</code> - Permissions to apply</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withFileOwner(java.lang.String)">
-<h3>withFileOwner</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
+<section class="detail" id="setFileOwner(java.lang.String)">
+<h3>setFileOwner</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
 <div class="block">Define file owner to apply during action execution eligible files.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>fileOwner</code> - File owner</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="withFileGroup(java.lang.String)">
-<h3>withFileGroup</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
+<section class="detail" id="setFileGroup(java.lang.String)">
+<h3>setFileGroup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">setFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
 <div class="block">Define file group to apply during action execution eligible files.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>fileGroup</code> - File group</dd>
 <dt>Returns:</dt>
 <dd>This builder</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withConfiguration(org.apache.logging.log4j.core.config.Configuration)">
+<h3>withConfiguration</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../../../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)">
+<h3>withSubst</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withSubst</span><wbr><span class="parameters">(<a href="../../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;subst)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setSubst(org.apache.logging.log4j.core.lookup.StrSubstitutor)"><code>setSubst(StrSubstitutor)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withBasePath(java.lang.String)">
+<h3>withBasePath</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withBasePath</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;basePath)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setBasePath(java.lang.String)"><code>setBasePath(String)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withFollowLinks(boolean)">
+<h3>withFollowLinks</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFollowLinks</span><wbr><span class="parameters">(boolean&nbsp;followLinks)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFollowLinks(boolean)"><code>setFollowLinks(boolean)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withMaxDepth(int)">
+<h3>withMaxDepth</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withMaxDepth</span><wbr><span class="parameters">(int&nbsp;maxDepth)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setMaxDepth(int)"><code>setMaxDepth(int)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition[])">
+<h3>withPathConditions</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withPathConditions</span><wbr><span class="parameters">(<a href="PathCondition.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">PathCondition</a>[]&nbsp;pathConditions)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPathConditions(org.apache.logging.log4j.core.appender.rolling.action.PathCondition%5B%5D)"><code>setPathConditions(PathCondition[])</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withFilePermissionsString(java.lang.String)">
+<h3>withFilePermissionsString</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFilePermissionsString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissionsString)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissionsString(java.lang.String)"><code>setFilePermissionsString(String)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withFilePermissions(java.util.Set)">
+<h3>withFilePermissions</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/attribute/PosixFilePermission.html" title="class or interface in java.nio.file.attribute" class="external-link">PosixFilePermission</a>&gt;&nbsp;filePermissions)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissions(java.util.Set)"><code>setFilePermissions(Set&lt;PosixFilePermission&gt;)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withFileOwner(java.lang.String)">
+<h3>withFileOwner</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileOwner(java.lang.String)"><code>setFileOwner(String)</code></a>.</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="withFileGroup(java.lang.String)">
+<h3>withFileGroup</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></span>&nbsp;<span class="element-name">withFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileGroup(java.lang.String)"><code>setFileGroup(String)</code></a>.</div>
+</div>
 </section>
 </li>
 </ul>

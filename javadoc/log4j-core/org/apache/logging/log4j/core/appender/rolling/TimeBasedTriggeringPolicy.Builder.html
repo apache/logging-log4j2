@@ -109,7 +109,7 @@ implements <a href="../../util/Builder.html" title="interface in org.apache.logg
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -130,14 +130,35 @@ implements <a href="../../util/Builder.html" title="interface in org.apache.logg
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isModulate()" class="member-name-link">isModulate</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withInterval(int)" class="member-name-link">withInterval</a><wbr>(int&nbsp;interval)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setInterval(int)" class="member-name-link">setInterval</a><wbr>(int&nbsp;interval)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withMaxRandomDelay(int)" class="member-name-link">withMaxRandomDelay</a><wbr>(int&nbsp;maxRandomDelay)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setMaxRandomDelay(int)" class="member-name-link">setMaxRandomDelay</a><wbr>(int&nbsp;maxRandomDelay)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withModulate(boolean)" class="member-name-link">withModulate</a><wbr>(boolean&nbsp;modulate)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setModulate(boolean)" class="member-name-link">setModulate</a><wbr>(boolean&nbsp;modulate)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withInterval(int)" class="member-name-link">withInterval</a><wbr>(int&nbsp;interval)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setInterval(int)"><code>setInterval(int)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withMaxRandomDelay(int)" class="member-name-link">withMaxRandomDelay</a><wbr>(int&nbsp;maxRandomDelay)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setMaxRandomDelay(int)"><code>setMaxRandomDelay(int)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withModulate(boolean)" class="member-name-link">withModulate</a><wbr>(boolean&nbsp;modulate)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setModulate(boolean)"><code>setModulate(boolean)</code></a>.</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -206,21 +227,63 @@ implements <a href="../../util/Builder.html" title="interface in org.apache.logg
 </section>
 </li>
 <li>
+<section class="detail" id="setInterval(int)">
+<h3>setInterval</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">setInterval</span><wbr><span class="parameters">(int&nbsp;interval)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setModulate(boolean)">
+<h3>setModulate</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">setModulate</span><wbr><span class="parameters">(boolean&nbsp;modulate)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setMaxRandomDelay(int)">
+<h3>setMaxRandomDelay</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">setMaxRandomDelay</span><wbr><span class="parameters">(int&nbsp;maxRandomDelay)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="withInterval(int)">
 <h3>withInterval</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withInterval</span><wbr><span class="parameters">(int&nbsp;interval)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withInterval</span><wbr><span class="parameters">(int&nbsp;interval)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setInterval(int)"><code>setInterval(int)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withModulate(boolean)">
 <h3>withModulate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withModulate</span><wbr><span class="parameters">(boolean&nbsp;modulate)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withModulate</span><wbr><span class="parameters">(boolean&nbsp;modulate)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setModulate(boolean)"><code>setModulate(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withMaxRandomDelay(int)">
 <h3>withMaxRandomDelay</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withMaxRandomDelay</span><wbr><span class="parameters">(int&nbsp;maxRandomDelay)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TimeBasedTriggeringPolicy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">TimeBasedTriggeringPolicy.Builder</a></span>&nbsp;<span class="element-name">withMaxRandomDelay</span><wbr><span class="parameters">(int&nbsp;maxRandomDelay)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setMaxRandomDelay(int)"><code>setMaxRandomDelay(int)</code></a>.</div>
+</div>
 </section>
 </li>
 </ul>

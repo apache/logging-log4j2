@@ -110,7 +110,7 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -134,17 +134,45 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getScript()" class="member-name-link">getScript</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)" class="member-name-link">withAppenderNodeSet</a><wbr>(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)" class="member-name-link">setAppenderNodeSet</a><wbr>(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withName(java.lang.String)" class="member-name-link">withName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withScript(org.apache.logging.log4j.core.script.AbstractScript)" class="member-name-link">withScript</a><wbr>(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setScript(org.apache.logging.log4j.core.script.AbstractScript)" class="member-name-link">setScript</a><wbr>(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)" class="member-name-link">withAppenderNodeSet</a><wbr>(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)"><code>setAppenderNodeSet(AppenderSet)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withName(java.lang.String)" class="member-name-link">withName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setName(java.lang.String)"><code>setName(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withScript(org.apache.logging.log4j.core.script.AbstractScript)" class="member-name-link">withScript</a><wbr>(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setScript(org.apache.logging.log4j.core.script.AbstractScript)"><code>setScript(AbstractScript)</code></a>.</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -219,27 +247,83 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 </section>
 </li>
 <li>
+<section class="detail" id="setAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)">
+<h3>setAppenderNodeSet</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">setAppenderNodeSet</span><wbr><span class="parameters">(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setConfiguration(org.apache.logging.log4j.core.config.Configuration)">
+<h3>setConfiguration</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">setConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setName(java.lang.String)">
+<h3>setName</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">setName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setScript(org.apache.logging.log4j.core.script.AbstractScript)">
+<h3>setScript</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">setScript</span><wbr><span class="parameters">(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="withAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)">
 <h3>withAppenderNodeSet</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withAppenderNodeSet</span><wbr><span class="parameters">(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withAppenderNodeSet</span><wbr><span class="parameters">(<a href="AppenderSet.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet</a>&nbsp;appenderSet)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAppenderNodeSet(org.apache.logging.log4j.core.appender.AppenderSet)"><code>setAppenderNodeSet(AppenderSet)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withConfiguration(org.apache.logging.log4j.core.config.Configuration)">
 <h3>withConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withName(java.lang.String)">
 <h3>withName</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setName(java.lang.String)"><code>setName(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withScript(org.apache.logging.log4j.core.script.AbstractScript)">
 <h3>withScript</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withScript</span><wbr><span class="parameters">(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></span>&nbsp;<span class="element-name">withScript</span><wbr><span class="parameters">(<a href="../script/AbstractScript.html" title="class in org.apache.logging.log4j.core.script">AbstractScript</a>&nbsp;script)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setScript(org.apache.logging.log4j.core.script.AbstractScript)"><code>setScript(AbstractScript)</code></a>.</div>
+</div>
 </section>
 </li>
 </ul>

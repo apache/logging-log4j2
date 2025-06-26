@@ -97,7 +97,7 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -109,35 +109,105 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <div class="block">Builds the object after all configuration has been set.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAlwaysWriteExceptions(boolean)" class="member-name-link">withAlwaysWriteExceptions</a><wbr>(boolean&nbsp;alwaysWriteExceptions)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAlwaysWriteExceptions(boolean)" class="member-name-link">setAlwaysWriteExceptions</a><wbr>(boolean&nbsp;alwaysWriteExceptions)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withCharset(java.nio.charset.Charset)" class="member-name-link">withCharset</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCharset(java.nio.charset.Charset)" class="member-name-link">setCharset</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withDisableAnsi(boolean)" class="member-name-link">withDisableAnsi</a><wbr>(boolean&nbsp;disableAnsi)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDisableAnsi(boolean)" class="member-name-link">setDisableAnsi</a><wbr>(boolean&nbsp;disableAnsi)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFooter(java.lang.String)" class="member-name-link">withFooter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFooter(java.lang.String)" class="member-name-link">setFooter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withHeader(java.lang.String)" class="member-name-link">withHeader</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setHeader(java.lang.String)" class="member-name-link">setHeader</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withNoConsoleNoAnsi(boolean)" class="member-name-link">withNoConsoleNoAnsi</a><wbr>(boolean&nbsp;noConsoleNoAnsi)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setNoConsoleNoAnsi(boolean)" class="member-name-link">setNoConsoleNoAnsi</a><wbr>(boolean&nbsp;noConsoleNoAnsi)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withPattern(java.lang.String)" class="member-name-link">withPattern</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPattern(java.lang.String)" class="member-name-link">setPattern</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)" class="member-name-link">withPatternSelector</a><wbr>(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)" class="member-name-link">setPatternSelector</a><wbr>(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)" class="member-name-link">withRegexReplacement</a><wbr>(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)" class="member-name-link">setRegexReplacement</a><wbr>(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withAlwaysWriteExceptions(boolean)" class="member-name-link">withAlwaysWriteExceptions</a><wbr>(boolean&nbsp;alwaysWriteExceptions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAlwaysWriteExceptions(boolean)"><code>setAlwaysWriteExceptions(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withCharset(java.nio.charset.Charset)" class="member-name-link">withCharset</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setCharset(java.nio.charset.Charset)"><code>setCharset(Charset)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withDisableAnsi(boolean)" class="member-name-link">withDisableAnsi</a><wbr>(boolean&nbsp;disableAnsi)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setDisableAnsi(boolean)"><code>setDisableAnsi(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFooter(java.lang.String)" class="member-name-link">withFooter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFooter(java.lang.String)"><code>setFooter(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withHeader(java.lang.String)" class="member-name-link">withHeader</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setHeader(java.lang.String)"><code>setHeader(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withNoConsoleNoAnsi(boolean)" class="member-name-link">withNoConsoleNoAnsi</a><wbr>(boolean&nbsp;noConsoleNoAnsi)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setNoConsoleNoAnsi(boolean)"><code>setNoConsoleNoAnsi(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withPattern(java.lang.String)" class="member-name-link">withPattern</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPattern(java.lang.String)"><code>setPattern(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)" class="member-name-link">withPatternSelector</a><wbr>(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)"><code>setPatternSelector(PatternSelector)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)" class="member-name-link">withRegexReplacement</a><wbr>(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)"><code>setRegexReplacement(RegexReplacement)</code></a>.</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -159,103 +229,223 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="withPattern(java.lang.String)">
-<h3>withPattern</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withPattern</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</span></div>
+<section class="detail" id="setPattern(java.lang.String)">
+<h3>setPattern</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setPattern</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>pattern</code> - The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)">
+<h3>setPatternSelector</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setPatternSelector</span><wbr><span class="parameters">(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>patternSelector</code> - Allows different patterns to be used based on some selection criteria.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setConfiguration(org.apache.logging.log4j.core.config.Configuration)">
+<h3>setConfiguration</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>configuration</code> - The Configuration. Some Converters require access to the Interpolator.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)">
+<h3>setRegexReplacement</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setRegexReplacement</span><wbr><span class="parameters">(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>regexReplacement</code> - A Regex replacement</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setCharset(java.nio.charset.Charset)">
+<h3>setCharset</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setCharset</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>charset</code> - The character set. The platform default is used if not specified.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAlwaysWriteExceptions(boolean)">
+<h3>setAlwaysWriteExceptions</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setAlwaysWriteExceptions</span><wbr><span class="parameters">(boolean&nbsp;alwaysWriteExceptions)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>alwaysWriteExceptions</code> - If <code>"true"</code> (default) exceptions are always written even if the pattern contains no exception tokens.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setDisableAnsi(boolean)">
+<h3>setDisableAnsi</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setDisableAnsi</span><wbr><span class="parameters">(boolean&nbsp;disableAnsi)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>disableAnsi</code> - If <code>true</code>, do not output ANSI escape codes.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setNoConsoleNoAnsi(boolean)">
+<h3>setNoConsoleNoAnsi</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setNoConsoleNoAnsi</span><wbr><span class="parameters">(boolean&nbsp;noConsoleNoAnsi)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>noConsoleNoAnsi</code> - If <code>"true"</code> (default is false) and <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#console--" title="class or interface in java.lang" class="external-link"><code>System.console()</code></a> is null, do not output ANSI escape codes</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setHeader(java.lang.String)">
+<h3>setHeader</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setHeader</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>header</code> - The header to place at the top of the document, once.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setFooter(java.lang.String)">
+<h3>setFooter</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">setFooter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</span></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>footer</code> - The footer to place at the bottom of the document, once.</dd>
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withPattern(java.lang.String)">
+<h3>withPattern</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withPattern</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pattern)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPattern(java.lang.String)"><code>setPattern(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)">
 <h3>withPatternSelector</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withPatternSelector</span><wbr><span class="parameters">(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>patternSelector</code> - Allows different patterns to be used based on some selection criteria.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withPatternSelector</span><wbr><span class="parameters">(<a href="PatternSelector.html" title="interface in org.apache.logging.log4j.core.layout">PatternSelector</a>&nbsp;patternSelector)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setPatternSelector(org.apache.logging.log4j.core.layout.PatternSelector)"><code>setPatternSelector(PatternSelector)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withConfiguration(org.apache.logging.log4j.core.config.Configuration)">
 <h3>withConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>configuration</code> - The Configuration. Some Converters require access to the Interpolator.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withConfiguration</span><wbr><span class="parameters">(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>setConfiguration(Configuration)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)">
 <h3>withRegexReplacement</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withRegexReplacement</span><wbr><span class="parameters">(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>regexReplacement</code> - A Regex replacement</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withRegexReplacement</span><wbr><span class="parameters">(<a href="../pattern/RegexReplacement.html" title="class in org.apache.logging.log4j.core.pattern">RegexReplacement</a>&nbsp;regexReplacement)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setRegexReplacement(org.apache.logging.log4j.core.pattern.RegexReplacement)"><code>setRegexReplacement(RegexReplacement)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withCharset(java.nio.charset.Charset)">
 <h3>withCharset</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withCharset</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>charset</code> - The character set. The platform default is used if not specified.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withCharset</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setCharset(java.nio.charset.Charset)"><code>setCharset(Charset)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withAlwaysWriteExceptions(boolean)">
 <h3>withAlwaysWriteExceptions</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withAlwaysWriteExceptions</span><wbr><span class="parameters">(boolean&nbsp;alwaysWriteExceptions)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>alwaysWriteExceptions</code> - If <code>"true"</code> (default) exceptions are always written even if the pattern contains no exception tokens.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withAlwaysWriteExceptions</span><wbr><span class="parameters">(boolean&nbsp;alwaysWriteExceptions)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAlwaysWriteExceptions(boolean)"><code>setAlwaysWriteExceptions(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withDisableAnsi(boolean)">
 <h3>withDisableAnsi</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withDisableAnsi</span><wbr><span class="parameters">(boolean&nbsp;disableAnsi)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>disableAnsi</code> - If <code>true</code>, do not output ANSI escape codes.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withDisableAnsi</span><wbr><span class="parameters">(boolean&nbsp;disableAnsi)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setDisableAnsi(boolean)"><code>setDisableAnsi(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withNoConsoleNoAnsi(boolean)">
 <h3>withNoConsoleNoAnsi</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withNoConsoleNoAnsi</span><wbr><span class="parameters">(boolean&nbsp;noConsoleNoAnsi)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>noConsoleNoAnsi</code> - If <code>"true"</code> (default is false) and <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#console--" title="class or interface in java.lang" class="external-link"><code>System.console()</code></a> is null, do not output ANSI escape codes</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withNoConsoleNoAnsi</span><wbr><span class="parameters">(boolean&nbsp;noConsoleNoAnsi)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setNoConsoleNoAnsi(boolean)"><code>setNoConsoleNoAnsi(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withHeader(java.lang.String)">
 <h3>withHeader</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withHeader</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>header</code> - The header to place at the top of the document, once.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withHeader</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;header)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setHeader(java.lang.String)"><code>setHeader(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withFooter(java.lang.String)">
 <h3>withFooter</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withFooter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</span></div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>footer</code> - The footer to place at the bottom of the document, once.</dd>
-</dl>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></span>&nbsp;<span class="element-name">withFooter</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;footer)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFooter(java.lang.String)"><code>setFooter(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>

@@ -115,7 +115,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -149,32 +149,95 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isLocking()" class="member-name-link">isLocking</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAdvertise(boolean)" class="member-name-link">withAdvertise</a><wbr>(boolean&nbsp;advertise)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertise(boolean)" class="member-name-link">setAdvertise</a><wbr>(boolean&nbsp;advertise)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAdvertiseUri(java.lang.String)" class="member-name-link">withAdvertiseUri</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiseUri(java.lang.String)" class="member-name-link">setAdvertiseUri</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAppend(boolean)" class="member-name-link">withAppend</a><wbr>(boolean&nbsp;append)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAppend(boolean)" class="member-name-link">setAppend</a><wbr>(boolean&nbsp;append)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withCreateOnDemand(boolean)" class="member-name-link">withCreateOnDemand</a><wbr>(boolean&nbsp;createOnDemand)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCreateOnDemand(boolean)" class="member-name-link">setCreateOnDemand</a><wbr>(boolean&nbsp;createOnDemand)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFileGroup(java.lang.String)" class="member-name-link">withFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileGroup(java.lang.String)" class="member-name-link">setFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFileName(java.lang.String)" class="member-name-link">withFileName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileName(java.lang.String)" class="member-name-link">setFileName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFileOwner(java.lang.String)" class="member-name-link">withFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileOwner(java.lang.String)" class="member-name-link">setFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withFilePermissions(java.lang.String)" class="member-name-link">withFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFilePermissions(java.lang.String)" class="member-name-link">setFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLocking(boolean)" class="member-name-link">withLocking</a><wbr>(boolean&nbsp;locking)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLocking(boolean)" class="member-name-link">setLocking</a><wbr>(boolean&nbsp;locking)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withAdvertise(boolean)" class="member-name-link">withAdvertise</a><wbr>(boolean&nbsp;advertise)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAdvertise(boolean)"><code>setAdvertise(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withAdvertiseUri(java.lang.String)" class="member-name-link">withAdvertiseUri</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAdvertiseUri(java.lang.String)"><code>setAdvertiseUri(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withAppend(boolean)" class="member-name-link">withAppend</a><wbr>(boolean&nbsp;append)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAppend(boolean)"><code>setAppend(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withCreateOnDemand(boolean)" class="member-name-link">withCreateOnDemand</a><wbr>(boolean&nbsp;createOnDemand)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setCreateOnDemand(boolean)"><code>setCreateOnDemand(boolean)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFileGroup(java.lang.String)" class="member-name-link">withFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileGroup(java.lang.String)"><code>setFileGroup(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFileName(java.lang.String)" class="member-name-link">withFileName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileName(java.lang.String)"><code>setFileName(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFileOwner(java.lang.String)" class="member-name-link">withFileOwner</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileOwner(java.lang.String)"><code>setFileOwner(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withFilePermissions(java.lang.String)" class="member-name-link">withFilePermissions</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissions(java.lang.String)"><code>setFilePermissions(String)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#withLocking(boolean)" class="member-name-link">withLocking</a><wbr>(boolean&nbsp;locking)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setLocking(boolean)"><code>setLocking(boolean)</code></a>.</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -270,57 +333,183 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="setAdvertise(boolean)">
+<h3>setAdvertise</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setAdvertise</span><wbr><span class="parameters">(boolean&nbsp;advertise)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAdvertiseUri(java.lang.String)">
+<h3>setAdvertiseUri</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setAdvertiseUri</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAppend(boolean)">
+<h3>setAppend</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setAppend</span><wbr><span class="parameters">(boolean&nbsp;append)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setFileName(java.lang.String)">
+<h3>setFileName</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setFileName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setCreateOnDemand(boolean)">
+<h3>setCreateOnDemand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setCreateOnDemand</span><wbr><span class="parameters">(boolean&nbsp;createOnDemand)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setLocking(boolean)">
+<h3>setLocking</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setLocking</span><wbr><span class="parameters">(boolean&nbsp;locking)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setFilePermissions(java.lang.String)">
+<h3>setFilePermissions</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setFileOwner(java.lang.String)">
+<h3>setFileOwner</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setFileGroup(java.lang.String)">
+<h3>setFileGroup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.26.0</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="withAdvertise(boolean)">
 <h3>withAdvertise</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAdvertise</span><wbr><span class="parameters">(boolean&nbsp;advertise)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAdvertise</span><wbr><span class="parameters">(boolean&nbsp;advertise)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAdvertise(boolean)"><code>setAdvertise(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withAdvertiseUri(java.lang.String)">
 <h3>withAdvertiseUri</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAdvertiseUri</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAdvertiseUri</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseUri)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAdvertiseUri(java.lang.String)"><code>setAdvertiseUri(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withAppend(boolean)">
 <h3>withAppend</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAppend</span><wbr><span class="parameters">(boolean&nbsp;append)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withAppend</span><wbr><span class="parameters">(boolean&nbsp;append)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setAppend(boolean)"><code>setAppend(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withFileName(java.lang.String)">
 <h3>withFileName</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileName(java.lang.String)"><code>setFileName(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withCreateOnDemand(boolean)">
 <h3>withCreateOnDemand</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withCreateOnDemand</span><wbr><span class="parameters">(boolean&nbsp;createOnDemand)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withCreateOnDemand</span><wbr><span class="parameters">(boolean&nbsp;createOnDemand)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setCreateOnDemand(boolean)"><code>setCreateOnDemand(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withLocking(boolean)">
 <h3>withLocking</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withLocking</span><wbr><span class="parameters">(boolean&nbsp;locking)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withLocking</span><wbr><span class="parameters">(boolean&nbsp;locking)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setLocking(boolean)"><code>setLocking(boolean)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withFilePermissions(java.lang.String)">
 <h3>withFilePermissions</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFilePermissions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePermissions)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFilePermissions(java.lang.String)"><code>setFilePermissions(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withFileOwner(java.lang.String)">
 <h3>withFileOwner</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileOwner</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileOwner(java.lang.String)"><code>setFileOwner(String)</code></a>.</div>
+</div>
 </section>
 </li>
 <li>
 <section class="detail" id="withFileGroup(java.lang.String)">
 <h3>withFileGroup</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AbstractFileAppender.Builder.html" title="type parameter in AbstractFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">withFileGroup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="#setFileGroup(java.lang.String)"><code>setFileGroup(String)</code></a>.</div>
+</div>
 </section>
 </li>
 </ul>

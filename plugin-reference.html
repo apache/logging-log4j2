@@ -1477,7 +1477,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -8117,37 +8117,49 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines compression level.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileIndex</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines the file index for rolling strategy.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>max</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines the maximum number of files to keep.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>min</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines the minimum number of files to keep.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>stopCustomActionsOnError</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines whether to stop executing asynchronous actions if an error occurs.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>tempCompressedFilePattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines temporary compression file pattern.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -8174,7 +8186,9 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <tr>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-Action">Action</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines custom actions.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -8269,25 +8283,33 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines compression level.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxFiles</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines the maximum number of files to keep.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>stopCustomActionsOnError</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines whether to stop executing asynchronous actions if an error occurs.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>tempCompressedFilePattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines temporary compression file pattern.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -8314,7 +8336,9 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <tr>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-Action">Action</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines custom actions.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -9582,37 +9606,58 @@ A glob is a simplified pattern expression described in <code>java.nio.file.FileS
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>basePath</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define base path to apply condition before execute POSIX file attribute action.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileGroup</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define file group to apply during action execution eligible files.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileOwner</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define file owner to apply during action execution eligible files.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>filePermissions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define file permissions in POSIX format to apply during action execution eligible files.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>rw-rw-rw</p>
+</div>
+<div class="paragraph">
+<p>r&#8212;&#8203;r&#8212;&#8203;r--</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>followLinks</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>True to allow synonyms links during search of eligible files.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDepth</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define max folder depth to search for eligible files to apply POSIX attribute view.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -9639,7 +9684,9 @@ A glob is a simplified pattern expression described in <code>java.nio.file.FileS
 <tr>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PathCondition">PathCondition</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Define path conditions to filter files in <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-action-PosixViewAttributeAction">PosixViewAttributeAction</a>.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>

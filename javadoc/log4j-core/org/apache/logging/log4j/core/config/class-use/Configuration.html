@@ -543,8 +543,14 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code><a href="../../appender/AbstractAppender.Builder.html" title="type parameter in AbstractAppender.Builder">B</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractAppender.Builder.</span><code><a href="../../appender/AbstractAppender.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../../appender/AsyncAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">AsyncAppender.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AsyncAppender.Builder.</span><code><a href="../../appender/AsyncAppender.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-first even-row-color"><code><a href="../../appender/AppenderSet.Builder.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppenderSet.Builder.</span><code><a href="../../appender/AppenderSet.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../appender/AsyncAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">AsyncAppender.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AsyncAppender.Builder.</span><code><a href="../../appender/AsyncAppender.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../appender/ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ScriptAppenderSelector.Builder.</span><code><a href="../../appender/ScriptAppenderSelector.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../../appender/AbstractAppender.Builder.html" title="type parameter in AbstractAppender.Builder">B</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AbstractAppender.Builder.</span><code><a href="../../appender/AbstractAppender.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
@@ -555,10 +561,18 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color"><code><a href="../../appender/AppenderSet.Builder.html" title="class in org.apache.logging.log4j.core.appender">AppenderSet.Builder</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AppenderSet.Builder.</span><code><a href="../../appender/AppenderSet.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/AppenderSet.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>AppenderSet.Builder.setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="../../appender/ScriptAppenderSelector.Builder.html" title="class in org.apache.logging.log4j.core.appender">ScriptAppenderSelector.Builder</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">ScriptAppenderSelector.Builder.</span><code><a href="../../appender/ScriptAppenderSelector.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/ScriptAppenderSelector.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>ScriptAppenderSelector.Builder.setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../appender/package-summary.html">org.apache.logging.log4j.core.appender</a> with parameters of type <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></span></div>
 <div class="summary-table three-column-summary">
@@ -813,14 +827,28 @@ loadScripts(document, 'script');</script>
  <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DefaultRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Defines configuration.</div>
 </div>
 <div class="col-first even-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DirectWriteRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DirectWriteRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Defines configuration.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/rolling/DefaultRolloverStrategy.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>DefaultRolloverStrategy.Builder.setConfig(Configuration)</code></a>.</div>
+</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DirectWriteRolloverStrategy.Builder.</span><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/rolling/DirectWriteRolloverStrategy.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>DirectWriteRolloverStrategy.Builder.setConfig(Configuration)</code></a>.</div>
+</div>
 </div>
 </div>
 </section>
@@ -852,9 +880,16 @@ loadScripts(document, 'script');</script>
 <div class="block">Create a DeleteAction.</div>
 </div>
 <div class="col-first even-row-color"><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">PosixViewAttributeAction.Builder.</span><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PosixViewAttributeAction.Builder.</span><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Define required configuration, used to retrieve string substituter.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PosixViewAttributeAction.Builder.</span><code><a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/rolling/action/PosixViewAttributeAction.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>PosixViewAttributeAction.Builder.setConfiguration(Configuration)</code></a>.</div>
+</div>
 </div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a> with parameters of type <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></span></div>
@@ -913,8 +948,15 @@ loadScripts(document, 'script');</script>
 <div class="block">Create the PurgePolicy</div>
 </div>
 <div class="col-first even-row-color"><code><a href="../../appender/routing/Routes.Builder.html" title="class in org.apache.logging.log4j.core.appender.routing">Routes.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">Routes.Builder.</span><code><a href="../../appender/routing/Routes.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Routes.Builder.</span><code><a href="../../appender/routing/Routes.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../appender/routing/Routes.Builder.html" title="class in org.apache.logging.log4j.core.appender.routing">Routes.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Routes.Builder.</span><code><a href="../../appender/routing/Routes.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../appender/routing/Routes.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>Routes.Builder.setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
 </div>
 </section>
 </li>
@@ -1164,6 +1206,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Reconfigure using an already constructed Configuration.</div>
 </div>
+<div class="col-first even-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConfigurationAware.</span><code><a href="../ConfigurationAware.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">
@@ -1171,10 +1219,18 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../LoggerConfig.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>LoggerConfig.Builder.setConfig(Configuration)</code></a>.</div>
+</div>
+</div>
 <div class="col-first even-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>LoggerConfig.RootLogger.Builder.setConfig(Configuration)</code></a>.</div>
+</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../package-summary.html">org.apache.logging.log4j.core.config</a> with parameters of type <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></span></div>
 <div class="summary-table three-column-summary">
@@ -1706,15 +1762,22 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code><a href="../../layout/MarkerPatternSelector.Builder.html" title="class in org.apache.logging.log4j.core.layout">MarkerPatternSelector.Builder</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">MarkerPatternSelector.Builder.</span><code><a href="../../layout/MarkerPatternSelector.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../../layout/PatternLayout.SerializerBuilder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.SerializerBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">PatternLayout.SerializerBuilder.</span><code><a href="../../layout/PatternLayout.SerializerBuilder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../../layout/ScriptPatternSelector.Builder.html" title="class in org.apache.logging.log4j.core.layout">ScriptPatternSelector.Builder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ScriptPatternSelector.Builder.</span><code><a href="../../layout/ScriptPatternSelector.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../../layout/PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">PatternLayout.Builder.</span><code><a href="../../layout/PatternLayout.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">PatternLayout.Builder.</span><code><a href="../../layout/PatternLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../layout/PatternLayout.SerializerBuilder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.SerializerBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PatternLayout.SerializerBuilder.</span><code><a href="../../layout/PatternLayout.SerializerBuilder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../layout/ScriptPatternSelector.Builder.html" title="class in org.apache.logging.log4j.core.layout">ScriptPatternSelector.Builder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ScriptPatternSelector.Builder.</span><code><a href="../../layout/ScriptPatternSelector.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../../layout/PatternLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">PatternLayout.Builder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">PatternLayout.Builder.</span><code><a href="../../layout/PatternLayout.Builder.html#withConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">since 2.26.0 use <a href="../../layout/PatternLayout.Builder.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)"><code>PatternLayout.Builder.setConfiguration(Configuration)</code></a>.</div>
+</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../layout/package-summary.html">org.apache.logging.log4j.core.layout</a> with parameters of type <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></span></div>
 <div class="summary-table three-column-summary">
