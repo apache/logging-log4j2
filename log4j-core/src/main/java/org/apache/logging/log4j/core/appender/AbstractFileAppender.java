@@ -104,53 +104,80 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
             return fileGroup;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
         }
 
         /**
-         * @deprecated use {@link #setAdvertise(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setAdvertise(boolean)}.
          */
         @Deprecated
         public B withAdvertise(final boolean advertise) {
@@ -159,7 +186,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setAdvertiseUri(String)}.
+         * @deprecated since 2.26.0 use {@link #setAdvertiseUri(String)}.
          */
         @Deprecated
         public B withAdvertiseUri(final String advertiseUri) {
@@ -168,7 +195,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setAppend(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setAppend(boolean)}.
          */
         @Deprecated
         public B withAppend(final boolean append) {
@@ -177,7 +204,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setFileName(String)}.
+         * @deprecated since 2.26.0 use {@link #setFileName(String)}.
          */
         @Deprecated
         public B withFileName(final String fileName) {
@@ -186,7 +213,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setCreateOnDemand(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setCreateOnDemand(boolean)}.
          */
         @Deprecated
         public B withCreateOnDemand(final boolean createOnDemand) {
@@ -195,7 +222,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setLocking(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setLocking(boolean)}.
          */
         @Deprecated
         public B withLocking(final boolean locking) {
@@ -204,7 +231,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setFilePermissions(String)}.
+         * @deprecated since 2.26.0 use {@link #setFilePermissions(String)}.
          */
         @Deprecated
         public B withFilePermissions(final String filePermissions) {
@@ -213,7 +240,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setFileOwner(String)}.
+         * @deprecated since 2.26.0 use {@link #setFileOwner(String)}.
          */
         @Deprecated
         public B withFileOwner(final String fileOwner) {
@@ -222,7 +249,7 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
         }
 
         /**
-         * @deprecated use {@link #setFileGroup(String)}.
+         * @deprecated since 2.26.0 use {@link #setFileGroup(String)}.
          */
         @Deprecated
         public B withFileGroup(final String fileGroup) {

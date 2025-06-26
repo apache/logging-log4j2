@@ -81,30 +81,36 @@ public class AppenderSet {
             return configuration;
         }
 
-        public Builder setNode(@SuppressWarnings("hiding") final Node node) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setNode(final Node node) {
             this.node = node;
             return this;
         }
 
-        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setNode(Node)}.
+         * @deprecated since 2.26.0 use {@link #setNode(Node)}.
          */
         @Deprecated
-        public Builder withNode(@SuppressWarnings("hiding") final Node node) {
+        public Builder withNode(final Node node) {
             this.node = node;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setConfiguration(Configuration)}.
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
          */
         @Deprecated
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }

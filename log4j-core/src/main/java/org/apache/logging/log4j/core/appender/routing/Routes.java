@@ -104,58 +104,70 @@ public final class Routes {
             return routes;
         }
 
-        public Builder setConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder setPattern(@SuppressWarnings("hiding") final String pattern) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
-        public Builder setPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setPatternScript(final AbstractScript patternScript) {
             this.patternScript = patternScript;
             return this;
         }
 
-        public Builder setRoutes(@SuppressWarnings("hiding") final Route[] routes) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setRoutes(final Route[] routes) {
             this.routes = routes;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setConfiguration(Configuration)}.
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
          */
         @Deprecated
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        public Builder withConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setPattern(String)}.
+         * @deprecated since 2.26.0 use {@link #setPattern(String)}.
          */
         @Deprecated
-        public Builder withPattern(@SuppressWarnings("hiding") final String pattern) {
+        public Builder withPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setPatternScript(AbstractScript)}.
+         * @deprecated since 2.26.0 use {@link #setPatternScript(AbstractScript)}.
          */
         @Deprecated
-        public Builder withPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+        public Builder withPatternScript(final AbstractScript patternScript) {
             this.patternScript = patternScript;
             return this;
         }
 
         /**
-         * @deprecated use {@link #setRoutes(Route[])}.
+         * @deprecated since 2.26.0 use {@link #setRoutes(Route[])}.
          */
         @Deprecated
-        public Builder withRoutes(@SuppressWarnings("hiding") final Route[] routes) {
+        public Builder withRoutes(final Route[] routes) {
             this.routes = routes;
             return this;
         }

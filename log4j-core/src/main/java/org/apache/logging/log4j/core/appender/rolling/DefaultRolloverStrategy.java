@@ -168,6 +168,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param max The maximum number of files to keep.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setMax(final String max) {
             this.max = max;
@@ -183,6 +184,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param min The minimum number of files to keep.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setMin(final String min) {
             this.min = min;
@@ -199,6 +201,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
          *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setFileIndex(final String fileIndex) {
             this.fileIndex = fileIndex;
@@ -214,6 +217,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
@@ -229,6 +233,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setCustomActions(final Action[] customActions) {
             this.customActions = customActions;
@@ -244,6 +249,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
@@ -259,6 +265,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
@@ -274,6 +281,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param config The Configuration.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
         public Builder setConfig(final Configuration config) {
             this.config = config;
@@ -281,7 +289,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setMax(String)}.
+         * @deprecated since 2.26.0 use {@link #setMax(String)}.
          */
         @Deprecated
         public Builder withMax(final String max) {
@@ -290,7 +298,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setMin(String)}.
+         * @deprecated since 2.26.0 use {@link #setMin(String)}.
          */
         @Deprecated
         public Builder withMin(final String min) {
@@ -299,7 +307,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setFileIndex(String)}.
+         * @deprecated since 2.26.0 use {@link #setFileIndex(String)}.
          */
         @Deprecated
         public Builder withFileIndex(final String fileIndex) {
@@ -308,7 +316,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setCompressionLevelStr(String)}.
+         * @deprecated since 2.26.0 use {@link #setCompressionLevelStr(String)}.
          */
         @Deprecated
         public Builder withCompressionLevelStr(final String compressionLevelStr) {
@@ -317,7 +325,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setCustomActions(Action[])}.
+         * @deprecated since 2.26.0 use {@link #setCustomActions(Action[])}.
          */
         @Deprecated
         public Builder withCustomActions(final Action[] customActions) {
@@ -326,7 +334,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setStopCustomActionsOnError(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setStopCustomActionsOnError(boolean)}.
          */
         @Deprecated
         public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
@@ -335,7 +343,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setTempCompressedFilePattern(String)}.
+         * @deprecated since 2.26.0 use {@link #setTempCompressedFilePattern(String)}.
          */
         @Deprecated
         public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
@@ -344,7 +352,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * @deprecated use {@link #setConfig(Configuration)}.
+         * @deprecated since 2.26.0 use {@link #setConfig(Configuration)}.
          */
         @Deprecated
         public Builder withConfig(final Configuration config) {

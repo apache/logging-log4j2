@@ -140,6 +140,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return additivity == null || additivity;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setAdditivity(final boolean additivity) {
             this.additivity = additivity;
             return asBuilder();
@@ -149,6 +152,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return level;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setLevel(final Level level) {
             this.level = level;
             return asBuilder();
@@ -158,6 +164,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return levelAndRefs;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setLevelAndRefs(final String levelAndRefs) {
             this.levelAndRefs = levelAndRefs;
             return asBuilder();
@@ -167,6 +176,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return loggerName;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setLoggerName(final String loggerName) {
             this.loggerName = loggerName;
             return asBuilder();
@@ -176,6 +188,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return includeLocation;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setIncludeLocation(final String includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
@@ -185,6 +200,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return refs;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setRefs(final AppenderRef[] refs) {
             this.refs = refs;
             return asBuilder();
@@ -194,6 +212,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return properties;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
@@ -203,6 +224,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return config;
         }
 
+        /**
+         * @since 2.26.0
+         */
         public B setConfig(final Configuration config) {
             this.config = config;
             return asBuilder();
@@ -219,7 +243,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setAdditivity(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setAdditivity(boolean)}.
          */
         @Deprecated
         public B withAdditivity(final boolean additivity) {
@@ -228,7 +252,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setLevel(Level)}.
+         * @deprecated since 2.26.0 use {@link #setLevel(Level)}.
          */
         @Deprecated
         public B withLevel(final Level level) {
@@ -237,7 +261,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setLevelAndRefs(String)}.
+         * @deprecated since 2.26.0 use {@link #setLevelAndRefs(String)}.
          */
         @Deprecated
         public B withLevelAndRefs(final String levelAndRefs) {
@@ -246,7 +270,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setLoggerName(String)}.
+         * @deprecated since 2.26.0 use {@link #setLoggerName(String)}.
          */
         @Deprecated
         public B withLoggerName(final String loggerName) {
@@ -255,7 +279,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setIncludeLocation(String)}.
+         * @deprecated since 2.26.0 use {@link #setIncludeLocation(String)}.
          */
         @Deprecated
         public B withIncludeLocation(final String includeLocation) {
@@ -264,7 +288,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setRefs(AppenderRef[])}.
+         * @deprecated since 2.26.0 use {@link #setRefs(AppenderRef[])}.
          */
         @Deprecated
         public B withRefs(final AppenderRef[] refs) {
@@ -273,7 +297,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setProperties(Property[])}.
+         * @deprecated since 2.26.0 use {@link #setProperties(Property[])}.
          */
         @Deprecated
         public B withProperties(final Property[] properties) {
@@ -282,7 +306,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
 
         /**
-         * @deprecated use {@link #setConfig(Configuration)}.
+         * @deprecated since 2.26.0 use {@link #setConfig(Configuration)}.
          */
         @Deprecated
         public B withConfig(final Configuration config) {
@@ -951,6 +975,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return additivity;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setAdditivity(final boolean additivity) {
                 this.additivity = additivity;
                 return asBuilder();
@@ -960,6 +987,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return level;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setLevel(final Level level) {
                 this.level = level;
                 return asBuilder();
@@ -969,6 +999,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return levelAndRefs;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setLevelAndRefs(final String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
                 return asBuilder();
@@ -978,6 +1011,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return includeLocation;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setIncludeLocation(final String includeLocation) {
                 this.includeLocation = includeLocation;
                 return asBuilder();
@@ -987,6 +1023,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return refs;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setRefs(final AppenderRef[] refs) {
                 this.refs = refs;
                 return asBuilder();
@@ -996,6 +1035,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return properties;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setProperties(final Property[] properties) {
                 this.properties = properties;
                 return asBuilder();
@@ -1005,6 +1047,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return config;
             }
 
+            /**
+             * @since 2.26.0
+             */
             public B setConfig(final Configuration config) {
                 this.config = config;
                 return asBuilder();
@@ -1021,7 +1066,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setAdditivity(boolean)}.
+             * @deprecated since 2.26.0 use {@link #setAdditivity(boolean)}.
              */
             @Deprecated
             public B withAdditivity(final boolean additivity) {
@@ -1030,7 +1075,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setLevel(Level)}.
+             * @deprecated since 2.26.0 use {@link #setLevel(Level)}.
              */
             @Deprecated
             public B withLevel(final Level level) {
@@ -1039,7 +1084,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setLevelAndRefs(String)}.
+             * @deprecated since 2.26.0 use {@link #setLevelAndRefs(String)}.
              */
             @Deprecated
             public B withLevelAndRefs(final String levelAndRefs) {
@@ -1048,7 +1093,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setIncludeLocation(String)}.
+             * @deprecated since 2.26.0 use {@link #setIncludeLocation(String)}.
              */
             @Deprecated
             public B withIncludeLocation(final String includeLocation) {
@@ -1057,7 +1102,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setRefs(AppenderRef[])}.
+             * @deprecated since 2.26.0 use {@link #setRefs(AppenderRef[])}.
              */
             @Deprecated
             public B withRefs(final AppenderRef[] refs) {
@@ -1066,7 +1111,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setProperties(Property[])}.
+             * @deprecated since 2.26.0 use {@link #setProperties(Property[])}.
              */
             @Deprecated
             public B withProperties(final Property[] properties) {
@@ -1075,7 +1120,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
 
             /**
-             * @deprecated use {@link #setConfig(Configuration)}.
+             * @deprecated since 2.26.0 use {@link #setConfig(Configuration)}.
              */
             @Deprecated
             public B withConfig(final Configuration config) {

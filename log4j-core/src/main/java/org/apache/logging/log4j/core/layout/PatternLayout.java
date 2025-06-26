@@ -667,6 +667,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param pattern
          *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+         * @since 2.26.0
          */
         public Builder setPattern(final String pattern) {
             this.pattern = pattern;
@@ -676,6 +677,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param patternSelector
          *        Allows different patterns to be used based on some selection criteria.
+         * @since 2.26.0
          */
         public Builder setPatternSelector(final PatternSelector patternSelector) {
             this.patternSelector = patternSelector;
@@ -685,6 +687,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param configuration
          *        The Configuration. Some Converters require access to the Interpolator.
+         * @since 2.26.0
          */
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
@@ -694,6 +697,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param regexReplacement
          *        A Regex replacement
+         * @since 2.26.0
          */
         public Builder setRegexReplacement(final RegexReplacement regexReplacement) {
             this.regexReplacement = regexReplacement;
@@ -703,6 +707,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param charset
          *        The character set. The platform default is used if not specified.
+         * @since 2.26.0
          */
         public Builder setCharset(final Charset charset) {
             // LOG4J2-783 if null, use platform default by default
@@ -715,6 +720,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param alwaysWriteExceptions
          *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
+         * @since 2.26.0
          */
         public Builder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
@@ -724,6 +730,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param disableAnsi
          *        If {@code true}, do not output ANSI escape codes.
+         * @since 2.26.0
          */
         public Builder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;
@@ -733,6 +740,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param noConsoleNoAnsi
          *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
+         * @since 2.26.0
          */
         public Builder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
@@ -742,6 +750,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param header
          *        The header to place at the top of the document, once.
+         * @since 2.26.0
          */
         public Builder setHeader(final String header) {
             this.header = header;
@@ -751,6 +760,7 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param footer
          *        The footer to place at the bottom of the document, once.
+         * @since 2.26.0
          */
         public Builder setFooter(final String footer) {
             this.footer = footer;
@@ -758,7 +768,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setPattern(String)}.
+         * @deprecated since 2.26.0 use {@link #setPattern(String)}.
          */
         @Deprecated
         public Builder withPattern(final String pattern) {
@@ -767,7 +777,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setPatternSelector(PatternSelector)}.
+         * @deprecated since 2.26.0 use {@link #setPatternSelector(PatternSelector)}.
          */
         @Deprecated
         public Builder withPatternSelector(final PatternSelector patternSelector) {
@@ -776,7 +786,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setConfiguration(Configuration)}.
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
          */
         @Deprecated
         public Builder withConfiguration(final Configuration configuration) {
@@ -785,7 +795,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setRegexReplacement(RegexReplacement)}.
+         * @deprecated since 2.26.0 use {@link #setRegexReplacement(RegexReplacement)}.
          */
         @Deprecated
         public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
@@ -794,7 +804,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setCharset(Charset)}.
+         * @deprecated since 2.26.0 use {@link #setCharset(Charset)}.
          */
         @Deprecated
         public Builder withCharset(final Charset charset) {
@@ -806,7 +816,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setAlwaysWriteExceptions(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setAlwaysWriteExceptions(boolean)}.
          */
         @Deprecated
         public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
@@ -815,7 +825,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setDisableAnsi(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setDisableAnsi(boolean)}.
          */
         @Deprecated
         public Builder withDisableAnsi(final boolean disableAnsi) {
@@ -824,7 +834,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setNoConsoleNoAnsi(boolean)}.
+         * @deprecated since 2.26.0 use {@link #setNoConsoleNoAnsi(boolean)}.
          */
         @Deprecated
         public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
@@ -833,7 +843,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setHeader(String)}.
+         * @deprecated since 2.26.0 use {@link #setHeader(String)}.
          */
         @Deprecated
         public Builder withHeader(final String header) {
@@ -842,7 +852,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated use {@link #setFooter(String)}.
+         * @deprecated since 2.26.0 use {@link #setFooter(String)}.
          */
         @Deprecated
         public Builder withFooter(final String footer) {
