@@ -50,7 +50,7 @@ public final class UuidPatternConverter extends LogEventPatternConverter {
      * Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
      *
      * @param options An array containing either {@code RANDOM} or {@code TIME}.
-                      If empty, {@code TIME} will be used.
+     * If empty, {@code TIME} will be used.
      * @return a new {@link UuidPatternConverter} instance
      */
     public static UuidPatternConverter newInstance(final String[] options) {
