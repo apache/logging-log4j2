@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 @SetTestProperty(key = "log4j2.isWebapp", value = "false")
-@LoggerContextSource("log4j-test3.xml")
 class ShutdownDisabledTest {
 
     private static final Field shutdownCallbackField;
@@ -47,7 +46,8 @@ class ShutdownDisabledTest {
     }
 
     @Test
-    void testShutdownFlag(final Configuration config, final LoggerContext ctx) throws NoSuchFieldException {
+    @LoggerContextSource("log4j-test3.xml")
+    void testShutdownFlag(final Configuration config, final LoggerContext ctx) {
         assertThat(config.isShutdownHookEnabled())
                 .as("Shutdown hook is enabled")
                 .isFalse();
