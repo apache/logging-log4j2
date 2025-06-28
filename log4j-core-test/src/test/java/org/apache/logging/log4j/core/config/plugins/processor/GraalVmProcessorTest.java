@@ -16,31 +16,56 @@
  */
 package org.apache.logging.log4j.core.config.plugins.processor;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.io.IOUtils;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.CleanupMode;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 class GraalVmProcessorTest {
 
+    private static final String FAKE_PLUGIN_NAME = "example.FakePlugin";
     private static final Object FAKE_PLUGIN = asMap(
             "name",
-            FakePlugin.class.getName(),
+            FAKE_PLUGIN_NAME,
             "methods",
             asList(
                     asMap("name", "<init>", "parameterTypes", emptyList()),
@@ -57,9 +82,10 @@ class GraalVmProcessorTest {
                                     "java.lang.String"))),
             "fields",
             emptyList());
+    private static final String FAKE_PLUGIN_BUILDER_NAME = FAKE_PLUGIN_NAME + "$Builder";
     private static final Object FAKE_PLUGIN_BUILDER = asMap(
             "name",
-            FakePlugin.Builder.class.getName(),
+            FAKE_PLUGIN_BUILDER_NAME,
             "methods",
             emptyList(),
             "fields",
@@ -71,21 +97,27 @@ class GraalVmProcessorTest {
                     asMap("name", "loggerContext"),
                     asMap("name", "node"),
                     asMap("name", "value")));
-    private static final Object FAKE_PLUGIN_NESTED = onlyNoArgsConstructor(FakePlugin.Nested.class);
-    private static final Object FAKE_CONSTRAINT_VALIDATOR =
-            onlyNoArgsConstructor(FakeAnnotations.FakeConstraintValidator.class);
-    private static final Object FAKE_PLUGIN_VISITOR = onlyNoArgsConstructor(FakeAnnotations.FakePluginVisitor.class);
+    private static final String FAKE_PLUGIN_NESTED_NAME = FAKE_PLUGIN_NAME + "$Nested";
+    private static final Object FAKE_PLUGIN_NESTED = onlyNoArgsConstructor(FAKE_PLUGIN_NESTED_NAME);
+    private static final String FAKE_CONSTRAINT_VALIDATOR_NAME = "example.FakeAnnotations$FakeConstraintValidator";
+    private static final Object FAKE_CONSTRAINT_VALIDATOR = onlyNoArgsConstructor(FAKE_CONSTRAINT_VALIDATOR_NAME);
+    private static final String FAKE_PLUGIN_VISITOR_NAME = "example.FakeAnnotations$FakePluginVisitor";
+    private static final Object FAKE_PLUGIN_VISITOR = onlyNoArgsConstructor(FAKE_PLUGIN_VISITOR_NAME);
+
+    private static final String GROUP_ID = "groupId";
+    private static final String ARTIFACT_ID = "artifactId";
+    private static final String FALLBACK_METADATA_FOLDER = "fooBar";
 
     /**
      * Generates a metadata element with just a single no-arg constructor.
      *
-     * @param clazz The name of the metadata element.
+     * @param className The name of the metadata element.
      * @return A GraalVM metadata element.
      */
-    private static Object onlyNoArgsConstructor(Class<?> clazz) {
+    private static Object onlyNoArgsConstructor(String className) {
         return asMap(
                 "name",
-                clazz.getName(),
+                className,
                 "methods",
                 singletonList(asMap("name", "<init>", "parameterTypes", emptyList())),
                 "fields",
@@ -103,43 +135,131 @@ class GraalVmProcessorTest {
         return map;
     }
 
-    private static String reachabilityMetadata;
+    private static Path sourceDir;
+
+    @TempDir
+    private static Path outputDir;
 
     @BeforeAll
-    static void setup() throws IOException {
-        // There are two descriptors, choose the one in `test-classes`
-        URL reachabilityMetadataUrl = null;
-        for (URL url : Collections.list(GraalVmProcessor.class
-                .getClassLoader()
-                .getResources("META-INF/native-image/org.apache.logging.log4j/log4j-core-test/reflect-config.json"))) {
-            if (url.getPath().contains("test-classes")) {
-                reachabilityMetadataUrl = url;
-                break;
-            }
-        }
-        assertThat(reachabilityMetadataUrl).isNotNull();
-        reachabilityMetadata = IOUtils.toString(reachabilityMetadataUrl, StandardCharsets.UTF_8);
+    static void setup() throws Exception {
+        URL sourceUrl = requireNonNull(GraalVmProcessorTest.class.getResource("/GraalVmProcessorTest/java"));
+        sourceDir = Paths.get(sourceUrl.toURI());
+        // Generate metadata
+        List<String> diagnostics = generateDescriptor(sourceDir, GROUP_ID, ARTIFACT_ID, outputDir);
+        assertThat(diagnostics).isEmpty();
     }
 
     static Stream<Arguments> containsSpecificEntries() {
         return Stream.of(
-                Arguments.of(FakePlugin.class, FAKE_PLUGIN),
-                Arguments.of(FakePlugin.Builder.class, FAKE_PLUGIN_BUILDER),
-                Arguments.of(FakePlugin.Nested.class, FAKE_PLUGIN_NESTED),
-                Arguments.of(FakeAnnotations.FakeConstraintValidator.class, FAKE_CONSTRAINT_VALIDATOR),
-                Arguments.of(FakeAnnotations.FakePluginVisitor.class, FAKE_PLUGIN_VISITOR));
+                Arguments.of(FAKE_PLUGIN_NAME, FAKE_PLUGIN),
+                Arguments.of(FAKE_PLUGIN_BUILDER_NAME, FAKE_PLUGIN_BUILDER),
+                Arguments.of(FAKE_PLUGIN_NESTED_NAME, FAKE_PLUGIN_NESTED),
+                Arguments.of(FAKE_CONSTRAINT_VALIDATOR_NAME, FAKE_CONSTRAINT_VALIDATOR),
+                Arguments.of(FAKE_PLUGIN_VISITOR_NAME, FAKE_PLUGIN_VISITOR));
     }
 
     @ParameterizedTest
     @MethodSource
-    void containsSpecificEntries(Class<?> clazz, Object expectedJson) {
+    void containsSpecificEntries(String className, Object expectedJson) throws IOException {
+        // Read metadata
+        Path reachabilityMetadataPath =
+                outputDir.resolve("META-INF/native-image/log4j-generated/groupId/artifactId/reflect-config.json");
+        String reachabilityMetadata = new String(Files.readAllBytes(reachabilityMetadataPath), UTF_8);
         assertThatJson(reachabilityMetadata)
-                .inPath(filterByName(clazz))
+                .inPath(String.format("$[?(@.name == '%s')]", className))
                 .isArray()
                 .contains(json(expectedJson));
     }
 
-    private String filterByName(Class<?> clazz) {
-        return String.format("$[?(@.name == '%s')]", clazz.getName());
+    static Stream<Arguments> reachabilityMetadataPath() {
+        return Stream.of(
+                Arguments.of(
+                        "groupId",
+                        "artifactId",
+                        "META-INF/native-image/log4j-generated/groupId/artifactId/reflect-config.json"),
+                Arguments.of(null, "artifactId", "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"),
+                Arguments.of("groupId", null, "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"),
+                Arguments.of(null, null, "META-INF/native-image/log4j-generated/fooBar/reflect-config.json"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void reachabilityMetadataPath(@Nullable String groupId, @Nullable String artifactId, String expected) {
+        Messager messager = Mockito.mock(Messager.class);
+        Elements elements = Mockito.mock(Elements.class);
+        ProcessingEnvironment processingEnv = Mockito.mock(ProcessingEnvironment.class);
+        when(processingEnv.getMessager()).thenReturn(messager);
+        when(processingEnv.getElementUtils()).thenReturn(elements);
+        GraalVmProcessor processor = new GraalVmProcessor();
+        processor.init(processingEnv);
+        assertThat(processor.getReachabilityMetadataPath(groupId, artifactId, FALLBACK_METADATA_FOLDER))
+                .isEqualTo(expected);
+    }
+
+    @Test
+    void whenNoGroupIdAndArtifactId_thenWarningIsPrinted(@TempDir(cleanup = CleanupMode.NEVER) Path outputDir)
+            throws Exception {
+        List<String> diagnostics = generateDescriptor(sourceDir, null, null, outputDir);
+        assertThat(diagnostics).hasSize(1);
+        // The warning message should contain the information about the missing groupId and artifactId arguments
+        assertThat(diagnostics.get(0))
+                .contains(
+                        "recommended",
+                        "-A" + GraalVmProcessor.GROUP_ID + "=<groupId>",
+                        "-A" + GraalVmProcessor.ARTIFACT_ID + "=<artifactId>");
+        Path path = outputDir.resolve("META-INF/native-image/log4j-generated");
+        List<Path> reachabilityMetadataFolders;
+        try (Stream<Path> files = Files.list(path)) {
+            reachabilityMetadataFolders = files.filter(Files::isDirectory).collect(Collectors.toList());
+        }
+        // The generated folder name should be deterministic and based solely on the descriptor content.
+        // If the descriptor changes, this test and the expected folder name must be updated accordingly.
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("62162090"));
+        assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
+                .as("Reachability metadata file")
+                .exists();
+    }
+
+    private static List<String> generateDescriptor(
+            Path sourceDir, @Nullable String groupId, @Nullable String artifactId, Path outputDir) throws Exception {
+        // Instantiate the tooling
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.ROOT, UTF_8);
+
+        // Populate sources
+        final Iterable<? extends JavaFileObject> sources;
+        try (final Stream<Path> files = Files.walk(sourceDir)) {
+            File[] sourceFiles =
+                    files.filter(Files::isRegularFile).map(Path::toFile).toArray(File[]::new);
+            sources = fileManager.getJavaFileObjects(sourceFiles);
+        }
+
+        // Set the target path used by `DescriptorGenerator` to dump the generated files
+        fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Collections.singleton(outputDir.toFile()));
+
+        // Prepare the compiler options
+        List<String> options = new ArrayList<>();
+        options.add("-proc:only");
+        options.add("-processor");
+        options.add(GraalVmProcessor.class.getName());
+        if (groupId != null) {
+            options.add("-A" + GraalVmProcessor.GROUP_ID + "=" + groupId);
+        }
+        if (artifactId != null) {
+            options.add("-A" + GraalVmProcessor.ARTIFACT_ID + "=" + artifactId);
+        }
+
+        // Compile the sources
+        final Path descriptorFilePath = outputDir.resolve("plugins.xml");
+        final DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
+        final JavaCompiler.CompilationTask task =
+                compiler.getTask(null, fileManager, diagnosticCollector, options, null, sources);
+        task.call();
+
+        // Verify successful compilation
+        return diagnosticCollector.getDiagnostics().stream()
+                .filter(d -> d.getKind() != Diagnostic.Kind.NOTE)
+                .map(d -> d.getMessage(Locale.ROOT))
+                .collect(Collectors.toList());
     }
 }
