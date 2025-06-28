@@ -1339,14 +1339,18 @@ Includes either a random or a time-based UUID
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidPatternConverter.html[`UuidPatternConverter`] specifier grammar
 [source,text]
 ----
-u{RANDOM|TIME}
-uuid{RANDOM|TIME}
+u[{RANDOM|TIME}]
+uuid[{RANDOM|TIME}]
 ----
 
-The time-based UUID is a Type 1 UUID generated using the MAC address of each host
+The random UUID is a type 4 UUID. The UUID is generated using a cryptographically strong pseudo-random number generator.
+
+The time-based UUID is a Type 1 (date and time based) UUID generated using the MAC address of each host.
 To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
 See also xref:manual/systemproperties.adoc#log4j2.uuidSequence[`log4j2.uuidSequence`].
 Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.
+
+TIME is the default.
 
 [#format-modifiers]
 === Format modifiers
