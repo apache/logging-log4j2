@@ -2341,15 +2341,21 @@ threadPriority</code></pre>
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/UuidPatternConverter.html"><code>UuidPatternConverter</code></a> specifier grammar</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">u{RANDOM|TIME}
-uuid{RANDOM|TIME}</code></pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">u[{RANDOM|TIME}]
+uuid[{RANDOM|TIME}]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The time-based UUID is a Type 1 UUID generated using the MAC address of each host
+<p>The random UUID is a type 4 UUID. The UUID is generated using a cryptographically strong pseudo-random number generator.</p>
+</div>
+<div class="paragraph">
+<p>The time-based UUID is a Type 1 (date and time based) UUID generated using the MAC address of each host.
 To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16,384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
 See also <a href="systemproperties.html#log4j2.uuidSequence" class="xref page"><code>log4j2.uuidSequence</code></a>.
 Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.</p>
+</div>
+<div class="paragraph">
+<p>TIME is the default.</p>
 </div>
 </div>
 </div>

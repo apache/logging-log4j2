@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
         <a href="../config/plugins/Plugin.html#category()">category</a>="Converter")
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">UuidPatternConverter</span>
 <span class="extends-implements">extends <a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></span></div>
-<div class="block">Formats the event sequence number.</div>
+<div class="block">Formats a UUID.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -125,7 +125,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Obtains an instance of SequencePatternConverter.</div>
+<div class="block">Creates an instance of <a href="UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>UuidPatternConverter</code></a>.</div>
 </div>
 </div>
 </div>
@@ -154,12 +154,21 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="newInstance(java.lang.String[])">
 <h3>newInstance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></span>&nbsp;<span class="element-name">newInstance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</span></div>
-<div class="block">Obtains an instance of SequencePatternConverter.</div>
+<div class="block">Creates an instance of <a href="UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>UuidPatternConverter</code></a>.
+ <p>
+ The <code>RANDOM</code> option generates a Type 4 (pseudo-randomly generated) UUID.
+ The UUID is generated using a cryptographically strong pseudo-random number generator.
+ <p>
+ The <code>TIME</code> option generates a Type 1 (date and time based) UUID using the local network interface's MAC address.
+ To ensure uniqueness across multiple JVMs and/or class loaders on the same host, a random number between 0 and 16384 will be associated with each instance of the UUID generator class, and included in each time-based UUID generated.
+ See <a href="../util/UuidUtil.html#UUID_SEQUENCE"><code>UuidUtil.UUID_SEQUENCE</code></a> how to seed the UUID generation with an integer value.
+ Because time-based UUIDs contain the MAC address and timestamp, they should be used with care.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>options</code> - options, currently ignored, may be null.</dd>
+<dd><code>options</code> - An array containing either <code>RANDOM</code> or <code>TIME</code>.
+ If empty, <code>TIME</code> will be used.</dd>
 <dt>Returns:</dt>
-<dd>instance of SequencePatternConverter.</dd>
+<dd>a new <a href="UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>UuidPatternConverter</code></a> instance</dd>
 </dl>
 </section>
 </li>
