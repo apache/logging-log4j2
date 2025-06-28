@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="3771" link="https://github.com/apache/logging-log4j2/issues/3771"/>
+  <description format="asciidoc">
+    Make `-Alog4j.graalvm.groupId` and `-Alog4j.graalvm.artifactId` arguments optional.
+  </description>
+</entry>
