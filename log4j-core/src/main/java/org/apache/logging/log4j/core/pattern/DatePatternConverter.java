@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static java.util.Objects.requireNonNull;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -28,15 +36,6 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatt
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
@@ -143,9 +142,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         //   To avoid the `Z` output, one needs to use `x` with `DateTimeFormatter`.
         try {
             final NamedPattern namedPattern = NamedPattern.valueOf(pattern);
-            return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED ?
-                    namedPattern.getLegacyPattern() :
-                    namedPattern.getNonLegacyPattern();
+            return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED
+                    ? namedPattern.getLegacyPattern()
+                    : namedPattern.getNonLegacyPattern();
         } catch (IllegalArgumentException ignored) { // for Java 22+ it can be changed to `IllegalArgumentException _`
             return pattern;
         }
