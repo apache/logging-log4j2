@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static java.util.Objects.requireNonNull;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -36,6 +28,15 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatt
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
@@ -140,53 +141,14 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         //   This is the correct behaviour for `SimpleDateFormat`.
         //   Though `X` in `DateTimeFormatter` produces `Z` for zero-offset.
         //   To avoid the `Z` output, one needs to use `x` with `DateTimeFormatter`.
-        final boolean compat = InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED;
-
-        switch (pattern) {
-            case "ABSOLUTE":
-                return "HH:mm:ss,SSS";
-            case "ABSOLUTE_MICROS":
-                return "HH:mm:ss," + (compat ? "nnnnnn" : "SSSSSS");
-            case "ABSOLUTE_NANOS":
-                return "HH:mm:ss," + (compat ? "nnnnnnnnn" : "SSSSSSSSS");
-            case "ABSOLUTE_PERIOD":
-                return "HH:mm:ss.SSS";
-            case "COMPACT":
-                return "yyyyMMddHHmmssSSS";
-            case "DATE":
-                return "dd MMM yyyy HH:mm:ss,SSS";
-            case "DATE_PERIOD":
-                return "dd MMM yyyy HH:mm:ss.SSS";
-            case "DEFAULT":
-                return "yyyy-MM-dd HH:mm:ss,SSS";
-            case "DEFAULT_MICROS":
-                return "yyyy-MM-dd HH:mm:ss," + (compat ? "nnnnnn" : "SSSSSS");
-            case "DEFAULT_NANOS":
-                return "yyyy-MM-dd HH:mm:ss," + (compat ? "nnnnnnnnn" : "SSSSSSSSS");
-            case "DEFAULT_PERIOD":
-                return "yyyy-MM-dd HH:mm:ss.SSS";
-            case "ISO8601_BASIC":
-                return "yyyyMMdd'T'HHmmss,SSS";
-            case "ISO8601_BASIC_PERIOD":
-                return "yyyyMMdd'T'HHmmss.SSS";
-            case "ISO8601":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS";
-            case "ISO8601_OFFSET_DATE_TIME_HH":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "X" : "x");
-            case "ISO8601_OFFSET_DATE_TIME_HHMM":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "XX" : "xx");
-            case "ISO8601_OFFSET_DATE_TIME_HHCMM":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "XXX" : "xxx");
-            case "ISO8601_PERIOD":
-                return "yyyy-MM-dd'T'HH:mm:ss.SSS";
-            case "ISO8601_PERIOD_MICROS":
-                return "yyyy-MM-dd'T'HH:mm:ss." + (compat ? "nnnnnn" : "SSSSSS");
-            case "US_MONTH_DAY_YEAR2_TIME":
-                return "dd/MM/yy HH:mm:ss.SSS";
-            case "US_MONTH_DAY_YEAR4_TIME":
-                return "dd/MM/yyyy HH:mm:ss.SSS";
+        try {
+            final NamedPattern namedPattern = NamedPattern.valueOf(pattern);
+            return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED ?
+                    namedPattern.getLegacyPattern() :
+                    namedPattern.getNonLegacyPattern();
+        } catch (IllegalArgumentException ignored) { // for Java 22+ it can be changed to `IllegalArgumentException _`
+            return pattern;
         }
-        return pattern;
     }
 
     private static TimeZone readTimeZone(@Nullable final String[] options) {
