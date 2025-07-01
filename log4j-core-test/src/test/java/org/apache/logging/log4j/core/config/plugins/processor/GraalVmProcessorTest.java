@@ -103,6 +103,18 @@ class GraalVmProcessorTest {
     private static final Object FAKE_CONSTRAINT_VALIDATOR = onlyNoArgsConstructor(FAKE_CONSTRAINT_VALIDATOR_NAME);
     private static final String FAKE_PLUGIN_VISITOR_NAME = "example.FakeAnnotations$FakePluginVisitor";
     private static final Object FAKE_PLUGIN_VISITOR = onlyNoArgsConstructor(FAKE_PLUGIN_VISITOR_NAME);
+    private static final String FAKE_CONVERTER_NAME = "example.FakeConverter";
+    private static final Object FAKE_CONVERTER = asMap(
+            "name",
+            FAKE_CONVERTER_NAME,
+            "methods",
+            singletonList(asMap(
+                    "name",
+                    "newInstance",
+                    "parameterTypes",
+                    asList("org.apache.logging.log4j.core.config.Configuration", "java.lang.String[]"))),
+            "fields",
+            emptyList());
 
     private static final String GROUP_ID = "groupId";
     private static final String ARTIFACT_ID = "artifactId";
@@ -155,7 +167,8 @@ class GraalVmProcessorTest {
                 Arguments.of(FAKE_PLUGIN_BUILDER_NAME, FAKE_PLUGIN_BUILDER),
                 Arguments.of(FAKE_PLUGIN_NESTED_NAME, FAKE_PLUGIN_NESTED),
                 Arguments.of(FAKE_CONSTRAINT_VALIDATOR_NAME, FAKE_CONSTRAINT_VALIDATOR),
-                Arguments.of(FAKE_PLUGIN_VISITOR_NAME, FAKE_PLUGIN_VISITOR));
+                Arguments.of(FAKE_PLUGIN_VISITOR_NAME, FAKE_PLUGIN_VISITOR),
+                Arguments.of(FAKE_CONVERTER_NAME, FAKE_CONVERTER));
     }
 
     @ParameterizedTest
@@ -168,7 +181,9 @@ class GraalVmProcessorTest {
         assertThatJson(reachabilityMetadata)
                 .inPath(String.format("$[?(@.name == '%s')]", className))
                 .isArray()
-                .contains(json(expectedJson));
+                .hasSize(1)
+                .first()
+                .isEqualTo(json(expectedJson));
     }
 
     static Stream<Arguments> reachabilityMetadataPath() {
@@ -214,7 +229,7 @@ class GraalVmProcessorTest {
         }
         // The generated folder name should be deterministic and based solely on the descriptor content.
         // If the descriptor changes, this test and the expected folder name must be updated accordingly.
-        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("62162090"));
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("e51e0522"));
         assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
                 .as("Reachability metadata file")
                 .exists();
@@ -250,7 +265,6 @@ class GraalVmProcessorTest {
         }
 
         // Compile the sources
-        final Path descriptorFilePath = outputDir.resolve("plugins.xml");
         final DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
         final JavaCompiler.CompilationTask task =
                 compiler.getTask(null, fileManager, diagnosticCollector, options, null, sources);
