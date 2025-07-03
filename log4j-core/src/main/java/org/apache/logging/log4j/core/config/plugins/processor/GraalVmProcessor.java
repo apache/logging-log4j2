@@ -300,7 +300,9 @@ public class GraalVmProcessor extends AbstractProcessor {
 
                     @Override
                     public @Nullable String visitDeclared(final DeclaredType t, final Void unused) {
-                        return processingEnv.getTypeUtils().erasure(t).toString();
+                        return safeCast(t.asElement(), TypeElement.class)
+                                .getQualifiedName()
+                                .toString();
                     }
                 },
                 null);
