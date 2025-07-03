@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -66,7 +67,8 @@ public class UrlConnectionFactory {
      *     <dd>Resources embedded in a GraalVM native image</dd>
      * </dl>
      */
-    private static final String DEFAULT_ALLOWED_PROTOCOLS = "file, https, jar, resource";
+    private static final String DEFAULT_ALLOWED_PROTOCOLS =
+            SystemUtils.isGraalVm() ? "file, https, jar, resource" : "file, https, jar";
 
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
