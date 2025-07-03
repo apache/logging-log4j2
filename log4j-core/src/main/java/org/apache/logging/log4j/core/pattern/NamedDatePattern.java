@@ -53,7 +53,7 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatt
  * Provides patterns for legacy and modern formatters based on configuration.
  */
 @SuppressWarnings("SpellCheckingInspection")
-public enum NamedPattern {
+public enum NamedDatePattern {
     ABSOLUTE("HH:mm:ss,SSS"),
     ABSOLUTE_MICROS("HH:mm:ss," + (InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED ? "nnnnnn" : "SSSSSS")),
     ABSOLUTE_NANOS("HH:mm:ss," + (InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED ? "nnnnnnnnn" : "SSSSSSSSS")),
@@ -82,7 +82,7 @@ public enum NamedPattern {
     US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS");
     private final String pattern;
 
-    NamedPattern(String pattern) {
+    NamedDatePattern(String pattern) {
         this.pattern = pattern;
     }
 

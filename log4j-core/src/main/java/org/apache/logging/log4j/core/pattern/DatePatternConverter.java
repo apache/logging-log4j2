@@ -63,7 +63,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             logOptionReadFailure(options, error, "failed for options: {}, falling back to the default instance");
         }
         return InstantPatternFormatter.newBuilder()
-                .setPattern(NamedPattern.DEFAULT.getPattern())
+                .setPattern(NamedDatePattern.DEFAULT.getPattern())
                 .build();
     }
 
@@ -94,7 +94,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static String readPattern(@Nullable final String[] options) {
         return options != null && options.length > 0 && options[0] != null
                 ? decodeNamedPattern(options[0])
-                : NamedPattern.DEFAULT.getPattern();
+                : NamedDatePattern.DEFAULT.getPattern();
     }
 
     /**
@@ -110,7 +110,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      */
     static String decodeNamedPattern(final String pattern) {
         try {
-            return NamedPattern.valueOf(pattern).getPattern();
+            return NamedDatePattern.valueOf(pattern).getPattern();
         } catch (IllegalArgumentException ignored) { // for Java 22+ it can be changed to `IllegalArgumentException _`
             return pattern;
         }
