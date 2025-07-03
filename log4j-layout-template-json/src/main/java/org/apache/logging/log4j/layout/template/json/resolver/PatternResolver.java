@@ -62,10 +62,10 @@ public final class PatternResolver implements EventResolver {
         final boolean stackTraceEnabled =
                 Optional.ofNullable(config.getBoolean("stackTraceEnabled")).orElse(context.isStackTraceEnabled());
         final PatternLayout patternLayout = PatternLayout.newBuilder()
-                .withConfiguration(context.getConfiguration())
-                .withCharset(context.getCharset())
-                .withPattern(pattern)
-                .withAlwaysWriteExceptions(stackTraceEnabled)
+                .setConfiguration(context.getConfiguration())
+                .setCharset(context.getCharset())
+                .setPattern(pattern)
+                .setAlwaysWriteExceptions(stackTraceEnabled)
                 .build();
         this.emitter = (final StringBuilder stringBuilder, final LogEvent logEvent) ->
                 patternLayout.serialize(logEvent, stringBuilder);

@@ -48,12 +48,12 @@ class LoggerConfigTest {
 
     private static LoggerConfig createForProperties(final Property[] properties) {
         return LoggerConfig.newBuilder()
-                .withConfig(new NullConfiguration())
-                .withAdditivity(true)
-                .withLevel(Level.INFO)
-                .withLoggerName("name")
-                .withIncludeLocation("false")
-                .withProperties(properties)
+                .setConfig(new NullConfiguration())
+                .setAdditivity(true)
+                .setLevel(Level.INFO)
+                .setLoggerName("name")
+                .setIncludeLocation("false")
+                .setProperties(properties)
                 .build();
     }
 
@@ -109,15 +109,15 @@ class LoggerConfigTest {
     void testLevel() {
         final Configuration configuration = new DefaultConfiguration();
         final LoggerConfig config1 = LoggerConfig.newBuilder()
-                .withLoggerName("org.apache.logging.log4j.test")
-                .withLevel(Level.ERROR)
-                .withAdditivity(false)
-                .withConfig(configuration)
+                .setLoggerName("org.apache.logging.log4j.test")
+                .setLevel(Level.ERROR)
+                .setAdditivity(false)
+                .setConfig(configuration)
                 .build();
         final LoggerConfig config2 = LoggerConfig.newBuilder()
-                .withLoggerName("org.apache.logging.log4j")
-                .withAdditivity(false)
-                .withConfig(configuration)
+                .setLoggerName("org.apache.logging.log4j")
+                .setAdditivity(false)
+                .setConfig(configuration)
                 .build();
         config1.setParent(config2);
         assertEquals(Level.ERROR, config1.getLevel(), "Unexpected Level");
@@ -131,9 +131,9 @@ class LoggerConfigTest {
         final Configuration configuration = new NullConfiguration();
         final Filter filter = mock(Filter.class);
         final LoggerConfig config = LoggerConfig.newBuilder()
-                .withLoggerName(FQCN)
-                .withConfig(configuration)
-                .withLevel(Level.INFO)
+                .setLoggerName(FQCN)
+                .setConfig(configuration)
+                .setLevel(Level.INFO)
                 .setFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);
@@ -150,9 +150,9 @@ class LoggerConfigTest {
     void testLevelAndRefsWithoutAppenderRef() {
         final Configuration configuration = mock(PropertiesConfiguration.class);
         final LoggerConfig.Builder builder = LoggerConfig.newBuilder()
-                .withLoggerName(FQCN)
-                .withConfig(configuration)
-                .withLevelAndRefs(Level.INFO.name());
+                .setLoggerName(FQCN)
+                .setConfig(configuration)
+                .setLevelAndRefs(Level.INFO.name());
 
         final LoggerConfig loggerConfig = builder.build();
 

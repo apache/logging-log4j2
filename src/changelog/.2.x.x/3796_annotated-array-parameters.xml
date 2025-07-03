@@ -5,9 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-    <issue id="3758" link="https://github.com/apache/logging-log4j2/issues/3758"/>
-    <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
+    <issue id="3796" link="https://github.com/apache/logging-log4j2/issues/3796"/>
     <description format="asciidoc">
-        Fix version resolution of `jspecify` and `error_prone_annotations` dependencies in published POM files.
+        Fix GraalVM reachability metadata generation for methods with annotated array type parameters, such as `@Nullable String[]`.
     </description>
 </entry>

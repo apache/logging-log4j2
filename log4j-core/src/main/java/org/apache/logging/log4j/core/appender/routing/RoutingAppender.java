@@ -122,22 +122,69 @@ public final class RoutingAppender extends AbstractAppender {
             return purgePolicy;
         }
 
-        public B withRoutes(@SuppressWarnings("hiding") final Routes routes) {
+        /**
+         * @since 2.26.0
+         */
+        public B setRoutes(final Routes routes) {
             this.routes = routes;
             return asBuilder();
         }
 
-        public B withDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
+        /**
+         * @since 2.26.0
+         */
+        public B setDefaultRouteScript(final AbstractScript defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
 
-        public B withRewritePolicy(@SuppressWarnings("hiding") final RewritePolicy rewritePolicy) {
+        /**
+         * @since 2.26.0
+         */
+        public B setRewritePolicy(final RewritePolicy rewritePolicy) {
             this.rewritePolicy = rewritePolicy;
             return asBuilder();
         }
 
-        public void withPurgePolicy(@SuppressWarnings("hiding") final PurgePolicy purgePolicy) {
+        /**
+         * @since 2.26.0
+         */
+        public void setPurgePolicy(final PurgePolicy purgePolicy) {
+            this.purgePolicy = purgePolicy;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setRoutes(Routes)}.
+         */
+        @Deprecated
+        public B withRoutes(final Routes routes) {
+            this.routes = routes;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setDefaultRouteScript(AbstractScript)}.
+         */
+        @Deprecated
+        public B withDefaultRouteScript(final AbstractScript defaultRouteScript) {
+            this.defaultRouteScript = defaultRouteScript;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setRewritePolicy(RewritePolicy)}.
+         */
+        @Deprecated
+        public B withRewritePolicy(final RewritePolicy rewritePolicy) {
+            this.rewritePolicy = rewritePolicy;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setPurgePolicy(PurgePolicy)}.
+         */
+        @Deprecated
+        public void withPurgePolicy(final PurgePolicy purgePolicy) {
             this.purgePolicy = purgePolicy;
         }
     }

@@ -168,8 +168,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param max The maximum number of files to keep.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withMax(final String max) {
+        public Builder setMax(final String max) {
             this.max = max;
             return this;
         }
@@ -183,8 +184,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param min The minimum number of files to keep.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withMin(final String min) {
+        public Builder setMin(final String min) {
             this.min = min;
             return this;
         }
@@ -199,8 +201,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
          *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withFileIndex(final String fileIndex) {
+        public Builder setFileIndex(final String fileIndex) {
             this.fileIndex = fileIndex;
             return this;
         }
@@ -214,8 +217,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withCompressionLevelStr(final String compressionLevelStr) {
+        public Builder setCompressionLevelStr(final String compressionLevelStr) {
             this.compressionLevelStr = compressionLevelStr;
             return this;
         }
@@ -229,8 +233,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param customActions custom actions to perform asynchronously after rollover
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withCustomActions(final Action[] customActions) {
+        public Builder setCustomActions(final Action[] customActions) {
             this.customActions = customActions;
             return this;
         }
@@ -244,8 +249,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
+        public Builder setStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
             this.stopCustomActionsOnError = stopCustomActionsOnError;
             return this;
         }
@@ -259,8 +265,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param tempCompressedFilePattern File pattern of the working file pattern used during compression, if null no temporary file are used
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
-        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
+        public Builder setTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
             return this;
         }
@@ -274,7 +281,80 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          *
          * @param config The Configuration.
          * @return This builder for chaining convenience
+         * @since 2.26.0
          */
+        public Builder setConfig(final Configuration config) {
+            this.config = config;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMax(String)}.
+         */
+        @Deprecated
+        public Builder withMax(final String max) {
+            this.max = max;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMin(String)}.
+         */
+        @Deprecated
+        public Builder withMin(final String min) {
+            this.min = min;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileIndex(String)}.
+         */
+        @Deprecated
+        public Builder withFileIndex(final String fileIndex) {
+            this.fileIndex = fileIndex;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setCompressionLevelStr(String)}.
+         */
+        @Deprecated
+        public Builder withCompressionLevelStr(final String compressionLevelStr) {
+            this.compressionLevelStr = compressionLevelStr;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setCustomActions(Action[])}.
+         */
+        @Deprecated
+        public Builder withCustomActions(final Action[] customActions) {
+            this.customActions = customActions;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setStopCustomActionsOnError(boolean)}.
+         */
+        @Deprecated
+        public Builder withStopCustomActionsOnError(final boolean stopCustomActionsOnError) {
+            this.stopCustomActionsOnError = stopCustomActionsOnError;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setTempCompressedFilePattern(String)}.
+         */
+        @Deprecated
+        public Builder withTempCompressedFilePattern(final String tempCompressedFilePattern) {
+            this.tempCompressedFilePattern = tempCompressedFilePattern;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setConfig(Configuration)}.
+         */
+        @Deprecated
         public Builder withConfig(final Configuration config) {
             this.config = config;
             return this;
@@ -313,13 +393,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     final boolean stopCustomActionsOnError,
             @PluginConfiguration final Configuration config) {
         return DefaultRolloverStrategy.newBuilder()
-                .withMin(min)
-                .withMax(max)
-                .withFileIndex(fileIndex)
-                .withCompressionLevelStr(compressionLevelStr)
-                .withCustomActions(customActions)
-                .withStopCustomActionsOnError(stopCustomActionsOnError)
-                .withConfig(config)
+                .setMin(min)
+                .setMax(max)
+                .setFileIndex(fileIndex)
+                .setCompressionLevelStr(compressionLevelStr)
+                .setCustomActions(customActions)
+                .setStopCustomActionsOnError(stopCustomActionsOnError)
+                .setConfig(config)
                 .build();
         // @formatter:on
     }
@@ -617,14 +697,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             // Propagate POSIX attribute view to compressed file
             // @formatter:off
             final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
-                    .withBasePath(compressedName)
-                    .withFollowLinks(false)
-                    .withMaxDepth(1)
-                    .withPathConditions(PathCondition.EMPTY_ARRAY)
-                    .withSubst(getStrSubstitutor())
-                    .withFilePermissions(manager.getFilePermissions())
-                    .withFileOwner(manager.getFileOwner())
-                    .withFileGroup(manager.getFileGroup())
+                    .setBasePath(compressedName)
+                    .setFollowLinks(false)
+                    .setMaxDepth(1)
+                    .setPathConditions(PathCondition.EMPTY_ARRAY)
+                    .setSubst(getStrSubstitutor())
+                    .setFilePermissions(manager.getFilePermissions())
+                    .setFileOwner(manager.getFileOwner())
+                    .setFileGroup(manager.getFileGroup())
                     .build();
             // @formatter:on
             compressAction = new CompositeAction(Arrays.asList(compressAction, posixAttributeViewAction), false);

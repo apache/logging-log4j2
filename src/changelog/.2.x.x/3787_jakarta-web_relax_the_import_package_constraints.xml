@@ -4,10 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
-    <issue id="3758" link="https://github.com/apache/logging-log4j2/issues/3758"/>
-    <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
+       type="changed">
+    <issue id="3787" link="https://github.com/apache/logging-log4j2/issues/3787"/>
     <description format="asciidoc">
-        Fix version resolution of `jspecify` and `error_prone_annotations` dependencies in published POM files.
+     add a bnd tool property that makes sure that the supported jakarta version has a wider range then 5 to 6
+     Support the current release version for 5 to 7
     </description>
 </entry>

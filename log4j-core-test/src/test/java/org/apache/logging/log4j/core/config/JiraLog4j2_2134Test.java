@@ -42,16 +42,16 @@ class JiraLog4j2_2134Test {
         final Configuration config = ctx.getConfiguration();
         final PatternLayout layout = PatternLayout.newBuilder()
                 // @formatter:off
-                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .withConfiguration(config)
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setConfiguration(config)
                 .build();
         final Layout<? extends Serializable> layout1 = layout;
         // @formatter:on
         final Appender appender = FileAppender.newBuilder()
-                .withFileName("target/test.log")
+                .setFileName("target/test.log")
                 .setLayout(layout1)
                 .setConfiguration(config)
-                .withBufferSize(4000)
+                .setBufferSize(4000)
                 .setName("File")
                 .build();
         // appender.start();
