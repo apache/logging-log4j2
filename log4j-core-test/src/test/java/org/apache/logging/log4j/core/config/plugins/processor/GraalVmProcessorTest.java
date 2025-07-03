@@ -274,6 +274,8 @@ class GraalVmProcessorTest {
         return diagnosticCollector.getDiagnostics().stream()
                 .filter(d -> d.getKind() != Diagnostic.Kind.NOTE)
                 .map(d -> d.getMessage(Locale.ROOT))
+                // This message appears when the test runs on JDK 8
+                .filter(m -> !"unknown enum constant java.lang.annotation.ElementType.MODULE".equals(m))
                 .collect(Collectors.toList());
     }
 }
