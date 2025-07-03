@@ -140,7 +140,7 @@
     <spotbugs-annotations.version>4.9.3</spotbugs-annotations.version>
     <system-stubs.version>2.1.8</system-stubs.version>
     <velocity.version>1.7</velocity.version>
-    <xmlunit.version>2.10.2</xmlunit.version>
+    <xmlunit.version>2.10.3</xmlunit.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -150,7 +150,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.6</asm.version>
-    <byte-buddy.version>1.17.5</byte-buddy.version>
+    <byte-buddy.version>1.17.6</byte-buddy.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
