@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3683" link="https://github.com/apache/logging-log4j2/pull/3683"/>
-  <description format="asciidoc">Update `org.xmlunit:xmlunit-core` to version `2.10.2`</description>
+  <issue id="3764" link="https://github.com/apache/logging-log4j2/pull/3764"/>
+  <description format="asciidoc">Update `org.xmlunit:xmlunit-core` to version `2.10.3`</description>
 </entry>
