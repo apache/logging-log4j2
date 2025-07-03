@@ -229,7 +229,7 @@ class GraalVmProcessorTest {
         }
         // The generated folder name should be deterministic and based solely on the descriptor content.
         // If the descriptor changes, this test and the expected folder name must be updated accordingly.
-        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("e51e0522"));
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("72c240aa"));
         assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
                 .as("Reachability metadata file")
                 .exists();
