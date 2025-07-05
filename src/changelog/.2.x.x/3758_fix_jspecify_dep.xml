@@ -5,9 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-    <issue id="3758" link="https://github.com/apache/logging-log4j2/issues/3758"/>
-    <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
-    <description format="asciidoc">
-        Fix version resolution of `jspecify` and `error_prone_annotations` dependencies in published POM files.
-    </description>
+  <issue id="3758" link="https://github.com/apache/logging-log4j2/issues/3758"/>
+  <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
+  <description format="asciidoc">
+    Fix incorrect version resolution of `jspecify` and `error_prone_annotations` dependencies in published POM files.
+  </description>
 </entry>

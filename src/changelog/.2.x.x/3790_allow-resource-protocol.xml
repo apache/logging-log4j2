@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3790" link="https://github.com/apache/logging-log4j2/issues/3790"/>
   <description format="asciidoc">
-    Allow `resource:` protocol for configuration files by default, if the current runtime is GraalVM.
+    Enable the `resource:` protocol for configuration files by default when running on GraalVM.
   </description>
 </entry>

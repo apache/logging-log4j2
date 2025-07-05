@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3800" link="https://github.com/apache/logging-log4j2/pull/3800"/>
   <description format="asciidoc">
-    Resolves `PropertiesConfiguration` compatibility issues with GraalVM and addresses additional minor reflection-related problems.
+    Resolve `PropertiesConfiguration` compatibility issues with GraalVM and address additional minor reflection-related problems.
   </description>
 </entry>

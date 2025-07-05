@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3770" link="https://github.com/apache/logging-log4j2/issues/3770"/>
   <description format="asciidoc">
-    Restore backward compatibility with the Spring Boot reconfiguration process.
+    Restore compatibility with Spring Boot by allowing reconfiguration using the `LoggerContext.start` method.
   </description>
 </entry>

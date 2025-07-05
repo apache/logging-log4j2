@@ -4,10 +4,9 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
-    <issue id="3787" link="https://github.com/apache/logging-log4j2/issues/3787"/>
-    <description format="asciidoc">
-     add a bnd tool property that makes sure that the supported jakarta version has a wider range then 5 to 6
-     Support the current release version for 5 to 7
-    </description>
+       type="fixed">
+  <issue id="3787" link="https://github.com/apache/logging-log4j2/issues/3787"/>
+  <description format="asciidoc">
+    Broaden the OSGi manifest's `Import-Package` constraints to support Jakarta Servlet API up to version 6.
+  </description>
 </entry>
