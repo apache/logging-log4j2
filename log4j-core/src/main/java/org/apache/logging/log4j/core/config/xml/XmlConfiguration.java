@@ -20,7 +20,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -336,12 +335,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return attributes;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
-                + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
-    }
-
     /**
      * The error that occurred.
      */
@@ -361,11 +354,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             this.name = name;
             this.element = element;
             this.errorType = errorType;
-        }
-
-        @Override
-        public String toString() {
-            return "Status [name=" + name + ", element=" + element + ", errorType=" + errorType + "]";
         }
     }
 }
