@@ -111,7 +111,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     static String decodeNamedPattern(final String pattern) {
         try {
             return NamedDatePattern.valueOf(pattern).getPattern();
-        } catch (IllegalArgumentException ignored) { // for Java 22+ it can be changed to `IllegalArgumentException _`
+        } catch (IllegalArgumentException ignored) {
             return pattern;
         }
     }
