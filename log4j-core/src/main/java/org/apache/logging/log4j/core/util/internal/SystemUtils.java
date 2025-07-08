@@ -36,5 +36,21 @@ public final class SystemUtils {
         return getJavaVendor().contains("Android");
     }
 
+    /**
+     * Checks if the current runtime is GraalVM.
+     * <p>
+     *     See <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/nativeimage/ImageInfo.html#PROPERTY_IMAGE_CODE_KEY">ImageInfo.PROPERTY_IMAGE_CODE_KEY</a>.
+     * </p>
+     * @return true if the current runtime is GraalVM, false otherwise.
+     */
+    public static boolean isGraalVm() {
+        try {
+            return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
+        } catch (final SecurityException e) {
+            LOGGER.debug("Unable to determine if the current runtime is GraalVM.", e);
+            return false;
+        }
+    }
+
     private SystemUtils() {}
 }

@@ -38,8 +38,6 @@ final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFo
     private final ThreadLocal<Object[]> epochInstantAndBufferRef =
             ThreadLocal.withInitial(InstantPatternThreadLocalCachedFormatter::createEpochInstantAndBuffer);
 
-    private Object[] lastEpochInstantAndBuffer = createEpochInstantAndBuffer();
-
     private static Object[] createEpochInstantAndBuffer() {
         return new Object[] {-1L, new StringBuilder()};
     }
@@ -89,32 +87,21 @@ final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFo
     public void formatTo(final StringBuilder buffer, final Instant instant) {
         requireNonNull(buffer, "buffer");
         requireNonNull(instant, "instant");
-        final Object[] prevEpochInstantAndBuffer = lastEpochInstantAndBuffer;
-        final long prevEpochInstant = (long) prevEpochInstantAndBuffer[0];
-        final StringBuilder prevBuffer = (StringBuilder) prevEpochInstantAndBuffer[1];
+        final Object[] epochInstantAndBuffer = epochInstantAndBufferRef.get();
+        final long prevEpochInstant = (long) epochInstantAndBuffer[0];
+        final StringBuilder localBuffer = (StringBuilder) epochInstantAndBuffer[1];
         final long nextEpochInstant = epochInstantExtractor.apply(instant);
-        if (prevEpochInstant == nextEpochInstant) {
-            buffer.append(prevBuffer);
-        } else {
-
-            // We could have used `StringBuilders.trimToMaxSize()` on `prevBuffer`.
+        if (prevEpochInstant != nextEpochInstant) {
+            // We could have used `StringBuilders.trimToMaxSize()` on `localBuffer`.
             // That is, we wouldn't want exploded `StringBuilder`s in hundreds of `ThreadLocal`s.
             // Though we are formatting instants and always expect to produce strings of more or less the same length.
             // Hence, no need for truncation.
 
-            // Populate a new cache entry
-            final Object[] nextEpochInstantAndBuffer = epochInstantAndBufferRef.get();
-            nextEpochInstantAndBuffer[0] = nextEpochInstant;
-            final StringBuilder nextBuffer = (StringBuilder) nextEpochInstantAndBuffer[1];
-            nextBuffer.setLength(0);
-            formatter.formatTo(nextBuffer, instant);
-
-            // Update the effective cache entry
-            lastEpochInstantAndBuffer = nextEpochInstantAndBuffer;
-
-            // Help out the request
-            buffer.append(nextBuffer);
+            epochInstantAndBuffer[0] = nextEpochInstant;
+            localBuffer.setLength(0);
+            formatter.formatTo(localBuffer, instant);
         }
+        buffer.append(localBuffer);
     }
 
     @Override

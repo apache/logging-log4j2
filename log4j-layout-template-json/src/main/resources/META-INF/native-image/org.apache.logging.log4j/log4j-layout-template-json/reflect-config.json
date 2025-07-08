@@ -1,0 +1,24 @@
+[
+  {
+    "name": "org.jctools.queues.MpmcArrayQueue",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "int"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.util.concurrent.ArrayBlockingQueue",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "int"
+        ]
+      }
+    ]
+  }
+]

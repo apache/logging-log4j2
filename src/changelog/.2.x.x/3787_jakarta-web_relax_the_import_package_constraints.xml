@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <issue id="3787" link="https://github.com/apache/logging-log4j2/issues/3787"/>
+    <description format="asciidoc">
+     add a bnd tool property that makes sure that the supported jakarta version has a wider range then 5 to 6
+     Support the current release version for 5 to 7
+    </description>
+</entry>

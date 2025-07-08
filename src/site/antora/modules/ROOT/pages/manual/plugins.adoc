@@ -211,8 +211,8 @@ annotation processor creates such a file at compile-time.
 
 [WARNING]
 ====
-The `GraalVmProcessor` needs to know the `groupId` and `artifactId` coordinates of your project.
-These must be supplied to the processor using the `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` annotation processor options.
+The `GraalVmProcessor` requires your project's `groupId` and `artifactId` to correctly generate the GraalVM reachability metadata file in the recommended location.
+Provide these values to the processor using the `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` annotation processor options.
 ====
 
 You need to configure your build tool as follows to use both plugin processors:
@@ -227,15 +227,23 @@ Maven::
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-compiler-plugin</artifactId>
   <version>${maven-compiler-plugin.version}</version>
+  <configuration>
+    <compilerArgs>
+        <!-- Provide the project coordinates to `GraalVmProcessor`: -->
+        <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
+        <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
+    </compilerArgs>
+  </configuration>
   <executions>
     <execution>
-      <id>generate-log4j-plugin-descriptor</id>
-      <goals>
-        <goal>compile</goal>
-      </goals>
-      <phase>process-classes</phase>
+        <!--
+          ~ Explicitly list the annotation processors for the default compile execution.
+          ~ This is required starting with JDK 23, where annotation processors are not enabled automatically.
+          ~ Explicit configuration also improves build reliability and clarity.
+          ~ For more details, see: https://inside.java/2024/06/18/quality-heads-up/
+          -->
+      <id>default-compile</id>
       <configuration>
-        <proc>only</proc>
         <annotationProcessorPaths>
           <!-- Include `log4j-core` providing
                1. `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat`
@@ -252,11 +260,6 @@ Maven::
           <!-- Process sources using `GraalVmProcessor` to generate a GraalVM reachability metadata file -->
           <processor>org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor</processor>
         </annotationProcessors>
-        <compilerArgs>
-          <!-- Provide the project coordinates to `GraalVmProcessor`: -->
-          <arg>-Alog4j.graalvm.groupId=${project.groupId}</arg>
-          <arg>-Alog4j.graalvm.artifactId=${project.artifactId}</arg>
-        </compilerArgs>
       </configuration>
     </execution>
   </executions>

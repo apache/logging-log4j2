@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -51,7 +52,24 @@ public class UrlConnectionFactory {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String JAR = "jar";
-    private static final String DEFAULT_ALLOWED_PROTOCOLS = "https, file, jar";
+    /**
+     * Default list of protocols that are allowed to be used for configuration files and other trusted resources.
+     * <p>
+     *     By default, we trust the following protocols:
+     * <dl>
+     *     <dt>file</dt>
+     *     <dd>Local files</dd>
+     *     <dt>https</dt>
+     *     <dd>Resources retrieved through TLS to guarantee their integrity</dd>
+     *     <dt>jar</dt>
+     *     <dd>Resources retrieved from JAR files</dd>
+     *     <dt>resource</dt>
+     *     <dd>Resources embedded in a GraalVM native image</dd>
+     * </dl>
+     */
+    private static final String DEFAULT_ALLOWED_PROTOCOLS =
+            SystemUtils.isGraalVm() ? "file, https, jar, resource" : "file, https, jar";
+
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
