@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
   <issue id="3789" link="https://github.com/apache/logging-log4j2/pull/3789"/>
-  <description format="asciidoc">Add and export `org.apache.logging.log4j.core.pattern.NamedDatePattern` class where users can programmatically access named date &amp; time patterns supported by Pattern Layout</description>
+  <description format="asciidoc">Add and export `org.apache.logging.log4j.core.pattern.NamedDatePattern` enabling users to programmatically access named date &amp; time patterns supported by Pattern Layout</description>
 </entry>
