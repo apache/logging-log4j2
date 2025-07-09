@@ -331,7 +331,7 @@ abstract class DatePatternConverterTestBase {
     }
 
     private static final String[] PATTERN_NAMES =
-            Stream.of(NamedDatePattern.values()).map(Enum::name).toArray(String[]::new);
+            Stream.of(NamedInstantPattern.values()).map(Enum::name).toArray(String[]::new);
 
     @Test
     void testPredefinedFormatWithoutTimezone() {
