@@ -19,12 +19,15 @@ package org.apache.logging.log4j.core.impl;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.context.internal.GarbageFreeSortedArrayThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -77,6 +80,7 @@ public class Log4jProvider extends Provider {
     private static final String DISABLE_THREAD_CONTEXT = "log4j2.disableThreadContext";
     private static final String THREAD_CONTEXT_MAP_PROPERTY = "log4j2.threadContextMap";
     private static final String GC_FREE_THREAD_CONTEXT_PROPERTY = "log4j2.garbagefree.threadContextMap";
+    private static final String THREAD_CONTEXT_STACK_PROPERTY = "log4j2.threadContextStack";
 
     // Name of the context map implementations
     private static final String WEB_APP_CLASS_NAME = "org.apache.logging.log4j.spi.DefaultThreadContextMap";
@@ -87,6 +91,7 @@ public class Log4jProvider extends Provider {
 
     private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(Log4jContextFactory::new);
     private final Lazy<ThreadContextMap> threadContextMapLazy = Lazy.lazy(this::createThreadContextMap);
+    private final Lazy<ThreadContextStack> threadContextStackLazy = Lazy.lazy(this::createThreadContextStack);
 
     public Log4jProvider() {
         super(10, CURRENT_VERSION, Log4jContextFactory.class);
@@ -100,6 +105,11 @@ public class Log4jProvider extends Provider {
     @Override
     public ThreadContextMap getThreadContextMapInstance() {
         return threadContextMapLazy.get();
+    }
+
+    @Override
+    public ThreadContextStack getThreadContextStackInstance() {
+        return threadContextStackLazy.get();
     }
 
     private ThreadContextMap createThreadContextMap() {
@@ -143,8 +153,28 @@ public class Log4jProvider extends Provider {
         return NoOpThreadContextMap.INSTANCE;
     }
 
+    private ThreadContextStack createThreadContextStack() {
+        final PropertiesUtil props = PropertiesUtil.getProperties();
+        if (props.getBooleanProperty(DISABLE_CONTEXT_MAP) || props.getBooleanProperty(DISABLE_THREAD_CONTEXT)) {
+            return ThreadContext.NOOP_STACK;
+        }
+        String threadContextStackClass = props.getStringProperty(THREAD_CONTEXT_STACK_PROPERTY);
+        if (threadContextStackClass != null) {
+            try {
+                return LoaderUtil.newCheckedInstanceOf(threadContextStackClass, ThreadContextStack.class);
+            } catch (final Exception e) {
+                LOGGER.error("Unable to create instance of class {}.", threadContextStackClass, e);
+            }
+        }
+        return new DefaultThreadContextStack();
+    }
+
     // Used in tests
     void resetThreadContextMap() {
         threadContextMapLazy.set(null);
+    }
+
+    void resetThreadContextStack() {
+        threadContextStackLazy.set(null);
     }
 }
