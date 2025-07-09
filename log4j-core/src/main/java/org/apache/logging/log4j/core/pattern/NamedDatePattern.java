@@ -21,7 +21,7 @@ import static org.apache.logging.log4j.core.util.internal.instant.InstantPattern
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 
 /**
- * Represents named date & time patterns for formatting log timestamps.
+ * Represents named date &amp; time patterns for formatting log timestamps.
  *
  * @see InstantPatternFormatter#LEGACY_FORMATTERS_ENABLED
  * @see DatePatternConverter
