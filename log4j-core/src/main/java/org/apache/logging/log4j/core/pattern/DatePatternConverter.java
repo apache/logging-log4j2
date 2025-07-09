@@ -109,40 +109,19 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @since 2.25.0
      */
     static String decodeNamedPattern(final String pattern) {
-        // If legacy formatters are enabled, we need to produce output aimed for `FixedDateFormat` and `FastDateFormat`.
-        // Otherwise, we need to produce output aimed for `DateTimeFormatter`.
-        // In conclusion, we need to check if legacy formatters enabled and apply following transformations.
+        // `FixedDateFormat` accepted two types of patterns:
+        //   - the names of `FixedFormat` enum constants (identical to `NamedInstantPattern` enum names),
+        //   - or custom pattern strings.
         //
-        //                               | Microseconds | Nanoseconds | Time-zone
-        // ------------------------------+--------------+-------------+-----------
-        // Legacy formatter directive    | nnnnnn       | nnnnnnnnn   | X, XX, XXX
-        // `DateTimeFormatter` directive | SSSSSS       | SSSSSSSSS   | x, xx, xxx
-        //
-        // Enabling legacy formatters mean that user requests the pattern to be formatted using deprecated
-        // `FixedDateFormat` and `FastDateFormat`.
-        // These two have, let's not say _bogus_, but an _interesting_ way of handling certain pattern directives:
-        //
-        // - They say they adhere to `SimpleDateFormat` specification, but use `n` directive.
-        //   `n` is neither defined by `SimpleDateFormat`, nor `SimpleDateFormat` supports sub-millisecond precisions.
-        //   `n` is probably manually introduced by Log4j to support sub-millisecond precisions.
-        //
-        // - `n` denotes nano-of-second for `DateTimeFormatter`.
-        //   In Java 17, `n` and `N` (nano-of-day) always output nanosecond precision.
-        //   This is independent of how many times they occur consequently.
-        //   Yet legacy formatters use repeated `n` to denote sub-milliseconds precision of certain length.
-        //   This doesn't work for `DateTimeFormatter`, which needs
-        //
-        //   - `SSSSSS` for 6-digit microsecond precision
-        //   - `SSSSSSSSS` for 9-digit nanosecond precision
-        //
-        // - Legacy formatters use `X`, `XX,` and `XXX` to choose between `+00`, `+0000`, or `+00:00`.
-        //   This is the correct behaviour for `SimpleDateFormat`.
-        //   Though `X` in `DateTimeFormatter` produces `Z` for zero-offset.
-        //   To avoid the `Z` output, one needs to use `x` with `DateTimeFormatter`.
+        // To determine the format's precision, we cannot return the legacy name directly;
+        // instead, we must return the equivalent `FixedDateFormat` pattern string.
+        // These patterns are only recognized by `FixedDateFormat` so we make them available only
+        // via the package-private `getLegacyPattern()` method.
         try {
+            NamedInstantPattern namedInstantPattern = NamedInstantPattern.valueOf(pattern);
             return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED
-                    ? FixedDateFormat.FixedFormat.valueOf(pattern).getPattern()
-                    : NamedInstantPattern.valueOf(pattern).getPattern();
+                    ? namedInstantPattern.getLegacyPattern()
+                    : namedInstantPattern.getPattern();
         } catch (IllegalArgumentException ignored) {
             return pattern;
         }
