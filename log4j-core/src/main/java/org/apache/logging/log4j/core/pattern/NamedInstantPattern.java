@@ -23,7 +23,6 @@ package org.apache.logging.log4j.core.pattern;
  * @since 2.26.0
  */
 public enum NamedInstantPattern {
-
     ABSOLUTE("HH:mm:ss,SSS"),
 
     ABSOLUTE_MICROS("HH:mm:ss,SSSSSS"),
@@ -72,6 +71,9 @@ public enum NamedInstantPattern {
         this.pattern = pattern;
     }
 
+    /**
+     * @return pattern that is compatible with {@link java.time.format.DateTimeFormatter}
+     */
     public String getPattern() {
         return pattern;
     }
