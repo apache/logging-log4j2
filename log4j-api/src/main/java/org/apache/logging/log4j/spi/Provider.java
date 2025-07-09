@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -79,6 +80,7 @@ public class Provider {
 
     private static final String DISABLE_CONTEXT_MAP = "log4j2.disableThreadContextMap";
     private static final String DISABLE_THREAD_CONTEXT = "log4j2.disableThreadContext";
+    private static final String DISABLE_CONTEXT_STACK = "log4j2.disableThreadContextStack";
 
     private static final int DEFAULT_PRIORITY = -1;
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -94,6 +96,7 @@ public class Provider {
     private final @Nullable String threadContextMap;
 
     private final @Nullable Class<? extends ThreadContextMap> threadContextMapClass;
+    private final @Nullable Class<? extends ThreadContextStack> threadContextStackClass;
     private final @Nullable String versions;
 
     @Deprecated
@@ -117,6 +120,7 @@ public class Provider {
         threadContextMap = props.getProperty(THREAD_CONTEXT_MAP);
         loggerContextFactoryClass = null;
         threadContextMapClass = null;
+        threadContextStackClass = null;
         versions = null;
     }
 
@@ -126,7 +130,7 @@ public class Provider {
      * @since 2.24.0
      */
     public Provider(final @Nullable Integer priority, final String versions) {
-        this(priority, versions, null, null);
+        this(priority, versions, null, null, null);
     }
 
     /**
@@ -140,7 +144,7 @@ public class Provider {
             final @Nullable Integer priority,
             final String versions,
             final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
-        this(priority, versions, loggerContextFactoryClass, null);
+        this(priority, versions, loggerContextFactoryClass, null, null);
     }
 
     /**
@@ -157,10 +161,31 @@ public class Provider {
             final String versions,
             final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass,
             final @Nullable Class<? extends ThreadContextMap> threadContextMapClass) {
+        this(priority, versions, loggerContextFactoryClass, threadContextMapClass, null);
+    }
+
+    /**
+     * @param priority A positive number specifying the provider's priority or {@code null} if default,
+     * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION},
+     * @param loggerContextFactoryClass A public exported implementation of {@link LoggerContextFactory} or {@code
+     * null} if {@link #getLoggerContextFactory()} is also implemented,
+     * @param threadContextMapClass A public exported implementation of {@link ThreadContextMap} or {@code null} if
+     * {@link #getThreadContextMapInstance()} is implemented,
+     * @param threadContextStackClass A public exported implementation of {@link ThreadContextStack} or {@code null} if
+     * {@link #getThreadContextStackInstance()} is implemented.
+     * @since 2.26.0
+     */
+    public Provider(
+            final @Nullable Integer priority,
+            final String versions,
+            final @Nullable Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+            final @Nullable Class<? extends ThreadContextMap> threadContextMapClass,
+            final @Nullable Class<? extends ThreadContextStack> threadContextStackClass) {
         this.priority = priority != null ? priority : DEFAULT_PRIORITY;
         this.versions = versions;
         this.loggerContextFactoryClass = loggerContextFactoryClass;
         this.threadContextMapClass = threadContextMapClass;
+        this.threadContextStackClass = threadContextStackClass;
         // Deprecated
         className = null;
         threadContextMap = null;
@@ -314,6 +339,56 @@ public class Provider {
     }
 
     /**
+     * Gets the class name of the {@link ThreadContextStack} implementation of this Provider.
+     *
+     * @return the class name of a ThreadContextStack implementation
+     */
+    public @Nullable String getThreadContextStack() {
+        return threadContextStackClass != null ? threadContextStackClass.getName() : null;
+    }
+
+    /**
+     * Loads the {@link ThreadContextStack} class specified by this Provider.
+     *
+     * @return the {@code ThreadContextStack} implementation class or {@code null} if unspecified or a loading error
+     * occurred.
+     */
+    public @Nullable Class<? extends ThreadContextStack> loadThreadContextStack() {
+        return threadContextStackClass;
+    }
+
+    /**
+     * @return The thread context stack to be used by {@link org.apache.logging.log4j.ThreadContext}.
+     */
+    public ThreadContextStack getThreadContextStackInstance() {
+        final Class<? extends ThreadContextStack> implementation = loadThreadContextStack();
+        if (implementation != null) {
+            try {
+                return LoaderUtil.newInstanceOf(implementation);
+            } catch (final ReflectiveOperationException e) {
+                LOGGER.error("Failed to instantiate thread context stack {}.", implementation.getName(), e);
+            }
+        }
+
+        final PropertiesUtil props = PropertiesUtil.getProperties();
+
+        if (props.getBooleanProperty(DISABLE_CONTEXT_STACK) || props.getBooleanProperty(DISABLE_THREAD_CONTEXT)) {
+            return ThreadContext.NOOP_STACK;
+        }
+
+        String threadContextStackClass = props.getStringProperty("log4j2.threadContextStack");
+        if (threadContextStackClass != null) {
+            try {
+                return LoaderUtil.newCheckedInstanceOf(threadContextStackClass, ThreadContextStack.class);
+            } catch (final Exception e) {
+                LOGGER.error("Unable to create instance of class {}.", threadContextStackClass, e);
+            }
+        }
+
+        return new DefaultThreadContextStack();
+    }
+
+    /**
      * Gets the URL containing this Provider's Log4j details.
      *
      * @return the URL corresponding to the Provider {@code META-INF/log4j-provider.properties} file or {@code null}
@@ -333,6 +408,10 @@ public class Provider {
             result.append("\n\tpriority = ").append(priority);
         }
         final String threadContextMap = getThreadContextMap();
+        final String threadContextStack = getThreadContextStack();
+        if (threadContextStack != null) {
+            result.append("\n\tthreadContextStack = ").append(threadContextStack);
+        }
         if (threadContextMap != null) {
             result.append("\n\tthreadContextMap = ").append(threadContextMap);
         }

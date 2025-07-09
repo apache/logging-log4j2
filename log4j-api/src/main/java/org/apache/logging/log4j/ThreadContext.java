@@ -26,13 +26,13 @@ import java.util.Map;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap2;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.spi.ThreadContextStackFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 
@@ -196,6 +196,8 @@ public final class ThreadContext {
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
+    public static final ThreadContextStack NOOP_STACK = new NoOpThreadContextStack();
+
     private static final String DISABLE_STACK = "disableThreadContextStack";
     private static final String DISABLE_ALL = "disableThreadContext";
 
@@ -220,8 +222,8 @@ public final class ThreadContext {
     public static void init() {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         contextStack = properties.getBooleanProperty(DISABLE_STACK) || properties.getBooleanProperty(DISABLE_ALL)
-                ? new NoOpThreadContextStack()
-                : new DefaultThreadContextStack();
+                ? NOOP_STACK
+                : ThreadContextStackFactory.createThreadContextStack();
         // TODO: Fix the tests that need to reset the thread context map to use separate instance of the
         //       provider instead.
         ThreadContextMapFactory.init();
