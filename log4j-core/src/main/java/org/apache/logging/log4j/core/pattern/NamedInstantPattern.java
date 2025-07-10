@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.regex.Pattern;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -28,9 +29,9 @@ import org.jspecify.annotations.NullMarked;
 public enum NamedInstantPattern {
     ABSOLUTE("HH:mm:ss,SSS"),
 
-    ABSOLUTE_MICROS("HH:mm:ss,SSSSSS", "HH:mm:ss,nnnnnn"),
+    ABSOLUTE_MICROS("HH:mm:ss,SSSSSS"),
 
-    ABSOLUTE_NANOS("HH:mm:ss,SSSSSSSSS", "HH:mm:ss,nnnnnnnnn"),
+    ABSOLUTE_NANOS("HH:mm:ss,SSSSSSSSS"),
 
     ABSOLUTE_PERIOD("HH:mm:ss.SSS"),
 
@@ -42,9 +43,9 @@ public enum NamedInstantPattern {
 
     DEFAULT("yyyy-MM-dd HH:mm:ss,SSS"),
 
-    DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,SSSSSS", "yyyy-MM-dd HH:mm:ss,nnnnnn"),
+    DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,SSSSSS"),
 
-    DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,SSSSSSSSS", "yyyy-MM-dd HH:mm:ss,nnnnnnnnn"),
+    DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,SSSSSSSSS"),
 
     DEFAULT_PERIOD("yyyy-MM-dd HH:mm:ss.SSS"),
 
@@ -54,30 +55,26 @@ public enum NamedInstantPattern {
 
     ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS"),
 
-    ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSx", "yyyy-MM-dd'T'HH:mm:ss,SSSX"),
+    ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSx"),
 
-    ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSxx", "yyyy-MM-dd'T'HH:mm:ss,SSSXX"),
+    ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSxx"),
 
-    ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSxxx", "yyyy-MM-dd'T'HH:mm:ss,SSSXXX"),
+    ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSxxx"),
 
     ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS"),
 
-    ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", "yyyy-MM-dd'T'HH:mm:ss.nnnnnn"),
+    ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"),
 
     US_MONTH_DAY_YEAR2_TIME("dd/MM/yy HH:mm:ss.SSS"),
 
     US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS");
 
+    private static final Pattern NANO_PATTERN = Pattern.compile("S{4,}");
+
     private final String pattern;
-    private final String legacyPattern;
 
     NamedInstantPattern(String pattern) {
-        this(pattern, pattern);
-    }
-
-    NamedInstantPattern(String pattern, String legacyPattern) {
         this.pattern = pattern;
-        this.legacyPattern = legacyPattern;
     }
 
     /**
@@ -93,11 +90,74 @@ public enum NamedInstantPattern {
     /**
      * Returns the legacy {@link org.apache.logging.log4j.core.util.datetime.FixedDateFormat} pattern
      * associated with this named pattern.
+     * <p>
+     * If legacy formatters are enabled, output is produced for
+     * {@code FixedDateFormat} and {@code FastDateFormat}. To convert the {@code DateTimeFormatter}
+     * to its legacy counterpart, the following transformations need to be applied:
+     * </p>
+     * <table>
+     *   <caption>Pattern Differences</caption>
+     *   <thead>
+     *     <tr>
+     *       <th></th>
+     *       <th>Microseconds</th>
+     *       <th>Nanoseconds</th>
+     *       <th>Time-zone</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *       <td>Legacy formatter directive</td>
+     *       <td><code>nnnnnn</code></td>
+     *       <td><code>nnnnnnnnn</code></td>
+     *       <td><code>X</code>, <code>XX</code>, <code>XXX</code></td>
+     *     </tr>
+     *     <tr>
+     *       <td>{@code DateTimeFormatter} directive</td>
+     *       <td><code>SSSSSS</code></td>
+     *       <td><code>SSSSSSSSS</code></td>
+     *       <td><code>x</code>, <code>xx</code>, <code>xxx</code></td>
+     *     </tr>
+     *   </tbody>
+     * </table>
+     * <h2></h2>
+     * <ul>
+     *   <li>
+     *     <p>
+     *       Legacy formatters are largely compatible with the {@code SimpleDateFormat} specification,
+     *       but introduce a custom {@code n} pattern letter, unique to Log4j, to represent sub-millisecond precision.
+     *       This {@code n} is not part of the standard {@code SimpleDateFormat}.
+     *     </p>
+     *     <p>
+     *       In legacy formatters, repeating {@code n} increases the precision, similar to how repeated {@code S}
+     *       is used for fractional seconds in {@code DateTimeFormatter}.
+     *     </p>
+     *     <p>
+     *       In contrast, {@code DateTimeFormatter} interprets {@code n} as nano-of-second.
+     *       In Java 17, both {@code n} and {@code N} always output nanosecond precision,
+     *       regardless of the number of pattern letters.
+     *     </p>
+     *   </li>
+     *   <li>
+     *     <p>
+     *       Legacy formatters use <code>X</code>, <code>XX</code>, and <code>XXX</code> to format time zones as
+     *       <code>+00</code>, <code>+0000</code>, or <code>+00:00</code>, following {@code SimpleDateFormat} conventions.
+     *       In contrast, {@code DateTimeFormatter} outputs <code>Z</code> for zero-offset when using <code>X</code>.
+     *       To ensure numeric output for zero-offset (e.g., <code>+00</code>),
+     *       we use <code>x</code>, <code>xx</code>, or <code>xxx</code> instead.
+     *     </p>
+     *   </li>
+     * </ul>
      *
      * @return the legacy pattern string as used in
      * {@link org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat}
      */
     String getLegacyPattern() {
+        String legacyPattern = pattern.replace('x', 'X');
+        if (NANO_PATTERN.matcher(pattern).find()) {
+            // If the pattern contains sub-millis, replace 'S' with 'n' for legacy formatters
+            return legacyPattern.replace('S', 'n');
+        }
         return legacyPattern;
     }
 }
