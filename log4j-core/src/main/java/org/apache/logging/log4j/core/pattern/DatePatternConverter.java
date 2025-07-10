@@ -109,14 +109,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @since 2.25.0
      */
     static String decodeNamedPattern(final String pattern) {
-        // `FixedDateFormat` accepted two types of patterns:
-        //   - the names of `FixedFormat` enum constants (identical to `NamedInstantPattern` enum names),
-        //   - or custom pattern strings.
-        //
-        // To determine the format's precision, we cannot return the legacy name directly;
-        // instead, we must return the equivalent `FixedDateFormat` pattern string.
-        // These patterns are only recognized by `FixedDateFormat` so we make them available only
-        // via the package-private `getLegacyPattern()` method.
+        // See `NamedInstantPattern.getLegacyPattern()`
+        // for the difference between legacy and `DateTimeFormatter` patterns.
         try {
             NamedInstantPattern namedInstantPattern = NamedInstantPattern.valueOf(pattern);
             return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED
