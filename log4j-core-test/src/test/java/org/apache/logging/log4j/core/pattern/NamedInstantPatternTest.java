@@ -41,5 +41,6 @@ class NamedInstantPatternTest {
         MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(javaTimeInstant.getEpochSecond(), javaTimeInstant.getNano());
         assertThat(legacyFormatter.format(instant)).isEqualTo(formatter.format(instant));
+        assertThat(legacyFormatter.getPrecision()).isEqualTo(formatter.getPrecision());
     }
 }
