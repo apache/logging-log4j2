@@ -120,7 +120,7 @@ public enum NamedInstantPattern {
      *     </tr>
      *   </tbody>
      * </table>
-     * <h2></h2>
+     * <h4>Rationale</h4>
      * <ul>
      *   <li>
      *     <p>
