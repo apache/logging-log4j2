@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3800" link="https://github.com/apache/logging-log4j2/pull/3800"/>
+  <issue id="3770" link="https://github.com/apache/logging-log4j2/issues/3770"/>
   <description format="asciidoc">
-    Resolves `PropertiesConfiguration` compatibility issues with GraalVM and addresses additional minor reflection-related problems.
+    Restore compatibility with Spring Boot by allowing reconfiguration using the `LoggerContext.start` method.
   </description>
 </entry>
