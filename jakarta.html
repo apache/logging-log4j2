@@ -571,7 +571,7 @@ that takes care of configuring the Log4j lifecycle for you. Under the hood this 
 To do it, you must create a <code>web.xml</code> descriptor and add the <code>Log4jServletContextListener</code> explicitly as the <strong>first</strong> context listener:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/web.xml"><code>web.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/web.xml"><code>web.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;listener&gt;
   &lt;description&gt;Handles Log4j Core lifecycle&lt;/description&gt;
@@ -592,7 +592,7 @@ To do it, you must create a <code>web.xml</code> descriptor and add the <code>Lo
 or if you disabled the <a href="#isLog4jAutoInitializationDisabled">servlet container initializer</a>.</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/web.xml"><code>web.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/web.xml"><code>web.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;listener&gt;
   &lt;description&gt;Handles Log4j Core lifecycle&lt;/description&gt;
@@ -850,7 +850,7 @@ helper class is made available.
 Using this class you can either decorate a <code>Runnable</code> with method calls that bind the appropriate logger context to the thread:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/AsyncServlet.java"><code>AsyncServlet.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/AsyncServlet.java"><code>AsyncServlet.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">AsyncContext asyncContext = req.startAsync();
 asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(getServletContext(), () -&gt; {
@@ -863,7 +863,7 @@ asyncContext.start(WebLoggerContextUtils.wrapExecutionContext(getServletContext(
 <a href="javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html"><code>Log4jWebSupport</code></a>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/AsyncServlet.java"><code>AsyncServlet.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/AsyncServlet.java"><code>AsyncServlet.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">AsyncContext asyncContext = req.startAsync();
 Log4jWebSupport webSupport = WebLoggerContextUtils.getWebLifeCycle(getServletContext());
@@ -974,7 +974,7 @@ methods, including:</p>
 <li>
 <p>simple and parameterized log statements:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;log4j:debug message="Simple message"/&gt;
 &lt;log4j:info message="Hello {}!" p0="${param.who}"/&gt;
@@ -985,7 +985,7 @@ methods, including:</p>
 <li>
 <p>flow tracing statements:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;log4j:entry p0="${param.who}"/&gt;
 &lt;log4j:exit/&gt;</code></pre>
@@ -995,7 +995,7 @@ methods, including:</p>
 <li>
 <p>catching and throwing statements:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;c:catch var="exception"&gt;
     &lt;%= 5 / 0 %&gt;
@@ -1019,7 +1019,7 @@ methods, including:</p>
 <li>
 <p>tags to set the name of the logger used:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;log4j:setLogger logger="example.jsp"/&gt;</code></pre>
 </div>
@@ -1028,7 +1028,7 @@ methods, including:</p>
 <li>
 <p>a <code>dump</code> tag that prints the contents of a JSP scope:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/taglib.jsp"><code>taglib.jsp</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;log4j:dump scope="request"/&gt;</code></pre>
 </div>
@@ -1091,12 +1091,12 @@ per file, which will serialize concurrent access from multiple applications.</p>
 <p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-api/${log4j-api.version}"><code>log4j-api</code></a></p>
 </li>
 <li>
-<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.0"><code>log4j-core</code></a></p>
+<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.1"><code>log4j-core</code></a></p>
 </li>
 <li>
-<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jakarta-web/2.25.0"><code>log4j-jakarta-web</code></a>
+<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-jakarta-web/2.25.1"><code>log4j-jakarta-web</code></a>
 (or
-<a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-web/2.25.0"><code>log4j-web</code></a>
+<a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-web/2.25.1"><code>log4j-web</code></a>
 if you use a Java EE application server)</p>
 </li>
 </ul>
@@ -1569,7 +1569,7 @@ Log4j configuration property to <code>true</code>,</p>
 <li>
 <p>Each web application needs to configure the servlet context parameter <code>isLog4jContextSelectorNamed</code> to <code>true</code> and provide a value for the <code>log4jContextName</code> servlet context parameter and <code>java:comp/env/log4j/context-name</code> JNDI environment entry:</p>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/webapp/jndi.xml"><code>web.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/webapp/jndi.xml"><code>web.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;context-param&gt;
   &lt;param-name&gt;isLog4jContextSelectorNamed&lt;/param-name&gt;
@@ -1632,7 +1632,7 @@ Assuming <code>$CATALINA_BASE</code> is the main directory of your Tomcat instan
 <p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-api/${log4j-api.version}"><code>log4j-api</code></a>,</p>
 </li>
 <li>
-<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.0"><code>log4j-core</code></a>.</p>
+<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.1"><code>log4j-core</code></a>.</p>
 </li>
 </ul>
 </div>
@@ -1691,7 +1691,7 @@ See <a href="https://jetty.org/docs/jetty/12/operations-guide/modules/index.html
 <p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-api/${log4j-api.version}"><code>log4j-api</code></a>,</p>
 </li>
 <li>
-<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.0"><code>log4j-core</code></a>.</p>
+<p><a href="https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-core/2.25.1"><code>log4j-core</code></a>.</p>
 </li>
 </ul>
 </div>

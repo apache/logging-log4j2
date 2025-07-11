@@ -441,7 +441,7 @@ Existing usages are kept for backward compatibility reasons with the legacy conf
 </dl>
 </div>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/LowerLookup.java"><code>LowerLookup.java</code></a> (a <a href="lookups.html" class="xref page">lookup</a> for lower-casing its input) for a simple example.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/LowerLookup.java"><code>LowerLookup.java</code></a> (a <a href="lookups.html" class="xref page">lookup</a> for lower-casing its input) for a simple example.</p>
 </div>
 <details>
 <summary class="title">Click to read more on <strong>name collision</strong> and <strong>overriding an existing plugin</strong></summary>
@@ -477,7 +477,7 @@ In short, name collisions are even more unpredictable in an OSGi environment.</p
 </ul>
 </div>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example and notice these details:</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example and notice these details:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -524,7 +524,7 @@ In short, name collisions are even more unpredictable in an OSGi environment.</p
 <p>What is expected to be received is modelled as method arguments.
 Intended for simple plugins that receive less than a handful of values.</p>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/CsvParameterLayout.java"><code>CsvParameterLayout.java</code></a> for an example on <code>@PluginFactory</code> usage.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/CsvParameterLayout.java"><code>CsvParameterLayout.java</code></a> for an example on <code>@PluginFactory</code> usage.</p>
 </div>
 </dd>
 <dt class="hdlist1">a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginBuilderFactory.html"><code>@PluginBuilderFactory</code></a>-annotated static method of return type <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/util/Builder.html"><code>Builder&lt;T&gt;</code></a></dt>
@@ -557,7 +557,7 @@ This also allows a runtime-calculated default value, which isn&#8217;t allowed i
 </div>
 </details>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example on <code>@PluginBuilderFactory</code> usage.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example on <code>@PluginBuilderFactory</code> usage.</p>
 </div>
 </dd>
 </dl>
@@ -639,7 +639,7 @@ Unlike other plugins, the plugin name of a <code>TypeConverter</code> is purely 
 </ul>
 </div>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.java"><code>TypeConverters.java</code></a> for example implementations.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core/org/apache/logging/log4j/core/config/plugins/convert/TypeConverters.java"><code>TypeConverters.java</code></a> for example implementations.</p>
 </div>
 </div>
 <div class="sect3">
@@ -701,8 +701,8 @@ annotation processor creates such a file at compile-time.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The <code>GraalVmProcessor</code> needs to know the <code>groupId</code> and <code>artifactId</code> coordinates of your project.
-These must be supplied to the processor using the <code>log4j.graalvm.groupId</code> and <code>log4j.graalvm.artifactId</code> annotation processor options.</p>
+<p>The <code>GraalVmProcessor</code> requires your project&#8217;s <code>groupId</code> and <code>artifactId</code> to correctly generate the GraalVM reachability metadata file in the recommended location.
+Provide these values to the processor using the <code>log4j.graalvm.groupId</code> and <code>log4j.graalvm.artifactId</code> annotation processor options.</p>
 </div>
 </td>
 </tr>
@@ -730,15 +730,23 @@ These must be supplied to the processor using the <code>log4j.graalvm.groupId</c
   &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
   &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
   &lt;version&gt;${maven-compiler-plugin.version}&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;compilerArgs&gt;
+        &lt;!-- Provide the project coordinates to `GraalVmProcessor`: --&gt;
+        &lt;arg&gt;-Alog4j.graalvm.groupId=${project.groupId}&lt;/arg&gt;
+        &lt;arg&gt;-Alog4j.graalvm.artifactId=${project.artifactId}&lt;/arg&gt;
+    &lt;/compilerArgs&gt;
+  &lt;/configuration&gt;
   &lt;executions&gt;
     &lt;execution&gt;
-      &lt;id&gt;generate-log4j-plugin-descriptor&lt;/id&gt;
-      &lt;goals&gt;
-        &lt;goal&gt;compile&lt;/goal&gt;
-      &lt;/goals&gt;
-      &lt;phase&gt;process-classes&lt;/phase&gt;
+        &lt;!--
+          ~ Explicitly list the annotation processors for the default compile execution.
+          ~ This is required starting with JDK 23, where annotation processors are not enabled automatically.
+          ~ Explicit configuration also improves build reliability and clarity.
+          ~ For more details, see: https://inside.java/2024/06/18/quality-heads-up/
+          --&gt;
+      &lt;id&gt;default-compile&lt;/id&gt;
       &lt;configuration&gt;
-        &lt;proc&gt;only&lt;/proc&gt;
         &lt;annotationProcessorPaths&gt;
           &lt;!-- Include `log4j-core` providing
                1. `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` that generates `Log4j2Plugins.dat`
@@ -746,7 +754,7 @@ These must be supplied to the processor using the <code>log4j.graalvm.groupId</c
           &lt;path&gt;
             &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
             &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
-            &lt;version&gt;2.25.0&lt;/version&gt;
+            &lt;version&gt;2.25.1&lt;/version&gt;
           &lt;/path&gt;
         &lt;/annotationProcessorPaths&gt;
         &lt;annotationProcessors&gt;
@@ -755,11 +763,6 @@ These must be supplied to the processor using the <code>log4j.graalvm.groupId</c
           &lt;!-- Process sources using `GraalVmProcessor` to generate a GraalVM reachability metadata file --&gt;
           &lt;processor&gt;org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor&lt;/processor&gt;
         &lt;/annotationProcessors&gt;
-        &lt;compilerArgs&gt;
-          &lt;!-- Provide the project coordinates to `GraalVmProcessor`: --&gt;
-          &lt;arg&gt;-Alog4j.graalvm.groupId=${project.groupId}&lt;/arg&gt;
-          &lt;arg&gt;-Alog4j.graalvm.artifactId=${project.artifactId}&lt;/arg&gt;
-        &lt;/compilerArgs&gt;
       &lt;/configuration&gt;
     &lt;/execution&gt;
   &lt;/executions&gt;
@@ -780,7 +783,7 @@ dependencies {
   // Process sources using:
   // * `PluginProcessor` to generate `Log4j2Plugins.dat`
   // * `GraalVmProcessor` to generate a GraalVM reachability metadata file
-  annotationProcessor('org.apache.logging.log4j:log4j-core:2.25.0')
+  annotationProcessor('org.apache.logging.log4j:log4j-core:2.25.1')
 }</code></pre>
 </div>
 </div>
@@ -831,13 +834,13 @@ You can do this as follows:</p>
 <ul>
 <li>
 <p>If your plugin has a <a href="#declare-plugin-factory">plugin factory</a> (i.e., it is represented by a configuration file element), you can use <a href="#PluginElement">the <code>@PluginElement</code> annotation</a> to receive other plugins.
-See <code>@PluginElement("EventTemplateAdditionalField")</code> usage in <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example.</p>
+See <code>@PluginElement("EventTemplateAdditionalField")</code> usage in <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/JsonTemplateLayout.java"><code>JsonTemplateLayout.java</code></a> for an example.</p>
 </li>
 <li>
 <p>Otherwise, you can use
 <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/util/PluginUtil.html"><code>PluginUtil</code></a>,
 which is a convenient wrapper around <a href="#plugin-discovery"><code>PluginManager</code></a>, to discover and load plugins.
-See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/resolver/TemplateResolverFactories.java"><code>TemplateResolverFactories.java</code></a> for example usages.</p>
+See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-layout-template-json/src/main/java/org/apache/logging/log4j/layout/template/json/resolver/TemplateResolverFactories.java"><code>TemplateResolverFactories.java</code></a> for example usages.</p>
 </li>
 </ul>
 </div>

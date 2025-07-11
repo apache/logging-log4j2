@@ -352,6 +352,75 @@
 <article class="doc">
 <h1 class="page">Release notes</h1>
 <div class="sect1">
+<h2 id="release-notes-2-25-1"><a class="anchor" href="#release-notes-2-25-1"></a>2.25.1</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-07-05</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release addresses a dozen bugs in version <code>2.25.0</code>, in particular:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Resolves a concurrency issue in the new unified datetime formatter.</p>
+</li>
+<li>
+<p>Fixes build failures affecting Gradle users.</p>
+</li>
+<li>
+<p>Restores backward compatibility with Spring Boot’s common logging configuration.</p>
+</li>
+<li>
+<p>Improves handling of edge cases in GraalVM support.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-1-fixed"><a class="anchor" href="#release-notes-2-25-1-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix detection of the Disruptor major version in environments with non-standard thread context classloader. (<a href="https://github.com/apache/logging-log4j2/issues/3706">3706</a>)</p>
+</li>
+<li>
+<p>Downgrade <code>spotbugs-annotations</code> to resolve Gradle build failures. (<a href="https://github.com/apache/logging-log4j2/issues/3754">3754</a>)</p>
+</li>
+<li>
+<p>Fix incorrect version resolution of <code>jspecify</code> and <code>error_prone_annotations</code> dependencies in published POM files. (<a href="https://github.com/apache/logging-log4j2/issues/3758">3758</a>, <a href="https://github.com/apache/logging-log4j2/issues/3779">3779</a>)</p>
+</li>
+<li>
+<p>Restore compatibility with Spring Boot by allowing reconfiguration using the <code>LoggerContext.start</code> method. (<a href="https://github.com/apache/logging-log4j2/issues/3770">3770</a>)</p>
+</li>
+<li>
+<p>Allow omission of the <code>-Alog4j.graalvm.groupId</code> and <code>-Alog4j.graalvm.artifactId</code> arguments when building Log4j plugins. (<a href="https://github.com/apache/logging-log4j2/issues/3771">3771</a>)</p>
+</li>
+<li>
+<p>Broaden the OSGi manifest&#8217;s <code>Import-Package</code> constraints to support Jakarta Servlet API up to version 6. (<a href="https://github.com/apache/logging-log4j2/issues/3787">3787</a>)</p>
+</li>
+<li>
+<p>Enable the <code>resource:</code> protocol for configuration files by default when running on GraalVM. (<a href="https://github.com/apache/logging-log4j2/issues/3790">3790</a>)</p>
+</li>
+<li>
+<p>Fix timestamp formatting concurrency issue, when <code>log4j2.enabledThreadlocals</code> is <code>true</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3792">3792</a>)</p>
+</li>
+<li>
+<p>Fix GraalVM reachability metadata generation for methods with annotated array type parameters, such as <code>@Nullable String[]</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3796">3796</a>)</p>
+</li>
+<li>
+<p>Resolve <code>PropertiesConfiguration</code> compatibility issues with GraalVM and address additional minor reflection-related problems. (<a href="https://github.com/apache/logging-log4j2/pull/3800">3800</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-25-0"><a class="anchor" href="#release-notes-2-25-0"></a>2.25.0</h2>
 <div class="sectionbody">
 <div class="dlist">

@@ -439,7 +439,7 @@ Consider the following Log4j Core configuration file:</p>
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Appenders&gt;
   &lt;Console name="CONSOLE"&gt;
@@ -457,7 +457,7 @@ Consider the following Log4j Core configuration file:</p>
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"Appenders": {
   "Console": {
@@ -478,7 +478,7 @@ Consider the following Log4j Core configuration file:</p>
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">Appenders:
   Console:
@@ -495,7 +495,7 @@ Loggers:
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/ConfigurationBuilder/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">appender.0.type = Console
 appender.0.name = CONSOLE
@@ -512,7 +512,7 @@ rootLogger.appenderRef.0.ref = CONSOLE</code></pre>
 <p>Above Log4j Core configuration can be programmatically built using <code>ConfigurationBuilder</code> as follows:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationBuilder&lt;BuiltConfiguration&gt; configBuilder =
         ConfigurationBuilderFactory.newConfigurationBuilder(); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -581,7 +581,7 @@ Though there are cases where the provided convenience methods fall short of:</p>
 <p>For those, you can use the generic <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilder.html#newComponent()"><code>ConfigurationBuilder#newComponent()</code></a> method.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/log4j-core-test/src/test/java/org/apache/logging/log4j/core/config/Configurator1Test.java"><code>Configurator1Test.java</code></a> for examples on <code>ConfigurationBuilder</code>, <code>newComponent()</code>, etc. usage.</p>
+<p>See <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core-test/src/test/java/org/apache/logging/log4j/core/config/Configurator1Test.java"><code>Configurator1Test.java</code></a> for examples on <code>ConfigurationBuilder</code>, <code>newComponent()</code>, etc. usage.</p>
 </div>
 </div>
 <div class="sect2">
@@ -595,7 +595,7 @@ Though there are cases where the provided convenience methods fall short of:</p>
 <p>You can use <code>Configurator</code> to obtain a <code>LoggerContext</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Configuration configuration = createConfiguration();
 try (LoggerContext loggerContext = Configurator.initialize(configuration)) {
@@ -614,7 +614,7 @@ This is a convenient way to create isolated <code>LoggerContext</code>s for test
 <p>You can use <code>Configurator</code> to reconfigure the active <code>LoggerContext</code> as follows:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Configuration configuration = createConfiguration();
 Configurator.reconfigure(configuration);</code></pre>
@@ -649,7 +649,7 @@ You need to</p>
 <p>Consider the example below:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/ExampleConfigurationFactory.java"><code>ExampleConfigurationFactory.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/ExampleConfigurationFactory.java"><code>ExampleConfigurationFactory.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Order(100)
 @Plugin(name = "ExampleConfigurationFactory", category = ConfigurationFactory.CATEGORY)
@@ -698,7 +698,7 @@ Hence, you are encouraged to implement <code>getConfiguration(LoggerContext, Str
 You can use this <code>getInstance()</code> method to load a configuration file programmatically, granted that the input file format is supported by at least one of the available <code>ConfigurationFactory</code> plugins:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationFactory.getInstance()
         .getConfiguration(
@@ -748,7 +748,7 @@ Yet you want to allow users to extend it whenever necessary.</p>
 <p>You can programmatically combine multiple configurations into a single one using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html"><code>CompositeConfiguration</code></a>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.0/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/customconfig/Usage.java"><code>Usage.java</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ConfigurationFactory configFactory = ConfigurationFactory.getInstance();
 AbstractConfiguration commonConfig = (AbstractConfiguration) <i class="conum" data-value="2"></i><b>(2)</b>
