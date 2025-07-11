@@ -21,9 +21,17 @@
 
 [cols="1h,5"]
 |===
-| Env. variable | `LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS`
-| Type          | Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols
-| Default value | `file, https, jar`
+| Env. variable
+| `LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS`
+
+| Type
+| Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols
+
+| Default value
+|
+`file, https, jar` (JVM)
+
+`file, https, jar, resource` (GraalVM)
 |===
 
 A comma separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URL.html[`URL`] protocols that may be used to load any kind of configuration source.
