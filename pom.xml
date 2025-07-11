@@ -279,7 +279,7 @@
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
-    <tag>rel/2.25.1</tag>
+    <tag>2.x</tag>
     <url>https://github.com/apache/logging-log4j2</url>
   </scm>
 
