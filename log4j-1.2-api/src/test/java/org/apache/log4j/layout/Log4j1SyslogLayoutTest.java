@@ -78,7 +78,7 @@ class Log4j1SyslogLayoutTest {
                 .build();
         assertEquals(expected, appenderLayout.toSerializable(logEvent));
         final StringLayout messageLayout =
-                PatternLayout.newBuilder().withPattern("%m").build();
+                PatternLayout.newBuilder().setPattern("%m").build();
         appenderLayout = Log4j1SyslogLayout.newBuilder()
                 .setFacility(facility)
                 .setHeader(header)

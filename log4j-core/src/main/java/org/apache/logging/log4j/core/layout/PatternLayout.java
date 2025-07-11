@@ -313,15 +313,15 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginAttribute("header") final String headerPattern,
             @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()
-                .withPattern(pattern)
-                .withPatternSelector(patternSelector)
-                .withConfiguration(config)
-                .withRegexReplacement(replace)
-                .withCharset(charset)
-                .withAlwaysWriteExceptions(alwaysWriteExceptions)
-                .withNoConsoleNoAnsi(noConsoleNoAnsi)
-                .withHeader(headerPattern)
-                .withFooter(footerPattern)
+                .setPattern(pattern)
+                .setPatternSelector(patternSelector)
+                .setConfiguration(config)
+                .setRegexReplacement(replace)
+                .setCharset(charset)
+                .setAlwaysWriteExceptions(alwaysWriteExceptions)
+                .setNoConsoleNoAnsi(noConsoleNoAnsi)
+                .setHeader(headerPattern)
+                .setFooter(footerPattern)
                 .build();
     }
 
@@ -613,7 +613,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
      */
     public static PatternLayout createDefaultLayout(final Configuration configuration) {
-        return newBuilder().withConfiguration(configuration).build();
+        return newBuilder().setConfiguration(configuration).build();
     }
 
     /**
@@ -667,8 +667,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param pattern
          *        The pattern. If not specified, defaults to DEFAULT_CONVERSION_PATTERN.
+         * @since 2.26.0
          */
-        public Builder withPattern(final String pattern) {
+        public Builder setPattern(final String pattern) {
             this.pattern = pattern;
             return this;
         }
@@ -676,8 +677,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param patternSelector
          *        Allows different patterns to be used based on some selection criteria.
+         * @since 2.26.0
          */
-        public Builder withPatternSelector(final PatternSelector patternSelector) {
+        public Builder setPatternSelector(final PatternSelector patternSelector) {
             this.patternSelector = patternSelector;
             return this;
         }
@@ -685,8 +687,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param configuration
          *        The Configuration. Some Converters require access to the Interpolator.
+         * @since 2.26.0
          */
-        public Builder withConfiguration(final Configuration configuration) {
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -694,8 +697,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param regexReplacement
          *        A Regex replacement
+         * @since 2.26.0
          */
-        public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
+        public Builder setRegexReplacement(final RegexReplacement regexReplacement) {
             this.regexReplacement = regexReplacement;
             return this;
         }
@@ -703,8 +707,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param charset
          *        The character set. The platform default is used if not specified.
+         * @since 2.26.0
          */
-        public Builder withCharset(final Charset charset) {
+        public Builder setCharset(final Charset charset) {
             // LOG4J2-783 if null, use platform default by default
             if (charset != null) {
                 this.charset = charset;
@@ -715,8 +720,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param alwaysWriteExceptions
          *        If {@code "true"} (default) exceptions are always written even if the pattern contains no exception tokens.
+         * @since 2.26.0
          */
-        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+        public Builder setAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
             this.alwaysWriteExceptions = alwaysWriteExceptions;
             return this;
         }
@@ -724,8 +730,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param disableAnsi
          *        If {@code true}, do not output ANSI escape codes.
+         * @since 2.26.0
          */
-        public Builder withDisableAnsi(final boolean disableAnsi) {
+        public Builder setDisableAnsi(final boolean disableAnsi) {
             this.disableAnsi = disableAnsi;
             return this;
         }
@@ -733,8 +740,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param noConsoleNoAnsi
          *        If {@code "true"} (default is false) and {@link System#console()} is null, do not output ANSI escape codes
+         * @since 2.26.0
          */
-        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+        public Builder setNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
@@ -742,8 +750,9 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param header
          *        The header to place at the top of the document, once.
+         * @since 2.26.0
          */
-        public Builder withHeader(final String header) {
+        public Builder setHeader(final String header) {
             this.header = header;
             return this;
         }
@@ -751,7 +760,101 @@ public final class PatternLayout extends AbstractStringLayout {
         /**
          * @param footer
          *        The footer to place at the bottom of the document, once.
+         * @since 2.26.0
          */
+        public Builder setFooter(final String footer) {
+            this.footer = footer;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setPattern(String)}.
+         */
+        @Deprecated
+        public Builder withPattern(final String pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setPatternSelector(PatternSelector)}.
+         */
+        @Deprecated
+        public Builder withPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
+         */
+        @Deprecated
+        public Builder withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setRegexReplacement(RegexReplacement)}.
+         */
+        @Deprecated
+        public Builder withRegexReplacement(final RegexReplacement regexReplacement) {
+            this.regexReplacement = regexReplacement;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setCharset(Charset)}.
+         */
+        @Deprecated
+        public Builder withCharset(final Charset charset) {
+            // LOG4J2-783 if null, use platform default by default
+            if (charset != null) {
+                this.charset = charset;
+            }
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setAlwaysWriteExceptions(boolean)}.
+         */
+        @Deprecated
+        public Builder withAlwaysWriteExceptions(final boolean alwaysWriteExceptions) {
+            this.alwaysWriteExceptions = alwaysWriteExceptions;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setDisableAnsi(boolean)}.
+         */
+        @Deprecated
+        public Builder withDisableAnsi(final boolean disableAnsi) {
+            this.disableAnsi = disableAnsi;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setNoConsoleNoAnsi(boolean)}.
+         */
+        @Deprecated
+        public Builder withNoConsoleNoAnsi(final boolean noConsoleNoAnsi) {
+            this.noConsoleNoAnsi = noConsoleNoAnsi;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setHeader(String)}.
+         */
+        @Deprecated
+        public Builder withHeader(final String header) {
+            this.header = header;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFooter(String)}.
+         */
+        @Deprecated
         public Builder withFooter(final String footer) {
             this.footer = footer;
             return this;

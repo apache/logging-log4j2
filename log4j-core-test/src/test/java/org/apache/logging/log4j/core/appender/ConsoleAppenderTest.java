@@ -92,7 +92,7 @@ class ConsoleAppenderTest {
         try {
             systemSetter.systemSet(psMock);
             final Layout<String> layout =
-                    PatternLayout.newBuilder().withAlwaysWriteExceptions(true).build();
+                    PatternLayout.newBuilder().setAlwaysWriteExceptions(true).build();
             final ConsoleAppender app = ConsoleAppender.newBuilder()
                     .setLayout(layout)
                     .setTarget(targetName)

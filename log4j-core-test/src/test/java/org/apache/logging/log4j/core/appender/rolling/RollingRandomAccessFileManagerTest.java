@@ -300,11 +300,11 @@ class RollingRandomAccessFileManagerTest {
 
         // Create the manager.
         final RolloverStrategy rolloverStrategy = DefaultRolloverStrategy.newBuilder()
-                .withMax("7")
-                .withMin("1")
-                .withFileIndex("max")
-                .withStopCustomActionsOnError(false)
-                .withConfig(new DefaultConfiguration())
+                .setMax("7")
+                .setMin("1")
+                .setFileIndex("max")
+                .setStopCustomActionsOnError(false)
+                .setConfig(new DefaultConfiguration())
                 .build();
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 file.getAbsolutePath(),

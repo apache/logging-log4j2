@@ -123,13 +123,13 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             if (strategy == null) {
                 if (fileName != null) {
                     strategy = DefaultRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 } else {
                     strategy = DirectWriteRolloverStrategy.newBuilder()
-                            .withCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
-                            .withConfig(getConfiguration())
+                            .setCompressionLevelStr(String.valueOf(Deflater.DEFAULT_COMPRESSION))
+                            .setConfig(getConfiguration())
                             .build();
                 }
             } else if (fileName == null && !(strategy instanceof DirectFileRolloverStrategy)) {
@@ -212,31 +212,103 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return fileGroup;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public B setAdvertise(final boolean advertise) {
+            this.advertise = advertise;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setAdvertiseUri(final String advertiseUri) {
+            this.advertiseUri = advertiseUri;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setAppend(final boolean append) {
+            this.append = append;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setFileName(final String fileName) {
+            this.fileName = fileName;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setLocking(final boolean locking) {
+            this.locking = locking;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setAdvertise(boolean)}.
+         */
+        @Deprecated
         public B withAdvertise(final boolean advertise) {
             this.advertise = advertise;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setAdvertiseUri(String)}.
+         */
+        @Deprecated
         public B withAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setAppend(boolean)}.
+         */
+        @Deprecated
         public B withAppend(final boolean append) {
             this.append = append;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileName(String)}.
+         */
+        @Deprecated
         public B withFileName(final String fileName) {
             this.fileName = fileName;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setCreateOnDemand(boolean)}.
+         */
+        @Deprecated
         public B withCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setLocking(boolean)}.
+         */
+        @Deprecated
         public B withLocking(final boolean locking) {
             this.locking = locking;
             return asBuilder();
@@ -254,31 +326,103 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             return strategy;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public B setFilePattern(final String filePattern) {
+            this.filePattern = filePattern;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setPolicy(final TriggeringPolicy policy) {
+            this.policy = policy;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setStrategy(final RolloverStrategy strategy) {
+            this.strategy = strategy;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setFilePermissions(final String filePermissions) {
+            this.filePermissions = filePermissions;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public B setFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFilePattern(String)}.
+         */
+        @Deprecated
         public B withFilePattern(final String filePattern) {
             this.filePattern = filePattern;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setPolicy(TriggeringPolicy)}.
+         */
+        @Deprecated
         public B withPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setStrategy(RolloverStrategy)}.
+         */
+        @Deprecated
         public B withStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setFilePermissions(String)}.
+         */
+        @Deprecated
         public B withFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileOwner(String)}.
+         */
+        @Deprecated
         public B withFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return asBuilder();
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileGroup(String)}.
+         */
+        @Deprecated
         public B withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return asBuilder();
@@ -406,23 +550,23 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         final int bufferSize = Integers.parseInt(bufferSizeStr, DEFAULT_BUFFER_SIZE);
         // @formatter:off
         return RollingFileAppender.<B>newBuilder()
-                .withAdvertise(Boolean.parseBoolean(advertise))
-                .withAdvertiseUri(advertiseUri)
-                .withAppend(Booleans.parseBoolean(append, true))
-                .withBufferedIo(Booleans.parseBoolean(bufferedIO, true))
-                .withBufferSize(bufferSize)
+                .setAdvertise(Boolean.parseBoolean(advertise))
+                .setAdvertiseUri(advertiseUri)
+                .setAppend(Booleans.parseBoolean(append, true))
+                .setBufferedIo(Booleans.parseBoolean(bufferedIO, true))
+                .setBufferSize(bufferSize)
                 .setConfiguration(config)
-                .withFileName(fileName)
-                .withFilePattern(filePattern)
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
                 .setFilter(filter)
                 .setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
-                .withImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
+                .setImmediateFlush(Booleans.parseBoolean(immediateFlush, true))
                 .setLayout(layout)
-                .withCreateOnDemand(false)
-                .withLocking(false)
+                .setCreateOnDemand(false)
+                .setLocking(false)
                 .setName(name)
-                .withPolicy(policy)
-                .withStrategy(strategy)
+                .setPolicy(policy)
+                .setStrategy(strategy)
                 .build();
         // @formatter:on
     }
