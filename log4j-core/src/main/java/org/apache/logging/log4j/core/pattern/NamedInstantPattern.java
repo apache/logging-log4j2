@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.regex.Pattern;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -29,9 +28,9 @@ import org.jspecify.annotations.NullMarked;
 public enum NamedInstantPattern {
     ABSOLUTE("HH:mm:ss,SSS"),
 
-    ABSOLUTE_MICROS("HH:mm:ss,SSSSSS"),
+    ABSOLUTE_MICROS("HH:mm:ss,SSSSSS", "HH:mm:ss,nnnnnn"),
 
-    ABSOLUTE_NANOS("HH:mm:ss,SSSSSSSSS"),
+    ABSOLUTE_NANOS("HH:mm:ss,SSSSSSSSS", "HH:mm:ss,nnnnnnnnn"),
 
     ABSOLUTE_PERIOD("HH:mm:ss.SSS"),
 
@@ -43,9 +42,9 @@ public enum NamedInstantPattern {
 
     DEFAULT("yyyy-MM-dd HH:mm:ss,SSS"),
 
-    DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,SSSSSS"),
+    DEFAULT_MICROS("yyyy-MM-dd HH:mm:ss,SSSSSS", "yyyy-MM-dd HH:mm:ss,nnnnnn"),
 
-    DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,SSSSSSSSS"),
+    DEFAULT_NANOS("yyyy-MM-dd HH:mm:ss,SSSSSSSSS", "yyyy-MM-dd HH:mm:ss,nnnnnnnnn"),
 
     DEFAULT_PERIOD("yyyy-MM-dd HH:mm:ss.SSS"),
 
@@ -55,26 +54,30 @@ public enum NamedInstantPattern {
 
     ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS"),
 
-    ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSx"),
+    ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSx", "yyyy-MM-dd'T'HH:mm:ss,SSSX"),
 
-    ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSxx"),
+    ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSxx", "yyyy-MM-dd'T'HH:mm:ss,SSSXX"),
 
-    ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSxxx"),
+    ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSxxx", "yyyy-MM-dd'T'HH:mm:ss,SSSXXX"),
 
     ISO8601_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSS"),
 
-    ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"),
+    ISO8601_PERIOD_MICROS("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", "yyyy-MM-dd'T'HH:mm:ss.nnnnnn"),
 
     US_MONTH_DAY_YEAR2_TIME("dd/MM/yy HH:mm:ss.SSS"),
 
     US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS");
 
-    private static final Pattern NANO_PATTERN = Pattern.compile("S{4,}");
-
     private final String pattern;
+    private final String legacyPattern;
 
     NamedInstantPattern(String pattern) {
+        this(pattern, pattern);
+    }
+
+    NamedInstantPattern(String pattern, String legacyPattern) {
         this.pattern = pattern;
+        this.legacyPattern = legacyPattern;
     }
 
     /**
@@ -153,11 +156,6 @@ public enum NamedInstantPattern {
      * {@link org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat}
      */
     String getLegacyPattern() {
-        String legacyPattern = pattern.replace('x', 'X');
-        if (NANO_PATTERN.matcher(pattern).find()) {
-            // If the pattern contains sub-millis, replace 'S' with 'n' for legacy formatters
-            return legacyPattern.replace('S', 'n');
-        }
         return legacyPattern;
     }
 }
