@@ -30,7 +30,7 @@
 
   <properties>
     <commons-compress.version>1.27.1</commons-compress.version>
-    <jimfs.version>1.3.0</jimfs.version>
+    <jimfs.version>1.3.1</jimfs.version>
     <xz.version>1.10</xz.version>
     <zstd.version>1.5.7-4</zstd.version>
   </properties>
