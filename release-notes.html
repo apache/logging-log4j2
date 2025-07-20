@@ -1379,10 +1379,19 @@ system property.</p>
 </dl>
 </div>
 <div class="paragraph">
-<p>This release adds support for LMAX Disruptor 4.x and several performance and bug fixes.</p>
+<p>This release adds support for LMAX Disruptor 4.x, revamps <code>StatusLogger</code>, and incorporates several performance and bug fixes.</p>
 </div>
 <div class="paragraph">
 <p>In order to maintain compatibility with JRE 8, support for LMAX Disruptor 3.x is maintained.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-23-0-StatusLogger"><a class="anchor" href="#release-notes-2-23-0-StatusLogger"></a><code>StatusLogger</code> improvements</h3>
+<div class="paragraph">
+<p><code>StatusLogger</code> is a standalone, self-sufficient <code>Logger</code> implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.
+This release improves <code>StatusLogger</code> to make it self-contained and testable.
+During this simplification, the message factory for <code>log4j-to-slf4j</code> and <code>log4j-to-jul</code> is fixed to <code>ParameterizedMessageFactory</code>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="release-notes-2-23-0-added"><a class="anchor" href="#release-notes-2-23-0-added"></a>Added</h3>
@@ -1398,6 +1407,9 @@ system property.</p>
 <h3 id="release-notes-2-23-0-changed"><a class="anchor" href="#release-notes-2-23-0-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Make <code>StatusLogger</code> self-contained and testable (<a href="https://github.com/apache/logging-log4j2/pull/2249">2249</a>)</p>
+</li>
 <li>
 <p>Simplify BND configuration after upgrade from version <code>6.4.1</code> to <code>7.0.0</code></p>
 </li>
