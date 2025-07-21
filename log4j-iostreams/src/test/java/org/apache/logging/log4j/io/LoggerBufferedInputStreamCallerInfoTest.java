@@ -19,12 +19,17 @@ package org.apache.logging.log4j.io;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerBufferedInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private BufferedInputStream logIn;
+
+    LoggerBufferedInputStreamCallerInfoTest(LoggerContext context) {
+        super(context);
+    }
 
     @Test
     public void close() throws Exception {
@@ -58,7 +63,7 @@ public class LoggerBufferedInputStreamCallerInfoTest extends IoBuilderCallerInfo
         this.logIn.close();
     }
 
-    @Before
+    @BeforeEach
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
         this.logIn = (BufferedInputStream) IoBuilder.forLogger(getLogger())

@@ -18,19 +18,27 @@ package org.apache.logging.log4j.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
+@LoggerContextSource("log4j2-streams-unit-test.xml")
 public abstract class AbstractStreamTest {
 
-    protected static ExtendedLogger getExtendedLogger() {
-        return ctx.getLogger("UnitTestLogger");
+    private LoggerContext context = null;
+
+    AbstractStreamTest(LoggerContext context) {
+        this.context = context;
+    }
+
+    protected ExtendedLogger getExtendedLogger() {
+        return context.getLogger("UnitTestLogger");
     }
 
     protected static final String NEWLINE = System.lineSeparator();
@@ -39,20 +47,19 @@ public abstract class AbstractStreamTest {
 
     protected static final String LAST = "last";
 
-    @ClassRule
-    public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-unit-test.xml");
-
     protected void assertMessages(final String... messages) {
-        final List<String> actualMsgs = ctx.getListAppender("UnitTest").getMessages();
-        assertEquals("Unexpected number of results.", messages.length, actualMsgs.size());
+        ListAppender listApp = context.getConfiguration().getAppender("UnitTest");
+        final List<String> actualMsgs = listApp.getMessages();
+        assertEquals(messages.length, actualMsgs.size(), "Unexpected number of results.");
         for (int i = 0; i < messages.length; i++) {
             final String start = LEVEL.name() + ' ' + messages[i];
             assertThat(actualMsgs.get(i), startsWith(start));
         }
     }
 
-    @Before
+    @BeforeEach
     public void clearAppender() {
-        ctx.getListAppender("UnitTest").clear();
+        ListAppender listApp = context.getConfiguration().getAppender("UnitTest");
+        listApp.clear();
     }
 }
