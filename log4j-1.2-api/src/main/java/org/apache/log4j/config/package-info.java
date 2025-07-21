@@ -18,7 +18,7 @@
  * Log4j 1.x compatibility layer.
  */
 @Export
-@Version("2.20.1")
+@Version("2.21.0")
 @Open("org.apache.logging.log4j.core")
 package org.apache.log4j.config;
 
