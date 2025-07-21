@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -70,5 +73,23 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     @Override
     public String[] getSupportedTypes() {
         return SUFFIXES;
+    }
+
+    /**
+     * Returns the file extensions supported by this JSON configuration factory.
+     *
+     * <p>This method returns JSON file extensions that this factory can process.
+     * The factory requires Jackson dependencies to be available on the classpath.
+     * If Jackson libraries are missing, this method returns an empty list.</p>
+     *
+     * @return a list containing "json" and "jsn" extensions if Jackson dependencies
+     *         are available and the factory is active, empty list otherwise
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        if (!isActive()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList("json", "jsn");
     }
 }

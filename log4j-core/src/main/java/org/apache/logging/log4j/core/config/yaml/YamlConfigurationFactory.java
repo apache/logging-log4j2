@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.yaml;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -71,5 +74,23 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
     @Override
     public String[] getSupportedTypes() {
         return SUFFIXES;
+    }
+
+    /**
+     * Returns the file extensions supported by this YAML configuration factory.
+     *
+     * <p>This method returns YAML file extensions that this factory can process.
+     * The factory requires Jackson YAML dependencies to be available on the classpath.
+     * If Jackson YAML libraries are missing, this method returns an empty list.</p>
+     *
+     * @return a list containing "yml" and "yaml" extensions if Jackson YAML dependencies
+     *         are available and the factory is active, empty list otherwise
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        if (!isActive()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList("yml", "yaml");
     }
 }

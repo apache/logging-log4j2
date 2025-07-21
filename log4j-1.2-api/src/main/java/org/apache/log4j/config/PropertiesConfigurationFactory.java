@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.config;
 
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -50,6 +52,11 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
             return null;
         }
         return new String[] {FILE_EXTENSION};
+    }
+
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return Collections.emptyList();
     }
 
     @Override
