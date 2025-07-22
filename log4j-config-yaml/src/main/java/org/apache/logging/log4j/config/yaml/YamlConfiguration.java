@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.config.yaml;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.apache.logging.log4j.config.jackson.AbstractJacksonConfiguration;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 /**
  * Creates a Node hierarchy from a YAML file.
@@ -41,8 +40,6 @@ public class YamlConfiguration extends AbstractJacksonConfiguration {
 
     @Override
     protected ObjectMapper getObjectMapper() {
-        return YAMLMapper.builder()
-                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
-                .build();
+        return YAMLMapper.builder().build();
     }
 }
