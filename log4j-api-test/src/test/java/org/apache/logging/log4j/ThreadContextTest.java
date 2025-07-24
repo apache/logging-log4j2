@@ -162,6 +162,58 @@ class ThreadContextTest {
         assertFalse(ThreadContext.containsKey("testKey"));
     }
 
+    @Test
+    void testStackBasicOperations() {
+        ThreadContext.clearStack();
+        assertEquals(0, ThreadContext.getDepth(), "Stack should be empty initially");
+
+        ThreadContext.push("first");
+        assertEquals(1, ThreadContext.getDepth(), "Stack depth should be 1");
+        assertEquals("first", ThreadContext.peek(), "Peek should return last pushed item");
+
+        ThreadContext.push("second");
+        assertEquals(2, ThreadContext.getDepth(), "Stack depth should be 2");
+        assertEquals("second", ThreadContext.peek(), "Peek should return last pushed item");
+
+        assertEquals("second", ThreadContext.pop(), "Pop should return last pushed item");
+        assertEquals(1, ThreadContext.getDepth(), "Stack depth should be 1 after pop");
+        assertEquals("first", ThreadContext.peek(), "Peek should return remaining item");
+
+        ThreadContext.clearStack();
+        assertEquals(0, ThreadContext.getDepth(), "Stack should be empty after clear");
+    }
+
+    @Test
+    void testCustomStackIntegration() {
+        String originalProperty = System.getProperty("log4j2.threadContextStack");
+        try {
+            System.setProperty(
+                    "log4j2.threadContextStack",
+                    "org.apache.logging.log4j.spi.ThreadContextStackFactoryTest$CustomThreadContextStack");
+            ThreadContext.init();
+            ThreadContext.push("test");
+            assertEquals("test", ThreadContext.peek(), "Custom stack should work normally");
+        } finally {
+            if (originalProperty != null) {
+                System.setProperty("log4j2.threadContextStack", originalProperty);
+            } else {
+                System.clearProperty("log4j2.threadContextStack");
+            }
+            ThreadContext.init();
+        }
+    }
+
+    @Test
+    void testClearAll() {
+        ThreadContext.put("key", "value");
+        ThreadContext.push("stackItem");
+        assertFalse(ThreadContext.isEmpty(), "Map should not be empty");
+        assertEquals(1, ThreadContext.getDepth(), "Stack should not be empty");
+        ThreadContext.clearAll();
+        assertTrue(ThreadContext.isEmpty(), "Map should be empty after clearAll");
+        assertEquals(0, ThreadContext.getDepth(), "Stack should be empty after clearAll");
+    }
+
     private static class TestThread extends Thread {
 
         private final StringBuilder sb;
