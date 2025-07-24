@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -262,6 +263,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     protected abstract String[] getSupportedTypes();
+
+    /**
+     * Returns the file extensions supported by this configuration factory.
+     *
+     * @return list of supported file extensions (e.g., ["xml", "json"])
+     * @since 2.25.0
+     */
+    public abstract List<String> getSupportedExtensions();
 
     protected String getTestPrefix() {
         return TEST_PREFIX;
@@ -554,6 +563,16 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         }
 
         @Override
+        public List<String> getSupportedExtensions() {
+            return getFactories().stream()
+                    .filter(factory -> factory != this)
+                    .filter(ConfigurationFactory::isActive)
+                    .flatMap(factory -> factory.getSupportedExtensions().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+
+        @Override
         public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
             if (source != null) {
                 final String config = source.getLocation();
@@ -616,5 +635,20 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     static List<ConfigurationFactory> getFactories() {
         return factories;
+    }
+
+    /**
+     * Returns all configuration file extensions currently supported at runtime.
+     * This aggregates extensions from all active configuration factories.
+     *
+     * @return list of supported file extensions
+     * @since 2.25.0
+     */
+    public static List<String> getActiveFileExtensions() {
+        return getFactories().stream()
+                .filter(ConfigurationFactory::isActive)
+                .flatMap(factory -> factory.getSupportedExtensions().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
