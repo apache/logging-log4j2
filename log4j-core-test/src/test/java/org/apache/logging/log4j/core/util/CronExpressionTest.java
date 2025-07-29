@@ -16,12 +16,21 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import org.assertj.core.presentation.Representation;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -170,5 +179,89 @@ class CronExpressionTest {
         System.err.println(sdf.format(fireDate));
         final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
         assertEquals(expected, fireDate, "Dates not equal.");
+    }
+
+    /**
+     * Test that the next valid time after a fallback at 2:00 am from Daylight Saving Time
+     */
+    @Test
+    void daylightSavingChangeAtTwoAm() throws Exception {
+        ZoneId zoneId = ZoneId.of("Australia/Sydney");
+        Representation representation = new ZoneOffsetRepresentation(ZoneOffset.ofHours(11));
+        // The beginning of the day when daylight saving time ends in Australia in 2025 (switch from UTC+11 to UTC+10).
+        Instant april5 =
+                ZonedDateTime.of(2025, 4, 4, 13, 0, 0, 0, ZoneOffset.UTC).toInstant();
+        Instant april6 = april5.plus(24, ChronoUnit.HOURS);
+        Instant april7 = april6.plus(25, ChronoUnit.HOURS);
+
+        final CronExpression expression = new CronExpression("0 0 0 * * ?");
+        expression.setTimeZone(TimeZone.getTimeZone(zoneId));
+        // Check the next valid time after 23:59:59.999 on the day before DST ends.
+        Date currentTime = Date.from(april6.minusMillis(1));
+        Instant previousTime = expression.getPrevFireTime(currentTime).toInstant();
+        assertThat(previousTime).withRepresentation(representation).isEqualTo(april5);
+        Instant nextTime = expression.getNextValidTimeAfter(currentTime).toInstant();
+        assertThat(nextTime).withRepresentation(representation).isEqualTo(april6);
+        // Check the next valid time after 00:00:00.001 on the day DST ends.
+        currentTime = Date.from(april6.plusMillis(1));
+        previousTime = expression.getPrevFireTime(currentTime).toInstant();
+        assertThat(previousTime).withRepresentation(representation).isEqualTo(april6);
+        nextTime = expression.getNextValidTimeAfter(currentTime).toInstant();
+        assertThat(nextTime).withRepresentation(representation).isEqualTo(april7);
+    }
+
+    /**
+     * Test that the next valid time after a fallback at 0:00 am from Daylight Saving Time
+     */
+    @Test
+    void daylightSavingChangeAtMidnight() throws Exception {
+        ZoneId zoneId = ZoneId.of("America/Santiago");
+        Representation representation = new ZoneOffsetRepresentation(ZoneOffset.ofHours(-3));
+        // The beginning of the day when daylight saving time ends in Chile in 2025 (switch from UTC-3 to UTC-4).
+        Instant april5 =
+                ZonedDateTime.of(2025, 4, 5, 3, 0, 0, 0, ZoneOffset.UTC).toInstant();
+        // Midnight according to Daylight Saving Time.
+        Instant april6Dst = april5.plus(24, ChronoUnit.HOURS);
+        // Midnight according to Standard Time.
+        Instant april6 = april6Dst.plus(1, ChronoUnit.HOURS);
+        Instant april7 = april6.plus(24, ChronoUnit.HOURS);
+
+        final CronExpression expression = new CronExpression("0 0 0 * * ?");
+        expression.setTimeZone(TimeZone.getTimeZone(zoneId));
+        // Check the next valid time after 23:59:59.999 DST (22:59.59.999 standard) on the day before DST ends.
+        Date currentTime = Date.from(april6Dst.minusMillis(1));
+        Instant previousTime = expression.getPrevFireTime(currentTime).toInstant();
+        assertThat(previousTime).withRepresentation(representation).isEqualTo(april5);
+        Instant nextTime = expression.getNextValidTimeAfter(currentTime).toInstant();
+        assertThat(nextTime).withRepresentation(representation).isEqualTo(april6);
+        // Check the next valid time after 23:59:59.999 on the day before DST ends.
+        currentTime = Date.from(april6.minusMillis(1));
+        previousTime = expression.getPrevFireTime(currentTime).toInstant();
+        assertThat(previousTime).withRepresentation(representation).isEqualTo(april5);
+        nextTime = expression.getNextValidTimeAfter(currentTime).toInstant();
+        assertThat(nextTime).withRepresentation(representation).isEqualTo(april6);
+        // Check the next valid time after 00:00:00.001 on the day DST ends.
+        currentTime = Date.from(april6.plusMillis(1));
+        previousTime = expression.getPrevFireTime(currentTime).toInstant();
+        assertThat(previousTime).withRepresentation(representation).isEqualTo(april6);
+        nextTime = expression.getNextValidTimeAfter(currentTime).toInstant();
+        assertThat(nextTime).withRepresentation(representation).isEqualTo(april7);
+    }
+
+    private static class ZoneOffsetRepresentation extends StandardRepresentation {
+
+        private final ZoneOffset zoneOffset;
+
+        private ZoneOffsetRepresentation(final ZoneOffset zoneOffset) {
+            this.zoneOffset = zoneOffset;
+        }
+
+        @Override
+        public String toStringOf(final Object object) {
+            if (object instanceof Instant) {
+                return ZonedDateTime.ofInstant((Instant) object, zoneOffset).toString();
+            }
+            return super.toStringOf(object);
+        }
     }
 }
