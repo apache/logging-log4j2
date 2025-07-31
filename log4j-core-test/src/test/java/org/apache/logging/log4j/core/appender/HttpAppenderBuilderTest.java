@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.layout.JsonLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -46,7 +46,7 @@ class HttpAppenderBuilderTest {
         HttpAppender appender = HttpAppender.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setName("TestAppender")
-                .setLayout(JsonLayout.createDefaultLayout()) // Providing a layout here
+                .setLayout(PatternLayout.createDefaultLayout()) // Providing a layout here
                 .build();
 
         assertThat(listener.findStatusData(Level.ERROR))
@@ -72,7 +72,7 @@ class HttpAppenderBuilderTest {
     @Test
     void testBuilderWithValidConfiguration() throws Exception {
         URL url = new URL("http://example.com");
-        Layout<?> layout = JsonLayout.createDefaultLayout();
+        Layout layout = PatternLayout.createDefaultLayout();
 
         HttpAppender.Builder<?> builder = getBuilder().setUrl(url).setLayout(layout);
 
@@ -83,7 +83,7 @@ class HttpAppenderBuilderTest {
     @Test
     void testBuilderWithCustomMethod() throws Exception {
         URL url = new URL("http://example.com");
-        Layout<?> layout = JsonLayout.createDefaultLayout();
+        Layout layout = PatternLayout.createDefaultLayout();
         String customMethod = "PUT";
 
         HttpAppender.Builder<?> builder =
@@ -96,7 +96,7 @@ class HttpAppenderBuilderTest {
     @Test
     void testBuilderWithHeaders() throws Exception {
         URL url = new URL("http://example.com");
-        Layout<?> layout = JsonLayout.createDefaultLayout();
+        Layout layout = PatternLayout.createDefaultLayout();
         Property[] headers = new Property[] {
             Property.createProperty("Header1", "Value1"), Property.createProperty("Header2", "Value2")
         };
@@ -111,7 +111,7 @@ class HttpAppenderBuilderTest {
     @Test
     void testBuilderWithSslConfiguration() throws Exception {
         URL url = new URL("https://example.com");
-        Layout<?> layout = JsonLayout.createDefaultLayout();
+        Layout layout = PatternLayout.createDefaultLayout();
 
         // Use real SslConfiguration instead of Mockito mock
         SslConfiguration sslConfig = SslConfiguration.createSSLConfiguration(null, null, null, false);
