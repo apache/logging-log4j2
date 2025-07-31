@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
@@ -494,39 +493,5 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
                 contextData.clear();
             }
         }
-    }
-
-    /**
-     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code RingBufferLogEvent}.
-     * @param builder the builder whose fields to populate
-     */
-    @Override
-    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        // If the data is not frozen, make a copy of it.
-        // TODO: merge with MementoLogEvent#memento
-        final StringMap oldContextData = this.contextData;
-        final StringMap contextData;
-        if (oldContextData != null && !oldContextData.isFrozen()) {
-            contextData = ContextDataFactory.createContextData(oldContextData);
-        } else {
-            contextData = oldContextData;
-        }
-        builder.setContextData(contextData) //
-                .setContextStack(contextStack) //
-                .setEndOfBatch(endOfBatch) //
-                .setIncludeLocation(includeLocation) //
-                .setLevel(getLevel()) // ensure non-null
-                .setLoggerFqcn(fqcn) //
-                .setLoggerName(loggerName) //
-                .setMarker(marker) //
-                .setMessage(memento()) // ensure non-null & immutable
-                .setNanoTime(nanoTime) //
-                .setSource(location) //
-                .setThreadId(threadId) //
-                .setThreadName(threadName) //
-                .setThreadPriority(threadPriority) //
-                .setThrown(getThrown()) //
-                .setInstant(instant) //
-        ;
     }
 }
