@@ -56,6 +56,7 @@ import org.apache.logging.log4j.message.MessageCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Maps;
 import org.apache.logging.log4j.util.ProcessIdUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -219,7 +220,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private Map<String, FieldFormatter> createFieldFormatters(
             final LoggerFields[] loggerFields, final Configuration config) {
-        final Map<String, FieldFormatter> sdIdMap = new HashMap<>(loggerFields == null ? 0 : loggerFields.length);
+        final Map<String, FieldFormatter> sdIdMap = Maps.newHashMap(loggerFields == null ? 0 : loggerFields.length);
         if (loggerFields != null) {
             for (final LoggerFields loggerField : loggerFields) {
                 final StructuredDataId key = loggerField.getSdId() == null ? mdcSdId : loggerField.getSdId();
@@ -908,7 +909,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         public StructuredDataElement format(final LogEvent event) {
-            final Map<String, String> map = new HashMap<>(delegateMap.size());
+            final Map<String, String> map = Maps.newHashMap(delegateMap.size());
 
             for (final Map.Entry<String, List<PatternFormatter>> entry : delegateMap.entrySet()) {
                 final StringBuilder buffer = new StringBuilder();
