@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3852" link="https://github.com/apache/logging-log4j2/pull/3852"/>
   <description format="asciidoc">
-    Fix missing default Target value in ConsoleAppender.
+    Fix missing default `Target` value in Console Appender.
   </description>
 </entry>
