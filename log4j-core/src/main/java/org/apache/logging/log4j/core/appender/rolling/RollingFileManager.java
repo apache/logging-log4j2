@@ -918,15 +918,19 @@ public class RollingFileManager extends FileManager {
                 final FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
                     LOGGER.debug("Returning file creation time for {}", file.getAbsolutePath());
-                    return fileTime.toMillis();
+
+                    // See https://github.com/apache/logging-log4j2/issues/3068
+                    return Math.round(fileTime.toMillis() / 1000d) * 1000;
                 }
-                LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
+                LOGGER.info("Unable to obtain file creation time for {}", file.getAbsolutePath());
             } catch (final Exception ex) {
-                LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": "
-                        + ex.getMessage());
+                LOGGER.info(
+                        "Unable to calculate file creation time for {}: {}", file.getAbsolutePath(), ex.getMessage());
             }
         }
-        return file.lastModified();
+
+        // See https://github.com/apache/logging-log4j2/issues/3068
+        return Math.round(file.lastModified() / 1000d) * 1000;
     }
 
     private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
