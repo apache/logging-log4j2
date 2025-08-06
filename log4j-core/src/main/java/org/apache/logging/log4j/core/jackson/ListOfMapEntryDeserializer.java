@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.util.Maps;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ public class ListOfMapEntryDeserializer extends StdDeserializer<Map<String, Stri
                 new TypeReference<List<MapEntry>>() {
                     // empty
                 });
-        final HashMap<String, String> map = new HashMap<>(list.size());
+        final HashMap<String, String> map = Maps.newHashMap(list.size());
         for (final MapEntry mapEntry : list) {
             map.put(mapEntry.getKey(), mapEntry.getValue());
         }
