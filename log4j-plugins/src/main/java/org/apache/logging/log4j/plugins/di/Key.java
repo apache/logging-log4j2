@@ -82,7 +82,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
         final Annotation qualifier =
                 AnnotationUtil.getElementAnnotationHavingMetaAnnotation(superclass, QualifierType.class);
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
-        name = Keys.getName(superclass);
+        name = Strings.EMPTY;
         namespace = Keys.getNamespace(superclass);
         order = AnnotationUtil.getOrder(superclass);
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));

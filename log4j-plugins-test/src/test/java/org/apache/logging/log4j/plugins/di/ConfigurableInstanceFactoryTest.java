@@ -218,9 +218,15 @@ class ConfigurableInstanceFactoryTest {
     @Test
     void injectionPointValidationFull() {
         final ConfigurableInstanceFactory instanceFactory = DI.builder()
-                .addInitialBindingFrom(new @Named("foo") Key<String>() {})
+                .addInitialBindingFrom(Key.builder(String.class)
+                        .setName("foo")
+                        .setQualifierType(Named.class)
+                        .get())
                 .toInstance("hello")
-                .addInitialBindingFrom(new @Named("bar") Key<String>() {})
+                .addInitialBindingFrom(Key.builder(String.class)
+                        .setName("bar")
+                        .setQualifierType(Named.class)
+                        .get())
                 .toInstance("world")
                 .build();
         final ValidatedInjectionPoints instance = instanceFactory.getInstance(ValidatedInjectionPoints.class);
