@@ -45,9 +45,6 @@ class KeyTest {
     @Test
     void forClass() {
         final Key<AnnotatedClass> key = Key.forClass(AnnotatedClass.class);
-        assertEquals("namespace", key.getNamespace());
-        assertEquals("name", key.getName());
-        assertEquals(Named.class, key.getQualifierType());
         assertThat(key.getOrder()).isPresent().hasValue(42);
         assertEquals(AnnotatedClass.class, key.getType());
         assertEquals(AnnotatedClass.class, key.getRawType());
@@ -114,6 +111,11 @@ class KeyTest {
 
     static class CustomQualifierNameProvider implements AnnotatedElementNameProvider<CustomQualifier> {
         @Override
+        public Class<CustomQualifier> annotationType() {
+            return CustomQualifier.class;
+        }
+
+        @Override
         public Optional<String> getSpecifiedName(final CustomQualifier annotation) {
             return Optional.of(annotation.value());
         }
@@ -130,9 +132,6 @@ class KeyTest {
     @Test
     void classWithCustomQualifierAndNamespace() {
         final Key<LogicallyAnnotatedClass> key = Key.forClass(LogicallyAnnotatedClass.class);
-        assertEquals("logical", key.getNamespace());
-        assertEquals("class", key.getName());
-        assertEquals(CustomQualifier.class, key.getQualifierType());
         assertThat(key.getOrder()).isEmpty();
         assertEquals(LogicallyAnnotatedClass.class, key.getType());
         assertEquals(LogicallyAnnotatedClass.class, key.getRawType());

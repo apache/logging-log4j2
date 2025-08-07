@@ -17,19 +17,17 @@
 package org.apache.logging.log4j.plugins.util;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Comparator;
 import java.util.OptionalInt;
 import org.apache.logging.log4j.plugins.Ordered;
-import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Comparator for annotated elements using {@link Ordered} followed by their name from {@link Keys#getName}.
+ * Comparator for annotated elements using {@link Ordered} followed by their element name.
  */
 public class OrderedComparator implements Comparator<AnnotatedElement> {
     public static final OrderedComparator INSTANCE = new OrderedComparator();
@@ -55,19 +53,16 @@ public class OrderedComparator implements Comparator<AnnotatedElement> {
 
     private static String getName(final AnnotatedElement element) {
         if (element instanceof Class<?> clazz) {
-            return Keys.getName(clazz);
+            return clazz.getName();
         }
         if (element instanceof Field field) {
-            return Keys.getName(field);
+            return field.getName();
         }
         if (element instanceof Parameter parameter) {
-            return Keys.getName(parameter);
+            return parameter.getName();
         }
         if (element instanceof Method method) {
-            return Keys.getName(method);
-        }
-        if (element instanceof AnnotatedType annotatedType) {
-            return Keys.getName(annotatedType);
+            return method.getName();
         }
         return Strings.EMPTY;
     }

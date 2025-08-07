@@ -303,10 +303,7 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
      * Creates a Key for the class.
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
-        final Builder<T> builder = Key.builder(clazz)
-                .setQualifierType(getQualifierType(clazz))
-                .setName(Keys.getName(clazz))
-                .setNamespace(Keys.getNamespace(clazz));
+        final Builder<T> builder = Key.builder(clazz);
         AnnotationUtil.getOrder(clazz).ifPresent(builder::setOrder);
         return builder.get();
     }
