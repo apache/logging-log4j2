@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  */
 @FunctionalInterface
 public interface StringValueResolver {
-    Key<StringValueResolver> KEY = new Key<>() {};
+    Key<StringValueResolver> KEY = Key.forClass(StringValueResolver.class);
 
     StringValueResolver NOOP = s -> s;
 

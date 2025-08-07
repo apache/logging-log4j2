@@ -28,7 +28,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  *
  */
 public interface LogEventFactory {
-    Key<LogEventFactory> KEY = new Key<>() {};
+    Key<LogEventFactory> KEY = Key.forClass(LogEventFactory.class);
 
     LogEvent createEvent(
             String loggerName,

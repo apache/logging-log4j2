@@ -51,7 +51,7 @@ import org.apache.logging.log4j.plugins.di.Key;
 public interface Configuration extends Filterable {
 
     /** Injection key for the current Configuration. */
-    Key<Configuration> KEY = new Key<>() {};
+    Key<Configuration> KEY = Key.forClass(Configuration.class);
 
     /** Key for storing the Context properties. */
     String CONTEXT_PROPERTIES = "ContextProperties";

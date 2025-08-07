@@ -28,12 +28,6 @@ import org.junit.jupiter.api.Test;
 
 class KeysTest {
 
-    @Test
-    void configurableNamespace() {
-        final Key<String> key = new @Configurable Key<>() {};
-        assertEquals(Node.CORE_NAMESPACE, key.getNamespace());
-    }
-
     static class ConfigurableField {
         @Configurable
         String field;

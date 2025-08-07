@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.di.Keys;
 
 public record InjectionPoint<T>(Key<T> key, Collection<String> aliases, AnnotatedElement element) {
 
-    public static final Key<InjectionPoint<?>> CURRENT_INJECTION_POINT = new Key<>() {};
+    public static final Key<InjectionPoint> CURRENT_INJECTION_POINT = Key.forClass(InjectionPoint.class);
 
     public static <T> InjectionPoint<T> forField(final Field field) {
         final Key<T> key = Key.forField(field);

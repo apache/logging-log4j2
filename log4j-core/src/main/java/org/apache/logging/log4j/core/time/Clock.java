@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  * @since 2.11
  */
 public interface Clock {
-    Key<Clock> KEY = new Key<>() {};
+    Key<Clock> KEY = Key.forClass(Clock.class);
 
     /**
      * Returns the time in milliseconds since the epoch.

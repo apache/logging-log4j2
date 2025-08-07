@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  * Script Manager.
  */
 public interface ScriptManager {
-    Key<ScriptManager> KEY = new Key<>() {};
+    Key<ScriptManager> KEY = Key.forClass(ScriptManager.class);
 
     /**
      * Add scripts defined in the configuration.

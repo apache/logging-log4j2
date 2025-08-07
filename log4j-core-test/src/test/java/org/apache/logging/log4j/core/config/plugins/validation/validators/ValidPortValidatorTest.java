@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
@@ -39,7 +38,8 @@ public class ValidPortValidatorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginNamespace category = instanceFactory.getInstance(new @Namespace("Test") Key<>() {});
+        final var key = Key.builder(PluginNamespace.class).setNamespace("Test").get();
+        final PluginNamespace category = instanceFactory.getInstance(key);
         final PluginType<?> plugin = category.get("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);

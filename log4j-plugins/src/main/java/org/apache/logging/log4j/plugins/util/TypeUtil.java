@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.util.Cast;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
@@ -314,5 +316,36 @@ public final class TypeUtil {
                     && firstType.getGenericDeclaration().equals(secondType.getGenericDeclaration());
         }
         return false;
+    }
+
+    public static ParameterizedType createParameterizedType(final Type rawType, final Type... actualTypeArguments) {
+        return new SyntheticParameterizedType(rawType, actualTypeArguments, null);
+    }
+
+    @NullMarked
+    private record SyntheticParameterizedType(Type rawType, Type[] actualTypeArguments, @Nullable Type ownerType)
+            implements ParameterizedType {
+        @Override
+        public Type[] getActualTypeArguments() {
+            return actualTypeArguments.clone();
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public @Nullable Type getOwnerType() {
+            return ownerType;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof ParameterizedType type
+                    && Objects.equals(rawType, type.getRawType())
+                    && Objects.equals(ownerType, type.getOwnerType())
+                    && Arrays.equals(actualTypeArguments, type.getActualTypeArguments());
+        }
     }
 }

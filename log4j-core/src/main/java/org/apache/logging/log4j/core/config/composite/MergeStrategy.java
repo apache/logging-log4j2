@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
  */
 public interface MergeStrategy {
 
-    Key<MergeStrategy> KEY = new Key<>() {};
+    Key<MergeStrategy> KEY = Key.forClass(MergeStrategy.class);
 
     /**
      * Merge the root node properties into the configuration.

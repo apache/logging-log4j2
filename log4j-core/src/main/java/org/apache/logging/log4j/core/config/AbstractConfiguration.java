@@ -279,7 +279,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         initializeScriptManager();
         // TODO(ms): this should use injectMembers()
         corePlugins = instanceFactory.getInstance(Core.PLUGIN_NAMESPACE_KEY);
-        final PluginNamespace levelPlugins = instanceFactory.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
+        final var levelPluginsKey =
+                Key.builder(PluginNamespace.class).setNamespace(Level.CATEGORY).get();
+        final PluginNamespace levelPlugins = instanceFactory.getInstance(levelPluginsKey);
         levelPlugins.forEach(type -> {
             final Class<?> pluginClass = type.getPluginClass();
             try {

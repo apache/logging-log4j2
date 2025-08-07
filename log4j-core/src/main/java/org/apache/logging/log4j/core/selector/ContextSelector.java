@@ -32,7 +32,7 @@ public interface ContextSelector {
 
     long DEFAULT_STOP_TIMEOUT = 50;
 
-    Key<ContextSelector> KEY = new Key<>() {};
+    Key<ContextSelector> KEY = Key.forClass(ContextSelector.class);
 
     /**
      * Shuts down the LoggerContext.

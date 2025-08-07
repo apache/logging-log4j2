@@ -21,8 +21,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactoryProvider;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -33,7 +31,7 @@ public class CompositeCompressActionFactoryProvider implements CompressActionFac
 
     public CompositeCompressActionFactoryProvider(final @Nullable Configuration configuration) {
         if (configuration != null) {
-            delegates = configuration.getComponent(new @Namespace(CompressActionFactoryProvider.NAMESPACE) Key<>() {});
+            delegates = configuration.getComponent(CompressActionFactoryProvider.KEY);
         } else {
             delegates = List.of(new JreCompressActionFactoryProvider());
         }

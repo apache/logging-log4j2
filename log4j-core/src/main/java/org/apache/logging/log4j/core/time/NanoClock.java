@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  * @since 2.11
  */
 public interface NanoClock {
-    Key<NanoClock> KEY = new Key<>() {};
+    Key<NanoClock> KEY = Key.forClass(NanoClock.class);
 
     /**
      * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.

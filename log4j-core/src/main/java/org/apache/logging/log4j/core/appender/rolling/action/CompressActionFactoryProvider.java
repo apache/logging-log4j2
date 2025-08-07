@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.util.List;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.CompositeCompressActionFactoryProvider;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -30,6 +33,11 @@ import org.jspecify.annotations.Nullable;
 public interface CompressActionFactoryProvider {
 
     String NAMESPACE = "compress";
+
+    Key<List<CompressActionFactoryProvider>> KEY = Key.<List<CompressActionFactoryProvider>>builder(
+                    TypeUtil.createParameterizedType(List.class, CompressActionFactoryProvider.class))
+            .setNamespace(NAMESPACE)
+            .get();
 
     /**
      * Creates the appropriate {@link CompressActionFactory} for the given compression algorithm.

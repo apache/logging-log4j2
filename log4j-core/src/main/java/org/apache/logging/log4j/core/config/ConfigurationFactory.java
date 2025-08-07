@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.impl.CoreProperties.AuthenticationPropertie
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.env.internal.PropertiesUtilPropertyEnvironment;
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
@@ -62,9 +61,10 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
      */
     public static final String NAMESPACE = "ConfigurationFactory";
 
-    public static final Key<ConfigurationFactory> KEY = new Key<>() {};
+    public static final Key<ConfigurationFactory> KEY = Key.forClass(ConfigurationFactory.class);
 
-    public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(NAMESPACE) Key<>() {};
+    public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY =
+            Key.builder(PluginNamespace.class).setNamespace(NAMESPACE).get();
 
     /**
      * Allows subclasses access to the status logger without creating another instance.

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.di;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.plugins.test.validation.di.BaseBean;
 import org.apache.logging.log4j.plugins.test.validation.di.BetaBean;
 import org.apache.logging.log4j.plugins.test.validation.di.GammaBean;
 import org.apache.logging.log4j.plugins.test.validation.di.PrototypeBean;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.junit.jupiter.api.Test;
 
@@ -73,14 +75,16 @@ class ConfigurableInstanceFactoryTest {
 
     @Test
     void unknownInstanceError() {
-        final Key<UnknownInstance> key = new Key<>() {};
+        final Key<UnknownInstance> key = Key.forClass(UnknownInstance.class);
         assertThatThrownBy(() -> DI.createInitializedFactory().getInstance(key))
                 .hasMessage("No @Inject constructor or default constructor found for " + key);
     }
 
     @Test
     void optionalUnknownInstance() {
-        final Key<Optional<UnknownInstance>> key = new Key<>() {};
+        final Type type = TypeUtil.createParameterizedType(Optional.class, UnknownInstance.class);
+        final Key<Optional<UnknownInstance>> key =
+                Key.<Optional<UnknownInstance>>builder(type).get();
         assertThat(DI.createInitializedFactory().getInstance(key)).isEmpty();
     }
 
@@ -208,7 +212,10 @@ class ConfigurableInstanceFactoryTest {
     @Test
     void injectionPointValidationPartial() {
         final ConfigurableInstanceFactory instanceFactory = DI.builder()
-                .addInitialBindingFrom(new @Named("foo") Key<String>() {})
+                .addInitialBindingFrom(Key.builder(String.class)
+                        .setName("foo")
+                        .setQualifierType(Named.class)
+                        .get())
                 .toInstance("hello")
                 .build();
         assertThatThrownBy(() -> instanceFactory.getInstance(ValidatedInjectionPoints.class))

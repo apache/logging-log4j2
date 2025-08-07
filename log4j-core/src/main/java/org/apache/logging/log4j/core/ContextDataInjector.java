@@ -55,7 +55,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @since 2.7
  */
 public interface ContextDataInjector {
-    Key<ContextDataInjector> KEY = new Key<>() {};
+    Key<ContextDataInjector> KEY = Key.builder(ContextDataInjector.class).get();
 
     /**
      * Returns a {@code StringMap} object initialized with the specified properties and the appropriate

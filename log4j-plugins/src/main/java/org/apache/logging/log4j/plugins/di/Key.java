@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.di;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -63,30 +62,6 @@ public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
 
     @LazyInit
     private @Nullable String toString;
-
-    /**
-     * Anonymous subclasses override this constructor to instantiate this Key based on the type given.
-     * For example, to represent the equivalent of an annotated field {@code @Named("abc") Map<String, List<String>> field},
-     * this constructor would be used like so:
-     *
-     * <pre>{@code
-     * Key<Map<String, List<String>>> key = new @Named("abc") Key<>() {};
-     * // or equivalently
-     * var key = new @Named("abc") Key<Map<String, List<String>>>() {};
-     * }</pre>
-     */
-    protected Key() {
-        type = TypeUtil.getSuperclassTypeParameter(getClass());
-        rawType = TypeUtil.getRawType(type);
-        final AnnotatedType superclass = getClass().getAnnotatedSuperclass();
-        final Annotation qualifier =
-                AnnotationUtil.getElementAnnotationHavingMetaAnnotation(superclass, QualifierType.class);
-        qualifierType = qualifier != null ? qualifier.annotationType() : null;
-        name = Strings.EMPTY;
-        namespace = Keys.getNamespace(superclass);
-        order = AnnotationUtil.getOrder(superclass);
-        hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
-    }
 
     private Key(
             final Type type,

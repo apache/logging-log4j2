@@ -44,11 +44,9 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Factory;
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.Strings;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)
@@ -105,8 +103,7 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
 
         // Inject resolver factory and interceptor plugins.
-        final List<EventResolverFactory> resolverFactories =
-                configuration.getComponent(new @Namespace(EventResolverFactory.CATEGORY) Key<>() {});
+        final List<EventResolverFactory> resolverFactories = configuration.getComponent(EventResolverFactory.KEY);
         final Map<String, EventResolverFactory> resolverFactoryByName = resolverFactories.stream()
                 .collect(Collectors.toMap(
                         EventResolverFactory::getName,
@@ -119,7 +116,7 @@ public class JsonTemplateLayout implements StringLayout {
                         },
                         LinkedHashMap::new));
         final List<EventResolverInterceptor> resolverInterceptors =
-                configuration.getComponent(new @Namespace(EventResolverInterceptor.CATEGORY) Key<>() {});
+                configuration.getComponent(EventResolverInterceptor.KEY);
         final EventResolverStringSubstitutor substitutor =
                 new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
 

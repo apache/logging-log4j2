@@ -16,9 +16,17 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 /**
  * {@link TemplateResolverInterceptor} specialized for {@link LogEvent}s.
  */
-public interface EventResolverInterceptor extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {}
+public interface EventResolverInterceptor extends TemplateResolverInterceptor<LogEvent, EventResolverContext> {
+    Key<List<EventResolverInterceptor>> KEY = Key.<List<EventResolverInterceptor>>builder(
+                    TypeUtil.createParameterizedType(List.class, EventResolverInterceptor.class))
+            .setNamespace(CATEGORY)
+            .get();
+}

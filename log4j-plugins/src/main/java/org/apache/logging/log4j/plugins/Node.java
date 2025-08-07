@@ -52,7 +52,8 @@ public class Node {
     /**
      * Key describing the current node being configured.
      */
-    public static final Key<Node> CURRENT_NODE = new @PluginNode Key<>() {};
+    public static final Key<Node> CURRENT_NODE =
+            Key.builder(Node.class).setQualifierType(PluginNode.class).get();
 
     private Node parent;
     private final String name;
