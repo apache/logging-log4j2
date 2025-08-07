@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
+import org.jspecify.annotations.Nullable;
 
 public final class AnnotationUtil {
 
@@ -53,7 +54,7 @@ public final class AnnotationUtil {
      * @param metaAnnotation expected annotation to find present on annotation
      * @return the annotation with meta-annotation if present or {@code null} if none match
      */
-    public static Annotation getElementAnnotationHavingMetaAnnotation(
+    public static @Nullable Annotation getElementAnnotationHavingMetaAnnotation(
             final AnnotatedElement element, final Class<? extends Annotation> metaAnnotation) {
         return findAnnotatedAnnotations(element, metaAnnotation)
                 .map(AnnotatedAnnotation::annotation)
@@ -101,7 +102,7 @@ public final class AnnotationUtil {
      * @param annotationType class of logical annotation
      * @return a logical annotation instance or {@code null} if none are found
      */
-    public static <A extends Annotation> A getLogicalAnnotation(
+    public static <A extends Annotation> @Nullable A getLogicalAnnotation(
             final AnnotatedElement element, final Class<A> annotationType) {
         return findLogicalAnnotations(element, annotationType).findFirst().orElse(null);
     }
