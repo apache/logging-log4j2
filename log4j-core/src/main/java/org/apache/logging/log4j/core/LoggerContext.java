@@ -139,7 +139,7 @@ public class LoggerContext extends AbstractLifeCycle
                         ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
                 .forEachOrdered(processor -> processor.postProcessFactory(instanceFactory));
 
-        this.instanceFactory.registerInstancePostProcessor(new LoggerContextAwarePostProcessor(this));
+        this.instanceFactory.registerExtension(new LoggerContextAwarePostProcessor(this));
         if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }

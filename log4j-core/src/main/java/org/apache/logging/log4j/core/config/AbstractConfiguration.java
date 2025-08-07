@@ -202,7 +202,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                         ConfigurableInstanceFactoryPostProcessor::getClass, OrderedComparator.INSTANCE))
                 .forEachOrdered(processor -> processor.postProcessFactory(instanceFactory));
 
-        instanceFactory.registerInstancePostProcessor(new ConfigurationAwarePostProcessor(Lazy.weak(this)));
+        instanceFactory.registerExtension(new ConfigurationAwarePostProcessor(Lazy.weak(this)));
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = instanceFactory.getInstance(InterpolatorFactory.class);
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));

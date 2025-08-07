@@ -34,6 +34,6 @@ public abstract class FactoryResolversPostProcessor implements ConfigurableInsta
 
     @Override
     public final void postProcessFactory(final ConfigurableInstanceFactory factory) {
-        factoryResolvers.forEach(factory::registerFactoryResolver);
+        factoryResolvers.forEach(factory::registerExtension);
     }
 }

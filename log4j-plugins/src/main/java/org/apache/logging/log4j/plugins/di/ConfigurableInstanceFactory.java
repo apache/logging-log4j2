@@ -28,7 +28,8 @@ import org.apache.logging.log4j.plugins.di.spi.ReflectionAgent;
 import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.plugins.internal.util.AnnotatedAnnotation;
 import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
-import org.apache.logging.log4j.plugins.util.OrderedComparator;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
@@ -106,23 +107,22 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
     void removeBinding(final Key<?> key);
 
     /**
-     * Registers a factory resolver. Factory resolvers are additional strategies for resolving factories for
-     * a key using existing bindings or other factory resolvers. These are consulted in the order that they are
-     * registered.
+     * Registers extensions for dependency injection.
      *
-     * @param resolver factory resolver to add to this instance factory
-     */
-    void registerFactoryResolver(final FactoryResolver<?> resolver);
-
-    /**
-     * Registers an instance post-processor. Instance post-processors provide hooks into the lifecycle of instance
-     * initialization. When multiple processors are registered, then they are invoked in the order of their
-     * {@link Ordered} annotations and falls back to the rules in {@link OrderedComparator}. When creating a child
-     * instance factory, then the child factory is created with a copy of the current registered processors.
+     * @param extension instance of extension to register
+     * @see FactoryResolver
+     * @see InstancePostProcessor
+     * @see ReflectionAgent
+     * @see AnnotatedElementNameProvider
+     * @see AnnotatedElementAliasesProvider
      *
-     * @param instancePostProcessor processor to register
+     * @implNote Factory resolvers are shared between parent and child {@link InstanceFactory} objects.
+     * Child factories inherit copies of registered {@link InstancePostProcessor} objects (which are kept in
+     * {@link Ordered} order), but processors added to child factories are not copied to the parent.
+     * Use of a custom {@link ReflectionAgent} is specific to this factory and is inherited by child factories
+     * unless overridden. Name and alias providers are shared by all factories.
      */
-    void registerInstancePostProcessor(final InstancePostProcessor instancePostProcessor);
+    void registerExtension(final Object extension);
 
     /**
      * Creates a new child instance factory from this factory which uses bindings from this factory as fallback
@@ -140,15 +140,6 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
      */
     ConfigurableInstanceFactory newChildInstanceFactory(
             Supplier<PropertyEnvironment> environment, Supplier<ClassLoader> loader);
-
-    /**
-     * Sets the {@link ReflectionAgent} used for invoking {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
-     * from an appropriate caller class. Customizing this allows for changing the base module that other modules should
-     * open themselves to.
-     *
-     * @param accessor accessor to use
-     */
-    void setReflectionAgent(final ReflectionAgent accessor);
 
     /**
      * Injects dependencies into the members of the provided instance. Injectable fields are set, then injectable methods are

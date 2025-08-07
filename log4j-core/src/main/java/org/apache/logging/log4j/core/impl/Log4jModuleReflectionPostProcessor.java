@@ -18,10 +18,12 @@ package org.apache.logging.log4j.core.impl;
 
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.lang.reflect.AccessibleObject;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.ReflectionAgent;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Post-processor that registers a {@link ReflectionAgent} using {@code log4j-core} as the calling context.
@@ -29,9 +31,14 @@ import org.apache.logging.log4j.plugins.di.spi.ReflectionAgent;
  */
 @Ordered(Ordered.FIRST + 100)
 @ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
-public class Log4jModuleReflectionPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
+public class Log4jModuleReflectionPostProcessor implements ConfigurableInstanceFactoryPostProcessor, ReflectionAgent {
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {
-        factory.setReflectionAgent(object -> object.setAccessible(true));
+        factory.registerExtension(this);
+    }
+
+    @Override
+    public void makeAccessible(@NonNull AccessibleObject object) {
+        object.setAccessible(true);
     }
 }

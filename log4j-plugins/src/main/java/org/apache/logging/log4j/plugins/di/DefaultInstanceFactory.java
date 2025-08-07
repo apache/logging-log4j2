@@ -26,9 +26,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -51,6 +53,8 @@ import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.internal.util.BindingMap;
 import org.apache.logging.log4j.plugins.internal.util.HierarchicalMap;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
@@ -69,6 +73,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     private final List<FactoryResolver<?>> factoryResolvers;
     private final SortedSet<InstancePostProcessor> instancePostProcessors = new ConcurrentSkipListSet<>(
             Comparator.comparing(InstancePostProcessor::getClass, OrderedComparator.INSTANCE));
+    private final Map<Class<? extends Annotation>, AnnotatedElementNameProvider<?>> nameProviders;
+    private final Map<Class<? extends Annotation>, AnnotatedElementAliasesProvider<?>> aliasProviders;
     private ReflectionAgent agent = object -> object.setAccessible(true);
 
     protected DefaultInstanceFactory() {
@@ -77,6 +83,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 HierarchicalMap.newRootMap(),
                 new ArrayList<>(),
                 List.of(),
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>(),
                 PropertyEnvironment::getGlobal,
                 LoaderUtil::getClassLoader);
     }
@@ -90,6 +98,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
                 parent.scopes.newChildMap(),
                 parent.factoryResolvers,
                 parent.instancePostProcessors,
+                parent.nameProviders,
+                parent.aliasProviders,
                 environment,
                 loader);
         this.agent = parent.agent;
@@ -100,12 +110,16 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
             final HierarchicalMap<Class<? extends Annotation>, Scope> scopes,
             final List<FactoryResolver<?>> factoryResolvers,
             final Collection<InstancePostProcessor> instancePostProcessors,
+            final Map<Class<? extends Annotation>, AnnotatedElementNameProvider<?>> nameProviders,
+            final Map<Class<? extends Annotation>, AnnotatedElementAliasesProvider<?>> aliasProviders,
             final Supplier<PropertyEnvironment> environment,
             final Supplier<ClassLoader> loader) {
         this.bindings = bindings;
         this.scopes = scopes;
         this.factoryResolvers = factoryResolvers;
         this.instancePostProcessors.addAll(instancePostProcessors);
+        this.nameProviders = nameProviders;
+        this.aliasProviders = aliasProviders;
         this.bindings.put(InjectionPoint.CURRENT_INJECTION_POINT, currentInjectionPoint::get);
         this.bindings.put(Key.forClass(ConfigurableInstanceFactory.class), () -> this);
         this.bindings.put(Key.forClass(InstanceFactory.class), () -> this);
@@ -337,13 +351,22 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     @Override
-    public void registerFactoryResolver(final FactoryResolver<?> resolver) {
-        factoryResolvers.add(resolver);
-    }
-
-    @Override
-    public void registerInstancePostProcessor(final InstancePostProcessor instancePostProcessor) {
-        instancePostProcessors.add(instancePostProcessor);
+    public void registerExtension(final Object extension) {
+        if (extension instanceof FactoryResolver<?> factoryResolver) {
+            factoryResolvers.add(factoryResolver);
+        }
+        if (extension instanceof InstancePostProcessor instancePostProcessor) {
+            instancePostProcessors.add(instancePostProcessor);
+        }
+        if (extension instanceof ReflectionAgent reflectionAgent) {
+            agent = reflectionAgent;
+        }
+        if (extension instanceof AnnotatedElementNameProvider<?> nameProvider) {
+            nameProviders.put(nameProvider.annotationType(), nameProvider);
+        }
+        if (extension instanceof AnnotatedElementAliasesProvider<?> aliasProvider) {
+            aliasProviders.put(aliasProvider.annotationType(), aliasProvider);
+        }
     }
 
     @Override
@@ -358,11 +381,6 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     public ConfigurableInstanceFactory newChildInstanceFactory(
             final Supplier<PropertyEnvironment> environment, final Supplier<ClassLoader> loader) {
         return new DefaultInstanceFactory(this, environment, loader);
-    }
-
-    @Override
-    public void setReflectionAgent(final ReflectionAgent accessor) {
-        this.agent = accessor;
     }
 
     @Override
