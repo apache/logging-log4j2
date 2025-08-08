@@ -93,6 +93,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                 handleError(entry.getKey(), t);
             }
         }
+
+        if (!strLookupMap.containsKey(LOOKUP_KEY_JVMRUNARGS)) {
+            try {
+                strLookupMap.put(LOOKUP_KEY_JVMRUNARGS, new JmxRuntimeInputArgumentsLookup());
+            } catch (Throwable t) {
+                handleError(LOOKUP_KEY_JVMRUNARGS, t);
+            }
+        }
     }
 
     /**
