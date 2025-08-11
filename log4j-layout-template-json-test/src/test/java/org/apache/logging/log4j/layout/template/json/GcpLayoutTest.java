@@ -20,11 +20,6 @@ import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGUR
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -42,9 +37,6 @@ class GcpLayoutTest {
             .build();
 
     private static final int LOG_EVENT_COUNT = 1_000;
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     @Test
     void test_lite_log_events() {
@@ -83,8 +75,9 @@ class GcpLayoutTest {
         usingSerializedLogEventAccessor(LAYOUT, logEvent, accessor -> {
 
             // Verify timestamp.
-            final String expectedTimestamp = formatLogEventInstant(logEvent);
-            assertThat(accessor.getString("timestamp")).isEqualTo(expectedTimestamp);
+            final org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
+            assertThat(accessor.getInteger("timestampSeconds")).isEqualTo(instant.getEpochSecond());
+            assertThat(accessor.getInteger("timestampNanos")).isEqualTo(instant.getNanoOfSecond());
 
             // Verify severity.
             final Level level = logEvent.getLevel();
@@ -147,48 +140,25 @@ class GcpLayoutTest {
                         .isEmpty();
             }
 
-            // Verify insert id.
-            assertThat(accessor.getString("logging.googleapis.com/insertId")).matches("[-]?[0-9]+");
-
             // Verify exception.
             if (exception != null) {
 
-                // Verify exception class.
-                assertThat(accessor.getString(new String[] {"_exception", "class"}))
-                        .isEqualTo(exception.getClass().getCanonicalName());
-
-                // Verify exception message.
-                assertThat(accessor.getString(new String[] {"_exception", "message"}))
-                        .isEqualTo(exception.getMessage());
-
                 // Verify exception stack trace.
-                assertThat(accessor.getString(new String[] {"_exception", "stackTrace"}))
+                assertThat(accessor.getString("exception"))
                         .contains(exception.getLocalizedMessage())
                         .contains("at org.apache.logging.log4j.layout.template.json")
                         .contains("at java.base/java.lang.reflect.Method")
                         .contains("at org.junit.platform.engine");
 
             } else {
-                assertThat(accessor.getObject(new String[] {"_exception", "class"}))
-                        .isNull();
-                assertThat(accessor.getObject(new String[] {"_exception", "message"}))
-                        .isNull();
-                assertThat(accessor.getString(new String[] {"_exception", "stackTrace"}))
-                        .isEmpty();
+                assertThat(accessor.getString("exception")).isNull();
             }
 
             // Verify thread name.
-            assertThat(accessor.getString("_thread")).isEqualTo(logEvent.getThreadName());
+            assertThat(accessor.getString("thread")).isEqualTo(logEvent.getThreadName());
 
             // Verify logger name.
-            assertThat(accessor.getString("_logger")).isEqualTo(logEvent.getLoggerName());
+            assertThat(accessor.getString("logger")).isEqualTo(logEvent.getLoggerName());
         });
-    }
-
-    private static String formatLogEventInstant(final LogEvent logEvent) {
-        final org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
-        final ZonedDateTime dateTime = Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond())
-                .atZone(ZoneId.of("UTC"));
-        return DATE_TIME_FORMATTER.format(dateTime);
     }
 }

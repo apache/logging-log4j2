@@ -1,10 +1,15 @@
 {
-  "timestamp": {
+  "timestampSeconds": {
     "$resolver": "timestamp",
-    "pattern": {
-      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      "timeZone": "UTC",
-      "locale": "en_US"
+    "epoch": {
+      "unit": "secs",
+      "rounded": true
+    }
+  },
+  "timestampNanos": {
+    "$resolver": "timestamp",
+    "epoch": {
+      "unit": "secs.nanos"
     }
   },
   "severity": {
@@ -36,10 +41,6 @@
       "stackTraceEnabled": false
     }
   },
-  "logging.googleapis.com/insertId": {
-    "$resolver": "counter",
-    "stringified": true
-  },
   "logging.googleapis.com/trace": {
     "$resolver": "mdc",
     "key": "trace_id"
@@ -49,25 +50,18 @@
     "key": "span_id"
   },
   "logging.googleapis.com/trace_sampled": true,
-  "_exception": {
-    "class": {
-      "$resolver": "exception",
-      "field": "className"
-    },
-    "message": {
-      "$resolver": "exception",
-      "field": "message"
-    },
+  "exception": {
+    "$resolver": "exception",
+    "field": "stackTrace",
     "stackTrace": {
-      "$resolver": "pattern",
-      "pattern": "%xEx"
+      "stringified": true
     }
   },
-  "_thread": {
+  "thread": {
     "$resolver": "thread",
     "field": "name"
   },
-  "_logger": {
+  "logger": {
     "$resolver": "logger",
     "field": "name"
   }

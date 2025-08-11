@@ -239,10 +239,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 final PatternSequence sequence;
                 switch (c) {
                     case 's':
-                        sequence = new SecondPatternSequence(true, "", 0);
+                        sequence = new SecondPatternSequence(sequenceContent.length(), "", 0);
                         break;
                     case 'S':
-                        sequence = new SecondPatternSequence(false, "", sequenceContent.length());
+                        sequence = new SecondPatternSequence(0, "", sequenceContent.length());
                         break;
                     default:
                         sequence = new DynamicPatternSequence(sequenceContent);
@@ -694,39 +694,50 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             100_000_000, 10_000_000, 1_000_000, 100_000, 10_000, 1_000, 100, 10, 1
         };
 
-        private final boolean printSeconds;
+        private final int secondDigits;
         private final String separator;
         private final int fractionalDigits;
 
-        SecondPatternSequence(boolean printSeconds, String separator, int fractionalDigits) {
+        SecondPatternSequence(int secondDigits, String separator, int fractionalDigits) {
             super(
-                    createPattern(printSeconds, separator, fractionalDigits),
-                    determinePrecision(printSeconds, fractionalDigits));
-            this.printSeconds = printSeconds;
+                    createPattern(secondDigits, separator, fractionalDigits),
+                    determinePrecision(secondDigits, fractionalDigits));
+            final int maxSecondDigits = 2;
+            if (secondDigits > maxSecondDigits) {
+                final String message = String.format(
+                        "More than %d `s` pattern letters are not supported, found: %d", maxSecondDigits, secondDigits);
+                throw new IllegalArgumentException(message);
+            }
+            final int maxFractionalDigits = 9;
+            if (fractionalDigits > maxFractionalDigits) {
+                final String message = String.format(
+                        "More than %d `S` pattern letters are not supported, found: %d",
+                        maxFractionalDigits, fractionalDigits);
+                throw new IllegalArgumentException(message);
+            }
+            this.secondDigits = secondDigits;
             this.separator = separator;
             this.fractionalDigits = fractionalDigits;
         }
 
-        private static String createPattern(boolean printSeconds, String separator, int fractionalDigits) {
-            StringBuilder builder = new StringBuilder();
-            if (printSeconds) {
-                builder.append("ss");
-            }
-            builder.append(StaticPatternSequence.escapeLiteral(separator));
-            if (fractionalDigits > 0) {
-                builder.append(Strings.repeat("S", fractionalDigits));
-            }
-            return builder.toString();
+        private static String createPattern(int secondDigits, String separator, int fractionalDigits) {
+            return Strings.repeat("s", secondDigits)
+                    + StaticPatternSequence.escapeLiteral(separator)
+                    + Strings.repeat("S", fractionalDigits);
         }
 
-        private static ChronoUnit determinePrecision(boolean printSeconds, int digits) {
+        private static ChronoUnit determinePrecision(int secondDigits, int digits) {
             if (digits > 6) return ChronoUnit.NANOS;
             if (digits > 3) return ChronoUnit.MICROS;
             if (digits > 0) return ChronoUnit.MILLIS;
-            return printSeconds ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
+            return secondDigits > 0 ? ChronoUnit.SECONDS : ChronoUnit.FOREVER;
         }
 
-        private static void formatSeconds(StringBuilder buffer, Instant instant) {
+        private static void formatUnpaddedSeconds(StringBuilder buffer, Instant instant) {
+            buffer.append(instant.getEpochSecond() % 60L);
+        }
+
+        private static void formatPaddedSeconds(StringBuilder buffer, Instant instant) {
             long secondsInMinute = instant.getEpochSecond() % 60L;
             buffer.append((char) ((secondsInMinute / 10L) + '0'));
             buffer.append((char) ((secondsInMinute % 10L) + '0'));
@@ -757,9 +768,12 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         @Override
         InstantPatternFormatter createFormatter(Locale locale, TimeZone timeZone) {
+            final BiConsumer<StringBuilder, Instant> secondDigitsFormatter = secondDigits == 2
+                    ? SecondPatternSequence::formatPaddedSeconds
+                    : SecondPatternSequence::formatUnpaddedSeconds;
             final BiConsumer<StringBuilder, Instant> fractionDigitsFormatter =
                     fractionalDigits == 3 ? SecondPatternSequence::formatMillis : this::formatFractionalDigits;
-            if (!printSeconds) {
+            if (secondDigits == 0) {
                 return new AbstractFormatter(pattern, locale, timeZone, precision) {
                     @Override
                     public void formatTo(StringBuilder buffer, Instant instant) {
@@ -772,7 +786,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 return new AbstractFormatter(pattern, locale, timeZone, precision) {
                     @Override
                     public void formatTo(StringBuilder buffer, Instant instant) {
-                        formatSeconds(buffer, instant);
+                        secondDigitsFormatter.accept(buffer, instant);
                         buffer.append(separator);
                     }
                 };
@@ -780,7 +794,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             return new AbstractFormatter(pattern, locale, timeZone, precision) {
                 @Override
                 public void formatTo(StringBuilder buffer, Instant instant) {
-                    formatSeconds(buffer, instant);
+                    secondDigitsFormatter.accept(buffer, instant);
                     buffer.append(separator);
                     fractionDigitsFormatter.accept(buffer, instant);
                 }
@@ -795,15 +809,15 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                 StaticPatternSequence staticOther = (StaticPatternSequence) other;
                 if (fractionalDigits == 0) {
                     return new SecondPatternSequence(
-                            printSeconds, this.separator + staticOther.literal, fractionalDigits);
+                            this.secondDigits, this.separator + staticOther.literal, fractionalDigits);
                 }
             }
             // We can always append more fractional digits
             if (other instanceof SecondPatternSequence) {
                 SecondPatternSequence secondOther = (SecondPatternSequence) other;
-                if (!secondOther.printSeconds && secondOther.separator.isEmpty()) {
+                if (secondOther.secondDigits == 0 && secondOther.separator.isEmpty()) {
                     return new SecondPatternSequence(
-                            printSeconds, this.separator, this.fractionalDigits + secondOther.fractionalDigits);
+                            this.secondDigits, this.separator, this.fractionalDigits + secondOther.fractionalDigits);
                 }
             }
             return null;
