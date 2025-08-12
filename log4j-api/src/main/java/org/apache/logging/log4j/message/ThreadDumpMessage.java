@@ -24,12 +24,12 @@ import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.internal.Maps;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -176,7 +176,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-            final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(map.size());
+            final Map<ThreadInformation, StackTraceElement[]> threads = Maps.newHashMap(map.size());
             for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
             }

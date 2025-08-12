@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.util.internal.Maps;
 
 /**
  * Adds entries to the {@link ThreadContext stack or map} and them removes them when the object is closed, e.g. as part
@@ -206,7 +207,7 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            final Map<String, String> valuesToReplace = new HashMap<>(originalValues.size());
+            final Map<String, String> valuesToReplace = Maps.newHashMap(originalValues.size());
             final List<String> keysToRemove = new ArrayList<>(originalValues.size());
             for (final Map.Entry<String, String> entry : originalValues.entrySet()) {
                 final String key = entry.getKey();
