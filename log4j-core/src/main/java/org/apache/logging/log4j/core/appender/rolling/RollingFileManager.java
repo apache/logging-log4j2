@@ -910,7 +910,7 @@ public class RollingFileManager extends FileManager {
         }
     }
 
-    private static long initialFileTime(final File file) {
+    static long initialFileTime(final File file) {
         final Path path = file.toPath();
         if (Files.exists(path)) {
             try {
