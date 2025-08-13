@@ -75,7 +75,7 @@ class AsyncQueueFullPolicyFactoryTest {
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
         assertEquals(
-                Level.INFO,
+                Level.ERROR,
                 ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).getThresholdLevel());
     }
 
@@ -85,7 +85,7 @@ class AsyncQueueFullPolicyFactoryTest {
                 AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
                 toRootLowerCase(AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER));
         assertEquals(
-                Level.INFO,
+                Level.ERROR,
                 ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).getThresholdLevel());
     }
 

@@ -30,10 +30,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or has
  * value {@code "Default"}, this factory creates {@link DefaultAsyncQueueFullPolicy} objects.
  * </p> <p>
- * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects.
- * By default, this router discards events of level {@code INFO}, {@code DEBUG} and {@code TRACE} if the queue is full.
- * This can be adjusted with property {@code "log4j2.DiscardThreshold"} (name of the level at which to start
- * discarding).
+ * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects. By
+ * default, this router discards events of level {@code ERROR}, {@code WARN}, {@code INFO}, {@code DEBUG} and {@code
+ * TRACE} if the queue is full. This can be adjusted with property {@code "log4j2.DiscardThreshold"} (name of the level
+ * at which to start discarding).
  * </p> <p>
  * For any other value, this
  * factory interprets the value as the fully qualified name of a class implementing the {@link AsyncQueueFullPolicy}
@@ -104,8 +104,8 @@ public class AsyncQueueFullPolicyFactory {
 
     private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
         final PropertiesUtil util = PropertiesUtil.getProperties();
-        final String level = util.getStringProperty(PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL, Level.INFO.name());
-        final Level thresholdLevel = Level.toLevel(level, Level.INFO);
+        final String level = util.getStringProperty(PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL, Level.ERROR.name());
+        final Level thresholdLevel = Level.toLevel(level, Level.ERROR);
         LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
         return new DiscardingAsyncQueueFullPolicy(thresholdLevel);
     }
