@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotations to separate {@link org.apache.logging.log4j.plugins.name.NameProvider} names into namespaces.
+ * Annotations to separate {@link NameProvider} names into namespaces.
  * For example, the {@linkplain Configurable Core namespace} is used with the {@link Node} API, while the TypeConverter
  * namespace is used with the {@link org.apache.logging.log4j.plugins.convert.TypeConverter} API.
  * This can be annotated on another annotation to create an alias annotation for a common namespace.
