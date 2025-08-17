@@ -27,10 +27,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 class NamedInstantPatternTest {
 
     @ParameterizedTest
-    @EnumSource(
-            value = NamedInstantPattern.class,
-            names = {"ISO8601_OFFSET_DATE_TIME_HH"},
-            mode = EnumSource.Mode.EXCLUDE)
+    @EnumSource(NamedInstantPattern.class)
     void compatibilityOfLegacyPattern(NamedInstantPattern namedPattern) {
         InstantPatternFormatter legacyFormatter = InstantPatternFormatter.newBuilder()
                 .setPattern(namedPattern.getLegacyPattern())
