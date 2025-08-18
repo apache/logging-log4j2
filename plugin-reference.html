@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Plugin reference :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/plugin-reference.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.9">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -1477,7 +1477,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -7435,7 +7435,7 @@ Configurations set up for the 2.0 version of the JMS appenders will still work.<
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider">NoSqlProvider</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the provider.</p>
 </div></div></td>
@@ -16312,10 +16312,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17609,10 +17609,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17808,10 +17808,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -18111,32 +18111,6 @@ SimpleDateFormat date and time pattern strings.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup"></a>jvmrunargs</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;jvmrunargs/&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JndiLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JndiLookup"></a>jndi</h4>
 <div class="dlist">
 <dl>
@@ -18276,9 +18250,6 @@ SimpleDateFormat date and time pattern strings.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup">JmxRuntimeInputArgumentsLookup</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MainMapLookup">MainMapLookup</a></p>
 </li>
 </ul>
@@ -18383,9 +18354,6 @@ If these do not suffice, you can subclass and implement your own matcher.</p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JavaLookup">JavaLookup</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup">JmxRuntimeInputArgumentsLookup</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JndiLookup">JndiLookup</a></p>
@@ -21950,6 +21918,37 @@ toString(), or to output the value of a specific key within the property bundle 
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-couchdb"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb"></a><code>log4j-couchdb</code></h3>
 <div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-couchdb</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider"></a>CouchDB</h4>
 <div class="dlist">
 <dl>
@@ -23892,37 +23891,6 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 <div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-mongodb"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb"></a><code>log4j-mongodb</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider"></a><code>NoSqlProvider</code></h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.appender.nosql.NoSqlProvider</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-mongodb</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-core-appender-nosql-NoSqlProvider_implementations"></a>Known implementations</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-couchdb_org-apache-logging-log4j-couchdb-CouchDbProvider">CouchDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider">MongoDbProvider</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-mongodb4_org-apache-logging-log4j-mongodb4-MongoDb4Provider">MongoDb4Provider</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"><a class="anchor" href="#org-apache-logging-log4j_log4j-mongodb_org-apache-logging-log4j-mongodb-MongoDbProvider"></a>MongoDb</h4>
 <div class="dlist">
