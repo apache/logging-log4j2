@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -40,6 +41,19 @@ class NamedInstantPatternTest {
         Instant javaTimeInstant = Instant.now();
         MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(javaTimeInstant.getEpochSecond(), javaTimeInstant.getNano());
-        assertThat(legacyFormatter.format(instant)).isEqualTo(formatter.format(instant));
+        String legacy = legacyFormatter.format(instant);
+        String modern = formatter.format(instant);
+        if (namedPattern == NamedInstantPattern.ISO8601_OFFSET_DATE_TIME_HH) {
+            java.time.ZoneOffset offset =
+                    java.time.ZoneId.systemDefault().getRules().getOffset(java.time.Instant.now());
+            Assumptions.assumeTrue(
+                    offset.getTotalSeconds() % 3600 == 0,
+                    () -> String.format(
+                            "Skipping test: ISO8601_OFFSET_DATE_TIME_HH requires a whole-hour offset, but system offset is %s",
+                            offset));
+            assertThat(legacy).isEqualTo(modern);
+        } else {
+            assertThat(legacy).isEqualTo(modern);
+        }
     }
 }
