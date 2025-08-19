@@ -20,9 +20,11 @@
  * {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#category() plugin category}
  * {@link org.apache.logging.log4j.core.lookup.StrLookup#CATEGORY Lookup}.
  */
+@BaselineIgnore("2.26.0")
 @Export
-@Version("2.24.1")
+@Version("2.26.0")
 package org.apache.logging.log4j.core.lookup;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
