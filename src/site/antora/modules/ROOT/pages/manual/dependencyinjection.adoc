@@ -53,7 +53,7 @@ Injection points are injectable fields or parameters where a dependency should b
 _Injectable fields_ are fields annotated with `@Inject` or a qualifier annotation.
 _Injectable methods_ are methods annotated with `@Inject` or are not annotated with a factory annotation and have at least one parameter annotated with a qualifier annotation.
 _Injectable constructors_ are constructors annotated with `@Inject`; only one such constructor should exist per class.
-When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with `@org.apache.logging.log4j.plugins.name.NameProvider`), then the provided name or name of the field or parameter are included in the `Key<T>` for the injection point.
+When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with `@org.apache.logging.log4j.plugins.NameProvider`), then the provided name or name of the field or parameter are included in the `Key<T>` for the injection point.
 When these elements are annotated with a `@Namespace` annotation or meta-annotation, then that namespace name is included in the `Key<T>` for the injection point.
 Similarly, when a field or parameter is annotated with a qualifier annotation, then that qualifier annotation type is included in the `Key<T>` for the injection point.
 
@@ -114,8 +114,8 @@ Qualifiers provide a way to match dependencies and factories based on more than 
 For example, the `@org.apache.logging.log4j.plugins.Named` qualifier allows for creating different bindings of the same type with different names (along with support for aliases).
 Qualifiers on an injection point request a binding with that qualifier type and name.
 Qualifiers on a factory method register a binding with that qualifier type and name.
-The name for a qualifier is provided via an `org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider` strategy class given in the `@NameProvider` annotation declared on the qualifier annotation.
-Aliases are likewise provided via an `org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider` strategy class given in the `@AliasesProvider` annotated declared on the qualifier annotation.
+The name for a qualifier is provided via a `@NameProvider` annotation declared on the qualifier annotation.
+Aliases are likewise provided via a `@AliasesProvider` annotated declared on the qualifier annotation.
 
 === Scopes
 

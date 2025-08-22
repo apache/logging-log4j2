@@ -21,9 +21,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.core.config.plugins.util.PluginValueNameProvider;
+import org.apache.logging.log4j.plugins.NameProvider;
 import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.name.NameProvider;
 
 /**
  * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
@@ -35,7 +34,7 @@ import org.apache.logging.log4j.plugins.name.NameProvider;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@NameProvider(PluginValueNameProvider.class)
+@NameProvider
 @QualifierType
 @Deprecated(since = "3.0", forRemoval = true)
 @SuppressWarnings("removal")
