@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,6 +37,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.json.JsonConfigurationFactory;
+import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory;
+import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
@@ -129,5 +134,56 @@ class ConfigurationFactoryTest {
         checkConfiguration(context);
         final Path logFile = loggingPath.resolve("test-properties.log");
         checkFileLogger(context, logFile);
+    }
+
+    @Test
+    void getSupportedFileExtensions() {
+        final List<String> extensions = ConfigurationFactory.getInstance().getSupportedFileExtensions();
+        assertNotNull(extensions);
+        assertFalse(extensions.isEmpty());
+        assertTrue(extensions.contains("xml"));
+        assertTrue(extensions.contains("properties"));
+        final long distinctCount = extensions.stream().distinct().count();
+        assertEquals(extensions.size(), distinctCount);
+    }
+
+    @Test
+    void xmlConfigurationFactoryExtensions() {
+        final XmlConfigurationFactory factory = new XmlConfigurationFactory();
+        final List<String> extensions = factory.getSupportedFileExtensions();
+        assertEquals(1, extensions.size());
+        assertEquals("xml", extensions.get(0));
+    }
+
+    @Test
+    void propertiesConfigurationFactoryExtensions() {
+        final PropertiesConfigurationFactory factory = new PropertiesConfigurationFactory();
+        final List<String> extensions = factory.getSupportedFileExtensions();
+        assertEquals(1, extensions.size());
+        assertEquals("properties", extensions.get(0));
+    }
+
+    @Test
+    @Tag("json")
+    void jsonConfigurationFactoryExtensions() {
+        final JsonConfigurationFactory factory = new JsonConfigurationFactory();
+        final List<String> extensions = factory.getSupportedFileExtensions();
+        assertTrue(extensions.size() == 0 || extensions.size() == 2);
+        if (!extensions.isEmpty()) {
+            assertTrue(extensions.contains("json"));
+            assertTrue(extensions.contains("jsn"));
+        }
+    }
+
+    @Test
+    @Tag("yaml")
+    void yamlConfigurationFactoryExtensions() {
+        final YamlConfigurationFactory factory = new YamlConfigurationFactory();
+        final List<String> extensions = factory.getSupportedFileExtensions();
+        assertTrue(extensions.size() == 0 || extensions.size() == 2);
+        if (!extensions.isEmpty()) {
+            assertTrue(extensions.contains("yml"));
+            assertTrue(extensions.contains("yaml"));
+        }
     }
 }

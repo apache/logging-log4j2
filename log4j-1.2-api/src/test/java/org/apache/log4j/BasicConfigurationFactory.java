@@ -17,6 +17,8 @@
 package org.apache.log4j;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -33,6 +35,11 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
     @Override
     public String[] getSupportedTypes() {
         return new String[] {"*"};
+    }
+
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return Collections.emptyList();
     }
 
     @Override
