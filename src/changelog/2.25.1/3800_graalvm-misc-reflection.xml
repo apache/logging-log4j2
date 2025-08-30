@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3706" link="https://github.com/apache/logging-log4j2/issues/3706"/>
+  <issue id="3800" link="https://github.com/apache/logging-log4j2/pull/3800"/>
   <description format="asciidoc">
-    Fix detection of the Disruptor major version in some environments.
+    Resolve `PropertiesConfiguration` compatibility issues with GraalVM and address additional minor reflection-related problems.
   </description>
 </entry>
