@@ -167,4 +167,13 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
         // Wait for the completion.
         join(timeoutMillis);
     }
+
+    boolean requiresLocation() {
+        for (var appender : appenders) {
+            if (appender.getAppender().requiresLocation()) {
+                return true;
+            }
+        }
+        return errorAppender != null && errorAppender.getAppender().requiresLocation();
+    }
 }
