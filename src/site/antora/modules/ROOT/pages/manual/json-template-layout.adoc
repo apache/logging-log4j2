@@ -1263,6 +1263,13 @@ unit          = "unit" -> (
 rounded       = "rounded" -> boolean
 ----
 
+[NOTE]
+====
+The resolvers based on the `epochConfig` expression are garbage-free.
+
+The resolvers based on the `patternConfig` expression are low-garbage and generate temporary objects only once a minute.
+====
+
 .See examples
 [%collapsible]
 ====
