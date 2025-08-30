@@ -427,4 +427,9 @@ public final class AsyncAppender extends AbstractAppender {
     public int getQueueSize() {
         return queue.size();
     }
+
+    @Override
+    public boolean requiresLocation() {
+        return includeLocation && dispatcher.requiresLocation();
+    }
 }
