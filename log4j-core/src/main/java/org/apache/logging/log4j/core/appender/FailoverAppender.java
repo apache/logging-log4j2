@@ -158,6 +158,19 @@ public final class FailoverAppender extends AbstractAppender {
     }
 
     @Override
+    public boolean requiresLocation() {
+        if (primary != null && primary.getAppender().requiresLocation()) {
+            return true;
+        }
+        for (final AppenderControl control : failoverAppenders) {
+            if (control.getAppender().requiresLocation()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(getName());
         sb.append(" primary=").append(primary).append(", failover={");
