@@ -5,9 +5,10 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3758" link="https://github.com/apache/logging-log4j2/issues/3758"/>
   <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
+  <issue id="3785" link="https://github.com/apache/logging-log4j2/pull/3785"/>
+  <issue id="3905" link="https://github.com/apache/logging-log4j2/pull/3905"/>
   <description format="asciidoc">
-    Fix the `com.google.errorprone:error_prone_annotations` dependency whose version property gets orphan due to flattening.
+    Fix the `com.google.errorprone:error_prone_annotations` dependency whose version property gets erased due to flattening
   </description>
 </entry>
