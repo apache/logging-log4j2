@@ -910,7 +910,7 @@ public class RollingFileManager extends FileManager {
         }
     }
 
-    private static long initialFileTime(final File file) {
+    static long initialFileTime(final File file) {
         final Path path = file.toPath();
         if (Files.exists(path)) {
             try {
@@ -918,15 +918,24 @@ public class RollingFileManager extends FileManager {
                 final FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
                     LOGGER.debug("Returning file creation time for {}", file.getAbsolutePath());
-                    return fileTime.toMillis();
+
+                    return alignMillisToSecond(fileTime.toMillis());
                 }
-                LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
+                LOGGER.info("Unable to obtain file creation time for {}", file.getAbsolutePath());
             } catch (final Exception ex) {
-                LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": "
-                        + ex.getMessage());
+                LOGGER.info(
+                        "Unable to calculate file creation time for {}: {}", file.getAbsolutePath(), ex.getMessage());
             }
         }
-        return file.lastModified();
+
+        return alignMillisToSecond(file.lastModified());
+    }
+
+    /**
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/3068">Issue #3068</a>
+     */
+    static long alignMillisToSecond(long millis) {
+        return Math.round(millis / 1000d) * 1000;
     }
 
     private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
