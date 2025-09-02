@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -53,5 +56,22 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
     @Override
     public String[] getSupportedTypes() {
         return SUFFIXES;
+    }
+
+    /**
+     * Returns the file extensions supported by this XML configuration factory.
+     *
+     * <p>This method returns XML file extensions that this factory can process.
+     * The factory supports standard XML configuration files used by Log4j 2.</p>
+     *
+     * @return a list containing "xml" extension if the factory is active,
+     *         empty list if inactive due to missing XML parsing dependencies
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        if (!isActive()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList("xml");
     }
 }
