@@ -65,7 +65,7 @@ public final class HttpAppender extends AbstractAppender {
         private SslConfiguration sslConfiguration;
 
         @PluginBuilderAttribute
-        private boolean verifyHostname = true;
+        private Boolean verifyHostname;
 
         @Override
         public HttpAppender build() {
@@ -79,6 +79,14 @@ public final class HttpAppender extends AbstractAppender {
             if (getLayout() == null) {
                 LOGGER.error("HttpAppender requires a layout to be set.");
                 return null; // Return null if layout is missing
+            }
+
+            if (verifyHostname != null) {
+                LOGGER.warn("Http#verifyHostname is deprecated. please configure this on the TLS instead.");
+            } else if (sslConfiguration != null) {
+                verifyHostname = sslConfiguration.isVerifyHostName();
+            } else {
+                verifyHostname = true;
             }
 
             final HttpManager httpManager = new HttpURLConnectionManager(
@@ -123,7 +131,13 @@ public final class HttpAppender extends AbstractAppender {
         }
 
         public boolean isVerifyHostname() {
-            return verifyHostname;
+            if (verifyHostname != null) {
+                return verifyHostname;
+            }
+            if (sslConfiguration != null) {
+                return sslConfiguration.isVerifyHostName();
+            }
+            return true;
         }
 
         public B setUrl(final URL url) {
@@ -156,6 +170,7 @@ public final class HttpAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        @Deprecated
         public B setVerifyHostname(final boolean verifyHostname) {
             this.verifyHostname = verifyHostname;
             return asBuilder();
