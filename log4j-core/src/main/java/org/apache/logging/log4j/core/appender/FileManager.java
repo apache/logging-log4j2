@@ -246,19 +246,20 @@ public class FileManager extends OutputStreamManager {
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
-        final File file = new File(filename);
+        final Path path = getPath();
+        final File file = path.toFile();
         createParentDir(file);
         final FileOutputStream fos = new FileOutputStream(file, isAppend);
         if (file.exists() && file.length() == 0) {
             try {
                 final FileTime now = FileTime.fromMillis(System.currentTimeMillis());
-                Files.setAttribute(file.toPath(), "creationTime", now);
+                Files.setAttribute(path, "creationTime", now);
             } catch (Exception ex) {
                 LOGGER.warn("Unable to set current file time for {}", filename);
             }
             writeHeader(fos);
         }
-        defineAttributeView(Paths.get(filename));
+        defineAttributeView(path);
         return fos;
     }
 
@@ -343,6 +344,16 @@ public class FileManager extends OutputStreamManager {
     public String getFileName() {
         return getName();
     }
+
+    /**
+     * Returns the Path of the file being managed.
+     * @return The name of the file being managed.
+     * @since 2.26.0
+     */
+    public Path getPath() {
+        return Paths.get(getFileName());
+    }
+
     /**
      * Returns the append status.
      * @return true if the file will be appended to, false if it is overwritten.
