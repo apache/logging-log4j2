@@ -54,7 +54,7 @@
     </bnd-extra-module-options>
 
     <!-- Dependencies unique for this module -->
-    <jetty.version>9.4.57.v20241219</jetty.version>
+    <jetty.version>9.4.58.v20250814</jetty.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
   </properties>
 
