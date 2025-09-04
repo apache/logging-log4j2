@@ -1,0 +1,156 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Versioning and support policy
+
+== Versioning
+
+Apache Log4j releases follow the
+https://semver.org/spec/v2.0.0.html[Semantic Versioning specification], which means that the release numbering is of the form:
+
+[source]
+----
+<major>.<minor>.<patch>[-<pre-release>]
+----
+
+where:
+
+<major>::
++
+Is the major version number.
+This number is incremented when **breaking changes** are introduced to the software.
++
+Upgrading to a new major release might require code changes.
+See
+xref:migrate-from-log4j1.adoc[]
+to migrate from Log4j 1 to Log4j 2.
+
+<minor>::
++
+Is the minor version number.
+This number is incremented each time:
++
+--
+* A new Java method/class appears in the public API of one of the
+xref:components.adoc[Log4j artifacts].
+* A new configuration attribute is added to one of the
+xref:manual/plugins.adoc[Log4j Plugins (appenders, layouts, filters, etc.)].
+* A functionality or Java method/class are deprecated.
+* A behavioral change is introduced.
+--
++
+When upgrading to a new minor version, check the
+xref:release-notes.adoc[]
+of the new minor version: behavioral changes are highlighted in the release description and contained in the "Changed" section.
+
+<patch>::
++
+Is the patch release number.
+This number is incremented if the release only contains bug fixes.
++
+Upgrading to a new patch release constitutes the easiest upgrade path.
++
+[NOTE]
+====
+The classification of behavioral changes as minor or patch release is up to interpretation: what constitutes a bug for one user might be a feature for somebody else.
+====
+
+=== OSGi package versioning
+
+Since release `2.21.0` Log4j follows the OSGi practice of versioning each Java package separately (see
+https://bnd.bndtools.org/chapters/170-versioning.html#versioning-packages[Versioning Packages] for more information).
+The version of each package is available in the manifests of each artifact and in the Javadoc of each package: e.g. the version of the `o.a.l.l.core.appender` package is available in the
+link:javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.html[package summary Javadoc page].
+
+Package versions are in the form `X.Y.Z`, where the `X.Y` part corresponds to the Apache Log4j version that contained the last modifications in the public API of the package.
+For example, if a package has version `2.34.5` **all** the functionality of the package has been available since Log4j `2.34.0`.
+
+== Version compatibility
+
+Due to the separation between
+xref:manual/api.adoc[Log4j API]
+and
+xref:manual/implementation.adoc[implementation]
+the versions of the `log4j-api` and `log4j-core` artifacts at **runtime** must be aligned:
+
+* Log4j Core version X depends on Log4j API version X, so you need to have **at least** version X of Log4j API at runtime.
+* Conversely, to be able to use all the methods provided by Log4j API X, you need to have a version of Log4j Core that implements those methods, i.e., Log4j Core X or later.
+
+The easiest way to ensure version alignement in your project is to use the
+xref:components.adoc#log4j-bom[`log4j-bom` artifact]
+in your build tool.
+The usage of `log4j-bom` guarantees that the correct versions will be chosen, regardless of the conflict resolution algorithm used by your tool.
+
+== Support policy
+
+Apache Log4j currently supports two versions: Apache Log4j 2.x and the incubating Apache Log4j Core 3.x as in the table below:
+
+[cols="1,1,1m,1,1"]
+|===
+| Version | Status | Latest release | General availability | End-of-life
+
+| 3.x
+| Pre-release
+| 3.0.0-beta3
+|
+|
+
+| 2.x
+| Active
+| {log4j-core-version}
+| July 12, 2014
+|
+
+| 2.12.x
+| **EOS**
+| 2.12.4
+| June 23, 2019
+| December 28, 2021
+
+| 2.3.x
+| **EOS**
+| 2.3.2
+| May 9, 2015
+| December 29, 2021
+
+| 1.x
+| **EOL**
+| 1.2.17
+| January 8, 2000
+| August 5, 2015
+
+|===
+
+The levels of support for each release train are:
+
+Pre-release::
++
+The version is under active development, but it is not recommended to use it in production.
+
+Active::
++
+The version is under active development.
+
+EOS::
++
+The version will not receive any updates, including security updates.
+New security advisories against this version might be published in the future.
+
+EOL::
++
+The version will not receive any updates, including security updates.
+No new security advisories will be published for it.

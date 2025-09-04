@@ -18,6 +18,7 @@
 * xref:download.adoc[Download]
 ** xref:release-notes.adoc[]
 * link:{logging-services-url}/support.html[Support]
+** xref:versioning.adoc[]
 ** link:{logging-services-url}/security.html[Security]
 
 .xref:manual/index.adoc[]
