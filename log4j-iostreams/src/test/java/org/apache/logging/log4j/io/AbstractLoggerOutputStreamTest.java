@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest {
 
@@ -35,7 +36,11 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
 
     protected abstract OutputStream createOutputStreamWrapper();
 
-    @Before
+    AbstractLoggerOutputStreamTest(LoggerContext context) {
+        super(context);
+    }
+
+    @BeforeEach
     public void createStream() {
         this.wrapped = createOutputStream();
         this.out = createOutputStreamWrapper();

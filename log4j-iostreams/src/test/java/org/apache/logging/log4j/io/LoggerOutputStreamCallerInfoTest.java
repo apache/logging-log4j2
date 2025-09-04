@@ -18,14 +18,19 @@ package org.apache.logging.log4j.io;
 
 import java.io.OutputStream;
 import org.apache.logging.log4j.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerOutputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private OutputStream logOut;
 
-    @Before
+    LoggerOutputStreamCallerInfoTest(LoggerContext context) {
+        super(context);
+    }
+
+    @BeforeEach
     public void setupStreams() {
         this.logOut =
                 IoBuilder.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
