@@ -630,6 +630,37 @@
         </configuration>
       </plugin>
 
+      <!--
+        ~ Memento rules to remove overrides from child modules, whenever the changes are moved to `logging-parent`.
+        ~
+        ~ When empty, please comment this execution out, but do not delete it!
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>remove-overrides</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <!-- Wait until we retrieve `parent.version` property in `build-helper-maven-plugin` below -->
+            <phase>initialize</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <rules>
+                <requireProperty>
+                  <property>parent.version</property>
+                  <regex>12\.1\.1</regex>
+                  <regexMessage>Remember to remove overrides from child modules, whenever the changes are moved to `logging-parent`:
+                    * Remove the override `flatten-maven-plugin` configuration from `log4j-parent/pom.xml`.</regexMessage>
+                </requireProperty>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- ███████ ████████  █████  ██████  ████████        ███████ ██ ████████ ███████
            ██         ██    ██   ██ ██   ██    ██    ██     ██      ██    ██    ██
            ███████    ██    ███████ ██████     ██           ███████ ██    ██    █████
@@ -655,6 +686,21 @@
               <name>currentYear</name>
               <pattern>yyyy</pattern>
               <locale>en_US</locale>
+            </configuration>
+          </execution>
+          <!-- Used by `maven-enforcer-plugin` above -->
+          <execution>
+            <id>capture-parent-version</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <phase>validate</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <name>parent.version</name>
+              <value>${project.parent.version}</value>
+              <regex>^(.+)$</regex>
+              <replacement>$1</replacement>
             </configuration>
           </execution>
         </executions>
