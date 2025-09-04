@@ -14,19 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.test;
+package org.apache.logging.log4j.core.appender.rolling;
 
-/**
- * A JUnit TestRule to discover an available port and save it in a system property. Useful for setting up tests using
- * Apache Active MQ.
- */
-public class AvailablePortSystemPropertyTestRule extends SystemPropertyTestRule {
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 
-    public static AvailablePortSystemPropertyTestRule create(final String name) {
-        return new AvailablePortSystemPropertyTestRule(name);
-    }
+@LoggerContextSource("log4j-rolling-size-max-width-3.xml")
+public class RollingAppenderSizeMaxWidthTest3 extends RollingAppenderSizeMaxWidthTest {
 
-    protected AvailablePortSystemPropertyTestRule(final String name) {
-        super(name, () -> Integer.toString(AvailablePortFinder.getNextAvailable()));
+    public RollingAppenderSizeMaxWidthTest3(LoggerContext context) {
+        super(context);
     }
 }
