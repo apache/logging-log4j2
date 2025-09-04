@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -208,6 +209,44 @@ public class StatusLogger extends AbstractLogger {
      * @since 2.23.0
      */
     public static final String PROPERTIES_FILE_NAME = "log4j2.StatusLogger.properties";
+
+    /**
+     * Pattern that matches common separators in property names:
+     * <ul>
+     *   <li>Dots ({@code .}) used in property paths</li>
+     *   <li>Dashes ({@code -}) used in kebab-case</li>
+     *   <li>Underscores ({@code _}) used in environment variables</li>
+     * </ul>
+     * <p>
+     * These are removed during normalization.
+     * </p>
+     */
+    private static final Pattern SEPARATORS = Pattern.compile("[._-]");
+
+    /**
+     * Pattern that matches any character not in the ASCII Basic Latin block.
+     * <p>
+     * These characters are replaced with dots during normalization to avoid mismatches
+     * while preserving boundaries, e.g. {@code fooàö} becomes {@code foo..}.
+     * </p>
+     */
+    private static final Pattern NON_ASCII = Pattern.compile("\\P{InBasic_Latin}");
+
+    /**
+     * Pattern that matches the {@code log4j2} prefix at the start of the property name.
+     * <p>
+     * This is replaced with {@code log4j} for internal normalization.
+     * </p>
+     */
+    private static final Pattern PREFIX_LOG4J2 = Pattern.compile("^log4j2");
+
+    /**
+     * Pattern that matches property names starting with {@code log4j}, case-insensitively.
+     * <p>
+     * Used to determine if a given property name is relevant for Log4j configuration.
+     * </p>
+     */
+    private static final Pattern LOG4J_PREFIX = Pattern.compile("^log4j.*", Pattern.CASE_INSENSITIVE);
 
     /**
      * Holder for user-provided {@link StatusLogger} configurations.
@@ -462,7 +501,8 @@ public class StatusLogger extends AbstractLogger {
          * @return {@code true}, if the property name is relevant; {@code false}, otherwise
          */
         private static boolean isRelevantPropertyName(@Nullable final Object propertyName) {
-            return propertyName instanceof String && ((String) propertyName).matches("^(?i)log4j.*");
+            return propertyName instanceof String
+                    && LOG4J_PREFIX.matcher((String) propertyName).matches();
         }
 
         /**
@@ -476,19 +516,17 @@ public class StatusLogger extends AbstractLogger {
          * @return the normalized property name
          */
         private static String normalizePropertyName(final String propertyName) {
-            return propertyName
-                    // Remove separators:
-                    // - dots (properties)
-                    // - dashes (kebab-case)
-                    // - underscores (environment variables)
-                    .replaceAll("[._-]", "")
-                    // Replace all non-ASCII characters.
-                    // Don't remove, otherwise `fooàö` would incorrectly match with `foo`.
-                    // It is safe to replace them with dots, since we've just removed all dots above.
-                    .replaceAll("\\P{InBasic_Latin}", ".")
-                    // Lowercase ASCII – this is safe, since we've just removed all non-ASCII
-                    .toLowerCase(Locale.US)
-                    .replaceAll("^log4j2", "log4j");
+            if (propertyName == null) {
+                return null;
+            }
+
+            String propertyNameInput = propertyName;
+            propertyNameInput = SEPARATORS.matcher(propertyNameInput).replaceAll("");
+            propertyNameInput = NON_ASCII.matcher(propertyNameInput).replaceAll(".");
+            propertyNameInput = propertyNameInput.toLowerCase(Locale.US);
+            propertyNameInput = PREFIX_LOG4J2.matcher(propertyNameInput).replaceFirst("log4j");
+
+            return propertyNameInput;
         }
     }
 
