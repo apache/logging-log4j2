@@ -22,7 +22,6 @@ import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
@@ -154,7 +154,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @since 2.11.2
      */
     public Map<Source, Watcher> getConfigurationWatchers() {
-        final Map<Source, Watcher> map = new HashMap<>(watchers.size());
+        final Map<Source, Watcher> map = Maps.newHashMap(watchers.size());
         for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getWatcher());
         }
@@ -182,7 +182,7 @@ public class WatchManager extends AbstractLifeCycle {
      */
     @Deprecated
     public Map<File, FileWatcher> getWatchers() {
-        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
+        final Map<File, FileWatcher> map = Maps.newHashMap(watchers.size());
         for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
             if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
                 map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
