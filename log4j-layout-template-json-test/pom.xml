@@ -31,6 +31,7 @@
   <name>Apache Log4j JSON Template Layout tests</name>
 
   <properties>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
     <log4j.docgen.skip>true</log4j.docgen.skip>
       <bnd.baseline.skip>true</bnd.baseline.skip>
       <maven.deploy.skip>true</maven.deploy.skip>
@@ -65,11 +66,11 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-config-properties</artifactId>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-config-properties</artifactId>
+          <scope>test</scope>
+      </dependency>
 
       <dependency>
           <groupId>org.apache.logging.log4j</groupId>
@@ -106,7 +107,7 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
         <version>${jackson2.test.version}</version>
-      <scope>test</scope>
+        <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -138,12 +139,13 @@
       <artifactId>log4j2-ecs-layout</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.elasticsearch.client</groupId>
-          <artifactId>elasticsearch-rest-client</artifactId>
-          <version>8.13.4</version>
-          <scope>test</scope>
-      </dependency>
+
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-client</artifactId>
+      <version>8.13.4</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -202,26 +204,25 @@
       <build>
         <plugins>
 
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>3.1.0</version>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>17</version>
-                </jdk>
-              </toolchains>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>17</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
