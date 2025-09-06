@@ -84,15 +84,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-client</artifactId>
+      <version>${elastic.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>co.elastic.clients</groupId>
-      <artifactId>elasticsearch-java</artifactId>
-      <version>${elastic.version}</version>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -129,13 +129,6 @@
     <dependency>
       <groupId>co.elastic.logging</groupId>
       <artifactId>log4j2-ecs-layout</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-client</artifactId>
-      <version>8.13.4</version>
       <scope>test</scope>
     </dependency>
 
@@ -195,26 +188,6 @@
 
       <build>
         <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>3.1.0</version>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>17</version>
-                </jdk>
-              </toolchains>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
 
           <plugin>
             <groupId>io.fabric8</groupId>
@@ -387,6 +360,10 @@
                 <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
                 <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
               </systemPropertyVariables>
+              <jdkToolchain>
+                <version>17</version>
+              </jdkToolchain>
+
             </configuration>
             <executions>
               <execution>

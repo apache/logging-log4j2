@@ -19,19 +19,8 @@ package org.apache.logging.log4j.layout.template.json;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.ElasticsearchException;
-import co.elastic.clients.elasticsearch._types.HealthStatus;
-import co.elastic.clients.elasticsearch.cluster.HealthResponse;
-import co.elastic.clients.elasticsearch.core.CountResponse;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.SourceConfig;
-import co.elastic.clients.elasticsearch.indices.DeleteIndexRequest;
-import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.elastic.logging.log4j2.EcsLayout;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -63,6 +52,9 @@ import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFac
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
+import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -136,10 +128,7 @@ class LogstashIT {
     private static final String ES_INDEX_MESSAGE_FIELD_NAME = "message";
 
     private static RestClient REST_CLIENT;
-
-    private static ElasticsearchTransport ES_TRANSPORT;
-
-    private static ElasticsearchClient ES_CLIENT;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * Constants hardcoded in `docker-maven-plugin` configuration, do not change!
@@ -182,16 +171,16 @@ class LogstashIT {
         final String hostUri =
                 String.format("http://%s:%d", MavenHardcodedConstants.HOST_NAME, MavenHardcodedConstants.ES_PORT);
         REST_CLIENT = RestClient.builder(HttpHost.create(hostUri)).build();
-        ES_TRANSPORT = new RestClientTransport(REST_CLIENT, new JacksonJsonpMapper());
-        ES_CLIENT = new ElasticsearchClient(ES_TRANSPORT);
-
         LOGGER.info(LOG_PREFIX + "verifying the ES connection to `{}`", hostUri);
         await("ES cluster health")
                 .pollDelay(100, TimeUnit.MILLISECONDS)
                 .atMost(1, TimeUnit.MINUTES)
                 .untilAsserted(() -> {
-                    final HealthResponse healthResponse = ES_CLIENT.cluster().health();
-                    assertThat(healthResponse.status()).isNotEqualTo(HealthStatus.Red);
+                    Request request = new Request("GET", "/_cluster/health");
+                    Response response = REST_CLIENT.performRequest(request);
+                    Map<String, Object> health =
+                            OBJECT_MAPPER.readValue(response.getEntity().getContent(), Map.class);
+                    assertThat(health.get("status")).isNotEqualTo("red");
                 });
     }
 
@@ -217,11 +206,9 @@ class LogstashIT {
     void deleteIndex() throws IOException {
         LOGGER.info(LOG_PREFIX + "deleting the ES index");
         try {
-            DeleteIndexResponse deleteIndexResponse = ES_CLIENT
-                    .indices()
-                    .delete(DeleteIndexRequest.of(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME)));
-            assertThat(deleteIndexResponse.acknowledged()).isTrue();
-        } catch (ElasticsearchException error) {
+            Request request = new Request("DELETE", "/" + MavenHardcodedConstants.ES_INDEX_NAME);
+            REST_CLIENT.performRequest(request);
+        } catch (ResponseException error) {
             if (!error.getMessage().contains("index_not_found_exception")) {
                 throw new RuntimeException(error);
             }
@@ -230,7 +217,6 @@ class LogstashIT {
 
     @AfterAll
     static void stopClient() throws Exception {
-        ES_TRANSPORT.close();
         REST_CLIENT.close();
     }
 
@@ -466,42 +452,24 @@ class LogstashIT {
     }
 
     private static void assertDocumentCount(final int expectedCount) throws IOException {
-        final CountResponse countResponse;
-        try {
-            countResponse = ES_CLIENT.count(builder -> builder.index(MavenHardcodedConstants.ES_INDEX_NAME));
-        }
-        // Try to enrich the failure with the available list of indices
-        catch (final ElasticsearchException error) {
-            try {
-                if (error.getMessage().contains("index_not_found_exception")) {
-                    final Set<String> indexNames =
-                            ES_CLIENT.cluster().health().indices().keySet();
-                    final String message = String.format("Could not find index! Available index names: %s", indexNames);
-                    throw new AssertionError(message, error);
-                }
-            } catch (final Exception suppressed) {
-                error.addSuppressed(suppressed);
-            }
-            throw error;
-        }
-        final long actualCount = countResponse.count();
+        Request request = new Request("GET", "/" + MavenHardcodedConstants.ES_INDEX_NAME + "/_count");
+        Response response = REST_CLIENT.performRequest(request);
+        Map<String, Object> countResponse =
+                OBJECT_MAPPER.readValue(response.getEntity().getContent(), Map.class);
+        long actualCount = ((Number) countResponse.get("count")).longValue();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
     private static List<Map<String, Object>> queryDocuments() throws IOException {
-        @SuppressWarnings("rawtypes")
-        SearchResponse<Map> searchResponse = ES_CLIENT.search(
-                searchBuilder -> searchBuilder
-                        .index(MavenHardcodedConstants.ES_INDEX_NAME)
-                        .size(LOG_EVENT_COUNT)
-                        .source(SourceConfig.of(sourceConfigBuilder -> sourceConfigBuilder.fetch(true))),
-                Map.class);
-        return searchResponse.hits().hits().stream()
-                .map(hit -> {
-                    @SuppressWarnings("unchecked")
-                    final Map<String, Object> source = hit.source();
-                    return source;
-                })
+        Request request =
+                new Request("GET", "/" + MavenHardcodedConstants.ES_INDEX_NAME + "/_search?size=" + LOG_EVENT_COUNT);
+        Response response = REST_CLIENT.performRequest(request);
+        Map<String, Object> searchResponse =
+                OBJECT_MAPPER.readValue(response.getEntity().getContent(), Map.class);
+        List<Map<String, Object>> hits =
+                (List<Map<String, Object>>) ((Map<String, Object>) searchResponse.get("hits")).get("hits");
+        return hits.stream()
+                .map(hit -> (Map<String, Object>) hit.get("_source"))
                 .collect(Collectors.toList());
     }
 }
