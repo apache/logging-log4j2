@@ -14,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.plugins.name;
+package org.apache.logging.log4j.plugins;
 
-import static java.util.Optional.ofNullable;
-import static org.apache.logging.log4j.util.Strings.trimToNull;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.Optional;
-import org.apache.logging.log4j.plugins.PluginValue;
-
-public class PluginValueNameProvider implements AnnotatedElementNameProvider<PluginValue> {
-    @Override
-    public Optional<String> getSpecifiedName(final PluginValue annotation) {
-        return ofNullable(trimToNull(annotation.value()));
-    }
-}
+/**
+ * Marks another annotation as one providing a name for an object. The name is obtained from
+ * the annotation element named {@code value}. This element can be a {@code String} or {@code String[]}.
+ * When specified as an array, the first element is used.
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface NameProvider {}

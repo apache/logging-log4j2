@@ -25,13 +25,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Optional;
+import org.apache.logging.log4j.plugins.NameProvider;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.junit.jupiter.api.Test;
 
 // TODO: add tests for more complex types with generics etc
@@ -107,16 +105,9 @@ class KeyTest {
 
     @Retention(RetentionPolicy.RUNTIME)
     @QualifierType
-    @NameProvider(CustomQualifierNameProvider.class)
+    @NameProvider
     @interface CustomQualifier {
         String value();
-    }
-
-    static class CustomQualifierNameProvider implements AnnotatedElementNameProvider<CustomQualifier> {
-        @Override
-        public Optional<String> getSpecifiedName(final CustomQualifier annotation) {
-            return Optional.of(annotation.value());
-        }
     }
 
     @Retention(RetentionPolicy.RUNTIME)
