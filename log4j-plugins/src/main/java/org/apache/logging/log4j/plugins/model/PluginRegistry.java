@@ -20,6 +20,8 @@ import static org.apache.logging.log4j.util.Unbox.box;
 
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.spi.ServiceConsumer;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -101,24 +103,44 @@ public class PluginRegistry {
 
     private Namespaces decodeCacheFiles(final ClassLoader classLoader) {
         final long startTime = System.nanoTime();
-        final PluginCache cache = new PluginCache();
+        final PluginIndex index = new PluginIndex();
         try {
             final Enumeration<URL> resources = classLoader.getResources(PLUGIN_CACHE_FILE);
             if (resources == null) {
                 LOGGER.info("Plugin preloads not available from class loader {}", classLoader);
             } else {
-                cache.loadCacheFiles(resources);
+                while (resources.hasMoreElements()) {
+                    final URL url = resources.nextElement();
+                    try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
+                        final int count = in.readInt();
+                        for (int i = 0; i < count; i++) {
+                            final var builder = PluginEntry.builder().setNamespace(in.readUTF());
+                            final int entries = in.readInt();
+                            for (int j = 0; j < entries; j++) {
+                                // Must always read all parts of the entry, even if not adding, so that the stream
+                                // progresses
+                                final var entry = builder.setKey(in.readUTF())
+                                        .setClassName(in.readUTF())
+                                        .setName(in.readUTF())
+                                        .setPrintable(in.readBoolean())
+                                        .setDeferChildren(in.readBoolean())
+                                        .get();
+                                index.add(entry);
+                            }
+                        }
+                    }
+                }
             }
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
         }
         final Namespaces namespaces = new Namespaces();
         final AtomicInteger pluginCount = new AtomicInteger();
-        cache.getAllNamespaces().forEach((key, outer) -> outer.values().forEach(entry -> {
+        index.forEach(entry -> {
             final PluginType<?> type = new PluginType<>(entry, classLoader);
             namespaces.add(type);
             pluginCount.incrementAndGet();
-        }));
+        });
         reportLoadTime(classLoader, startTime, pluginCount);
         return namespaces;
     }
