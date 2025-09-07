@@ -102,6 +102,8 @@ class PatternParserTest {
         assertNotNull(formatters);
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("loginId", "Fred");
+        // The line number of the Throwable definition
+        final int nextLineNumber = 107;
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
@@ -120,8 +122,9 @@ class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :101 ] - Hello, world" + Strings.LINE_SEPARATOR;
-        assertTrue(str.endsWith(expected), "Expected to end with: " + expected + ". Actual: " + str);
+        final String expected =
+                "INFO  [PatternParserTest        :" + nextLineNumber + " ] - Hello, world" + Strings.LINE_SEPARATOR;
+        assertThat(str).endsWith(expected);
     }
 
     @Test
