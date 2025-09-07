@@ -4,10 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
-    <issue id="3787" link="https://github.com/apache/logging-log4j2/issues/3787"/>
+       type="fixed">
+    <issue id="3068" link="https://github.com/apache/logging-log4j2/issues/3068"/>
+    <issue id="3872" link="https://github.com/apache/logging-log4j2/pull/3872"/>
     <description format="asciidoc">
-     add a bnd tool property that makes sure that the supported jakarta version has a wider range then 5 to 6
-     Support the current release version for 5 to 7
+        Discard the sub-second part while obtaining the initial time (i.e., creation time) of a file in `RollingFileManager`
     </description>
 </entry>
