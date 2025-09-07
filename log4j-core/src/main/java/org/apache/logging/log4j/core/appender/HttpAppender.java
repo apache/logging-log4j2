@@ -31,17 +31,16 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.status.StatusLogger;
 
-/**
- * Sends log events over HTTP.
- */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Http")
 public final class HttpAppender extends AbstractAppender {
 
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
     /**
      * Builds HttpAppender instances.
-     * @param <B> The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<HttpAppender> {
@@ -70,6 +69,18 @@ public final class HttpAppender extends AbstractAppender {
 
         @Override
         public HttpAppender build() {
+            // Validate URL presence
+            if (url == null) {
+                LOGGER.error("HttpAppender requires URL to be set.");
+                return null; // Return null if URL is missing
+            }
+
+            // Validate layout presence
+            if (getLayout() == null) {
+                LOGGER.error("HttpAppender requires a layout to be set.");
+                return null; // Return null if layout is missing
+            }
+
             final HttpManager httpManager = new HttpURLConnectionManager(
                     getConfiguration(),
                     getConfiguration().getLoggerContext(),
@@ -81,10 +92,12 @@ public final class HttpAppender extends AbstractAppender {
                     headers,
                     sslConfiguration,
                     verifyHostname);
+
             return new HttpAppender(
                     getName(), getLayout(), getFilter(), isIgnoreExceptions(), httpManager, getPropertyArray());
         }
 
+        // Getter and Setter methods
         public URL getUrl() {
             return url;
         }
@@ -149,9 +162,6 @@ public final class HttpAppender extends AbstractAppender {
         }
     }
 
-    /**
-     * @return a builder for a HttpAppender.
-     */
     @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
