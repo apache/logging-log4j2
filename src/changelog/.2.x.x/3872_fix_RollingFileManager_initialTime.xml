@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <issue id="3068" link="https://github.com/apache/logging-log4j2/issues/3068"/>
+    <issue id="3872" link="https://github.com/apache/logging-log4j2/pull/3872"/>
+    <description format="asciidoc">
+        Discard the sub-second part while obtaining the initial time (i.e., creation time) of a file in `RollingFileManager`
+    </description>
+</entry>
