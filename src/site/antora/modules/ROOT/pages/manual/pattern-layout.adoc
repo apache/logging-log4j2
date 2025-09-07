@@ -603,7 +603,13 @@ In this mode, the exception stack trace will be rendered according to the config
 
 [IMPORTANT]
 ====
-All rendered exception stack traces are ensured to be prefixed with a new line obtained using `System.lineSeparator()`.
+Earlier versions of Log4j Core always inserted a space between the *output* of the previous conversion specifier and the stack trace.
+
+Starting with version `2.25.0`, this was changed to a line separator instead of a space.
+
+Since version `2.25.2`, automatic separation occurs *only* for converters implicitly added via the <<plugin-attr-alwaysWriteExceptions>> option.
+
+When you add a throwable converter explicitly in your pattern, Log4j Core no longer inserts any separator on its own: you have full control over whether and how to separate the stack trace from the preceding message.
 ====
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/ThrowablePatternConverter.html[`ThrowablePatternConverter`] specifier grammar **for rendering stack traces**:
