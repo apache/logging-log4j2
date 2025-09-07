@@ -118,4 +118,11 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
         }
         return true;
     }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
+    }
 }
