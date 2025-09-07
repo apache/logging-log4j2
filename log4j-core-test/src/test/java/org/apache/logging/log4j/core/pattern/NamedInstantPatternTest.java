@@ -17,8 +17,11 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +32,15 @@ class NamedInstantPatternTest {
     @ParameterizedTest
     @EnumSource(NamedInstantPattern.class)
     void compatibilityOfLegacyPattern(NamedInstantPattern namedPattern) {
+        if (namedPattern == NamedInstantPattern.ISO8601_OFFSET_DATE_TIME_HH) {
+            ZoneOffset offset = ZoneId.systemDefault().getRules().getOffset(Instant.now());
+            assumeThat(offset.getTotalSeconds() % 3600 == 0)
+                    .withFailMessage(
+                            "Skipping test: ISO8601_OFFSET_DATE_TIME_HH requires a whole-hour offset, but system offset is %s",
+                            offset)
+                    .isTrue();
+        }
+
         InstantPatternFormatter legacyFormatter = InstantPatternFormatter.newBuilder()
                 .setPattern(namedPattern.getLegacyPattern())
                 .setLegacyFormattersEnabled(true)
@@ -40,6 +52,8 @@ class NamedInstantPatternTest {
         Instant javaTimeInstant = Instant.now();
         MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(javaTimeInstant.getEpochSecond(), javaTimeInstant.getNano());
-        assertThat(legacyFormatter.format(instant)).isEqualTo(formatter.format(instant));
+        String legacy = legacyFormatter.format(instant);
+        String modern = formatter.format(instant);
+        assertThat(legacy).isEqualTo(modern);
     }
 }
