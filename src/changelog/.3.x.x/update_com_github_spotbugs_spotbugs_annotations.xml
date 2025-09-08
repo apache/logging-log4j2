@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="3539" link="https://github.com/apache/logging-log4j2/pull/3539"/>
-  <description format="asciidoc">Update `com.github.spotbugs:spotbugs-annotations` to version `4.9.3`</description>
+  <issue id="3924" link="https://github.com/apache/logging-log4j2/pull/3924"/>
+  <description format="asciidoc">Update `com.github.spotbugs:spotbugs-annotations` to version `4.9.4`</description>
 </entry>
