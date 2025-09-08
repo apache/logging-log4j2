@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.config.builder;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -85,5 +87,10 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     @Override
     protected String[] getSupportedTypes() {
         return new String[] {"*"};
+    }
+
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return Collections.emptyList();
     }
 }
