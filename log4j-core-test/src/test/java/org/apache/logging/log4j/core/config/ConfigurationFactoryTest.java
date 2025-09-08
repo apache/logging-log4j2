@@ -19,14 +19,19 @@ package org.apache.logging.log4j.core.config;
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +41,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
@@ -129,5 +135,64 @@ class ConfigurationFactoryTest {
         checkConfiguration(context);
         final Path logFile = loggingPath.resolve("test-properties.log");
         checkFileLogger(context, logFile);
+    }
+
+    @Test
+    void testGetConfigurationWithNullUris() {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            assertThrows(NullPointerException.class, () -> factory.getConfiguration(context, "test", (List<URI>) null));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithEmptyUris() {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> factory.getConfiguration(context, "test", Collections.emptyList()));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithNullInList() {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final List<URI> listWithNull = Collections.singletonList(null);
+            assertThrows(ConfigurationException.class, () -> factory.getConfiguration(context, "test", listWithNull));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithSingleUri() throws Exception {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final URL resource = getClass().getResource("/log4j-test1.xml");
+            assertNotNull(resource);
+
+            final List<URI> singleUri = Collections.singletonList(resource.toURI());
+            final Configuration config = factory.getConfiguration(context, "test", singleUri);
+
+            assertNotNull(config);
+            assertFalse(config instanceof CompositeConfiguration);
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithMultipleUris() throws Exception {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final URL resource1 = getClass().getResource("/log4j-test1.xml");
+            final URL resource2 = getClass().getResource("/log4j-xinclude.xml");
+            assertNotNull(resource1);
+            assertNotNull(resource2);
+
+            final List<URI> multipleUris = Arrays.asList(resource1.toURI(), resource2.toURI());
+            final Configuration config = factory.getConfiguration(context, "test", multipleUris);
+
+            assertNotNull(config);
+            assertTrue(config instanceof CompositeConfiguration);
+        }
     }
 }

@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
@@ -331,6 +332,52 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
         }
         return getConfiguration(loggerContext, name, configLocation);
+    }
+
+    /**
+     * Creates a Configuration from multiple configuration URIs.
+     * If multiple URIs are successfully loaded, they will be combined into a CompositeConfiguration.
+     *
+     * @param loggerContext the logger context (may be null)
+     * @param name the configuration name (may be null)
+     * @param uris the list of configuration URIs (must not be null or empty)
+     * @return a Configuration created from the provided URIs
+     * @throws NullPointerException if uris is null
+     * @throws IllegalArgumentException if uris is empty
+     * @throws ConfigurationException if no valid configuration could be created
+     * from any of the provided URIs
+     * @since 2.26.0
+     */
+    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final List<URI> uris) {
+
+        Objects.requireNonNull(uris, "uris parameter cannot be null");
+
+        if (uris.isEmpty()) {
+            throw new IllegalArgumentException("URI list cannot be empty");
+        }
+
+        final List<AbstractConfiguration> configurations = new ArrayList<>();
+
+        for (final URI uri : uris) {
+
+            if (uri == null) {
+                throw new ConfigurationException("URI list contains null element");
+            }
+
+            final Configuration config = getConfiguration(loggerContext, name, uri);
+
+            if (config == null) {
+                throw new ConfigurationException("Failed to create configuration from: " + uri);
+            }
+
+            if (!(config instanceof AbstractConfiguration)) {
+                throw new ConfigurationException("Configuration at " + uri + " is not an AbstractConfiguration");
+            }
+
+            configurations.add((AbstractConfiguration) config);
+        }
+
+        return configurations.size() == 1 ? configurations.get(0) : new CompositeConfiguration(configurations);
     }
 
     static boolean isClassLoaderUri(final URI uri) {
