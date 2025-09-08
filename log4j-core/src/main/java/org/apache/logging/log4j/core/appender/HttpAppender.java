@@ -82,7 +82,8 @@ public final class HttpAppender extends AbstractAppender {
             }
 
             if (verifyHostname != null) {
-                LOGGER.warn("Http#verifyHostname is deprecated. please configure this on the TLS instead.");
+                LOGGER.warn(
+                        "`verifyHostname` attribute of `HttpAppender` is deprecated and ignored. Use a `TlsConfiguration` element to configure this attribute.");
             } else if (sslConfiguration != null) {
                 verifyHostname = sslConfiguration.isVerifyHostName();
             } else {
@@ -131,13 +132,7 @@ public final class HttpAppender extends AbstractAppender {
         }
 
         public boolean isVerifyHostname() {
-            if (verifyHostname != null) {
-                return verifyHostname;
-            }
-            if (sslConfiguration != null) {
-                return sslConfiguration.isVerifyHostName();
-            }
-            return true;
+            return Boolean.TRUE.equals(this.verifyHostname);
         }
 
         public B setUrl(final URL url) {
