@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3819" link="https://github.com/apache/logging-log4j2/issues/3819"/>
+  <issue id="3852" link="https://github.com/apache/logging-log4j2/pull/3852"/>
   <description format="asciidoc">
-    Fix potential memory leak involving `LogBuilder` in Log4j API to Logback bridge.
+    Fix missing default `Target` value in Console Appender
   </description>
 </entry>

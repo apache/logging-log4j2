@@ -5,8 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-    <issue id="3828" link="https://github.com/apache/logging-log4j2/issues/3828"/>
-    <description format="asciidoc">
-        Corrected an incorrect placeholder count in the AbstractDriverManagerConnectionSource debug log message to prevent unnecessary warnings.
-    </description>
+  <issue id="3835" link="https://github.com/apache/logging-log4j2/issues/3835"/>
+  <issue id="3851" link="https://github.com/apache/logging-log4j2/pull/3851"/>
+  <description format="asciidoc">
+    Fix missing newlines in default logging configuration for `log4j-core`
+  </description>
 </entry>

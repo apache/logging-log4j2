@@ -5,10 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
-  <issue id="3785" link="https://github.com/apache/logging-log4j2/pull/3785"/>
-  <issue id="3905" link="https://github.com/apache/logging-log4j2/pull/3905"/>
+  <issue id="3819" link="https://github.com/apache/logging-log4j2/issues/3819"/>
+  <issue id="3824" link="https://github.com/apache/logging-log4j2/pull/3824"/>
   <description format="asciidoc">
-    Fix the `com.google.errorprone:error_prone_annotations` dependency whose version property gets erased due to flattening
+    Fix potential memory leak involving `LogBuilder` in Log4j API to Logback bridge
   </description>
 </entry>

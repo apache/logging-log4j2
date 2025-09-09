@@ -5,8 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3835" link="https://github.com/apache/logging-log4j2/issues/3835"/>
-  <description format="asciidoc">
-    Fix missing newlines in default logging configuration for log4j-core.
-  </description>
+    <issue id="3828" link="https://github.com/apache/logging-log4j2/issues/3828"/>
+    <issue id="3831" link="https://github.com/apache/logging-log4j2/pull/3831"/>
+    <description format="asciidoc">
+        Prevent unnecessary warnings in `AbstractDriverManagerConnectionSource`
+    </description>
 </entry>
