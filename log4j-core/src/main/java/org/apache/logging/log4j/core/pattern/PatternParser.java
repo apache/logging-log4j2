@@ -212,7 +212,26 @@ public final class PatternParser {
             list.add(new PatternFormatter(pc, field));
         }
         if (alwaysWriteExceptions && !handlesThrowable) {
-            final LogEventPatternConverter pc = ThrowablePatternConverter.newInstance(config, new String[0]);
+            // We need to guarantee that an exception is always written,
+            // and that it is cleanly separated from the main log line by a newline.
+            final LogEventPatternConverter pc;
+            // Look at the last converter in the existing pattern.
+            final PatternFormatter lastFormatter = list.isEmpty() ? null : list.get(list.size() - 1);
+
+            if (lastFormatter == null || !(lastFormatter.getConverter() instanceof LineSeparatorPatternConverter)) {
+                // Case 1: The pattern does NOT already end with a newline.
+                // In this case, we append a composite converter `%notEmpty{%n%ex}`.
+                // - If no exception is present, it renders nothing (so the pattern behaves exactly as before).
+                // - If an exception is present, it renders a newline followed by the stack trace.
+                pc = VariablesNotEmptyReplacementConverter.newInstance(config, new String[] {"%n%ex"});
+            } else {
+                // Case 2: The pattern already ends with a newline.
+                // In this case, we only need to add `%ex`:
+                // - If no exception is present, nothing changes.
+                // - If an exception is present, it is written immediately after the newline already in the pattern.
+                pc = ThrowablePatternConverter.newInstance(config, Strings.EMPTY_ARRAY);
+            }
+            // Finally, add the chosen converter to the end of the pattern.
             list.add(new PatternFormatter(pc, FormattingInfo.getDefault()));
         }
         return list;
