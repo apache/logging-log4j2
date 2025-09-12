@@ -35,7 +35,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class VariablesNotEmptyReplacementConverter extends LogEventPatternConverter {
 
-    private final List<PatternFormatter> formatters;
+    // package private for testing
+    final List<PatternFormatter> formatters;
 
     /**
      * Constructs the converter.

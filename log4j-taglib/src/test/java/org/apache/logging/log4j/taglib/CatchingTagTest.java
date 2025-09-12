@@ -57,7 +57,7 @@ public class CatchingTagTest {
         this.tag.setException(new Exception("This is a test."));
 
         assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
-        verify("Catching ERROR M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Exception: This is a test.");
+        verify("Catching ERROR M-CATCHING[ EXCEPTION ] E-java.lang.Exception: This is a test.");
     }
 
     @Test
@@ -66,8 +66,7 @@ public class CatchingTagTest {
         this.tag.setException(new RuntimeException("This is another test."));
 
         assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
-        verify("Catching INFO M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR
-                + "java.lang.RuntimeException: This is another test.");
+        verify("Catching INFO M-CATCHING[ EXCEPTION ] E-java.lang.RuntimeException: This is another test.");
     }
 
     @Test
@@ -76,7 +75,7 @@ public class CatchingTagTest {
         this.tag.setException(new Error("This is the last test."));
 
         assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
-        verify("Catching WARN M-CATCHING[ EXCEPTION ] E" + LINE_SEPARATOR + "java.lang.Error: This is the last test.");
+        verify("Catching WARN M-CATCHING[ EXCEPTION ] E-java.lang.Error: This is the last test.");
     }
 
     private void verify(final String expected) {

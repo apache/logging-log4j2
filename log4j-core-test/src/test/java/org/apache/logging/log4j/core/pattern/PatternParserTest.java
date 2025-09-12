@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -42,6 +43,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class PatternParserTest {
@@ -145,6 +147,8 @@ class PatternParserTest {
         assertNotNull(formatters);
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("loginId", "Fred");
+        // The line number of the Throwable definition
+        final int nextLineNumber = 152; // Adjust this when the code above changes!
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
@@ -163,7 +167,8 @@ class PatternParserTest {
             formatter.format(event, buf);
         }
         final String str = buf.toString();
-        final String expected = "INFO  [PatternParserTest        :148 ] - Hello, world" + Strings.LINE_SEPARATOR;
+        final String expected =
+                "INFO  [PatternParserTest        :" + nextLineNumber + " ] - Hello, world" + Strings.LINE_SEPARATOR;
         assertThat(str).endsWith(expected);
     }
 
@@ -414,6 +419,39 @@ class PatternParserTest {
 
         validateConverter(formatters, 0, "SimpleLiteral");
         validateConverter(formatters, 1, "Date");
+    }
+
+    static Stream<String> testAlwaysWriteExceptions_ensuresPrecededByNewline() {
+        return Stream.of("", "%m", "%n", "%m%n");
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAlwaysWriteExceptions_ensuresPrecededByNewline(final String pattern) {
+        final List<PatternFormatter> formatters = parser.parse(pattern, true, false, false);
+        assertNotNull(formatters);
+        if (pattern.endsWith("%n")) {
+            // Case 1: the original pattern ends with a new line, so the last converter is a ThrowablePatternConverter
+            assertThat(formatters).hasSizeGreaterThan(1);
+            final LogEventPatternConverter lastConverter =
+                    formatters.get(formatters.size() - 1).getConverter();
+            assertThat(lastConverter).isInstanceOf(ThrowablePatternConverter.class);
+            LogEventPatternConverter secondLastConverter =
+                    formatters.get(formatters.size() - 2).getConverter();
+            assertThat(secondLastConverter).isInstanceOf(LineSeparatorPatternConverter.class);
+        } else {
+            // Case 2: the original pattern does not end with a new line, so we add a composite converter
+            // that appends a new line and the exception if an exception is present.
+            assertThat(formatters).hasSizeGreaterThan(0);
+            final LogEventPatternConverter lastConverter =
+                    formatters.get(formatters.size() - 1).getConverter();
+            assertThat(lastConverter).isInstanceOf(VariablesNotEmptyReplacementConverter.class);
+            final List<PatternFormatter> nestedFormatters =
+                    ((VariablesNotEmptyReplacementConverter) lastConverter).formatters;
+            assertThat(nestedFormatters).hasSize(2);
+            assertThat(nestedFormatters.get(0).getConverter()).isInstanceOf(LineSeparatorPatternConverter.class);
+            assertThat(nestedFormatters.get(1).getConverter()).isInstanceOf(ThrowablePatternConverter.class);
+        }
     }
 
     @Test
