@@ -1140,6 +1140,52 @@
         </executions>
       </plugin>
 
+      <!--
+       ~ Drop the <build> section from flattened POMs.
+       ~ Keeps the consumer POM minimal and prevents flattened build-only properties
+       ~ (e.g., `error-prone.version`) from causing resolution problems to users.
+       ~
+       ~ Ref: https://github.com/apache/logging-log4j2/issues/3779
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <executions>
+          <!-- First use the special `resolveCiFriendliesOnly` mode to replace the special `${revision}` property with the actual version.
+               This is necessary because `flatten` mode does not support `ci-friendly` versions. -->
+          <execution>
+            <id>flatten-revision</id>
+          </execution>
+          <execution>
+            <id>flatten</id>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <!-- Use 'clean' as a base, then selectively retain key elements -->
+              <flattenMode>clean</flattenMode>
+              <pomElements>
+                <!-- Keep parent to maintain inheritance from log4j-bom and ancestors -->
+                <parent>keep</parent>
+
+                <!-- Retain meaningful module metadata -->
+                <name>expand</name>
+                <description>expand</description>
+
+                <!-- Expand URL to prevent default behavior of appending artifactId -->
+                <url>expand</url>
+
+                <!-- Keep dependencyManagement and dependencies, interpolating property-based versions -->
+                <dependencyManagement>interpolate</dependencyManagement>
+                <dependencies>interpolate</dependencies>
+              </pomElements>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
