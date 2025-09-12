@@ -376,4 +376,11 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
             toAppendTo.append(AnsiEscape.getDefaultStyle());
         }
     }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
+    }
 }

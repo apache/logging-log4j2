@@ -54,10 +54,9 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
 
     @Override
     public boolean handlesThrowable() {
-        return formatters != null
-                && formatters.stream()
-                        .map(PatternFormatter::getConverter)
-                        .anyMatch(LogEventPatternConverter::handlesThrowable);
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 
     /**

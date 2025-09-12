@@ -265,11 +265,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     @Override
     public boolean handlesThrowable() {
-        for (final PatternFormatter formatter : patternFormatters) {
-            if (formatter.handlesThrowable()) {
-                return true;
-            }
-        }
-        return false;
+        return patternFormatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 }
