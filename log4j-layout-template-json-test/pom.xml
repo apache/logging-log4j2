@@ -84,15 +84,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-client</artifactId>
-      <version>${elastic.version}</version>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-client</artifactId>
+      <version>${elastic.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -360,9 +360,6 @@
                 <log4j.logstash.gelf.port>${logstash.gelf.port}</log4j.logstash.gelf.port>
                 <log4j.logstash.tcp.port>${logstash.tcp.port}</log4j.logstash.tcp.port>
               </systemPropertyVariables>
-              <jdkToolchain>
-                <version>17</version>
-              </jdkToolchain>
 
             </configuration>
             <executions>
