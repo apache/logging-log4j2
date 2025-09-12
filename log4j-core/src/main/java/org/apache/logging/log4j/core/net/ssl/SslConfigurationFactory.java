@@ -86,7 +86,7 @@ public class SslConfigurationFactory {
             }
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
-            final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
+            final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, true);
             return SslConfiguration.createSSLConfiguration(
                     null, keyStoreConfiguration, trustStoreConfiguration, isVerifyHostName);
         }
