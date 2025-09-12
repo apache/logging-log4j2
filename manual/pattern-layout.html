@@ -476,8 +476,7 @@ The pattern parser knows when it has reached the end of a conversion specifier w
 In the example above the conversion specifier <code>%-5p</code> means the priority of the log event should be left justified to a width of five characters.</p>
 </div>
 <div class="paragraph">
-<p>If the pattern string does not contain a specifier to handle a <code>Throwable</code> being logged, parsing of the pattern will act as if the <code>%xEx</code> specifier had been added to the end of the string.
-To suppress the formatting of the <code>Throwable</code> completely simply add <code>%ex{0}</code> as a specifier in the pattern string.</p>
+<p>If the pattern string does not contain a specifier to handle a <code>Throwable</code> being logged, parsing of the pattern will act as if the <code>%n%ex</code> specifier had been added to the end of the string.</p>
 </div>
 </div>
 </div>
@@ -617,7 +616,7 @@ If configured, the <code>replace</code> element must specify the regular express
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%xEx</code></a> pattern is appended.
+<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%n%ex</code></a> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to <code>false</code> disables this behavior and allows you to exclude exceptions from your pattern output.</p>
 </div>
@@ -1383,7 +1382,13 @@ It features two modes:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>All rendered exception stack traces are ensured to be prefixed with a new line obtained using <code>System.lineSeparator()</code>.</p>
+<p>Earlier versions of Log4j Core always inserted a space between the <strong>output</strong> of the previous conversion specifier and the stack trace.
+Starting with version <code>2.25.0</code>, this was changed to a line separator instead of a space.
+Since version <code>2.25.2</code>, automatic separation occurs <strong>only</strong> for converters implicitly added via the <a href="#plugin-attr-alwaysWriteExceptions"><code>alwaysWriteExceptions</code></a> option.</p>
+</div>
+<div class="paragraph">
+<p>When you add a throwable converter explicitly in your pattern, Log4j Core no longer inserts any separator on its own: you have full control over whether and how to separate the stack trace from the preceding message.
+Thus, if you explicitly provide an exception stack trace converter (e.g., <code>%ex</code>), and want to prefix it with a newline, you need it add the newline prefix yourself too (e.g., <code>%n%ex</code>).</p>
 </div>
 </td>
 </tr>
