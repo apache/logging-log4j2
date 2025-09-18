@@ -44,6 +44,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class PatternParserTest {
 
@@ -93,6 +94,50 @@ class PatternParserTest {
         validateConverter(formatters, 1, "Line Sep");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"%m", "%p", "%c", "%d"})
+    void testAlwaysWriteExceptions_appendsThrowable(String pattern) {
+        // With alwaysWriteExceptions=true, parser should auto-append a %throwable
+        final List<PatternFormatter> formatters = parser.parse(pattern + "%n", true, false, false);
+        assertThat(formatters).hasSize(3);
+        assertThat(formatters.get(2).getConverter()).isInstanceOf(ThrowablePatternConverter.class);
+
+        // With alwaysWriteExceptions=false, parser should leave the pattern unchanged
+        final List<PatternFormatter> formatters2 = parser.parse(pattern + "%n", false, false, false);
+        assertThat(formatters2).hasSize(2);
+        assertThat(formatters2.get(1).getConverter()).isNotInstanceOf(ThrowablePatternConverter.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "%black{%throwable}",
+                "%blue{%throwable}",
+                "%cyan{%throwable}",
+                "%green{%throwable}",
+                "%magenta{%throwable}",
+                "%red{%throwable}",
+                "%white{%throwable}",
+                "%yellow{%throwable}",
+                "%encode{%throwable}{JSON}",
+                "%equals{%throwable}{java.lang.Throwable}{T}",
+                "%equalsIgnoreCase{%throwable}{java.lang.Throwable}{T}",
+                "%highlight{%throwable}",
+                "%maxLen{%throwable}{1024}",
+                "%replace{%throwable}{\n}{ }",
+                "%style{%throwable}{red bold}",
+                "%notEmpty{%throwable}",
+            })
+    void testAlwaysWriteExceptions_recognizesNestedPatterns(String pattern) {
+        // With alwaysWriteExceptions=true, parser must detect the nested %throwable
+        // and NOT auto-append another one at the top level
+        final List<PatternFormatter> formatters = parser.parse(pattern, true, false, false);
+
+        // Only one top-level formatter is expected (the wrapper itself), not a trailing ThrowablePatternConverter
+        assertThat(formatters).hasSize(1);
+        assertThat(formatters.get(0).getConverter()).isNotInstanceOf(ThrowablePatternConverter.class);
+    }
+
     /**
      * Test the custom pattern
      */
@@ -103,7 +148,7 @@ class PatternParserTest {
         final StringMap mdc = ContextDataFactory.createContextData();
         mdc.putValue("loginId", "Fred");
         // The line number of the Throwable definition
-        final int nextLineNumber = 107;
+        final int nextLineNumber = 152; // Adjust this when the code above changes!
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
