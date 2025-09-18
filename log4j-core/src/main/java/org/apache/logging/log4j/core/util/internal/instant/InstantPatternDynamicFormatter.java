@@ -253,7 +253,23 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
             // Handle single-quotes
             else if (c == '\'') {
-                final int endIndex = pattern.indexOf('\'', startIndex + 1);
+                int endIndex = startIndex + 1;
+                while (endIndex < pattern.length()) {
+                    if (pattern.charAt(endIndex) == '\'') {
+                        if ((endIndex + 1) < pattern.length() && pattern.charAt(endIndex + 1) == '\'') {
+                            // Escaped apostrophe, skip it
+                            endIndex += 2;
+                        } else {
+                            // Closing quote found
+                            break;
+                        }
+                    } else {
+                        endIndex++;
+                    }
+                }
+                if (endIndex >= pattern.length()) {
+                    endIndex = -1; // Signal incomplete literal
+                }
                 final PatternSequence sequence = getStaticPatternSequence(pattern, startIndex, endIndex);
                 sequences.add(sequence);
                 startIndex = endIndex + 1;
@@ -276,7 +292,10 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     startIndex, pattern);
             throw new IllegalArgumentException(message);
         }
-        final String sequenceLiteral = (startIndex + 1) == endIndex ? "'" : pattern.substring(startIndex + 1, endIndex);
+        // Extract the literal, replacing escaped apostrophes with a single apostrophe
+        final String sequenceLiteral = (startIndex + 1) == endIndex
+                ? "'"
+                : pattern.substring(startIndex + 1, endIndex).replace("''", "'");
         return new StaticPatternSequence(sequenceLiteral);
     }
 
@@ -414,8 +433,32 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
 
         final ChronoUnit precision;
 
+        /**
+         * Creates a {@code PatternSequence} from a {@link java.time.format.DateTimeFormatter DateTimeFormatter} pattern
+         * and its precision.
+         *
+         * <p><strong>Quoting invariant:</strong> every literal in {@code pattern} must be enclosed in single quotes.
+         * To include a lone apostrophe as a literal, use {@code "''''"} (open quote, escaped apostrophe {@code ''}, close quote).
+         * Never use a bare {@code "''"}: while syntactically valid, it becomes ambiguous at concatenation boundaries.
+         * This contract lets us merge adjacent quoted blocks in a purely context-free way
+         * (drop the left closing quote and the right opening quote).</p>
+         *
+         * <p><b>Examples</b>:
+         * <pre>{@code
+         * "yyyy-MM-dd 'at' HH:mm"    // OK: 'at' is a quoted literal
+         * "HH 'o''clock'"            // OK: apostrophe inside a quoted block is escaped as ''
+         * "yyyy''''MM"               // OK: emits a literal apostrophe between year and month
+         * }</pre>
+         *
+         * @param pattern    a DateTimeFormatter pattern with all literals fully quoted
+         * @param precision  the largest {@link java.time.temporal.ChronoUnit ChronoUnit} interval over which the
+         *                   formatted output remains constant for this pattern
+         * @throws NullPointerException if {@code pattern} or {@code precision} is {@code null}
+         * @throws IllegalArgumentException if {@code pattern} is not a valid {@code DateTimeFormatter} pattern
+         */
         @SuppressWarnings("ReturnValueIgnored")
         PatternSequence(final String pattern, final ChronoUnit precision) {
+            assert !"''".equals(pattern);
             DateTimeFormatter.ofPattern(pattern); // Validate the pattern
             this.pattern = pattern;
             this.precision = precision;
@@ -456,37 +499,40 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
          * @return A merged formatter factory or {@code null} if merging is not possible.
          */
         @Nullable
-        PatternSequence tryMerge(PatternSequence other, ChronoUnit thresholdPrecision) {
-            return null;
-        }
+        abstract PatternSequence tryMerge(PatternSequence other, ChronoUnit thresholdPrecision);
 
         boolean isConstantForDurationOf(final ChronoUnit thresholdPrecision) {
             return precision.compareTo(thresholdPrecision) >= 0;
         }
 
         static String escapeLiteral(String literal) {
-            StringBuilder sb = new StringBuilder(literal.length() + 2);
-            boolean inSingleQuotes = false;
-            for (int i = 0; i < literal.length(); i++) {
-                char c = literal.charAt(i);
-                if (c == '\'') {
-                    if (inSingleQuotes) {
-                        sb.append("'");
-                    }
-                    inSingleQuotes = false;
-                    sb.append("''");
-                } else {
-                    if (!inSingleQuotes) {
-                        sb.append("'");
-                    }
-                    inSingleQuotes = true;
-                    sb.append(c);
-                }
+            // Ensure that an empty literal is not quoted as "''",
+            // which would be interpreted as an apostrophe-escape sequence.
+            return literal.isEmpty() ? "" : "'" + literal.replace("'", "''") + "'";
+        }
+
+        /**
+         * Concatenates two DateTimeFormatter pattern fragments.
+         * <p>
+         * Precondition (enforced by the caller): every literal is fully quoted.
+         * Even a lone apostrophe is emitted as the quoted literal block "''''"
+         * (open quote, escaped apostrophe, and close quote).
+         * We never use a bare "''".
+         * </
+         */
+        static String mergePatterns(String left, String right) {
+            if (left.isEmpty()) return right;
+            if (right.isEmpty()) return left;
+
+            if (left.charAt(left.length() - 1) == '\'' && right.charAt(0) == '\'') {
+                // Stitch two adjacent quoted-literal blocks into one by removing the
+                // boundary quotes (close-then-open).
+                // Without this, concatenation would yield "...''..." at the join, which would change semantics.
+                //
+                // See: https://github.com/apache/logging-log4j2/issues/3930
+                return left.substring(0, left.length() - 1) + right.substring(1);
             }
-            if (inSingleQuotes) {
-                sb.append("'");
-            }
-            return sb.toString();
+            return left + right;
         }
 
         @Override
@@ -537,12 +583,12 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
             // We always merge consecutive static pattern factories
             if (other instanceof StaticPatternSequence) {
                 final StaticPatternSequence otherStatic = (StaticPatternSequence) other;
-                return new StaticPatternSequence(this.literal + otherStatic.literal);
+                return new StaticPatternSequence(mergePatterns(this.literal, otherStatic.literal));
             }
             // We also merge a static pattern factory with a DTF factory
             if (other instanceof DynamicPatternSequence) {
                 final DynamicPatternSequence otherDtf = (DynamicPatternSequence) other;
-                return new DynamicPatternSequence(this.pattern + otherDtf.pattern, otherDtf.precision);
+                return new DynamicPatternSequence(mergePatterns(this.pattern, otherDtf.pattern), otherDtf.precision);
             }
             return null;
         }
@@ -591,13 +637,13 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
                     ChronoUnit precision = this.precision.getDuration().compareTo(otherDtf.precision.getDuration()) < 0
                             ? this.precision
                             : otherDtf.precision;
-                    return new DynamicPatternSequence(this.pattern + otherDtf.pattern, precision);
+                    return new DynamicPatternSequence(mergePatterns(this.pattern, otherDtf.pattern), precision);
                 }
             }
             // We merge a static pattern factory
             if (other instanceof StaticPatternSequence) {
                 final StaticPatternSequence otherStatic = (StaticPatternSequence) other;
-                return new DynamicPatternSequence(this.pattern + otherStatic.pattern, this.precision);
+                return new DynamicPatternSequence(mergePatterns(this.pattern, otherStatic.pattern), this.precision);
             }
             return null;
         }

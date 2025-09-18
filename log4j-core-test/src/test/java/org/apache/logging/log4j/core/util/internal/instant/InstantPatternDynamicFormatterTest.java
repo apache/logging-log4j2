@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util.internal.instant;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.sequencePattern;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,10 +38,12 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamic
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.SecondPatternSequence;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
 import org.apache.logging.log4j.util.Constants;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.Issue;
 
 class InstantPatternDynamicFormatterTest {
 
@@ -55,8 +58,15 @@ class InstantPatternDynamicFormatterTest {
     static List<Arguments> sequencingTestCases() {
         final List<Arguments> testCases = new ArrayList<>();
 
+        // Single literals
+        testCases.add(Arguments.of("", ChronoUnit.DAYS, emptyList()));
+        testCases.add(Arguments.of("'foo'", ChronoUnit.DAYS, singletonList(literal("foo"))));
+        testCases.add(Arguments.of("''", ChronoUnit.DAYS, singletonList(literal("'"))));
+        testCases.add(Arguments.of("''''", ChronoUnit.DAYS, singletonList(literal("'"))));
+        testCases.add(Arguments.of("'o''clock'", ChronoUnit.DAYS, singletonList(literal("o'clock"))));
+
         // Merged constants
-        testCases.add(Arguments.of(":'foo',", ChronoUnit.DAYS, singletonList(new StaticPatternSequence(":foo,"))));
+        testCases.add(Arguments.of(":'foo',", ChronoUnit.DAYS, singletonList(literal(":foo,"))));
 
         // `SSSX` should be treated constant for daily updates
         testCases.add(Arguments.of("SSSX", ChronoUnit.DAYS, asList(pMilliSec(), pDyn("X"))));
@@ -106,6 +116,43 @@ class InstantPatternDynamicFormatterTest {
         testCases.add(Arguments.of("s.SSS", ChronoUnit.SECONDS, singletonList(pSec(1, ".", 3))));
 
         return testCases;
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"'", "'''", "'foo", "'foo''bar"})
+    void sequencing_should_fail_on_unterminated_literal(String pattern) {
+        Assertions.assertThatThrownBy(() -> sequencePattern(pattern, ChronoUnit.DAYS))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("incomplete string literal");
+    }
+
+    static Stream<Arguments> merging_of_adjacent_constants_should_work() {
+        return Stream.of(
+                Arguments.of("  ", singletonList(literal("  "))),
+                Arguments.of(" ' ' ", singletonList(literal("   "))),
+                Arguments.of(" '' ", singletonList(literal(" ' "))),
+                Arguments.of("d  ", singletonList(pDyn("d'  '", ChronoUnit.DAYS))),
+                Arguments.of("d ' ' ", singletonList(pDyn("d'   '", ChronoUnit.DAYS))),
+                Arguments.of("d '' ", singletonList(pDyn("d' '' '", ChronoUnit.DAYS))),
+                Arguments.of("  d", singletonList(pDyn("'  'd", ChronoUnit.DAYS))),
+                Arguments.of(" ' ' d", singletonList(pDyn("'   'd", ChronoUnit.DAYS))),
+                Arguments.of(" '' d", singletonList(pDyn("' '' 'd", ChronoUnit.DAYS))),
+                Arguments.of("s  S", singletonList(pSec(1, "  ", 1))),
+                Arguments.of("s ' ' S", singletonList(pSec(1, "   ", 1))),
+                Arguments.of("s '' S", singletonList(pSec(1, " ' ", 1))));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @Issue("https://github.com/apache/logging-log4j2/issues/3930")
+    void merging_of_adjacent_constants_should_work(
+            final String pattern, final List<PatternSequence> expectedSequences) {
+        final List<PatternSequence> actualSequences = sequencePattern(pattern, ChronoUnit.DAYS);
+        assertThat(actualSequences).isEqualTo(expectedSequences);
+    }
+
+    private static StaticPatternSequence literal(final String literal) {
+        return new StaticPatternSequence(literal);
     }
 
     private static DynamicPatternSequence pDyn(final String singlePattern) {
