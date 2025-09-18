@@ -95,11 +95,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             buffer.append(']');
             buffer.append(lineSeparator);
         } else {
+            final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
             renderThrowableMessage(buffer, throwable);
             buffer.append(lineSeparator);
-            renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
-            renderSuppressed(
-                    buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
+            renderStackTraceElements(buffer, throwable, context, metadata, prefix, lineSeparator);
+            renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
             renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
         }
     }
@@ -150,10 +150,10 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
+            final Context.Metadata metadata,
             final String prefix,
             final String lineSeparator) {
         context.ignoredStackTraceElementCount = 0;
-        final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         for (int i = 0; i < metadata.stackLength; i++) {
             renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, lineSeparator);
@@ -268,9 +268,15 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
              */
             final int stackLength;
 
-            private Metadata(final int commonElementCount, final int stackLength) {
+            /**
+             * The suppressed exceptions attached to this {@link Throwable}
+             */
+            final Throwable[] suppressed;
+
+            private Metadata(final int commonElementCount, final int stackLength, final Throwable[] suppressed) {
                 this.commonElementCount = commonElementCount;
                 this.stackLength = stackLength;
+                this.suppressed = suppressed;
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
@@ -288,11 +294,12 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 // Populate metadata of the current throwable
                 @Nullable
                 final StackTraceElement[] rootTrace = parentThrowable == null ? null : parentThrowable.getStackTrace();
-                final Metadata metadata = populateMetadata(rootTrace, throwable.getStackTrace());
+                final Metadata metadata =
+                        populateMetadata(rootTrace, throwable.getStackTrace(), throwable.getSuppressed());
                 metadataByThrowable.put(throwable, metadata);
 
                 // Populate metadata of suppressed exceptions
-                for (final Throwable suppressed : throwable.getSuppressed()) {
+                for (final Throwable suppressed : metadata.suppressed) {
                     if (!visitedThrowables.contains(suppressed)) {
                         visitedThrowables.add(suppressed);
                         populateMetadata(metadataByThrowable, visitedThrowables, throwable, suppressed);
@@ -308,7 +315,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             private static Metadata populateMetadata(
-                    @Nullable final StackTraceElement[] parentTrace, final StackTraceElement[] currentTrace) {
+                    @Nullable final StackTraceElement[] parentTrace,
+                    final StackTraceElement[] currentTrace,
+                    final Throwable[] suppressed) {
                 int commonElementCount;
                 int stackLength;
                 if (parentTrace != null) {
@@ -326,7 +335,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                     commonElementCount = 0;
                     stackLength = currentTrace.length;
                 }
-                return new Metadata(commonElementCount, stackLength);
+                return new Metadata(commonElementCount, stackLength, suppressed);
             }
         }
     }

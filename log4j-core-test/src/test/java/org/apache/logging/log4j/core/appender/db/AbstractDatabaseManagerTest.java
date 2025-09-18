@@ -86,6 +86,7 @@ class AbstractDatabaseManagerTest {
         reset(manager);
 
         manager.write(event1, null);
+        then(manager).should().write(same(event1), isNull());
         then(manager).should().writeThrough(same(event1), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
@@ -95,6 +96,7 @@ class AbstractDatabaseManagerTest {
         reset(manager);
 
         manager.write(event2, null);
+        then(manager).should().write(same(event2), isNull());
         then(manager).should().writeThrough(same(event2), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
@@ -104,6 +106,7 @@ class AbstractDatabaseManagerTest {
         reset(manager);
 
         manager.write(event3, null);
+        then(manager).should().write(same(event3), isNull());
         then(manager).should().writeThrough(same(event3), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
@@ -133,14 +136,23 @@ class AbstractDatabaseManagerTest {
         when(event4.toImmutable()).thenReturn(event4copy);
 
         manager.startup();
+        then(manager).should().startup();
+        then(manager).should().isRunning();
         then(manager).should().startupInternal();
 
         manager.write(event1, null);
+        then(manager).should().write(event1, null);
         manager.write(event2, null);
+        then(manager).should().write(event2, null);
         manager.write(event3, null);
+        then(manager).should().write(event3, null);
         manager.write(event4, null);
+        then(manager).should().write(event4, null);
 
         then(manager).should().connectAndStart();
+
+        then(manager).should().flush();
+        verify(manager, times(2)).isRunning();
         verify(manager, times(5)).isBuffered(); // 4 + 1 in flush()
         then(manager).should().writeInternal(same(event1copy), isNull());
         then(manager).should().buffer(event1);
@@ -171,13 +183,20 @@ class AbstractDatabaseManagerTest {
         when(event3.toImmutable()).thenReturn(event3copy);
 
         manager.startup();
+        then(manager).should().startup();
+        then(manager).should().isRunning();
         then(manager).should().startupInternal();
 
         manager.write(event1, null);
+        then(manager).should().write(same(event1), isNull());
         manager.write(event2, null);
+        then(manager).should().write(same(event2), isNull());
         manager.write(event3, null);
-        manager.flush();
+        then(manager).should().write(same(event3), isNull());
 
+        manager.flush();
+        then(manager).should().flush();
+        verify(manager, times(2)).isRunning();
         then(manager).should().connectAndStart();
         verify(manager, times(4)).isBuffered();
         then(manager).should().writeInternal(same(event1copy), isNull());
@@ -207,14 +226,22 @@ class AbstractDatabaseManagerTest {
         when(event3.toImmutable()).thenReturn(event3copy);
 
         manager.startup();
+        then(manager).should().startup();
+        then(manager).should().isRunning();
         then(manager).should().startupInternal();
 
         manager.write(event1, null);
+        then(manager).should().write(same(event1), isNull());
         manager.write(event2, null);
+        then(manager).should().write(same(event2), isNull());
         manager.write(event3, null);
+        then(manager).should().write(same(event3), isNull());
         manager.shutdown();
+        then(manager).should().shutdown();
+        then(manager).should().flush();
 
         then(manager).should().connectAndStart();
+        verify(manager, times(3)).isRunning();
         verify(manager, times(4)).isBuffered();
         then(manager).should().writeInternal(same(event1copy), isNull());
         then(manager).should().buffer(event1);
