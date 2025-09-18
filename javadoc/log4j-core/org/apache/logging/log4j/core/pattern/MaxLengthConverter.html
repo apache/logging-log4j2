@@ -132,10 +132,15 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Formats an event into a string buffer.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="MaxLengthConverter.html" title="class in org.apache.logging.log4j.core.pattern">MaxLengthConverter</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handlesThrowable()" class="member-name-link">handlesThrowable</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Tests whether this pattern converter is renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="MaxLengthConverter.html" title="class in org.apache.logging.log4j.core.pattern">MaxLengthConverter</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newInstance(org.apache.logging.log4j.core.config.Configuration,java.lang.String%5B%5D)" class="member-name-link">newInstance</a><wbr>(<a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;options)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Gets an instance of the class.</div>
 </div>
 </div>
@@ -143,7 +148,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.LogEventPatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></h3>
-<code><a href="LogEventPatternConverter.html#emptyVariableOutput()">emptyVariableOutput</a>, <a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a>, <a href="LogEventPatternConverter.html#handlesThrowable()">handlesThrowable</a>, <a href="LogEventPatternConverter.html#isVariable()">isVariable</a></code></div>
+<code><a href="LogEventPatternConverter.html#emptyVariableOutput()">emptyVariableOutput</a>, <a href="LogEventPatternConverter.html#format(java.lang.Object,java.lang.StringBuilder)">format</a>, <a href="LogEventPatternConverter.html#isVariable()">isVariable</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.pattern.AbstractPatternConverter">Methods inherited from class&nbsp;org.apache.logging.log4j.core.pattern.<a href="AbstractPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractPatternConverter</a></h3>
 <code><a href="AbstractPatternConverter.html#getName()">getName</a>, <a href="AbstractPatternConverter.html#getStyleClass(java.lang.Object)">getStyleClass</a></code></div>
@@ -189,6 +194,27 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>event</code> - event to format, may not be null.</dd>
 <dd><code>toAppendTo</code> - string buffer to which the formatted event will be appended.  May not be null.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="handlesThrowable()">
+<h3>handlesThrowable</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">handlesThrowable</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="LogEventPatternConverter.html#handlesThrowable()">LogEventPatternConverter</a></code></span></div>
+<div class="block">Tests whether this pattern converter is renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>.
+
+ <p>
+ The <a href="PatternParser.html" title="class in org.apache.logging.log4j.core.pattern"><code>PatternParser</code></a> checks this flag when processing the
+ <code>alwaysWriteExceptions</code> option: if no converter in the pattern handles
+ throwables, the parser automatically appends a converter to ensure exceptions are still written.
+ </p></div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="LogEventPatternConverter.html#handlesThrowable()">handlesThrowable</a></code>&nbsp;in class&nbsp;<code><a href="LogEventPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">LogEventPatternConverter</a></code></dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if this converter consumes and renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>,
+         <code>false</code> otherwise</dd>
 </dl>
 </section>
 </li>
