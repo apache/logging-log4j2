@@ -6,7 +6,8 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="3930" link="https://github.com/apache/logging-log4j2/issues/3930"/>
+  <issue id="3932" link="https://github.com/apache/logging-log4j2/pull/3932"/>
   <description format="asciidoc">
-    Fix parsing and merging of literals in `InstantPatternDynamicFormatter`.
+    Fix parsing and merging of literals in `InstantPatternDynamicFormatter`
   </description>
 </entry>
