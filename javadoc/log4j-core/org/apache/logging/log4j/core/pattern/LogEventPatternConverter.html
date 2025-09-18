@@ -153,7 +153,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handlesThrowable()" class="member-name-link">handlesThrowable</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Normally pattern converters are not meant to handle Exceptions although few pattern converters might.</div>
+<div class="block">Tests whether this pattern converter is renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isVariable()" class="member-name-link">isVariable</a>()</code></div>
@@ -229,14 +229,17 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="handlesThrowable()">
 <h3>handlesThrowable</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">handlesThrowable</span>()</div>
-<div class="block">Normally pattern converters are not meant to handle Exceptions although few pattern converters might.
+<div class="block">Tests whether this pattern converter is renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>.
+
  <p>
- By examining the return values for this method, the containing layout will determine whether it handles
- throwables or not.
+ The <a href="PatternParser.html" title="class in org.apache.logging.log4j.core.pattern"><code>PatternParser</code></a> checks this flag when processing the
+ <code>alwaysWriteExceptions</code> option: if no converter in the pattern handles
+ throwables, the parser automatically appends a converter to ensure exceptions are still written.
  </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>true if this PatternConverter handles throwables</dd>
+<dd><code>true</code> if this converter consumes and renders a <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link"><code>Throwable</code></a>,
+         <code>false</code> otherwise</dd>
 </dl>
 </section>
 </li>
