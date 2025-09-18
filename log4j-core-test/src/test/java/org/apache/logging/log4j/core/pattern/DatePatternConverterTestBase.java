@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.internal.instant.InstantPatternFormatter;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
@@ -67,9 +68,15 @@ abstract class DatePatternConverterTestBase {
     private static final String[] ISO8601_FORMAT_OPTIONS = {ISO8601};
 
     private final boolean threadLocalsEnabled;
+    private final boolean legacyFormatterEnabled;
 
     DatePatternConverterTestBase(final boolean threadLocalsEnabled) {
+        this(threadLocalsEnabled, false);
+    }
+
+    DatePatternConverterTestBase(final boolean threadLocalsEnabled, final boolean legacyFormatterEnabled) {
         this.threadLocalsEnabled = threadLocalsEnabled;
+        this.legacyFormatterEnabled = legacyFormatterEnabled;
     }
 
     private static Date date(final int year, final int month, final int date) {
@@ -82,6 +89,11 @@ abstract class DatePatternConverterTestBase {
     @Test
     void testThreadLocalsConstant() {
         assertEquals(Constants.ENABLE_THREADLOCALS, threadLocalsEnabled);
+    }
+
+    @Test
+    void testInstantFormatterConstant() {
+        assertEquals(InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED, legacyFormatterEnabled);
     }
 
     @Test
@@ -163,6 +175,7 @@ abstract class DatePatternConverterTestBase {
         assertDatePattern("dd/MM/yyyy HH:mm:ss.SSSSSS", date, "11/03/2011 14:15:16.123000");
         assertDatePattern("dd/MM/yy HH:mm:ss.SSS", date, "11/03/11 14:15:16.123");
         assertDatePattern("dd/MM/yy HH:mm:ss.SSSSSS", date, "11/03/11 14:15:16.123000");
+        assertDatePattern("EEE, dd MMM yyyy HH:mm:ss zzz", date, "Fri, 11 Mar 2011 14:15:16 PST");
     }
 
     @SuppressWarnings("deprecation")
