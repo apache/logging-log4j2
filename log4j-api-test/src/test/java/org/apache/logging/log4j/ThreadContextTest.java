@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.internal.Maps;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -115,7 +115,7 @@ class ThreadContextTest {
         assertTrue(ThreadContext.isEmpty());
         assertFalse(ThreadContext.containsKey("key"));
         final int mapSize = 10;
-        final Map<String, String> newMap = new HashMap<>(mapSize);
+        final Map<String, String> newMap = Maps.newHashMap(mapSize);
         for (int i = 1; i <= mapSize; i++) {
             newMap.put("key" + i, "value" + i);
         }
