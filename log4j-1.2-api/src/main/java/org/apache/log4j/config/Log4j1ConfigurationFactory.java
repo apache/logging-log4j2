@@ -18,6 +18,8 @@ package org.apache.log4j.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -52,5 +54,10 @@ public class Log4j1ConfigurationFactory extends ConfigurationFactory {
     @Override
     protected String[] getSupportedTypes() {
         return SUFFIXES;
+    }
+
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        return Collections.emptyList();
     }
 }

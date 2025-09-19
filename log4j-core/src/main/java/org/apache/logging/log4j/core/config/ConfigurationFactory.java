@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -262,6 +263,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     protected abstract String[] getSupportedTypes();
+
+    /**
+     * Returns the file extensions supported by this configuration factory.
+     *
+     * @return list of supported file extensions (e.g., ["xml", "json"])
+     * @since 2.26.0
+     */
+    public abstract List<String> getSupportedFileExtensions();
 
     protected String getTestPrefix() {
         return TEST_PREFIX;
@@ -551,6 +560,16 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         @Override
         public String[] getSupportedTypes() {
             return null;
+        }
+
+        @Override
+        public List<String> getSupportedFileExtensions() {
+            return getFactories().stream()
+                    .filter(factory -> factory != this)
+                    .filter(ConfigurationFactory::isActive)
+                    .flatMap(factory -> factory.getSupportedFileExtensions().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
         }
 
         @Override

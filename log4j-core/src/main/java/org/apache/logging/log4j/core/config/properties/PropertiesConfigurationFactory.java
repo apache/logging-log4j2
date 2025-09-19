@@ -18,6 +18,9 @@ package org.apache.logging.log4j.core.config.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -38,6 +41,24 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     @Override
     protected String[] getSupportedTypes() {
         return new String[] {".properties"};
+    }
+
+    /**
+     * Returns the file extensions supported by this Properties configuration factory.
+     *
+     * <p>This method returns Properties file extensions that this factory can process.
+     * The factory supports standard Java properties files used for Log4j 2 configuration.
+     * No external dependencies are required for properties file support.</p>
+     *
+     * @return a list containing "properties" extension if the factory is active,
+     *         empty list if inactive
+     */
+    @Override
+    public List<String> getSupportedFileExtensions() {
+        if (!isActive()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList("properties");
     }
 
     @Override
