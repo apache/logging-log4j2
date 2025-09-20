@@ -195,14 +195,18 @@ public class ListAppender extends AbstractAppender {
         return this;
     }
 
-    /** Returns an immutable snapshot of captured log events */
+    /** Returns a snapshot of captured log events */
     public List<LogEvent> getEvents() {
-        return Collections.<LogEvent>unmodifiableList(new ArrayList<>(events));
+        synchronized (events) {
+            return new ArrayList<>(events);
+        }
     }
 
-    /** Returns an immutable snapshot of captured messages */
+    /** Returns a snapshot of captured messages */
     public List<String> getMessages() {
-        return Collections.<String>unmodifiableList(new ArrayList<>(messages));
+        synchronized (messages) {
+            return new ArrayList<>(messages);
+        }
     }
 
     /**
@@ -215,9 +219,11 @@ public class ListAppender extends AbstractAppender {
         return getMessages();
     }
 
-    /** Returns an immutable snapshot of captured data */
+    /** Returns a snapshot of captured data */
     public List<byte[]> getData() {
-        return Collections.<byte[]>unmodifiableList(new ArrayList<>(data));
+        synchronized (data) {
+            return new ArrayList<>(data);
+        }
     }
 
     public static ListAppender createAppender(
