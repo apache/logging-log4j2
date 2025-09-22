@@ -439,9 +439,6 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/3847">3847</a>)</p>
-</li>
-<li>
 <p>Update <code>org.apache.commons:commons-lang3</code> to version <code>3.18.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3815">3815</a>)</p>
 </li>
 <li>
@@ -449,6 +446,56 @@
 </li>
 <li>
 <p>Update <code>org.xerial.snappy:snappy-java</code> to version <code>1.1.10.8</code> (<a href="https://github.com/apache/logging-log4j2/pull/3841">3841</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release-notes-2-25-2"><a class="anchor" href="#release-notes-2-25-2"></a>2.25.2</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-09-18</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release addresses certain minor issues detailed in the changelog.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-2-fixed"><a class="anchor" href="#release-notes-2-25-2-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix potential memory leak involving <code>LogBuilder</code> in Log4j API to Logback bridge (<a href="https://github.com/apache/logging-log4j2/issues/3819">3819</a>, <a href="https://github.com/apache/logging-log4j2/pull/3824">3824</a>)</p>
+</li>
+<li>
+<p>Prevent unnecessary warnings in <code>AbstractDriverManagerConnectionSource</code> (<a href="https://github.com/apache/logging-log4j2/issues/3828">3828</a>, <a href="https://github.com/apache/logging-log4j2/pull/3831">3831</a>)</p>
+</li>
+<li>
+<p>Fix missing newlines in default logging configuration for <code>log4j-core</code> (<a href="https://github.com/apache/logging-log4j2/issues/3835">3835</a>, <a href="https://github.com/apache/logging-log4j2/pull/3851">3851</a>)</p>
+</li>
+<li>
+<p>Fix missing default <code>Target</code> value in Console Appender (<a href="https://github.com/apache/logging-log4j2/pull/3852">3852</a>)</p>
+</li>
+<li>
+<p>Discard the sub-second part while obtaining the initial time (i.e., creation time) of a file in <code>RollingFileManager</code> (<a href="https://github.com/apache/logging-log4j2/issues/3068">3068</a>, <a href="https://github.com/apache/logging-log4j2/pull/3872">3872</a>)</p>
+</li>
+<li>
+<p>Fix Pattern Layout exception stack trace converters to no longer prepend newlines based on context (<a href="https://github.com/apache/logging-log4j2/issues/3873">3873</a>, <a href="https://github.com/apache/logging-log4j2/pull/3919">3919</a>)</p>
+</li>
+<li>
+<p>Fix the <code>com.google.errorprone:error_prone_annotations</code> dependency whose version property gets erased due to flattening (<a href="https://github.com/apache/logging-log4j2/issues/3779">3779</a>, <a href="https://github.com/apache/logging-log4j2/pull/3785">3785</a>, <a href="https://github.com/apache/logging-log4j2/issues/3822">3822</a>, <a href="https://github.com/apache/logging-log4j2/pull/3905">3905</a>)</p>
+</li>
+<li>
+<p>Fix detection of <code>Throwable</code> converters inside nested Pattern Layout patterns when applying <code>alwaysWriteExceptions</code> (<a href="https://github.com/apache/logging-log4j2/pull/3920">3920</a>)</p>
+</li>
+<li>
+<p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
 </li>
 </ul>
 </div>
@@ -854,7 +901,7 @@ For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref pag
 <p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.15</code> (<a href="https://github.com/apache/logging-log4j2/pull/3354">3354</a>)</p>
 </li>
 <li>
-<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.19.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3708">3708</a>)</p>
+<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/3847">3847</a>)</p>
 </li>
 <li>
 <p>Update <code>com.github.spotbugs:spotbugs-annotations</code> to version <code>4.9.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3545">3545</a>)</p>
