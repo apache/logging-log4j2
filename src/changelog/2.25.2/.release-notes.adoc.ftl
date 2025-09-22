@@ -15,21 +15,11 @@
     limitations under the License.
 ////
 
-[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+[${'#release-notes-' + release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
 == ${release.version}
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This release adds support for LMAX Disruptor 4.x, revamps `StatusLogger`, and incorporates several performance and bug fixes.
-
-In order to maintain compatibility with JRE 8, support for LMAX Disruptor 3.x is maintained.
-
-[#release-notes-2-23-0-StatusLogger]
-=== `StatusLogger` improvements
-
-`StatusLogger` is a standalone, self-sufficient `Logger` implementation to record events that occur in the logging system (i.e., Log4j) itself.
-It is the logging system used by Log4j for reporting status of its internals.
-This release improves `StatusLogger` to make it self-contained and testable.
-During this simplification, the message factory for `log4j-to-slf4j` and `log4j-to-jul` is fixed to `ParameterizedMessageFactory`.
+This patch release addresses certain minor issues detailed in the changelog.
 
 <#include "../.changelog.adoc.ftl">

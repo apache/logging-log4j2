@@ -859,7 +859,7 @@
     <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
-      <version>${error-prone.version}</version>
+      <version>${error-prone-annotations.version}</version>
       <scope>provided</scope>
     </dependency>
 

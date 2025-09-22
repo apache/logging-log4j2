@@ -32,10 +32,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -45,13 +48,17 @@ import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.Issue;
 import org.slf4j.MDC;
 
 @UsingStatusListener
 @LoggerContextSource
-class LoggerTest {
+class SLF4JLoggerTest {
 
     private static final Object OBJ = new Object();
     // Log4j objects
@@ -264,5 +271,39 @@ class LoggerTest {
         } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @Issue("https://github.com/apache/logging-log4j2/issues/3819")
+    void threadLocalUsage(boolean useThreadLocal) throws ReflectiveOperationException {
+        // Reset the static ThreadLocal in SLF4JLogger
+        getLogBuilderThreadLocal().remove();
+        final org.slf4j.Logger slf4jLogger = context.getLogger(getClass());
+        Logger logger = new SLF4JLogger(slf4jLogger.getName(), null, slf4jLogger, useThreadLocal);
+        LogBuilder builder1 = logger.atInfo();
+        builder1.log("Test message");
+        LogBuilder builder2 = logger.atInfo();
+        builder2.log("Another test message");
+        // Check if the same builder is reused based on the useThreadLocal flag
+        Assertions.assertThat(isThreadLocalPresent())
+                .as("ThreadLocal should be present iff useThreadLocal is enabled")
+                .isEqualTo(useThreadLocal);
+        Assertions.assertThat(builder2 == builder1)
+                .as("Builder2 should be the same as Builder1 iff useThreadLocal is enabled")
+                .isEqualTo(useThreadLocal);
+    }
+
+    private static boolean isThreadLocalPresent() throws ReflectiveOperationException {
+        Method isPresentMethod = ThreadLocal.class.getDeclaredMethod("isPresent");
+        isPresentMethod.setAccessible(true);
+        ThreadLocal<?> threadLocal = getLogBuilderThreadLocal();
+        return (boolean) isPresentMethod.invoke(threadLocal);
+    }
+
+    private static ThreadLocal<?> getLogBuilderThreadLocal() throws ReflectiveOperationException {
+        Field logBuilderField = SLF4JLogger.class.getDeclaredField("logBuilder");
+        logBuilderField.setAccessible(true);
+        return (ThreadLocal<?>) logBuilderField.get(null);
     }
 }

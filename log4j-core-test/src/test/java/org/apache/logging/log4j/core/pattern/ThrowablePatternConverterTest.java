@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.Issue;
 
 /**
  * {@link ThrowablePatternConverter} tests.
@@ -384,11 +385,12 @@ public class ThrowablePatternConverterTest {
         }
 
         @Test
-        void output_should_be_newline_prefixed() {
+        @Issue("https://github.com/apache/logging-log4j2/issues/3873")
+        void output_should_not_be_newline_prefixed() {
             final String pattern = "%p" + patternPrefix;
             final String stackTrace = convert(pattern);
             final String expectedStart =
-                    String.format("%s%n%s", LEVEL, EXCEPTION.getClass().getCanonicalName());
+                    String.format("%s%s", LEVEL, EXCEPTION.getClass().getCanonicalName());
             assertThat(stackTrace).as("pattern=`%s`", pattern).startsWith(expectedStart);
         }
 
