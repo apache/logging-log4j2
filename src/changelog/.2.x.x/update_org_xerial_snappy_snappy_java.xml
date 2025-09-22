@@ -2,15 +2,7 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-<<<<<<<< HEAD:src/changelog/.2.x.x/update_org_xerial_snappy_snappy_java.xml
        type="updated">
   <issue id="3841" link="https://github.com/apache/logging-log4j2/pull/3841"/>
   <description format="asciidoc">Update `org.xerial.snappy:snappy-java` to version `1.1.10.8`</description>
-========
-       type="fixed">
-  <issue id="3754" link="https://github.com/apache/logging-log4j2/issues/3754"/>
-  <description format="asciidoc">
-    Downgrade `spotbugs-annotations` to resolve Gradle build failures.
-  </description>
->>>>>>>> rel/2.25.2:src/changelog/2.25.1/3754_fix-gradle-build.xml
 </entry>
