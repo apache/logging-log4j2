@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.9">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -351,6 +351,56 @@
 </aside>
 <article class="doc">
 <h1 class="page">Release notes</h1>
+<div class="sect1">
+<h2 id="release-notes-2-25-2"><a class="anchor" href="#release-notes-2-25-2"></a>2.25.2</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-09-18</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release addresses certain minor issues detailed in the changelog.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-2-fixed"><a class="anchor" href="#release-notes-2-25-2-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix potential memory leak involving <code>LogBuilder</code> in Log4j API to Logback bridge (<a href="https://github.com/apache/logging-log4j2/issues/3819">3819</a>, <a href="https://github.com/apache/logging-log4j2/pull/3824">3824</a>)</p>
+</li>
+<li>
+<p>Prevent unnecessary warnings in <code>AbstractDriverManagerConnectionSource</code> (<a href="https://github.com/apache/logging-log4j2/issues/3828">3828</a>, <a href="https://github.com/apache/logging-log4j2/pull/3831">3831</a>)</p>
+</li>
+<li>
+<p>Fix missing newlines in default logging configuration for <code>log4j-core</code> (<a href="https://github.com/apache/logging-log4j2/issues/3835">3835</a>, <a href="https://github.com/apache/logging-log4j2/pull/3851">3851</a>)</p>
+</li>
+<li>
+<p>Fix missing default <code>Target</code> value in Console Appender (<a href="https://github.com/apache/logging-log4j2/pull/3852">3852</a>)</p>
+</li>
+<li>
+<p>Discard the sub-second part while obtaining the initial time (i.e., creation time) of a file in <code>RollingFileManager</code> (<a href="https://github.com/apache/logging-log4j2/issues/3068">3068</a>, <a href="https://github.com/apache/logging-log4j2/pull/3872">3872</a>)</p>
+</li>
+<li>
+<p>Fix Pattern Layout exception stack trace converters to no longer prepend newlines based on context (<a href="https://github.com/apache/logging-log4j2/issues/3873">3873</a>, <a href="https://github.com/apache/logging-log4j2/pull/3919">3919</a>)</p>
+</li>
+<li>
+<p>Fix the <code>com.google.errorprone:error_prone_annotations</code> dependency whose version property gets erased due to flattening (<a href="https://github.com/apache/logging-log4j2/issues/3779">3779</a>, <a href="https://github.com/apache/logging-log4j2/pull/3785">3785</a>, <a href="https://github.com/apache/logging-log4j2/issues/3822">3822</a>, <a href="https://github.com/apache/logging-log4j2/pull/3905">3905</a>)</p>
+</li>
+<li>
+<p>Fix detection of <code>Throwable</code> converters inside nested Pattern Layout patterns when applying <code>alwaysWriteExceptions</code> (<a href="https://github.com/apache/logging-log4j2/pull/3920">3920</a>)</p>
+</li>
+<li>
+<p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="release-notes-2-25-1"><a class="anchor" href="#release-notes-2-25-1"></a>2.25.1</h2>
 <div class="sectionbody">
@@ -1335,10 +1385,19 @@ system property.</p>
 </dl>
 </div>
 <div class="paragraph">
-<p>This release adds support for LMAX Disruptor 4.x and several performance and bug fixes.</p>
+<p>This release adds support for LMAX Disruptor 4.x, revamps <code>StatusLogger</code>, and incorporates several performance and bug fixes.</p>
 </div>
 <div class="paragraph">
 <p>In order to maintain compatibility with JRE 8, support for LMAX Disruptor 3.x is maintained.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-23-0-StatusLogger"><a class="anchor" href="#release-notes-2-23-0-StatusLogger"></a><code>StatusLogger</code> improvements</h3>
+<div class="paragraph">
+<p><code>StatusLogger</code> is a standalone, self-sufficient <code>Logger</code> implementation to record events that occur in the logging system (i.e., Log4j) itself.
+It is the logging system used by Log4j for reporting status of its internals.
+This release improves <code>StatusLogger</code> to make it self-contained and testable.
+During this simplification, the message factory for <code>log4j-to-slf4j</code> and <code>log4j-to-jul</code> is fixed to <code>ParameterizedMessageFactory</code>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="release-notes-2-23-0-added"><a class="anchor" href="#release-notes-2-23-0-added"></a>Added</h3>
@@ -1354,6 +1413,9 @@ system property.</p>
 <h3 id="release-notes-2-23-0-changed"><a class="anchor" href="#release-notes-2-23-0-changed"></a>Changed</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Make <code>StatusLogger</code> self-contained and testable (<a href="https://github.com/apache/logging-log4j2/pull/2249">2249</a>)</p>
+</li>
 <li>
 <p>Simplify BND configuration after upgrade from version <code>6.4.1</code> to <code>7.0.0</code></p>
 </li>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Pattern Layout :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/pattern-layout.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.9">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -405,7 +405,7 @@ For instance, given the following layout configuration</p>
 </div>
 <div id="_tabs_1_xml--panel" class="tabpanel" aria-labelledby="_tabs_1_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout pattern="%-5p [%t]: %m%n"/&gt;</code></pre>
 </div>
@@ -413,7 +413,7 @@ For instance, given the following layout configuration</p>
 </div>
 <div id="_tabs_1_json--panel" class="tabpanel" aria-labelledby="_tabs_1_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"PatternLayout": {
   "pattern": "%-5p [%t]: %m%n"
@@ -423,7 +423,7 @@ For instance, given the following layout configuration</p>
 </div>
 <div id="_tabs_1_yaml--panel" class="tabpanel" aria-labelledby="_tabs_1_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">PatternLayout:
   pattern: "%-5p [%t]: %m%n"</code></pre>
@@ -432,7 +432,7 @@ For instance, given the following layout configuration</p>
 </div>
 <div id="_tabs_1_properties--panel" class="tabpanel" aria-labelledby="_tabs_1_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/usage/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = PatternLayout
 appender.0.layout.pattern = %-5p [%t]: %m%n</code></pre>
@@ -476,8 +476,7 @@ The pattern parser knows when it has reached the end of a conversion specifier w
 In the example above the conversion specifier <code>%-5p</code> means the priority of the log event should be left justified to a width of five characters.</p>
 </div>
 <div class="paragraph">
-<p>If the pattern string does not contain a specifier to handle a <code>Throwable</code> being logged, parsing of the pattern will act as if the <code>%xEx</code> specifier had been added to the end of the string.
-To suppress the formatting of the <code>Throwable</code> completely simply add <code>%ex{0}</code> as a specifier in the pattern string.</p>
+<p>If the pattern string does not contain a specifier to handle a <code>Throwable</code> being logged, parsing of the pattern will act as if the <code>%n%ex</code> specifier had been added to the end of the string.</p>
 </div>
 </div>
 </div>
@@ -617,7 +616,7 @@ If configured, the <code>replace</code> element must specify the regular express
 </tbody>
 </table>
 <div class="paragraph">
-<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%xEx</code></a> pattern is appended.
+<p>If <code>true</code> and the user-provided pattern does not contain an exception converter, an implicit <a href="#converter-exception-extended"><code>%n%ex</code></a> pattern is appended.
 This means that if you do not include a way to output exceptions in your pattern, the default exception formatter will be added to the end of the pattern.
 Setting this to <code>false</code> disables this behavior and allows you to exclude exceptions from your pattern output.</p>
 </div>
@@ -775,7 +774,7 @@ If the marker in the log event is equal to or is an ancestor of the name specifi
 </div>
 <div id="_tabs_2_xml--panel" class="tabpanel" aria-labelledby="_tabs_2_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
   &lt;MarkerPatternSelector defaultPattern="[%-5level] %c{1.} %msg%n"&gt;
@@ -787,7 +786,7 @@ If the marker in the log event is equal to or is an ancestor of the name specifi
 </div>
 <div id="_tabs_2_json--panel" class="tabpanel" aria-labelledby="_tabs_2_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"PatternLayout": {
   "MarkerPatternSelector": {
@@ -805,7 +804,7 @@ If the marker in the log event is equal to or is an ancestor of the name specifi
 </div>
 <div id="_tabs_2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_2_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">PatternLayout:
   MarkerPatternSelector:
@@ -818,7 +817,7 @@ If the marker in the log event is equal to or is an ancestor of the name specifi
 </div>
 <div id="_tabs_2_properties--panel" class="tabpanel" aria-labelledby="_tabs_2_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/marker-pattern-selector/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = PatternLayout
 appender.0.layout.patternSelector.type = MarkerPatternSelector
@@ -860,7 +859,7 @@ appender.0.layout.patternSelector.patternMatch.0.pattern = [%-5level] %c{1.} ===
 </div>
 <div id="_tabs_3_xml--panel" class="tabpanel" aria-labelledby="_tabs_3_xml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.xml"><code>log4j2.xml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.xml"><code>log4j2.xml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PatternLayout&gt;
   &lt;ScriptPatternSelector defaultPattern="[%-5level] %c{1.} %C{1.}.%M.%L %msg%n"&gt;
@@ -882,7 +881,7 @@ appender.0.layout.patternSelector.patternMatch.0.pattern = [%-5level] %c{1.} ===
 </div>
 <div id="_tabs_3_json--panel" class="tabpanel" aria-labelledby="_tabs_3_json">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.json"><code>log4j2.json</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.json"><code>log4j2.json</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"PatternLayout": {
   "ScriptPatternSelector": {
@@ -909,7 +908,7 @@ appender.0.layout.patternSelector.patternMatch.0.pattern = [%-5level] %c{1.} ===
 </div>
 <div id="_tabs_3_yaml--panel" class="tabpanel" aria-labelledby="_tabs_3_yaml">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.yaml"><code>log4j2.yaml</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.yaml"><code>log4j2.yaml</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">PatternLayout:
   ScriptPatternSelector:
@@ -935,7 +934,7 @@ appender.0.layout.patternSelector.patternMatch.0.pattern = [%-5level] %c{1.} ===
 </div>
 <div id="_tabs_3_properties--panel" class="tabpanel" aria-labelledby="_tabs_3_properties">
 <div class="listingblock">
-<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.properties"><code>log4j2.properties</code></a></div>
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/src/site/antora/modules/ROOT/examples/manual/pattern-layout/script-pattern-selector/log4j2.properties"><code>log4j2.properties</code></a></div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">appender.0.layout.type = PatternLayout
 appender.0.layout.patternSelector.type = ScriptPatternSelector
@@ -1383,7 +1382,13 @@ It features two modes:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>All rendered exception stack traces are ensured to be prefixed with a new line obtained using <code>System.lineSeparator()</code>.</p>
+<p>Earlier versions of Log4j Core always inserted a space between the <strong>output</strong> of the previous conversion specifier and the stack trace.
+Starting with version <code>2.25.0</code>, this was changed to a line separator instead of a space.
+Since version <code>2.25.2</code>, automatic separation occurs <strong>only</strong> for converters implicitly added via the <a href="#plugin-attr-alwaysWriteExceptions"><code>alwaysWriteExceptions</code></a> option.</p>
+</div>
+<div class="paragraph">
+<p>When you add a throwable converter explicitly in your pattern, Log4j Core no longer inserts any separator on its own: you have full control over whether and how to separate the stack trace from the preceding message.
+Thus, if you explicitly provide an exception stack trace converter (e.g., <code>%ex</code>), and want to prefix it with a newline, you need it add the newline prefix yourself too (e.g., <code>%n%ex</code>).</p>
 </div>
 </td>
 </tr>
@@ -2960,10 +2965,10 @@ The <code>String[]</code> argument denots the the values that are specified with
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.java"><code>EndOfBatchPatternConverter.java</code></a></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/EndOfBatchPatternConverter.java"><code>EndOfBatchPatternConverter.java</code></a></p>
 </li>
 <li>
-<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.1/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/UuidPatternConverter.java"><code>UuidPatternConverter.java</code></a></p>
+<p><a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.2/log4j-core/src/main/java/org/apache/logging/log4j/core/pattern/UuidPatternConverter.java"><code>UuidPatternConverter.java</code></a></p>
 </li>
 </ul>
 </div>
