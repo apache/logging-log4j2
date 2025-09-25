@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -129,5 +131,145 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
     @Test
     void threadLocalInheritableIfConfigured() {
         threadLocalInheritableIfConfigured(createInheritableThreadContextMap());
+    }
+
+    /**
+     * Test getCopy() with empty map
+     */
+    @Test
+    void testGetCopyWithEmptyMap() {
+        final DefaultThreadContextMap contextMap = new DefaultThreadContextMap();
+
+        // Verify map is empty
+        assertTrue(contextMap.isEmpty());
+        assertEquals(0, contextMap.size());
+
+        // Get copy of empty map
+        final Map<String, String> copy = contextMap.getCopy();
+
+        // Verify copy is empty HashMap
+        assertThat(copy).isInstanceOf(HashMap.class);
+        assertTrue(copy.isEmpty());
+        assertEquals(0, copy.size());
+
+        // Verify copy is independent
+        copy.put("test", "value");
+        assertTrue(contextMap.isEmpty());
+    }
+
+    /**
+     * Test getCopy() with single-element map
+     */
+    @Test
+    void testGetCopyWithSingleElement() {
+        final DefaultThreadContextMap contextMap = new DefaultThreadContextMap();
+
+        // Add single element
+        contextMap.put("key1", "value1");
+        assertEquals(1, contextMap.size());
+        assertEquals("value1", contextMap.get("key1"));
+
+        // Get copy
+        final Map<String, String> copy = contextMap.getCopy();
+
+        // Verify copy contains identical data
+        assertThat(copy).isInstanceOf(HashMap.class);
+        assertEquals(1, copy.size());
+        assertEquals("value1", copy.get("key1"));
+        assertTrue(copy.containsKey("key1"));
+
+        // Verify copy is independent
+        assertNotSame(copy, contextMap.toMap());
+        copy.put("key2", "value2");
+        assertEquals(1, contextMap.size());
+        assertFalse(contextMap.containsKey("key2"));
+    }
+
+    /**
+     * Test getCopy() with multiple elements
+     */
+    @Test
+    void testGetCopyWithMultipleElements() {
+        final DefaultThreadContextMap contextMap = new DefaultThreadContextMap();
+
+        // Add multiple elements
+        final Map<String, String> testData = new HashMap<>();
+        testData.put("key1", "value1");
+        testData.put("key2", "value2");
+        testData.put("key3", "value3");
+        testData.put("key4", "value4");
+        testData.put("key5", "value5");
+
+        contextMap.putAll(testData);
+        assertEquals(5, contextMap.size());
+
+        // Get copy
+        final Map<String, String> copy = contextMap.getCopy();
+
+        // Verify copy contains identical data
+        assertThat(copy).isInstanceOf(HashMap.class);
+        assertEquals(5, copy.size());
+
+        for (Map.Entry<String, String> entry : testData.entrySet()) {
+            assertTrue(copy.containsKey(entry.getKey()));
+            assertEquals(entry.getValue(), copy.get(entry.getKey()));
+        }
+
+        // Verify all entries match
+        assertEquals(testData, copy);
+
+        // Verify copy is independent
+        copy.clear();
+        assertEquals(5, contextMap.size());
+    }
+
+    /**
+     * Test getCopy() returns proper HashMap type
+     */
+    @Test
+    void testGetCopyReturnsHashMap() {
+        final DefaultThreadContextMap contextMap = new DefaultThreadContextMap();
+
+        // Test with empty map
+        Map<String, String> copy = contextMap.getCopy();
+        assertThat(copy).isInstanceOf(HashMap.class);
+
+        // Test with populated map
+        contextMap.put("key", "value");
+        copy = contextMap.getCopy();
+        assertThat(copy).isInstanceOf(HashMap.class);
+    }
+
+    /**
+     * Test getCopy() independence from original map
+     */
+    @Test
+    void testGetCopyIndependence() {
+        final DefaultThreadContextMap contextMap = new DefaultThreadContextMap();
+
+        // Setup initial data
+        contextMap.put("key1", "value1");
+        contextMap.put("key2", "value2");
+
+        final Map<String, String> copy1 = contextMap.getCopy();
+        final Map<String, String> copy2 = contextMap.getCopy();
+
+        // Verify copies are independent of each other
+        assertNotSame(copy1, copy2);
+        assertEquals(copy1, copy2);
+
+        // Modify first copy
+        copy1.put("key3", "value3");
+        copy1.remove("key1");
+
+        // Verify second copy is unaffected
+        assertEquals(2, copy2.size());
+        assertTrue(copy2.containsKey("key1"));
+        assertFalse(copy2.containsKey("key3"));
+
+        // Verify original map is unaffected
+        assertEquals(2, contextMap.size());
+        assertTrue(contextMap.containsKey("key1"));
+        assertFalse(contextMap.containsKey("key3"));
     }
 }
