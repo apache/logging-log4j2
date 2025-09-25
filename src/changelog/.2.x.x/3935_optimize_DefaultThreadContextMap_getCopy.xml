@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <issue id="3935" link="https://github.com/apache/logging-log4j2/issues/3935"/>
+    <description format="asciidoc">
+        Optimize `DefaultThreadContextMap.getCopy()` performance by avoiding megamorphic calls in HashMap constructor.
+        
+        The optimization replaces `new HashMap&lt;>(map)` with manual iteration to avoid JDK-8368292 performance issues.
+        This provides significant performance improvements:
+        
+        * 37% faster for maps with 5 elements (90.9ns → 57.5ns)
+        * 47% faster for maps with 75 elements (1248ns → 667ns) 
+        * 39% faster for maps with 1000 elements (18625ns → 11452ns)
+        
+        The change maintains identical functional behavior while eliminating megamorphic virtual calls that prevent JIT optimization.
+        This optimization particularly benefits applications with heavy ThreadContext usage such as web applications and microservices.
+    </description>
+</entry>
