@@ -147,12 +147,20 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public CronScheduledFuture<?> scheduleWithCron(
             final CronExpression cronExpression, final Date startDate, final Runnable command) {
         final Date fireDate = cronExpression.getNextValidTimeAfter(startDate == null ? new Date() : startDate);
+
+        // --- FIX (part 1): prevent race by assigning a placeholder future BEFORE scheduling ---
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
-        final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
-        final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(future, fireDate);
+        CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(null, fireDate);
         runnable.setScheduledFuture(cronScheduledFuture);
-        LOGGER.debug(
-                "{} scheduled cron expression {} to fire at {}", name, cronExpression.getCronExpression(), fireDate);
+
+        // schedule and then update the placeholder with the real ScheduledFuture
+        final ScheduledFuture<?> future =
+                schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+        cronScheduledFuture.reset(future, fireDate);
+        // --- end fix ---
+
+        LOGGER.debug("{} scheduled cron expression {} to fire at {}", name,
+                cronExpression.getCronExpression(), fireDate);
         return cronScheduledFuture;
     }
 
@@ -231,33 +239,47 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         @Override
         public void run() {
             try {
-                final long millis = scheduledFuture.getFireTime().getTime() - System.currentTimeMillis();
-                if (millis > 0) {
-                    LOGGER.debug("{} Cron thread woke up {} millis early. Sleeping", name, millis);
-                    try {
-                        Thread.sleep(millis);
-                    } catch (final InterruptedException ie) {
-                        // Ignore the interruption.
+                // --- FIX (part 2): guard against null scheduledFuture on first execution ---
+                final CronScheduledFuture<?> localFuture = this.scheduledFuture;
+                if (localFuture != null) {
+                    final long millis = localFuture.getFireTime().getTime() - System.currentTimeMillis();
+                    if (millis > 0) {
+                        LOGGER.debug("{} Cron thread woke up {} millis early. Sleeping", name, millis);
+                        try {
+                            Thread.sleep(millis);
+                        } catch (final InterruptedException ie) {
+                            // Ignore the interruption.
+                        }
                     }
                 }
+                // --- end fix ---
+
                 runnable.run();
             } catch (final Throwable ex) {
                 LOGGER.error("{} caught error running command", name, ex);
             } finally {
                 final Date fireDate = cronExpression.getNextValidTimeAfter(new Date());
-                final ScheduledFuture<?> future = schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
-                LOGGER.debug(
-                        "{} Cron expression {} scheduled to fire again at {}",
-                        name,
-                        cronExpression.getCronExpression(),
-                        fireDate);
-                scheduledFuture.reset(future, fireDate);
+                final ScheduledFuture<?> future =
+                        schedule(this, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
+                LOGGER.debug("{} Cron expression {} scheduled to fire again at {}",
+                        name, cronExpression.getCronExpression(), fireDate);
+
+                // --- FIX (part 3): reset safely even if first execution had no future assigned ---
+                final CronScheduledFuture<?> currentFuture = this.scheduledFuture;
+                if (currentFuture != null) {
+                    currentFuture.reset(future, fireDate);
+                } else {
+                    setScheduledFuture(new CronScheduledFuture<>(future, fireDate));
+                }
+                // --- end fix ---
             }
         }
 
         @Override
         public String toString() {
-            return "CronRunnable{" + cronExpression.getCronExpression() + " - " + scheduledFuture.getFireTime();
+            final CronScheduledFuture<?> f = this.scheduledFuture;
+            return "CronRunnable{" + cronExpression.getCronExpression() + " - "
+                    + (f != null ? f.getFireTime() : "unassigned") + "}";
         }
     }
 
