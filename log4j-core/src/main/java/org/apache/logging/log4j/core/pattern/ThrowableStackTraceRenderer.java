@@ -269,7 +269,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final int stackLength;
 
             /**
-             * The suppressed exceptions attached to this {@link Throwable}
+             * The suppressed exceptions attached to this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getSuppressed()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3929">#3929</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3934">#3934</a>
              */
             final Throwable[] suppressed;
 

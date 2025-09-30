@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="3929" link="https://github.com/apache/logging-log4j2/issues/3929"/>
+  <issue id="3934" link="https://github.com/apache/logging-log4j2/pull/3934"/>
   <description format="asciidoc">
     Fixes `NullPointerException` thrown by `ThrowableStackTraceRenderer` when suppressed exceptions are mutated concurrently.
   </description>
