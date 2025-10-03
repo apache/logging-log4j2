@@ -37,17 +37,17 @@
     <sign.skip>true</sign.skip>
 
     <!--
-          ~ OSGi and JPMS options
-          -->
+      ~ OSGi and JPMS options
+      -->
     <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- `elastic.version` is used for two purposes:
 
-             1. `co.elastic.clients:elasticsearch-java` version
-             2. The Docker image version of the ELK-stack
+         1. `co.elastic.clients:elasticsearch-java` version
+         2. The Docker image version of the ELK-stack
 
-             As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
+         As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
     <elastic.version>9.1.3</elastic.version>
 
   </properties>
@@ -104,18 +104,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
@@ -161,8 +149,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- Enforcing a non-UTF-8 encoding to check that the layout
-                         indeed handles everything in UTF-8 without implicitly
-                         relying on the system defaults. -->
+               indeed handles everything in UTF-8 without implicitly
+               relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
           <systemPropertyVariables>
             <!-- Enable JUnit 5 parallel execution. -->
@@ -181,8 +169,8 @@
       <id>docker</id>
 
       <!--
-              ~ Only the `ubuntu` CI runners have access to Docker
-              -->
+        ~ Only the `ubuntu` CI runners have access to Docker
+        -->
       <activation>
         <os>
           <family>linux</family>
@@ -200,7 +188,7 @@
         <docker.verbose>false</docker.verbose>
 
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
-                     We limit the used JVM memory to avoid this OOM failure. -->
+             We limit the used JVM memory to avoid this OOM failure. -->
         <elastic.javaOpts>-Xms750m -Xmx750m</elastic.javaOpts>
 
       </properties>
