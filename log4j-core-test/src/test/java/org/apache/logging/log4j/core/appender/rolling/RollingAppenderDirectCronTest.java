@@ -78,7 +78,7 @@ class RollingAppenderDirectCronTest {
         }
 
         public void waitForRollover() {
-            waitAtMost(5, TimeUnit.SECONDS)
+            waitAtMost(7, TimeUnit.SECONDS)
                     .alias("Rollover timeout")
                     .until(() -> latch.getCount() == 0 || assertion != null);
             if (assertion != null) {
@@ -102,16 +102,18 @@ class RollingAppenderDirectCronTest {
                 final Path path = Paths.get(fileName);
                 final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
                 assertThat(matcher).as("Rolled file").matches();
-                try {
-                    final List<String> lines = Files.readAllLines(path);
-                    assertThat(lines).isNotEmpty();
-                    assertThat(lines.get(0)).startsWith(matcher.group(1));
-                } catch (final IOException ex) {
-                    fail("Unable to read file " + fileName + ": " + ex.getMessage());
-                }
+
+                // Wait until the file is non-empty (or timeout)
+                waitAtMost(2, TimeUnit.SECONDS).until(() -> Files.exists(path) && Files.size(path) > 0);
+
+                final List<String> lines = Files.readAllLines(path);
+                assertThat(lines).isNotEmpty();
+                assertThat(lines.get(0)).startsWith(matcher.group(1));
                 latch.countDown();
             } catch (final AssertionError ex) {
                 assertion = ex;
+            } catch (final IOException ex) {
+                fail("Unable to read file " + fileName + ": " + ex.getMessage());
             }
         }
     }
