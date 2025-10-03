@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -453,6 +454,7 @@ public class ThrowablePatternConverterTest {
             final CountDownLatch startLatch =
                     new CountDownLatch(threadCount + /* the main thread invoking the rendering: */ 1);
             final int exceptionPerThreadCount = 100;
+            final AtomicInteger runningThreadCountRef = new AtomicInteger(threadCount);
 
             // Schedule threads that will start adding suppressed exceptions with the start signal
             for (int threadIndex = 0; threadIndex < threadCount; threadIndex++) {
@@ -472,6 +474,8 @@ public class ThrowablePatternConverterTest {
                     } catch (InterruptedException ignored) {
                         // Restore the interrupt
                         Thread.currentThread().interrupt();
+                    } finally {
+                        runningThreadCountRef.decrementAndGet();
                     }
                 });
             }
@@ -491,7 +495,7 @@ public class ThrowablePatternConverterTest {
             // Trigger the start latch and format the exception
             startLatch.countDown();
             startLatch.await();
-            for (int i = 0; i < 1_000_000; i++) {
+            while (runningThreadCountRef.get() > 0) {
                 // Give some time slack to increase randomness
                 LockSupport.parkNanos(1);
                 patternFormatter.format(logEvent, buffer);

@@ -72,11 +72,13 @@ public class AbstractDatabaseAppenderTest {
         final LogEvent event2 = mock(LogEvent.class);
 
         appender.append(event1);
-        then(manager).should().write(same(event1), isNull());
+        then(manager).should().isBuffered();
+        then(manager).should().writeThrough(same(event1), isNull());
         reset(manager);
 
         appender.append(event2);
-        then(manager).should().write(same(event2), isNull());
+        then(manager).should().isBuffered();
+        then(manager).should().writeThrough(same(event2), isNull());
         reset(manager);
     }
 
@@ -106,7 +108,7 @@ public class AbstractDatabaseAppenderTest {
         final LocalAbstractDatabaseManager newManager = mock(LocalAbstractDatabaseManager.class);
         appender.replaceManager(newManager);
         then(manager).should().close();
-        then(newManager).should().startup();
+        then(newManager).should().startupInternal();
 
         appender.stop();
         then(newManager).should().stop(0L, TimeUnit.MILLISECONDS);
@@ -117,7 +119,7 @@ public class AbstractDatabaseAppenderTest {
         setUp("name");
 
         appender.start();
-        then(manager).should().startup();
+        then(manager).should().startupInternal();
 
         appender.stop();
         then(manager).should().stop(0L, TimeUnit.MILLISECONDS);
