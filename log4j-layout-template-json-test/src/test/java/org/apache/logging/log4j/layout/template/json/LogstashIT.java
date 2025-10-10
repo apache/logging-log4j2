@@ -31,7 +31,6 @@ import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import co.elastic.logging.log4j2.EcsLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -40,13 +39,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.http.HttpHost;
@@ -57,9 +54,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -82,18 +77,6 @@ class LogstashIT {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    private static final String SERVICE_NAME = "LogstashIT";
-
-    private static final String EVENT_DATASET = SERVICE_NAME + ".log";
-
-    private static final GelfLayout GELF_LAYOUT = GelfLayout.newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setCharset(CHARSET)
-            .setCompressionType(GelfLayout.CompressionType.OFF)
-            .setIncludeNullDelimiter(true)
-            .setHost(MavenHardcodedConstants.HOST_NAME)
-            .build();
-
     private static final JsonTemplateLayout JSON_TEMPLATE_GELF_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setCharset(CHARSET)
@@ -103,30 +86,6 @@ class LogstashIT {
                 EventTemplateAdditionalField.newBuilder()
                         .setKey("host")
                         .setValue(MavenHardcodedConstants.HOST_NAME)
-                        .build()
-            })
-            .build();
-
-    // Note that `EcsLayout` doesn't support charset configuration, though it uses UTF-8 internally.
-    private static final EcsLayout ECS_LAYOUT = EcsLayout.newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setServiceName(SERVICE_NAME)
-            .setEventDataset(EVENT_DATASET)
-            .build();
-
-    private static final JsonTemplateLayout JSON_TEMPLATE_ECS_LAYOUT = JsonTemplateLayout.newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setCharset(CHARSET)
-            .setEventTemplateUri("classpath:EcsLayout.json")
-            .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
-            .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
-                EventTemplateAdditionalField.newBuilder()
-                        .setKey("service.name")
-                        .setValue(SERVICE_NAME)
-                        .build(),
-                EventTemplateAdditionalField.newBuilder()
-                        .setKey("event.dataset")
-                        .setValue(EVENT_DATASET)
                         .build()
             })
             .build();
@@ -142,7 +101,7 @@ class LogstashIT {
     private static ElasticsearchClient ES_CLIENT;
 
     /**
-     * Constants hardcoded in `docker-maven-plugin` configuration, do not change!
+     * Constants hardcoded in docker-maven-plugin configuration, do not change!
      */
     private static final class MavenHardcodedConstants {
 
@@ -176,7 +135,7 @@ class LogstashIT {
     }
 
     @BeforeAll
-    static void initEsClient() {
+    public static void initEsClient() {
 
         LOGGER.info(LOG_PREFIX + "instantiating the ES client");
         final String hostUri =
@@ -196,7 +155,7 @@ class LogstashIT {
     }
 
     @BeforeAll
-    static void waitForLsInputSockets() {
+    public static void waitForLsInputSockets() {
         waitForSocketBinding(MavenHardcodedConstants.LS_GELF_INPUT_PORT, "Logstash GELF input");
         waitForSocketBinding(MavenHardcodedConstants.LS_TCP_INPUT_PORT, "Logstash TCP input");
     }
@@ -229,7 +188,7 @@ class LogstashIT {
     }
 
     @AfterAll
-    static void stopClient() throws Exception {
+    public static void stopClient() throws Exception {
         ES_TRANSPORT.close();
         REST_CLIENT.close();
     }
@@ -281,9 +240,9 @@ class LogstashIT {
         final Throwable throwable = logEvent.getThrown();
         if (throwable != null) {
             try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    final PrintStream printStream = new PrintStream(outputStream, false, CHARSET.name())) {
+                    final PrintStream printStream = new PrintStream(outputStream, false, CHARSET)) {
                 throwable.printStackTrace(printStream);
-                return outputStream.toString(CHARSET.name());
+                return outputStream.toString(CHARSET);
             } catch (final Exception error) {
                 throw new RuntimeException("failed printing stack trace", error);
             }
@@ -349,106 +308,7 @@ class LogstashIT {
         }
     }
 
-    @Test
-    void test_GelfLayout() throws IOException {
-
-        // Create log events.
-        final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
-
-        // Create a function to uniquely identify each document
-        final Function<Map<String, Object>, Integer> keyMapper = (final Map<String, Object> source) -> {
-            final String timestamp = (String) source.get("timestamp");
-            final String shortMessage = (String) source.get("short_message");
-            final String fullMessage = (String) source.get("full_message");
-            return Objects.hash(timestamp, shortMessage, fullMessage);
-        };
-
-        // Collect documents created by `GelfLayout`
-        final Map<Integer, Object> expectedSourceByKey = appendAndCollect(
-                logEvents, GELF_LAYOUT, MavenHardcodedConstants.LS_GELF_INPUT_PORT, keyMapper, Collections.emptySet());
-
-        // Reset the index
-        deleteIndex();
-
-        // Collect documents created by `JsonTemplateLayout`
-        final Map<Integer, Object> actualSourceByKey = appendAndCollect(
-                logEvents,
-                JSON_TEMPLATE_GELF_LAYOUT,
-                MavenHardcodedConstants.LS_GELF_INPUT_PORT,
-                keyMapper,
-                Collections.emptySet());
-
-        // Compare persisted sources.
-        assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
-    }
-
-    @Test
-    void test_EcsLayout() throws IOException {
-
-        // Create log events.
-        final List<LogEvent> logEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
-
-        // Create a function to uniquely identify each document
-        final Function<Map<String, Object>, Integer> keyMapper = (final Map<String, Object> source) -> {
-            final String timestamp = (String) source.get("@timestamp");
-            final String message = (String) source.get("message");
-            final String errorMessage = (String) source.get("error.message");
-            return Objects.hash(timestamp, message, errorMessage);
-        };
-
-        // Collect documents created by `EcsLayout`
-        final Set<String> excludedKeys = Collections.singleton("port");
-        final Map<Integer, Object> expectedSourceByKey = appendAndCollect(
-                logEvents, ECS_LAYOUT, MavenHardcodedConstants.LS_TCP_INPUT_PORT, keyMapper, excludedKeys);
-
-        // Reset the index
-        deleteIndex();
-
-        // Collect documents created by `JsonTemplateLayout`
-        final Map<Integer, Object> actualSourceByKey = appendAndCollect(
-                logEvents,
-                JSON_TEMPLATE_ECS_LAYOUT,
-                MavenHardcodedConstants.LS_TCP_INPUT_PORT,
-                keyMapper,
-                excludedKeys);
-
-        // Compare persisted sources.
-        assertThat(actualSourceByKey).isEqualTo(expectedSourceByKey);
-    }
-
-    private static <K> Map<K, Object> appendAndCollect(
-            final List<LogEvent> logEvents,
-            final Layout<?> layout,
-            final int port,
-            final Function<Map<String, Object>, K> keyMapper,
-            final Set<String> excludedKeys)
-            throws IOException {
-        final Appender appender = createStartedAppender(layout, port);
-        try {
-
-            // Append the event.
-            LOGGER.info(LOG_PREFIX + "appending events");
-            logEvents.forEach(appender::append);
-            LOGGER.info(LOG_PREFIX + "completed appending events");
-
-            // Wait the message to arrive.
-            await("message delivery")
-                    .atMost(Duration.ofSeconds(60))
-                    .pollDelay(Duration.ofSeconds(2))
-                    .untilAsserted(() -> assertDocumentCount(LOG_EVENT_COUNT));
-
-            // Retrieve the persisted messages.
-            return queryDocuments().stream().collect(Collectors.toMap(keyMapper, (final Map<String, Object> source) -> {
-                excludedKeys.forEach(source::remove);
-                return source;
-            }));
-
-        } finally {
-            appender.stop();
-        }
-    }
-
-    private static SocketAppender createStartedAppender(final Layout<?> layout, final int port) {
+    private static SocketAppender createStartedAppender(final Layout layout, final int port) {
         LOGGER.info(LOG_PREFIX + "creating the appender");
         final SocketAppender appender = SocketAppender.newBuilder()
                 .setConfiguration(CONFIGURATION)
