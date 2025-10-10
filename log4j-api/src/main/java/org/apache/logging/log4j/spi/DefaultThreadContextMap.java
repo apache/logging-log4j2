@@ -160,7 +160,6 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         final Map<String, String> map = getMap(state);
 
         // Handle empty map case efficiently - constructor is faster for empty maps
-        // (manual iteration shows 10-23% regression for empty maps)
         if (map.isEmpty()) {
             return new HashMap<>();
         }
