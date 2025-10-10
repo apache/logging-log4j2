@@ -174,7 +174,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         // megamorphic when used with different map types, leading to 24-136% performance
         // degradation. Manual iteration creates monomorphic call sites that JIT can optimize.
         // See https://bugs.openjdk.org/browse/JDK-8368292
-                for (final Map.Entry<String, String> entry : map.entrySet()) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
             copy.put(entry.getKey(), entry.getValue());
         }
 
