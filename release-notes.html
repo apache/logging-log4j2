@@ -374,6 +374,9 @@
 <li>
 <p>Ensured scripts in global <code>Scripts container</code> have explicit names by throwing a <code>ConfigurationException</code> for unnamed ones. Refined script identification with <code>AbstractScript.getId()</code> and clarified <code>AbstractScript.getName()</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3176">3176</a>)</p>
 </li>
+<li>
+<p>Optimize <code>DefaultThreadContextMap.getCopy()</code> performance by avoiding megamorphic calls in <code>HashMap</code> constructor (<a href="https://github.com/apache/logging-log4j2/issues/3935">3935</a>, <a href="https://github.com/apache/logging-log4j2/pull/3939">3939</a>)</p>
+</li>
 </ul>
 </div>
 </div>
