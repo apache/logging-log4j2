@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -335,49 +336,68 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     /**
-     * Creates a Configuration from multiple configuration URIs.
-     * If multiple URIs are successfully loaded, they will be combined into a CompositeConfiguration.
+     * {@return a {@link Configuration} created using provided configuration location {@link URI}s}
+     * If the provided list of {@code URI}s is null or empty, {@code getConfiguration(loggerContext, name, (URI) null)} will be returned.
      *
-     * @param loggerContext the logger context (may be null)
-     * @param name the configuration name (may be null)
-     * @param uris the list of configuration URIs (must not be null or empty)
-     * @return a Configuration created from the provided URIs
-     * @throws NullPointerException if uris is null
-     * @throws IllegalArgumentException if uris is empty
-     * @throws ConfigurationException if no valid configuration could be created
-     * from any of the provided URIs
+     * @param loggerContext a logger context, may be null
+     * @param name a configuration name, may be null
+     * @param configLocations configuration location {@code URI}s, may be null or empty
+     * @throws ConfigurationException if configuration could not be created
+     *
      * @since 2.26.0
      */
-    public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final List<URI> uris) {
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final List<URI> configLocations) {
 
-        Objects.requireNonNull(uris, "uris parameter cannot be null");
+        // Sanitize URIs
+        final List<URI> distinctConfigLocations = configLocations == null
+                ? Collections.emptyList()
+                : configLocations.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
 
-        if (uris.isEmpty()) {
-            throw new IllegalArgumentException("URI list cannot be empty");
-        }
-
-        final List<AbstractConfiguration> configurations = new ArrayList<>();
-
-        for (final URI uri : uris) {
-
-            if (uri == null) {
-                throw new ConfigurationException("URI list contains null element");
-            }
-
-            final Configuration config = getConfiguration(loggerContext, name, uri);
-
+        // Short-circuit if provided URIs are null or empty
+        if (distinctConfigLocations.isEmpty()) {
+            final Configuration config = getConfiguration(loggerContext, name, (URI) null);
             if (config == null) {
-                throw new ConfigurationException("Failed to create configuration from: " + uri);
+                throw new ConfigurationException("Configuration could not be created");
             }
-
-            if (!(config instanceof AbstractConfiguration)) {
-                throw new ConfigurationException("Configuration at " + uri + " is not an AbstractConfiguration");
-            }
-
-            configurations.add((AbstractConfiguration) config);
+            return config;
         }
 
-        return configurations.size() == 1 ? configurations.get(0) : new CompositeConfiguration(configurations);
+        // Short-circuit if there is only a single URI
+        if (distinctConfigLocations.size() == 1) {
+            final URI configLocation = distinctConfigLocations.get(0);
+            final Configuration config = getConfiguration(loggerContext, name, configLocation);
+            if (config == null) {
+                final String message =
+                        String.format("Configuration could not be created from location: `%s`", configLocation);
+                throw new ConfigurationException(message);
+            }
+            return config;
+        }
+
+        // Create individual configurations
+        final List<AbstractConfiguration> configs = distinctConfigLocations.stream()
+                .map(configLocation -> {
+                    final Configuration config = getConfiguration(loggerContext, name, configLocation);
+                    if (config == null) {
+                        final String message =
+                                String.format("Configuration could not be created from location: `%s`", configLocation);
+                        throw new ConfigurationException(message);
+                    }
+                    if (!(config instanceof AbstractConfiguration)) {
+                        final String message = String.format(
+                                "Configuration created from location `%s` was expected to be of type `%s`, found: `%s`",
+                                configLocation,
+                                AbstractConfiguration.class.getCanonicalName(),
+                                config.getClass().getCanonicalName());
+                        throw new ConfigurationException(message);
+                    }
+                    return (AbstractConfiguration) config;
+                })
+                .collect(Collectors.toList());
+
+        // Combine created configurations
+        return new CompositeConfiguration(configs);
     }
 
     static boolean isClassLoaderUri(final URI uri) {
