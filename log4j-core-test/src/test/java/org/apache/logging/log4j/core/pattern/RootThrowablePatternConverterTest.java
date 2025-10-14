@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
-import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.EXCEPTION;
 import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.LEVEL;
 import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.convert;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +36,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  * {@link RootThrowablePatternConverter} tests.
  */
 class RootThrowablePatternConverterTest {
+
+    static final Throwable EXCEPTION = TestFriendlyException.INSTANCE;
 
     private static final StackTraceElement THROWING_METHOD =
             Throwables.getRootCause(EXCEPTION).getStackTrace()[0];
