@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
@@ -443,10 +444,51 @@ public class ThrowablePatternConverterTest {
                     .replaceAll(" ~\\[\\?:[^]]+](\\Q" + conversionEnding + "\\E|$)", " ~[?:0]$1");
         }
 
+        @Test
+        @Issue("https://github.com/apache/logging-log4j2/issues/3940")
+        void concurrent_stacktrace_mutation_should_not_cause_failure() throws Exception {
+            final ExecutorService executor = Executors.newFixedThreadPool(2);
+
+            // Create the formatter
+            final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(patternPrefix, false, true, true);
+            assertThat(patternFormatters).hasSize(1);
+            final PatternFormatter patternFormatter = patternFormatters.get(0);
+            final StringBuilder buffer = new StringBuilder();
+
+            try {
+                for (int i = 0; i < 10; i++) {
+                    final CountDownLatch latch = new CountDownLatch(2);
+                    final Throwable exception = new RuntimeException();
+                    final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                            .setThrown(exception)
+                            .setLevel(LEVEL)
+                            .build();
+
+                    executor.submit(() -> {
+                        try {
+                            patternFormatter.format(logEvent, buffer);
+                            buffer.setLength(0);
+                            latch.countDown();
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    executor.submit(() -> {
+                        exception.setStackTrace(new StackTraceElement[0]);
+                        latch.countDown();
+                    });
+                    if (latch.await(1, TimeUnit.SECONDS) == false) {
+                        throw new IllegalStateException("timed out waiting for tasks to complete");
+                    }
+                }
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+
         @RepeatedTest(10)
         @Issue("https://github.com/apache/logging-log4j2/issues/3929")
         void concurrent_suppressed_mutation_should_not_cause_failure() throws Exception {
-
             // Test constants
             final int threadCount = Math.max(8, Runtime.getRuntime().availableProcessors());
             final ExecutorService executor = Executors.newFixedThreadPool(threadCount);
