@@ -291,7 +291,7 @@ public class SslSocketManager extends TcpSocketManager {
         return newSocket;
     }
 
-    private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
+    static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
         if (sslConf != null) {
             final SSLContext sslContext = sslConf.getSslContext();
             if (sslContext != null) {
