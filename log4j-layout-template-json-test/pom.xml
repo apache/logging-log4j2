@@ -38,8 +38,8 @@
     <sign.skip>true</sign.skip>
 
     <!--
-     ~ OSGi and JPMS options
-    -->
+      ~ OSGi and JPMS options
+      -->
     <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
@@ -174,8 +174,8 @@
       <id>docker</id>
 
       <!--
-      ~ Only the `ubuntu` CI runners have access to Docker
-      -->
+        ~ Only the `ubuntu` CI runners have access to Docker
+        -->
       <activation>
         <os>
           <family>linux</family>
@@ -193,7 +193,7 @@
         <docker.verbose>false</docker.verbose>
 
         <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
-              We limit the used JVM memory to avoid this OOM failure. -->
+             We limit the used JVM memory to avoid this OOM failure. -->
         <elastic.javaOpts>-Xms750m -Xmx750m</elastic.javaOpts>
 
       </properties>
