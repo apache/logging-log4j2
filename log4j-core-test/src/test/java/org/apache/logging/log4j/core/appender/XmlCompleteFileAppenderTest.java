@@ -82,8 +82,13 @@ public class XmlCompleteFileAppenderTest {
         try (final BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             line1 = reader.readLine();
             line2 = reader.readLine();
-            reader.readLine(); // ignore the empty line after the <Events> root
-            line3 = reader.readLine();
+            
+            String tmp;
+            do {
+                tmp = reader.readLine(); // ignore the empty lines after the <Events> root
+            } while (tmp != null && tmp.trim().isEmpty());
+
+            line3 = tmp;
             line4 = reader.readLine();
             line5 = reader.readLine();
         } finally {
