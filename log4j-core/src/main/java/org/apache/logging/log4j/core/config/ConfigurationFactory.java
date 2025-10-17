@@ -337,12 +337,18 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     /**
      * {@return a {@link Configuration} created using provided configuration location {@link URI}s}
-     * If the provided list of {@code URI}s is null or empty, {@code getConfiguration(loggerContext, name, (URI) null)} will be returned.
+     * <p>
+     * Configurations will be loaded and merged in the given order using the effective {@linkplain org.apache.logging.log4j.core.config.composite.MergeStrategy merge strategy}.
+     * The default can be changed using the {@value org.apache.logging.log4j.core.config.composite.CompositeConfiguration#MERGE_STRATEGY_PROPERTY} system property.
+     * <p>
+     * If the provided list of {@code URI}s is empty, the configuration factory attempts to load an implementation-dependent set of default locations.
+     * If no configuration can be found, a {@link ConfigurationException} is thrown.
      *
      * @param loggerContext a logger context, may be null
      * @param name a configuration name, may be null
-     * @param configLocations configuration location {@code URI}s, may be null or empty
+     * @param configLocations configuration location {@code URI}s, may not contain or be null
      * @throws ConfigurationException if configuration could not be created
+     * @throws NullPointerException if {@code configLocations} contains or is null
      *
      * @since 2.26.0
      */
@@ -350,9 +356,17 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             final LoggerContext loggerContext, final String name, final List<URI> configLocations) {
 
         // Sanitize URIs
-        final List<URI> distinctConfigLocations = configLocations == null
-                ? Collections.emptyList()
-                : configLocations.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        final int[] configLocationIndex = {0};
+        final List<URI> distinctConfigLocations = Objects.requireNonNull(configLocations, "configLocations").stream()
+                .peek(uri -> {
+                    if (uri == null) {
+                        final String message = String.format("configLocations[%d]", configLocationIndex[0]);
+                        throw new NullPointerException(message);
+                    }
+                    configLocationIndex[0]++;
+                })
+                .distinct()
+                .collect(Collectors.toList());
 
         // Short-circuit if provided URIs are null or empty
         if (distinctConfigLocations.isEmpty()) {

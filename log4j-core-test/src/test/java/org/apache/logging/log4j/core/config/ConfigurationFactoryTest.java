@@ -140,8 +140,7 @@ class ConfigurationFactoryTest {
     void testGetConfigurationWithNullUris() {
         final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
         try (final LoggerContext context = new LoggerContext("test")) {
-            factory.getConfiguration(context, "test", (List<URI>) null);
-            Mockito.verify(factory).getConfiguration(Mockito.same(context), Mockito.eq("test"), (URI) Mockito.isNull());
+            assertThrows(NullPointerException.class, () -> factory.getConfiguration(context, "test", (List<URI>) null));
         }
     }
 
@@ -158,9 +157,8 @@ class ConfigurationFactoryTest {
     void testGetConfigurationWithNullInList() {
         final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
         try (final LoggerContext context = new LoggerContext("test")) {
-            final List<URI> listWithNull = Collections.singletonList(null);
-            factory.getConfiguration(context, "test", listWithNull);
-            Mockito.verify(factory).getConfiguration(Mockito.same(context), Mockito.eq("test"), (URI) Mockito.isNull());
+            final List<URI> listWithNull = Arrays.asList(URI.create("path:://to/nowhere"), null);
+            assertThrows(NullPointerException.class, () -> factory.getConfiguration(context, "test", listWithNull));
         }
     }
 
