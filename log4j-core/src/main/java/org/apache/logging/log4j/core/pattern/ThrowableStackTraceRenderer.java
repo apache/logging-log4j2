@@ -268,7 +268,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final int stackLength;
 
             /**
-             * The stack trace of this {@link Throwable}
+             * The stack trace of this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getStackTrace()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3940">#3940</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3955">#3955</a>
              */
             final StackTraceElement[] stackTrace;
 
