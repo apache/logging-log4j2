@@ -60,6 +60,7 @@ final class ThrowableInvertedStackTraceRenderer
             buffer.append(']');
             buffer.append(lineSeparator);
         } else {
+            final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
             lineCapacityAcquired = renderCause(
                     buffer,
                     throwable.getCause(),
@@ -73,9 +74,8 @@ final class ThrowableInvertedStackTraceRenderer
             }
             renderThrowableMessage(buffer, throwable);
             buffer.append(lineSeparator);
-            renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
-            renderSuppressed(
-                    buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
+            renderStackTraceElements(buffer, throwable, context, metadata, prefix, lineSeparator);
+            renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
         }
     }
 

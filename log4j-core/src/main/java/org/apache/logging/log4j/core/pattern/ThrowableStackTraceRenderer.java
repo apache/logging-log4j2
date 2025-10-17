@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,20 +53,12 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (maxLineCount > 0) {
             try {
                 C context = createContext(throwable);
-                ensureNewlineSuffix(buffer);
                 renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
             } catch (final Exception error) {
                 if (error != MAX_LINE_COUNT_EXCEEDED) {
                     throw error;
                 }
             }
-        }
-    }
-
-    private static void ensureNewlineSuffix(final StringBuilder buffer) {
-        final int bufferLength = buffer.length();
-        if (bufferLength > 0 && buffer.charAt(bufferLength - 1) != '\n') {
-            buffer.append(LINE_SEPARATOR);
         }
     }
 
@@ -105,11 +95,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             buffer.append(']');
             buffer.append(lineSeparator);
         } else {
+            final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
             renderThrowableMessage(buffer, throwable);
             buffer.append(lineSeparator);
-            renderStackTraceElements(buffer, throwable, context, prefix, lineSeparator);
-            renderSuppressed(
-                    buffer, throwable.getSuppressed(), context, visitedThrowables, prefix + '\t', lineSeparator);
+            renderStackTraceElements(buffer, throwable, context, metadata, prefix, lineSeparator);
+            renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
             renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
         }
     }
@@ -160,10 +150,10 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final StringBuilder buffer,
             final Throwable throwable,
             final C context,
+            final Context.Metadata metadata,
             final String prefix,
             final String lineSeparator) {
         context.ignoredStackTraceElementCount = 0;
-        final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         for (int i = 0; i < metadata.stackLength; i++) {
             renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, lineSeparator);
@@ -278,9 +268,19 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
              */
             final int stackLength;
 
-            private Metadata(final int commonElementCount, final int stackLength) {
+            /**
+             * The suppressed exceptions attached to this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getSuppressed()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3929">#3929</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3934">#3934</a>
+             */
+            final Throwable[] suppressed;
+
+            private Metadata(final int commonElementCount, final int stackLength, final Throwable[] suppressed) {
                 this.commonElementCount = commonElementCount;
                 this.stackLength = stackLength;
+                this.suppressed = suppressed;
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
@@ -298,11 +298,12 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 // Populate metadata of the current throwable
                 @Nullable
                 final StackTraceElement[] rootTrace = parentThrowable == null ? null : parentThrowable.getStackTrace();
-                final Metadata metadata = populateMetadata(rootTrace, throwable.getStackTrace());
+                final Metadata metadata =
+                        populateMetadata(rootTrace, throwable.getStackTrace(), throwable.getSuppressed());
                 metadataByThrowable.put(throwable, metadata);
 
                 // Populate metadata of suppressed exceptions
-                for (final Throwable suppressed : throwable.getSuppressed()) {
+                for (final Throwable suppressed : metadata.suppressed) {
                     if (!visitedThrowables.contains(suppressed)) {
                         visitedThrowables.add(suppressed);
                         populateMetadata(metadataByThrowable, visitedThrowables, throwable, suppressed);
@@ -318,7 +319,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             private static Metadata populateMetadata(
-                    @Nullable final StackTraceElement[] parentTrace, final StackTraceElement[] currentTrace) {
+                    @Nullable final StackTraceElement[] parentTrace,
+                    final StackTraceElement[] currentTrace,
+                    final Throwable[] suppressed) {
                 int commonElementCount;
                 int stackLength;
                 if (parentTrace != null) {
@@ -336,7 +339,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                     commonElementCount = 0;
                     stackLength = currentTrace.length;
                 }
-                return new Metadata(commonElementCount, stackLength);
+                return new Metadata(commonElementCount, stackLength, suppressed);
             }
         }
     }
