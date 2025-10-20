@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.9">
+    <meta name="generator" content="Antora 3.2.0-alpha.10">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -448,6 +448,9 @@
 <p>Update <code>org.gradlex:gradle-module-metadata-maven-plugin</code> to version <code>1.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3811">3811</a>)</p>
 </li>
 <li>
+<p>Update <code>org.junit:junit-bom</code> to version <code>5.13.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/3850">3850</a>)</p>
+</li>
+<li>
 <p>Update <code>org.xerial.snappy:snappy-java</code> to version <code>1.1.10.8</code> (<a href="https://github.com/apache/logging-log4j2/pull/3841">3841</a>)</p>
 </li>
 </ul>
@@ -499,6 +502,9 @@
 </li>
 <li>
 <p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
+</li>
+<li>
+<p>Fixes <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
 </li>
 </ul>
 </div>
