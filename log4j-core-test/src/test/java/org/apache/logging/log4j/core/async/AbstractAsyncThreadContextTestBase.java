@@ -48,6 +48,7 @@ import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @UsingStatusListener
@@ -58,6 +59,11 @@ public abstract class AbstractAsyncThreadContextTestBase {
     private static final int LINE_COUNT = 130;
 
     private static TestProperties props;
+
+    @BeforeEach
+    public void beforeEach() {
+        ThreadContext.clearAll();
+    }
 
     @BeforeAll
     public static void beforeClass() {

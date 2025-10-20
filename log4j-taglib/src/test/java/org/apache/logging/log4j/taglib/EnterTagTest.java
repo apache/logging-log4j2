@@ -54,7 +54,7 @@ public class EnterTagTest {
     @Test
     public void testDoEndTag() throws Exception {
         assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
-        verify("Enter TRACE M-ENTER[ FLOW ] E");
+        verify("Enter TRACE M-ENTER[ FLOW ] E-");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class EnterTagTest {
         this.tag.setDynamicAttribute(null, null, 5792);
 
         assertEquals(Tag.EVAL_PAGE, this.tag.doEndTag(), "The return value is not correct.");
-        verify("Enter params(log4j-test1.xml, 5792) TRACE M-ENTER[ FLOW ] E");
+        verify("Enter params(log4j-test1.xml, 5792) TRACE M-ENTER[ FLOW ] E-");
     }
 
     private void verify(final String expected) {

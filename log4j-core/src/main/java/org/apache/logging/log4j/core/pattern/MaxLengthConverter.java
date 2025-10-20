@@ -99,4 +99,11 @@ public final class MaxLengthConverter extends LogEventPatternConverter {
             }
         }
     }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
+    }
 }
