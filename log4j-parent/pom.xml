@@ -100,7 +100,7 @@
     <commons-codec.version>1.18.0</commons-codec.version>
     <commons-csv.version>1.14.0</commons-csv.version>
     <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
-    <commons-io.version>2.19.0</commons-io.version>
+    <commons-io.version>2.20.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <disruptor.version>4.0.0</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
@@ -111,7 +111,10 @@
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.4</hsqldb.version>
-    <jackson-bom.version>2.19.1</jackson-bom.version>
+    <!-- wiremock and elasticsearch-java libraries used for testing require Jackson 2 -->
+    <!-- The log4j project is using Jackson 3. -->
+    <jackson2.test.version>2.20.0</jackson2.test.version>
+    <jackson-bom.version>3.0.0</jackson-bom.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
     <jctools.version>4.0.5</jctools.version>
@@ -120,7 +123,7 @@
     <json-unit.version>4.1.1</json-unit.version>
     <jspecify.version>1.0.0</jspecify.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.13.3</junit-jupiter.version>
+    <junit-jupiter.version>5.13.4</junit-jupiter.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
@@ -200,7 +203,7 @@
       </dependency>
 
       <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
+        <groupId>tools.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>${jackson-bom.version}</version>
         <type>pom</type>

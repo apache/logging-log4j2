@@ -47,8 +47,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     private static final String LOOKUP_KEY_JNDI = "jndi";
 
-    private static final String LOOKUP_KEY_JVMRUNARGS = "jvmrunargs";
-
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<String, Supplier<? extends StrLookup>> strLookups = new ConcurrentHashMap<>();
@@ -78,11 +76,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                         "JNDI lookup class is not available because this JRE does not support JNDI."
                                 + " JNDI string lookups will not be available, continuing configuration. Ignoring "
                                 + t);
-                break;
-            case LOOKUP_KEY_JVMRUNARGS:
-                // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
-                LOGGER.warn("JMX runtime input lookup class is not available because this JRE does not support JMX. "
-                        + "JMX lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
             case LOOKUP_KEY_WEB:
                 LOGGER.info(

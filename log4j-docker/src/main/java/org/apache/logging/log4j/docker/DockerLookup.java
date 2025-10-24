@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.docker;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -33,6 +32,8 @@ import org.apache.logging.log4j.docker.model.Network;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Looks up keys for a Docker container.
@@ -62,24 +63,26 @@ public class DockerLookup extends AbstractLookup {
             final URL url = baseUri.resolve("/containers/json").toURL();
             if (url.getProtocol().equals(HTTP)) {
                 final String macAddr = NetUtils.getMacAddressString();
-                final ObjectMapper objectMapper = new ObjectMapper();
-                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<>() {});
+                final JsonMapper jsonMapper = new JsonMapper();
+                try (InputStream urlStream = url.openStream()) {
+                    final List<Container> containerList = jsonMapper.readValue(urlStream, new TypeReference<>() {});
 
-                for (final Container container : containerList) {
-                    if (macAddr != null && container.getNetworkSettings() != null) {
-                        final Map<String, Network> networks =
-                                container.getNetworkSettings().getNetworks();
-                        if (networks != null) {
-                            for (final Network network : networks.values()) {
-                                if (macAddr.equals(network.getMacAddress())) {
-                                    current = container;
-                                    break;
+                    for (final Container container : containerList) {
+                        if (macAddr != null && container.getNetworkSettings() != null) {
+                            final Map<String, Network> networks =
+                                    container.getNetworkSettings().getNetworks();
+                            if (networks != null) {
+                                for (final Network network : networks.values()) {
+                                    if (macAddr.equals(network.getMacAddress())) {
+                                        current = container;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (current != null) {
-                        break;
+                        if (current != null) {
+                            break;
+                        }
                     }
                 }
             }

@@ -49,7 +49,7 @@
          2. The Docker image version of the ELK-stack
 
          As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
-    <elastic.version>8.17.3</elastic.version>
+    <elastic.version>9.1.5</elastic.version>
 
   </properties>
 
@@ -98,8 +98,24 @@
     </dependency>
 
     <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-client</artifactId>
+      <version>${elastic.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Needed by elasticsearch-java for testing -->
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson2.test.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>${jackson2.test.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -118,6 +134,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>log4j2-ecs-layout</artifactId>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
 
