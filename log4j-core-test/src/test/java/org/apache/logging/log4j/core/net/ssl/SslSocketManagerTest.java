@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.core.net.ssl;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
-import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Issue;
 
@@ -28,13 +27,19 @@ class SslSocketManagerTest {
     @Issue("https://github.com/apache/logging-log4j2/issues/3947")
     @Test
     void shouldNotThrowExceptionWhenConfiguringTrustStore() {
-        TrustStoreConfiguration trustStoreConfiguration = assertDoesNotThrow(() -> new TrustStoreConfiguration(
+        final TrustStoreConfiguration trustStoreConfiguration = assertDoesNotThrow(() -> new TrustStoreConfiguration(
                 SslKeyStoreConstants.TRUSTSTORE_LOCATION,
                 SslKeyStoreConstants::TRUSTSTORE_PWD,
                 SslKeyStoreConstants.TRUSTSTORE_TYPE,
                 null));
-        SslConfiguration sslConfiguration =
+        final SslConfiguration sslConfiguration =
                 SslConfiguration.createSSLConfiguration(null, null, trustStoreConfiguration);
-        assertDoesNotThrow(() -> SslSocketManager.createSslConfigurationId(sslConfiguration));
+        assertDoesNotThrow(() -> {
+            // noinspection EmptyTryBlock (try-with-resources to close `SslSocketManager`, even on failure
+            try (final SslSocketManager ignored = SslSocketManager.getSocketManager(
+                    sslConfiguration, "localhost", 0, 0, 0, true, PatternLayout.createDefaultLayout(), 8192, null)) {
+                // Do nothing
+            }
+        });
     }
 }

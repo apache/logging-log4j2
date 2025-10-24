@@ -245,7 +245,7 @@ public class SslSocketManager extends TcpSocketManager {
      * @param sslConfig an SSL configuration
      * @return a unique identifier extracted from the given SSL configuration
      */
-    static String createSslConfigurationId(final SslConfiguration sslConfig) {
+    private static String createSslConfigurationId(final SslConfiguration sslConfig) {
         return String.valueOf(Stream.of(sslConfig.getKeyStoreConfig(), sslConfig.getTrustStoreConfig())
                 .filter(Objects::nonNull)
                 .flatMap(keyStoreConfig -> {
