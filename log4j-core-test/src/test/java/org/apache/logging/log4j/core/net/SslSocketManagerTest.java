@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.core.net;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
@@ -36,9 +34,7 @@ class SslSocketManagerTest {
                 SslKeyStoreConstants.TRUSTSTORE_TYPE,
                 null));
         SslConfiguration sslConfiguration =
-                assertDoesNotThrow(() -> SslConfiguration.createSSLConfiguration(null, null, trustStoreConfiguration));
-        SSLSocketFactory sslSocketFactory =
-                assertDoesNotThrow(() -> SslSocketManager.createSslSocketFactory(sslConfiguration));
-        assertNotNull(sslSocketFactory);
+                SslConfiguration.createSSLConfiguration(null, null, trustStoreConfiguration);
+        assertDoesNotThrow(() -> SslSocketManager.createSslConfigurationId(sslConfiguration));
     }
 }
