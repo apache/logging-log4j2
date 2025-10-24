@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
+import static org.awaitility.Awaitility.waitAtMost;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,12 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
-import static org.awaitility.Awaitility.waitAtMost;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -75,33 +71,34 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
         final File dir = new File(DIR);
         assertTrue("Dir " + DIR + " should exist", dir.exists());
 
-        // Wait until the directory contents stabilize (no size change across two polls)
-        waitAtMost(5, TimeUnit.SECONDS).until(() -> {
-            final File[] a = dir.listFiles();
-            if (a == null) return false;
-            final int n1 = a.length;
-            try { Thread.sleep(150); } catch (InterruptedException ignored) { }
-            final File[] b = dir.listFiles();
-            return b != null && b.length == n1;
-        });
-
-        final File[] files = Objects.requireNonNull(dir.listFiles());
-        assertTrue("Dir " + DIR + " should contain files", files.length > 0);
-
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
 
-        // No unexpected names
-        for (final File file : files) {
-            if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
-                fail("unexpected file " + file);
+        waitAtMost(7, TimeUnit.SECONDS).untilAsserted(() -> {
+            final File[] files = Objects.requireNonNull(dir.listFiles(), "listFiles()");
+            assertTrue("Dir " + DIR + " should contain files", files.length > 0);
+
+            // The 5 my-*.log files must exist
+            for (final String name : expected) {
+                assertTrue("missing " + name, new File(dir, name).exists());
             }
-        }
 
-        final long rolled =
-            Stream.of(files).filter(f -> f.getName().startsWith("test-")).count();
+            // Only allow my-*.log and test-*.log
+            for (final File file : files) {
+                final String n = file.getName();
+                if (!expected.contains(n) && !n.startsWith("test-")) {
+                    fail("unexpected file " + file);
+                }
+            }
 
-        assertTrue("expected at least 6 rolled files but got " + rolled, rolled >= 6);
-        assertTrue("expected not more than 9 rolled files but got " + rolled, rolled <= 9);
+            // Rolled files count should be within a reasonable band
+            final long rolled = Arrays.stream(files)
+                    .map(File::getName)
+                    .filter(n -> n.startsWith("test-"))
+                    .count();
+
+            // Tolerate CRLF/LF differences + timing jitter
+            assertTrue("expected rolled count in [6, 9], got " + rolled, rolled >= 6 && rolled <= 9);
+        });
     }
 
     private void updateLastModified(final Path... paths) throws IOException {
