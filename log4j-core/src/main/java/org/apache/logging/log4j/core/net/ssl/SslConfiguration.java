@@ -54,6 +54,7 @@ public class SslConfiguration {
     @Nullable
     private final TrustStoreConfiguration trustStoreConfig;
 
+    @Nullable
     private final transient SSLContext sslContext;
 
     private SslConfiguration(
@@ -88,8 +89,9 @@ public class SslConfiguration {
      * @deprecated Use {@link SSLContext#getSocketFactory()} on {@link #getSslContext()}
      */
     @Deprecated
+    @Nullable
     public SSLSocketFactory getSslSocketFactory() {
-        return sslContext.getSocketFactory();
+        return sslContext != null ? sslContext.getSocketFactory() : null;
     }
 
     /**
@@ -99,10 +101,12 @@ public class SslConfiguration {
      * @deprecated Use {@link SSLContext#getServerSocketFactory()} on {@link #getSslContext()}
      */
     @Deprecated
+    @Nullable
     public SSLServerSocketFactory getSslServerSocketFactory() {
-        return sslContext.getServerSocketFactory();
+        return sslContext != null ? sslContext.getServerSocketFactory() : null;
     }
 
+    @Nullable
     private static SSLContext createDefaultSslContext(final String protocol) {
         try {
             return SSLContext.getDefault();
@@ -121,6 +125,7 @@ public class SslConfiguration {
         }
     }
 
+    @Nullable
     private static SSLContext createSslContext(
             final String protocol,
             @Nullable final KeyStoreConfiguration keyStoreConfig,
@@ -242,14 +247,17 @@ public class SslConfiguration {
         return verifyHostName;
     }
 
+    @Nullable
     public KeyStoreConfiguration getKeyStoreConfig() {
         return keyStoreConfig;
     }
 
+    @Nullable
     public TrustStoreConfiguration getTrustStoreConfig() {
         return trustStoreConfig;
     }
 
+    @Nullable
     public SSLContext getSslContext() {
         return sslContext;
     }

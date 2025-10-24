@@ -27,8 +27,10 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
@@ -245,6 +247,7 @@ public class SslSocketManager extends TcpSocketManager {
      */
     private static String createSslConfigurationId(final SslConfiguration sslConfig) {
         return String.valueOf(Stream.of(sslConfig.getKeyStoreConfig(), sslConfig.getTrustStoreConfig())
+                .filter(Objects::nonNull)
                 .flatMap(keyStoreConfig -> {
                     final Enumeration<String> aliases;
                     try {
@@ -289,15 +292,13 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
-        SSLSocketFactory socketFactory;
-
         if (sslConf != null) {
-            socketFactory = sslConf.getSslContext().getSocketFactory();
-        } else {
-            socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            final SSLContext sslContext = sslConf.getSslContext();
+            if (sslContext != null) {
+                return sslContext.getSocketFactory();
+            }
         }
-
-        return socketFactory;
+        return (SSLSocketFactory) SSLSocketFactory.getDefault();
     }
 
     private static class SslSocketManagerFactory extends TcpSocketManagerFactory<SslSocketManager, SslFactoryData> {

@@ -34,6 +34,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
@@ -308,9 +309,11 @@ public class SmtpManager extends MailManager {
             if (smtpProtocol.equals("smtps")) {
                 final SslConfiguration sslConfiguration = data.getSslConfiguration();
                 if (sslConfiguration != null) {
-                    final SSLSocketFactory sslSocketFactory =
-                            sslConfiguration.getSslContext().getSocketFactory();
-                    properties.put(prefix + ".ssl.socketFactory", sslSocketFactory);
+                    final SSLContext sslContext = sslConfiguration.getSslContext();
+                    if (sslContext != null) {
+                        final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                        properties.put(prefix + ".ssl.socketFactory", sslSocketFactory);
+                    }
                     properties.setProperty(
                             prefix + ".ssl.checkserveridentity", Boolean.toString(sslConfiguration.isVerifyHostName()));
                 }
