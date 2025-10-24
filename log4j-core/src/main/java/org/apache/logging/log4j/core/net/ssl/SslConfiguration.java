@@ -40,7 +40,7 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 @Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
-public class SslConfiguration {
+public class SslConfiguration implements TlsConfiguration {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
@@ -178,7 +178,7 @@ public class SslConfiguration {
             @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
             @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
         // @formatter:on
-        return new SslConfiguration(protocol, false, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, true, keyStoreConfig, trustStoreConfig);
     }
 
     /**
@@ -234,22 +234,27 @@ public class SslConfiguration {
         return true;
     }
 
+    @Override
     public String getProtocol() {
         return protocol;
     }
 
+    @Override
     public boolean isVerifyHostName() {
         return verifyHostName;
     }
 
+    @Override
     public KeyStoreConfiguration getKeyStoreConfig() {
         return keyStoreConfig;
     }
 
+    @Override
     public TrustStoreConfiguration getTrustStoreConfig() {
         return trustStoreConfig;
     }
 
+    @Override
     public SSLContext getSslContext() {
         return sslContext;
     }
