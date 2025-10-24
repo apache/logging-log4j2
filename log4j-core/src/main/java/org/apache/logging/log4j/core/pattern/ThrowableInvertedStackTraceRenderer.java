@@ -74,7 +74,7 @@ final class ThrowableInvertedStackTraceRenderer
             }
             renderThrowableMessage(buffer, throwable);
             buffer.append(lineSeparator);
-            renderStackTraceElements(buffer, throwable, context, metadata, prefix, lineSeparator);
+            renderStackTraceElements(buffer, context, metadata, prefix, lineSeparator);
             renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
         }
     }

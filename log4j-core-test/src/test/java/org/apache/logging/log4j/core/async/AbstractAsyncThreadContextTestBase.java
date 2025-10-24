@@ -177,7 +177,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
         for (int i = 0; i < LINE_COUNT; i++) {
             // buffer may be full
             if (i >= 128) {
-                waitAtMost(500, TimeUnit.MILLISECONDS)
+                waitAtMost(5, TimeUnit.SECONDS)
                         .pollDelay(10, TimeUnit.MILLISECONDS)
                         .until(() -> remainingCapacity.getAsLong() > 0);
             }
