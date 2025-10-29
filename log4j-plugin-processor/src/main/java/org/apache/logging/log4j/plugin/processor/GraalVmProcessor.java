@@ -1,0 +1,355 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.plugin.processor;
+
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleElementVisitor8;
+import javax.lang.model.util.SimpleTypeVisitor8;
+import javax.tools.Diagnostic;
+import javax.tools.StandardLocation;
+import org.apache.logging.log4j.plugin.processor.internal.Annotations;
+import org.apache.logging.log4j.plugin.processor.internal.ReachabilityMetadata;
+import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * Java annotation processor that generates GraalVM metadata.
+ * <p>
+ *     <strong>Note:</strong> The annotations listed here must also be classified by the {@link Annotations} helper.
+ * </p>
+ */
+@ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
+@SupportedAnnotationTypes({
+    "org.apache.logging.log4j.plugins.Factory",
+    "org.apache.logging.log4j.plugins.PluginFactory",
+    "org.apache.logging.log4j.plugins.SingletonFactory",
+    "org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory",
+    "org.apache.logging.log4j.core.config.plugins.PluginFactory",
+    "org.apache.logging.log4j.plugins.Inject",
+    "org.apache.logging.log4j.plugins.Named",
+    "org.apache.logging.log4j.plugins.PluginAttribute",
+    "org.apache.logging.log4j.plugins.PluginBuilderAttribute",
+    "org.apache.logging.log4j.plugins.PluginElement",
+    "org.apache.logging.log4j.plugins.PluginNode",
+    "org.apache.logging.log4j.plugins.PluginValue",
+    "org.apache.logging.log4j.core.config.plugins.PluginAttribute",
+    "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute",
+    "org.apache.logging.log4j.core.config.plugins.PluginConfiguration",
+    "org.apache.logging.log4j.core.config.plugins.PluginElement",
+    "org.apache.logging.log4j.core.config.plugins.PluginLoggerContext",
+    "org.apache.logging.log4j.core.config.plugins.PluginNode",
+    "org.apache.logging.log4j.core.config.plugins.PluginValue",
+    "org.apache.logging.log4j.plugins.Plugin",
+    "org.apache.logging.log4j.core.config.plugins.Plugin",
+    "org.apache.logging.log4j.plugins.condition.Conditional",
+    "org.apache.logging.log4j.plugins.validation.Constraint"
+})
+@SupportedOptions({"log4j.graalvm.groupId", "log4j.graalvm.artifactId"})
+public class GraalVmProcessor extends AbstractProcessor {
+
+    static final String GROUP_ID = "log4j.graalvm.groupId";
+    static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
+    private static final String LOCATION_PREFIX = "META-INF/native-image/log4j-generated/";
+    private static final String LOCATION_SUFFIX = "/reflect-config.json";
+    private static final String PROCESSOR_NAME = GraalVmProcessor.class.getSimpleName();
+
+    private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
+    private final List<Element> processedElements = new ArrayList<>();
+    private Annotations annotationUtil;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        this.annotationUtil = new Annotations(processingEnv.getElementUtils());
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
+    }
+
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        Messager messager = processingEnv.getMessager();
+        for (TypeElement annotation : annotations) {
+            Annotations.Type annotationType = annotationUtil.classifyAnnotation(annotation);
+            for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
+                switch (annotationType) {
+                    case INJECT:
+                        processInject(element);
+                        break;
+                    case PLUGIN:
+                        processPlugin(element);
+                        break;
+                    case META_ANNOTATION_STRATEGY:
+                        processMetaAnnotationStrategy(element, annotation);
+                        break;
+                    case QUALIFIER:
+                        processQualifier(element);
+                        break;
+                    case FACTORY:
+                        processFactory(element);
+                        break;
+                    case UNKNOWN:
+                        messager.printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "The annotation type `%s` is not handled by %s", annotation, PROCESSOR_NAME),
+                                annotation);
+                }
+                processedElements.add(element);
+            }
+        }
+        // Write the result file
+        if (roundEnv.processingOver() && !reachableTypes.isEmpty()) {
+            writeReachabilityMetadata();
+        }
+        // Do not claim the annotations to allow other annotation processors to run
+        return false;
+    }
+
+    private void processInject(Element element) {
+        if (element instanceof ExecutableElement executableElement) {
+            var parent = safeCast(executableElement.getEnclosingElement(), TypeElement.class);
+            addMethod(parent, executableElement);
+        } else if (element instanceof VariableElement variableElement) {
+            var parent = safeCast(variableElement.getEnclosingElement(), TypeElement.class);
+            addField(parent, variableElement);
+        }
+    }
+
+    private void processPlugin(Element element) {
+        TypeElement typeElement = safeCast(element, TypeElement.class);
+        for (Element child : typeElement.getEnclosedElements()) {
+            if (child instanceof ExecutableElement executableChild) {
+                if (executableChild.getModifiers().contains(Modifier.PUBLIC)) {
+                    switch (executableChild.getSimpleName().toString()) {
+                        // 1. All public constructors.
+                        case "<init>":
+                            addMethod(typeElement, executableChild);
+                            break;
+                        // 2. Static `newInstance` method used in, e.g. `PatternConverter` classes.
+                        case "newInstance":
+                            if (executableChild.getModifiers().contains(Modifier.STATIC)) {
+                                addMethod(typeElement, executableChild);
+                            }
+                            break;
+                        // 3. Other factory methods are annotated, so we don't deal with them here.
+                        default:
+                    }
+                }
+            }
+        }
+    }
+
+    private void processMetaAnnotationStrategy(Element element, TypeElement annotation) {
+        // Add the metadata for the public constructors
+        processPlugin(annotationUtil.getAnnotationClassValue(element, annotation));
+    }
+
+    private void processQualifier(Element element) {
+        if (element.getKind() == ElementKind.FIELD) {
+            addField(
+                    safeCast(element.getEnclosingElement(), TypeElement.class),
+                    safeCast(element, VariableElement.class));
+        }
+    }
+
+    private void processFactory(Element element) {
+        addMethod(
+                safeCast(element.getEnclosingElement(), TypeElement.class), safeCast(element, ExecutableElement.class));
+    }
+
+    private void writeReachabilityMetadata() {
+        // Compute the reachability metadata
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        try {
+            ReachabilityMetadata.writeReflectConfig(reachableTypes.values(), arrayOutputStream);
+        } catch (IOException e) {
+            String message = String.format(
+                    "%s: an error occurred while generating reachability metadata: %s", PROCESSOR_NAME, e.getMessage());
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
+            return;
+        }
+        byte[] data = arrayOutputStream.toByteArray();
+
+        Map<String, String> options = processingEnv.getOptions();
+        String reachabilityMetadataPath = getReachabilityMetadataPath(
+                options.get(GROUP_ID), options.get(ARTIFACT_ID), Integer.toHexString(Arrays.hashCode(data)));
+        Messager messager = processingEnv.getMessager();
+        messager.printMessage(
+                Diagnostic.Kind.NOTE,
+                String.format(
+                        "%s: writing GraalVM metadata for %d Java classes to `%s`.",
+                        PROCESSOR_NAME, reachableTypes.size(), reachabilityMetadataPath));
+        try (OutputStream output = processingEnv
+                .getFiler()
+                .createResource(
+                        StandardLocation.CLASS_OUTPUT,
+                        Strings.EMPTY,
+                        reachabilityMetadataPath,
+                        processedElements.toArray(Element[]::new))
+                .openOutputStream()) {
+            output.write(data);
+        } catch (IOException e) {
+            String message = String.format(
+                    "%s: unable to write reachability metadata to file `%s`", PROCESSOR_NAME, reachabilityMetadataPath);
+            messager.printMessage(Diagnostic.Kind.ERROR, message);
+            throw new IllegalArgumentException(message, e);
+        }
+    }
+
+    /**
+     * Returns the path to the reachability metadata file.
+     * <p>
+     *     If the groupId or artifactId is not specified, a warning is printed and a fallback folder name is used.
+     *     The fallback folder name should be reproducible, but unique enough to avoid conflicts.
+     * </p>
+     *
+     * @param groupId The group ID of the plugin.
+     * @param artifactId The artifact ID of the plugin.
+     * @param fallbackFolderName The fallback folder name to use if groupId or artifactId is not specified.
+     */
+    String getReachabilityMetadataPath(
+            @Nullable String groupId, @Nullable String artifactId, String fallbackFolderName) {
+        if (groupId == null || artifactId == null) {
+            String message = String.format(
+                    "The `%1$s` annotation processor is missing the recommended `%2$s` and `%3$s` options.%n"
+                            + "To follow the GraalVM recommendations, please add the following options to your build tool:%n"
+                            + "  -A%2$s=<groupId>%n"
+                            + "  -A%3$s=<artifactId>%n",
+                    PROCESSOR_NAME, GROUP_ID, ARTIFACT_ID);
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, message);
+            return LOCATION_PREFIX + fallbackFolderName + LOCATION_SUFFIX;
+        }
+        return LOCATION_PREFIX + groupId + '/' + artifactId + LOCATION_SUFFIX;
+    }
+
+    private void addField(TypeElement parent, VariableElement element) {
+        ReachabilityMetadata.Type reachableType =
+                reachableTypes.computeIfAbsent(toString(parent), ReachabilityMetadata.Type::new);
+        reachableType.addField(
+                new ReachabilityMetadata.Field(element.getSimpleName().toString()));
+    }
+
+    private void addMethod(TypeElement parent, ExecutableElement element) {
+        ReachabilityMetadata.Type reachableType =
+                reachableTypes.computeIfAbsent(toString(parent), ReachabilityMetadata.Type::new);
+        ReachabilityMetadata.Method method =
+                new ReachabilityMetadata.Method(element.getSimpleName().toString());
+        element.getParameters().stream().map(v -> toString(v.asType())).forEach(method::addParameterType);
+        reachableType.addMethod(method);
+    }
+
+    private <T extends Element> T safeCast(Element element, Class<T> type) {
+        if (type.isInstance(element)) {
+            return type.cast(element);
+        }
+        // This should never happen, unless annotations start appearing on unexpected elements.
+        String msg = String.format(
+                "Unexpected type of element `%s`: expecting `%s` but found `%s`",
+                element, type.getName(), element.getClass().getName());
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, msg, element);
+        throw new IllegalStateException(msg);
+    }
+
+    /**
+     * Returns the fully qualified name of a type.
+     *
+     * @param type A Java type.
+     */
+    private String toString(TypeMirror type) {
+        return type.accept(
+                new SimpleTypeVisitor8<String, @Nullable Void>() {
+                    @Override
+                    protected String defaultAction(final TypeMirror e, @Nullable Void unused) {
+                        return e.toString();
+                    }
+
+                    @Override
+                    public String visitArray(final ArrayType t, @Nullable Void unused) {
+                        return visit(t.getComponentType(), unused) + "[]";
+                    }
+
+                    @Override
+                    public @Nullable String visitDeclared(final DeclaredType t, final Void unused) {
+                        return safeCast(t.asElement(), TypeElement.class)
+                                .getQualifiedName()
+                                .toString();
+                    }
+                },
+                null);
+    }
+
+    /**
+     * Returns the fully qualified name of the element corresponding to a {@link DeclaredType}.
+     *
+     * @param element A Java language element.
+     */
+    private String toString(Element element) {
+        return element.accept(
+                new SimpleElementVisitor8<String, @Nullable Void>() {
+                    @Override
+                    public String visitPackage(PackageElement e, @Nullable Void unused) {
+                        return e.getQualifiedName().toString();
+                    }
+
+                    @Override
+                    public String visitType(TypeElement e, @Nullable Void unused) {
+                        Element parent = e.getEnclosingElement();
+                        String separator = parent.getKind() == ElementKind.PACKAGE ? "." : "$";
+                        return visit(parent, unused)
+                                + separator
+                                + e.getSimpleName().toString();
+                    }
+
+                    @Override
+                    protected String defaultAction(Element e, @Nullable Void unused) {
+                        return "";
+                    }
+                },
+                null);
+    }
+}

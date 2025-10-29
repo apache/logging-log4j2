@@ -25,26 +25,24 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.SimpleElementVisitor8;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -52,10 +50,10 @@ import javax.tools.StandardLocation;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.model.PluginEntry;
+import org.apache.logging.log4j.plugins.model.PluginIndex;
 import org.apache.logging.log4j.util.Strings;
 import org.jspecify.annotations.NullMarked;
 
@@ -74,7 +72,7 @@ import org.jspecify.annotations.NullMarked;
  * </p>
  */
 @NullMarked
-@SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
+@SupportedAnnotationTypes("org.apache.logging.log4j.plugins.Plugin")
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 public class PluginProcessor extends AbstractProcessor {
 
@@ -98,7 +96,9 @@ public class PluginProcessor extends AbstractProcessor {
             "META-INF/services/org.apache.logging.log4j.plugins.model.PluginService";
 
     private boolean enableBndAnnotations;
-    private String packageName = "";
+    private CharSequence packageName = "";
+    private final PluginIndex pluginIndex = new PluginIndex();
+    private final Set<TypeElement> processedElements = new HashSet<>();
 
     public PluginProcessor() {}
 
@@ -113,88 +113,123 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        handleOptions();
+    }
+
+    @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        handleOptions(processingEnv.getOptions());
-        final Messager messager = processingEnv.getMessager();
-        messager.printMessage(Kind.NOTE, "Processing Log4j annotations");
-        try {
-            final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
-            if (elements.isEmpty()) {
-                messager.printMessage(Kind.NOTE, "No elements to process");
-                return true;
-            }
-            messager.printMessage(Kind.NOTE, "Retrieved " + elements.size() + " Plugin elements");
-            final List<PluginEntry> list = new ArrayList<>();
-            packageName = collectPlugins(packageName, elements, list);
-            messager.printMessage(Kind.NOTE, "Writing plugin metadata using base package " + packageName);
-            Collections.sort(list);
-            writeClassFile(packageName, list);
-            writeServiceFile(packageName);
-            messager.printMessage(Kind.NOTE, "Annotations processed");
-        } catch (final Exception ex) {
-            var writer = new StringWriter();
-            ex.printStackTrace(new PrintWriter(writer));
-            error(writer.toString());
+        // Process the elements for this round
+        if (!annotations.isEmpty()) {
+            processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(Plugin.class)));
         }
+        // Write the generated code
+        if (roundEnv.processingOver() && !pluginIndex.isEmpty()) {
+            try {
+                final Messager messager = processingEnv.getMessager();
+                messager.printMessage(Kind.NOTE, "Writing Log4j plugin metadata using base package " + packageName);
+                writeClassFile();
+                writeServiceFile();
+                messager.printMessage(Kind.NOTE, "Log4j annotations processed");
+            } catch (final Exception e) {
+                handleUnexpectedError(e);
+            }
+        }
+        // Do not claim the annotations to allow other annotation processors to run
         return false;
     }
 
-    private void error(final CharSequence message) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, message);
-    }
-
-    private String collectPlugins(
-            String packageName, final Iterable<? extends Element> elements, final List<PluginEntry> list) {
-        final boolean calculatePackage = packageName.isEmpty();
-        final var pluginVisitor = new PluginElementVisitor();
-        final var pluginAliasesVisitor = new PluginAliasesElementVisitor();
-        for (final Element element : elements) {
-            // The elements must be annotated with `Plugin`
-            Plugin plugin = element.getAnnotation(Plugin.class);
-            final var entry = element.accept(pluginVisitor, plugin);
-            list.add(entry);
-            if (calculatePackage) {
-                packageName = calculatePackage(element, packageName);
+    private void processPluginAnnotatedClasses(Set<TypeElement> pluginClasses) {
+        final boolean calculatePackageName = packageName.isEmpty();
+        final Elements elements = processingEnv.getElementUtils();
+        final Messager messager = processingEnv.getMessager();
+        for (var pluginClass : pluginClasses) {
+            final String name = getPluginName(pluginClass);
+            final String namespace = getNamespace(pluginClass);
+            final String className = elements.getBinaryName(pluginClass).toString();
+            var builder =
+                    PluginEntry.builder().setName(name).setNamespace(namespace).setClassName(className);
+            processConfigurableAnnotation(pluginClass, builder);
+            var entry = builder.get();
+            messager.printMessage(Kind.NOTE, "Parsed Log4j plugin " + entry, pluginClass);
+            if (!pluginIndex.add(entry)) {
+                messager.printMessage(Kind.WARNING, "Duplicate Log4j plugin parsed " + entry, pluginClass);
             }
-            list.addAll(element.accept(pluginAliasesVisitor, plugin));
+            pluginIndex.addAll(createPluginAliases(pluginClass, builder));
+            if (calculatePackageName) {
+                packageName = calculatePackageName(elements, pluginClass, packageName);
+            }
+            processedElements.add(pluginClass);
         }
-        return packageName;
     }
 
-    private String calculatePackage(Element element, String packageName) {
-        final Name name = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName();
-        if (name.isEmpty()) {
-            return "";
+    private static void processConfigurableAnnotation(TypeElement pluginClass, PluginEntry.Builder builder) {
+        var configurable = pluginClass.getAnnotation(Configurable.class);
+        if (configurable != null) {
+            var elementType = configurable.elementType();
+            builder.setElementType(elementType.isEmpty() ? builder.getName() : elementType)
+                    .setDeferChildren(configurable.deferChildren())
+                    .setPrintable(configurable.printObject());
         }
-        final String pkgName = name.toString();
-        if (packageName.isEmpty()) {
-            return pkgName;
-        }
-        if (pkgName.length() == packageName.length()) {
+    }
+
+    private static List<PluginEntry> createPluginAliases(TypeElement pluginClass, PluginEntry.Builder builder) {
+        return Optional.ofNullable(pluginClass.getAnnotation(PluginAliases.class)).map(PluginAliases::value).stream()
+                .flatMap(Arrays::stream)
+                .map(alias -> alias.toLowerCase(Locale.ROOT))
+                .map(key -> builder.setKey(key).get())
+                .toList();
+    }
+
+    private void handleUnexpectedError(final Exception e) {
+        var writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        processingEnv
+                .getMessager()
+                .printMessage(Kind.ERROR, "Unexpected error processing Log4j annotations: " + writer);
+    }
+
+    private static CharSequence calculatePackageName(
+            Elements elements, TypeElement typeElement, CharSequence packageName) {
+        var qualifiedName = elements.getPackageOf(typeElement).getQualifiedName();
+        if (qualifiedName.isEmpty()) {
             return packageName;
         }
-        if (pkgName.length() < packageName.length() && packageName.startsWith(pkgName)) {
-            return pkgName;
+        if (packageName.isEmpty()) {
+            return qualifiedName;
         }
-
-        return commonPrefix(pkgName, packageName);
+        int packageLength = packageName.length();
+        int qualifiedLength = qualifiedName.length();
+        if (packageLength == qualifiedLength) {
+            return packageName;
+        }
+        if (qualifiedLength < packageLength
+                && qualifiedName.contentEquals(packageName.subSequence(0, qualifiedLength))) {
+            return qualifiedName;
+        }
+        return commonPrefix(qualifiedName, packageName);
     }
 
-    private void writeServiceFile(final String pkgName) throws IOException {
+    private void writeServiceFile() throws IOException {
         final FileObject fileObject = processingEnv
                 .getFiler()
-                .createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY, SERVICE_FILE_NAME);
+                .createResource(
+                        StandardLocation.CLASS_OUTPUT,
+                        Strings.EMPTY,
+                        SERVICE_FILE_NAME,
+                        processedElements.toArray(TypeElement[]::new));
         try (final PrintWriter writer =
                 new PrintWriter(new BufferedWriter(new OutputStreamWriter(fileObject.openOutputStream(), UTF_8)))) {
             writer.println("# Generated by " + PluginProcessor.class.getName());
-            writer.println(createFqcn(pkgName));
+            writer.println(createFqcn(packageName));
         }
     }
 
-    private void writeClassFile(final String pkg, final List<PluginEntry> list) {
-        final String fqcn = createFqcn(pkg);
+    private void writeClassFile() {
+        final String fqcn = createFqcn(packageName);
         try (final PrintWriter writer = createSourceFile(fqcn)) {
-            writer.println("package " + pkg + ".plugins;");
+            writer.println("package " + packageName + ".plugins;");
             writer.println("");
             if (enableBndAnnotations) {
                 writer.println("import aQute.bnd.annotation.Resolution;");
@@ -209,9 +244,9 @@ public class PluginProcessor extends AbstractProcessor {
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
             writer.println("  private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
-            final int max = list.size() - 1;
-            for (int i = 0; i < list.size(); ++i) {
-                final PluginEntry entry = list.get(i);
+            final int max = pluginIndex.size() - 1;
+            int current = 0;
+            for (final PluginEntry entry : pluginIndex) {
                 writer.println("    PluginEntry.builder()");
                 writer.println(String.format("      .setKey(\"%s\")", entry.key()));
                 writer.println(String.format("      .setClassName(\"%s\")", entry.className()));
@@ -227,7 +262,8 @@ public class PluginProcessor extends AbstractProcessor {
                 if (entry.deferChildren()) {
                     writer.println("      .setDeferChildren(true)");
                 }
-                writer.println("      .get()" + (i < max ? "," : Strings.EMPTY));
+                writer.println("      .get()" + (current < max ? "," : Strings.EMPTY));
+                current++;
             }
             writer.println("    };");
             writer.println("    @Override");
@@ -238,15 +274,23 @@ public class PluginProcessor extends AbstractProcessor {
 
     private PrintWriter createSourceFile(final String fqcn) {
         try {
-            final JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(fqcn);
+            final JavaFileObject sourceFile =
+                    processingEnv.getFiler().createSourceFile(fqcn, processedElements.toArray(TypeElement[]::new));
             return new PrintWriter(sourceFile.openWriter());
         } catch (IOException e) {
             throw new LoggingException("Unable to create Plugin Service Class " + fqcn, e);
         }
     }
 
-    private String createFqcn(String packageName) {
+    private String createFqcn(CharSequence packageName) {
         return packageName + ".plugins.Log4jPlugins";
+    }
+
+    private static String getPluginName(TypeElement pluginClass) {
+        return Optional.ofNullable(pluginClass.getAnnotation(Plugin.class))
+                .map(Plugin::value)
+                .filter(s -> !s.isEmpty())
+                .orElseGet(() -> pluginClass.getSimpleName().toString());
     }
 
     private static String getNamespace(final TypeElement e) {
@@ -267,52 +311,18 @@ public class PluginProcessor extends AbstractProcessor {
                         .orElse(Plugin.EMPTY));
     }
 
-    private static PluginEntry configureNamespace(final TypeElement e, final PluginEntry.Builder builder) {
-        final Configurable configurable = e.getAnnotation(Configurable.class);
-        if (configurable != null) {
-            builder.setNamespace(Node.CORE_NAMESPACE)
-                    .setElementType(
-                            configurable.elementType().isEmpty() ? builder.getName() : configurable.elementType())
-                    .setDeferChildren(configurable.deferChildren())
-                    .setPrintable(configurable.printObject());
-        } else {
-            builder.setNamespace(getNamespace(e));
-        }
-        return builder.get();
-    }
-
-    /**
-     * ElementVisitor to scan the Plugin annotation.
-     */
-    private final class PluginElementVisitor extends SimpleElementVisitor8<PluginEntry, Plugin> {
-        @Override
-        public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
-            Objects.requireNonNull(plugin, "Plugin annotation is null.");
-            String name = plugin.value();
-            if (name.isEmpty()) {
-                name = e.getSimpleName().toString();
-            }
-            final PluginEntry.Builder builder = PluginEntry.builder()
-                    .setKey(name.toLowerCase(Locale.ROOT))
-                    .setName(name)
-                    .setClassName(
-                            processingEnv.getElementUtils().getBinaryName(e).toString());
-            return configureNamespace(e, builder);
-        }
-    }
-
-    private String commonPrefix(final String str1, final String str2) {
+    private static CharSequence commonPrefix(final CharSequence str1, final CharSequence str2) {
         final int minLength = Math.min(str1.length(), str2.length());
         for (int i = 0; i < minLength; i++) {
             if (str1.charAt(i) != str2.charAt(i)) {
                 if (i > 1 && str1.charAt(i - 1) == '.') {
-                    return str1.substring(0, i - 1);
+                    return str1.subSequence(0, i - 1);
                 } else {
-                    return str1.substring(0, i);
+                    return str1.subSequence(0, i);
                 }
             }
         }
-        return str1.substring(0, minLength);
+        return str1.subSequence(0, minLength);
     }
 
     private boolean isServiceConsumerClassPresent() {
@@ -320,47 +330,14 @@ public class PluginProcessor extends AbstractProcessor {
         return processingEnv.getElementUtils().getTypeElement("aQute.bnd.annotation.spi.ServiceConsumer") != null;
     }
 
-    private void handleOptions(Map<String, String> options) {
+    private void handleOptions() {
+        var options = processingEnv.getOptions();
         packageName = options.getOrDefault(PLUGIN_PACKAGE, "");
         String enableBndAnnotationsOption = options.get(ENABLE_BND_ANNOTATIONS);
         if (enableBndAnnotationsOption != null) {
             this.enableBndAnnotations = !"false".equals(enableBndAnnotationsOption);
         } else {
             this.enableBndAnnotations = isServiceConsumerClassPresent();
-        }
-    }
-
-    /**
-     * ElementVisitor to scan the PluginAliases annotation.
-     */
-    private final class PluginAliasesElementVisitor extends SimpleElementVisitor8<Collection<PluginEntry>, Plugin> {
-
-        private PluginAliasesElementVisitor() {
-            super(List.of());
-        }
-
-        @Override
-        public Collection<PluginEntry> visitType(final TypeElement e, final Plugin plugin) {
-            final PluginAliases aliases = e.getAnnotation(PluginAliases.class);
-            if (aliases == null) {
-                return DEFAULT_VALUE;
-            }
-            String name = plugin.value();
-            if (name.isEmpty()) {
-                name = e.getSimpleName().toString();
-            }
-            final PluginEntry.Builder builder = PluginEntry.builder()
-                    .setName(name)
-                    .setClassName(
-                            processingEnv.getElementUtils().getBinaryName(e).toString());
-            configureNamespace(e, builder);
-            final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
-            for (final String alias : aliases.value()) {
-                final PluginEntry entry =
-                        builder.setKey(alias.toLowerCase(Locale.ROOT)).get();
-                entries.add(entry);
-            }
-            return entries;
         }
     }
 }

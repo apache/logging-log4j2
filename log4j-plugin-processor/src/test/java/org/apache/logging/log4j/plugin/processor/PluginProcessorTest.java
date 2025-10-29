@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.plugin.processor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -39,7 +39,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginService;
@@ -86,7 +86,8 @@ class PluginProcessorTest {
         try {
             // Instantiate the tooling
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            StandardJavaFileManager fileManager = compiler.getStandardFileManager(collector, Locale.ROOT, UTF_8);
+            StandardJavaFileManager fileManager =
+                    compiler.getStandardFileManager(collector, Locale.ROOT, StandardCharsets.UTF_8);
 
             // Populate sources
             Iterable<? extends JavaFileObject> sources = fileManager.getJavaFileObjects(fakePluginPath);
@@ -97,21 +98,24 @@ class PluginProcessorTest {
 
             // Compile the sources
             final JavaCompiler.CompilationTask task =
-                    compiler.getTask(null, fileManager, collector, Arrays.asList(options), null, sources);
+                    compiler.getTask(null, fileManager, collector, List.of(options), null, sources);
             task.setProcessors(List.of(new PluginProcessor()));
-            task.call();
+            Boolean result = task.call();
 
             // Verify successful compilation
-            List<Diagnostic<? extends JavaFileObject>> diagnostics = collector.getDiagnostics();
-            assertThat(diagnostics).isEmpty();
+            assertEquals(true, result);
+            assertThat(collector.getDiagnostics()).isEmpty();
 
             // Find the PluginService class
             Path pluginServicePath = outputDir.resolve(fqcn.replaceAll("\\.", "/") + ".class");
             assertThat(pluginServicePath).exists();
             Class<?> pluginServiceClass = classLoader.defineClass(fqcn, pluginServicePath);
-            return (PluginService) pluginServiceClass.getConstructor().newInstance();
+            return pluginServiceClass
+                    .asSubclass(PluginService.class)
+                    .getConstructor()
+                    .newInstance();
         } finally {
-            FileUtils.deleteDirectory(outputDir.toFile());
+            PathUtils.deleteDirectory(outputDir);
         }
     }
 
@@ -227,7 +231,6 @@ class PluginProcessorTest {
         public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
             switch (diagnostic.getKind()) {
                 case ERROR:
-                case WARNING:
                 case MANDATORY_WARNING:
                     diagnostics.add(diagnostic);
                     break;

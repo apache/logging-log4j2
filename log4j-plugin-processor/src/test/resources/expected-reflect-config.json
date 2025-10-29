@@ -1,0 +1,15 @@
+[
+{"name": "example.AbstractPluginWithGenericBuilder$Builder", "methods": [], "fields": [{"name": "thing"}]}, 
+{"name": "example.ConfigurablePlugin", "methods": [{"name": "<init>", "parameterTypes": ["example.ValidatingPlugin", "example.ValidatingPluginWithGenericBuilder", "example.ValidatingPluginWithTypedBuilder", "example.PluginWithGenericSubclassFoo1Builder"]}], "fields": []}, 
+{"name": "example.ConfigurableRecord", "methods": [{"name": "<init>", "parameterTypes": ["example.ValidatingPlugin", "example.ValidatingPluginWithGenericBuilder", "example.ValidatingPluginWithTypedBuilder", "example.PluginWithGenericSubclassFoo1Builder"]}], "fields": [{"name": "alpha"}, {"name": "beta"}, {"name": "delta"}, {"name": "gamma"}]}, 
+{"name": "example.FakePlugin", "methods": [{"name": "<init>", "parameterTypes": []}], "fields": []}, 
+{"name": "example.FakePlugin$Nested", "methods": [{"name": "<init>", "parameterTypes": []}], "fields": []}, 
+{"name": "example.PluginWithGenericSubclassFoo1Builder", "methods": [{"name": "<init>", "parameterTypes": ["java.lang.String", "java.lang.String"]}, {"name": "newBuilder", "parameterTypes": []}], "fields": []}, 
+{"name": "example.PluginWithGenericSubclassFoo1Builder$Builder", "methods": [], "fields": [{"name": "foo1"}]}, 
+{"name": "example.ValidatingPlugin", "methods": [{"name": "<init>", "parameterTypes": ["java.lang.String"]}, {"name": "newBuilder", "parameterTypes": []}], "fields": []}, 
+{"name": "example.ValidatingPlugin$Builder", "methods": [], "fields": [{"name": "name"}]}, 
+{"name": "example.ValidatingPluginWithGenericBuilder", "methods": [{"name": "<init>", "parameterTypes": ["java.lang.String"]}, {"name": "newBuilder", "parameterTypes": []}], "fields": []}, 
+{"name": "example.ValidatingPluginWithGenericBuilder$Builder", "methods": [], "fields": [{"name": "name"}]}, 
+{"name": "example.ValidatingPluginWithTypedBuilder", "methods": [{"name": "<init>", "parameterTypes": ["java.lang.String"]}, {"name": "newBuilder", "parameterTypes": []}], "fields": []}, 
+{"name": "example.ValidatingPluginWithTypedBuilder$Builder", "methods": [], "fields": [{"name": "name"}]}
+]
