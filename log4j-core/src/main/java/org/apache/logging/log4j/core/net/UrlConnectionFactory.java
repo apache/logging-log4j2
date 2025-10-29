@@ -28,6 +28,7 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -120,10 +121,13 @@ public class UrlConnectionFactory {
                 httpURLConnection.setIfModifiedSince(lastModifiedMillis);
             }
             if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
-                ((HttpsURLConnection) httpURLConnection)
-                        .setSSLSocketFactory(sslConfiguration.getSslContext().getSocketFactory());
+                final SSLContext sslContext = sslConfiguration.getSslContext();
+                final HttpsURLConnection httpsURLConnection = (HttpsURLConnection) httpURLConnection;
+                if (sslContext != null) {
+                    httpsURLConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+                }
                 if (!sslConfiguration.isVerifyHostName()) {
-                    ((HttpsURLConnection) httpURLConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+                    httpsURLConnection.setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
                 }
             }
             urlConnection = httpURLConnection;

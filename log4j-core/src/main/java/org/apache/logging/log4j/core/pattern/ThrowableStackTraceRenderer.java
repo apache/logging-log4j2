@@ -98,7 +98,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
             renderThrowableMessage(buffer, throwable);
             buffer.append(lineSeparator);
-            renderStackTraceElements(buffer, throwable, context, metadata, prefix, lineSeparator);
+            renderStackTraceElements(buffer, context, metadata, prefix, lineSeparator);
             renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
             renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
         }
@@ -148,13 +148,12 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
 
     final void renderStackTraceElements(
             final StringBuilder buffer,
-            final Throwable throwable,
             final C context,
             final Context.Metadata metadata,
             final String prefix,
             final String lineSeparator) {
         context.ignoredStackTraceElementCount = 0;
-        final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+        final StackTraceElement[] stackTraceElements = metadata.stackTrace;
         for (int i = 0; i < metadata.stackLength; i++) {
             renderStackTraceElement(buffer, stackTraceElements[i], context, prefix, lineSeparator);
         }
@@ -269,6 +268,15 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final int stackLength;
 
             /**
+             * The stack trace of this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getStackTrace()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3940">#3940</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3955">#3955</a>
+             */
+            final StackTraceElement[] stackTrace;
+
+            /**
              * The suppressed exceptions attached to this {@link Throwable}.
              * This needs to be captured separately since {@link Throwable#getSuppressed()} can change.
              *
@@ -277,9 +285,14 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
              */
             final Throwable[] suppressed;
 
-            private Metadata(final int commonElementCount, final int stackLength, final Throwable[] suppressed) {
+            private Metadata(
+                    final int commonElementCount,
+                    final int stackLength,
+                    final StackTraceElement[] stackTrace,
+                    final Throwable[] suppressed) {
                 this.commonElementCount = commonElementCount;
                 this.stackLength = stackLength;
+                this.stackTrace = stackTrace;
                 this.suppressed = suppressed;
             }
 
@@ -339,7 +352,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                     commonElementCount = 0;
                     stackLength = currentTrace.length;
                 }
-                return new Metadata(commonElementCount, stackLength, suppressed);
+                return new Metadata(commonElementCount, stackLength, currentTrace, suppressed);
             }
         }
     }
