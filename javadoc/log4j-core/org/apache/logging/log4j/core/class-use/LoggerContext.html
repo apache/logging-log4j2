@@ -599,25 +599,32 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Returns the Configuration obtained using a given ClassLoader.</div>
 </div>
-<div class="col-first even-row-color"><code>abstract <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../config/ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getConfiguration</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+<div class="col-first even-row-color"><code><a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../config/ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,java.lang.String,java.util.List)" class="member-name-link">getConfiguration</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&gt;&nbsp;configLocations)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config"><code>Configuration</code></a> created using provided configuration location <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a>s.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../config/ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getConfiguration</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
  <a href="../config/ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerContextAware.</span><code><a href="../config/LoggerContextAware.html#setLoggerContext(org.apache.logging.log4j.core.LoggerContext)" class="member-name-link">setLoggerContext</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerContextAware.</span><code><a href="../config/LoggerContextAware.html#setLoggerContext(org.apache.logging.log4j.core.LoggerContext)" class="member-name-link">setLoggerContext</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Injects the current LoggerContext into this object.</div>
 </div>
-<div class="col-first even-row-color"><code>static void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">Configurator.</span><code><a href="../config/Configurator.html#shutdown(org.apache.logging.log4j.core.LoggerContext)" class="member-name-link">shutdown</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx)</code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>static void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Configurator.</span><code><a href="../config/Configurator.html#shutdown(org.apache.logging.log4j.core.LoggerContext)" class="member-name-link">shutdown</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Shuts down the given logger context.</div>
 </div>
-<div class="col-first odd-row-color"><code>static boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Configurator.</span><code><a href="../config/Configurator.html#shutdown(org.apache.logging.log4j.core.LoggerContext,long,java.util.concurrent.TimeUnit)" class="member-name-link">shutdown</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
+<div class="col-first even-row-color"><code>static boolean</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Configurator.</span><code><a href="../config/Configurator.html#shutdown(org.apache.logging.log4j.core.LoggerContext,long,java.util.concurrent.TimeUnit)" class="member-name-link">shutdown</a><wbr>(<a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;ctx,
  long&nbsp;timeout,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;timeUnit)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Shuts down the given logger context.</div>
 </div>
 </div>

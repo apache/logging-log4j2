@@ -1093,13 +1093,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Returns the Configuration obtained using a given ClassLoader.</div>
 </div>
-<div class="col-first even-row-color"><code>abstract <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getConfiguration</a><wbr>(<a href="../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+<div class="col-first even-row-color"><code><a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,java.lang.String,java.util.List)" class="member-name-link">getConfiguration</a><wbr>(<a href="../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&gt;&nbsp;configLocations)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config"><code>Configuration</code></a> created using provided configuration location <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a>s.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationFactory.</span><code><a href="../ConfigurationFactory.html#getConfiguration(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getConfiguration</a><wbr>(<a href="../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
  <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Reconfigurable.</span><code><a href="../Reconfigurable.html#reconfigure()" class="member-name-link">reconfigure</a>()</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Reconfigurable.</span><code><a href="../Reconfigurable.html#reconfigure()" class="member-name-link">reconfigure</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config</a> with parameters of type <a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a></span></div>
 <div class="summary-table three-column-summary">
