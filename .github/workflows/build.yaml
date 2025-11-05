@@ -23,23 +23,25 @@ on:
       - "2.x"
       - "release/2*"
   pull_request:
+  workflow_dispatch:
 
 permissions: read-all
 
 jobs:
 
   build:
-    if: github.actor != 'dependabot[bot]'
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/12.1.1
-    secrets:
-      DV_ACCESS_TOKEN: ${{ startsWith(github.ref_name, 'release/') && '' || secrets.DEVELOCITY_ACCESS_KEY }}
-    with:
-      java-version: |
-        8
-        17
-      site-enabled: true
-      reproducibility-check-enabled: false
-      develocity-enabled: ${{ ! startsWith(github.ref_name, 'release/') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Just print some data
+        env:
+          ACTOR: ${{ github.actor }}
+          SENDER: ${{ toJSON(github.event.sender) }}
+          PR_USER: ${{ toJSON(github.event.pull_request.user) }}
+        run: |
+          echo "Actor: $ACTOR"
+          echo "Sender: $SENDER"
+          echo "User: $PR_USER"
 
   deploy-snapshot:
     needs: build
