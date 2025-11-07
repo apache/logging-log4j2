@@ -1455,24 +1455,15 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 [#third-party]
 == Third-party filters
 
-[IMPORTANT]
+[WARNING]
 ====
-These filters are provided by **third-party** vendors and are not maintained by the
-link:{logging-services-url}[Apache Logging Services]
-(Log4j, Log4cxx, Log4net) project.
+These filters are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] project.
 ====
 
-=== Routing filter
+=== Routing filter (`more-log4j2`)
 
-[cols="1h,4"]
-|===
-| Purpose | Routing messages to different filter chains
-| Dependency | {more-log4j2-url}[more-log4j2]
-| Use Cases | Marker or level based log throttling
-|===
-
-Sometimes xref:#CompositeFilter[composing filters sequentially] is not enough. Using a `RoutingFilter`, different filter chains can be
-applied to log messages depending on their attributes.
+`RoutingFilter` by https://github.com/mlangc/more-log4j2[more-log4j2] helps to compose filters by defining routes selected using log event attributes.
+For instance, it can be used to implement log throttling based on log event markers or levels.
 
 [#extending]
 == Extending
