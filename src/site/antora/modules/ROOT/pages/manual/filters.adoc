@@ -1452,6 +1452,28 @@ include::example$manual/filters/ScriptFilter.properties[tag=global]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
 
+[#third-party]
+== Third-party filters
+
+[IMPORTANT]
+====
+These filters are provided by **third-party** vendors and are not maintained by the
+link:{logging-services-url}[Apache Logging Services]
+(Log4j, Log4cxx, Log4net) project.
+====
+
+=== Routing filter
+
+[cols="1h,4"]
+|===
+| Purpose | Routing messages to different filter chains
+| Dependency | {more-log4j2-url}[more-log4j2]
+| Use Cases | Marker or level based log throttling
+|===
+
+Sometimes xref:#CompositeFilter[composing filters sequentially] is not enough. Using a `RoutingFilter`, different filter chains can be
+applied to log messages depending on their attributes.
+
 [#extending]
 == Extending
 
