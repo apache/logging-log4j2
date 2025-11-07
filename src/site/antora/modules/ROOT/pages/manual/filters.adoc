@@ -1460,6 +1460,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 These filters are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] project.
 ====
 
+[#more-log4j2-RoutingFilter]
 === Routing filter (`more-log4j2`)
 
 `RoutingFilter` by https://github.com/mlangc/more-log4j2[more-log4j2] helps to compose filters by defining routes selected using log event attributes.
