@@ -1452,6 +1452,20 @@ include::example$manual/filters/ScriptFilter.properties[tag=global]
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
 
+[#third-party]
+== Third-party filters
+
+[WARNING]
+====
+These filters are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] project.
+====
+
+[#more-log4j2-RoutingFilter]
+=== Routing filter (`more-log4j2`)
+
+`RoutingFilter` by https://github.com/mlangc/more-log4j2[more-log4j2] helps to compose filters by defining routes selected using log event attributes.
+For instance, it can be used to implement log throttling based on log event markers or levels.
+
 [#extending]
 == Extending
 
