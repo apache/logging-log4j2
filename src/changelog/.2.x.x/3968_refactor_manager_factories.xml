@@ -7,6 +7,6 @@
        type="changed">
     <issue id="3968" link="https://github.com/apache/logging-log4j2/pull/3968"/>
     <description format="asciidoc">
-        Simplify file manager registry factory methods by removing unnecessary boilerplate code.
+        Simplify file manager registry factory methods
     </description>
 </entry>
