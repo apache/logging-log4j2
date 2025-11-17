@@ -22,7 +22,6 @@ import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Colum
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
@@ -74,6 +73,7 @@ import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * <p>

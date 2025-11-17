@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import static org.apache.logging.log4j.util.Chars.LF;
 import static org.apache.logging.log4j.util.Chars.NUL;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,6 +56,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**

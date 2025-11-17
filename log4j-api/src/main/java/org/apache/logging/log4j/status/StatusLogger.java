@@ -18,8 +18,6 @@ package org.apache.logging.log4j.status;
 
 import static java.util.Objects.requireNonNull;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -46,6 +44,8 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Records events that occur in the logging system.

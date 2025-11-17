@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -47,6 +46,7 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Manager for sending SMTP events.

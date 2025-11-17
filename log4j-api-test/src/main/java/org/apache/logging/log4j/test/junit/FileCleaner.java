@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class FileCleaner extends AbstractFileCleaner {

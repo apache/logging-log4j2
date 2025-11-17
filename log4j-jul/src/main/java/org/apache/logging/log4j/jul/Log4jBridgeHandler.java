@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jul;
 
 // note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
@@ -30,6 +29,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Bridge from JUL to log4j2.<br>

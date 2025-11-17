@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.simple;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +29,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * This is the default logger that is used when no suitable logging implementation is available.

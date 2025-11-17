@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -41,6 +40,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Represents the source for the logging configuration.

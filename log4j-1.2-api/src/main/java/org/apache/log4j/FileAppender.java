@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +26,7 @@ import java.io.Writer;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * FileAppender appends log events to a file.

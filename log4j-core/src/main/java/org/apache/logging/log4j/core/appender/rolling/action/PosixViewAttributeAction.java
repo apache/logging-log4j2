@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -40,6 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * File POSIX attribute view action.

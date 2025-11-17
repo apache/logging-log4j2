@@ -21,7 +21,6 @@ import static org.apache.logging.log4j.spi.Provider.PROVIDER_PROPERTY_NAME;
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * A map-based lookup for main arguments.

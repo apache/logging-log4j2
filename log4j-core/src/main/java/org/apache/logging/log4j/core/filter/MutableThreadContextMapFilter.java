@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.filter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -52,6 +51,7 @@ import org.apache.logging.log4j.core.util.internal.Status;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).

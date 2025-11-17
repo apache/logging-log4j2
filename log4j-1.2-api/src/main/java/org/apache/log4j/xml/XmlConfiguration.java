@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.xml;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
@@ -50,6 +49,7 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

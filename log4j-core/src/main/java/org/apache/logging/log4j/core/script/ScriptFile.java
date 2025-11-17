@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Container for the language and body of a script file along with the file location.

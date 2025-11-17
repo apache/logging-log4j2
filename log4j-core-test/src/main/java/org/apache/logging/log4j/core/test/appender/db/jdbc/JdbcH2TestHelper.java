@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.test.appender.db.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 @SuppressFBWarnings("HARD_CODE_PASSWORD")
 public class JdbcH2TestHelper {

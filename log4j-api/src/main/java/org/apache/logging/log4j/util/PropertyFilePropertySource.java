@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;

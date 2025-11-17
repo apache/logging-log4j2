@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.net.mock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 public class MockTcpSyslogServer extends MockSyslogServer {
     private final ServerSocket serverSocket;

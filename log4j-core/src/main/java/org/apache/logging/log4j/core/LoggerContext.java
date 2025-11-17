@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core;
 import static org.apache.logging.log4j.core.jmx.internal.JmxUtil.isJmxDisabled;
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -61,6 +60,7 @@ import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.jspecify.annotations.Nullable;
 
 /**

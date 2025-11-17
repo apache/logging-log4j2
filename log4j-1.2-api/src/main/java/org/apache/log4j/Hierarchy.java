@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -38,6 +37,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 // WARNING This class MUST not have references to the Category or
 // WARNING RootCategory classes in its static initialization neither

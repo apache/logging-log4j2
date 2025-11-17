@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -51,6 +50,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Configures Log4j from properties.

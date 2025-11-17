@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -25,6 +24,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import org.apache.log4j.spi.ThrowableRenderer;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Default implementation of {@link ThrowableRenderer} using {@link Throwable#printStackTrace(PrintWriter)}.

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -26,6 +25,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * PasswordProvider that reads password from a file.

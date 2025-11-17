@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 

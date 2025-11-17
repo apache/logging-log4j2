@@ -19,8 +19,6 @@ package org.apache.logging.log4j.status;
 import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Chars.SPACE;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -28,6 +26,8 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Status data.

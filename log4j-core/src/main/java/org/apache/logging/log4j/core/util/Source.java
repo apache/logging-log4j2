@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import static java.util.Objects.requireNonNull;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 

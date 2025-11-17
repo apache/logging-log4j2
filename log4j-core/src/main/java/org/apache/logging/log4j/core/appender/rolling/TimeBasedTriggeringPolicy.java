@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Core;
@@ -26,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Rolls a file over based on time.

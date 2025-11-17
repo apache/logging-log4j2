@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util.internal;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Provides methods to increase the safety of object serialization/deserialization.

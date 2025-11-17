@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.layout;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +32,7 @@ import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.util.Transform;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Port of XMLLayout in Log4j 1.x. Provided for compatibility with existing Log4j 1 configurations.

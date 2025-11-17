@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
@@ -37,6 +36,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.internal.SystemUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal

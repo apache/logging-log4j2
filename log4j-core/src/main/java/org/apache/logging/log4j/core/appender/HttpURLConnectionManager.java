@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 public class HttpURLConnectionManager extends HttpManager {
 

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -58,6 +57,7 @@ import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.

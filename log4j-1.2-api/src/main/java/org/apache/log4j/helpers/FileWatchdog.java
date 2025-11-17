@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.helpers;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Checks every now and then that a certain file has not changed. If it has, then call the {@link #doOnChange} method.

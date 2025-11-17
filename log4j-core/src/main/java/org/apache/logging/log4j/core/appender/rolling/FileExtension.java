@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.util.Objects;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  *  Enumerates over supported file extensions for compression.

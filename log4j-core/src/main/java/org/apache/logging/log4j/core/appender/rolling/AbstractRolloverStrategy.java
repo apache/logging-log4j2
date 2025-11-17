@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -36,6 +35,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.NotANumber;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  *

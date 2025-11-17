@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,6 +48,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * The Rolling File Manager.

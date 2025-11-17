@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,6 +40,7 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find

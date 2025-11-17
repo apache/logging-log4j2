@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import static java.util.Objects.requireNonNull;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Helps with Throwable objects.

@@ -14,26 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.net.ssl;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+package org.apache.logging.log4j.util;
 
 /**
- * An HostnameVerifier which accepts everything.
+ * Annotation to suppress SpotBugs warnings.
  */
-public final class LaxHostnameVerifier implements HostnameVerifier {
+@InternalApi
+public @interface SuppressFBWarnings {
     /**
-     * Singleton instance.
+     * @return specific pattern names to suppress
      */
-    public static final HostnameVerifier INSTANCE = new LaxHostnameVerifier();
+    String[] value() default {};
 
-    private LaxHostnameVerifier() {}
-
-    @Override
-    @SuppressFBWarnings("WEAK_HOSTNAME_VERIFIER")
-    public boolean verify(final String s, final SSLSession sslSession) {
-        return true;
-    }
+    /**
+     * @return optional comment why it should be suppressed
+     */
+    String justification() default "";
 }
