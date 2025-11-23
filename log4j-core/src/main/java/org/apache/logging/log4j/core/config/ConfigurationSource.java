@@ -37,10 +37,10 @@ import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Represents the source for the logging configuration.

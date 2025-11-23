@@ -25,7 +25,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.HashSet;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class DirectoryCleaner extends AbstractFileCleaner {

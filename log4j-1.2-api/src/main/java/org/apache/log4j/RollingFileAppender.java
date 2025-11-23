@@ -24,7 +24,7 @@ import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * RollingFileAppender extends FileAppender to backup the log files when they reach a certain size.

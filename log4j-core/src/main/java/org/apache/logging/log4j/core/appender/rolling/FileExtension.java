@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  *  Enumerates over supported file extensions for compression.

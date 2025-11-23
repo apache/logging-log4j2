@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.internal.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation to suppress SpotBugs warnings.
+ * Annotation to suppress Spotbugs warnings.
  */
-@InternalApi
+@Retention(RetentionPolicy.CLASS)
 public @interface SuppressFBWarnings {
-    /**
-     * @return specific pattern names to suppress
-     */
+
     String[] value() default {};
 
-    /**
-     * @return optional comment why it should be suppressed
-     */
     String justification() default "";
 }

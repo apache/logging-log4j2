@@ -45,7 +45,7 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

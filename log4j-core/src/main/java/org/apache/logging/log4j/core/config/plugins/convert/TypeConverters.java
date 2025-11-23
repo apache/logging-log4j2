@@ -37,10 +37,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * Generates source code for custom or extended logger wrappers.

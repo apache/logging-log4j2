@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * Container for the language and body of a script file along with the file location.

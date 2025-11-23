@@ -31,8 +31,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Networking-related convenience methods.

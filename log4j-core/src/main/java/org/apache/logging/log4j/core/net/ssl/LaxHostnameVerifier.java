@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * An HostnameVerifier which accepts everything.

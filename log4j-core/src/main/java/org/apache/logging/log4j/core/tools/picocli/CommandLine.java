@@ -73,7 +73,7 @@ import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * <p>

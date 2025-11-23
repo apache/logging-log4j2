@@ -35,8 +35,8 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Utility methods for the GC-free logging tests.

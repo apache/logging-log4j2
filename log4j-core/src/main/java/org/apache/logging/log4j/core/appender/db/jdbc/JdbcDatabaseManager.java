@@ -51,13 +51,13 @@ import org.apache.logging.log4j.core.config.plugins.convert.DateTypeConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.

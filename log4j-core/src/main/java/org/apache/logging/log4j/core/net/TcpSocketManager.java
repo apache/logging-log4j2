@@ -36,8 +36,8 @@ import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Manager of TCP Socket connections.

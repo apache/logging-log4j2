@@ -27,9 +27,9 @@ import java.util.logging.LogRecord;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Bridge from JUL to log4j2.<br>

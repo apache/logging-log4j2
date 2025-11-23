@@ -28,9 +28,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Provides methods to increase the safety of object serialization/deserialization.

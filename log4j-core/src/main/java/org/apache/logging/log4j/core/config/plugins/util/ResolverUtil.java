@@ -38,8 +38,8 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleWiring;
 

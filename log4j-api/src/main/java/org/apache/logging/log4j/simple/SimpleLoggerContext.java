@@ -18,6 +18,7 @@ package org.apache.logging.log4j.simple;
 
 import java.io.PrintStream;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.simple.internal.SimpleProvider;
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.jspecify.annotations.Nullable;
 
 /**

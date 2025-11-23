@@ -22,7 +22,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 @SuppressFBWarnings("HARD_CODE_PASSWORD")
 public class JdbcH2TestHelper {

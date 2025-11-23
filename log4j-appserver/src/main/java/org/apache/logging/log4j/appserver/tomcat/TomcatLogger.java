@@ -24,9 +24,9 @@ import java.net.URL;
 import org.apache.juli.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Implements the Log interface from Tomcat 8.5 and greater.

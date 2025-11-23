@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.IOUtils;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 public class HttpURLConnectionManager extends HttpManager {
 

@@ -33,8 +33,8 @@ import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * File utilities.

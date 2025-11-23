@@ -48,6 +48,7 @@ import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.internal.InternalLoggerRegistry;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -60,7 +61,6 @@ import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -24,9 +24,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Utility class to facilitate serializing and deserializing objects.

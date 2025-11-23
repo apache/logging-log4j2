@@ -25,8 +25,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Dummy SMTP server for testing purposes.

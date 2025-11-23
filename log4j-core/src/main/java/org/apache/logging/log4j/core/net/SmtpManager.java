@@ -45,8 +45,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 
 /**
  * Manager for sending SMTP events.

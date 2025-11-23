@@ -41,8 +41,8 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.w3c.dom.Element;
 
 /**

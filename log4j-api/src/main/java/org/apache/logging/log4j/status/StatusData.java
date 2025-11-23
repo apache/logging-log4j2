@@ -25,8 +25,8 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.SuppressFBWarnings;
 import org.jspecify.annotations.Nullable;
 
 /**
