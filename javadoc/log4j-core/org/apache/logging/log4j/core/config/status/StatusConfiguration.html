@@ -139,17 +139,17 @@ loadScripts(document, 'script');</script>
 <div class="block">Configures and initializes the StatusLogger using the configured options in this instance.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withDestination(java.lang.String)" class="member-name-link">withDestination</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destination)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withDestination(java.lang.String)" class="member-name-link">withDestination</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destination)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the output of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withStatus(java.lang.String)" class="member-name-link">withStatus</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withStatus(java.lang.String)" class="member-name-link">withStatus</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withStatus(org.apache.logging.log4j.Level)" class="member-name-link">withStatus</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withStatus(org.apache.logging.log4j.Level)" class="member-name-link">withStatus</a><wbr>(@Nullable <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 </div>
@@ -216,8 +216,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withDestination(java.lang.String)">
 <h3>withDestination</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withDestination</span><wbr><span class="parameters">(@Nullable
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destination)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withDestination</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;destination)</span></div>
 <div class="block">Sets the output of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.
  <p>
  Accepted values are as follows:
@@ -241,8 +240,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withStatus(java.lang.String)">
 <h3>withStatus</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withStatus</span><wbr><span class="parameters">(@Nullable
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withStatus</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</span></div>
 <div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -255,8 +253,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withStatus(org.apache.logging.log4j.Level)">
 <h3>withStatus</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withStatus</span><wbr><span class="parameters">(@Nullable
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">withStatus</span><wbr><span class="parameters">(@Nullable <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
 <div class="block">Sets the level of the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/status/StatusLogger.html" title="class or interface in org.apache.logging.log4j.status" class="external-link"><code>StatusLogger</code></a> fallback listener.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
