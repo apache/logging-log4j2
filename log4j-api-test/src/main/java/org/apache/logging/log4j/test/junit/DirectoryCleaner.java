@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -26,6 +25,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.HashSet;
+import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class DirectoryCleaner extends AbstractFileCleaner {
