@@ -19,7 +19,7 @@
  * Utility and manager classes for Log4j 2 plugins.
  */
 @Export
-@Version("2.20.2")
+@Version("2.26.0")
 package org.apache.logging.log4j.core.config.plugins.util;
 
 import org.osgi.annotation.bundle.Export;

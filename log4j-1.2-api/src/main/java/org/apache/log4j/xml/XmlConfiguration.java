@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.xml;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
