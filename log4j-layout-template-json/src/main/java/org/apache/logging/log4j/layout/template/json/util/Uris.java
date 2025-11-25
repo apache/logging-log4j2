@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.layout.template.json.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 

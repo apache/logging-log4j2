@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.test.internal.annotation.SuppressFBWarnings;
 
 public class MockTcpSyslogServer extends MockSyslogServer {
     private final ServerSocket serverSocket;

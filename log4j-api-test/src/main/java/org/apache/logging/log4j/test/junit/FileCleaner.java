@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class FileCleaner extends AbstractFileCleaner {

@@ -25,8 +25,8 @@ import java.io.InterruptedIOException;
 import java.io.Writer;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.log4j.spi.ErrorCode;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * FileAppender appends log events to a file.

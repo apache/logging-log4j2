@@ -22,7 +22,7 @@ import java.sql.Statement;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.test.internal.annotation.SuppressFBWarnings;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 

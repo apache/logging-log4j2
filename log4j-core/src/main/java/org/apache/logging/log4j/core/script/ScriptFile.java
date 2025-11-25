@@ -29,11 +29,11 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * Container for the language and body of a script file along with the file location.

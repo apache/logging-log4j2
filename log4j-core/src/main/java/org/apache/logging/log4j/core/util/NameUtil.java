@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Strings;
 
 /**

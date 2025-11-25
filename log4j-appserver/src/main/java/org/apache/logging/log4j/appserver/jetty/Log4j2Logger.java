@@ -18,7 +18,7 @@ package org.apache.logging.log4j.appserver.jetty;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.appserver.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.eclipse.jetty.util.log.AbstractLogger;

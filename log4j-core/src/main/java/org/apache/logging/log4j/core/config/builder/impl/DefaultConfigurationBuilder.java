@@ -59,9 +59,9 @@ import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * @param <T> The BuiltConfiguration type.

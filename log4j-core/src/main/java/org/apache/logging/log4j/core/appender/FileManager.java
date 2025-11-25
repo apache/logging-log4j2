@@ -41,9 +41,9 @@ import java.util.Set;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * Manages actual File I/O for File Appenders.

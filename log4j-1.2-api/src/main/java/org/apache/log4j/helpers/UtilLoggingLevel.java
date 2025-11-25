@@ -21,7 +21,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * An extension of the Level class that provides support for java.util.logging Levels.

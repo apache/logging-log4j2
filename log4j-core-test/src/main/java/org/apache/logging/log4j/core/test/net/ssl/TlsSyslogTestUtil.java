@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.test.net.ssl;
 
 import java.util.ArrayList;
 import java.util.Random;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.test.internal.annotation.SuppressFBWarnings;
 
 @SuppressFBWarnings("PREDICTABLE_RANDOM")
 public class TlsSyslogTestUtil {

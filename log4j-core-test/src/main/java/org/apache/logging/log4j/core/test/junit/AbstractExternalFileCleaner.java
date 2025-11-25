@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.test.internal.annotation.SuppressFBWarnings;
 import org.junit.Assert;
 import org.junit.rules.ExternalResource;
 
