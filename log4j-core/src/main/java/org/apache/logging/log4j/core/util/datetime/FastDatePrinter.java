@@ -451,7 +451,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
 
     /**
      * Creates a String representation of the given Calendar by applying the rules of this printer to it.
-     * @param c the Calender to apply the rules to.
+     * @param c the Calendar to apply the rules to.
      * @return a String representation of the given Calendar.
      */
     private String applyRulesToString(final Calendar c) {

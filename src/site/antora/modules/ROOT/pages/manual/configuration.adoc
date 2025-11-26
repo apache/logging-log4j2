@@ -370,11 +370,11 @@ See xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-lo
 
 [cols="1h,5"]
 |===
-| Type          | `int`
+| Type          | `int` (seconds)
 | Default value | `0`
 |===
 
-Determines the polling interval used by Log4j to check for changes to the configuration file.
+Determines the polling interval, in seconds, used by Log4j to check for changes to the configuration file.
 If a change in the configuration file is detected, Log4j automatically reconfigures the logger context.
 If set to `0`, polling is disabled.
 

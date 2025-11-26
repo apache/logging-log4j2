@@ -53,13 +53,16 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     }
 
     /**
-     * Normally pattern converters are not meant to handle Exceptions although few pattern converters might.
+     * Tests whether this pattern converter is renders a {@link Throwable}.
+     *
      * <p>
-     * By examining the return values for this method, the containing layout will determine whether it handles
-     * throwables or not.
+     * The {@link PatternParser} checks this flag when processing the
+     * {@code alwaysWriteExceptions} option: if no converter in the pattern handles
+     * throwables, the parser automatically appends a converter to ensure exceptions are still written.
      * </p>
      *
-     * @return true if this PatternConverter handles throwables
+     * @return {@code true} if this converter consumes and renders a {@link Throwable},
+     *         {@code false} otherwise
      */
     public boolean handlesThrowable() {
         return false;
