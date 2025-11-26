@@ -34,7 +34,7 @@
       </PatternLayout>
     </File>
     <List name="List">
-      <PatternLayout pattern="%C{1.} %m %level M-%marker E%ex{1}"/>
+      <PatternLayout pattern="%C{1.} %m %level M-%marker E-%ex{1}"/>
     </List>
   </Appenders>
 

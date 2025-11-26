@@ -224,4 +224,20 @@ class RollingFileManagerTest {
         }
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
     }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3068")
+    void testInitialTimeRounded() throws IOException {
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147000L));
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147123L));
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147499L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031147500L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031147999L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031148000L));
+
+        final File file = File.createTempFile("testFile", "log");
+        file.deleteOnExit();
+
+        assertEquals(0, RollingFileManager.initialFileTime(file) % 1000);
+    }
 }

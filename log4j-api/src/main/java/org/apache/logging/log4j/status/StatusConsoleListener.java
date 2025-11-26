@@ -18,13 +18,13 @@ package org.apache.logging.log4j.status;
 
 import static java.util.Objects.requireNonNull;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.Level;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link StatusListener} that writes to the console.

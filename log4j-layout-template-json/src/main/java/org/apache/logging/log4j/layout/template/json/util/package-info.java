@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 @Export
-@Version("2.22.0")
+@Version("2.26.0")
 @Open("org.apache.logging.log4j.core")
 package org.apache.logging.log4j.layout.template.json.util;
 

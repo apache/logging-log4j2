@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -37,6 +36,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.util.Strings;

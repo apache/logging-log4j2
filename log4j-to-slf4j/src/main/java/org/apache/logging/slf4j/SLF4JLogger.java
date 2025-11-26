@@ -42,17 +42,21 @@ public class SLF4JLogger extends AbstractLogger {
 
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
+    private final boolean useThreadLocal;
 
     public SLF4JLogger(final String name, final MessageFactory messageFactory, final org.slf4j.Logger logger) {
-        super(name, messageFactory);
-        this.logger = logger;
-        this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
+        this(name, messageFactory, logger, Constants.ENABLE_THREADLOCALS);
     }
 
     public SLF4JLogger(final String name, final org.slf4j.Logger logger) {
-        super(name);
+        this(name, null, logger);
+    }
+
+    SLF4JLogger(String name, MessageFactory messageFactory, org.slf4j.Logger logger, boolean useThreadLocal) {
+        super(name, messageFactory);
         this.logger = logger;
         this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
+        this.useThreadLocal = useThreadLocal;
     }
 
     private int convertLevel(final Level level) {
@@ -364,8 +368,8 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     protected LogBuilder getLogBuilder(final Level level) {
-        final SLF4JLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse()
+        SLF4JLogBuilder builder;
+        return useThreadLocal && !(builder = logBuilder.get()).isInUse()
                 ? builder.reset(this, level)
                 : new SLF4JLogBuilder(this, level);
     }
