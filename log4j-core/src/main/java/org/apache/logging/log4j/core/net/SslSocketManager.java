@@ -30,19 +30,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.internal.InetAddressValidator;
 import org.apache.logging.log4j.util.Strings;
 
-/**
- *
- */
 public class SslSocketManager extends TcpSocketManager {
+
     public static final int DEFAULT_PORT = 6514;
+
     private static final SslSocketManagerFactory FACTORY = new SslSocketManagerFactory();
+
     private final SslConfiguration sslConfig;
 
     /**
@@ -285,10 +288,7 @@ public class SslSocketManager extends TcpSocketManager {
 
     @Override
     protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
-        final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        final Socket newSocket = socketFactory.createSocket();
-        newSocket.connect(socketAddress, getConnectTimeoutMillis());
-        return newSocket;
+        return createSocket(getHost(), socketAddress, getConnectTimeoutMillis(), sslConfig, getSocketOptions());
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
@@ -333,32 +333,65 @@ public class SslSocketManager extends TcpSocketManager {
             for (InetSocketAddress socketAddress : socketAddresses) {
                 try {
                     return SslSocketManager.createSocket(
-                            socketAddress, data.connectTimeoutMillis, data.sslConfiguration, data.socketOptions);
+                            data.host,
+                            socketAddress,
+                            data.connectTimeoutMillis,
+                            data.sslConfiguration,
+                            data.socketOptions);
                 } catch (IOException ex) {
-                    ioe = ex;
+                    final String message = String.format(
+                            "failed create a socket to `%s:%s` that is resolved to address `%s`",
+                            data.host, data.port, socketAddress);
+                    final IOException newEx = new IOException(message, ex);
+                    if (ioe == null) {
+                        ioe = newEx;
+                    } else {
+                        ioe.addSuppressed(newEx);
+                    }
                 }
             }
             throw new IOException(errorMessage(data, socketAddresses), ioe);
         }
     }
 
-    static Socket createSocket(
+    private static Socket createSocket(
+            final String hostName,
             final InetSocketAddress socketAddress,
             final int connectTimeoutMillis,
             final SslConfiguration sslConfiguration,
             final SocketOptions socketOptions)
             throws IOException {
+
+        // Create the `SSLSocket`
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
+
+        // Apply socket options before `connect()`
         if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
         }
+
+        // Connect the socket
         socket.connect(socketAddress, connectTimeoutMillis);
-        if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
-            socketOptions.apply(socket);
+
+        // Verify the host name
+        if (sslConfiguration.isVerifyHostName()) {
+            // Allowed endpoint identification algorithms: HTTPS and LDAPS.
+            // https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#endpoint-identification-algorithms
+            final SSLParameters sslParameters = socket.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            // Literal IPv4 and IPv6 addresses are not permitted in "HostName".
+            // https://www.rfc-editor.org/rfc/rfc6066.html#section-3
+            if (!InetAddressValidator.isValid(hostName)) {
+                sslParameters.setServerNames(Collections.singletonList(new SNIHostName(hostName)));
+            }
+            socket.setSSLParameters(sslParameters);
         }
+
+        // Force the handshake right after `connect()` instead of waiting for read/write to trigger it indirectly at a
+        // later stage
+        socket.startHandshake();
+
         return socket;
     }
 }
