@@ -83,7 +83,7 @@ Since release `2.21.0`, Log4j follows OSGi best practices by versioning each Jav
 https://bnd.bndtools.org/chapters/170-versioning.html#versioning-packages[Versioning Packages]
 for details).
 Package versions are available in the manifest of each artifact and in the package Javadoc.
-For example, the version of the `o.a.l.l.core.appender` package appears in the
+For example, the version of the `org.apache.logging.log4j.core.appender` package appears in the
 link:javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.html[package summary page].
 
 Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to the Apache Log4j version that last introduced changes to the package’s public API.
