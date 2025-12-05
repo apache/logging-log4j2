@@ -101,3 +101,5 @@ Each Log4j artifact is accompanied by a Software Bill of Materials (SBOM).
 See {logging-services-url}/download.html#sbom[the Download page of Logging Services page] for details.
 
 include::partial$supported-versions.adoc[leveloffset=+1]
+
+See xref:versioning.adoc[Version lifecycle and maintenance policy] for more information about the maintenance lifecycle of Log4j versions.

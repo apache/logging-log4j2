@@ -15,6 +15,7 @@
     limitations under the License.
 ////
 
+[#supported-versions]
 = Supported versions
 
 .Maintenance status of selected Log4j versions
@@ -79,9 +80,6 @@
 | Last release to support Java 1.4
 
 |===
-
-See xref:versioning.adoc[Version lifecycle and maintenance policy] for more information.
-
 
 [%collapsible]
 .Click to see all past versions

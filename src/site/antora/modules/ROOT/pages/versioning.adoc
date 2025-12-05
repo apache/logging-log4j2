@@ -20,6 +20,7 @@
 include::partial$supported-versions.adoc[leveloffset=+1]
 
 
+[#versioning-policy]
 == Versioning policy
 
 Since version 2.0, Apache Log4j follows
@@ -89,6 +90,7 @@ Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to t
 For example, if a package has version `2.34.5`, then **all** functionality in that package has been available since Log4j `2.34.0`.
 ====
 
+[#version-alignment]
 === Version alignment
 
 Because
@@ -105,7 +107,7 @@ xref:components.adoc#log4j-bom[`log4j-bom` artifact]
 in your build tool.
 Using `log4j-bom` guarantees that compatible versions are selected, regardless of your tool’s dependency resolution strategy.
 
-
+[#maintenance-policy]
 == Version lifecycle and maintenance policy
 
 Minor releases of Apache Log4j follow a defined lifecycle consisting of four phases:
