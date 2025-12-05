@@ -75,8 +75,9 @@ The classification of a behavioral change as a minor or patch release may vary b
 what is considered a bug by one user may be viewed as a feature by another.
 ====
 
-=== OSGi package versioning policy
-
+[%collapsible]
+.Click to see the OSGi package versioning policy
+====
 Since release `2.21.0`, Log4j follows OSGi best practices by versioning each Java package individually (see
 https://bnd.bndtools.org/chapters/170-versioning.html#versioning-packages[Versioning Packages]
 for details).
@@ -86,6 +87,7 @@ link:javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.h
 
 Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to the Apache Log4j version that last introduced changes to the package’s public API.
 For example, if a package has version `2.34.5`, then **all** functionality in that package has been available since Log4j `2.34.0`.
+====
 
 === Version alignment
 
