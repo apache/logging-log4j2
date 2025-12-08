@@ -383,7 +383,17 @@ public class SslSocketManager extends TcpSocketManager {
             // Literal IPv4 and IPv6 addresses are not permitted in "HostName".
             // https://www.rfc-editor.org/rfc/rfc6066.html#section-3
             if (!InetAddressValidator.isValid(hostName)) {
-                sslParameters.setServerNames(Collections.singletonList(new SNIHostName(hostName)));
+                // `SNIHostName::new` validates host names using `IDN.toASCII(hostName, IDN.USE_STD3_ASCII_RULES)`.
+                // Instead of failing, simply skip host names causing `SNIHostName::new` failures.
+                SNIHostName serverName = null;
+                try {
+                    serverName = new SNIHostName(hostName);
+                } catch (IllegalArgumentException ignored) {
+                    // Do nothing
+                }
+                if (serverName != null) {
+                    sslParameters.setServerNames(Collections.singletonList(serverName));
+                }
             }
             socket.setSSLParameters(sslParameters);
         }
