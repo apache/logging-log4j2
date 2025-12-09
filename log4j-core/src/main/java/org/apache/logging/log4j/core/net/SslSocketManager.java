@@ -37,8 +37,8 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.internal.InetAddressValidator;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
 public class SslSocketManager extends TcpSocketManager {
 
@@ -380,20 +380,9 @@ public class SslSocketManager extends TcpSocketManager {
             // https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#endpoint-identification-algorithms
             final SSLParameters sslParameters = socket.getSSLParameters();
             sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
-            // Literal IPv4 and IPv6 addresses are not permitted in "HostName".
-            // https://www.rfc-editor.org/rfc/rfc6066.html#section-3
-            if (!InetAddressValidator.isValid(hostName)) {
-                // `SNIHostName::new` validates host names using `IDN.toASCII(hostName, IDN.USE_STD3_ASCII_RULES)`.
-                // Instead of failing, simply skip host names causing `SNIHostName::new` failures.
-                SNIHostName serverName = null;
-                try {
-                    serverName = new SNIHostName(hostName);
-                } catch (IllegalArgumentException ignored) {
-                    // Do nothing
-                }
-                if (serverName != null) {
-                    sslParameters.setServerNames(Collections.singletonList(serverName));
-                }
+            final SNIHostName serverName = createSniHostName(hostName);
+            if (serverName != null) {
+                sslParameters.setServerNames(Collections.singletonList(serverName));
             }
             socket.setSSLParameters(sslParameters);
         }
@@ -403,5 +392,42 @@ public class SslSocketManager extends TcpSocketManager {
         socket.startHandshake();
 
         return socket;
+    }
+
+    /**
+     * {@return an {@link SNIHostName} instance if the provided host name is not an IP literal (RFC 6066), and constitutes a valid host name (RFC 1035); null otherwise}
+     *
+     * @param hostName a host name
+     *
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc6066.html#section-3">Literal IPv4 and IPv6 addresses are not permitted in "HostName" (RFC 6066)</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc1035.html">Domain Names - Implementation and Specification (RFC 1035)</a>
+     */
+    @Nullable
+    static SNIHostName createSniHostName(String hostName) {
+        // The actual check should be
+        //
+        //     !isIPv4(h) && !isIPv6(h) && isValidHostName(h)
+        //
+        // Though we translates this into
+        //
+        //     !h.matches("\d+[.]\d+[.]\d+[.]\d+") && new SNIServerName(h)
+        //
+        // This simplification is possible because
+        //
+        // - The `\d+[.]\d+[.]\d+[.]\d+` regex suffices to eliminate IPv4 addresses.
+        //   Any sequence of four numeric labels (e.g., `1234.2345.3456.4567`) is not a valid host name anyway.
+        //
+        // - `SNIServerName::new` throws an exception on invalid host names.
+        //   This check is performed using `IDN.toASCII(hostName, IDN.USE_STD3_ASCII_RULES)`.
+        //   IPv6 literals don't qualify as a valid host name by `IDN::toASCII`.
+        //   This assumption on `IDN` is unlikely to change in the foreseeable future.
+        if (!hostName.matches("\\d+[.]\\d+[.]\\d+[.]\\d+")) {
+            try {
+                return new SNIHostName(hostName);
+            } catch (IllegalArgumentException ignored) {
+                // Do nothing
+            }
+        }
+        return null;
     }
 }

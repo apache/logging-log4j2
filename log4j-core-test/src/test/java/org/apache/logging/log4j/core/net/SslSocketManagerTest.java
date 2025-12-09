@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.net.ssl;
+package org.apache.logging.log4j.core.net;
 
+import static org.apache.logging.log4j.core.net.SslSocketManager.createSniHostName;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -24,9 +25,14 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.net.SslSocketManager;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslKeyStoreConstants;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.Issue;
 
 class SslSocketManagerTest {
@@ -75,5 +81,51 @@ class SslSocketManagerTest {
     private static SslSocketManager createSocketManager(final SslConfiguration sslConfig) {
         return SslSocketManager.getSocketManager(
                 sslConfig, SslSocketManagerTest.HOST_NAME, HOST_PORT, 0, 0, true, LAYOUT, 8192, null);
+    }
+
+    static String[] hostNamesAllowedForSniServerName() {
+        return new String[] {
+            "apache.org",
+            "a.b",
+            "sub.domain.co.uk",
+            "xn--bcher-kva.example", // valid IDN/punycode
+            "my-host-123.example",
+            "a1234567890.b1234567890.c1234567890", // numeric/alpha labels
+            "EXAMPLE.COM", // case-insensitive
+            "service--node.example", // double hyphens allowed
+            Strings.repeat("l", 63) + ".com", // 63-char label, valid
+            "a.b.c.d.e.f.g.h.i.j", // many labels, short each
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("hostNamesAllowedForSniServerName")
+    void createSniHostName_should_work_with_allowed_input(String hostName) {
+        assertThat(createSniHostName(hostName)).isNotNull();
+    }
+
+    static String[] hostNamesNotAllowedForSniServerName() {
+        return new String[] {
+            // Invalid because IP literals not allowed
+            "192.168.1.1", // IPv4 literal
+            "2001:db8::1", // IPv6 literal
+            "[2001:db8::1]", // IPv6 URL literal form
+            // Invalid because illegal characters
+            "exa_mple.com", // underscore not allowed
+            "host name.com", // space not allowed
+            "example!.com", // symbol not allowed
+            // Invalid because label syntax violations
+            "-example.com", // leading hyphen
+            "example-.com", // trailing hyphen
+            ".example.com", // leading dot / empty label
+            // Invalid because label too long
+            Strings.repeat("l", 64) + ".com",
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("hostNamesNotAllowedForSniServerName")
+    void createSniHostName_should_fail_with_not_allowed_input(String hostName) {
+        assertThat(createSniHostName(hostName)).isNull();
     }
 }
