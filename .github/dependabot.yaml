@@ -48,8 +48,8 @@ updates:
     exclude-paths:
       # These use versions of MongoDB and SLF4J different
       # from the remaining artifacts
-      - "/log4j-mongodb4"
-      - "/log4j-slf4j-impl"
+      - "log4j-mongodb4/**"
+      - "log4j-slf4j-impl/**"
     schedule:
       interval: "monthly"
     groups:
