@@ -21,5 +21,7 @@
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
 This patch release addresses issues detailed in the changelog below.
+In particular, it includes an important fix for xref:manual/appenders/network.adoc#SslConfiguration-attr-verifyHostName[the host name verification in SSL/TLS configuration].
+This is used by xref:manual/appenders/network.adoc#SocketAppender[Socket Appender].
 
 <#include "../.changelog.adoc.ftl">
