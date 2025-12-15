@@ -132,7 +132,7 @@ final class ThrowableExtendedStackTraceRenderer
                 Class<?> executionStackTraceElementClass =
                         executionStackTrace.isEmpty() ? null : executionStackTrace.peekLast();
                 ClassLoader lastLoader = null;
-                final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+                final StackTraceElement[] stackTraceElements = metadata.stackTrace;
                 for (int throwableStackIndex = metadata.stackLength - 1;
                         throwableStackIndex >= 0;
                         --throwableStackIndex) {
