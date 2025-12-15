@@ -8,6 +8,6 @@
     <issue id="3871" link="https://github.com/apache/logging-log4j2/issues/3871"/>
     <issue id="3996" link="https://github.com/apache/logging-log4j2/pull/3996"/>
     <description format="asciidoc">
-        Fix GraalVM metadata for nested classes to use binary names instead of canonical names.
+        Fix GraalVM metadata for nested classes to use binary names instead of canonical names
     </description>
 </entry>
