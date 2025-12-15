@@ -30,19 +30,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.util.Strings;
+import org.jspecify.annotations.Nullable;
 
-/**
- *
- */
 public class SslSocketManager extends TcpSocketManager {
+
     public static final int DEFAULT_PORT = 6514;
+
     private static final SslSocketManagerFactory FACTORY = new SslSocketManagerFactory();
+
     private final SslConfiguration sslConfig;
 
     /**
@@ -285,10 +288,7 @@ public class SslSocketManager extends TcpSocketManager {
 
     @Override
     protected Socket createSocket(final InetSocketAddress socketAddress) throws IOException {
-        final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfig);
-        final Socket newSocket = socketFactory.createSocket();
-        newSocket.connect(socketAddress, getConnectTimeoutMillis());
-        return newSocket;
+        return createSocket(getHost(), socketAddress, getConnectTimeoutMillis(), sslConfig, getSocketOptions());
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
@@ -333,32 +333,102 @@ public class SslSocketManager extends TcpSocketManager {
             for (InetSocketAddress socketAddress : socketAddresses) {
                 try {
                     return SslSocketManager.createSocket(
-                            socketAddress, data.connectTimeoutMillis, data.sslConfiguration, data.socketOptions);
+                            data.host,
+                            socketAddress,
+                            data.connectTimeoutMillis,
+                            data.sslConfiguration,
+                            data.socketOptions);
                 } catch (IOException ex) {
-                    ioe = ex;
+                    final String message = String.format(
+                            "failed create a socket to `%s:%s` that is resolved to address `%s`",
+                            data.host, data.port, socketAddress);
+                    final IOException newEx = new IOException(message, ex);
+                    if (ioe == null) {
+                        ioe = newEx;
+                    } else {
+                        ioe.addSuppressed(newEx);
+                    }
                 }
             }
             throw new IOException(errorMessage(data, socketAddresses), ioe);
         }
     }
 
-    static Socket createSocket(
+    private static Socket createSocket(
+            final String hostName,
             final InetSocketAddress socketAddress,
             final int connectTimeoutMillis,
             final SslConfiguration sslConfiguration,
             final SocketOptions socketOptions)
             throws IOException {
+
+        // Create the `SSLSocket`
         final SSLSocketFactory socketFactory = createSslSocketFactory(sslConfiguration);
         final SSLSocket socket = (SSLSocket) socketFactory.createSocket();
+
+        // Apply socket options before `connect()`
         if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
             socketOptions.apply(socket);
         }
+
+        // Connect the socket
         socket.connect(socketAddress, connectTimeoutMillis);
-        if (socketOptions != null) {
-            // Not sure which options must be applied before or after the connect() call.
-            socketOptions.apply(socket);
+
+        // Verify the host name
+        if (sslConfiguration.isVerifyHostName()) {
+            // Allowed endpoint identification algorithms: HTTPS and LDAPS.
+            // https://docs.oracle.com/en/java/javase/17/docs/specs/security/standard-names.html#endpoint-identification-algorithms
+            final SSLParameters sslParameters = socket.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            final SNIHostName serverName = createSniHostName(hostName);
+            if (serverName != null) {
+                sslParameters.setServerNames(Collections.singletonList(serverName));
+            }
+            socket.setSSLParameters(sslParameters);
         }
+
+        // Force the handshake right after `connect()` instead of waiting for read/write to trigger it indirectly at a
+        // later stage
+        socket.startHandshake();
+
         return socket;
+    }
+
+    /**
+     * {@return an {@link SNIHostName} instance if the provided host name is not an IP literal (RFC 6066), and constitutes a valid host name (RFC 1035); null otherwise}
+     *
+     * @param hostName a host name
+     *
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc6066.html#section-3">Literal IPv4 and IPv6 addresses are not permitted in "HostName" (RFC 6066)</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc1035.html">Domain Names - Implementation and Specification (RFC 1035)</a>
+     */
+    @Nullable
+    static SNIHostName createSniHostName(String hostName) {
+        // The actual check should be
+        //
+        //     !isIPv4(h) && !isIPv6(h) && isValidHostName(h)
+        //
+        // Though we translate this into
+        //
+        //     !h.matches("\d+[.]\d+[.]\d+[.]\d+") && new SNIServerName(h)
+        //
+        // This simplification is possible because
+        //
+        // - The `\d+[.]\d+[.]\d+[.]\d+` is sufficient to eliminate IPv4 addresses.
+        //   Any sequence of four numeric labels (e.g., `1234.2345.3456.4567`) is not a valid host name.
+        //   Hence, false positives are not a problem, they would be eliminated by `isValidHostName()` anyway.
+        //
+        // - `SNIServerName::new` throws an exception on invalid host names.
+        //   This check is performed using `IDN.toASCII(hostName, IDN.USE_STD3_ASCII_RULES)`.
+        //   IPv6 literals don't qualify as a valid host name by `IDN::toASCII`.
+        //   This assumption on `IDN` is unlikely to change in the foreseeable future.
+        if (!hostName.matches("\\d+[.]\\d+[.]\\d+[.]\\d+")) {
+            try {
+                return new SNIHostName(hostName);
+            } catch (IllegalArgumentException ignored) {
+                // Do nothing
+            }
+        }
+        return null;
     }
 }
