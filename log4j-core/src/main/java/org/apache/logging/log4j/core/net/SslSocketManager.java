@@ -408,14 +408,15 @@ public class SslSocketManager extends TcpSocketManager {
         //
         //     !isIPv4(h) && !isIPv6(h) && isValidHostName(h)
         //
-        // Though we translates this into
+        // Though we translate this into
         //
         //     !h.matches("\d+[.]\d+[.]\d+[.]\d+") && new SNIServerName(h)
         //
         // This simplification is possible because
         //
-        // - The `\d+[.]\d+[.]\d+[.]\d+` regex suffices to eliminate IPv4 addresses.
-        //   Any sequence of four numeric labels (e.g., `1234.2345.3456.4567`) is not a valid host name anyway.
+        // - The `\d+[.]\d+[.]\d+[.]\d+` is sufficient to eliminate IPv4 addresses.
+        //   Any sequence of four numeric labels (e.g., `1234.2345.3456.4567`) is not a valid host name.
+        //   Hence, false positives are not a problem, they would be eliminated by `isValidHostName()` anyway.
         //
         // - `SNIServerName::new` throws an exception on invalid host names.
         //   This check is performed using `IDN.toASCII(hostName, IDN.USE_STD3_ASCII_RULES)`.
