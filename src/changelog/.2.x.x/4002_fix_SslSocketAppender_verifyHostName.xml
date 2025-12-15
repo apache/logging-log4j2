@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="6666" link="https://github.com/apache/logging-log4j2/pull/6666"/>
+  <issue id="4002" link="https://github.com/apache/logging-log4j2/pull/4002"/>
   <description format="asciidoc">
-    Fix incorrect handling of the host name verification (i.e., `verifyHostName`) in `SslSocketAppender`
+    Fix incorrect handling of the host name verification (i.e., `verifyHostName`) in `SslSocketManager`, which is used by Socket Appender when SSL/TLS is enabled
   </description>
 </entry>
