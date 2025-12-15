@@ -17,6 +17,7 @@
 package example;
 
 import java.io.Serializable;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -49,7 +50,9 @@ public class FakePlugin {
             @PluginConfiguration Configuration config,
             @PluginNode Node node,
             @PluginLoggerContext LoggerContext loggerContext,
-            @PluginValue("value") String value) {
+            @PluginValue("value") String value,
+            @PluginValue("onMatch") Filter.Result onMatch,
+            @PluginElement("filters") Filter[] filters) {
         return null;
     }
 
@@ -81,6 +84,12 @@ public class FakePlugin {
 
         @PluginValue("value")
         private String value;
+
+        @PluginValue("onMatch")
+        private Filter.Result onMatch;
+
+        @PluginElement("filters")
+        private Filter[] filters;
 
         @Override
         public FakePlugin build() {
