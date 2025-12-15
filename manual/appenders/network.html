@@ -438,6 +438,8 @@ that <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/js
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the host name in X509 certificate will be compared to the requested host name.
 In the case of a mismatch, the connection will fail.</p>
+<p class="tableblock">Note that SSL/TLS does not allow IP literals for host name verification – see <a href="https://www.rfc-editor.org/rfc/rfc6066.html#section-3">RFC 6066</a>.
+Host name verification will only be effective if the provided host name is not an IP literal and a valid host name per <a href="https://www.rfc-editor.org/rfc/rfc1035.html">RFC 1035</a>.</p>
 <p class="tableblock">See also
 <a href="../systemproperties.html#log4j2.sslVerifyHostName" class="xref page"><code>log4j2.sslVerifyHostName</code></a>.</p></td>
 </tr>
