@@ -132,8 +132,6 @@
     <osgi.annotation.versioning.version>1.1.2</osgi.annotation.versioning.version>
     <pax-exam.version>4.14.0</pax-exam.version>
     <plexus-utils.version>3.6.0</plexus-utils.version>
-    <!-- `com.github.spotbugs:spotbugs-annotations:4.9.0` and onwards require Java 11: -->
-    <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
@@ -163,7 +161,6 @@
     <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
       biz.aQute.bnd.annotation,
       com.google.errorprone.annotations,
-      com.github.spotbugs.annotations,
       org.osgi.annotation.bundle,
       org.osgi.annotation.versioning
       "</bnd-jpms-module-info>
@@ -877,13 +874,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.spotbugs</groupId>
-      <artifactId>spotbugs-annotations</artifactId>
-      <version>${spotbugs-annotations.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -1123,11 +1113,6 @@
               <groupId>org.osgi</groupId>
               <artifactId>org.osgi.annotation.versioning</artifactId>
               <version>${osgi.annotation.versioning.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs-annotations</artifactId>
-              <version>${spotbugs-annotations.version}</version>
             </dependency>
           </compileOnlyApiDependencies>
         </configuration>

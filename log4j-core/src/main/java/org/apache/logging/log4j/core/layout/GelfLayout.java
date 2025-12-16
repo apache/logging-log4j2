@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import static org.apache.logging.log4j.util.Chars.LF;
 import static org.apache.logging.log4j.util.Chars.NUL;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,6 +42,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
 import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
 import org.apache.logging.log4j.core.layout.internal.ListChecker;

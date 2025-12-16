@@ -16,28 +16,30 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
 
-    private static final Charset CHARSET = Charset.forName("US-ASCII");
+    private static final Charset CHARSET = StandardCharsets.US_ASCII;
 
     private final URL url;
     private final boolean isHttps;
@@ -100,8 +102,10 @@ public class HttpURLConnectionManager extends HttpManager {
                     header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
         }
         if (sslConfiguration != null) {
-            ((HttpsURLConnection) urlConnection)
-                    .setSSLSocketFactory(sslConfiguration.getSslContext().getSocketFactory());
+            final SSLContext sslContext = sslConfiguration.getSslContext();
+            if (sslContext != null) {
+                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslContext.getSocketFactory());
+            }
         }
         if (isHttps && !verifyHostname) {
             ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);

@@ -36,16 +36,13 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.SimpleElementVisitor8;
 import javax.lang.model.util.SimpleTypeVisitor8;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
@@ -300,9 +297,7 @@ public class GraalVmProcessor extends AbstractProcessor {
 
                     @Override
                     public @Nullable String visitDeclared(final DeclaredType t, final Void unused) {
-                        return safeCast(t.asElement(), TypeElement.class)
-                                .getQualifiedName()
-                                .toString();
+                        return GraalVmProcessor.this.toString(safeCast(t.asElement(), TypeElement.class));
                     }
                 },
                 null);
@@ -313,28 +308,7 @@ public class GraalVmProcessor extends AbstractProcessor {
      *
      * @param element A Java language element.
      */
-    private String toString(Element element) {
-        return element.accept(
-                new SimpleElementVisitor8<String, @Nullable Void>() {
-                    @Override
-                    public String visitPackage(PackageElement e, @Nullable Void unused) {
-                        return e.getQualifiedName().toString();
-                    }
-
-                    @Override
-                    public String visitType(TypeElement e, @Nullable Void unused) {
-                        Element parent = e.getEnclosingElement();
-                        String separator = parent.getKind() == ElementKind.PACKAGE ? "." : "$";
-                        return visit(parent, unused)
-                                + separator
-                                + e.getSimpleName().toString();
-                    }
-
-                    @Override
-                    protected String defaultAction(Element e, @Nullable Void unused) {
-                        return "";
-                    }
-                },
-                null);
+    private String toString(TypeElement element) {
+        return processingEnv.getElementUtils().getBinaryName(element).toString();
     }
 }
