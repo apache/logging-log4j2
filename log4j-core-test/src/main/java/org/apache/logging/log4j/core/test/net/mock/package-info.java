@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 @Export
-@Version("2.26.0")
+@Version("2.25.3")
 package org.apache.logging.log4j.core.test.net.mock;
 
 import org.osgi.annotation.bundle.Export;
