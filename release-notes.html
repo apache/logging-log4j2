@@ -483,6 +483,60 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="release-notes-2-25-3"><a class="anchor" href="#release-notes-2-25-3"></a>2.25.3</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2025-12-15</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release addresses issues detailed in the changelog below.
+In particular, it includes an important fix for <a href="manual/appenders/network.html#SslConfiguration-attr-verifyHostName" class="xref page">the host name verification in SSL/TLS configuration</a>.
+This is used by <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-3-changed"><a class="anchor" href="#release-notes-2-25-3-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Optimize <code>DefaultThreadContextMap.getCopy()</code> performance by avoiding megamorphic calls in <code>HashMap</code> constructor (<a href="https://github.com/apache/logging-log4j2/issues/3935">3935</a>, <a href="https://github.com/apache/logging-log4j2/pull/3939">3939</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-3-fixed"><a class="anchor" href="#release-notes-2-25-3-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix GraalVM metadata for nested classes to use binary names instead of canonical names (<a href="https://github.com/apache/logging-log4j2/issues/3871">3871</a>, <a href="https://github.com/apache/logging-log4j2/pull/3996">3996</a>)</p>
+</li>
+<li>
+<p>Fix failures caused by null <code>SslConfiguration</code> (<a href="https://github.com/apache/logging-log4j2/issues/3947">3947</a>, <a href="https://github.com/apache/logging-log4j2/pull/3953">3953</a>)</p>
+</li>
+<li>
+<p>Fix incorrect handling of <a href="manual/appenders/network.html#SslConfiguration-attr-verifyHostName" class="xref page">the host name verification in SSL/TLS configuration</a>, which is used by <a href="manual/appenders/network.html#SocketAppender" class="xref page">Socket Appender</a> when SSL/TLS is enabled (<a href="https://github.com/apache/logging-log4j2/pull/4002">4002</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-3-removed"><a class="anchor" href="#release-notes-2-25-3-removed"></a>Removed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove the <code>com.github.spotbugs:spotbugs-annotations</code> dependency (<a href="https://github.com/apache/logging-log4j2/issues/3984">3984</a>, <a href="https://github.com/apache/logging-log4j2/pull/3985">3985</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-25-2"><a class="anchor" href="#release-notes-2-25-2"></a>2.25.2</h2>
 <div class="sectionbody">
 <div class="dlist">
