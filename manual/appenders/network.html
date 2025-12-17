@@ -557,6 +557,24 @@ See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/Sta
 <p>The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
 It determines whether the remote authentication credentials (and thus the connection) should be trusted.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j Core typically does not communicate with external organizations; therefore, the default trust store provided by the Java Runtime Environment is often not appropriate.</p>
+</div>
+<div class="paragraph">
+<p>When configuring a trust store for Log4j Core, follow established best practices. For example,
+<a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a> (§4.5.2) recommends using a trust store that contains only the CA certificates required for the intended communication scope, such as a private or enterprise CA. This reduces exposure to unintended or compromised CA certificates included in the default trust store.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <table id="TrustStoreConfiguration-attributes" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. <code>TrustStore</code> configuration attributes</caption>
 <colgroup>
