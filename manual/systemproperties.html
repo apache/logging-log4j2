@@ -2365,6 +2365,24 @@ to use for the value of the <a href="#log4j2.configurationPassword"><code>log4j2
 <div class="paragraph">
 <p>The location of the trust store.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Log4j Core typically does not communicate with external organizations; therefore, the default trust store provided by the Java Runtime Environment is often not appropriate.</p>
+</div>
+<div class="paragraph">
+<p>When configuring a trust store for Log4j Core, follow established best practices. For example,
+<a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Rev. 2</a> (§4.5.2) recommends using a trust store that contains only the CA certificates required for the intended communication scope, such as a private or enterprise CA. This reduces exposure to unintended or compromised CA certificates included in the default trust store.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="log4j2.trustStorePassword"><a class="anchor" href="#log4j2.trustStorePassword"></a><code>log4j2.trustStorePassword</code></h4>
