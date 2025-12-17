@@ -167,6 +167,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
 It determines whether the remote authentication credentials (and thus the connection) should be trusted.
 
+include::partial$manual/trust-store-admonition.adoc[]
+
 [#TrustStoreConfiguration-attributes]
 .`TrustStore` configuration attributes
 [cols="1m,1,1,5"]
