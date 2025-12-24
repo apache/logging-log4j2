@@ -25,32 +25,32 @@ import java.util.concurrent.ThreadLocalRandom;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Wrapper action that schedules compression for delayed execution.
+ * Wrapper action that schedules compression for defferred execution.
  * This action wraps another action and schedules it to be executed
- * after a random delay within a specified time window.
+ * after a random defer within a specified time window.
  */
-public class DelayedCompressionAction implements Action {
+public class DeferredCompressionAction implements Action {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Action originalAction;
-    private final int maxDelaySeconds;
+    private final int maxDeferSeconds;
     private boolean complete = false;
     private boolean interrupted = false;
 
     /**
      * Creates a new DelayedCompressionAction.
      *
-     * @param originalAction the action to be executed with delay
-     * @param maxDelaySeconds the maximum delay in seconds (0 means immediate execution)
+     * @param originalAction the action to be executed with defer
+     * @param maxDeferSeconds the maximum defer in seconds (0 means immediate execution)
      */
-    public DelayedCompressionAction(Action originalAction, int maxDelaySeconds) {
+    public DeferredCompressionAction(Action originalAction, int maxDeferSeconds) {
         this.originalAction = requireNonNull(originalAction, "originalAction");
-        this.maxDelaySeconds = maxDelaySeconds;
+        this.maxDeferSeconds = maxDeferSeconds;
     }
 
     /**
-     * Executes the action with a delay using sleep.
+     * Executes the action with a defer using sleep.
      *
      * @return true if the action was successfully executed
      * @throws IOException if an error occurs during execution
@@ -65,17 +65,17 @@ public class DelayedCompressionAction implements Action {
             // Extract source file name for logging (if possible)
             String sourceFile = extractSourceFileName(originalAction);
 
-            // Calculate delay
-            int delaySeconds = 0;
-            if (maxDelaySeconds > 0) {
-                delaySeconds = ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
-                LOGGER.debug("Scheduling compression of {} with delay of {} seconds", sourceFile, delaySeconds);
+            // Calculate defer
+            int deferredSeconds = 0;
+            if (maxDeferSeconds > 0) {
+                deferredSeconds = ThreadLocalRandom.current().nextInt(maxDeferSeconds + 1);
+                LOGGER.debug("Scheduling compression of {} with defer of {} seconds", sourceFile, deferredSeconds);
             }
 
-            // Sleep for the delay period
-            if (delaySeconds > 0) {
+            // Sleep for the defer period
+            if (deferredSeconds > 0) {
                 try {
-                    Thread.sleep(delaySeconds * 1000L);
+                    Thread.sleep(deferredSeconds * 1000L);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     interrupted = true;
@@ -84,7 +84,7 @@ public class DelayedCompressionAction implements Action {
                 }
             }
 
-            // Execute the original action after delay
+            // Execute the original action after defer
             if (!interrupted) {
                 executeAction(originalAction, sourceFile);
             }
@@ -109,11 +109,11 @@ public class DelayedCompressionAction implements Action {
             try {
                 execute();
             } catch (final RuntimeException ex) {
-                LOGGER.warn("Exception during delayed compression execution", ex);
+                LOGGER.warn("Exception during deferred compression execution", ex);
             } catch (final IOException ex) {
-                LOGGER.warn("IOException during delayed compression execution", ex);
+                LOGGER.warn("IOException during deferred compression execution", ex);
             } catch (final Error e) {
-                LOGGER.warn("Error during delayed compression execution", e);
+                LOGGER.warn("Error during deferred compression execution", e);
             }
             complete = true;
         }
@@ -137,15 +137,15 @@ public class DelayedCompressionAction implements Action {
      */
     private void executeAction(Action action, String sourceFile) {
         try {
-            LOGGER.debug("Starting delayed compression of {}", sourceFile);
+            LOGGER.debug("Starting deferred compression of {}", sourceFile);
             boolean success = action.execute();
             if (success) {
-                LOGGER.debug("Successfully completed delayed compression of {}", sourceFile);
+                LOGGER.debug("Successfully completed deferred compression of {}", sourceFile);
             } else {
-                LOGGER.warn("Failed to execute delayed compression of {}", sourceFile);
+                LOGGER.warn("Failed to execute deferred compression of {}", sourceFile);
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception during delayed compression of {}", sourceFile, e);
+            LOGGER.warn("Exception during deferred compression of {}", sourceFile, e);
         } finally {
             // 在finally块中设置complete状态
             complete = true;
@@ -184,17 +184,17 @@ public class DelayedCompressionAction implements Action {
     }
 
     /**
-     * Gets the maximum delay in seconds for compression.
+     * Gets the maximum defer in seconds for compression.
      *
-     * @return the maximum delay in seconds
+     * @return the maximum defer in seconds
      */
-    public int getMaxDelaySeconds() {
-        return maxDelaySeconds;
+    public int getMaxDeferSeconds() {
+        return maxDeferSeconds;
     }
 
     @Override
     public String toString() {
-        return "DelayedCompressionAction[originalAction=" + originalAction + ", maxDelaySeconds=" + maxDelaySeconds + "]";
+        return "DeferredCompressionAction[originalAction=" + originalAction + ", maxDeferSeconds=" + maxDeferSeconds + "]";
     }
 }
 
