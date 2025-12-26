@@ -23,7 +23,7 @@ include::partial$supported-versions.adoc[leveloffset=+1]
 [#versioning-policy]
 == Versioning policy
 
-Since version 2.0, Apache Log4j follows
+Since version 2.0, Log4j follows
 https://semver.org/spec/v2.0.0.html[semantic versioning],
 with release numbers of the form:
 
@@ -86,7 +86,7 @@ Package versions are available in the manifest of each artifact and in the packa
 For example, the version of the `org.apache.logging.log4j.core.appender` package appears in the
 link:javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.html[package summary page].
 
-Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to the Apache Log4j version that last introduced changes to the package’s public API.
+Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to the Log4j version that last introduced changes to the package’s public API.
 For example, if a package has version `2.34.5`, then **all** functionality in that package has been available since Log4j `2.34.0`.
 ====
 
@@ -110,7 +110,7 @@ Using `log4j-bom` guarantees that compatible versions are selected, regardless o
 [#maintenance-policy]
 == Version lifecycle and maintenance policy
 
-Minor releases of Apache Log4j follow a defined lifecycle consisting of four phases:
+Minor releases of Log4j follow a defined lifecycle consisting of four phases:
 
 [development]#Active development#::
 +
@@ -125,7 +125,7 @@ The version is considered stable and suitable for production.
 In this phase, no new features are accepted: only bug fixes and security fixes.
 Vulnerability reports are accepted and will be addressed.
 +
-Due to the limited resources of the Apache Log4j project, **only the latest minor release of the latest major version** remains in Active Maintenance.
+Due to the limited resources of the Log4j project, **only the latest minor release of the latest major version** remains in Active Maintenance.
 
 [eom]#End-of-maintenance (EOM)#::
 +
