@@ -79,7 +79,9 @@ class GraalVmProcessorTest {
                                     "org.apache.logging.log4j.core.config.Configuration",
                                     "org.apache.logging.log4j.core.config.Node",
                                     "org.apache.logging.log4j.core.LoggerContext",
-                                    "java.lang.String"))),
+                                    "java.lang.String",
+                                    "org.apache.logging.log4j.core.Filter$Result",
+                                    "org.apache.logging.log4j.core.Filter[]"))),
             "fields",
             emptyList());
     private static final String FAKE_PLUGIN_BUILDER_NAME = FAKE_PLUGIN_NAME + "$Builder";
@@ -93,9 +95,11 @@ class GraalVmProcessorTest {
                     asMap("name", "attribute"),
                     asMap("name", "attributeWithoutPublicSetterButWithSuppressAnnotation"),
                     asMap("name", "config"),
+                    asMap("name", "filters"),
                     asMap("name", "layout"),
                     asMap("name", "loggerContext"),
                     asMap("name", "node"),
+                    asMap("name", "onMatch"),
                     asMap("name", "value")));
     private static final String FAKE_PLUGIN_NESTED_NAME = FAKE_PLUGIN_NAME + "$Nested";
     private static final Object FAKE_PLUGIN_NESTED = onlyNoArgsConstructor(FAKE_PLUGIN_NESTED_NAME);
@@ -229,7 +233,7 @@ class GraalVmProcessorTest {
         }
         // The generated folder name should be deterministic and based solely on the descriptor content.
         // If the descriptor changes, this test and the expected folder name must be updated accordingly.
-        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("72c240aa"));
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("791e18c8"));
         assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
                 .as("Reachability metadata file")
                 .exists();

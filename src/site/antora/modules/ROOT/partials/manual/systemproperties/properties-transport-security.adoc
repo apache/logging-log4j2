@@ -130,6 +130,8 @@ The username used in HTTP Basic authentication.
 
 The location of the trust store.
 
+include::partial$manual/trust-store-guideline.adoc[]
+
 [id=log4j2.trustStorePassword]
 == `log4j2.trustStorePassword`
 
