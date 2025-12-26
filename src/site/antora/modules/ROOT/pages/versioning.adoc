@@ -15,15 +15,18 @@
     limitations under the License.
 ////
 
-= Versioning and support policy
+= Versioning and maintenance policy
 
-include::partial$supported-versions.adoc[leveloffset=+1]
+This page answers the following questions:
 
+- xref:#versioning-policy[How are Log4j releases versioned?]
+- xref:#version-alignment[How shall users align the Log4j API and Log4j Core versions?]
+- xref:#maintenance-policy[How does Log4j classify maintenance status of released versions?]
 
 [#versioning-policy]
 == Versioning policy
 
-Since version 2.0, Log4j follows
+Since version `2.0`, Log4j follows
 https://semver.org/spec/v2.0.0.html[semantic versioning],
 with release numbers of the form:
 
@@ -56,25 +59,16 @@ xref:manual/plugins.adoc[Log4j Plugins] (appenders, layouts, filters, etc.).
 * Behavioral changes introduced without breaking the public API.
 --
 +
-Upgrading to a new minor version usually does not require code changes,
-unless you rely on undocumented behavior that has changed.
+Upgrading to a new minor version usually does not require code changes, unless you rely on undocumented behavior that has changed.
 To avoid accumulating such changes, we recommend upgrading minor versions regularly.
 +
-When upgrading to a new minor version, review the corresponding
-xref:release-notes.adoc[]:
-behavioral changes are highlighted in the release description and listed in the “Changed” section.
+When upgrading to a new minor version, review the corresponding xref:release-notes.adoc[], where behavioral changes are highlighted.
 
 <patch>::
 +
 The patch version number is incremented when only backward-compatible bug fixes are introduced.
 +
 Upgrading to a new patch release is the simplest upgrade path.
-+
-[NOTE]
-====
-The classification of a behavioral change as a minor or patch release may vary by interpretation:
-what is considered a bug by one user may be viewed as a feature by another.
-====
 
 [%collapsible]
 .Click to see the OSGi package versioning policy
@@ -99,8 +93,8 @@ and
 xref:manual/implementation.adoc[Log4j Core implementation]
 are separate artifacts, their versions at **runtime** must be aligned:
 
-* Log4j Core version X depends on Log4j API version X, so you must have **at least** version X of Log4j API at runtime.
-* Conversely, to use all methods provided by Log4j API X, you need a Log4j Core version that implements them, i.e., Log4j Core X or later.
+* Log4j Core version `X` depends on Log4j API version `X`, so you must have **at least** version `X` of Log4j API at runtime.
+* Conversely, to use all methods provided by Log4j API version `X`, you need a Log4j Core version that implements them, i.e., Log4j Core version `X` or later.
 
 The easiest way to ensure version alignment in your project is to use the
 xref:components.adoc#log4j-bom[`log4j-bom` artifact]
@@ -112,14 +106,14 @@ Using `log4j-bom` guarantees that compatible versions are selected, regardless o
 
 Minor releases of Log4j follow a defined lifecycle consisting of four phases:
 
-[development]#Active development#::
+[development]#Active development (AD)#::
 +
 The version is under active development and may introduce new features.
 Pre-release builds (alpha, beta, etc.) may be published during this phase; vulnerability reports are accepted and will be addressed.
 +
 Versions in this phase are **not recommended** for production use.
 
-[active]#Active maintenance#::
+[active]#Active maintenance (AM)#::
 +
 The version is considered stable and suitable for production.
 In this phase, no new features are accepted: only bug fixes and security fixes.
@@ -140,41 +134,11 @@ The version is no longer maintained, and **vulnerability reports are not accepte
 +
 This final phase is entered after an official PMC vote and public announcement.
 
-[cols="3h,1,1,1"]
-|===
-| Maintenance phase | New features | Security/bug fixes | Security advisories
-
-| [development]#Active development#
-| **Yes**
-| **Yes**
-| **Yes**
-
-| [active]#Active maintenance#
-| No
-| **Yes**
-| **Yes**
-
-| [eom]#End-of-maintenance (EOM)#
-| No
-| No
-| **Yes**
-
-| [eol]#End-of-life (EOL)#
-| No
-| No
-| No
-
-|===
-
 [NOTE]
 ====
-We avoid using the term *support* to describe the maintenance phases, because
-support remains available in **all** phases:
+We avoid using the term *support* to describe the maintenance phases, because support remains available in **all** phases:
 
-* See {logging-services-url}/support.html#discussions-user[Community support]
-for the community-run discussion channels that are offered on a best-effort basis.
-* Although the ASF does not endorse any third-party commercial providers,
-some companies may offer paid support for EOM or EOL versions.
-See {logging-services-url}/support.html#commercial[Commercial support]
-for a publicly maintained list of such providers.
+* See {logging-services-url}/support.html#discussions-user[Community support] for the community-run discussion channels that are offered on a best-effort basis.
+* Although the ASF does not endorse any third-party commercial providers, some companies may offer paid support for EOM or EOL versions.
+See {logging-services-url}/support.html#commercial[Commercial support] for a publicly maintained list of such providers.
 ====
