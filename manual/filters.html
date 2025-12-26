@@ -970,8 +970,7 @@ In the following examples <code>A</code> and <code>B</code> are two filters.</p>
 <div class="sect3">
 <h4 id="BurstFilter"><a class="anchor" href="#BurstFilter"></a><code>BurstFilter</code></h4>
 <div class="paragraph">
-<p>The <code>BurstFilter</code> limits the rate of log events.
-The rate limit is only applied to log events less severe than a configured log level.</p>
+<p>The <code>BurstFilter</code> limits the rate of log events at or below a configured severity level.</p>
 </div>
 <div class="paragraph">
 <p>Besides the <a href="#common-configuration-attributes">common configuration attributes</a>,
@@ -998,8 +997,8 @@ the <code>BurstFilter</code> supports the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>level</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html"><code>Level</code></a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN"><code>WARN</code></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The rate limit only applies to log events less severe than this level.
-Events at least as severe as this level will always match.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rate limit is only applied up until and including this level.
+Events more severe than this level will always match.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>rate</code></p></td>
@@ -3117,6 +3116,32 @@ filter.0.script.path = scripts/global.groovy</code></pre>
 <div class="paragraph">
 <p><a href="../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter" class="xref page">📖 Plugin reference for <code>ScriptFilter</code></a></p>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="third-party"><a class="anchor" href="#third-party"></a>Third-party filters</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These filters are provided by <strong>third-party</strong> vendors and are not maintained by the <a href="https://logging.apache.org">Apache Logging Services</a> project.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="more-log4j2-RoutingFilter"><a class="anchor" href="#more-log4j2-RoutingFilter"></a>Routing filter (<code>more-log4j2</code>)</h3>
+<div class="paragraph">
+<p><code>RoutingFilter</code> by <a href="https://github.com/mlangc/more-log4j2">more-log4j2</a> helps to compose filters by defining routes selected using log event attributes.
+For instance, it can be used to implement log throttling based on log event markers or levels.</p>
 </div>
 </div>
 </div>
