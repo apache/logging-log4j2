@@ -41,6 +41,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
@@ -332,5 +333,41 @@ class RollingRandomAccessFileManagerTest {
                 .readAttributes()
                 .permissions();
         assertEquals(filePermissions, actualFilePermissions);
+    }
+
+    @Test
+    void testWriteHeaderWhenFileDoesNotExistBefore() throws IOException {
+        final File file = File.createTempFile("log4j2", "test");
+        file.delete(); // Ensure file doesn't exist
+        file.deleteOnExit();
+
+        final String header = "HEADER";
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setHeader(header)
+                .build();
+
+        final boolean isAppend = true;
+        final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
+                file.getAbsolutePath(),
+                Strings.EMPTY,
+                isAppend,
+                true,
+                RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                new SizeBasedTriggeringPolicy(Long.MAX_VALUE),
+                null,
+                null,
+                layout,
+                null,
+                null,
+                null,
+                null);
+        assertNotNull(manager);
+        manager.close();
+
+        // Verify header was written
+        assertTrue(file.exists(), "File should exist");
+        final byte[] fileContent = Files.readAllBytes(file.toPath());
+        final String content = new String(fileContent);
+        assertTrue(content.startsWith(header), "File should start with header: " + content);
     }
 }
