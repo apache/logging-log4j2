@@ -135,8 +135,8 @@ Refer to xref:versioning.adoc[] for details.
 
 | 2.25.x
 | [active]#AM#
-| 2.25.2
-| 2025-06-13
+| 2.25.3
+| 2025-12-15
 |
 |
 |
