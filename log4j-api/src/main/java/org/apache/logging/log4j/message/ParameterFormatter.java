@@ -247,7 +247,7 @@ final class ParameterFormatter {
         // #2380: check if the count of placeholder is not equal to the count of arguments
         if (analysis.placeholderCount != argCount) {
             final int noThrowableArgCount =
-                    argCount < 1 ? 0 : argCount - ((args[argCount - 1] instanceof Throwable) ? 1 : 0);
+                    argCount < 1 ? 0 : argCount - (isLastArgumentThrowable(args, argCount) ? 1 : 0);
             if (analysis.placeholderCount != noThrowableArgCount) {
                 STATUS_LOGGER.warn(
                         "found {} argument placeholders, but provided {} for pattern `{}`",
@@ -266,6 +266,12 @@ final class ParameterFormatter {
         else {
             formatMessageContainingNoEscapes(buffer, pattern, args, argCount, analysis);
         }
+    }
+
+    private static boolean isLastArgumentThrowable(final Object[] args, final int argCount) {
+        final Object lastArgument = args[argCount - 1];
+        // #3975: tolerate null in the last argument since it could have been Throwable parameter
+        return (lastArgument == null) || (lastArgument instanceof Throwable);
     }
 
     private static void formatMessageContainingNoEscapes(
