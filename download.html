@@ -38,6 +38,11 @@
   .hljs-string {
     color: #0f8532;
   }
+  /* Colors for maintenance policies */
+  .development { color: #8A4FFF; }
+  .active { color: #28A745; }
+  .eom { color: #FFC107; }
+  .eol { color: #DC3545; }
 </style>
   </head>
   <body class="article">
@@ -79,6 +84,9 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="versioning.html">Versioning and maintenance policy</a>
+  </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
@@ -496,25 +504,360 @@ See <a href="https://logging.apache.org/download.html#sbom">the Download page of
 </div>
 </div>
 <div class="sect1">
-<h2 id="older"><a class="anchor" href="#older"></a>Older releases</h2>
+<h2 id="versions"><a class="anchor" href="#versions"></a>Available versions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Are you looking for old versions of Log4j?
-While we recommend always using the latest version, you can find the older versions here:</p>
+<p>Below you can find the list of available Log4j versions and their associated maintenance status; Active Development, Active Maintenance, End-of-Maintenance, and End-of-Life.
+Refer to <a href="versioning.html" class="xref page">Versioning and maintenance policy</a> for details.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://logging.apache.org/log4j/1.x/index.html">Log4j 1.x (End of Life, Java 1.4)</a></p>
-</li>
-<li>
-<p><a href="https://logging.apache.org/log4j/2.3.x/index.html">Log4j 2.3.x (Java 6)</a></p>
-</li>
-<li>
-<p><a href="https://logging.apache.org/log4j/2.12.x/index.html">Log4j 2.12.x (Java 7)</a></p>
-</li>
-</ul>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Maintenance status of selected Log4j versions</caption>
+<colgroup>
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1818%;">
+<col style="width: 18.1819%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Version</th>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Latest release</th>
+<th class="tableblock halign-left valign-top">First stable release</th>
+<th class="tableblock halign-left valign-top">EOM</th>
+<th class="tableblock halign-left valign-top">EOL</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">3.0.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="development">AD</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.0.0-beta3</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.26.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="development">AD</span></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.25.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="active">AM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.25.3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-12-15</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.24.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.24.3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-09-03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-06-13</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.12.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.12.4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2019-06-23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-29</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last release supporting Java 7</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.3.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.3.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-05-09</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-29</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last release supporting Java 6</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">1.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eol">EOL</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.2.17</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000-01-08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-07-12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-08-05</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last release supporting Java 1.4</p></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary class="title">Click to see all past versions</summary>
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Maintenance status of all Log4j versions</caption>
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 22.2222%;">
+<col style="width: 22.2223%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Version</th>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Latest release</th>
+<th class="tableblock halign-left valign-top">First release</th>
+<th class="tableblock halign-left valign-top">EOM</th>
+<th class="tableblock halign-left valign-top">EOL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">3.0.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="development">AD</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.0.0-beta3</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.26.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="development">AD</span></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.25.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="active">AM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.25.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-06-13</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.24.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.24.3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-09-03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2025-06-13</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.23.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.23.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-02-17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-09-03</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.22.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.22.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-11-17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-02-17</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.21.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.21.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-10-12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-11-17</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.20.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.20.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-02-17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-10-12</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.19.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.19.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2022-09-09</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2023-02-17</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.18.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.18.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2022-06-28</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2022-09-09</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.17.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.17.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2022-06-28</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.16.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.16.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-17</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.15.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.15.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-13</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.14.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.14.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2020-11-06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-06</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.13.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.13.3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2019-12-11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2020-11-06</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.12.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.12.4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2019-06-23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-29</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.11.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.11.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2018-03-11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2019-06-23</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.10.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.10.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-11-18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2018-03-11</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.9.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.9.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-08-26</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-11-18</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.8.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.8.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-01-21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-08-26</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.7.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2016-10-02</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-01-21</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.6.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.6.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2016-05-25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2016-10-02</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.5.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-12-06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2016-05-25</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.4.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.4.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-09-20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-12-06</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.3.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.3.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-05-09</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2021-12-29</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.2.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-02-22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-05-09</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.1.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-10-19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-02-22</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">2.0.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eom">EOM</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.0.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-07-12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-10-19</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">1.x</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="eol">EOL</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.2.17</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000-01-08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-07-12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015-08-05</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</details>
 </div>
 </div>
 </article>

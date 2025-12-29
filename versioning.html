@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Log4j IOStreams :: Apache Log4j</title>
-    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/log4j-iostreams.html">
+    <title>Versioning and maintenance policy :: Apache Log4j</title>
+    <link rel="canonical" href="https://logging.apache.org/log4j/2.x/versioning.html">
     <meta name="generator" content="Antora 3.2.0-alpha.10">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
@@ -84,7 +84,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="https://logging.apache.org/support.html">Support</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="versioning.html">Versioning and maintenance policy</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -293,7 +293,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="components.html">Components</a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="log4j-iostreams.html">Log4j IOStreams</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -347,63 +347,234 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li><a href="components.html">Components</a></li>
-    <li><a href="log4j-iostreams.html">Log4j IOStreams</a></li>
+    <li>Support</li>
+    <li><a href="versioning.html">Versioning and maintenance policy</a></li>
   </ul>
 </nav>
-<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/log4j-iostreams.adoc">Edit this Page</a></div>
+<div class="edit-this-page"><a href="https://github.com/apache/logging-log4j2/edit/2.x/src/site/antora/modules/ROOT/pages/versioning.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="4">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Log4j IOStreams</h1>
-<div class="sect1">
-<h2 id="_log4j_iostreams"><a class="anchor" href="#_log4j_iostreams"></a>Log4j IOStreams</h2>
+<h1 class="page">Versioning and maintenance policy</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The IOStreams component is a
-<a href="manual/api.html" class="xref page">Log4j API</a>
-extension that provides numerous classes from
-<a href="https://docs.oracle.com/javase/8/docs/api/java/io/package-summary.html"><code>java.io</code></a>
-that can either write to a
-<a href="javadoc/log4j-api/org/apache/logging/log4j/Logger.html"><code>Logger</code></a>
-while writing to another <code>OutputStream</code> or <code>Writer</code>, or the contents read by an <code>InputStream</code> or <code>Reader</code> can be
-<a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/WireTap.html">wiretapped</a>
-by a <code>Logger</code>.</p>
+<p>This page answers the following questions:</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_requirements"><a class="anchor" href="#_requirements"></a>Requirements</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Log4j IOStreams API extension requires the Log4j 2 API.
-This component was introduced in Log4j 2.1.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#versioning-policy">How are Log4j releases versioned?</a></p>
+</li>
+<li>
+<p><a href="#version-alignment">How shall users align the Log4j API and Log4j Core versions?</a></p>
+</li>
+<li>
+<p><a href="#maintenance-policy">How does Log4j classify maintenance status of released versions?</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h2>
+<h2 id="versioning-policy"><a class="anchor" href="#versioning-policy"></a>Versioning policy</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The main entry point for the IOStreams module is the builder class <code>IoBuilder</code>, and in particular, the <code>IoBuilder.forLogger()</code> methods.
-One primary usage of this API extension is for setting up loggers in the JDBC API.
-For example:</p>
+<p>Since version <code>2.0</code>, Log4j follows
+<a href="https://semver.org/spec/v2.0.0.html">semantic versioning</a>,
+with release numbers of the form:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">PrintWriter logger = IoBuilder.forLogger(DriverManager.class)
-                              .setLevel(Level.DEBUG)
-                              .buildPrintWriter();
-DriverManager.setLogWriter(logger);</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;[-&lt;pre-release&gt;]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Using the <code>IoBuilder</code> class, there are a few more options that can be set.
-In general, there are six primary classes one can build from it: <code>Reader</code>, <code>Writer</code>, <code>PrintWriter</code>, <code>InputStream</code>, <code>OutputStream</code>, and <code>PrintStream</code>.
-The input-oriented classes are for wiretapping, and the output-oriented classes are for creating either an output class that solely outputs its lines as log messages, or an output filter class that logs all lines output through it to its delegate output class.</p>
+<p>where:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">&lt;major&gt;</dt>
+<dd>
+<div class="paragraph">
+<p>The major version number is incremented when <strong>breaking changes</strong> are introduced.</p>
+</div>
+<div class="paragraph">
+<p>Upgrading to a new major version typically requires code changes in your application.
+For each major release, a migration guide is provided.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="migrate-from-log4j1.html" class="xref page">Migrating from Log4j 1</a> for instructions on migrating from Log4j 1 to Log4j 2.</p>
+</div>
+</dd>
+<dt class="hdlist1">&lt;minor&gt;</dt>
+<dd>
+<div class="paragraph">
+<p>The minor version number is incremented when new features are added in a backward-compatible manner, such as:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>New Java methods or classes added to the public API of one of the
+<a href="components.html" class="xref page">Log4j artifacts</a>.</p>
+</li>
+<li>
+<p>New configuration attributes added to
+<a href="manual/plugins.html" class="xref page">Log4j Plugins</a> (appenders, layouts, filters, etc.).</p>
+</li>
+<li>
+<p>Functionality or Java methods/classes being deprecated.</p>
+</li>
+<li>
+<p>Behavioral changes introduced without breaking the public API.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Upgrading to a new minor version usually does not require code changes, unless you rely on undocumented behavior that has changed.
+To avoid accumulating such changes, we recommend upgrading minor versions regularly.</p>
+</div>
+<div class="paragraph">
+<p>When upgrading to a new minor version, review the corresponding <a href="release-notes.html" class="xref page">Release notes</a>, where behavioral changes are highlighted.</p>
+</div>
+</dd>
+<dt class="hdlist1">&lt;patch&gt;</dt>
+<dd>
+<div class="paragraph">
+<p>The patch version number is incremented when only backward-compatible bug fixes are introduced.</p>
+</div>
+<div class="paragraph">
+<p>Upgrading to a new patch release is the simplest upgrade path.</p>
+</div>
+</dd>
+</dl>
+</div>
+<details>
+<summary class="title">Click to see the OSGi package versioning policy</summary>
+<div class="content">
+<div class="paragraph">
+<p>Since release <code>2.21.0</code>, Log4j follows OSGi best practices by versioning each Java package individually (see
+<a href="https://bnd.bndtools.org/chapters/170-versioning.html#versioning-packages">Versioning Packages</a>
+for details).
+Package versions are available in the manifest of each artifact and in the package Javadoc.
+For example, the version of the <code>org.apache.logging.log4j.core.appender</code> package appears in the
+<a href="javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.html">package summary page</a>.</p>
+</div>
+<div class="paragraph">
+<p>Package versions have the form <code>X.Y.Z</code>, where the <code>X.Y</code> portion corresponds to the Log4j version that last introduced changes to the package’s public API.
+For example, if a package has version <code>2.34.5</code>, then <strong>all</strong> functionality in that package has been available since Log4j <code>2.34.0</code>.</p>
+</div>
+</div>
+</details>
+<div class="sect2">
+<h3 id="version-alignment"><a class="anchor" href="#version-alignment"></a>Version alignment</h3>
+<div class="paragraph">
+<p>Because
+<a href="manual/api.html" class="xref page">Log4j API</a>
+and
+<a href="manual/implementation.html" class="xref page">Log4j Core implementation</a>
+are separate artifacts, their versions at <strong>runtime</strong> must be aligned:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Log4j Core version <code>X</code> depends on Log4j API version <code>X</code>, so you must have <strong>at least</strong> version <code>X</code> of Log4j API at runtime.</p>
+</li>
+<li>
+<p>Conversely, to use all methods provided by Log4j API version <code>X</code>, you need a Log4j Core version that implements them, i.e., Log4j Core version <code>X</code> or later.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The easiest way to ensure version alignment in your project is to use the
+<a href="components.html#log4j-bom" class="xref page"><code>log4j-bom</code> artifact</a>
+in your build tool.
+Using <code>log4j-bom</code> guarantees that compatible versions are selected, regardless of your tool’s dependency resolution strategy.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="maintenance-policy"><a class="anchor" href="#maintenance-policy"></a>Version lifecycle and maintenance policy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Minor releases of Log4j follow a defined lifecycle consisting of four phases:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><span class="development">Active development (AD)</span></dt>
+<dd>
+<div class="paragraph">
+<p>The version is under active development and may introduce new features.
+Pre-release builds (alpha, beta, etc.) may be published during this phase; vulnerability reports are accepted and will be addressed.</p>
+</div>
+<div class="paragraph">
+<p>Versions in this phase are <strong>not recommended</strong> for production use.</p>
+</div>
+</dd>
+<dt class="hdlist1"><span class="active">Active maintenance (AM)</span></dt>
+<dd>
+<div class="paragraph">
+<p>The version is considered stable and suitable for production.
+In this phase, no new features are accepted: only bug fixes and security fixes.
+Vulnerability reports are accepted and will be addressed.</p>
+</div>
+<div class="paragraph">
+<p>Due to the limited resources of the Log4j project, <strong>only the latest minor release of the latest major version</strong> remains in Active Maintenance.</p>
+</div>
+</dd>
+<dt class="hdlist1"><span class="eom">End-of-maintenance (EOM)</span></dt>
+<dd>
+<div class="paragraph">
+<p>The version is no longer actively maintained. New releases, including security fixes, are <strong>very unlikely</strong>.
+Vulnerability reports may still be submitted, but fixes will be produced only in exceptional circumstances.</p>
+</div>
+<div class="paragraph">
+<p>Because the project is volunteer-driven, any PMC member may choose to create a release for an EOM version, but such releases should be considered exceptional.</p>
+</div>
+</dd>
+<dt class="hdlist1"><span class="eol">End-of-life (EOL)</span></dt>
+<dd>
+<div class="paragraph">
+<p>The version is no longer maintained, and <strong>vulnerability reports are not accepted</strong>.</p>
+</div>
+<div class="paragraph">
+<p>This final phase is entered after an official PMC vote and public announcement.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We avoid using the term <strong>support</strong> to describe the maintenance phases, because support remains available in <strong>all</strong> phases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>See <a href="https://logging.apache.org/support.html#discussions-user">Community support</a> for the community-run discussion channels that are offered on a best-effort basis.</p>
+</li>
+<li>
+<p>Although the ASF does not endorse any third-party commercial providers, some companies may offer paid support for EOM or EOL versions.
+See <a href="https://logging.apache.org/support.html#commercial">Commercial support</a> for a publicly maintained list of such providers.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
