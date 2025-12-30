@@ -450,6 +450,9 @@
 <li>
 <p>Fix incorrect handling of the host name verification (i.e., <code>verifyHostName</code>) in <code>SslSocketManager</code>, which is used by Socket Appender when SSL/TLS is enabled (<a href="https://github.com/apache/logging-log4j2/pull/4002">4002</a>)</p>
 </li>
+<li>
+<p>Fix header write in <code>RollingRandomAccessFileManager</code> that was being incorrectly skipped if <code>append=true</code> and the file didn&#8217;t exist before.</p>
+</li>
 </ul>
 </div>
 </div>
