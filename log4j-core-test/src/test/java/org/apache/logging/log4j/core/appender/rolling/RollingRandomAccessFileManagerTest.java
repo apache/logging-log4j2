@@ -47,6 +47,8 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests the RollingRandomAccessFileManager class.
@@ -335,10 +337,23 @@ class RollingRandomAccessFileManagerTest {
         assertEquals(filePermissions, actualFilePermissions);
     }
 
-    @Test
-    void testWriteHeaderWhenFileDoesNotExistBefore() throws IOException {
+    @ParameterizedTest
+    @CsvSource({
+            "true,true",
+            "true,false",
+            "false,true",
+            "false,false",
+    })
+    void testWriteHeaderWhetherAppendOrExists(final boolean append, final boolean fileExists) throws Exception {
         final File file = File.createTempFile("log4j2", "test");
-        file.delete(); // Ensure file doesn't exist
+        if (!fileExists) {
+            file.delete(); // Ensure file doesn't exist
+        } else {
+            // If file exists, write some content to it so it's not empty
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write("EXISTING_CONTENT".getBytes());
+            }
+        }
         file.deleteOnExit();
 
         final String header = "HEADER";
@@ -346,11 +361,10 @@ class RollingRandomAccessFileManagerTest {
                 .setHeader(header)
                 .build();
 
-        final boolean isAppend = true;
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 file.getAbsolutePath(),
                 Strings.EMPTY,
-                isAppend,
+                append,
                 true,
                 RollingRandomAccessFileManager.DEFAULT_BUFFER_SIZE,
                 new SizeBasedTriggeringPolicy(Long.MAX_VALUE),
@@ -364,10 +378,20 @@ class RollingRandomAccessFileManagerTest {
         assertNotNull(manager);
         manager.close();
 
-        // Verify header was written
+        // Verify header was written based on logic: writeHeader = !append || !fileExistedBefore
+        // Note: writeHeader() also checks file.length() == 0, so header is only written if file is empty
         assertTrue(file.exists(), "File should exist");
         final byte[] fileContent = Files.readAllBytes(file.toPath());
         final String content = new String(fileContent);
-        assertTrue(content.startsWith(header), "File should start with header: " + content);
+        final boolean expectedHeaderWritten = !append || !fileExists;
+        if (expectedHeaderWritten) {
+            assertTrue(content.startsWith(header), "File should start with header when append=" + append
+                    + ", fileExists=" + fileExists + ", content: " + content);
+        } else {
+            // When append=true and fileExists=true, file has existing content, so header should not be written
+            assertTrue(!content.startsWith(header),
+                    "File should not start with header when append=" + append + ", fileExists=" + fileExists
+                            + ", content: " + content);
+        }
     }
 }
