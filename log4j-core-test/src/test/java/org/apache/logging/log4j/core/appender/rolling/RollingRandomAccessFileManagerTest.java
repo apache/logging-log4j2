@@ -339,10 +339,10 @@ class RollingRandomAccessFileManagerTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true,true",
-            "true,false",
-            "false,true",
-            "false,false",
+        "true,true",
+        "true,false",
+        "false,true",
+        "false,false",
     })
     void testWriteHeaderWhetherAppendOrExists(final boolean append, final boolean fileExists) throws Exception {
         final File file = File.createTempFile("log4j2", "test");
@@ -357,9 +357,8 @@ class RollingRandomAccessFileManagerTest {
         file.deleteOnExit();
 
         final String header = "HEADER";
-        final PatternLayout layout = PatternLayout.newBuilder()
-                .setHeader(header)
-                .build();
+        final PatternLayout layout =
+                PatternLayout.newBuilder().setHeader(header).build();
 
         final RollingRandomAccessFileManager manager = RollingRandomAccessFileManager.getRollingRandomAccessFileManager(
                 file.getAbsolutePath(),
@@ -385,11 +384,14 @@ class RollingRandomAccessFileManagerTest {
         final String content = new String(fileContent);
         final boolean expectedHeaderWritten = !append || !fileExists;
         if (expectedHeaderWritten) {
-            assertTrue(content.startsWith(header), "File should start with header when append=" + append
-                    + ", fileExists=" + fileExists + ", content: " + content);
+            assertTrue(
+                    content.startsWith(header),
+                    "File should start with header when append=" + append + ", fileExists=" + fileExists + ", content: "
+                            + content);
         } else {
             // When append=true and fileExists=true, file has existing content, so header should not be written
-            assertTrue(!content.startsWith(header),
+            assertTrue(
+                    !content.startsWith(header),
                     "File should not start with header when append=" + append + ", fileExists=" + fileExists
                             + ", content: " + content);
         }
