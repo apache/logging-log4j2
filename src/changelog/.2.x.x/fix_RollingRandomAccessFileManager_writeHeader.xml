@@ -6,7 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <description format="asciidoc">
-    Fix writeHeader computation in RollingRandomAccessFileManager. The writeHeader boolean was computed after creating the RandomAccessFile, which creates the file if it doesn't exist. This made file.exists() always return true, causing incorrect header write decisions when append=true and the file didn't exist before.
+    Fix header write in `RollingRandomAccessFileManager` that was being incorrectly skipped if `append=true` and the file didn't exist before.
   </description>
 </entry>
 
