@@ -177,7 +177,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                             boolean fileExistedBefore = false;
                             if (fileName != null) {
                                 file = new File(name);
-                                fileExistedBefore = new File(name).exists();
+                                fileExistedBefore = file.exists();
 
                                 if (!append) {
                                     file.delete();
