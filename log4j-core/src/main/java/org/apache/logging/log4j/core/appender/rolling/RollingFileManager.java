@@ -30,9 +30,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.apache.logging.log4j.core.Layout;
@@ -72,10 +72,18 @@ public class RollingFileManager extends FileManager {
     private final boolean directWrite;
     private final CopyOnWriteArrayList<RolloverListener> rolloverListeners = new CopyOnWriteArrayList<>();
 
-    /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
-    us to make sure all the Threads are completed when the Manager is stopped. */
-    private final ExecutorService asyncExecutor =
-            new ThreadPoolExecutor(0, Integer.MAX_VALUE, 0, TimeUnit.MILLISECONDS, new EmptyQueue(), threadFactory);
+    /* This scheduled executor pool handles both immediate async actions and delayed compression actions.
+     * For immediate tasks, it creates new threads like the original ThreadPoolExecutor.
+     * For delayed tasks, it uses the scheduling capabilities.
+     * Using it allows us to make sure all the Threads are completed when the Manager is stopped. */
+    private final ScheduledExecutorService asyncExecutor = new ScheduledThreadPoolExecutor(0, threadFactory) {
+        @Override
+        public void execute(Runnable command) {
+            // For immediate execution, create a new thread to maintain original behavior
+            Thread thread = getThreadFactory().newThread(command);
+            thread.start();
+        }
+    };
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(
@@ -636,6 +644,14 @@ public class RollingFileManager extends FileManager {
      */
     public RolloverStrategy getRolloverStrategy() {
         return this.rolloverStrategy;
+    }
+
+    /**
+     * Returns the async executor service for both immediate and delayed actions.
+     * @return The ScheduledExecutorService
+     */
+    public ScheduledExecutorService getAsyncExecutor() {
+        return this.asyncExecutor;
     }
 
     private boolean rollover(final RolloverStrategy strategy) {
