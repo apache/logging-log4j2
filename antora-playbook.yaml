@@ -130,6 +130,11 @@ ui:
           .hljs-string {
             color: #0f8532;
           }
+          /* Colors for maintenance policies */
+          .development { color: #8A4FFF; }
+          .active { color: #28A745; }
+          .eom { color: #FFC107; }
+          .eol { color: #DC3545; }
         </style>
 
     - path: partials/header-content.hbs

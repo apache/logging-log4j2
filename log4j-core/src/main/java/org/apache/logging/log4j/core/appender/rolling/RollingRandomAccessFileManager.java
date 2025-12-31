@@ -174,8 +174,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                             long size = 0;
                             long time = System.currentTimeMillis();
                             RandomAccessFile raf = null;
+                            boolean fileExistedBefore = false;
                             if (fileName != null) {
                                 file = new File(name);
+                                fileExistedBefore = file.exists();
 
                                 if (!append) {
                                     file.delete();
@@ -207,7 +209,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                     return null;
                                 }
                             }
-                            final boolean writeHeader = !append || file == null || !file.exists();
+                            final boolean writeHeader = !append || file == null || !fileExistedBefore;
 
                             final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(
                                     data.getLoggerContext(),
