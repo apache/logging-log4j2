@@ -739,14 +739,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
         Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
 
-        // Apply delayed compression if configured
-        // DelayedCompressionAction is applied here (rather than wrapping compressAction earlier) to ensure:
-        // 1. Custom actions execute immediately without delay
-        // 2. Only compression-related actions are delayed
-        // 3. POSIX attribute propagation happens before delay scheduling
-        // 4. Clean separation between immediate and delayed operations
         if (asyncAction != null && delayedCompressionSeconds > 0) {
-            asyncAction = new DelayedCompressionAction(asyncAction, delayedCompressionSeconds, manager.getAsyncExecutor());
+            // Wrap the entire async action with delay - DelayedCompressionAction will provide
+            // delay configuration for RollingFileManager to handle scheduling
+            asyncAction = new DelayedCompressionAction(asyncAction, delayedCompressionSeconds);
         }
 
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);

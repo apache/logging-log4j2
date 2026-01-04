@@ -44,6 +44,8 @@ import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.Schedulable;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Constants;
@@ -686,7 +688,7 @@ public class RollingFileManager extends FileManager {
 
                 if (syncActionSuccess && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
+                    scheduleActionsWithDelay(descriptor.getAsynchronous());
                     asyncActionStarted = false;
                 }
             }
@@ -890,5 +892,76 @@ public class RollingFileManager extends FileManager {
             }
             return false;
         }
+    }
+
+    /**
+     * Schedules actions with delays based on their Schedulable interface implementation.
+     * Actions implementing Schedulable with positive delays are scheduled individually,
+     * while others are executed immediately.
+     *
+     * @param action the action to schedule
+     */
+    private void scheduleActionsWithDelay(Action action) {
+        if (action instanceof Schedulable) {
+            Schedulable schedulableAction = (Schedulable) action;
+            int delaySeconds = schedulableAction.getDelaySeconds();
+
+            if (delaySeconds > 0) {
+                // Schedule the action with its specific delay
+                LOGGER.debug("Scheduling action with {} seconds delay", delaySeconds);
+                asyncExecutor.schedule(
+                    new AsyncAction(action, this),
+                    delaySeconds,
+                    TimeUnit.SECONDS
+                );
+                return;
+            }
+        }
+
+        if (action instanceof CompositeAction) {
+            // Handle each action in the composite separately
+            scheduleCompositeAction((CompositeAction) action);
+        } else {
+            // Execute immediately if no delay
+            asyncExecutor.execute(new AsyncAction(action, this));
+        }
+    }
+
+    /**
+     * Schedules actions within a CompositeAction based on their individual delays.
+     *
+     * @param compositeAction the CompositeAction to schedule
+     */
+    private void scheduleCompositeAction(CompositeAction compositeAction) {
+        Action[] actions = compositeAction.getActions();
+        for (Action action : actions) {
+            scheduleIndividualAction(action);
+        }
+    }
+
+    /**
+     * Schedules an individual action based on its Schedulable interface.
+     *
+     * @param action the action to schedule
+     */
+    private void scheduleIndividualAction(Action action) {
+        if (action instanceof Schedulable) {
+            Schedulable schedulableAction = (Schedulable) action;
+            int delaySeconds = schedulableAction.getDelaySeconds();
+
+            if (delaySeconds > 0) {
+                // Schedule the action with its specific delay
+                LOGGER.debug("Scheduling individual action with {} seconds delay", delaySeconds);
+                asyncExecutor.schedule(
+                    new AsyncAction(action, this),
+                    delaySeconds,
+                    TimeUnit.SECONDS
+                );
+                return;
+            }
+        }
+
+        // Execute immediately if no delay
+        asyncExecutor.execute(new AsyncAction(action, this));
     }
 }

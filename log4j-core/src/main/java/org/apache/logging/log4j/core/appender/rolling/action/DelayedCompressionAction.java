@@ -20,137 +20,47 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Wrapper action that schedules compression for delayed execution.
- * This action wraps another action and schedules it to be executed
- * after a random delay within a specified time window using ScheduledExecutorService.
+ * Wrapper action that provides delay configuration for compression actions.
+ * This action wraps another action and specifies a delay time, allowing
+ * the scheduling to be handled externally by RollingFileManager.
  */
-public class DelayedCompressionAction implements Action {
+public class DelayedCompressionAction extends AbstractAction implements Schedulable {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Action originalAction;
-    private final int maxDelaySeconds;
-    private final ScheduledExecutorService scheduler;
-    private final AtomicBoolean complete = new AtomicBoolean(false);
-    private final AtomicBoolean interrupted = new AtomicBoolean(false);
-    private final AtomicReference<ScheduledFuture<?>> scheduledTask = new AtomicReference<>();
+    private final int delaySeconds;
 
     /**
      * Creates a new DelayedCompressionAction.
      *
      * @param originalAction the action to be executed with delay
-     * @param maxDelaySeconds the maximum delay in seconds (0 means immediate execution)
-     * @param scheduler the ScheduledExecutorService to use for scheduling
+     * @param delaySeconds the delay in seconds (0 means immediate execution)
      */
-    public DelayedCompressionAction(Action originalAction, int maxDelaySeconds, ScheduledExecutorService scheduler) {
+    public DelayedCompressionAction(Action originalAction, int delaySeconds) {
         this.originalAction = requireNonNull(originalAction, "originalAction");
-        this.maxDelaySeconds = maxDelaySeconds;
-        this.scheduler = requireNonNull(scheduler, "scheduler");
+        this.delaySeconds = delaySeconds;
     }
 
     /**
-     * Executes the action with a delay using ScheduledExecutorService.
+     * Executes the wrapped action immediately.
+     * The delay is handled externally by RollingFileManager based on the
+     * getDelaySeconds() method.
      *
-     * @return true if the action was successfully executed or scheduled
+     * @return true if the action was successfully executed
      * @throws IOException if an error occurs during execution
      */
     @Override
     public boolean execute() throws IOException {
-        if (interrupted.get()) {
-            return false;
-        }
-
-        // Extract source file name for logging (if possible)
         String sourceFile = extractSourceFileName(originalAction);
-// Calculate delay
-        int delayedSeconds = 0;
-        try {
-            if (maxDelaySeconds > 0) {
-                delayedSeconds = ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
-                LOGGER.debug("Scheduling compression of {} with delay of {} seconds", sourceFile, delayedSeconds);
-            }
 
-            // Schedule the task if there's a delay period
-            if (delayedSeconds > 0) {
-                ScheduledFuture<?> future = scheduler.schedule(
-                    new CompressionTask(originalAction, sourceFile),
-                    delayedSeconds,
-                    TimeUnit.SECONDS
-                );
-                scheduledTask.set(future);
-                LOGGER.debug("Compression task scheduled for {} seconds from now", delayedSeconds);
-                return true;
-            } else {
-                // Execute immediately if no delay
-                return executeAction(originalAction, sourceFile);
-            }
-        } catch (Exception e) {
-            if (delayedSeconds == 0) {
-                complete.set(true);
-            }
-            if (e instanceof IOException) {
-                throw (IOException) e;
-            }
-            throw new IOException(e);
-        }
-    }
-
-    /**
-     * Runs the action. This method is called when the action is executed
-     * as a Runnable.
-     */
-    @Override
-    public void run() {
-        if (!interrupted.get()) {
-            try {
-                execute();
-            } catch (final RuntimeException ex) {
-                LOGGER.warn("Exception during delayed compression execution", ex);
-                complete.set(true);
-            } catch (final IOException ex) {
-                LOGGER.warn("IOException during delayed compression execution", ex);
-                complete.set(true);
-            } catch (final Error e) {
-                LOGGER.warn("Error during delayed compression execution", e);
-                complete.set(true);
-            }
-        }
-    }
-
-    /**
-     * Cancels the compression task.
-     */
-    @Override
-    public void close() {
-        interrupted.set(true);
-        ScheduledFuture<?> future = scheduledTask.get();
-        if (future != null) {
-            future.cancel(true);
-        }
-        complete.set(true);
-    }
-
-    /**
-     * Executes the compression action immediately.
-     *
-     * @param action the action to execute
-     * @param sourceFile the source file name (for logging)
-     * @return true if execution was successful
-     */
-    private boolean executeAction(Action action, String sourceFile) {
         try {
             LOGGER.debug("Starting delayed compression of {}", sourceFile);
-            boolean success = action.execute();
+            boolean success = originalAction.execute();
             if (success) {
                 LOGGER.debug("Successfully completed delayed compression of {}", sourceFile);
             } else {
@@ -159,20 +69,11 @@ public class DelayedCompressionAction implements Action {
             return success;
         } catch (Exception e) {
             LOGGER.warn("Exception during delayed compression of {}", sourceFile, e);
-            return false;
-        } finally {
-            complete.set(true);
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            }
+            throw new IOException(e);
         }
-    }
-
-    /**
-     * Checks if the action has completed.
-     *
-     * @return true if the action is complete
-     */
-    @Override
-    public boolean isComplete() {
-        return complete.get();
     }
 
     /**
@@ -197,40 +98,24 @@ public class DelayedCompressionAction implements Action {
     }
 
     /**
-     * Gets the maximum delay in seconds for compression.
+     * Gets the delay in seconds for compression.
      *
-     * @return the maximum delay in seconds
+     * @return the delay in seconds
      */
-    public int getMaxDelaySeconds() {
-        return maxDelaySeconds;
+    public int getDelaySeconds() {
+        return delaySeconds;
     }
 
-    /**
-     * Task that executes the compression action.
-     */
-    private class CompressionTask implements Runnable {
-        private final Action action;
-        private final String sourceFile;
-
-        CompressionTask(Action action, String sourceFile) {
-            this.action = action;
-            this.sourceFile = sourceFile;
-        }
-
-        @Override
-        public void run() {
-            if (!interrupted.get()) {
-                executeAction(action, sourceFile);
-            } else {
-                complete.set(true);
-                LOGGER.debug("Compression task was interrupted for {}", sourceFile);
-            }
-        }
+    @Override
+    public boolean isComplete() {
+        // For simplicity, we consider this action complete after execution
+        // In a more sophisticated implementation, we might track the wrapped action's completion
+        return true;
     }
 
     @Override
     public String toString() {
-        return "DelayedCompressionAction[originalAction=" + originalAction + ", maxDelaySeconds=" + maxDelaySeconds + "]";
+        return "DelayedCompressionAction[originalAction=" + originalAction + ", delaySeconds=" + delaySeconds + "]";
     }
 }
 
