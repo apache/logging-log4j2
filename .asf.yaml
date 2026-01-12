@@ -2,7 +2,6 @@ publish:
   whoami: main-site-pro-out
   subdir: content/log4j/3.x
 
-
 # INFRA cannot handle change sets bigger than a certain size: https://the-asf.slack.com/archives/CBX4TSBQ8/p1709724983391709
 # This file will be used to push a small commit to help the INFRA to recover.
 #
