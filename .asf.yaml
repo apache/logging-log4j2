@@ -1,5 +1,4 @@
 publish:
-  profile: ~
   whoami: main-site-pro-out
   subdir: content/log4j/3.x
 
@@ -9,6 +8,6 @@ publish:
 #
 # Random values to cause a change:
 #
-# - Seed: 20304
+# - Seed: 20306
 # - Commit ID: d12724d13676cb058e5d261b613ddd9cc80332c2
 # - Timestamp: 2025-03-21T08:26:36Z
