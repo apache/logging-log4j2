@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -43,16 +45,30 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         public static final String ATTR_ON_MISMATCH = "onMismatch";
         public static final String ATTR_ON_MATCH = "onMatch";
 
+        /**
+         * The action to perform when a match occurs.
+         */
         @PluginBuilderAttribute(ATTR_ON_MATCH)
-        private Result onMatch = Result.NEUTRAL;
+        protected Result onMatch = Result.NEUTRAL;
 
+        /**
+         * The action to perform when a mismatch occurs.
+         */
         @PluginBuilderAttribute(ATTR_ON_MISMATCH)
-        private Result onMismatch = Result.DENY;
+        protected Result onMismatch = Result.DENY;
 
+        /**
+         * Returns the action to apply when a match occurs
+         * @return the match result
+         */
         public Result getOnMatch() {
             return onMatch;
         }
 
+        /**
+         * Returns the action to apply when a mismatch occurs
+         * @return the mismatch result
+         */
         public Result getOnMismatch() {
             return onMismatch;
         }
@@ -108,6 +124,19 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
     protected AbstractFilter(final Result onMatch, final Result onMismatch) {
         this.onMatch = onMatch == null ? Result.NEUTRAL : onMatch;
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
+    }
+
+    /**
+     * Constructs a new instance configured by the given builder
+     * @param builder the builder
+     * @throws NullPointerException if the builder argument is {@code null}
+     */
+    protected AbstractFilter(final AbstractFilterBuilder<?> builder) {
+
+        Objects.requireNonNull(builder, "The 'builder' argument cannot be null.");
+
+        this.onMatch = Optional.ofNullable(builder.onMatch).orElse(Result.NEUTRAL);
+        this.onMismatch = Optional.ofNullable(builder.onMismatch).orElse(Result.DENY);
     }
 
     @Override
