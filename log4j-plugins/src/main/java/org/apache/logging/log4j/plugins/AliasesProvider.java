@@ -14,20 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.config.plugins.util;
+package org.apache.logging.log4j.plugins;
 
-import static java.util.Optional.ofNullable;
-import static org.apache.logging.log4j.util.Strings.trimToNull;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.Optional;
-import org.apache.logging.log4j.core.config.plugins.PluginValue;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-
-@Deprecated(since = "3.0", forRemoval = true)
-@SuppressWarnings("removal")
-public class PluginValueNameProvider implements AnnotatedElementNameProvider<PluginValue> {
-    @Override
-    public Optional<String> getSpecifiedName(final PluginValue annotation) {
-        return ofNullable(trimToNull(annotation.value()));
-    }
+/**
+ * Marks another annotation as one providing aliases for an object. The annotation must define an element
+ * named {@code value} of type {@code String[]} that contains the aliases. An offset can define where to
+ * begin reading the aliases.
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface AliasesProvider {
+    /**
+     * Offset within the {@code value} array to read aliases from.
+     */
+    int offset() default 0;
 }
