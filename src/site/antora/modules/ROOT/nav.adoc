@@ -87,6 +87,5 @@
 .Related projects
 * {logging-services-url}/log4j/jmx-gui/index.html[Log4j JMX GUI]
 * {logging-services-url}/log4j/kotlin/index.html[Log4j Kotlin]
-* {logging-services-url}/log4j/scala/index.html[Log4j Scala]
 * {logging-services-url}/log4j/tools/index.html[Log4j Tools]
 * {logging-services-url}/log4j/transform/index.html[Log4j Transformation Tools]
