@@ -29,10 +29,10 @@
   <description>Add additional compression formats to Log4j Core.</description>
 
   <properties>
-    <commons-compress.version>1.27.1</commons-compress.version>
+    <commons-compress.version>1.28.0</commons-compress.version>
     <jimfs.version>1.3.1</jimfs.version>
-    <xz.version>1.10</xz.version>
-    <zstd.version>1.5.7-4</zstd.version>
+    <xz.version>1.11</xz.version>
+    <zstd.version>1.5.7-6</zstd.version>
   </properties>
 
   <dependencyManagement>
