@@ -51,7 +51,7 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <docker-maven-plugin.version>0.46.0</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.48.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.14.0</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
@@ -60,38 +60,38 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>6.1.7</activemq.version>
-    <angus-activation.version>2.0.2</angus-activation.version>
-    <angus-mail.version>2.0.3</angus-mail.version>
-    <assertj.version>3.27.3</assertj.version>
+    <activemq.version>6.2.0</activemq.version>
+    <angus-activation.version>2.0.3</angus-activation.version>
+    <angus-mail.version>2.0.5</angus-mail.version>
+    <assertj.version>3.27.7</assertj.version>
     <awaitility.version>4.3.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <bnd.annotation.version>7.1.0</bnd.annotation.version>
+    <bnd.annotation.version>7.2.1</bnd.annotation.version>
     <cassandra.version>3.11.19</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
-    <commons-codec.version>1.18.0</commons-codec.version>
-    <commons-compress.version>1.27.1</commons-compress.version>
-    <commons-csv.version>1.14.0</commons-csv.version>
-    <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
-    <commons-io.version>2.19.0</commons-io.version>
-    <commons-lang3.version>3.18.0</commons-lang3.version>
+    <commons-codec.version>1.21.0</commons-codec.version>
+    <commons-compress.version>1.28.0</commons-compress.version>
+    <commons-csv.version>1.14.1</commons-csv.version>
+    <commons-dbcp2.version>2.14.0</commons-dbcp2.version>
+    <commons-io.version>2.21.0</commons-io.version>
+    <commons-lang3.version>3.20.0</commons-lang3.version>
     <commons-logging.version>1.3.5</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
-    <error-prone-annotations.version>2.38.0</error-prone-annotations.version>
+    <error-prone-annotations.version>2.46.0</error-prone-annotations.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.27</groovy.version>
-    <guava.version>33.4.8-jre</guava.version>
+    <groovy.version>5.0.4</groovy.version>
+    <guava.version>33.5.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.4</hsqldb.version>
-    <jackson-bom.version>2.19.2</jackson-bom.version>
+    <jackson-bom.version>2.21.0</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
-    <jakarta-activation.version>2.1.3</jakarta-activation.version>
-    <jakarta-mail.version>2.1.3</jakarta-mail.version>
+    <jakarta-activation.version>2.1.4</jakarta-activation.version>
+    <jakarta-mail.version>2.1.5</jakarta-mail.version>
     <!-- BOM with Jakarta EE 9 APIs: -->
     <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
     <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
@@ -103,15 +103,15 @@
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <java-allocation-instrumenter.version>3.3.4</java-allocation-instrumenter.version>
-    <jazzer.version>0.24.0</jazzer.version>
+    <jazzer.version>0.29.1</jazzer.version>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.5</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
-    <jmdns.version>3.6.1</jmdns.version>
+    <jmdns.version>3.6.3</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <jspecify.version>1.0.0</jspecify.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.13.4</junit-jupiter.version>
+    <junit-jupiter.version>6.0.2</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.9.1</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
@@ -120,10 +120,10 @@
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
     <log4j2-ecs-layout.version>1.7.0</log4j2-ecs-layout.version>
     <logback.version>1.3.15</logback.version>
-    <maven.version>3.9.10</maven.version>
+    <maven.version>3.9.12</maven.version>
     <mockito.version>4.11.0</mockito.version>
-    <nashorn.version>15.6</nashorn.version>
-    <org.eclipse.osgi.version>3.23.100</org.eclipse.osgi.version>
+    <nashorn.version>15.7</nashorn.version>
+    <org.eclipse.osgi.version>3.24.0</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.16</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports: -->
@@ -137,9 +137,9 @@
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
-    <xmlunit.version>2.10.3</xmlunit.version>
-    <xz.version>1.10</xz.version>
-    <zstd.version>1.5.7-4</zstd.version>
+    <xmlunit.version>2.11.0</xmlunit.version>
+    <xz.version>1.11</xz.version>
+    <zstd.version>1.5.7-6</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -150,10 +150,10 @@
          ===================================================== -->
     <asm.version>9.6</asm.version>
     <byte-buddy.version>1.14.9</byte-buddy.version>
-    <commons-pool2.version>2.12.1</commons-pool2.version>
+    <commons-pool2.version>2.13.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jna.version>5.17.0</jna.version>
+    <jna.version>5.18.1</jna.version>
 
     <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
          to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
@@ -1084,7 +1084,7 @@
       <plugin>
         <groupId>org.gradlex</groupId>
         <artifactId>gradle-module-metadata-maven-plugin</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
         <configuration>
           <compileOnlyApiDependencies>
             <dependency>
