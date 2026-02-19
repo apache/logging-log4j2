@@ -79,6 +79,23 @@ public class ThrowablePatternConverterTest {
         }
     }
 
+    /**
+     * Test exception whose {@link #toString()} is intentionally overridden to return a fixed value.
+     */
+    private static final class ToStringOverridingException extends RuntimeException {
+
+        private static final ToStringOverridingException INSTANCE = new ToStringOverridingException();
+
+        private ToStringOverridingException() {
+            super(EXCEPTION);
+        }
+
+        @Override
+        public String toString() {
+            return "foo";
+        }
+    }
+
     static Stream<SeparatorTestCase> separatorTestCases() {
         final String level = LEVEL.toString();
         return Stream.of(
@@ -214,6 +231,14 @@ public class ThrowablePatternConverterTest {
             assertThat(actualStackTrace).as("pattern=`%s`", effectivePattern).isEqualTo(expectedStackTrace);
         }
 
+        @Test
+        void full_output_should_use_custom_toString() {
+            final Throwable exception = ToStringOverridingException.INSTANCE;
+            final String expectedStackTrace = renderStackTraceUsingJava(exception);
+            final String actualStackTrace = convert(patternPrefix, exception);
+            assertThat(actualStackTrace).isEqualTo(expectedStackTrace);
+        }
+
         // This test does not provide `separator` and `suffix` options, since the reference output will be obtained from
         // `Throwable#printStackTrace()`, which doesn't take these into account.
         @ParameterizedTest
@@ -252,10 +277,14 @@ public class ThrowablePatternConverterTest {
         }
 
         private String renderStackTraceUsingJava() {
+            return renderStackTraceUsingJava(EXCEPTION);
+        }
+
+        private String renderStackTraceUsingJava(final Throwable throwable) {
             final Charset charset = StandardCharsets.UTF_8;
             try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     final PrintStream printStream = new PrintStream(outputStream, false, charset.name())) {
-                EXCEPTION.printStackTrace(printStream);
+                throwable.printStackTrace(printStream);
                 printStream.flush();
                 return new String(outputStream.toByteArray(), charset);
             } catch (final Exception error) {
@@ -545,9 +574,13 @@ public class ThrowablePatternConverterTest {
     }
 
     static String convert(final String pattern) {
+        return convert(pattern, EXCEPTION);
+    }
+
+    static String convert(final String pattern, final Throwable throwable) {
         final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(pattern, false, true, true);
         final LogEvent logEvent =
-                Log4jLogEvent.newBuilder().setThrown(EXCEPTION).setLevel(LEVEL).build();
+                Log4jLogEvent.newBuilder().setThrown(throwable).setLevel(LEVEL).build();
         final StringBuilder buffer = new StringBuilder();
         for (final PatternFormatter patternFormatter : patternFormatters) {
             patternFormatter.format(logEvent, buffer);
