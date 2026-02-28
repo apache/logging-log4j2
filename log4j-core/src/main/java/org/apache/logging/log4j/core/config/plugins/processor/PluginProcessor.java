@@ -98,8 +98,7 @@ public class PluginProcessor extends AbstractProcessor {
 
             // process plugin builder Attributes
             final Set<? extends Element> pluginAttributeBuilderElements =
-                    roundEnv.getElementsAnnotatedWith(
-                            elementUtils.getTypeElement(PLUGIN_BUILDER_ATTRIBUTE_ANNOTATION));
+                    roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(PLUGIN_BUILDER_ATTRIBUTE_ANNOTATION));
             processBuilderAttribute(pluginAttributeBuilderElements);
             processedElements.addAll(pluginAttributeBuilderElements);
         }
