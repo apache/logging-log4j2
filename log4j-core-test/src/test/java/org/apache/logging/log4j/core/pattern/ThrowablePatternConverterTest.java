@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import static java.util.Arrays.asList;
 import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import foo.TestFriendlyException;
 import java.io.ByteArrayOutputStream;
@@ -383,6 +384,101 @@ public class ThrowablePatternConverterTest {
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	... 3 more",
                             "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
+        }
+
+        /**
+         * Verifies that the extended stack trace renderer does not propagate
+         * {@link Throwable} when a class in the stack trace cannot be resolved.
+         *
+         * @see <a href="https://github.com/apache/logging-log4j2/issues/4028">#4028</a>
+         */
+        @Test
+        @Issue("https://github.com/apache/logging-log4j2/issues/4028")
+        void rendering_should_succeed_with_nonexistent_class_in_stack_trace() {
+
+            // Create an exception with a stack trace element referencing a non-existent class
+            final Exception exception = new Exception("test exception");
+            final StackTraceElement[] originalTrace = exception.getStackTrace();
+            final StackTraceElement[] modifiedTrace = new StackTraceElement[originalTrace.length + 1];
+            modifiedTrace[0] = new StackTraceElement(
+                    "com.nonexistent.deliberately.missing.ClassName",
+                    "someMethod",
+                    "ClassName.java",
+                    42);
+            System.arraycopy(originalTrace, 0, modifiedTrace, 1, originalTrace.length);
+            exception.setStackTrace(modifiedTrace);
+
+            // Create the formatter using patternPrefix (e.g., "%xEx" for extended)
+            final List<PatternFormatter> patternFormatters =
+                    PATTERN_PARSER.parse(patternPrefix, false, true, true);
+            assertThat(patternFormatters).hasSize(1);
+            final PatternFormatter patternFormatter = patternFormatters.get(0);
+
+            final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                    .setThrown(exception)
+                    .setLevel(LEVEL)
+                    .build();
+            final StringBuilder buffer = new StringBuilder();
+
+            // The rendering should not throw any exception
+            assertThatNoException().isThrownBy(() -> patternFormatter.format(logEvent, buffer));
+
+            // The output should contain our non-existent class name and the exception message
+            final String output = buffer.toString();
+            assertThat(output).contains("com.nonexistent.deliberately.missing.ClassName");
+            assertThat(output).contains("test exception");
+        }
+
+        /**
+         * Verifies that the stack trace renderer gracefully handles a class loader
+         * that throws {@link NoClassDefFoundError} during class resolution.
+         *
+         * @see <a href="https://github.com/apache/logging-log4j2/issues/4028">#4028</a>
+         */
+        @Test
+        @Issue("https://github.com/apache/logging-log4j2/issues/4028")
+        void rendering_should_succeed_when_classloader_throws_linkage_error() {
+
+            // Create a class loader that always throws NoClassDefFoundError
+            final ClassLoader errorThrowingLoader = new ClassLoader(null) {
+                @Override
+                public Class<?> loadClass(final String name) throws ClassNotFoundException {
+                    throw new NoClassDefFoundError("Simulated missing class: " + name);
+                }
+            };
+
+            final Exception exception = new Exception("test with custom classloader");
+            exception.setStackTrace(new StackTraceElement[] {
+                    new StackTraceElement(
+                            "com.example.UnloadedClass", "doWork", "UnloadedClass.java", 10),
+                    new StackTraceElement(
+                            "com.example.CallerClass", "invoke", "CallerClass.java", 20)
+            });
+
+            final List<PatternFormatter> patternFormatters =
+                    PATTERN_PARSER.parse(patternPrefix, false, true, true);
+            assertThat(patternFormatters).hasSize(1);
+            final PatternFormatter patternFormatter = patternFormatters.get(0);
+
+            final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                    .setThrown(exception)
+                    .setLevel(LEVEL)
+                    .build();
+            final StringBuilder buffer = new StringBuilder();
+
+            // Set the error-throwing class loader as the context class loader
+            final Thread currentThread = Thread.currentThread();
+            final ClassLoader originalLoader = currentThread.getContextClassLoader();
+            try {
+                currentThread.setContextClassLoader(errorThrowingLoader);
+                assertThatNoException().isThrownBy(() -> patternFormatter.format(logEvent, buffer));
+            } finally {
+                currentThread.setContextClassLoader(originalLoader);
+            }
+
+            final String output = buffer.toString();
+            assertThat(output).contains("test with custom classloader");
+            assertThat(output).contains("com.example.UnloadedClass");
         }
     }
 

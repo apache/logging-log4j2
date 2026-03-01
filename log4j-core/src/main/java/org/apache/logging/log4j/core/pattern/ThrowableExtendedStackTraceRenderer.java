@@ -181,7 +181,7 @@ final class ThrowableExtendedStackTraceRenderer
                     if (clazz != null) {
                         return clazz;
                     }
-                } catch (final Exception | LinkageError ignored) {
+                } catch (final Throwable ignored) {
                     // Do nothing
                 }
             }
