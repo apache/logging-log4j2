@@ -577,7 +577,7 @@ public class ThrowablePatternConverterTest {
         return convert(pattern, EXCEPTION);
     }
 
-    static String convert(final String pattern, final Throwable throwable) {
+    private static String convert(final String pattern, final Throwable throwable) {
         final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(pattern, false, true, true);
         final LogEvent logEvent =
                 Log4jLogEvent.newBuilder().setThrown(throwable).setLevel(LEVEL).build();
