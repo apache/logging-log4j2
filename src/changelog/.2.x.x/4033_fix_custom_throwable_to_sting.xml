@@ -5,9 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-    <issue id="3623" link="https://github.com/apache/logging-log4j2/pull/3623"/>
+    <issue id="3623" link="https://github.com/apache/logging-log4j2/issues/3623"/>
     <issue id="4033" link="https://github.com/apache/logging-log4j2/pull/4033"/>
     <description format="asciidoc">
-        Take Throwable#toString() into account while rendering stack traces in Pattern Layout.
+        Take `Throwable#toString()` into account while rendering stack traces in Pattern Layout.
     </description>
 </entry>
