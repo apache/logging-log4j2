@@ -138,12 +138,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
     }
 
     static void renderThrowableMessage(final StringBuilder buffer, final Throwable throwable) {
-        final String message = throwable.getLocalizedMessage();
-        buffer.append(throwable.getClass().getName());
-        if (message != null) {
-            buffer.append(": ");
-            buffer.append(message);
-        }
+        buffer.append(throwable);
     }
 
     final void renderStackTraceElements(
