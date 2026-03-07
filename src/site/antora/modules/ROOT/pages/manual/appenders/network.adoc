@@ -283,6 +283,13 @@ Additional headers can be configured using the nested
 If the appender receives a response with status code different from `2xx`, an exception is thrown.
 See also <<HttpAppender-attr-ignoreExceptions,`ignoreExceptions`>> configuration attribute.
 
+[WARNING]
+====
+Sending logs synchronously, one by one to an HTTP backend is rarely a good idea. Even if the expected log
+volumes are extremely low, you should at least consider using xref:manual/async.adoc[asynchronous loggers] if
+you use this appender. Otherwise, please have a look at xref:manual/appenders.adoc#third-party[third-party appenders].
+====
+
 [NOTE]
 ====
 The implementation uses
