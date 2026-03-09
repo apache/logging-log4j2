@@ -35,9 +35,11 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
@@ -61,6 +63,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 @SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.Plugin")
+@SupportedOptions("log4j.plugin.processor.minAllowedMessageKind")
 public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
@@ -68,6 +71,21 @@ public class PluginProcessor extends AbstractProcessor {
     private static final Element[] EMPTY_ELEMENT_ARRAY = {};
 
     private static final String SUPPRESS_WARNING_PUBLIC_SETTER_STRING = "log4j.public.setter";
+
+    /**
+     * Annotation processor option that controls the minimum {@link Diagnostic.Kind} of messages emitted by this
+     * processor.
+     * <p>
+     *     Some build environments (e.g. Maven with {@code -Werror}) treat compiler notes or warnings as errors.
+     *     Setting this option to {@code WARNING} or {@code ERROR} suppresses informational notes emitted during
+     *     normal processing.
+     * </p>
+     * <p>
+     *     Accepted values (case-insensitive): {@code NOTE}, {@code WARNING}, {@code MANDATORY_WARNING},
+     *     {@code ERROR}, {@code OTHER}. Defaults to {@code NOTE}.
+     * </p>
+     */
+    static final String MIN_ALLOWED_MESSAGE_KIND_OPTION = "log4j.plugin.processor.minAllowedMessageKind";
 
     /**
      * The location of the plugin cache data file. This file is written to by this processor, and read from by
@@ -78,15 +96,58 @@ public class PluginProcessor extends AbstractProcessor {
 
     private final List<Element> processedElements = new ArrayList<>();
     private final PluginCache pluginCache = new PluginCache();
+    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+
+    @Override
+    public void init(final ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        final String kindValue = processingEnv.getOptions().get(MIN_ALLOWED_MESSAGE_KIND_OPTION);
+        if (kindValue != null) {
+            try {
+                minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
+            } catch (final IllegalArgumentException e) {
+                processingEnv
+                        .getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        PluginProcessor.class.getSimpleName(),
+                                        kindValue,
+                                        MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                        Diagnostic.Kind.NOTE,
+                                        Arrays.toString(Diagnostic.Kind.values())));
+            }
+        }
+    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latest();
     }
 
+    /**
+     * Prints a message via the {@link Messager} only if {@code kind} is at least as severe as the configured
+     * {@link #MIN_ALLOWED_MESSAGE_KIND_OPTION minimum allowed kind}.
+     */
+    private void printMessage(final Diagnostic.Kind kind, final String message) {
+        if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
+            processingEnv.getMessager().printMessage(kind, message);
+        }
+    }
+
+    /**
+     * Prints a message via the {@link Messager} only if {@code kind} is at least as severe as the configured
+     * {@link #MIN_ALLOWED_MESSAGE_KIND_OPTION minimum allowed kind}.
+     */
+    private void printMessage(final Diagnostic.Kind kind, final String message, final Element element) {
+        if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
+            processingEnv.getMessager().printMessage(kind, message, element);
+        }
+    }
+
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        final Messager messager = processingEnv.getMessager();
         // Process the elements for this round
         if (!annotations.isEmpty()) {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
@@ -102,7 +163,7 @@ public class PluginProcessor extends AbstractProcessor {
         // Write the cache file
         if (roundEnv.processingOver() && !processedElements.isEmpty()) {
             try {
-                messager.printMessage(
+                printMessage(
                         Diagnostic.Kind.NOTE,
                         String.format(
                                 "%s: writing plugin descriptor for %d Log4j Plugins to `%s`.",
@@ -115,7 +176,7 @@ public class PluginProcessor extends AbstractProcessor {
                         .append(PLUGIN_CACHE_FILE)
                         .append("\n");
                 e.printStackTrace(new PrintWriter(sw));
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, sw.toString());
+                printMessage(Diagnostic.Kind.ERROR, sw.toString());
             }
         }
         // Do not claim the annotations to allow other annotation processors to run
@@ -177,14 +238,12 @@ public class PluginProcessor extends AbstractProcessor {
                 }
             }
             // If the setter was not found generate a compiler warning.
-            processingEnv
-                    .getMessager()
-                    .printMessage(
-                            Diagnostic.Kind.ERROR,
-                            String.format(
-                                    "The field `%s` does not have a public setter, Note that @SuppressWarnings(\"%s\"), can be used on the field to suppress the compilation error. ",
-                                    fieldName, SUPPRESS_WARNING_PUBLIC_SETTER_STRING),
-                            element);
+            printMessage(
+                    Diagnostic.Kind.ERROR,
+                    String.format(
+                            "The field `%s` does not have a public setter, Note that @SuppressWarnings(\"%s\"), can be used on the field to suppress the compilation error. ",
+                            fieldName, SUPPRESS_WARNING_PUBLIC_SETTER_STRING),
+                    element);
         }
     }
 
