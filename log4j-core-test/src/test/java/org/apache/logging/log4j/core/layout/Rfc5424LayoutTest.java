@@ -29,8 +29,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -57,6 +60,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
@@ -88,6 +93,10 @@ class Rfc5424LayoutTest {
     private static final String collectionLine3 =
             "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
+
+    private static final String NEW_LINE_ESCAPE = "\\n";
+    private static final String INCLUDED_KEYS = "key1, key2, locale";
+    private static final String EXCLUDED_KEYS = "key3, key4";
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
@@ -791,5 +800,124 @@ class Rfc5424LayoutTest {
         final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
         final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
         assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
+    }
+
+    private static Map<String, String> attributeMap(String... keyValuePairs) {
+        Map<String, String> result = new HashMap<>();
+        for (int i = 0; i < keyValuePairs.length; i += 2) {
+            result.put(keyValuePairs[i], keyValuePairs[i + 1]);
+        }
+        return result;
+    }
+
+    private static Rfc5424Layout buildRfc5424Layout(Map<String, String> attributes) {
+        PluginManager manager = new PluginManager(Node.CATEGORY);
+        manager.collectPlugins();
+
+        Node node = new Node();
+        node.getAttributes().putAll(attributes);
+
+        Object object = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+                .withConfigurationNode(node)
+                .withConfiguration(new DefaultConfiguration())
+                .build();
+
+        assertThat(object).isInstanceOf(Rfc5424Layout.class);
+        return (Rfc5424Layout) object;
+    }
+
+    private static Stream<Arguments> testAcceptsDocumentedAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of(
+                        "documented attributes",
+                        attributeMap(
+                                "newLine",
+                                "true",
+                                "newLineEscape",
+                                NEW_LINE_ESCAPE,
+                                "useTlsMessageFormat",
+                                "true",
+                                "mdcRequired",
+                                INCLUDED_KEYS)),
+                Arguments.of(
+                        "compatibility aliases",
+                        attributeMap(
+                                "includeNL",
+                                "true",
+                                "escapeNL",
+                                NEW_LINE_ESCAPE,
+                                "useTLSMessageFormat",
+                                "true",
+                                "required",
+                                INCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsDocumentedAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.isIncludeNewLine()).isTrue();
+        // The field contains Matcher.quote() escaped value, so we expect the backslash to be escaped.
+        assertThat(layout.getEscapeNewLine()).isEqualTo("\\\\n");
+        assertThat(layout.isUseTlsMessageFormat()).isTrue();
+        assertThat(layout.getMdcRequired()).containsExactly("key1", "key2", "locale");
+    }
+
+    private static Stream<Arguments> testAcceptsIncludeAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of("documented attributes", attributeMap("mdcIncludes", INCLUDED_KEYS)),
+                Arguments.of("compatibility aliases", attributeMap("includes", INCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsIncludeAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.getMdcIncludes()).containsExactly("key1", "key2", "locale");
+        assertThat(layout.getMdcExcludes()).isNullOrEmpty();
+    }
+
+    private static Stream<Arguments> testAcceptsExcludeAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of("documented attributes", attributeMap("mdcExcludes", EXCLUDED_KEYS)),
+                Arguments.of("compatibility aliases", attributeMap("excludes", EXCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsExcludeAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.getMdcExcludes()).containsExactly("key3", "key4");
+        assertThat(layout.getMdcIncludes()).isNullOrEmpty();
+    }
+
+    private static Stream<Arguments> testRejectsIncludesAndExcludesTogether() {
+        return Stream.of(
+                Arguments.of(
+                        "documented attributes",
+                        attributeMap("mdcIncludes", INCLUDED_KEYS, "mdcExcludes", EXCLUDED_KEYS)),
+                Arguments.of(
+                        "compatibility aliases", attributeMap("includes", INCLUDED_KEYS, "excludes", EXCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testRejectsIncludesAndExcludesTogether(String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        // If both includes and excludes are specified, the layout will ignore the includes and log an error about the
+        // invalid configuration.
+        assertThat(layout.getMdcExcludes()).containsExactly("key3", "key4");
+        assertThat(layout.getMdcIncludes()).isNullOrEmpty();
     }
 }
