@@ -722,11 +722,21 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
     }
 
     public void writeNumber(final float number) {
-        stringBuilder.append(number);
+        // Follows the same logic as Jackson's JsonWriteFeatures#WRITE_NAN_AS_STRINGS feature.
+        if (!Float.isFinite(number)) {
+            writeString(Float.toString(number));
+        } else {
+            stringBuilder.append(number);
+        }
     }
 
     public void writeNumber(final double number) {
-        stringBuilder.append(number);
+        // Follows the same logic as Jackson's JsonWriteFeatures#WRITE_NAN_AS_STRINGS feature.
+        if (!Double.isFinite(number)) {
+            writeString(Double.toString(number));
+        } else {
+            stringBuilder.append(number);
+        }
     }
 
     public void writeNumber(final short number) {
