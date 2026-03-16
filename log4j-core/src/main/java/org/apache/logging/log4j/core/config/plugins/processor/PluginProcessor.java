@@ -112,7 +112,7 @@ public class PluginProcessor extends AbstractProcessor {
                                 Diagnostic.Kind.WARNING,
                                 String.format(
                                         "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                        PluginProcessor.class.getSimpleName(),
+                                        PluginProcessor.class.getName(),
                                         kindValue,
                                         MIN_ALLOWED_MESSAGE_KIND_OPTION,
                                         Diagnostic.Kind.NOTE,

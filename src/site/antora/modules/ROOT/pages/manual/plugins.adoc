@@ -220,7 +220,6 @@ Provide these values to the processor using the `log4j.graalvm.groupId` and `log
 ====
 Some build environments treat all compiler notes or warnings as errors (e.g., Maven with `-Werror` or Gradle with `options.compilerArgs << '-Werror'`).
 By default, `PluginProcessor` emits a `NOTE`-level diagnostic when it writes the plugin descriptor, which can cause the build to fail in those environments.
-
 To suppress these informational notes, pass the `log4j.plugin.processor.minAllowedMessageKind` annotation processor option with a value of `WARNING` or `ERROR`.
 This instructs the processor to only emit diagnostics at or above the specified severity, silencing routine notes while preserving genuine warnings and errors.
 
