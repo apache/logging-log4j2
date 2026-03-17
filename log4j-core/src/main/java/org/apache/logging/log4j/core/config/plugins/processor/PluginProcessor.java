@@ -55,7 +55,6 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -126,6 +125,9 @@ public class PluginProcessor extends AbstractProcessor {
         return SourceVersion.latest();
     }
 
+    private static final String PLUGIN_BUILDER_ATTRIBUTE_ANNOTATION =
+            "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute";
+
     /**
      * Prints a message via the {@link Messager} only if {@code kind} is at least as severe as the configured
      * {@link #MIN_ALLOWED_MESSAGE_KIND_OPTION minimum allowed kind}.
@@ -148,6 +150,7 @@ public class PluginProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        final Elements elementUtils = processingEnv.getElementUtils();
         // Process the elements for this round
         if (!annotations.isEmpty()) {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
@@ -156,7 +159,7 @@ public class PluginProcessor extends AbstractProcessor {
 
             // process plugin builder Attributes
             final Set<? extends Element> pluginAttributeBuilderElements =
-                    roundEnv.getElementsAnnotatedWith(PluginBuilderAttribute.class);
+                    roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(PLUGIN_BUILDER_ATTRIBUTE_ANNOTATION));
             processBuilderAttribute(pluginAttributeBuilderElements);
             processedElements.addAll(pluginAttributeBuilderElements);
         }
