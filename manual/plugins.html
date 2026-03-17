@@ -710,8 +710,17 @@ Provide these values to the processor using the <code>log4j.graalvm.groupId</cod
 </tr>
 </table>
 </div>
+<details>
+<summary class="title">Suppressing notes from <code>PluginProcessor</code> in strict build environments</summary>
+<div class="content">
 <div class="paragraph">
-<p>You need to configure your build tool as follows to use both plugin processors:</p>
+<p>Some build environments treat all compiler notes or warnings as errors (e.g., Maven with <code>-Werror</code> or Gradle with <code>options.compilerArgs &lt;&lt; '-Werror'</code>).
+By default, <code>PluginProcessor</code> emits a <code>NOTE</code>-level diagnostic when it writes the plugin descriptor, which can cause the build to fail in those environments.
+To suppress these informational notes, pass the <code>log4j.plugin.processor.minAllowedMessageKind</code> annotation processor option with a value of <code>WARNING</code> or <code>ERROR</code>.
+This instructs the processor to only emit diagnostics at or above the specified severity, silencing routine notes while preserving genuine warnings and errors.</p>
+</div>
+<div class="paragraph">
+<p>Accepted values (case-insensitive): <code>NOTE</code> (default), <code>WARNING</code>, <code>MANDATORY_WARNING</code>, <code>ERROR</code>, <code>OTHER</code>.</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -726,6 +735,43 @@ Provide these values to the processor using the <code>log4j.graalvm.groupId</cod
 </ul>
 </div>
 <div id="_tabs_1_maven--panel" class="tabpanel" aria-labelledby="_tabs_1_maven">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;compilerArgs&gt;
+  &lt;arg&gt;-Alog4j.plugin.processor.minAllowedMessageKind=WARNING&lt;/arg&gt;
+&lt;/compilerArgs&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">compileJava {
+  options.compilerArgs &lt;&lt; '-Alog4j.plugin.processor.minAllowedMessageKind=WARNING'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>You need to configure your build tool as follows to use both plugin processors:</p>
+</div>
+<div id="_tabs_2" class="openblock tabs is-sync is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_2_maven" class="tab">
+<p>Maven</p>
+</li>
+<li id="_tabs_2_gradle" class="tab">
+<p>Gradle</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_2_maven--panel" class="tabpanel" aria-labelledby="_tabs_2_maven">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
@@ -772,7 +818,7 @@ Provide these values to the processor using the <code>log4j.graalvm.groupId</cod
 </div>
 </div>
 </div>
-<div id="_tabs_1_gradle--panel" class="tabpanel" aria-labelledby="_tabs_1_gradle">
+<div id="_tabs_2_gradle--panel" class="tabpanel" aria-labelledby="_tabs_2_gradle">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">compileJava {
