@@ -56,6 +56,11 @@ public final class GzCompressAction extends AbstractAction {
     private final int compressionLevel;
 
     /**
+     * Maximum delay in seconds before compression.
+     */
+    private final int maxDelaySeconds;
+
+    /**
      * Create new instance of GzCompressAction.
      *
      * @param source       file to compress, may not be null.
@@ -64,9 +69,15 @@ public final class GzCompressAction extends AbstractAction {
      *                     does not cause an exception to be thrown or affect return value.
      * @param compressionLevel
      *                     Gzip deflater compression level.
+     * @param maxDelaySeconds
+     *                     Maximum delay in seconds before compression.
      */
     public GzCompressAction(
-            final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int compressionLevel,
+            final int maxDelaySeconds) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
 
@@ -74,16 +85,29 @@ public final class GzCompressAction extends AbstractAction {
         this.destination = destination;
         this.deleteSource = deleteSource;
         this.compressionLevel = compressionLevel;
+        this.maxDelaySeconds = maxDelaySeconds;
+    }
+
+    /**
+     * Legacy constructor for backward compatibility.
+     * @param source file to compress, may not be null.
+     * @param destination compressed file, may not be null.
+     * @param deleteSource if true, attempt to delete file on completion.
+     * @param compressionLevel Gzip deflater compression level.
+     */
+    public GzCompressAction(
+            final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
+        this(source, destination, deleteSource, compressionLevel, 0);
     }
 
     /**
      * Prefer the constructor with compression level.
      *
-     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int)}.
+     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int, int)}.
      */
     @Deprecated
     public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
-        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
+        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION, 0);
     }
 
     /**
@@ -94,6 +118,16 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
+        if (maxDelaySeconds > 0) {
+            int delay = java.util.concurrent.ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay * 1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
         return execute(source, destination, deleteSource, compressionLevel);
     }
 

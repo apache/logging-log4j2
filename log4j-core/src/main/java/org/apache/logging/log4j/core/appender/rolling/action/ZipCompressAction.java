@@ -52,7 +52,38 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     /**
+     * Maximum delay in seconds before compression.
+     */
+    private final int maxDelaySeconds;
+
+    /**
      * Creates new instance of GzCompressAction.
+     *
+     * @param source file to compress, may not be null.
+     * @param destination compressed file, may not be null.
+     * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
+     *            to be thrown or affect return value.
+     * @param level TODO
+     * @param maxDelaySeconds maximum delay in seconds before compression.
+     */
+    public ZipCompressAction(
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int level,
+            final int maxDelaySeconds) {
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
+
+        this.source = source;
+        this.destination = destination;
+        this.deleteSource = deleteSource;
+        this.level = level;
+        this.maxDelaySeconds = maxDelaySeconds;
+    }
+
+    /**
+     * Creates new instance of GzCompressAction with default maxDelaySeconds.
      *
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
@@ -61,13 +92,7 @@ public final class ZipCompressAction extends AbstractAction {
      * @param level TODO
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
-        this.level = level;
+        this(source, destination, deleteSource, level, 0);
     }
 
     /**
@@ -78,6 +103,16 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
+        if (maxDelaySeconds > 0) {
+            int delay = java.util.concurrent.ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay * 1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
         return execute(source, destination, deleteSource, level);
     }
 

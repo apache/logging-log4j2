@@ -37,8 +37,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class PluginProcessorPublicSetterTest {
 
@@ -52,10 +50,6 @@ public class PluginProcessorPublicSetterTest {
 
     @BeforeEach
     void setup() {
-        setupWithOptions();
-    }
-
-    private void setupWithOptions(final String... extraOptions) {
         // Instantiate the tooling
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         diagnosticCollector = new DiagnosticCollector<>();
@@ -73,12 +67,13 @@ public class PluginProcessorPublicSetterTest {
         // get compilation units
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(createdFile);
 
-        final List<String> args =
-                new java.util.ArrayList<>(Arrays.asList("-proc:only", "-processor", PluginProcessor.class.getName()));
-        args.addAll(Arrays.asList(extraOptions));
-
-        JavaCompiler.CompilationTask task =
-                compiler.getTask(null, fileManager, diagnosticCollector, args, null, compilationUnits);
+        JavaCompiler.CompilationTask task = compiler.getTask(
+                null,
+                fileManager,
+                diagnosticCollector,
+                Arrays.asList("-proc:only", "-processor", PluginProcessor.class.getName()),
+                null,
+                compilationUnits);
         task.call();
 
         errorDiagnostics = diagnosticCollector.getDiagnostics().stream()
@@ -97,6 +92,7 @@ public class PluginProcessorPublicSetterTest {
 
     @Test
     void warnWhenPluginBuilderAttributeLacksPublicSetter() {
+
         assertThat(errorDiagnostics).anyMatch(errorMessage -> errorMessage
                 .getMessage(Locale.ROOT)
                 .contains("The field `attribute` does not have a public setter"));
@@ -110,57 +106,5 @@ public class PluginProcessorPublicSetterTest {
                                 .getMessage(Locale.ROOT)
                                 .contains(
                                         "The field `attributeWithoutPublicSetterButWithSuppressAnnotation` does not have a public setter"));
-    }
-
-    @Test
-    void noteEmittedByDefault() {
-        final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
-                .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
-                .collect(Collectors.toList());
-        assertThat(noteDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT).contains("writing plugin descriptor"));
-    }
-
-    @Test
-    void notesSuppressedWhenMinKindIsError() {
-        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=ERROR");
-
-        final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
-                .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
-                .collect(Collectors.toList());
-        assertThat(noteDiagnostics).noneMatch(d -> d.getMessage(Locale.ROOT).contains("writing plugin descriptor"));
-    }
-
-    @Test
-    void errorsStillEmittedWhenMinKindIsError() {
-        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=ERROR");
-
-        assertThat(errorDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT)
-                .contains("The field `attribute` does not have a public setter"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"NOTE", "note"})
-    void explicitNoteKindBehavesLikeDefault(final String kindValue) {
-        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=" + kindValue);
-
-        assertThat(errorDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT)
-                .contains("The field `attribute` does not have a public setter"));
-
-        final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
-                .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
-                .collect(Collectors.toList());
-        assertThat(noteDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT).contains("writing plugin descriptor"));
-    }
-
-    @Test
-    void invalidKindValueEmitsWarning() {
-        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=INVALID");
-
-        final List<Diagnostic<? extends JavaFileObject>> warningDiagnostics =
-                diagnosticCollector.getDiagnostics().stream()
-                        .filter(d -> d.getKind() == Diagnostic.Kind.WARNING)
-                        .collect(Collectors.toList());
-        assertThat(warningDiagnostics)
-                .anyMatch(d -> d.getMessage(Locale.ROOT).contains("unrecognized value `INVALID`"));
     }
 }

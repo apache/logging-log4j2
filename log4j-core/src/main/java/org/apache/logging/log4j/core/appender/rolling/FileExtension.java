@@ -35,7 +35,24 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            return new ZipCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
+            return new ZipCompressAction(
+                    new File(renameTo), new File(compressedName), deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
+            // Issue #4012: pass maxCompressionDelaySeconds so random delay is applied before compression
+            return new ZipCompressAction(
+                    new File(renameTo),
+                    new File(compressedName),
+                    deleteSource,
+                    compressionLevel,
+                    maxCompressionDelaySeconds);
         }
     },
     GZ(".gz") {
@@ -45,7 +62,24 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            return new GzCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
+            return new GzCompressAction(
+                    new File(renameTo), new File(compressedName), deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
+            // Issue #4012: pass maxCompressionDelaySeconds so random delay is applied before compression
+            return new GzCompressAction(
+                    new File(renameTo),
+                    new File(compressedName),
+                    deleteSource,
+                    compressionLevel,
+                    maxCompressionDelaySeconds);
         }
     },
     BZIP2(".bz2") {
@@ -129,8 +163,20 @@ public enum FileExtension {
         this.extension = extension;
     }
 
+    // 4-argument version (legacy, for compatibility)
     public abstract Action createCompressAction(
             String renameTo, String compressedName, boolean deleteSource, int compressionLevel);
+
+    // 5-argument version (for delay support)
+    public Action createCompressAction(
+            String renameTo,
+            String compressedName,
+            boolean deleteSource,
+            int compressionLevel,
+            int maxCompressionDelaySeconds) {
+        // By default, ignore delay and call the 4-argument version
+        return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel);
+    }
 
     public String getExtension() {
         return extension;
