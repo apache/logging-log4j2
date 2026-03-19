@@ -300,10 +300,16 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             final boolean currentContext,
             final List<URI> configLocations,
             final String name) {
-        final LoggerContext ctx =
-                selector.getContext(fqcn, loader, currentContext, null /*this probably needs to change*/);
-        if (externalContext != null && ctx.getExternalContext() == null) {
-            ctx.setExternalContext(externalContext);
+        final LoggerContext ctx;
+        if (externalContext instanceof Map.Entry) {
+            @SuppressWarnings("unchecked")
+            final Map.Entry<String, Object> entry = (Map.Entry<String, Object>) externalContext;
+            ctx = selector.getContext(fqcn, loader, entry, currentContext, null);
+        } else {
+            ctx = selector.getContext(fqcn, loader, currentContext, null);
+            if (externalContext != null && ctx.getExternalContext() == null) {
+                ctx.setExternalContext(externalContext);
+            }
         }
         if (name != null) {
             ctx.setName(name);
