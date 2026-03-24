@@ -282,7 +282,7 @@ class TlsSocketAppenderTest {
         trustStore.load(null, null);
         trustStore.setCertificateEntry(alias, CA_CERT);
 
-        Path file = certPath.resolve(alias + "-truststore.p12");
+        Path file = certPath.resolve(sanitizePath(alias) + "-truststore.p12");
         try (OutputStream out = Files.newOutputStream(file)) {
             trustStore.store(out, TRUSTSTORE_PWD);
         }
@@ -300,11 +300,15 @@ class TlsSocketAppenderTest {
                     alias, keyPair.getPrivate(), KEYSTORE_PWD, new X509Certificate[] {certificate, CA_CERT});
         }
 
-        Path file = certPath.resolve(alias.replace(':', '_') + "-keystore.p12");
+        Path file = certPath.resolve(sanitizePath(alias) + "-keystore.p12");
         try (OutputStream out = Files.newOutputStream(file)) {
             keyStore.store(out, KEYSTORE_PWD);
         }
         return file.toAbsolutePath().toString();
+    }
+
+    private static String sanitizePath(String alias) {
+        return alias.replace(':', '_');
     }
 
     private static class TestTlsMaterial {
