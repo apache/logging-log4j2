@@ -398,26 +398,26 @@ public final class StringBuilders {
     }
 
     /**
-     * Checks if a code point is a valid XML 1.0 character
+     * Checks if a BMP {@code char} is a valid XML 1.0 character.
      *
      * <p>This method is restricted to characters in the BMP, i.e. represented by one UTF-16 code unit.</p>
      *
-     * @param codePoint a code point
-     * @return {@code true} if it is a valid XML 1.0 code point
+     * @param ch a BMP {@code char} to validate
+     * @return {@code true} if it is a valid XML 1.0 character
      */
-    private static boolean isValidXml10(final char codePoint) {
+    private static boolean isValidXml10(final char ch) {
         // XML 1.0 valid characters (Fifth Edition):
         //   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 
         // [#x20–#xD7FF] (placed early as a fast path for the most common case)
-        return (codePoint >= ' ' && codePoint < Character.MIN_SURROGATE)
+        return (ch >= ' ' && ch < Character.MIN_SURROGATE)
                 // #x9
-                || codePoint == '\t'
+                || ch == '\t'
                 // #xA
-                || codePoint == '\n'
+                || ch == '\n'
                 // #xD
-                || codePoint == '\r'
+                || ch == '\r'
                 // [#xE000-#xFFFD]
-                || (codePoint > Character.MAX_SURROGATE && codePoint <= 0xFFFD);
+                || (ch > Character.MAX_SURROGATE && ch <= 0xFFFD);
     }
 }
