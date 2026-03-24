@@ -21,6 +21,7 @@ on:
   push:
     branches:
       - "2.x"
+      - "2.25.x"
       - "release/2*"
   pull_request:
 
