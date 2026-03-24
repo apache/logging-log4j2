@@ -19,8 +19,10 @@ package org.apache.logging.log4j.core.appender;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyPair;
@@ -36,6 +38,8 @@ import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -107,6 +111,22 @@ class TlsSocketAppenderTest {
 
     @TempDir
     private static Path certPath;
+
+    @BeforeAll
+    static void setup() {
+        Assumptions.assumeTrue(() -> {
+            // RFC 6761 recommends that *.localhost resolve to the loopback interface, but DNS behavior varies
+            // across platforms and test environments. If two distinct hostnames do not resolve to the local
+            // machine, tests that require different hostnames cannot be executed reliably.
+            try {
+                InetAddress.getByName(TARGET_HOSTNAME);
+                InetAddress.getByName(ATTACKER_HOSTNAME);
+                return true;
+            } catch (UnknownHostException e) {
+                return false;
+            }
+        });
+    }
 
     static Stream<Arguments> connectionAlwaysSucceedsWithoutHostnameVerification() {
         return Stream.of(
