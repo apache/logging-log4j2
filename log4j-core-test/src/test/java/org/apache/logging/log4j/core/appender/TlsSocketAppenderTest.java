@@ -19,31 +19,23 @@ package org.apache.logging.log4j.core.appender;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.SslSocketManager;
-import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.jspecify.annotations.Nullable;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -147,23 +139,6 @@ class TlsSocketAppenderTest {
                 Arguments.of(TARGET_HOSTNAME, ATTACKER_CERT1),
                 Arguments.of(TARGET_HOSTNAME, ATTACKER_CERT2),
                 Arguments.of(TARGET_IP, ATTACKER_CERT3));
-    }
-
-    @BeforeAll
-    static void setup() {
-        byte[] loopback = {0x7f, 0x00, 0x00, 0x01};
-        TcpSocketManager.setHostResolver(new TcpSocketManager.HostResolver() {
-            @Override
-            public List<InetSocketAddress> resolveHost(String host, int port) throws UnknownHostException {
-                InetAddress loopbackAddress = InetAddress.getByAddress(host, loopback);
-                return Collections.singletonList(new InetSocketAddress(loopbackAddress, port));
-            }
-        });
-    }
-
-    @AfterAll
-    static void tearDown() {
-        TcpSocketManager.setHostResolver(TcpSocketManager.HostResolver.INSTANCE);
     }
 
     @ParameterizedTest

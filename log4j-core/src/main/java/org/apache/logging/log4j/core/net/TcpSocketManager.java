@@ -533,12 +533,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             InetAddress inetAddress;
             OutputStream os;
             try {
-                List<InetSocketAddress> addresses = RESOLVER.resolveHost(data.host, data.port);
-                if (addresses.isEmpty()) {
-                    LOGGER.warn("Could not find address of {}", data.host);
-                    return null;
-                }
-                inetAddress = addresses.get(0).getAddress();
+                inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
                 LOGGER.error("Could not find address of {}: {}", data.host, ex, ex);
                 return null;
