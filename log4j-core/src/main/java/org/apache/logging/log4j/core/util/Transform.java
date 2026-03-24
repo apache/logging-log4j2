@@ -34,13 +34,14 @@ public final class Transform {
     private Transform() {}
 
     /**
-     * This method takes a string which may contain HTML tags (ie,
-     * &lt;b&gt;, &lt;table&gt;, etc) and replaces any
-     * '&lt;',  '&gt;' , '&amp;' or '&quot;'
-     * characters with respective predefined entity references.
+     * Escapes characters in a string for safe inclusion in HTML or XML text.
      *
-     * @param input The text to be converted.
-     * @return The input string with the special characters replaced.
+     * <p>Replaces the characters {@code <}, {@code >}, {@code &}, {@code "} and {@code '} with their corresponding
+     * entity references ({@code &lt;}, {@code &gt;}, {@code &amp;}, {@code &quot;}, and {@code &#39;}). Any code point
+     * that is invalid in XML 1.0 is replaced with the Unicode replacement character U+FFFD.</p>
+     *
+     * @param input The text to be escaped; may be {@code null} or empty.
+     * @return The escaped string, or the original {@code input} if no changes were required.
      */
     public static String escapeHtmlTags(final String input) {
         // Check if the string is null or zero length
