@@ -5,6 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
+    <issue id="4073" link="https://github.com/apache/logging-log4j2/pull/4073"/>
     <description format="asciidoc">
         Fix sanitization of structured data parameter names in RFC5424 layout.
     </description>
