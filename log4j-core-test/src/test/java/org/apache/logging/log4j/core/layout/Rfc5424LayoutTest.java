@@ -100,16 +100,23 @@ class Rfc5424LayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    private static PluginManager pluginManager;
+
     @BeforeAll
     static void setupClass() {
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
+
+        pluginManager = new PluginManager(Node.CATEGORY);
+        pluginManager.collectPlugins();
     }
 
     @AfterAll
     static void cleanupClass() {
+        pluginManager = null;
+
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -758,9 +765,7 @@ class Rfc5424LayoutTest {
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
         checkDefaultValues(layout);
 
-        final PluginManager manager = new PluginManager(Node.CATEGORY);
-        manager.collectPlugins();
-        final Object obj = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+        final Object obj = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
                 .withConfigurationNode(new Node())
                 .withConfiguration(new DefaultConfiguration())
                 .build();
@@ -811,13 +816,10 @@ class Rfc5424LayoutTest {
     }
 
     private static Rfc5424Layout buildRfc5424Layout(Map<String, String> attributes) {
-        PluginManager manager = new PluginManager(Node.CATEGORY);
-        manager.collectPlugins();
-
         Node node = new Node();
         node.getAttributes().putAll(attributes);
 
-        Object object = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+        Object object = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
                 .withConfigurationNode(node)
                 .withConfiguration(new DefaultConfiguration())
                 .build();
