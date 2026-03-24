@@ -131,7 +131,7 @@ final class X509Certificates {
         long now = System.currentTimeMillis();
         Date notBefore = new Date(now - MINUTE_IN_MILLIS);
         Date notAfter = new Date(now + YEAR_IN_MILLIS);
-        BigInteger serial = BigInteger.valueOf(RANDOM.nextLong());
+        BigInteger serial = BigInteger.valueOf(RANDOM.nextLong()).abs();
 
         X500Name issuer = new X500Name(CA_DN);
         X500Name subject = new X500Name(subjectDn);
