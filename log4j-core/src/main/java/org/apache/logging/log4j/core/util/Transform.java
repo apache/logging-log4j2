@@ -208,7 +208,7 @@ public final class Transform {
     }
 
     /**
-     * Checks if a code point is a valid in XML 1.0
+     * Checks if a code point is valid in XML 1.0.
      *
      * @param codePoint a code point between {@code 0} and {@link Character#MAX_CODE_POINT}
      * @return {@code true} if it is a valid XML 1.0 code point
