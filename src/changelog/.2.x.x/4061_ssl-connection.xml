@@ -5,9 +5,10 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="4061" link="https://github.com/apache/logging-log4j2/issues/4061"/>
-  <issue id="4075" link="https://github.com/apache/logging-log4j2/pull/4075"/>
-  <description format="asciidoc">
-    Align `SslConfiguration` factory method usage with Log4j 2.12+ API.
-  </description>
+    <issue id="4061" link="https://github.com/apache/logging-log4j2/issues/4061"/>
+    <issue id="4075" link="https://github.com/apache/logging-log4j2/pull/4075"/>
+    <description format="asciidoc">
+        Align `SslConfiguration` factory method usage with Log4j 2.12+ API.
+        The `verifyHostname` attribute is not correctly recognized.
+    </description>
 </entry>
