@@ -16,10 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests the StringBuilders class.
@@ -79,15 +84,37 @@ class StringBuildersTest {
         assertEquals(jsonValueEscaped, sb.toString());
     }
 
-    @Test
-    void escapeXMLCharactersCorrectly() {
-        final String xmlValueNotEscaped = "<\"Salt&Peppa'\">";
-        final String xmlValueEscaped = "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;";
+    static Stream<Arguments> escapeXmlCharactersCorrectly() {
+        final char replacement = '\uFFFD';
+        return Stream.of(
+                // Empty
+                Arguments.of("", ""),
+                // characters that need to be escaped
+                Arguments.of("<\"Salt&Peppa'\">", "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;"),
+                // control character replaced with U+FFFD
+                Arguments.of("A" + (char) 0x01 + "B", "A" + replacement + "B"),
+                // standalone low surrogate replaced with U+FFFD
+                Arguments.of("low" + Character.MIN_SURROGATE + "surrogate", "low" + replacement + "surrogate"),
+                Arguments.of(Character.MIN_SURROGATE + "low", replacement + "low"),
+                // standalone high surrogate replaced with U+FFFD
+                Arguments.of("high" + Character.MAX_SURROGATE + "surrogate", "high" + replacement + "surrogate"),
+                Arguments.of(Character.MAX_SURROGATE + "high", replacement + "high"),
+                // FFFE and FFFF
+                Arguments.of("invalid\uFFFEchars", "invalid" + replacement + "chars"),
+                Arguments.of("invalid\uFFFFchars", "invalid" + replacement + "chars"),
+                // whitespace characters are preserved
+                Arguments.of("tab\tnewline\ncr\r", "tab\tnewline\ncr\r"),
+                // character beyond BMP (emoji) preserved as surrogate pair
+                Arguments.of("emoji " + "\uD83D\uDE00" + " end", "emoji " + "\uD83D\uDE00" + " end"));
+    }
 
+    @ParameterizedTest
+    @MethodSource
+    void escapeXmlCharactersCorrectly(final String input, final String expected) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(xmlValueNotEscaped);
-        assertEquals(xmlValueNotEscaped, sb.toString());
+        sb.append(input);
+        assertThat(sb.toString()).isEqualTo(input);
         StringBuilders.escapeXml(sb, 0);
-        assertEquals(xmlValueEscaped, sb.toString());
+        assertThat(sb.toString()).isEqualTo(expected);
     }
 }
