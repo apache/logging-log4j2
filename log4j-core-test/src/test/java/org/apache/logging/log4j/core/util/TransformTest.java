@@ -31,7 +31,7 @@ class TransformTest {
                 // Empty
                 Arguments.of("", ""),
                 // characters that need to be escaped
-                Arguments.of("<\"Salt&Peppa'\">", "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;"),
+                Arguments.of("<\"Salt&Peppa'\">", "&lt;&quot;Salt&amp;Peppa&#39;&quot;&gt;"),
                 // control character replaced with U+FFFD
                 Arguments.of("A" + (char) 0x01 + "B", "A" + replacement + "B"),
                 // standalone low surrogate replaced with U+FFFD

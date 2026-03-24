@@ -90,7 +90,7 @@ class Log4j1XmlLayoutTest {
         final String message = "<>'\"&A\uD800B\uDE00C\u0000\u0001\u0002\u0003\uFFFE\uFFFF";
         final String expectedMessage = "<>'\"&A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD";
         final String expectedEscapedMessage =
-                "&lt;&gt;&apos;&quot;&amp;A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD";
+                "&lt;&gt;&#39;&quot;&amp;A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD";
 
         final StringMap contextMap = ContextDataFactory.createContextData(1);
         contextMap.putValue(message, message);
