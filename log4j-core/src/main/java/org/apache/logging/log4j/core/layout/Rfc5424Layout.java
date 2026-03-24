@@ -1028,7 +1028,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             String effectiveExcludes = Objects.toString(mdcExcludes, excludes);
 
             if (effectiveIncludes != null && effectiveExcludes != null) {
-                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
+                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes will be ignored");
                 effectiveIncludes = null;
             }
 
