@@ -615,7 +615,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     private String sanitizeParamNameSlowPath(final String key) {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(SD_PARAM_NAME_MAX_LENGTH);
         final int maxLength = Math.min(key.length(), SD_PARAM_NAME_MAX_LENGTH);
         for (int i = 0; i < maxLength; i++) {
             final char c = key.charAt(i);
