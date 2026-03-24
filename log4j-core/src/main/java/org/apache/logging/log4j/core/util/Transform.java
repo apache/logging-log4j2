@@ -184,7 +184,7 @@ public final class Transform {
                     buf.append("&quot;");
                     break;
                 case '\'':
-                    buf.append("&apos;");
+                    buf.append("&#39;");
                     break;
                 default:
                     buf.appendCodePoint(isValidXml10(ch) ? ch : REPLACEMENT_CHAR);
