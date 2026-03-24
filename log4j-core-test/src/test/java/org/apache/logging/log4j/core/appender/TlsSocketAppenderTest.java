@@ -300,7 +300,7 @@ class TlsSocketAppenderTest {
                     alias, keyPair.getPrivate(), KEYSTORE_PWD, new X509Certificate[] {certificate, CA_CERT});
         }
 
-        Path file = certPath.resolve(alias + "-keystore.p12");
+        Path file = certPath.resolve(alias.replace(':', '_') + "-keystore.p12");
         try (OutputStream out = Files.newOutputStream(file)) {
             keyStore.store(out, KEYSTORE_PWD);
         }
