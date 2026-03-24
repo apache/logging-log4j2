@@ -22,16 +22,14 @@ import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 import org.codehaus.stax2.util.StreamWriter2Delegate;
