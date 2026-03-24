@@ -94,11 +94,11 @@ class StringBuildersTest {
                 // control character replaced with U+FFFD
                 Arguments.of("A" + (char) 0x01 + "B", "A" + replacement + "B"),
                 // standalone low surrogate replaced with U+FFFD
-                Arguments.of("low" + Character.MIN_SURROGATE + "surrogate", "low" + replacement + "surrogate"),
-                Arguments.of(Character.MIN_SURROGATE + "low", replacement + "low"),
+                Arguments.of("low" + Character.MIN_LOW_SURROGATE + "surrogate", "low" + replacement + "surrogate"),
+                Arguments.of(Character.MIN_LOW_SURROGATE + "low", replacement + "low"),
                 // standalone high surrogate replaced with U+FFFD
-                Arguments.of("high" + Character.MAX_SURROGATE + "surrogate", "high" + replacement + "surrogate"),
-                Arguments.of(Character.MAX_SURROGATE + "high", replacement + "high"),
+                Arguments.of("high" + Character.MIN_HIGH_SURROGATE + "surrogate", "high" + replacement + "surrogate"),
+                Arguments.of(Character.MIN_HIGH_SURROGATE + "high", replacement + "high"),
                 // FFFE and FFFF
                 Arguments.of("invalid\uFFFEchars", "invalid" + replacement + "chars"),
                 Arguments.of("invalid\uFFFFchars", "invalid" + replacement + "chars"),
