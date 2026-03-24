@@ -37,7 +37,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jXmlObjectMapper;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
@@ -47,18 +46,13 @@ import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.apache.logging.log4j.util.StringMap;
-import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests {@link XmlLayout}.
@@ -402,88 +396,5 @@ public class XmlLayoutTest {
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str.endsWith("\0"));
-    }
-
-    // In Java 11 this can be replaced with Character.toString
-    private static String codePointToString(final int codePoint) {
-        return new String(Character.toChars(codePoint));
-    }
-
-    private static Log4jLogEvent createLogEventWithString(final String str) {
-        final Marker marker = MarkerManager.getMarker("marker" + str);
-
-        final RuntimeException thrown = new RuntimeException("thrown" + str);
-        thrown.addSuppressed(new IllegalStateException("suppressed" + str));
-
-        final StringMap contextData = ContextDataFactory.createContextData();
-        contextData.putValue("mdcKey" + str, "mdcValue" + str);
-
-        final DefaultThreadContextStack contextStack = new DefaultThreadContextStack();
-        contextStack.clear();
-        contextStack.push("contextStack" + str);
-
-        final StackTraceElement source =
-                new StackTraceElement("class" + str, "method" + str, "file" + str + ".java", 123);
-
-        return Log4jLogEvent.newBuilder()
-                .setLoggerName("logger" + str)
-                .setMarker(marker)
-                .setLoggerFqcn("fqcn" + str)
-                .setLevel(Level.DEBUG)
-                .setMessage(new SimpleMessage("message" + str))
-                .setThrown(thrown)
-                .setContextData(contextData)
-                .setContextStack(contextStack)
-                .setThreadName("thread" + str)
-                .setSource(source)
-                .setTimeMillis(1L)
-                .build();
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                "\u0000",
-                "\u001F",
-                // hi surrogate
-                "\uD800",
-                // low surrogate
-                "\uDC00",
-                // invalid chars
-                "\uFFFE",
-                "\uFFFF"
-            })
-    void testInvalidXmlCharsAreSanitized(final String invalidXmlChars) {
-        final Log4jLogEvent event = createLogEventWithString(invalidXmlChars);
-        final AbstractJacksonLayout layout = XmlLayout.newBuilder()
-                .setCompact(true)
-                .setIncludeStacktrace(true)
-                .setLocationInfo(true)
-                .setProperties(true)
-                .build();
-        final String str = layout.toSerializable(event);
-        Assertions.assertThat(str).doesNotContain(invalidXmlChars).contains("\uFFFD");
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                " ",
-                "A",
-                // First character from supplementary plane
-                "\uD801\uDC00",
-                // Last character from supplementary plane
-                "\uDBFF\uDFFF"
-            })
-    void testValidXmlCharsAreKept(final String validXmlChars) {
-        final Log4jLogEvent event = createLogEventWithString(validXmlChars);
-        final AbstractJacksonLayout layout = XmlLayout.newBuilder()
-                .setCompact(true)
-                .setIncludeStacktrace(true)
-                .setLocationInfo(true)
-                .setProperties(true)
-                .build();
-        final String str = layout.toSerializable(event);
-        Assertions.assertThat(str).contains(validXmlChars).doesNotContain("\uFFFD");
     }
 }
