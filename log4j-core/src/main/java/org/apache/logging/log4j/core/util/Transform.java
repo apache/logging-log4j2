@@ -29,6 +29,8 @@ public final class Transform {
     private static final String CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
     private static final int CDATA_END_LEN = CDATA_END.length();
 
+    private static final char REPLACEMENT_CHAR = '\uFFFD';
+
     private Transform() {}
 
     /**
@@ -41,47 +43,26 @@ public final class Transform {
      * @return The input string with the special characters replaced.
      */
     public static String escapeHtmlTags(final String input) {
-        // Check if the string is null, zero length or devoid of special characters
+        // Check if the string is null or zero length
         // if so, return what was sent in.
-
-        if (Strings.isEmpty(input)
-                || (input.indexOf('"') == -1
-                        && input.indexOf('&') == -1
-                        && input.indexOf('<') == -1
-                        && input.indexOf('>') == -1)) {
+        if (Strings.isEmpty(input)) {
             return input;
         }
 
-        // Use a StringBuilder in lieu of String concatenation -- it is
-        // much more efficient this way.
-
-        final StringBuilder buf = new StringBuilder(input.length() + 6);
-
-        final int len = input.length();
-        for (int i = 0; i < len; i++) {
-            final char ch = input.charAt(i);
-            if (ch > '>') {
-                buf.append(ch);
-            } else
-                switch (ch) {
-                    case '<':
-                        buf.append("&lt;");
-                        break;
-                    case '>':
-                        buf.append("&gt;");
-                        break;
-                    case '&':
-                        buf.append("&amp;");
-                        break;
-                    case '"':
-                        buf.append("&quot;");
-                        break;
-                    default:
-                        buf.append(ch);
-                        break;
-                }
+        // Only create a new string if we find a special character or invalid code point.
+        // In the common case, this should avoid unnecessary allocations.
+        final int length = input.length();
+        for (int i = 0; i < length; ) {
+            final int cp = input.codePointAt(i);
+            if (!isValidXml10(cp) || isHtmlTagCharacter(cp)) {
+                final StringBuilder out = new StringBuilder(length);
+                out.append(input, 0, i);
+                appendEscapingHtmlTags(input, i, length, out);
+                return out.toString();
+            }
+            i += Character.charCount(cp);
         }
-        return buf.toString();
+        return input;
     }
 
     /**
@@ -97,11 +78,11 @@ public final class Transform {
         if (str != null) {
             int end = str.indexOf(CDATA_END);
             if (end < 0) {
-                buf.append(str);
+                appendSanitizedXml10(str, 0, str.length(), buf);
             } else {
                 int start = 0;
                 while (end > -1) {
-                    buf.append(str.substring(start, end));
+                    appendSanitizedXml10(str, start, end, buf);
                     buf.append(CDATA_EMBEDED_END);
                     start = end + CDATA_END_LEN;
                     if (start < str.length()) {
@@ -110,7 +91,7 @@ public final class Transform {
                         return;
                     }
                 }
-                buf.append(str.substring(start));
+                appendSanitizedXml10(str, start, str.length(), buf);
             }
         }
     }
@@ -184,5 +165,70 @@ public final class Transform {
             }
         }
         return buf.toString();
+    }
+
+    private static void appendEscapingHtmlTags(final String input, int i, final int length, final StringBuilder buf) {
+        while (i < length) {
+            final int ch = input.codePointAt(i);
+            switch (ch) {
+                case '<':
+                    buf.append("&lt;");
+                    break;
+                case '>':
+                    buf.append("&gt;");
+                    break;
+                case '&':
+                    buf.append("&amp;");
+                    break;
+                case '"':
+                    buf.append("&quot;");
+                    break;
+                case '\'':
+                    buf.append("&apos;");
+                    break;
+                default:
+                    buf.appendCodePoint(isValidXml10(ch) ? ch : REPLACEMENT_CHAR);
+                    break;
+            }
+            i += Character.charCount(ch);
+        }
+    }
+
+    private static boolean isHtmlTagCharacter(final int cp) {
+        return cp == '<' || cp == '>' || cp == '&' || cp == '"' || cp == '\'';
+    }
+
+    private static void appendSanitizedXml10(
+            final String input, final int start, final int end, final StringBuilder out) {
+        for (int i = start; i < end; ) {
+            final int cp = input.codePointAt(i);
+            out.appendCodePoint(isValidXml10(cp) ? cp : REPLACEMENT_CHAR);
+            i += Character.charCount(cp);
+        }
+    }
+
+    /**
+     * Checks if a code point is a valid in XML 1.0
+     *
+     * @param codePoint a code point between {@code 0} and {@link Character#MAX_CODE_POINT}
+     * @return {@code true} if it is a valid XML 1.0 code point
+     */
+    private static boolean isValidXml10(final int codePoint) {
+        assert codePoint >= 0 && codePoint <= Character.MAX_CODE_POINT;
+        // XML 1.0 valid characters (Fifth Edition):
+        //   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+
+        // [#x20–#xD7FF] (placed early as a fast path for the most common case)
+        return (codePoint >= ' ' && codePoint < Character.MIN_SURROGATE)
+                // #x9
+                || codePoint == '\t'
+                // #xA
+                || codePoint == '\n'
+                // #xD
+                || codePoint == '\r'
+                // [#xE000-#xFFFD]
+                || (codePoint > Character.MAX_SURROGATE && codePoint <= 0xFFFD)
+                // [#x10000-#x10FFFF]
+                || codePoint >= Character.MIN_SUPPLEMENTARY_CODE_POINT;
     }
 }

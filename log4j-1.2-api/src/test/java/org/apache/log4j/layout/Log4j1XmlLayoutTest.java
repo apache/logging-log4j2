@@ -72,12 +72,52 @@ class Log4j1XmlLayoutTest {
         final String expected = "<log4j:event logger=\"a.B\" timestamp=\"" + event.getTimeMillis()
                 + "\" level=\"INFO\" thread=\"main\">\r\n"
                 + "<log4j:message><![CDATA[Hello, World]]></log4j:message>\r\n"
-                + "<log4j:locationInfo class=\"pack.MyClass\" method=\"myMethod\" file=\"MyClass.java\" line=\"17\"/>\r\n"
+                + "<log4j:locationInfo class=\"pack.MyClass\" method=\"myMethod\" file=\"MyClass.java\""
+                + " line=\"17\"/>\r\n"
                 + "<log4j:properties>\r\n"
                 + "<log4j:data name=\"key1\" value=\"value1\"/>\r\n"
                 + "<log4j:data name=\"key2\" value=\"value2\"/>\r\n"
                 + "</log4j:properties>\r\n"
                 + "</log4j:event>\r\n\r\n";
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testWithInvalidXmlCharacters() {
+        final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(true, true);
+
+        final String message = "<>'\"&A\uD800B\uDE00C\u0000\u0001\u0002\u0003\uFFFE\uFFFF";
+        final String expectedMessage = "<>'\"&A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD";
+        final String expectedEscapedMessage =
+                "&lt;&gt;&apos;&quot;&amp;A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD";
+
+        final StringMap contextMap = ContextDataFactory.createContextData(1);
+        contextMap.putValue(message, message);
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(message)
+                .setLevel(Level.forName(message, 100))
+                .setMessage(new SimpleMessage(message))
+                .setTimeMillis(System.currentTimeMillis() + 17)
+                .setIncludeLocation(true)
+                .setSource(new StackTraceElement(message, message, message, 17))
+                .setContextData(contextMap)
+                .build();
+
+        final String result = layout.toSerializable(event);
+
+        final String expected =
+                "<log4j:event logger=\"" + expectedEscapedMessage + "\" timestamp=\"" + event.getTimeMillis()
+                        + "\" level=\"" + expectedEscapedMessage + "\" thread=\"main\">\r\n"
+                        + "<log4j:message><![CDATA[" + expectedMessage + "]]></log4j:message>\r\n"
+                        + "<log4j:locationInfo class=\"" + expectedEscapedMessage
+                        + "\" method=\"" + expectedEscapedMessage
+                        + "\" file=\"" + expectedEscapedMessage + "\" line=\"17\"/>\r\n"
+                        + "<log4j:properties>\r\n"
+                        + "<log4j:data name=\"" + expectedEscapedMessage + "\" value=\"" + expectedEscapedMessage
+                        + "\"/>\r\n"
+                        + "</log4j:properties>\r\n"
+                        + "</log4j:event>\r\n\r\n";
 
         assertEquals(expected, result);
     }
