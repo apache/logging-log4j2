@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
@@ -24,8 +25,13 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 import org.codehaus.stax2.util.StreamWriter2Delegate;
@@ -175,6 +181,21 @@ public class Log4jXmlObjectMapper extends XmlMapper {
 
         private static final long serialVersionUID = 1L;
 
+        public SanitizingXmlFactory() {
+            super();
+        }
+
+        private SanitizingXmlFactory(
+                ObjectCodec oc,
+                int xpFeatures,
+                int xgFeatures,
+                XMLInputFactory xmlIn,
+                XMLOutputFactory xmlOut,
+                String nameForTextElem,
+                XmlNameProcessor nameProcessor) {
+            super(oc, xpFeatures, xgFeatures, xmlIn, xmlOut, nameForTextElem, nameProcessor);
+        }
+
         @Override
         protected XMLStreamWriter _createXmlWriter(final IOContext ctxt, final Writer w) throws IOException {
             return new SanitizingWriter(Stax2WriterAdapter.wrapIfNecessary(super._createXmlWriter(ctxt, w)));
@@ -188,7 +209,14 @@ public class Log4jXmlObjectMapper extends XmlMapper {
         @Override
         public XmlFactory copy() {
             _checkInvalidCopy(SanitizingXmlFactory.class);
-            return new SanitizingXmlFactory();
+            return new SanitizingXmlFactory(
+                    _objectCodec,
+                    _xmlParserFeatures,
+                    _xmlGeneratorFeatures,
+                    _xmlInputFactory,
+                    _xmlOutputFactory,
+                    _cfgNameForTextElement,
+                    _nameProcessor);
         }
     }
 }
