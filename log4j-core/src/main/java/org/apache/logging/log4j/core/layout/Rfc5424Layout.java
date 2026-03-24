@@ -641,7 +641,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @return {@code true} if the character is allowed in an {@code SD-NAME}
      */
     private static boolean isParamNameCharacterValid(final char c) {
-        return c >= 32 && c <= 126 && c != '=' && c != ' ' && c != ']' && c != '"';
+        return c > 32 && c <= 126 && c != '=' && c != ']' && c != '"';
     }
 
     private String escapeParamValue(final String value) {
