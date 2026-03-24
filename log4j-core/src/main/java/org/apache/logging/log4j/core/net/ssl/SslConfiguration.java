@@ -178,9 +178,7 @@ public class SslConfiguration {
      * @param keyStoreConfig   The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
      * @return a new SslConfiguration
-     * @deprecated Since 2.26.0, use {@link #createSSLConfiguration(String, KeyStoreConfiguration, TrustStoreConfiguration, boolean)} instead.
      */
-    @Deprecated
     @NullUnmarked
     public static SslConfiguration createSSLConfiguration(
             final String protocol,
