@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -469,6 +470,26 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return mdcIncludes;
     }
 
+    // Test-only
+    List<String> getMdcRequired() {
+        return mdcRequired;
+    }
+
+    // Test-only
+    boolean isIncludeNewLine() {
+        return includeNewLine;
+    }
+
+    // Test-only
+    String getEscapeNewLine() {
+        return escapeNewLine;
+    }
+
+    // Test-only
+    boolean isUseTlsMessageFormat() {
+        return useTlsMessageFormat;
+    }
+
     private String computeTimeStampString(final long now) {
         long last;
         synchronized (this) {
@@ -697,7 +718,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param loggerFields Container for the KeyValuePairs containing the patterns
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
-     * @deprecated Use {@link Rfc5424LayoutBuilder instead}
+     * @deprecated Since 2.21.0 use {@link Rfc5424LayoutBuilder instead}
      */
     @Deprecated
     public static Rfc5424Layout createLayout(
@@ -747,65 +768,208 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 .build();
     }
 
+    /**
+     * @since 2.21.0
+     */
     @PluginBuilderFactory
     public static Rfc5424LayoutBuilder newBuilder() {
         return new Rfc5424LayoutBuilder();
     }
 
+    /**
+     * @since 2.21.0
+     */
     public static class Rfc5424LayoutBuilder extends AbstractStringLayout.Builder<Rfc5424LayoutBuilder>
             implements org.apache.logging.log4j.core.util.Builder<Rfc5424Layout> {
 
+        /**
+         * The name of the {@link Facility} as described in RFC 5424
+         *
+         * <p>The matching is case-insensitive. Defaults to {@code LOCAL0}.</p>
+         */
         @PluginBuilderAttribute
         private Facility facility = Facility.LOCAL0;
 
+        /**
+         * The default {@code SD-ID} as described in RFC 5424.
+         */
         @PluginBuilderAttribute
         private String id;
 
+        /**
+         * The enterprise number to include in {@code SD-ID} identifiers.
+         *
+         * <p>Can contain multiple integers separated by a dot, for example {@code 32473.1}</p>
+         *
+         * <p>Defaults to {@value #DEFAULT_ENTERPRISE_NUMBER}.</p>
+         */
         @PluginBuilderAttribute
         private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
 
+        /**
+         * The enterprise number to include in {@code SD-ID} identifiers.
+         *
+         * <p>Limited to a single integer.</p>
+         *
+         * <p>Defaults to {@value #DEFAULT_ENTERPRISE_NUMBER}.</p>
+         */
         @PluginBuilderAttribute
         private Integer enterpriseNumber;
 
+        /**
+         * Indicates whether data from the context map will be included as RFC 5424 {@code SD-ELEMENT}.
+         *
+         * <p>Defaults to {@code true}.</p>
+         */
         @PluginBuilderAttribute
         private boolean includeMDC = true;
 
+        /**
+         * If {@code true}, a newline will be appended to the end of the syslog record.
+         *
+         * <p>Default is {@code false}.</p>
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private boolean newLine;
+
+        /**
+         * Same as {@code newLine}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private boolean includeNL;
 
+        /**
+         * If set, this string will be used to replace new lines within the message text.
+         *
+         * <p>By default, new lines are not escaped.</p>
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private String newLineEscape;
+
+        /**
+         * Same as {@code newLineEscape}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String escapeNL;
 
+        /**
+         * The id to use for the MDC Structured Data Element.
+         *
+         * <p>Defaults to {@value #DEFAULT_MDCID}.</p>
+         */
         @PluginBuilderAttribute
         private String mdcId = DEFAULT_MDCID;
 
+        /**
+         * A prefix to add to MDC key names when formatting them as structured data parameters.
+         */
         @PluginBuilderAttribute
         private String mdcPrefix;
 
+        /**
+         * A prefix to add to event key names when formatting {@link StructuredDataMessage} fields.
+         */
         @PluginBuilderAttribute
         private String eventPrefix;
 
+        /**
+         * The value to use as the {@code APP-NAME} in the RFC 5424 syslog record.
+         */
         @PluginBuilderAttribute
         private String appName;
 
+        /**
+         * The default value to be used in the {@code MSGID} field of RFC 5424 syslog records.
+         *
+         * <p>If the log event contains a {@link StructuredDataMessage}, the id from that message will be used
+         * instead.</p>
+         */
         @PluginBuilderAttribute
         private String messageId;
 
+        /**
+         * A comma separated list of MDC keys that should be excluded from the LogEvent.
+         *
+         * <p>Mutually exclusive with {@link #mdcIncludes}.</p>
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private String mdcExcludes;
+
+        /**
+         * Same as {@code mdcExcludes}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String excludes;
 
+        /**
+         * A comma separated list of MDC keys that should be included in the LogEvent.
+         *
+         * <p>Mutually exclusive with {@link #mdcExcludes}.</p>
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private String mdcIncludes;
+
+        /**
+         * Same as {@code mdcIncludes}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String includes;
 
+        /**
+         * A comma separated list of MDC keys that must be present in the MDC.
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private String mdcRequired;
+
+        /**
+         * Same as {@code mdcRequired}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String required;
 
+        /**
+         * The pattern used to format exceptions appended to the syslog message.
+         */
         @PluginBuilderAttribute
         private String exceptionPattern;
 
+        /**
+         * If true the message will be formatted according to RFC 5425.
+         *
+         * <p>Default is {@code false}.</p>
+         */
+        @SuppressWarnings("log4j.public.setter")
+        @PluginBuilderAttribute
+        private boolean useTlsMessageFormat;
+
+        /**
+         * Same as {@code useTlsMessageFormat}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private boolean useTLSMessageFormat;
 
+        /**
+         * Optional additional {@code SD-ELEMENT}s.
+         *
+         * <p>Each {@link LoggerFields} entry contains a set of key/value patterns to produce structured data parameters.</p>
+         */
         @PluginElement(value = "loggerFields")
         private LoggerFields[] loggerFields;
 
@@ -918,9 +1082,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         @Override
         public Rfc5424Layout build() {
-            if (includes != null && excludes != null) {
-                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
-                includes = null;
+            String effectiveIncludes = Objects.toString(mdcIncludes, includes);
+            String effectiveExcludes = Objects.toString(mdcExcludes, excludes);
+
+            if (effectiveIncludes != null && effectiveExcludes != null) {
+                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes will be ignored");
+                effectiveIncludes = null;
             }
 
             if (enterpriseNumber != null) {
@@ -938,19 +1105,19 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                     id,
                     ein,
                     includeMDC,
-                    includeNL,
-                    escapeNL,
+                    newLine || includeNL,
+                    Objects.toString(newLineEscape, escapeNL),
                     mdcId,
                     mdcPrefix,
                     eventPrefix,
                     appName,
                     messageId,
-                    excludes,
-                    includes,
-                    required,
+                    effectiveExcludes,
+                    effectiveIncludes,
+                    Objects.toString(mdcRequired, required),
                     charset != null ? charset : StandardCharsets.UTF_8,
                     exceptionPattern,
-                    useTLSMessageFormat,
+                    useTlsMessageFormat || useTLSMessageFormat,
                     loggerFields);
         }
     }
