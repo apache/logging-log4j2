@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.apache.logging.log4j"},{"l":"org.apache.logging.log4j.message"},{"l":"org.apache.logging.log4j.simple"},{"l":"org.apache.logging.log4j.spi"},{"l":"org.apache.logging.log4j.status"},{"l":"org.apache.logging.log4j.util"}];updateSearchResults();
