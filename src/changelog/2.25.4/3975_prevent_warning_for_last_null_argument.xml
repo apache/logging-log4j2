@@ -4,7 +4,7 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
+       type="fixed">
     <issue id="3975" link="https://github.com/apache/logging-log4j2/issues/3975"/>
     <issue id="4014" link="https://github.com/apache/logging-log4j2/pull/4014"/>
     <description format="asciidoc">
