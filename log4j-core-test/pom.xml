@@ -64,7 +64,18 @@
     <!-- Additional version of LMAX Disruptor to test -->
     <disruptor4.version>4.0.0</disruptor4.version>
     <json-unit.version>2.40.1</json-unit.version>
+    <bouncycastle.version>1.83</bouncycastle.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -146,6 +157,12 @@
     <dependency>
       <groupId>org.apache-extras.beanshell</groupId>
       <artifactId>bsh</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
       <scope>test</scope>
     </dependency>
 
