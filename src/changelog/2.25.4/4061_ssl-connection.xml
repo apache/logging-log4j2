@@ -9,6 +9,6 @@
     <issue id="4075" link="https://github.com/apache/logging-log4j2/pull/4075"/>
     <description format="asciidoc">
         Align `SslConfiguration` factory method usage with Log4j 2.12+ API.
-        The `verifyHostname` attribute is not correctly recognized.
+        The `verifyHostname` attribute is now correctly recognized.
     </description>
 </entry>
