@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.10">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -354,6 +354,76 @@
 <article class="doc">
 <h1 class="page">Release notes</h1>
 <div class="sect1">
+<h2 id="release-notes-2-25-4"><a class="anchor" href="#release-notes-2-25-4"></a>2.25.4</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2026-03-25</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release delivers fixes for configuration inconsistencies and formatting issues across several layouts.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Restores alignment between documented and actual configuration attributes.</p>
+</li>
+<li>
+<p>Fixes formatting and sanitization issues in XML and RFC5424 layouts.</p>
+</li>
+<li>
+<p>Improves handling of invalid characters and non-standard values.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The authoritative list of recognized configuration attributes is available in the
+<a href="https://logging.apache.org/log4j/2.x/plugin-reference.html">Plugin Reference</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-4-fixed"><a class="anchor" href="#release-notes-2-25-4-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Don&#8217;t issue warnings if extra argument in parameterized logging is <code>null</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3975">3975</a>, <a href="https://github.com/apache/logging-log4j2/pull/4014">4014</a>)</p>
+</li>
+<li>
+<p>Restore support for documented <code>Rfc5424Layout</code> parameter names. (<a href="https://github.com/apache/logging-log4j2/issues/4022">4022</a>, <a href="https://github.com/apache/logging-log4j2/pull/4074">4074</a>)</p>
+</li>
+<li>
+<p>Take <code>Throwable#toString()</code> into account while rendering stack traces in Pattern Layout. (<a href="https://github.com/apache/logging-log4j2/issues/3623">3623</a>, <a href="https://github.com/apache/logging-log4j2/pull/4033">4033</a>)</p>
+</li>
+<li>
+<p>Added debug level logs for successful resource loading in <code>Loader</code> class. (<a href="https://github.com/apache/logging-log4j2/issues/4058">4058</a>, <a href="https://github.com/apache/logging-log4j2/pull/4060">4060</a>)</p>
+</li>
+<li>
+<p>Align <code>SslConfiguration</code> factory method usage with Log4j 2.12+ API. The <code>verifyHostname</code> attribute is not correctly recognized. (<a href="https://github.com/apache/logging-log4j2/issues/4061">4061</a>, <a href="https://github.com/apache/logging-log4j2/pull/4075">4075</a>)</p>
+</li>
+<li>
+<p>Fix sanitization of structured data parameter names in RFC5424 layout. (<a href="https://github.com/apache/logging-log4j2/pull/4073">4073</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in XmlLayout output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4077">4077</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in Log4j1XmlLayout output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4078">4078</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in MapMessage.asXml() output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4079">4079</a>)</p>
+</li>
+<li>
+<p>Write non-finite floating-point numbers as strings in <code>JsonWriter</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4080">4080</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-25-3"><a class="anchor" href="#release-notes-2-25-3"></a>2.25.3</h2>
 <div class="sectionbody">
 <div class="dlist">
@@ -452,6 +522,9 @@ This is used by <a href="manual/appenders/network.html#SocketAppender" class="xr
 <li>
 <p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
 </li>
+<li>
+<p>Fixes <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
+</li>
 </ul>
 </div>
 </div>
@@ -520,6 +593,9 @@ This is used by <a href="manual/appenders/network.html#SocketAppender" class="xr
 </li>
 <li>
 <p>Resolve <code>PropertiesConfiguration</code> compatibility issues with GraalVM and address additional minor reflection-related problems. (<a href="https://github.com/apache/logging-log4j2/pull/3800">3800</a>)</p>
+</li>
+<li>
+<p>Fixes <code>NullPointerException</code> thrown by <code>ThrowableStackTraceRenderer</code> when suppressed exceptions are mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3929">3929</a>, <a href="https://github.com/apache/logging-log4j2/pull/3934">3934</a>)</p>
 </li>
 </ul>
 </div>
