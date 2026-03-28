@@ -26,8 +26,6 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -42,8 +40,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
      * The default buffer size.
      */
     public static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
-
-    private static final RollingRandomAccessFileManagerFactory FACTORY = new RollingRandomAccessFileManagerFactory();
 
     private RandomAccessFile randomAccessFile;
 
@@ -153,7 +149,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(
             final String fileName,
             final String filePattern,
-            final boolean isAppend,
+            final boolean append,
             final boolean immediateFlush,
             final int bufferSize,
             final TriggeringPolicy policy,
@@ -168,26 +164,78 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
             return null;
         }
-        final String name = fileName == null ? filePattern : fileName;
+        final String actualName = fileName == null ? filePattern : fileName;
         return narrow(
                 RollingRandomAccessFileManager.class,
                 getManager(
-                        name,
-                        new FactoryData(
-                                fileName,
-                                filePattern,
-                                isAppend,
-                                immediateFlush,
-                                bufferSize,
-                                policy,
-                                strategy,
-                                advertiseURI,
-                                layout,
-                                filePermissions,
-                                fileOwner,
-                                fileGroup,
-                                configuration),
-                        FACTORY));
+                        actualName,
+                        (name, data) -> {
+                            File file = null;
+                            long size = 0;
+                            long time = System.currentTimeMillis();
+                            RandomAccessFile raf = null;
+                            boolean fileExistedBefore = false;
+                            if (fileName != null) {
+                                file = new File(name);
+                                fileExistedBefore = file.exists();
+
+                                if (!append) {
+                                    file.delete();
+                                }
+                                size = append ? file.length() : 0;
+                                if (file.exists()) {
+                                    time = file.lastModified();
+                                }
+                                try {
+                                    FileUtils.makeParentDirs(file);
+                                    raf = new RandomAccessFile(name, "rw");
+                                    if (append) {
+                                        final long length = raf.length();
+                                        LOGGER.trace("RandomAccessFile {} seek to {}", name, length);
+                                        raf.seek(length);
+                                    } else {
+                                        LOGGER.trace("RandomAccessFile {} set length to 0", name);
+                                        raf.setLength(0);
+                                    }
+                                } catch (final IOException ex) {
+                                    LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
+                                    if (raf != null) {
+                                        try {
+                                            raf.close();
+                                        } catch (final IOException e) {
+                                            LOGGER.error("Cannot close RandomAccessFile {}", name, e);
+                                        }
+                                    }
+                                    return null;
+                                }
+                            }
+                            final boolean writeHeader = !append || file == null || !fileExistedBefore;
+
+                            final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(
+                                    data.getLoggerContext(),
+                                    raf,
+                                    name,
+                                    data.getPattern(),
+                                    NullOutputStream.getInstance(),
+                                    append,
+                                    immediateFlush,
+                                    bufferSize,
+                                    size,
+                                    time,
+                                    data.getTriggeringPolicy(),
+                                    data.getRolloverStrategy(),
+                                    advertiseURI,
+                                    layout,
+                                    filePermissions,
+                                    fileOwner,
+                                    fileGroup,
+                                    writeHeader);
+                            if (rrm.isAttributeViewEnabled()) {
+                                rrm.defineAttributeView(file.toPath());
+                            }
+                            return rrm;
+                        },
+                        new FactoryData(filePattern, policy, strategy, configuration)));
     }
 
     /**
@@ -282,165 +330,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     @Override
     public int getBufferSize() {
         return byteBuffer.capacity();
-    }
-
-    /**
-     * Factory to create a RollingRandomAccessFileManager.
-     */
-    private static class RollingRandomAccessFileManagerFactory
-            implements ManagerFactory<RollingRandomAccessFileManager, FactoryData> {
-
-        /**
-         * Create the RollingRandomAccessFileManager.
-         *
-         * @param name The name of the entity to manage.
-         * @param data The data required to create the entity.
-         * @return a RollingFileManager.
-         */
-        @Override
-        @SuppressFBWarnings(
-                value = "PATH_TRAVERSAL_IN",
-                justification = "The name of the accessed files is based on a configuration value.")
-        public RollingRandomAccessFileManager createManager(final String name, final FactoryData data) {
-            File file = null;
-            long size = 0;
-            long time = System.currentTimeMillis();
-            RandomAccessFile raf = null;
-            if (data.fileName != null) {
-                file = new File(name);
-
-                if (!data.append) {
-                    file.delete();
-                }
-                size = data.append ? file.length() : 0;
-                if (file.exists()) {
-                    time = file.lastModified();
-                }
-                try {
-                    FileUtils.makeParentDirs(file);
-                    raf = new RandomAccessFile(name, "rw");
-                    if (data.append) {
-                        final long length = raf.length();
-                        LOGGER.trace("RandomAccessFile {} seek to {}", name, length);
-                        raf.seek(length);
-                    } else {
-                        LOGGER.trace("RandomAccessFile {} set length to 0", name);
-                        raf.setLength(0);
-                    }
-                } catch (final IOException ex) {
-                    LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
-                    if (raf != null) {
-                        try {
-                            raf.close();
-                        } catch (final IOException e) {
-                            LOGGER.error("Cannot close RandomAccessFile {}", name, e);
-                        }
-                    }
-                    return null;
-                }
-            }
-            final boolean writeHeader = !data.append || file == null || !file.exists();
-
-            final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(
-                    data.getLoggerContext(),
-                    raf,
-                    name,
-                    data.pattern,
-                    NullOutputStream.getInstance(),
-                    data.append,
-                    data.immediateFlush,
-                    data.bufferSize,
-                    size,
-                    time,
-                    data.policy,
-                    data.strategy,
-                    data.advertiseURI,
-                    data.layout,
-                    data.filePermissions,
-                    data.fileOwner,
-                    data.fileGroup,
-                    writeHeader);
-            if (rrm.isAttributeViewEnabled()) {
-                rrm.defineAttributeView(file.toPath());
-            }
-            return rrm;
-        }
-    }
-
-    /**
-     * Factory data.
-     */
-    private static class FactoryData extends ConfigurationFactoryData {
-        private final String fileName;
-        private final String pattern;
-        private final boolean append;
-        private final boolean immediateFlush;
-        private final int bufferSize;
-        private final TriggeringPolicy policy;
-        private final RolloverStrategy strategy;
-        private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
-        private final String filePermissions;
-        private final String fileOwner;
-        private final String fileGroup;
-
-        /**
-         * Create the data for the factory.
-         *
-         * @param fileName The file name.
-         * @param pattern The pattern.
-         * @param append The append flag.
-         * @param immediateFlush
-         * @param bufferSize
-         * @param policy
-         * @param strategy
-         * @param advertiseURI
-         * @param layout
-         * @param filePermissions File permissions
-         * @param fileOwner File owner
-         * @param fileGroup File group
-         * @param configuration
-         */
-        public FactoryData(
-                final String fileName,
-                final String pattern,
-                final boolean append,
-                final boolean immediateFlush,
-                final int bufferSize,
-                final TriggeringPolicy policy,
-                final RolloverStrategy strategy,
-                final String advertiseURI,
-                final Layout<? extends Serializable> layout,
-                final String filePermissions,
-                final String fileOwner,
-                final String fileGroup,
-                final Configuration configuration) {
-            super(configuration);
-            this.fileName = fileName;
-            this.pattern = pattern;
-            this.append = append;
-            this.immediateFlush = immediateFlush;
-            this.bufferSize = bufferSize;
-            this.policy = policy;
-            this.strategy = strategy;
-            this.advertiseURI = advertiseURI;
-            this.layout = layout;
-            this.filePermissions = filePermissions;
-            this.fileOwner = fileOwner;
-            this.fileGroup = fileGroup;
-        }
-
-        public String getPattern() {
-            return pattern;
-        }
-
-        public TriggeringPolicy getTriggeringPolicy() {
-            return this.policy;
-        }
-
-        public RolloverStrategy getRolloverStrategy() {
-            return this.strategy;
-        }
     }
 
     /**

@@ -57,7 +57,7 @@ public class ScriptArbiter implements Arbiter {
         final SimpleBindings bindings = new SimpleBindings();
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return Boolean.parseBoolean(object.toString());
     }
 
@@ -114,8 +114,8 @@ public class ScriptArbiter implements Arbiter {
                 return null;
             }
             if (script instanceof ScriptRef) {
-                if (configuration.getScriptManager().getScript(script.getName()) == null) {
-                    LOGGER.error("No script with name {} has been declared.", script.getName());
+                if (configuration.getScriptManager().getScript(script.getId()) == null) {
+                    LOGGER.error("No script with name {} has been declared.", script.getId());
                     return null;
                 }
             } else {

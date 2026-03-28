@@ -45,7 +45,7 @@ class InMemoryAppenderTest {
     @Test
     void testHeaderRequested() {
         final PatternLayout layout =
-                PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+                PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
         final String expectedHeader = "HEADERHEADER";
@@ -55,7 +55,7 @@ class InMemoryAppenderTest {
     @Test
     void testHeaderSuppressed() {
         final PatternLayout layout =
-                PatternLayout.newBuilder().withHeader("HEADERHEADER").build();
+                PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
         final boolean writeHeader = false;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader);
         final String expectedHeader = null;

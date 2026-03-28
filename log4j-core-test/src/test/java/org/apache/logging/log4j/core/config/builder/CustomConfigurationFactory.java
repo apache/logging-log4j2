@@ -72,7 +72,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        return getConfiguration(loggerContext, source.toString(), null);
+        return getConfiguration(loggerContext, source.toString(), (URI) null);
     }
 
     @Override

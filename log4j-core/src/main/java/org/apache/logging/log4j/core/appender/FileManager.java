@@ -50,8 +50,6 @@ import org.apache.logging.log4j.core.util.FileUtils;
  */
 public class FileManager extends OutputStreamManager {
 
-    private static final FileManagerFactory FACTORY = new FileManagerFactory();
-
     private final boolean isAppend;
     private final boolean createOnDemand;
     private final boolean isLocking;
@@ -194,7 +192,7 @@ public class FileManager extends OutputStreamManager {
      * @param locking true if the file should be locked while writing, false otherwise.
      * @param bufferedIo true if the contents should be buffered as they are written.
      * @param createOnDemand true if you want to lazy-create the file (a.k.a. on-demand.)
-     * @param advertiseUri the URI to use when advertising the file
+     * @param advertiseURI the URI to use when advertising the file
      * @param layout The layout
      * @param bufferSize buffer size for buffered IO
      * @param filePermissions File permissions
@@ -209,34 +207,52 @@ public class FileManager extends OutputStreamManager {
             boolean locking,
             final boolean bufferedIo,
             final boolean createOnDemand,
-            final String advertiseUri,
+            final String advertiseURI,
             final Layout<? extends Serializable> layout,
             final int bufferSize,
             final String filePermissions,
             final String fileOwner,
             final String fileGroup,
             final Configuration configuration) {
-
-        if (locking && bufferedIo) {
-            locking = false;
-        }
+        // Disable locking if buffered IO is enabled
+        boolean actualLocking = !bufferedIo && locking;
+        int actualBufferSize = bufferedIo ? bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
         return narrow(
                 FileManager.class,
                 getManager(
                         fileName,
-                        new FactoryData(
-                                append,
-                                locking,
-                                bufferedIo,
-                                bufferSize,
-                                createOnDemand,
-                                advertiseUri,
-                                layout,
-                                filePermissions,
-                                fileOwner,
-                                fileGroup,
-                                configuration),
-                        FACTORY));
+                        (name, data) -> {
+                            Objects.requireNonNull(name, "filename is missing");
+                            final File file = new File(name);
+                            try {
+                                FileUtils.makeParentDirs(file);
+                                final boolean writeHeader = !append || !file.exists();
+                                final ByteBuffer byteBuffer = ByteBuffer.allocate(actualBufferSize);
+                                final FileOutputStream fos = createOnDemand ? null : new FileOutputStream(file, append);
+                                final FileManager fm = new FileManager(
+                                        data.getLoggerContext(),
+                                        name,
+                                        fos,
+                                        append,
+                                        actualLocking,
+                                        createOnDemand,
+                                        advertiseURI,
+                                        layout,
+                                        filePermissions,
+                                        fileOwner,
+                                        fileGroup,
+                                        writeHeader,
+                                        byteBuffer);
+                                if (fos != null && fm.attributeViewEnabled) {
+                                    fm.defineAttributeView(file.toPath());
+                                }
+                                return fm;
+                            } catch (final IOException ex) {
+                                LOGGER.error("FileManager ({}): {}", name, ex);
+                            }
+                            return null;
+                        },
+                        new ConfigurationFactoryData(configuration)));
     }
 
     @Override
@@ -425,109 +441,5 @@ public class FileManager extends OutputStreamManager {
         final Map<String, String> result = new HashMap<>(super.getContentFormat());
         result.put("fileURI", advertiseURI);
         return result;
-    }
-
-    /**
-     * Factory Data.
-     */
-    private static class FactoryData extends ConfigurationFactoryData {
-        private final boolean append;
-        private final boolean locking;
-        private final boolean bufferedIo;
-        private final int bufferSize;
-        private final boolean createOnDemand;
-        private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
-        private final String filePermissions;
-        private final String fileOwner;
-        private final String fileGroup;
-
-        /**
-         * Constructor.
-         * @param append Append status.
-         * @param locking Locking status.
-         * @param bufferedIo Buffering flag.
-         * @param bufferSize Buffer size.
-         * @param createOnDemand if you want to lazy-create the file (a.k.a. on-demand.)
-         * @param advertiseURI the URI to use when advertising the file
-         * @param layout The layout
-         * @param filePermissions File permissions
-         * @param fileOwner File owner
-         * @param fileGroup File group
-         * @param configuration the configuration
-         */
-        public FactoryData(
-                final boolean append,
-                final boolean locking,
-                final boolean bufferedIo,
-                final int bufferSize,
-                final boolean createOnDemand,
-                final String advertiseURI,
-                final Layout<? extends Serializable> layout,
-                final String filePermissions,
-                final String fileOwner,
-                final String fileGroup,
-                final Configuration configuration) {
-            super(configuration);
-            this.append = append;
-            this.locking = locking;
-            this.bufferedIo = bufferedIo;
-            this.bufferSize = bufferSize;
-            this.createOnDemand = createOnDemand;
-            this.advertiseURI = advertiseURI;
-            this.layout = layout;
-            this.filePermissions = filePermissions;
-            this.fileOwner = fileOwner;
-            this.fileGroup = fileGroup;
-        }
-    }
-
-    /**
-     * Factory to create a FileManager.
-     */
-    private static class FileManagerFactory implements ManagerFactory<FileManager, FactoryData> {
-
-        /**
-         * Creates a FileManager.
-         * @param name The name of the File.
-         * @param data The FactoryData
-         * @return The FileManager for the File.
-         */
-        @Override
-        @SuppressFBWarnings(
-                value = "PATH_TRAVERSAL_IN",
-                justification = "The destination file should be specified in the configuration file.")
-        public FileManager createManager(final String name, final FactoryData data) {
-            Objects.requireNonNull(name, "filename is missing");
-            final File file = new File(name);
-            try {
-                FileUtils.makeParentDirs(file);
-                final boolean writeHeader = !data.append || !file.exists();
-                final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
-                final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
-                final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
-                final FileManager fm = new FileManager(
-                        data.getLoggerContext(),
-                        name,
-                        fos,
-                        data.append,
-                        data.locking,
-                        data.createOnDemand,
-                        data.advertiseURI,
-                        data.layout,
-                        data.filePermissions,
-                        data.fileOwner,
-                        data.fileGroup,
-                        writeHeader,
-                        byteBuffer);
-                if (fos != null && fm.attributeViewEnabled) {
-                    fm.defineAttributeView(file.toPath());
-                }
-                return fm;
-            } catch (final IOException ex) {
-                LOGGER.error("FileManager (" + name + ") " + ex, ex);
-            }
-            return null;
-        }
     }
 }

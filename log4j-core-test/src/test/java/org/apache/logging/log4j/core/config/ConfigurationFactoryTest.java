@@ -25,8 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +39,14 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class ConfigurationFactoryTest {
 
@@ -129,5 +134,57 @@ class ConfigurationFactoryTest {
         checkConfiguration(context);
         final Path logFile = loggingPath.resolve("test-properties.log");
         checkFileLogger(context, logFile);
+    }
+
+    @Test
+    void testGetConfigurationWithNullUris() {
+        final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
+        try (final LoggerContext context = new LoggerContext("test")) {
+            assertThrows(NullPointerException.class, () -> factory.getConfiguration(context, "test", (List<URI>) null));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithEmptyUris() {
+        final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
+        try (final LoggerContext context = new LoggerContext("test")) {
+            factory.getConfiguration(context, "test", Collections.emptyList());
+            Mockito.verify(factory).getConfiguration(Mockito.same(context), Mockito.eq("test"), (URI) Mockito.isNull());
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithNullInList() {
+        final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final List<URI> listWithNull = Arrays.asList(URI.create("path:://to/nowhere"), null);
+            assertThrows(NullPointerException.class, () -> factory.getConfiguration(context, "test", listWithNull));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithSingleUri() throws Exception {
+        final ConfigurationFactory factory = Mockito.spy(ConfigurationFactory.getInstance());
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final URI configLocation =
+                    getClass().getResource("/log4j-test1.xml").toURI();
+            factory.getConfiguration(context, "test", Collections.singletonList(configLocation));
+            Mockito.verify(factory)
+                    .getConfiguration(Mockito.same(context), Mockito.eq("test"), Mockito.eq(configLocation));
+        }
+    }
+
+    @Test
+    void testGetConfigurationWithMultipleUris() throws Exception {
+        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        try (final LoggerContext context = new LoggerContext("test")) {
+            final URI configLocation1 =
+                    getClass().getResource("/log4j-test1.xml").toURI();
+            final URI configLocation2 =
+                    getClass().getResource("/log4j-xinclude.xml").toURI();
+            final List<URI> configLocations = Arrays.asList(configLocation1, configLocation2);
+            final Configuration config = factory.getConfiguration(context, "test", configLocations);
+            assertInstanceOf(CompositeConfiguration.class, config);
+        }
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <issue id="3873" link="https://github.com/apache/logging-log4j2/issues/3873"/>
+    <issue id="3919" link="https://github.com/apache/logging-log4j2/pull/3919"/>
+    <description format="asciidoc">
+        Fix Pattern Layout exception stack trace converters to no longer prepend newlines based on context
+    </description>
+</entry>

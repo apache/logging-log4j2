@@ -130,8 +130,8 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
         }
         sb.append("- %m%n");
         return LayoutWrapper.adapt(PatternLayout.newBuilder()
-                .withPattern(sb.toString())
-                .withConfiguration(config)
+                .setPattern(sb.toString())
+                .setConfiguration(config)
                 .build());
     }
 }

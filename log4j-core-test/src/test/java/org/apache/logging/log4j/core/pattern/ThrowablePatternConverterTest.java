@@ -25,8 +25,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,6 +43,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -463,6 +473,103 @@ public class ThrowablePatternConverterTest {
                     // Normalize extended stack trace resource information for Java Standard library classes.
                     // We replace the `~[?:1.8.0_422]` suffix of such classes with `~[?:0]`.
                     .replaceAll(" ~\\[\\?:[^]]+](\\Q" + conversionEnding + "\\E|$)", " ~[?:0]$1");
+        }
+
+        @RepeatedTest(10)
+        @Issue("https://github.com/apache/logging-log4j2/issues/3940")
+        void concurrent_stack_trace_mutation_should_not_cause_failure() throws Exception {
+            final int stackTracePerThreadCount = 100;
+            formatThrowableWhileMutatingConcurrently(threadIndex -> {
+                final List<StackTraceElement[]> stackTraces = createExceptionsOfDifferentDepths().stream()
+                        .map(Throwable::getStackTrace)
+                        .collect(Collectors.toList());
+                return exception -> {
+                    for (int stackTraceIndex = 0; stackTraceIndex < stackTracePerThreadCount; stackTraceIndex++) {
+                        exception.setStackTrace(stackTraces.get(stackTraceIndex));
+                        // Give some time slack to increase randomness
+                        LockSupport.parkNanos(1);
+                    }
+                };
+            });
+        }
+
+        @RepeatedTest(10)
+        @Issue("https://github.com/apache/logging-log4j2/issues/3929")
+        void concurrent_suppressed_mutation_should_not_cause_failure() throws Exception {
+            formatThrowableWhileMutatingConcurrently(threadIndex -> {
+                final List<Exception> exceptions = createExceptionsOfDifferentDepths();
+                return exception -> exceptions.forEach(suppressed -> {
+                    exception.addSuppressed(suppressed);
+                    // Give some time slack to increase randomness
+                    LockSupport.parkNanos(1);
+                });
+            });
+        }
+
+        private void formatThrowableWhileMutatingConcurrently(
+                Function<Integer, Consumer<Throwable>> throwableMutatorFactory) throws Exception {
+
+            // Test constants
+            final int threadCount = Math.max(8, Runtime.getRuntime().availableProcessors());
+            final ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+            try {
+                final Exception exception = new Exception();
+                final CountDownLatch startLatch =
+                        new CountDownLatch(threadCount + /* the main thread invoking the rendering: */ 1);
+                final AtomicInteger runningThreadCountRef = new AtomicInteger(threadCount);
+
+                // Schedule threads that will start mutating the exception with the start signal
+                for (int threadIndex = 0; threadIndex < threadCount; threadIndex++) {
+                    final Consumer<Throwable> exceptionMutator = throwableMutatorFactory.apply(threadIndex);
+                    executor.submit(() -> {
+                        try {
+                            startLatch.countDown();
+                            startLatch.await();
+                            exceptionMutator.accept(exception);
+                        } catch (InterruptedException ignored) {
+                            // Restore the interrupt
+                            Thread.currentThread().interrupt();
+                        } finally {
+                            runningThreadCountRef.decrementAndGet();
+                        }
+                    });
+                }
+
+                // Create the formatter
+                final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(patternPrefix, false, true, true);
+                assertThat(patternFormatters).hasSize(1);
+                final PatternFormatter patternFormatter = patternFormatters.get(0);
+
+                // Create the log event and the layout buffer
+                final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                        .setThrown(exception)
+                        .setLevel(LEVEL)
+                        .build();
+                final StringBuilder buffer = new StringBuilder(16384);
+
+                // Trigger the start latch and format the exception
+                startLatch.countDown();
+                startLatch.await();
+                while (runningThreadCountRef.get() > 0) {
+                    // Give some time slack to increase randomness
+                    LockSupport.parkNanos(1);
+                    patternFormatter.format(logEvent, buffer);
+                    buffer.setLength(0);
+                }
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+
+        private static List<Exception> createExceptionsOfDifferentDepths() {
+            final StackTraceElement[] stackTrace = new Exception().getStackTrace();
+            return IntStream.range(0, stackTrace.length)
+                    .mapToObj(depth -> {
+                        final Exception exception = new Exception();
+                        exception.setStackTrace(Arrays.copyOfRange(stackTrace, 0, depth));
+                        return exception;
+                    })
+                    .collect(Collectors.toList());
         }
     }
 

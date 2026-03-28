@@ -44,8 +44,8 @@ class PatternSelectorTest {
         final PatternSelector selector = MarkerPatternSelector.createSelector(
                 patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPatternSelector(selector)
-                .withConfiguration(ctx.getConfiguration())
+                .setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -77,8 +77,8 @@ class PatternSelectorTest {
         final PatternSelector selector =
                 LevelPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPatternSelector(selector)
-                .withConfiguration(ctx.getConfiguration())
+                .setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())

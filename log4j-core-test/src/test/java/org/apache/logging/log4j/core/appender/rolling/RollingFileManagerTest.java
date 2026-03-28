@@ -82,11 +82,11 @@ class RollingFileManagerTest {
             file.deleteOnExit();
 
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                    .withFilePattern("FilePattern")
+                    .setFilePattern("FilePattern")
                     .setName("RollingFileAppender")
                     .setConfiguration(config)
-                    .withStrategy(new CustomDirectFileRolloverStrategy(file, config.getConfigurationStrSubstitutor()))
-                    .withPolicy(new SizeBasedTriggeringPolicy(100))
+                    .setStrategy(new CustomDirectFileRolloverStrategy(file, config.getConfigurationStrSubstitutor()))
+                    .setPolicy(new SizeBasedTriggeringPolicy(100))
                     .build();
 
             assertNotNull(appender);
@@ -167,7 +167,7 @@ class RollingFileManagerTest {
                 false,
                 NoOpTriggeringPolicy.INSTANCE,
                 DirectWriteRolloverStrategy.newBuilder()
-                        .withConfig(configuration)
+                        .setConfig(configuration)
                         .build(),
                 null,
                 PatternLayout.createDefaultLayout(configuration),

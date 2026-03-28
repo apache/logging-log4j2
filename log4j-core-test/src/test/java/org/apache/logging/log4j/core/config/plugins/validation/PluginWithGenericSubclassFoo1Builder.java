@@ -45,7 +45,7 @@ public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGene
             return foo1;
         }
 
-        public B withFoo1(final String foo1) {
+        public B setFoo1(final String foo1) {
             this.foo1 = foo1;
             return asBuilder();
         }

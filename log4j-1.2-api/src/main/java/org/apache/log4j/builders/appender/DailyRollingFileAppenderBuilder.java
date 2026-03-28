@@ -180,25 +180,25 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         }
         final String filePattern = fileName + "%d{" + datePattern + "}";
         final TriggeringPolicy timePolicy =
-                TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
+                TimeBasedTriggeringPolicy.newBuilder().setModulate(true).build();
         final TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
-                .withConfig(configuration)
-                .withMax(Integer.toString(Integer.MAX_VALUE))
+                .setConfig(configuration)
+                .setMax(Integer.toString(Integer.MAX_VALUE))
                 .build();
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
-                .withFileName(fileName)
-                .withAppend(append)
+                .setFileName(fileName)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferSize)
                 .setImmediateFlush(immediateFlush)
-                .withFilePattern(filePattern)
-                .withPolicy(policy)
-                .withStrategy(strategy)
+                .setFilePattern(filePattern)
+                .setPolicy(policy)
+                .setStrategy(strategy)
                 .build());
     }
 }
