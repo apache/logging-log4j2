@@ -161,8 +161,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          *
          * @param configuration {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withConfiguration(final Configuration configuration) {
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
@@ -172,8 +173,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          *
          * @param subst {@link AbstractPathAction#getStrSubstitutor()}
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withSubst(final StrSubstitutor subst) {
+        public Builder setSubst(final StrSubstitutor subst) {
             this.subst = subst;
             return this;
         }
@@ -182,8 +184,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * Define base path to apply condition before execute POSIX file attribute action.
          * @param basePath {@link AbstractPathAction#getBasePath()}
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withBasePath(final String basePath) {
+        public Builder setBasePath(final String basePath) {
             this.basePath = basePath;
             return this;
         }
@@ -192,8 +195,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * True to allow synonyms links during search of eligible files.
          * @param followLinks Follow synonyms links
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withFollowLinks(final boolean followLinks) {
+        public Builder setFollowLinks(final boolean followLinks) {
             this.followLinks = followLinks;
             return this;
         }
@@ -202,8 +206,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * Define max folder depth to search for eligible files to apply POSIX attribute view.
          * @param maxDepth Max search depth
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withMaxDepth(final int maxDepth) {
+        public Builder setMaxDepth(final int maxDepth) {
             this.maxDepth = maxDepth;
             return this;
         }
@@ -213,8 +218,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          *
          * @param pathConditions {@link AbstractPathAction#getPathConditions()}
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withPathConditions(final PathCondition[] pathConditions) {
+        public Builder setPathConditions(final PathCondition[] pathConditions) {
             this.pathConditions = pathConditions;
             return this;
         }
@@ -227,8 +233,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * <p>r--r--r--
          * @param filePermissionsString Permissions to apply
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withFilePermissionsString(final String filePermissionsString) {
+        public Builder setFilePermissionsString(final String filePermissionsString) {
             this.filePermissionsString = filePermissionsString;
             return this;
         }
@@ -237,8 +244,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * Define file permissions to apply during action execution eligible files.
          * @param filePermissions Permissions to apply
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withFilePermissions(final Set<PosixFilePermission> filePermissions) {
+        public Builder setFilePermissions(final Set<PosixFilePermission> filePermissions) {
             this.filePermissions = filePermissions;
             return this;
         }
@@ -247,8 +255,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * Define file owner to apply during action execution eligible files.
          * @param fileOwner File owner
          * @return This builder
+         * @since 2.26.0
          */
-        public Builder withFileOwner(final String fileOwner) {
+        public Builder setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
             return this;
         }
@@ -257,7 +266,98 @@ public class PosixViewAttributeAction extends AbstractPathAction {
          * Define file group to apply during action execution eligible files.
          * @param fileGroup File group
          * @return This builder
+         * @since 2.26.0
          */
+        public Builder setFileGroup(final String fileGroup) {
+            this.fileGroup = fileGroup;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
+         */
+        @Deprecated
+        public Builder withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setSubst(StrSubstitutor)}.
+         */
+        @Deprecated
+        public Builder withSubst(final StrSubstitutor subst) {
+            this.subst = subst;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setBasePath(String)}.
+         */
+        @Deprecated
+        public Builder withBasePath(final String basePath) {
+            this.basePath = basePath;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFollowLinks(boolean)}.
+         */
+        @Deprecated
+        public Builder withFollowLinks(final boolean followLinks) {
+            this.followLinks = followLinks;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMaxDepth(int)}.
+         */
+        @Deprecated
+        public Builder withMaxDepth(final int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setPathConditions(PathCondition[])}.
+         */
+        @Deprecated
+        public Builder withPathConditions(final PathCondition[] pathConditions) {
+            this.pathConditions = pathConditions;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFilePermissionsString(String)}.
+         */
+        @Deprecated
+        public Builder withFilePermissionsString(final String filePermissionsString) {
+            this.filePermissionsString = filePermissionsString;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFilePermissions(Set<PosixFilePermission>)}.
+         */
+        @Deprecated
+        public Builder withFilePermissions(final Set<PosixFilePermission> filePermissions) {
+            this.filePermissions = filePermissions;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileOwner(String)}.
+         */
+        @Deprecated
+        public Builder withFileOwner(final String fileOwner) {
+            this.fileOwner = fileOwner;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFileGroup(String)}.
+         */
+        @Deprecated
         public Builder withFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
             return this;

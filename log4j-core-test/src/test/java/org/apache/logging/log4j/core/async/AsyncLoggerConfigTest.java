@@ -82,12 +82,12 @@ class AsyncLoggerConfigTest {
     void testIncludeLocationDefaultsToFalse() {
         final Configuration configuration = new NullConfiguration();
         final LoggerConfig rootLoggerConfig =
-                RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
+                RootLogger.newAsyncRootBuilder().setConfig(configuration).build();
         assertFalse(rootLoggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
 
         final LoggerConfig loggerConfig = AsyncLoggerConfig.newAsyncBuilder()
-                .withConfig(configuration)
-                .withLoggerName("com.foo.Bar")
+                .setConfig(configuration)
+                .setLoggerName("com.foo.Bar")
                 .build();
         assertFalse(loggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
     }
@@ -97,9 +97,9 @@ class AsyncLoggerConfigTest {
         final Configuration configuration = new NullConfiguration();
         final Filter filter = mock(Filter.class);
         final LoggerConfig config = AsyncLoggerConfig.newAsyncBuilder()
-                .withLoggerName(FQCN)
-                .withConfig(configuration)
-                .withLevel(Level.INFO)
+                .setLoggerName(FQCN)
+                .setConfig(configuration)
+                .setLevel(Level.INFO)
                 .setFilter(filter)
                 .build();
         final Appender appender = mock(Appender.class);

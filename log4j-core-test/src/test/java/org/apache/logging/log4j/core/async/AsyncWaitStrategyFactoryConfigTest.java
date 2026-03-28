@@ -100,7 +100,7 @@ class AsyncWaitStrategyFactoryConfigTest {
     @Test
     void testInvalidProgrammaticConfiguration3159WithNullFactoryClassName() {
         assertThrows(IllegalArgumentException.class, () -> AsyncWaitStrategyFactoryConfig.newBuilder()
-                .withFactoryClassName(null));
+                .setFactoryClassName(null));
     }
 
     /**
@@ -110,7 +110,7 @@ class AsyncWaitStrategyFactoryConfigTest {
     @Test
     void testInvalidProgrammaticConfiguration3159WithEmptyFactoryClassName() {
         assertThrows(IllegalArgumentException.class, () -> AsyncWaitStrategyFactoryConfig.newBuilder()
-                .withFactoryClassName(""));
+                .setFactoryClassName(""));
     }
 
     @Test

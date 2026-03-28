@@ -60,7 +60,7 @@ public abstract class FileWatchdog extends Thread {
         try {
             fileExists = file.exists();
         } catch (final SecurityException e) {
-            LogLog.warn("Was not allowed to read check file existance, file:[" + filename + "].");
+            LogLog.warn("Was not allowed to read check file existence, file:[" + filename + "].");
             interrupted = true; // there is no point in continuing
             return;
         }

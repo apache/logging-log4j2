@@ -112,7 +112,7 @@ class HtmlLayoutTest {
     @Test
     void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
-                .withContentType("text/html; charset=UTF-16")
+                .setContentType("text/html; charset=UTF-16")
                 .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
         // TODO: make sure this following bit works as well
@@ -145,7 +145,7 @@ class HtmlLayoutTest {
         }
         // set up appender
         final HtmlLayout layout =
-                HtmlLayout.newBuilder().withLocationInfo(includeLocation).build();
+                HtmlLayout.newBuilder().setLocationInfo(includeLocation).build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 

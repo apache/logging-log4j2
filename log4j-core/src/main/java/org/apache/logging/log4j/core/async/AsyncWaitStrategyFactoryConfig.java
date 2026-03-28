@@ -66,6 +66,19 @@ public class AsyncWaitStrategyFactoryConfig {
             return factoryClassName;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public B setFactoryClassName(final String className) {
+            this.factoryClassName =
+                    Assert.requireNonEmpty(className, "The 'className' argument must not be null or empty.");
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setFactoryClassName(String)}.
+         */
+        @Deprecated
         public B withFactoryClassName(final String className) {
             this.factoryClassName =
                     Assert.requireNonEmpty(className, "The 'className' argument must not be null or empty.");

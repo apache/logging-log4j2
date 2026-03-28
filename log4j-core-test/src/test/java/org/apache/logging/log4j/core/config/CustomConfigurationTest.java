@@ -59,16 +59,16 @@ class CustomConfigurationTest {
             }
         }
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .withConfiguration(config)
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setConfiguration(config)
                 .build();
         final FileAppender appender = FileAppender.newBuilder()
                 .setBufferedIo(false)
                 .setIgnoreExceptions(false)
                 .setName("File")
                 .setLayout(layout)
-                .withAppend(false)
-                .withFileName(logFile.toString())
+                .setAppend(false)
+                .setFileName(logFile.toString())
                 .build();
         appender.start();
         config.addAppender(appender);
@@ -76,12 +76,12 @@ class CustomConfigurationTest {
         final AppenderRef[] refs = new AppenderRef[] {ref};
 
         final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
-                .withConfig(config)
-                .withAdditivity(false)
-                .withIncludeLocation("true")
-                .withLevel(Level.INFO)
-                .withLoggerName("org.apache.logging.log4j")
-                .withRefs(refs)
+                .setConfig(config)
+                .setAdditivity(false)
+                .setIncludeLocation("true")
+                .setLevel(Level.INFO)
+                .setLoggerName("org.apache.logging.log4j")
+                .setRefs(refs)
                 .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);

@@ -259,7 +259,7 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
         final DefaultRolloverStrategy.Builder rolloverStrategyBuilder = DefaultRolloverStrategy.newBuilder();
         switch (rollingPolicyClassName) {
             case FIXED_WINDOW_ROLLING_POLICY:
-                rolloverStrategyBuilder.withMin(Integer.toString(minIndex)).withMax(Integer.toString(maxIndex));
+                rolloverStrategyBuilder.setMin(Integer.toString(minIndex)).setMax(Integer.toString(maxIndex));
                 break;
             case TIME_BASED_ROLLING_POLICY:
                 break;
@@ -276,18 +276,18 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
             return null;
         }
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
-                .withAppend(append)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferedIo ? bufferSize : 0)
                 .setConfiguration(configuration)
-                .withFileName(actualFileName)
-                .withFilePattern(fileNamePattern)
+                .setFileName(actualFileName)
+                .setFilePattern(fileNamePattern)
                 .setFilter(fileFilter)
                 .setImmediateFlush(actualImmediateFlush)
                 .setLayout(fileLayout)
                 .setName(name)
-                .withPolicy(actualTriggeringPolicy)
-                .withStrategy(rolloverStrategyBuilder.build())
+                .setPolicy(actualTriggeringPolicy)
+                .setStrategy(rolloverStrategyBuilder.build())
                 .build());
     }
 }

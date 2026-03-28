@@ -88,9 +88,9 @@ public final class ColumnConfig {
 
             if (isPattern) {
                 final PatternLayout layout = PatternLayout.newBuilder()
-                        .withPattern(pattern)
-                        .withConfiguration(configuration)
-                        .withAlwaysWriteExceptions(false)
+                        .setPattern(pattern)
+                        .setConfiguration(configuration)
+                        .setAlwaysWriteExceptions(false)
                         .build();
                 return new ColumnConfig(name, layout, null, false, isUnicode, isClob);
             }

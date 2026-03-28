@@ -98,6 +98,19 @@ class ParameterFormatterTest {
                         placeholderCount, argCount, pattern);
     }
 
+    @Test
+    void format_should_not_warn_on_insufficient_args() {
+        final String expectedMessage = "pan a";
+        final String pattern = "pan {}";
+        final String[] args = new String[] {"a", null};
+        final int argCount = args.length;
+
+        String actualMessage = ParameterFormatter.format(pattern, args, argCount);
+        assertThat(actualMessage).isEqualTo(expectedMessage);
+        final List<StatusData> statusDataList = statusListener.getStatusData().collect(Collectors.toList());
+        assertThat(statusDataList).isEmpty();
+    }
+
     @ParameterizedTest
     @MethodSource("messageFormattingTestCases")
     void format_should_work(

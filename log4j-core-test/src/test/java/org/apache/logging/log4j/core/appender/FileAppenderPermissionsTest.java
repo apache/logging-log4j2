@@ -70,19 +70,19 @@ class FileAppenderPermissionsTest {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
         final Path path = file.toPath();
         final Layout<String> layout = PatternLayout.newBuilder()
-                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-                .withFileName(file.getAbsolutePath())
+                .setFileName(file.getAbsolutePath())
                 .setName("test")
-                .withImmediateFlush(false)
+                .setImmediateFlush(false)
                 .setIgnoreExceptions(false)
-                .withBufferedIo(false)
-                .withBufferSize(1)
+                .setBufferedIo(false)
+                .setBufferSize(1)
                 .setLayout(layout)
-                .withCreateOnDemand(createOnDemand)
-                .withFilePermissions(filePermissions)
+                .setCreateOnDemand(createOnDemand)
+                .setFilePermissions(filePermissions)
                 .build();
         // @formatter:on
         try {
@@ -130,20 +130,20 @@ class FileAppenderPermissionsTest {
         assertNotNull(group);
 
         final Layout<String> layout = PatternLayout.newBuilder()
-                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-                .withFileName(file.getAbsolutePath())
+                .setFileName(file.getAbsolutePath())
                 .setName("test")
-                .withImmediateFlush(true)
+                .setImmediateFlush(true)
                 .setIgnoreExceptions(false)
-                .withBufferedIo(false)
-                .withBufferSize(1)
+                .setBufferedIo(false)
+                .setBufferSize(1)
                 .setLayout(layout)
-                .withFilePermissions(filePermissions)
-                .withFileOwner(user)
-                .withFileGroup(group)
+                .setFilePermissions(filePermissions)
+                .setFileOwner(user)
+                .setFileGroup(group)
                 .build();
         // @formatter:on
         try {

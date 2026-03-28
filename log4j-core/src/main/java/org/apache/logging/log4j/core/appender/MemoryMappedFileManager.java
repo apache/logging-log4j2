@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
@@ -58,7 +57,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     static final int DEFAULT_REGION_LENGTH = 32 * 1024 * 1024;
 
     private static final int MAX_REMAP_COUNT = 10;
-    private static final MemoryMappedFileManagerFactory FACTORY = new MemoryMappedFileManagerFactory();
     private static final double NANOS_PER_MILLISEC = 1000.0 * 1000.0;
 
     private final boolean immediateFlush;
@@ -111,8 +109,37 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 MemoryMappedFileManager.class,
                 getManager(
                         fileName,
-                        new FactoryData(append, immediateFlush, regionLength, advertiseURI, layout),
-                        FACTORY));
+                        (name, ignored) -> {
+                            final File file = new File(name);
+                            if (!append) {
+                                file.delete();
+                            }
+
+                            final boolean writeHeader = !append || !file.exists();
+                            final OutputStream os = NullOutputStream.getInstance();
+                            RandomAccessFile raf = null;
+                            try {
+                                FileUtils.makeParentDirs(file);
+                                raf = new RandomAccessFile(name, "rw");
+                                final long position = (append) ? raf.length() : 0;
+                                raf.setLength(position + regionLength);
+                                return new MemoryMappedFileManager(
+                                        raf,
+                                        name,
+                                        os,
+                                        immediateFlush,
+                                        position,
+                                        regionLength,
+                                        advertiseURI,
+                                        layout,
+                                        writeHeader);
+                            } catch (final Exception ex) {
+                                LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex, ex);
+                                Closer.closeSilently(raf);
+                            }
+                            return null;
+                        },
+                        (Void) null));
     }
 
     /**
@@ -339,56 +366,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             this.regionLength = regionLength;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
-        }
-    }
-
-    /**
-     * Factory to create a MemoryMappedFileManager.
-     */
-    private static class MemoryMappedFileManagerFactory
-            implements ManagerFactory<MemoryMappedFileManager, FactoryData> {
-
-        /**
-         * Create a MemoryMappedFileManager.
-         *
-         * @param name The name of the File.
-         * @param data The FactoryData
-         * @return The MemoryMappedFileManager for the File.
-         */
-        @SuppressWarnings("resource")
-        @Override
-        @SuppressFBWarnings(
-                value = "PATH_TRAVERSAL_IN",
-                justification = "The destination file should be specified in the configuration file.")
-        public MemoryMappedFileManager createManager(final String name, final FactoryData data) {
-            final File file = new File(name);
-            if (!data.append) {
-                file.delete();
-            }
-
-            final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.getInstance();
-            RandomAccessFile raf = null;
-            try {
-                FileUtils.makeParentDirs(file);
-                raf = new RandomAccessFile(name, "rw");
-                final long position = (data.append) ? raf.length() : 0;
-                raf.setLength(position + data.regionLength);
-                return new MemoryMappedFileManager(
-                        raf,
-                        name,
-                        os,
-                        data.immediateFlush,
-                        position,
-                        data.regionLength,
-                        data.advertiseURI,
-                        data.layout,
-                        writeHeader);
-            } catch (final Exception ex) {
-                LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex, ex);
-                Closer.closeSilently(raf);
-            }
-            return null;
         }
     }
 }
