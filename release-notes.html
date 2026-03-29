@@ -375,6 +375,9 @@
 <li>
 <p>Add <code>log4j.plugin.processor.minAllowedMessageKind</code> annotation processor option to <code>PluginProcessor</code> to filter diagnostic messages by severity. This allows builds that treat compiler notes as errors (e.g. Maven with <code>-Werror</code>) to suppress informational notes emitted during normal plugin processing. (<a href="https://github.com/apache/logging-log4j2/discussions/3380">3380</a>, <a href="https://github.com/apache/logging-log4j2/pull/4063">4063</a>)</p>
 </li>
+<li>
+<p>Disregarded defined logger, appender and filter properties not referenced in loggers, appenders and filters respectively (<a href="https://github.com/apache/logging-log4j2/issues/4036">4036</a>, <a href="https://github.com/apache/logging-log4j2/pull/4069">4069</a>)</p>
+</li>
 </ul>
 </div>
 </div>
