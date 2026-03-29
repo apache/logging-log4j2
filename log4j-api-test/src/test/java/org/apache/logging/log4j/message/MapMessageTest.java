@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -72,12 +73,26 @@ class MapMessageTest {
 
     @Test
     void testXMLEscape() {
-        final String testMsg = "Test message <foo>";
+        final String notBmp = new String(Character.toChars(0x10000));
+        final String invalid = "A\uD800B\uDE00C\0\1\2\3";
+        final String expectedInvalid = "A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD";
+        final String key = "k<e&y> '\"\t\r\n" + notBmp + invalid;
+        final String value = "v>al<u& '\"\t\r\n" + notBmp + invalid;
         final StringMapMessage msg = new StringMapMessage();
-        msg.put("message", testMsg);
+        msg.put(key, value);
         final String result = msg.getFormattedMessage(new String[] {"XML"});
-        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" + "</Map>";
-        assertEquals(expected, result);
+
+        assertThat(result)
+                .isEqualTo(
+                        "<Map>\n" //
+                                + "  <Entry key=\"k&lt;e&amp;y&gt; &apos;&quot;\t\r\n"
+                                + notBmp
+                                + expectedInvalid
+                                + "\">v&gt;al&lt;u&amp; &apos;&quot;\t\r\n"
+                                + notBmp
+                                + expectedInvalid
+                                + "</Entry>\n" //
+                                + "</Map>");
     }
 
     @Test
