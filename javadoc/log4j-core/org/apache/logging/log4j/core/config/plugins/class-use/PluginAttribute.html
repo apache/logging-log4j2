@@ -2634,9 +2634,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Creates a KeyStoreConfiguration.</div>
 </div>
 <div class="col-first even-row-color"><code>static <a href="../../../net/ssl/SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SslConfiguration.</span><code><a href="../../../net/ssl/SslConfiguration.html#createSSLConfiguration(java.lang.String,org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration,org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration)" class="member-name-link">createSSLConfiguration</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
+<div class="col-second even-row-color"><span class="type-name-label">SslConfiguration.</span><code><a href="../../../net/ssl/SslConfiguration.html#createSSLConfiguration(java.lang.String,org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration,org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration,boolean)" class="member-name-link">createSSLConfiguration</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
  <a href="../../../net/ssl/KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a>&nbsp;keyStoreConfig,
- <a href="../../../net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a>&nbsp;trustStoreConfig)</code></div>
+ <a href="../../../net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a>&nbsp;trustStoreConfig,
+ boolean&nbsp;verifyHostName)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.</div>
 </div>
@@ -2646,14 +2647,6 @@ loadScripts(document, 'script');</script>
  <a href="../../../net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a>&nbsp;trustStoreConfig,
  boolean&nbsp;verifyHostName)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.</div>
-</div>
-<div class="col-first even-row-color"><code>static <a href="../../../net/ssl/SslConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">SslConfiguration</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SslConfiguration.</span><code><a href="../../../net/ssl/SslConfiguration.html#createSSLConfiguration(java.lang.String,org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration,org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration,boolean)" class="member-name-link">createSSLConfiguration</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
- <a href="../../../net/ssl/KeyStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">KeyStoreConfiguration</a>&nbsp;keyStoreConfig,
- <a href="../../../net/ssl/TrustStoreConfiguration.html" title="class in org.apache.logging.log4j.core.net.ssl">TrustStoreConfiguration</a>&nbsp;trustStoreConfig,
- boolean&nbsp;verifyHostName)</code></div>
-<div class="col-last even-row-color">
 <div class="block">Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.</div>
 </div>
 </div>
@@ -2747,7 +2740,7 @@ loadScripts(document, 'script');</script>
 </main>
 <footer role="contentinfo">
 <hr>
-<p class="legal-copy"><small><p align="center">Copyright &copy; 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.All Rights Reserved.<br/>Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of <a href="https://www.apache.org/">The Apache Software Foundation</a>.Oracle and Java are registered trademarks of Oracle and/or its affiliates.Other names may be trademarks of their respective owners.</p></small></p>
+<p class="legal-copy"><small><p align="center">Copyright &copy; 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.All Rights Reserved.<br/>Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of <a href="https://www.apache.org/">The Apache Software Foundation</a>.Oracle and Java are registered trademarks of Oracle and/or its affiliates.Other names may be trademarks of their respective owners.</p></small></p>
 </footer>
 </div>
 </div>

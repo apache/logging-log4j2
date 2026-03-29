@@ -2166,7 +2166,7 @@ NOTE: The Log4j API supports custom levels, the following list contains only the
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2287,7 +2287,7 @@ When resources require locking (e.g., through <code>org.apache.logging.log4j.cor
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2692,7 +2692,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -2900,7 +2900,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-TimeFilter">TimeFilter</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -3076,7 +3076,7 @@ In most circumstances, implementation classes should store their <code>org.apach
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-routing-RoutingAppender">RoutingAppender</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -13362,7 +13362,7 @@ A filter may choose to support being called only from the context or only from a
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -13844,7 +13844,7 @@ DENY.</p>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-LoggerConfig-RootLogger">RootLogger</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -15244,7 +15244,7 @@ If not "or" the operation will be an "and".</p>
 <p><a href="#org-apache-logging-log4j_log4j-layout-template-json_org-apache-logging-log4j-layout-template-json-JsonTemplateLayout">JsonTemplateLayout</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender">ServletAppender</a></p>
 </li>
 </ul>
 </div>
@@ -17022,10 +17022,16 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
                includeMDC=""
                includeNL=""
                includes=""
+               mdcExcludes=""
                mdcId=""
+               mdcIncludes=""
                mdcPrefix=""
+               mdcRequired=""
                messageId=""
+               newLine=""
+               newLineEscape=""
                required=""
+               useTlsMessageFormat=""
                useTLSMessageFormat=""&gt;
     &lt;a-Serializer-implementation/&gt;
     &lt;LoggerFields/&gt;&lt;!-- multiple occurrences allowed --&gt;
@@ -17058,7 +17064,9 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>appName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value to use as the <code>APP-NAME</code> in the RFC 5424 syslog record.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
@@ -17070,43 +17078,81 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ein</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The enterprise number to include in <code>SD-ID</code> identifiers.</p>
+</div>
+<div class="paragraph">
+<p>Can contain multiple integers separated by a dot, for example <code>32473. 1</code></p>
+</div>
+<div class="paragraph">
+<p>Defaults to .</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>enterpriseNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The enterprise number to include in <code>SD-ID</code> identifiers.</p>
+</div>
+<div class="paragraph">
+<p>Limited to a single integer.</p>
+</div>
+<div class="paragraph">
+<p>Defaults to .</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>escapeNL</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>newLineEscape</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>eventPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A prefix to add to event key names when formatting <code>org.apache.logging.log4j.message.StructuredDataMessage</code> fields.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>exceptionPattern</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The pattern used to format exceptions appended to the syslog message.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>excludes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>mdcExcludes</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>facility</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-Facility">Facility</a>?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The name of the <a href="#org-apache-logging-log4j_log4j-1-2-api_org-apache-logging-log4j-core-net-Facility">Facility</a> as described in RFC 5424</p>
+</div>
+<div class="paragraph">
+<p>The matching is case-insensitive.
+Defaults to <code>LOCAL0</code>.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>footer</code></p></td>
@@ -17124,55 +17170,161 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The default <code>SD-ID</code> as described in RFC 5424.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeMDC</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Indicates whether data from the context map will be included as RFC 5424 <code>SD-ELEMENT</code>.</p>
+</div>
+<div class="paragraph">
+<p>Defaults to <code>true</code>.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeNL</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>newLine</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>includes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>mdcIncludes</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcExcludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A comma separated list of MDC keys that should be excluded from the LogEvent.</p>
+</div>
+<div class="paragraph">
+<p>Mutually exclusive with <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout">Rfc5424Layout</a>.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The id to use for the MDC Structured Data Element.</p>
+</div>
+<div class="paragraph">
+<p>Defaults to .</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcIncludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A comma separated list of MDC keys that should be included in the LogEvent.</p>
+</div>
+<div class="paragraph">
+<p>Mutually exclusive with <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-Rfc5424Layout">Rfc5424Layout</a>.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcPrefix</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A prefix to add to MDC key names when formatting them as structured data parameters.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdcRequired</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A comma separated list of MDC keys that must be present in the MDC.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>messageId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The default value to be used in the <code>MSGID</code> field of RFC 5424 syslog records.</p>
+</div>
+<div class="paragraph">
+<p>If the log event contains a <code>org.apache.logging.log4j.message.StructuredDataMessage</code>, the id from that message will be used instead.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLine</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If <code>true</code>, a newline will be appended to the end of the syslog record.</p>
+</div>
+<div class="paragraph">
+<p>Default is <code>false</code>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newLineEscape</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If set, this string will be used to replace new lines within the message text.</p>
+</div>
+<div class="paragraph">
+<p>By default, new lines are not escaped.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>mdcRequired</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTlsMessageFormat</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>If true the message will be formatted according to RFC 5425.</p>
+</div>
+<div class="paragraph">
+<p>Default is <code>false</code>.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTLSMessageFormat</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Same as <code>useTlsMessageFormat</code>.</p>
+</div>
+<div class="paragraph">
+<p>Erroneously introduced in version 2.21.
+0, but kept for compatibility.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -17204,7 +17356,12 @@ The format of the result depends on the <em>conversion pattern</em>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>LoggerFields</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LoggerFields">LoggerFields</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Optional additional <code>SD-ELEMENT</code> s.</p>
+</div>
+<div class="paragraph">
+<p>Each <a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-layout-LoggerFields">LoggerFields</a> entry contains a set of key/value patterns to produce structured data parameters.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -17968,7 +18125,7 @@ Supports Lookup expressions.</p>
 <p><a href="#org-apache-logging-log4j_log4j-docker_org-apache-logging-log4j-docker-DockerLookup">DockerLookup</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
 </li>
 </ul>
 </div>
@@ -18394,7 +18551,7 @@ If these do not suffice, you can subclass and implement your own matcher.</p>
 <p><a href="#org-apache-logging-log4j_log4j-spring-boot_org-apache-logging-log4j-spring-boot-SpringLookup">SpringLookup</a></p>
 </li>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
+<p><a href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup">WebLookup</a></p>
 </li>
 </ul>
 </div>
@@ -19209,7 +19366,8 @@ See the Java Secure Socket Extension Reference Guide for information about these
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-net-ssl-SslConfiguration_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Ssl protocol=""&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Ssl protocol=""
+     verifyHostName=""&gt;
     &lt;KeyStore/&gt;
     &lt;TrustStore/&gt;
 &lt;/Ssl&gt;</code></pre>
@@ -19243,6 +19401,14 @@ See the Java Secure Socket Extension Reference Guide for information about these
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>The protocol, see SSLContext Algorithms</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>verifyHostName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>whether or not to perform host name verification</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -22255,6 +22421,148 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 </div>
 <div class="sect2">
+<h3 id="org-apache-logging-log4j_log4j-jakarta-web"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web"></a><code>log4j-jakarta-web</code></h3>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup"></a>web</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.web.WebLookup</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jakarta-web</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;web/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender"></a>Servlet</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.web.appender.ServletAppender</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-jakarta-web</code></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Logs using the ServletContext&#8217;s log method</p>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet ignoreExceptions=""
+         logThrowables=""
+         name=""&gt;
+    &lt;a-Filter-implementation/&gt;
+    &lt;a-Layout-implementation/&gt;
+    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
+&lt;/Servlet&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"></a>Attributes</h5>
+<div class="paragraph">
+<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logThrowables</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Logs with <code>jakarta.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>jakarta.servlet.ServletContext#log(String)</code> if false.</p>
+</div>
+<div class="paragraph">
+<p>Logs with <code>jakarta.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>jakarta.servlet.ServletContext#log(String)</code> if false.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-jakarta-web_org-apache-logging-log4j-web-appender-ServletAppender_components"></a>Nested components</h5>
+<div class="paragraph">
+<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="org-apache-logging-log4j_log4j-jdbc-dbcp2"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2"></a><code>log4j-jdbc-dbcp2</code></h3>
 <div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig"><a class="anchor" href="#org-apache-logging-log4j_log4j-jdbc-dbcp2_org-apache-logging-log4j-core-appender-db-jdbc-PoolableConnectionFactoryConfig"></a>PoolableConnectionFactory</h4>
@@ -24112,148 +24420,6 @@ toString(), or to output the value of a specific key within the property bundle 
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Sets the Profile Name or Names.</p>
 </div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="org-apache-logging-log4j_log4j-web"><a class="anchor" href="#org-apache-logging-log4j_log4j-web"></a><code>log4j-web</code></h3>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup"></a>web</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.web.WebLookup</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-web</code></p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-WebLookup_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;web/&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender"></a>Servlet</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.web.appender.ServletAppender</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-web</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Logs using the ServletContext&#8217;s log method</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Servlet ignoreExceptions=""
-         logThrowables=""
-         name=""&gt;
-    &lt;a-Filter-implementation/&gt;
-    &lt;a-Layout-implementation/&gt;
-    &lt;Property/&gt;&lt;!-- multiple occurrences allowed --&gt;
-&lt;/Servlet&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender-attributes"></a>Attributes</h5>
-<div class="paragraph">
-<p>Optional attributes are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ignoreExceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logThrowables</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Logs with <code>javax.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>javax.servlet.ServletContext#log(String)</code> if false.</p>
-</div>
-<div class="paragraph">
-<p>Logs with <code>javax.servlet.ServletContext#log(String,Throwable)</code> if true and with <code>javax.servlet.ServletContext#log(String)</code> if false.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_components"><a class="anchor" href="#org-apache-logging-log4j_log4j-web_org-apache-logging-log4j-web-appender-ServletAppender_components"></a>Nested components</h5>
-<div class="paragraph">
-<p>Optional components are denoted by <code>?</code>-suffixed types.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Tag</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Filter">Filter</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-Layout">Layout</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 </tbody>
 </table>

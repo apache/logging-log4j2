@@ -104,10 +104,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#escapeHtmlTags(java.lang.String)" class="member-name-link">escapeHtmlTags</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">This method takes a string which may contain HTML tags (ie,
- &lt;b&gt;, &lt;table&gt;, etc) and replaces any
- '&lt;',  '&gt;' , '&amp;' or '&quot;'
- characters with respective predefined entity references.</div>
+<div class="block">Escapes characters in a string for safe inclusion in HTML or XML text.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#escapeJsonControlCharacters(java.lang.String)" class="member-name-link">escapeJsonControlCharacters</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
@@ -136,15 +133,16 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="escapeHtmlTags(java.lang.String)">
 <h3>escapeHtmlTags</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">escapeHtmlTags</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</span></div>
-<div class="block">This method takes a string which may contain HTML tags (ie,
- &lt;b&gt;, &lt;table&gt;, etc) and replaces any
- '&lt;',  '&gt;' , '&amp;' or '&quot;'
- characters with respective predefined entity references.</div>
+<div class="block">Escapes characters in a string for safe inclusion in HTML or XML text.
+
+ <p>Replaces the characters <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>"</code> and <code>'</code> with their corresponding
+ entity references (<code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;amp;</code>, <code>&amp;quot;</code>, and <code>&amp;#39;</code>). Any code point
+ that is invalid in XML 1.0 is replaced with the Unicode replacement character U+FFFD.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>input</code> - The text to be converted.</dd>
+<dd><code>input</code> - The text to be escaped; may be <code>null</code> or empty.</dd>
 <dt>Returns:</dt>
-<dd>The input string with the special characters replaced.</dd>
+<dd>The escaped string, or the original <code>input</code> if no changes were required.</dd>
 </dl>
 </section>
 </li>
@@ -187,7 +185,7 @@ loadScripts(document, 'script');</script>
 </main>
 <footer role="contentinfo">
 <hr>
-<p class="legal-copy"><small><p align="center">Copyright &copy; 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.All Rights Reserved.<br/>Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of <a href="https://www.apache.org/">The Apache Software Foundation</a>.Oracle and Java are registered trademarks of Oracle and/or its affiliates.Other names may be trademarks of their respective owners.</p></small></p>
+<p class="legal-copy"><small><p align="center">Copyright &copy; 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.All Rights Reserved.<br/>Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of <a href="https://www.apache.org/">The Apache Software Foundation</a>.Oracle and Java are registered trademarks of Oracle and/or its affiliates.Other names may be trademarks of their respective owners.</p></small></p>
 </footer>
 </div>
 </div>

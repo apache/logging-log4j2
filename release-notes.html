@@ -500,6 +500,76 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="release-notes-2-25-4"><a class="anchor" href="#release-notes-2-25-4"></a>2.25.4</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2026-03-28</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release delivers fixes for configuration inconsistencies and formatting issues across several layouts.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Restores alignment between documented and actual configuration attributes.</p>
+</li>
+<li>
+<p>Fixes formatting and sanitization issues in XML and RFC5424 layouts.</p>
+</li>
+<li>
+<p>Improves handling of invalid characters and non-standard values.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The authoritative list of recognized configuration attributes is available in the
+<a href="https://logging.apache.org/log4j/2.x/plugin-reference.html">Plugin Reference</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-25-4-fixed"><a class="anchor" href="#release-notes-2-25-4-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Don&#8217;t issue warnings if extra argument in parameterized logging is <code>null</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3975">3975</a>, <a href="https://github.com/apache/logging-log4j2/pull/4014">4014</a>)</p>
+</li>
+<li>
+<p>Restore support for documented <code>Rfc5424Layout</code> parameter names. (<a href="https://github.com/apache/logging-log4j2/issues/4022">4022</a>, <a href="https://github.com/apache/logging-log4j2/pull/4074">4074</a>)</p>
+</li>
+<li>
+<p>Take <code>Throwable#toString()</code> into account while rendering stack traces in Pattern Layout. (<a href="https://github.com/apache/logging-log4j2/issues/3623">3623</a>, <a href="https://github.com/apache/logging-log4j2/pull/4033">4033</a>)</p>
+</li>
+<li>
+<p>Added debug level logs for successful resource loading in <code>Loader</code> class. (<a href="https://github.com/apache/logging-log4j2/issues/4058">4058</a>, <a href="https://github.com/apache/logging-log4j2/pull/4060">4060</a>)</p>
+</li>
+<li>
+<p>Align <code>SslConfiguration</code> factory method usage with Log4j 2.12+ API. The <code>verifyHostname</code> attribute is now correctly recognized. (<a href="https://github.com/apache/logging-log4j2/issues/4061">4061</a>, <a href="https://github.com/apache/logging-log4j2/pull/4075">4075</a>)</p>
+</li>
+<li>
+<p>Fix sanitization of structured data parameter names in RFC5424 layout. (<a href="https://github.com/apache/logging-log4j2/pull/4073">4073</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in XmlLayout output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4077">4077</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in Log4j1XmlLayout output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4078">4078</a>)</p>
+</li>
+<li>
+<p>Replace invalid characters in MapMessage.asXml() output with the Unicode replacement character (U+FFFD). (<a href="https://github.com/apache/logging-log4j2/pull/4079">4079</a>)</p>
+</li>
+<li>
+<p>Write non-finite floating-point numbers as strings in <code>JsonWriter</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4080">4080</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-25-3"><a class="anchor" href="#release-notes-2-25-3"></a>2.25.3</h2>
 <div class="sectionbody">
 <div class="dlist">
@@ -1008,7 +1078,7 @@ For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref pag
 <p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.15</code> (<a href="https://github.com/apache/logging-log4j2/pull/3354">3354</a>)</p>
 </li>
 <li>
-<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version `` (<a href="https://github.com/apache/logging-log4j2/pull/3847">3847</a>)</p>
+<p>Update <code>com.fasterxml.jackson:jackson-bom</code> to version <code>2.19.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/3708">3708</a>)</p>
 </li>
 <li>
 <p>Update <code>com.github.spotbugs:spotbugs-annotations</code> to version <code>4.9.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/3545">3545</a>)</p>
