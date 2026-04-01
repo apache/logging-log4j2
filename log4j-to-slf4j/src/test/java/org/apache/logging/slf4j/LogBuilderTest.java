@@ -103,4 +103,18 @@ class LogBuilderTest {
         assertThat(list.strList).hasSize(1);
         list.strList.clear();
     }
+
+    /**
+     * Verifies that {@code atFatal()} delegates to {@code atLevel(Level.FATAL)}
+     * and not {@code atLevel(Level.TRACE)}.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/4068">#4068</a>
+     */
+    @ParameterizedTest
+    @MethodSource("logBuilderMethods")
+    void atFatal_should_log_at_error_level(final Consumer<LogBuilder> consumer) {
+        consumer.accept(logger.atFatal());
+        assertThat(list.strList).as("atFatal() must produce a log event (SLF4J ERROR equivalent)").hasSize(1);
+        list.strList.clear();
+    }
 }
