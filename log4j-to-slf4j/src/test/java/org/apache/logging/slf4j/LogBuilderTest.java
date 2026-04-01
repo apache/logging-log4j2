@@ -114,7 +114,9 @@ class LogBuilderTest {
     @MethodSource("logBuilderMethods")
     void atFatal_should_log_at_error_level(final Consumer<LogBuilder> consumer) {
         consumer.accept(logger.atFatal());
-        assertThat(list.strList).as("atFatal() must produce a log event (SLF4J ERROR equivalent)").hasSize(1);
+        assertThat(list.strList)
+                .as("atFatal() must produce a log event (SLF4J ERROR equivalent)")
+                .hasSize(1);
         list.strList.clear();
     }
 }
