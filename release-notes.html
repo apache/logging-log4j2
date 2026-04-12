@@ -451,6 +451,9 @@
 <p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>)</p>
 </li>
 <li>
+<p>Fixes <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
+</li>
+<li>
 <p>Fix failures caused by null <code>SslConfiguration</code> (<a href="https://github.com/apache/logging-log4j2/issues/3947">3947</a>, <a href="https://github.com/apache/logging-log4j2/pull/3953">3953</a>)</p>
 </li>
 <li>
@@ -670,9 +673,6 @@ This is used by <a href="manual/appenders/network.html#SocketAppender" class="xr
 </li>
 <li>
 <p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
-</li>
-<li>
-<p>Fixes <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
 </li>
 </ul>
 </div>
