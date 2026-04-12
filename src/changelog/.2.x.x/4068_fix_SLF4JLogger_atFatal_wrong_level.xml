@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
     <issue id="4068" link="https://github.com/apache/logging-log4j2/issues/4068"/>
+    <issue id="4089" link="https://github.com/apache/logging-log4j2/pull/4089"/>
     <description format="asciidoc">
         Fixed `SLF4JLogger.atFatal()` returning `atLevel(Level.TRACE)` instead of `atLevel(Level.FATAL)`, which caused FATAL log events to be silently discarded when using the fluent API through the `log4j-to-slf4j` bridge.
     </description>
