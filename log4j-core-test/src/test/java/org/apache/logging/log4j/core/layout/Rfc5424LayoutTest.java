@@ -27,6 +27,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +41,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -45,16 +49,21 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.ProcessIdUtil;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,11 +90,13 @@ class Rfc5424LayoutTest {
                     + "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
             PROCESSID);
     private static final String lineEscaped3 = String.format(
-            "ATM %s - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc",
+            "ATM %s - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled"
+                    + " mdc",
             PROCESSID);
     private static final String lineEscaped4 = String.format(
-            "ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]"
-                    + "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
+            "ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\""
+                    + " ToAccount=\"123456\"][RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\""
+                    + " ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
             PROCESSID);
     private static final String collectionLine1 =
             "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " + "ToAccount=\"123456\"]";
@@ -100,16 +111,23 @@ class Rfc5424LayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
+    private static PluginManager pluginManager;
+
     @BeforeAll
     static void setupClass() {
         StatusLogger.getLogger().setLevel(Level.OFF);
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
+
+        pluginManager = new PluginManager(Node.CATEGORY);
+        pluginManager.collectPlugins();
     }
 
     @AfterAll
     static void cleanupClass() {
+        pluginManager = null;
+
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -758,9 +776,7 @@ class Rfc5424LayoutTest {
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
         checkDefaultValues(layout);
 
-        final PluginManager manager = new PluginManager(Node.CATEGORY);
-        manager.collectPlugins();
-        final Object obj = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+        final Object obj = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
                 .withConfigurationNode(new Node())
                 .withConfiguration(new DefaultConfiguration())
                 .build();
@@ -811,13 +827,10 @@ class Rfc5424LayoutTest {
     }
 
     private static Rfc5424Layout buildRfc5424Layout(Map<String, String> attributes) {
-        PluginManager manager = new PluginManager(Node.CATEGORY);
-        manager.collectPlugins();
-
         Node node = new Node();
         node.getAttributes().putAll(attributes);
 
-        Object object = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+        Object object = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
                 .withConfigurationNode(node)
                 .withConfiguration(new DefaultConfiguration())
                 .build();
@@ -919,5 +932,54 @@ class Rfc5424LayoutTest {
         // invalid configuration.
         assertThat(layout.getMdcExcludes()).containsExactly("key3", "key4");
         assertThat(layout.getMdcIncludes()).isNullOrEmpty();
+    }
+
+    private static LogEvent createLogEventWithMdcParamName(final String paramName) {
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(1L, 0);
+
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue(paramName, "");
+
+        return Log4jLogEvent.newBuilder()
+                .setInstant(instant)
+                .setMessage(new SimpleMessage("MSG"))
+                .setContextData(contextData)
+                .build();
+    }
+
+    private static Stream<Arguments> testParamNameSanitization() {
+        return Stream.of(
+                Arguments.of("validName", "[mdc@32473 validName=\"\"]"),
+                Arguments.of("user name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user=name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user]name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user\"name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("", "[mdc@32473 ?=\"\"]"),
+                Arguments.of(
+                        "0123456789012345678901234567890123456789",
+                        "[mdc@32473 01234567890123456789012345678901=\"\"]"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testParamNameSanitization(final String paramName, final String expectedStructuredData) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+
+        final String actual = layout.toSerializable(createLogEventWithMdcParamName(paramName));
+
+        final String expected = formatExpectedMessage(layout, expectedStructuredData);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static String formatExpectedMessage(final Rfc5424Layout layout, final String expectedStructuredData) {
+
+        final String timestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.ofEpochMilli(1L));
+
+        return String.format(
+                "<128>1 %s %s - %s - %s MSG", timestamp, layout.getLocalHostName(), PROCESSID, expectedStructuredData);
     }
 }

@@ -363,7 +363,7 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     public LogBuilder atFatal() {
-        return atLevel(Level.TRACE);
+        return atLevel(Level.FATAL);
     }
 
     @Override

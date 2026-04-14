@@ -97,6 +97,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_MDCID = "mdc";
 
+    private static final int SD_PARAM_NAME_MAX_LENGTH = 32;
+
     private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
@@ -600,14 +602,70 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 if (prefix != null) {
                     sb.append(prefix);
                 }
-                final String safeKey = escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine);
-                final String safeValue = escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine);
+                // No need to escape new lines, since parameter names cannot contain them.
+                final String safeKey = sanitizeParamName(entry.getKey());
+                final String safeValue = escapeNewlines(escapeParamValue(entry.getValue()), escapeNewLine);
                 StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }
     }
 
-    private String escapeSDParams(final String value) {
+    /**
+     * Sanitizes an RFC 5424 {@code PARAM-NAME}
+     *
+     * <p>Invalid characters are replaced with {@code '?'} and the result is truncated to
+     * {@value #SD_PARAM_NAME_MAX_LENGTH}.</p>
+     *
+     * @param key the original parameter name
+     * @return a sanitized parameter name compliant with RFC 5424
+     */
+    private String sanitizeParamName(final String key) {
+        final int length = key.length();
+        if (length == 0) {
+            return "?";
+        }
+        if (length > SD_PARAM_NAME_MAX_LENGTH) {
+            return sanitizeParamNameSlowPath(key);
+        }
+        for (int i = 0; i < length; i++) {
+            if (!isParamNameCharacterValid(key.charAt(i))) {
+                return sanitizeParamNameSlowPath(key);
+            }
+        }
+        return key;
+    }
+
+    private String sanitizeParamNameSlowPath(final String key) {
+        final StringBuilder sb = new StringBuilder(SD_PARAM_NAME_MAX_LENGTH);
+        final int maxLength = Math.min(key.length(), SD_PARAM_NAME_MAX_LENGTH);
+        for (int i = 0; i < maxLength; i++) {
+            final char c = key.charAt(i);
+            sb.append(isParamNameCharacterValid(c) ? c : '?');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Checks whether a character is allowed in an RFC 5424 {@code PARAM-NAME}.
+     *
+     * <p>Valid characters are printable US-ASCII characters
+     * ({@code 0x20-0x7E}) excluding:
+     *
+     * <ul>
+     *   <li>{@code '='} – parameter delimiter</li>
+     *   <li>{@code ' '} – not permitted in SD-NAME</li>
+     *   <li>{@code ']'} – structured data terminator</li>
+     *   <li>{@code '"'} – quoting delimiter</li>
+     * </ul>
+     *
+     * @param c the character to test
+     * @return {@code true} if the character is allowed in an {@code SD-NAME}
+     */
+    private static boolean isParamNameCharacterValid(final char c) {
+        return c > 32 && c <= 126 && c != '=' && c != ']' && c != '"';
+    }
+
+    private String escapeParamValue(final String value) {
         StringBuilder output = null;
         for (int i = 0; i < value.length(); i++) {
             final char cur = value.charAt(i);
@@ -1094,7 +1152,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             String effectiveExcludes = Objects.toString(mdcExcludes, excludes);
 
             if (effectiveIncludes != null && effectiveExcludes != null) {
-                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
+                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes will be ignored");
                 effectiveIncludes = null;
             }
 
