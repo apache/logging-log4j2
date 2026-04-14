@@ -1014,7 +1014,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         /**
-         * @deprecated Since 2.26.0 use {@link #setIncludeNL} instead.
+         * @deprecated Since 2.26.0 use {@link #setNewLineEscape} instead.
          */
         @Deprecated
         public Rfc5424LayoutBuilder setEscapeNL(final String escapeNL) {
