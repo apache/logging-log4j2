@@ -76,17 +76,19 @@ jobs:
   #      signing event to the public Rekor transparency log.
   #   3. Attaches the signed attestation to the commit via `git notes`.
   generate-source-provenance:
-    uses: slsa-framework/source-actions/slsa_with_provenance@dea965cdca5e0cb422bf7b2653c9d15f678ad01c   # 0.1.0
+    runs-on: ubuntu-latest
     permissions:
       # Needed to push the attestation to refs/notes/commits.
       contents: write
       # Needed to obtain the GitHub OIDC token used for Sigstore signing.
       id-token: write
-    with:
-      version: v0.6.3
-      # Allow merge commits so that `release/*` branches can be integrated back
-      # into `main` via a merge commit after a release.
-      allow-merge-commits: true
-      # Use the pre-compiled `slsa-source-tool` binary rather than building it
-      # from source.
-      build-from-source: false
+    steps:
+      - uses: slsa-framework/source-actions/slsa_with_provenance@dea965cdca5e0cb422bf7b2653c9d15f678ad01c   # 0.1.0
+        with:
+          version: v0.6.3
+          # Allow merge commits so that `release/*` branches can be integrated back
+          # into `main` via a merge commit after a release.
+          allow-merge-commits: true
+          # Use the pre-compiled `slsa-source-tool` binary rather than building it
+          # from source.
+          build-from-source: false
