@@ -88,16 +88,19 @@ github:
       type: branch
       branches:
         includes:
-          - "main"
+          - "refs/heads/2.x"
+          - "refs/heads/main"
       # All reviews must be addressed before merging
       required_conversation_resolution: true
       # Require checks to pass before merging
       required_status_checks:
         # The GitHub Actions app
-        - app_slug: github-actions
+        # https://api.github.com/apps/github-actions
+        - app_slug: 15368
           name: "build / build (ubuntu-latest)"
         # The GitHub Advanced Security
-        - app_slug: github-advanced-security
+        # https://api.github.com/apps/github-advanced-security
+        - app_slug: 57789
           name: "CodeQL"
       # At least one positive review must be present
       required_pull_request_reviews:
@@ -107,4 +110,4 @@ github:
       type: tag
       branches:
         includes:
-          - "rel/*"
+          - "refs/tags/rel/*"
