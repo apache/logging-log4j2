@@ -134,6 +134,7 @@
     <plexus-utils.version>3.6.0</plexus-utils.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
+    <stax2-api.version>4.2.2</stax2-api.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
@@ -788,6 +789,12 @@
             <artifactId>spring-jcl</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>${stax2-api.version}</version>
       </dependency>
 
       <dependency>
