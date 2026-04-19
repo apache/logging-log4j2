@@ -688,11 +688,11 @@
               <offlineLinks>
                 <link>
                   <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-api</url>
-                  <location>${maven.multiModuleProjectDirectory}/log4j-api/target/site/apidocs/</location>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-api/target/reports/apidocs/</location>
                 </link>
                 <link>
                   <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-core</url>
-                  <location>${maven.multiModuleProjectDirectory}/log4j-core/target/site/apidocs/</location>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-core/target/reports/apidocs/</location>
                 </link>
               </offlineLinks>
             </configuration>
