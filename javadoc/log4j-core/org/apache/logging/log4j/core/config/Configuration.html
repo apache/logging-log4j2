@@ -547,14 +547,14 @@ extends <a href="../filter/Filterable.html" title="interface in org.apache.loggi
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="CustomLevelConfig.html" title="class in org.apache.logging.log4j.core.config">CustomLevelConfig</a>&gt;</span>&nbsp;<span class="element-name">getCustomLevels</span>()</div>
 <div class="block"><p>
  Returns a list of descriptors of the custom levels defined in the current configuration. The returned list does
- <em>not</em> include custom levels that are defined in code with direct calls to <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#forName(java.lang.String,int)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.forName(String, int)</code></a>.
+ <em>not</em> include custom levels that are defined in code with direct calls to <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#forName(java.lang.String,int)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.forName(String, int)</code></a>.
  </p>
  <p>
  Note that the list does not include levels of previous configurations. For example, suppose a configuration
  contains custom levels A, B and C. The configuration is then modified to contain custom levels B, C and D. For
  the new configuration, this method will return only {B, C, D}, that is, only the custom levels defined in
  <em>this</em> configuration. The previously defined level A still exists (and can be obtained with
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#getLevel(java.lang.String)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.getLevel(String)</code></a>), it is just not in the current configuration. <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/Level.html#values()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.values()</code></a> will return
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#getLevel(java.lang.String)" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.getLevel(String)</code></a>), it is just not in the current configuration. <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html#values()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>Level.values()</code></a> will return
  {A, B, C, D and the built-in levels}.
  </p></div>
 <dl class="notes">

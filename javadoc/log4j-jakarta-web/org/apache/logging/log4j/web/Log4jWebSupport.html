@@ -73,7 +73,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">Log4jWebSupport</span></div>
-<div class="block">Specifies an interface for setting and clearing a thread-bound <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a> in a Java EE web application.
+<div class="block">Specifies an interface for setting and clearing a thread-bound <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a> in a Java EE web application.
  Also defines constants for context parameter and attribute names. In most cases you will never need to use this
  directly because the Log4j filter handles this task automatically. However, in async operations you should wrap
  code that executes in separate threads with <a href="#setLoggerContext()"><code>setLoggerContext()</code></a> and <a href="#clearLoggerContext()"><code>clearLoggerContext()</code></a>.
@@ -81,7 +81,7 @@ loadScripts(document, 'script');</script>
  <p>
  You can obtain the instance of this for your web application by retrieving the <code>ServletContext</code>
  attribute named <code>org.apache.logging.log4j.core.web.Log4jWebSupport.INSTANCE</code>. If needed, you can also obtain
- the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a> instance for your web application by retrieving the <code>ServletContext</code> attribute named
+ the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a> instance for your web application by retrieving the <code>ServletContext</code> attribute named
  <code>org.apache.logging.log4j.spi.LoggerContext.INSTANCE</code>.
  </p></div>
 </section>
@@ -99,7 +99,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#CONTEXT_ATTRIBUTE" class="member-name-link">CONTEXT_ATTRIBUTE</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">The attribute key for the <code>ServletContext</code> attribute that the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a>
+<div class="block">The attribute key for the <code>ServletContext</code> attribute that the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a>
  is stored in.</div>
 </div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -128,7 +128,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><code><a href="#LOG4J_CONTEXT_NAME" class="member-name-link">LOG4J_CONTEXT_NAME</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block">The <code>ServletContext</code> parameter name for the name of the
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/core/LoggerContext.html" title="class or interface in org.apache.logging.log4j.core" class="external-link"><code>LoggerContext</code></a>.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html" title="class or interface in org.apache.logging.log4j.core" class="external-link"><code>LoggerContext</code></a>.</div>
 </div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#SUPPORT_ATTRIBUTE" class="member-name-link">SUPPORT_ATTRIBUTE</a></code></div>
@@ -159,7 +159,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setLoggerContext()" class="member-name-link">setLoggerContext</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Sets the logger context so that code executing afterwards can easily and quickly access loggers via
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LogManager.html#getLogger()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getLogger()</code></a>.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getLogger()</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#wrapExecution(java.lang.Runnable)" class="member-name-link">wrapExecution</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;runnable)</code></div>
@@ -186,7 +186,7 @@ loadScripts(document, 'script');</script>
 <h3>LOG4J_CONTEXT_NAME</h3>
 <div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">LOG4J_CONTEXT_NAME</span></div>
 <div class="block">The <code>ServletContext</code> parameter name for the name of the
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/core/LoggerContext.html" title="class or interface in org.apache.logging.log4j.core" class="external-link"><code>LoggerContext</code></a>.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html" title="class or interface in org.apache.logging.log4j.core" class="external-link"><code>LoggerContext</code></a>.</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
@@ -273,7 +273,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="CONTEXT_ATTRIBUTE">
 <h3>CONTEXT_ATTRIBUTE</h3>
 <div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">CONTEXT_ATTRIBUTE</span></div>
-<div class="block">The attribute key for the <code>ServletContext</code> attribute that the <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a>
+<div class="block">The attribute key for the <code>ServletContext</code> attribute that the <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext</code></a>
  is stored in.</div>
 </section>
 </li>
@@ -290,7 +290,7 @@ loadScripts(document, 'script');</script>
 <h3>setLoggerContext</h3>
 <div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">setLoggerContext</span>()</div>
 <div class="block">Sets the logger context so that code executing afterwards can easily and quickly access loggers via
- <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/LogManager.html#getLogger()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getLogger()</code></a>.</div>
+ <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getLogger()</code></a>.</div>
 </section>
 </li>
 <li>

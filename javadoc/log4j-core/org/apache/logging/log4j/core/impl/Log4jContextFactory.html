@@ -78,12 +78,12 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></code>, <code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">Log4jContextFactory</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a>, <a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></span></div>
+implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a>, <a href="../util/ShutdownCallbackRegistry.html" title="interface in org.apache.logging.log4j.core.util">ShutdownCallbackRegistry</a></span></div>
 <div class="block">Factory to locate a ContextSelector and then load a LoggerContext.</div>
 </section>
 <section class="summary">
@@ -218,7 +218,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShutdownHookEnabled()" class="member-name-link">isShutdownHookEnabled</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeContext(org.apache.logging.log4j.spi.LoggerContext)" class="member-name-link">removeContext</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>&nbsp;context)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeContext(org.apache.logging.log4j.spi.LoggerContext)" class="member-name-link">removeContext</a><wbr>(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>&nbsp;context)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Removes knowledge of a LoggerContext.</div>
 </div>
@@ -310,7 +310,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Loads the LoggerContext using the ContextSelector.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>fqcn</code> - The fully qualified class name of the caller.</dd>
 <dd><code>loader</code> - The ClassLoader to use or null.</dd>
@@ -378,7 +378,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Loads the LoggerContext using the ContextSelector.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.net.URI,java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.net.URI,java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">getContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>fqcn</code> - The fully qualified class name of the caller.</dd>
 <dd><code>loader</code> - The ClassLoader to use or null.</dd>
@@ -422,7 +422,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
  boolean&nbsp;allContexts)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#shutdown(java.lang.String,java.lang.ClassLoader,boolean,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">shutdown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#shutdown(java.lang.String,java.lang.ClassLoader,boolean,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">shutdown</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 </dl>
 </section>
 </li>
@@ -435,7 +435,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="block">Checks to see if a LoggerContext is installed.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#hasContext(java.lang.String,java.lang.ClassLoader,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#hasContext(java.lang.String,java.lang.ClassLoader,boolean)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">hasContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>fqcn</code> - The fully qualified class name of the caller.</dd>
 <dd><code>loader</code> - The ClassLoader to use or null.</dd>
@@ -475,11 +475,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <li>
 <section class="detail" id="removeContext(org.apache.logging.log4j.spi.LoggerContext)">
 <h3>removeContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeContext</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>&nbsp;context)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeContext</span><wbr><span class="parameters">(<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContext</a>&nbsp;context)</span></div>
 <div class="block">Removes knowledge of a LoggerContext.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#removeContext(org.apache.logging.log4j.spi.LoggerContext)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#removeContext(org.apache.logging.log4j.spi.LoggerContext)" title="class or interface in org.apache.logging.log4j.spi" class="external-link">removeContext</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>context</code> - The context to remove.</dd>
 </dl>
@@ -491,7 +491,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logg
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isClassLoaderDependent</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html#isClassLoaderDependent()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">isClassLoaderDependent</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/apidocs/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
+<dd><code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html#isClassLoaderDependent()" title="class or interface in org.apache.logging.log4j.spi" class="external-link">isClassLoaderDependent</a></code>&nbsp;in interface&nbsp;<code><a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextFactory.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextFactory</a></code></dd>
 </dl>
 </section>
 </li>

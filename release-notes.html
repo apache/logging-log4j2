@@ -466,6 +466,9 @@
 <p>Fixed <code>SLF4JLogger.atFatal()</code> returning <code>atLevel(Level.TRACE)</code> instead of <code>atLevel(Level.FATAL)</code>, which caused FATAL log events to be silently discarded when using the fluent API through the <code>log4j-to-slf4j</code> bridge. (<a href="https://github.com/apache/logging-log4j2/issues/4068">4068</a>, <a href="https://github.com/apache/logging-log4j2/pull/4089">4089</a>)</p>
 </li>
 <li>
+<p>Javadoc references across module boundaries (i.e., cross-references) are fixed (<a href="https://github.com/apache/logging-log4j2/issues/4099">4099</a>, <a href="https://github.com/apache/logging-log4j2/pull/4100">4100</a>)</p>
+</li>
+<li>
 <p>Fix header write in <code>RollingRandomAccessFileManager</code> that was being incorrectly skipped if <code>append=true</code> and the file didn&#8217;t exist before.</p>
 </li>
 </ul>
