@@ -58,6 +58,21 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, and type (max 32 characters).
+     * <p>
+     * The {@code id} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * It is recommended to use {@link StructuredDataId} instead of a raw {@link String} where possible.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -69,6 +84,21 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Creates a StructuredDataMessage using an ID (user specified max characters), message, and type (user specified
      * maximum number of characters).
+     * <p>
+     * The {@code id} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * It is recommended to use {@link StructuredDataId} instead of a raw {@link String} where possible.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -85,6 +115,21 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
+     * <p>
+     * The {@code id} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * It is recommended to use {@link StructuredDataId} instead of a raw {@link String} where possible.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -97,6 +142,21 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Creates a StructuredDataMessage using an (user specified max characters), message, and type (user specified
      * maximum number of characters, and an initial map of structured data to include.
+     * <p>
+     * The {@code id} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * It is recommended to use {@link StructuredDataId} instead of a raw {@link String} where possible.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The String id.
      * @param msg The message.
      * @param type The message type.
@@ -115,6 +175,20 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
+     * <p>
+     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
@@ -125,6 +199,20 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
+     * <p>
+     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
@@ -141,6 +229,20 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
      * of structured data to include.
+     * <p>
+     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
@@ -154,6 +256,20 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
      * of structured data to include.
+     * <p>
+     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 Section 6.3.2</a>.
+     * </p>
+     * <p>
+     * The {@code type} parameter represents the syslog {@code MSGID} and is expected to conform to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 Section 6.2.7</a>.
+     * </p>
+     * <p>
+     * Both {@code id} and {@code type} are considered trusted inputs (typically compile-time constants).
+     * If these values are derived from external or untrusted sources, it is the caller's responsibility
+     * to validate and sanitize them to ensure RFC-compliant output, especially when used with
+     * {@code Rfc5424Layout}.
+     * </p>
      * @param id The StructuredDataId.
      * @param msg The message.
      * @param type The message type.
