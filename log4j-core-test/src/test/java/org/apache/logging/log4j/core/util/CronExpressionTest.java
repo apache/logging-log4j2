@@ -257,7 +257,8 @@ class CronExpressionTest {
         ZoneId zoneId = ZoneId.of("Australia/Sydney");
         Representation representation = new ZoneOffsetRepresentation(ZoneOffset.ofHours(10));
         // Midnight UTC+10 on Oct 5 (the spring-forward day; clocks jump at 2AM → day is 23h).
-        Instant oct5 = ZonedDateTime.of(2025, 10, 4, 14, 0, 0, 0, ZoneOffset.UTC).toInstant();
+        Instant oct5 =
+                ZonedDateTime.of(2025, 10, 4, 14, 0, 0, 0, ZoneOffset.UTC).toInstant();
         // Next midnight is only 23 hours later (UTC+11 offset after the jump).
         Instant oct6 = oct5.plus(23, ChronoUnit.HOURS);
         Instant oct7 = oct6.plus(24, ChronoUnit.HOURS);
