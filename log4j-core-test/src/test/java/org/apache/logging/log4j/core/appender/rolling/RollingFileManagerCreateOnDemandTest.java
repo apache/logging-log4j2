@@ -22,19 +22,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class RollingFileManagerCreateOnDemandTest {
     @Test
-    void testCreateOnDemandDoesNotCreateDirectoryOrFile() throws Exception {
-        String logDir = "target/test-logs/onDemand";
-        String logFile = logDir + "/test.log";
-        File dir = new File(logDir);
+    void testCreateOnDemandDoesNotCreateDirectoryOrFile(@TempDir Path tempDir) throws Exception {
+        Path logDir = tempDir.resolve("onDemand");
+        String logFile = logDir.resolve("test.log").toString();
+        File dir = logDir.toFile();
         File file = new File(logFile);
-        if (file.exists()) file.delete();
-        if (dir.exists()) dir.delete();
         assertFalse(dir.exists(), "Directory should not exist before logging");
         assertFalse(file.exists(), "File should not exist before logging");
 
