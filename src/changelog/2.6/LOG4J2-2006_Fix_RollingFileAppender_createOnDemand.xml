@@ -8,7 +8,7 @@
   <issue id="2006" link="https://github.com/apache/logging-log4j2/issues/2006"/>
   <issue id="4072" link="https://github.com/apache/logging-log4j2/pull/4072"/>
   <description format="asciidoc">
-    Fix RollingFileAppender createOnDemand behavior to correctly defer file and directory creation
+    Fix the `createOnDemand` behavior of `RollingFileAppender` to correctly defer file and directory creation
     until the first log event, while preserving eager creation when disabled.
   </description>
 </entry>
