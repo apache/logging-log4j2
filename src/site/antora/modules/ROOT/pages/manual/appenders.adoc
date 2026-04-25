@@ -616,8 +616,8 @@ These appenders are provided by **third-party** vendors and are not maintained b
 [#more-log4j2-AsyncHttpAppender]
 === Async HTTP appender (`more-log4j2`)
 
-`AsyncHttpAppender` by https://github.com/mlangc/more-log4j2[more-log4j2] batches and optionally compresses log events,
-before sending them to backends. This way it is able to deliver high log volumes with little overhead.
+`AsyncHttpAppender` by https://github.com/mlangc/more-log4j2[more-log4j2] batches and optionally compresses log events, before sending them to backends.
+This way it is able to deliver high log volumes with little overhead.
 
 [#extending]
 == Extending

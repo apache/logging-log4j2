@@ -285,9 +285,14 @@ See also <<HttpAppender-attr-ignoreExceptions,`ignoreExceptions`>> configuration
 
 [WARNING]
 ====
-Sending logs synchronously, one by one to an HTTP backend is rarely a good idea. Even if the expected log
-volumes are extremely low, you should at least consider using xref:manual/async.adoc[asynchronous loggers] if
-you use this appender. Otherwise, please have a look at xref:manual/appenders.adoc#third-party[third-party appenders].
+Sending logs synchronously, one by one to an HTTP backend is rarely a good idea.
+In such a setup, every network or backend-related issue will immediately impact all loggers delegating to the HTTP Appender.
+Even when everything is working fine, log statements will block for tens or hundreds of milliseconds in a typical setup.
+This is orders of magnitude more than what you get with the xref:manual/appenders.adoc#ConsoleAppender[console appender] and the xref:manual/appenders/file.adoc[file appender].
+Also consider the number of HTTP requests and the associated network traffic that can result from such a setup.
+
+Consider at least xref:manual/async.adoc[asynchronous loggers] if you want to use this appender.
+Otherwise, please have a look at xref:manual/appenders.adoc#third-party[third-party appenders].
 ====
 
 [NOTE]
