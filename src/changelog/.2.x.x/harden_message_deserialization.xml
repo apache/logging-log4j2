@@ -6,6 +6,6 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
     <description format="asciidoc">
-        Hardened `ObjectArrayMessage.readObject()` to call `SerializationUtil.assertFiltered()` for consistency with `ObjectMessage` and `ParameterizedMessage`. Defense-in-depth only; wire format is unchanged.
+        Applied `SerializationUtil.assertFiltered()` consistently to every `private void readObject(ObjectInputStream)` across `log4j-api`, `log4j-core`, `log4j-1.2-api`, `log4j-slf4j-impl`, and `log4j-slf4j2-impl`. Defense-in-depth only; wire format is unchanged.
     </description>
 </entry>
