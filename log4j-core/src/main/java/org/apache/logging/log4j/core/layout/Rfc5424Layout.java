@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -95,6 +96,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * Default MDC ID: {@value} .
      */
     public static final String DEFAULT_MDCID = "mdc";
+
+    private static final int SD_PARAM_NAME_MAX_LENGTH = 32;
 
     private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
@@ -467,6 +470,26 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return mdcIncludes;
     }
 
+    // Test-only
+    List<String> getMdcRequired() {
+        return mdcRequired;
+    }
+
+    // Test-only
+    boolean isIncludeNewLine() {
+        return includeNewLine;
+    }
+
+    // Test-only
+    String getEscapeNewLine() {
+        return escapeNewLine;
+    }
+
+    // Test-only
+    boolean isUseTlsMessageFormat() {
+        return useTlsMessageFormat;
+    }
+
     private String computeTimeStampString(final long now) {
         long last;
         synchronized (this) {
@@ -579,14 +602,70 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 if (prefix != null) {
                     sb.append(prefix);
                 }
-                final String safeKey = escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine);
-                final String safeValue = escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine);
+                // No need to escape new lines, since parameter names cannot contain them.
+                final String safeKey = sanitizeParamName(entry.getKey());
+                final String safeValue = escapeNewlines(escapeParamValue(entry.getValue()), escapeNewLine);
                 StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }
     }
 
-    private String escapeSDParams(final String value) {
+    /**
+     * Sanitizes an RFC 5424 {@code PARAM-NAME}
+     *
+     * <p>Invalid characters are replaced with {@code '?'} and the result is truncated to
+     * {@value #SD_PARAM_NAME_MAX_LENGTH}.</p>
+     *
+     * @param key the original parameter name
+     * @return a sanitized parameter name compliant with RFC 5424
+     */
+    private String sanitizeParamName(final String key) {
+        final int length = key.length();
+        if (length == 0) {
+            return "?";
+        }
+        if (length > SD_PARAM_NAME_MAX_LENGTH) {
+            return sanitizeParamNameSlowPath(key);
+        }
+        for (int i = 0; i < length; i++) {
+            if (!isParamNameCharacterValid(key.charAt(i))) {
+                return sanitizeParamNameSlowPath(key);
+            }
+        }
+        return key;
+    }
+
+    private String sanitizeParamNameSlowPath(final String key) {
+        final StringBuilder sb = new StringBuilder(SD_PARAM_NAME_MAX_LENGTH);
+        final int maxLength = Math.min(key.length(), SD_PARAM_NAME_MAX_LENGTH);
+        for (int i = 0; i < maxLength; i++) {
+            final char c = key.charAt(i);
+            sb.append(isParamNameCharacterValid(c) ? c : '?');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Checks whether a character is allowed in an RFC 5424 {@code PARAM-NAME}.
+     *
+     * <p>Valid characters are printable US-ASCII characters
+     * ({@code 0x20-0x7E}) excluding:
+     *
+     * <ul>
+     *   <li>{@code '='} – parameter delimiter</li>
+     *   <li>{@code ' '} – not permitted in SD-NAME</li>
+     *   <li>{@code ']'} – structured data terminator</li>
+     *   <li>{@code '"'} – quoting delimiter</li>
+     * </ul>
+     *
+     * @param c the character to test
+     * @return {@code true} if the character is allowed in an {@code SD-NAME}
+     */
+    private static boolean isParamNameCharacterValid(final char c) {
+        return c > 32 && c <= 126 && c != '=' && c != ']' && c != '"';
+    }
+
+    private String escapeParamValue(final String value) {
         StringBuilder output = null;
         for (int i = 0; i < value.length(); i++) {
             final char cur = value.charAt(i);
@@ -639,7 +718,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param loggerFields Container for the KeyValuePairs containing the patterns
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
-     * @deprecated Use {@link Rfc5424LayoutBuilder instead}
+     * @deprecated Since 2.21.0 use {@link Rfc5424LayoutBuilder instead}
      */
     @Deprecated
     public static Rfc5424Layout createLayout(
@@ -672,82 +751,219 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 .setId(id)
                 .setEin(String.valueOf(enterpriseNumber))
                 .setIncludeMDC(includeMDC)
-                .setIncludeNL(newLine)
-                .setEscapeNL(escapeNL)
+                .setNewLine(newLine)
+                .setNewLineEscape(escapeNL)
                 .setMdcId(mdcId)
                 .setMdcPrefix(mdcPrefix)
                 .setEventPrefix(eventPrefix)
                 .setAppName(appName)
                 .setMessageId(msgId)
-                .setExcludes(excludes)
-                .setIncludes(includes)
-                .setRequired(required)
+                .setMdcExcludes(excludes)
+                .setMdcIncludes(includes)
+                .setMdcRequired(required)
                 .setCharset(StandardCharsets.UTF_8)
                 .setExceptionPattern(exceptionPattern)
-                .setUseTLSMessageFormat(useTlsMessageFormat)
+                .setUseTlsMessageFormat(useTlsMessageFormat)
                 .setLoggerFields(loggerFields)
                 .build();
     }
 
+    /**
+     * @since 2.21.0
+     */
     @PluginBuilderFactory
     public static Rfc5424LayoutBuilder newBuilder() {
         return new Rfc5424LayoutBuilder();
     }
 
+    /**
+     * @since 2.21.0
+     */
     public static class Rfc5424LayoutBuilder extends AbstractStringLayout.Builder<Rfc5424LayoutBuilder>
             implements org.apache.logging.log4j.core.util.Builder<Rfc5424Layout> {
 
+        /**
+         * The name of the {@link Facility} as described in RFC 5424
+         *
+         * <p>The matching is case-insensitive. Defaults to {@code LOCAL0}.</p>
+         */
         @PluginBuilderAttribute
         private Facility facility = Facility.LOCAL0;
 
+        /**
+         * The default {@code SD-ID} as described in RFC 5424.
+         */
         @PluginBuilderAttribute
         private String id;
 
+        /**
+         * The enterprise number to include in {@code SD-ID} identifiers.
+         *
+         * <p>Can contain multiple integers separated by a dot, for example {@code 32473.1}</p>
+         *
+         * <p>Defaults to {@value #DEFAULT_ENTERPRISE_NUMBER}.</p>
+         */
         @PluginBuilderAttribute
         private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
 
+        /**
+         * The enterprise number to include in {@code SD-ID} identifiers.
+         *
+         * <p>Limited to a single integer.</p>
+         *
+         * <p>Defaults to {@value #DEFAULT_ENTERPRISE_NUMBER}.</p>
+         */
         @PluginBuilderAttribute
         private Integer enterpriseNumber;
 
+        /**
+         * Indicates whether data from the context map will be included as RFC 5424 {@code SD-ELEMENT}.
+         *
+         * <p>Defaults to {@code true}.</p>
+         */
         @PluginBuilderAttribute
         private boolean includeMDC = true;
 
+        /**
+         * If {@code true}, a newline will be appended to the end of the syslog record.
+         *
+         * <p>Default is {@code false}.</p>
+         */
+        @PluginBuilderAttribute
+        private boolean newLine;
+
+        /**
+         * Same as {@code newLine}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private boolean includeNL;
 
+        /**
+         * If set, this string will be used to replace new lines within the message text.
+         *
+         * <p>By default, new lines are not escaped.</p>
+         */
+        @PluginBuilderAttribute
+        private String newLineEscape;
+
+        /**
+         * Same as {@code newLineEscape}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String escapeNL;
 
+        /**
+         * The id to use for the MDC Structured Data Element.
+         *
+         * <p>Defaults to {@value #DEFAULT_MDCID}.</p>
+         */
         @PluginBuilderAttribute
         private String mdcId = DEFAULT_MDCID;
 
+        /**
+         * A prefix to add to MDC key names when formatting them as structured data parameters.
+         */
         @PluginBuilderAttribute
         private String mdcPrefix;
 
+        /**
+         * A prefix to add to event key names when formatting {@link StructuredDataMessage} fields.
+         */
         @PluginBuilderAttribute
         private String eventPrefix;
 
+        /**
+         * The value to use as the {@code APP-NAME} in the RFC 5424 syslog record.
+         */
         @PluginBuilderAttribute
         private String appName;
 
+        /**
+         * The default value to be used in the {@code MSGID} field of RFC 5424 syslog records.
+         *
+         * <p>If the log event contains a {@link StructuredDataMessage}, the id from that message will be used
+         * instead.</p>
+         */
         @PluginBuilderAttribute
         private String messageId;
 
+        /**
+         * A comma separated list of MDC keys that should be excluded from the LogEvent.
+         *
+         * <p>Mutually exclusive with {@link #mdcIncludes}.</p>
+         */
+        @PluginBuilderAttribute
+        private String mdcExcludes;
+
+        /**
+         * Same as {@code mdcExcludes}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String excludes;
 
+        /**
+         * A comma separated list of MDC keys that should be included in the LogEvent.
+         *
+         * <p>Mutually exclusive with {@link #mdcExcludes}.</p>
+         */
+        @PluginBuilderAttribute
+        private String mdcIncludes;
+
+        /**
+         * Same as {@code mdcIncludes}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String includes;
 
+        /**
+         * A comma separated list of MDC keys that must be present in the MDC.
+         */
+        @PluginBuilderAttribute
+        private String mdcRequired;
+
+        /**
+         * Same as {@code mdcRequired}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private String required;
 
+        /**
+         * The pattern used to format exceptions appended to the syslog message.
+         */
         @PluginBuilderAttribute
         private String exceptionPattern;
 
+        /**
+         * If true the message will be formatted according to RFC 5425.
+         *
+         * <p>Default is {@code false}.</p>
+         */
+        @PluginBuilderAttribute
+        private boolean useTlsMessageFormat;
+
+        /**
+         * Same as {@code useTlsMessageFormat}.
+         *
+         * <p>Erroneously introduced in version 2.21.0, but kept for compatibility.</p>
+         */
         @PluginBuilderAttribute
         private boolean useTLSMessageFormat;
 
+        /**
+         * Optional additional {@code SD-ELEMENT}s.
+         *
+         * <p>Each {@link LoggerFields} entry contains a set of key/value patterns to produce structured data parameters.</p>
+         */
         @PluginElement(value = "loggerFields")
         private LoggerFields[] loggerFields;
 
@@ -780,13 +996,37 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated Since 2.26.0 use {@link #setNewLine} instead.
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setIncludeNL(final boolean includeNL) {
             this.includeNL = includeNL;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setNewLine(boolean newLine) {
+            this.newLine = newLine;
+            return this;
+        }
+
+        /**
+         * @deprecated Since 2.26.0 use {@link #setNewLineEscape} instead.
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setNewLineEscape(String newLineEscape) {
+            this.newLineEscape = newLineEscape;
             return this;
         }
 
@@ -815,18 +1055,54 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcExcludes} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setExcludes(final String excludes) {
             this.excludes = excludes;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcExcludes(String mdcExcludes) {
+            this.mdcExcludes = mdcExcludes;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcIncludes} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setIncludes(String includes) {
             this.includes = includes;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcIncludes(String mdcIncludes) {
+            this.mdcIncludes = mdcIncludes;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcRequired} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setRequired(final String required) {
             this.required = required;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcRequired(String mdcRequired) {
+            this.mdcRequired = mdcRequired;
             return this;
         }
 
@@ -840,8 +1116,20 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setUseTlsMessageFormat} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setUseTLSMessageFormat(final boolean useTLSMessageFormat) {
             this.useTLSMessageFormat = useTLSMessageFormat;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setUseTlsMessageFormat(boolean useTlsMessageFormat) {
+            this.useTlsMessageFormat = useTlsMessageFormat;
             return this;
         }
 
@@ -860,9 +1148,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         @Override
         public Rfc5424Layout build() {
-            if (includes != null && excludes != null) {
-                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
-                includes = null;
+            String effectiveIncludes = Objects.toString(mdcIncludes, includes);
+            String effectiveExcludes = Objects.toString(mdcExcludes, excludes);
+
+            if (effectiveIncludes != null && effectiveExcludes != null) {
+                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes will be ignored");
+                effectiveIncludes = null;
             }
 
             if (enterpriseNumber != null) {
@@ -880,19 +1171,19 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                     id,
                     ein,
                     includeMDC,
-                    includeNL,
-                    escapeNL,
+                    newLine || includeNL,
+                    Objects.toString(newLineEscape, escapeNL),
                     mdcId,
                     mdcPrefix,
                     eventPrefix,
                     appName,
                     messageId,
-                    excludes,
-                    includes,
-                    required,
+                    effectiveExcludes,
+                    effectiveIncludes,
+                    Objects.toString(mdcRequired, required),
                     charset != null ? charset : StandardCharsets.UTF_8,
                     exceptionPattern,
-                    useTLSMessageFormat,
+                    useTlsMessageFormat || useTLSMessageFormat,
                     loggerFields);
         }
     }
