@@ -5,7 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
+    <issue id="4098" link="https://github.com/apache/logging-log4j2/pull/4098"/>
     <description format="asciidoc">
-        Applied `SerializationUtil.assertFiltered()` consistently to every `private void readObject(ObjectInputStream)` across `log4j-api`, `log4j-core`, `log4j-1.2-api`, `log4j-slf4j-impl`, and `log4j-slf4j2-impl`. Defense-in-depth only; wire format is unchanged.
+        Harden `readObject(ObjectInputStream)` method argument checks in serializable API models
     </description>
 </entry>
