@@ -57,13 +57,27 @@ public final class ZipCompressAction extends AbstractAction {
     private final int maxDelaySeconds;
 
     /**
+     * Validates that the compression level is in the valid range [0, 9].
+     *
+     * @param level the compression level to validate
+     * @return the level if valid
+     * @throws IllegalArgumentException if level is not in the range [0, 9]
+     */
+    private static int checkLevel(final int level) {
+        if (level < 0 || level > 9) {
+            throw new IllegalArgumentException("Compression level must be in the range [0, 9], got: " + level);
+        }
+        return level;
+    }
+
+    /**
      * Creates new instance of GzCompressAction.
      *
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
-     * @param level TODO
+     * @param level the compression level
      * @param maxDelaySeconds maximum delay in seconds before compression.
      */
     public ZipCompressAction(
@@ -78,18 +92,18 @@ public final class ZipCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.level = level;
+        this.level = checkLevel(level);
         this.maxDelaySeconds = maxDelaySeconds;
     }
 
     /**
-     * Creates new instance of GzCompressAction with default maxDelaySeconds.
+     * Creates new instance.
      *
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
-     * @param level TODO
+     * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
         this(source, destination, deleteSource, level, 0);
