@@ -66,13 +66,12 @@ public final class GzCompressAction extends AbstractAction {
 
     private static int checkCompressionLevel(final int compressionLevel) {
         if (compressionLevel < MIN_COMPRESSION_LEVEL || compressionLevel > MAX_COMPRESSION_LEVEL) {
-            throw new IllegalArgumentException(
-                    "GZIP compression level must be in the range ["
-                            + MIN_COMPRESSION_LEVEL
-                            + ", "
-                            + MAX_COMPRESSION_LEVEL
-                            + "], got: "
-                            + compressionLevel);
+            throw new IllegalArgumentException("GZIP compression level must be in the range ["
+                    + MIN_COMPRESSION_LEVEL
+                    + ", "
+                    + MAX_COMPRESSION_LEVEL
+                    + "], got: "
+                    + compressionLevel);
         }
         return compressionLevel;
     }

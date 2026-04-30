@@ -17,15 +17,42 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.zip.Deflater;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class GzCompressActionTest {
+
+    @Test
+    void testRejectsCompressionLevelLowerThanDefault(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-low.log");
+        File dest = new File(tempDir, "invalid-low.log.gz");
+
+        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, -2, 0));
+    }
+
+    @Test
+    void testRejectsCompressionLevelHigherThanBest(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-high.log");
+        File dest = new File(tempDir, "invalid-high.log.gz");
+
+        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, 10, 0));
+    }
+
+    @Test
+    void testAcceptsDeflaterRangeBounds(@TempDir File tempDir) {
+        File source = new File(tempDir, "valid.log");
+        File dest = new File(tempDir, "valid.log.gz");
+
+        new GzCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION, 0);
+        new GzCompressAction(source, dest, true, Deflater.BEST_COMPRESSION, 0);
+    }
 
     /** Issue #4012 — when maxDelaySeconds > 0, compression must be deferred by a random 0..max seconds. */
     @Test

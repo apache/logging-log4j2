@@ -96,7 +96,8 @@ public enum FileExtension {
                 final int compressionLevel,
                 final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
+            return new CommonsCompressAction(
+                    "bzip2", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     DEFLATE(".deflate") {
@@ -117,7 +118,8 @@ public enum FileExtension {
                 final int compressionLevel,
                 final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
+            return new CommonsCompressAction(
+                    "deflate", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     PACK200(".pack200") {
@@ -138,7 +140,8 @@ public enum FileExtension {
                 final int compressionLevel,
                 final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
+            return new CommonsCompressAction(
+                    "pack200", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     XZ(".xz") {
@@ -159,7 +162,8 @@ public enum FileExtension {
                 final int compressionLevel,
                 final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
+            return new CommonsCompressAction(
+                    "xz", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     ZSTD(".zst") {
@@ -180,7 +184,8 @@ public enum FileExtension {
                 final int compressionLevel,
                 final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("zstd", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
+            return new CommonsCompressAction(
+                    "zstd", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     };
 

@@ -416,7 +416,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 .build();
     }
 
-
     /**
      * Index for oldest retained log file.
      */
@@ -483,8 +482,16 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final Action[] customActions,
             final boolean stopCustomActionsOnError,
             final String tempCompressedFilePatternString) {
-        this(minIndex, maxIndex, useMax, compressionLevel, strSubstitutor, customActions, stopCustomActionsOnError,
-                tempCompressedFilePatternString, 0);
+        this(
+                minIndex,
+                maxIndex,
+                useMax,
+                compressionLevel,
+                strSubstitutor,
+                customActions,
+                stopCustomActionsOnError,
+                tempCompressedFilePatternString,
+                0);
     }
 
     /**
@@ -726,16 +733,16 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 compressAction = new CompositeAction(
                         Arrays.asList(
                                 fileExtension.createCompressAction(
-                                                renameTo,
-                                                tmpCompressedName,
-                                                true,
-                                                compressionLevel,
-                                                maxCompressionDelaySeconds),
+                                        renameTo,
+                                        tmpCompressedName,
+                                        true,
+                                        compressionLevel,
+                                        maxCompressionDelaySeconds),
                                 new FileRenameAction(tmpCompressedNameFile, renameToFile, true)),
                         true);
             } else {
                 compressAction = fileExtension.createCompressAction(
-                                renameTo, compressedName, true, compressionLevel, maxCompressionDelaySeconds);
+                        renameTo, compressedName, true, compressionLevel, maxCompressionDelaySeconds);
             }
         }
 

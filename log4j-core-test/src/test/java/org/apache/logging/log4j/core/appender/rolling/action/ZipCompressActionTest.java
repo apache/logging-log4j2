@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -26,6 +27,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ZipCompressActionTest {
+
+    @Test
+    void testRejectsCompressionLevelBelowRange(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-low.log");
+        File dest = new File(tempDir, "invalid-low.log.zip");
+
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2, 0));
+    }
+
+    @Test
+    void testRejectsCompressionLevelAboveRange(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-high.log");
+        File dest = new File(tempDir, "invalid-high.log.zip");
+
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10, 0));
+    }
+
+    @Test
+    void testAcceptsCompressionLevelRangeBounds(@TempDir File tempDir) {
+        File source = new File(tempDir, "valid.log");
+        File dest = new File(tempDir, "valid.log.zip");
+
+        new ZipCompressAction(source, dest, true, -1, 0);
+        new ZipCompressAction(source, dest, true, 0, 0);
+        new ZipCompressAction(source, dest, true, 9, 0);
+    }
 
     /** Issue #4012 — when maxDelaySeconds > 0, compression must be deferred by a random 0..max seconds. */
     @Test

@@ -215,6 +215,38 @@ The `GraalVmProcessor` requires your project's `groupId` and `artifactId` to cor
 Provide these values to the processor using the `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` annotation processor options.
 ====
 
+.Suppressing notes from `PluginProcessor` in strict build environments
+[%collapsible]
+====
+Some build environments treat all compiler notes or warnings as errors (e.g., Maven with `-Werror` or Gradle with `options.compilerArgs << '-Werror'`).
+By default, `PluginProcessor` emits a `NOTE`-level diagnostic when it writes the plugin descriptor, which can cause the build to fail in those environments.
+To suppress these informational notes, pass the `log4j.plugin.processor.minAllowedMessageKind` annotation processor option with a value of `WARNING` or `ERROR`.
+This instructs the processor to only emit diagnostics at or above the specified severity, silencing routine notes while preserving genuine warnings and errors.
+
+Accepted values (case-insensitive): `NOTE` (default), `WARNING`, `MANDATORY_WARNING`, `ERROR`, `OTHER`.
+
+[tabs]
+=====
+Maven::
++
+[source,xml]
+----
+<compilerArgs>
+  <arg>-Alog4j.plugin.processor.minAllowedMessageKind=WARNING</arg>
+</compilerArgs>
+----
+
+Gradle::
++
+[source,groovy]
+----
+compileJava {
+  options.compilerArgs << '-Alog4j.plugin.processor.minAllowedMessageKind=WARNING'
+}
+----
+=====
+====
+
 You need to configure your build tool as follows to use both plugin processors:
 
 [tabs]

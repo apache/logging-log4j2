@@ -57,15 +57,15 @@ public final class ZipCompressAction extends AbstractAction {
     private final int maxDelaySeconds;
 
     /**
-     * Validates that the compression level is in the valid range [0, 9].
+     * Validates that the compression level is in the valid range [-1, 9].
      *
      * @param level the compression level to validate
      * @return the level if valid
-     * @throws IllegalArgumentException if level is not in the range [0, 9]
+     * @throws IllegalArgumentException if level is not in the range [-1, 9]
      */
     private static int checkLevel(final int level) {
-        if (level < 0 || level > 9) {
-            throw new IllegalArgumentException("Compression level must be in the range [0, 9], got: " + level);
+        if (level < java.util.zip.Deflater.DEFAULT_COMPRESSION || level > 9) {
+            throw new IllegalArgumentException("Compression level must be in the range [-1, 9], got: " + level);
         }
         return level;
     }
@@ -78,6 +78,7 @@ public final class ZipCompressAction extends AbstractAction {
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      * @param level the compression level
+     * @since2.26.0
      * @param maxDelaySeconds maximum delay in seconds before compression.
      */
     public ZipCompressAction(

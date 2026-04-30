@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -37,6 +38,32 @@ import org.junit.jupiter.api.io.TempDir;
  * fell back to the 4-argument version, silently dropping the delay value.
  */
 class FileExtensionCompressDelayTest {
+
+    @Test
+    void testGzCreateCompressActionRejectsInvalidCompressionLevel(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-level.log");
+        File dest = new File(tempDir, "invalid-level.log.gz");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileExtension.GZ.createCompressAction(source.getPath(), dest.getPath(), true, -2, 0));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileExtension.GZ.createCompressAction(source.getPath(), dest.getPath(), true, 10, 0));
+    }
+
+    @Test
+    void testZipCreateCompressActionRejectsInvalidCompressionLevel(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid-level.log");
+        File dest = new File(tempDir, "invalid-level.log.zip");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileExtension.ZIP.createCompressAction(source.getPath(), dest.getPath(), true, -2, 0));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FileExtension.ZIP.createCompressAction(source.getPath(), dest.getPath(), true, 10, 0));
+    }
 
     // ── GZ ────────────────────────────────────────────────────────────────
 
