@@ -36,28 +36,27 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-import org.awaitility.Awaitility;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
- * List could eventually grow to cause an OutOfMemoryError.
+ * lists could eventually grow to cause an {@link OutOfMemoryError}.
  *
- * This appender is not thread-safe.
+ * <p>This appender is thread-safe: all public methods are {@code synchronized} on {@code this}.
+ * Callers waiting for a minimum number of messages can use
+ * {@link #getMessages(int, long, TimeUnit)} which releases the monitor while waiting.</p>
  *
- * This appender will use {@link Layout#toByteArray(LogEvent)}.
+ * <p>This appender will use {@link Layout#toByteArray(LogEvent)}.</p>
  *
  * @see org.apache.logging.log4j.core.test.junit.LoggerContextRule#getListAppender(String) ILC.getListAppender
  */
 @Plugin(name = "List", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ListAppender extends AbstractAppender {
 
-    // Use Collections.synchronizedList rather than CopyOnWriteArrayList because we expect
-    // more frequent writes than reads.
-    final List<LogEvent> events = Collections.<LogEvent>synchronizedList(new ArrayList<LogEvent>());
+    final List<LogEvent> events = new ArrayList<>();
 
-    private final List<String> messages = Collections.<String>synchronizedList(new ArrayList<String>());
+    private final List<String> messages = new ArrayList<>();
 
-    final List<byte[]> data = Collections.<byte[]>synchronizedList(new ArrayList<byte[]>());
+    final List<byte[]> data = new ArrayList<>();
 
     private final boolean newLine;
 
@@ -66,30 +65,20 @@ public class ListAppender extends AbstractAppender {
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
     /**
-     * CountDownLatch for asynchronous logging tests. Example usage:
-     * <pre>
-     * @Rule
-     * public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
-     * private ListAppender listAppender;
+     * A {@link CountDownLatch} that is decremented once for every call to {@link #append(LogEvent)}.
      *
-     * @Before
-     * public void before() throws Exception {
-     *     listAppender = context.getListAppender("List");
-     * }
+     * <p>Callers may assign a new latch before submitting a known number of log events,
+     * then await that latch to block until all events have been processed.  Example:</p>
+     * <pre>{@code
+     * listAppender.countDownLatch = new CountDownLatch(1);
      *
-     * @Test
-     * public void testSomething() throws Exception {
-     *     listAppender.countDownLatch = new CountDownLatch(1);
+     * logger.info("log one event asynchronously");
      *
-     *     Logger logger = LogManager.getLogger();
-     *     logger.info("log one event asynchronously");
+     * // wait for the appender to finish processing this event (wait max 1 second)
+     * listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
      *
-     *     // wait for the appender to finish processing this event (wait max 1 second)
-     *     listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
-     *
-     *     // now assert something or do follow-up tests...
-     * }
-     * </pre>
+     * // now assert something or do follow-up tests...
+     * }</pre>
      */
     public volatile CountDownLatch countDownLatch = null;
 
@@ -117,7 +106,7 @@ public class ListAppender extends AbstractAppender {
     }
 
     @Override
-    public void append(final LogEvent event) {
+    public synchronized void append(final LogEvent event) {
         final Layout<? extends Serializable> layout = getLayout();
         if (layout == null) {
             events.add(event.toImmutable());
@@ -131,12 +120,14 @@ public class ListAppender extends AbstractAppender {
         } else {
             write(layout.toByteArray(event));
         }
-        if (countDownLatch != null) {
-            countDownLatch.countDown();
+        notifyAll();
+        final CountDownLatch latch = countDownLatch;
+        if (latch != null) {
+            latch.countDown();
         }
     }
 
-    void write(final byte[] bytes) {
+    synchronized void write(final byte[] bytes) {
         if (raw) {
             data.add(bytes);
             return;
@@ -174,7 +165,7 @@ public class ListAppender extends AbstractAppender {
     }
 
     @Override
-    public boolean stop(final long timeout, final TimeUnit timeUnit) {
+    public synchronized boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
         final Layout<? extends Serializable> layout = getLayout();
@@ -188,42 +179,43 @@ public class ListAppender extends AbstractAppender {
         return true;
     }
 
-    public ListAppender clear() {
+    public synchronized ListAppender clear() {
         events.clear();
         messages.clear();
         data.clear();
         return this;
     }
 
-    /** Returns a snapshot of captured log events */
-    public List<LogEvent> getEvents() {
-        synchronized (events) {
-            return new ArrayList<>(events);
-        }
+    /** Returns an immutable snapshot of captured log events */
+    public synchronized List<LogEvent> getEvents() {
+        return Collections.unmodifiableList(new ArrayList<>(events));
     }
 
-    /** Returns a snapshot of captured messages */
-    public List<String> getMessages() {
-        synchronized (messages) {
-            return new ArrayList<>(messages);
-        }
+    /** Returns an immutable snapshot of captured messages */
+    public synchronized List<String> getMessages() {
+        return Collections.unmodifiableList(new ArrayList<>(messages));
     }
 
     /**
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
+    public synchronized List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
             throws InterruptedException {
-        Awaitility.waitAtMost(timeout, timeUnit).until(() -> messages.size() >= minSize);
-        return getMessages();
+        final long deadlineNanos = System.nanoTime() + timeUnit.toNanos(timeout);
+        while (messages.size() < minSize) {
+            final long remainingNanos = deadlineNanos - System.nanoTime();
+            if (remainingNanos <= 0) {
+                break;
+            }
+            TimeUnit.NANOSECONDS.timedWait(this, remainingNanos);
+        }
+        return Collections.unmodifiableList(new ArrayList<>(messages));
     }
 
-    /** Returns a snapshot of captured data */
-    public List<byte[]> getData() {
-        synchronized (data) {
-            return new ArrayList<>(data);
-        }
+    /** Returns an immutable snapshot of captured data */
+    public synchronized List<byte[]> getData() {
+        return Collections.unmodifiableList(new ArrayList<>(data));
     }
 
     public static ListAppender createAppender(
