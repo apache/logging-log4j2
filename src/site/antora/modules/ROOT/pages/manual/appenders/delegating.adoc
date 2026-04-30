@@ -636,6 +636,21 @@ Provides a mapping between old level names and new level names.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{plugin-reference-marker} Plugin reference for `LoggerNameLevelRewritePolicy`]
 
+[#ThirdPartyRewritePolicies]
+=== Third Party Rewrite Policies
+
+[WARNING]
+====
+These `Rewrite Policies` are provided by **third-party** vendors and are not maintained by the https://logging.apache.org/[Apache Logging Services] project.
+====
+
+[#MessageRewritePolicy]
+==== `MessageRewritePolicy`
+
+The **`https://github.com/Neel1210/log4j-utils/blob/main/src/main/java/in/org/nnm/log4j/utils/MessageRewritePolicy.java[MessageRewritePolicy]`** Provided by ( **https://github.com/Neel1210/log4j-utils[log4j-utils]** ) allows you to manipulate the text of a log message before it is processed by a downstream appender.
+This is particularly useful for defining multiple regex-based replacement rules to mask sensitive information (PII) within the log message.
+
+
 [#RewriteAppender-examples]
 === Configuration example
 
