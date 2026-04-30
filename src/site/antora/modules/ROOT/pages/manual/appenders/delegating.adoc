@@ -518,164 +518,15 @@ Rewrite policies allow to apply arbitrary modifications to log events.
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-RewritePolicy[{plugin-reference-marker} Plugin reference for `RewritePolicy`]
 
-Log4j Core provides four rewrite policies out-of-the-box:
-
-[#MessageRewritePolicy]
-`MessageRewritePolicy`::
-+
-The `MessageRewritePolicy` allows you to manipulate the text of a log message before it is processed by a downstream appender.
-This is particularly useful for masking sensitive data.
-+
-[#MessageRewritePolicy-attributes]
-.`MessageRewritePolicy` configuration attributes
-[cols="1m,1,1,5"]
-|===
-| Attribute | Type | Default value | Description
-
-| [[MessageRewritePolicy-attr-replace]]regex
-| String
-| None
-a|
-A Java-compliant regular expression pattern to match the resulting string in the log message.
-
-| [[MessageRewritePolicy-attr-replace]]replacement
-| String
-| None
-a|
-The string to replace the matched patterns with.
-|===
-+
-[#MapRewritePolicy-elements]
-.`MessageRewritePolicy` nested elements
-[cols="1m,1,4"]
-|===
-
-| Type | Multiplicity | Description
-
-| [[MapRewritePolicy-element-replace]]
-xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RegexReplacement[`replace`]
-| one or more
-|
-A list of regex and replacement pairs to apply to the message.
-|===
-+
-.Configuration example
-+
-[tabs]
-====
-XML::
-+
-[source,xml,indent=0]
-----
-        <Rewrite name="MASKING_REWRITE">
-            <MessageRewritePolicy>
-                <replace regex="([A-Za-z0-9._%+-])([A-Za-z0-9._%+-]*)(@[A-Za-z0-9.-]+\.[A-Za-z]{2,})"
-                         replacement="[EMAIL]"/>
-                <replace regex="\+?1?\s*\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}"
-                         replacement="[PHONE]"/>
-                <replace> <!-- Uses a CDATA Section -->
-                    <regex><![CDATA[[A-Za-z0-9_%+-]{20,}\.[A-Za-z0-9_%+-]{20,}\.[A-Za-z0-9_%+-]+\b]]></regex>
-                    <replacement>[TOKEN]</replacement>
-                </replace>
-            </MessageRewritePolicy>
-            <Appender-Ref ref="Console"/>
-        </Rewrite>
-----
-
-JSON::
-+
-[source,json,indent=0]
-----
-{
-  "Rewrite": [
-    {
-      "name": "MASKING_REWRITE",
-      "MessageRewritePolicy": {
-        "replace": [
-          {
-            "regex": "([A-Za-z0-9._%+-])([A-Za-z0-9._%+-]*)(@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})",
-            "replacement": "[EMAIL MASKED]"
-          },
-          {
-            "regex": "\\+?1?\\s*\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}",
-            "replacement": "[PHONE]"
-          },
-          {
-            "regex": "[A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]+\\b",
-            "replacement": "[TOKEN]"
-          }
-        ]
-      },
-      "AppenderRef": [
-        {
-          "ref": "Console"
-        }
-      ]
-    }
-  ]
-}
-----
-
-YAML::
-+
-[source,yaml,indent=0]
-----
-    rewrite:
-      - name: MASKING_REWRITE
-        MessageRewritePolicy:
-          replace:
-            - regex: "([A-Za-z0-9._%+-])([A-Za-z0-9._%+-]*)(@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})"
-              replacement: "[EMAIL MASKED]"
-            - regex: "\\+?1?\\s*\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
-              replacement: "[PHONE]"
-            - regex: "[A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]+\\b"
-              replacement: "[TOKEN]"
-        AppenderRef:
-          - ref: Console
-----
-
-Properties::
-+
-[source,properties,indent=0]
-----
-
-appender.rewrite.type = Rewrite
-appender.rewrite.name = MASKING_REWRITE
-
-# Message Rewrite Policy
-appender.rewrite.policy.type = MessageRewritePolicy
-
-# ---- Replace Rule 1 (Email) ----
-appender.rewrite.policy.replace1.type = replace
-appender.rewrite.policy.replace1.regex = ([A-Za-z0-9._%+-])([A-Za-z0-9._%+-]*)(@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})
-appender.rewrite.policy.replace1.replacement = [EMAIL MASKED]
-
-# ---- Replace Rule 2 (Phone) ----
-appender.rewrite.policy.replace2.type = replace
-appender.rewrite.policy.replace2.regex = \\+?1?\\s*\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}
-appender.rewrite.policy.replace2.replacement = [PHONE]
-
-# ---- Replace Rule 3 (Token) ----
-appender.rewrite.policy.replace3.type = replace
-appender.rewrite.policy.replace3.regex = [A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]{20,}\\.[A-Za-z0-9_%+-]+\\b
-appender.rewrite.policy.replace3.replacement = [TOKEN]
-
-# Attach Console appender
-appender.rewrite.appenderRef.type = AppenderRef
-appender.rewrite.appenderRef.ref = console
-----
-====
-
-:repo-url: https://github.com/Neel1210/log4j-utils/blob/main/src/main/java/in/org/nnm/log4j/utils
-{repo-url}/MessageRewritePolicy.java[{plugin-reference-marker} Plugin reference for `MessageRewritePolicy`]
+Log4j Core provides three rewrite policies out-of-the-box:
 
 [#MapRewritePolicy]
-`MapRewritePolicy`::
-+
+==== `MapRewritePolicy`
+
 The `MapRewritePolicy` only modifies events that contain a
 xref:manual/messages.adoc#MapMessage[`MapMessage`].
 It allows adding or updating the keys of the `MapMessage`.
-+
+
 [#MapRewritePolicy-attributes]
 .`MapRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -695,7 +546,7 @@ Update::
 The rewrite policy will add to the `MapMessage` only entries corresponding to existing keys.
 
 |===
-+
+
 [#MapRewritePolicy-elements]
 .`MapRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -710,20 +561,20 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 A list of map entries to add to the `MapMessage`.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{plugin-reference-marker} Plugin reference for `MapRewritePolicy`]
 
 [#PropertiesRewritePolicy]
-`PropertiesRewritePolicy`::
-+
+==== `PropertiesRewritePolicy`
+
 The `PropertiesRewritePolicy` will add properties to the context data of the log event.
-+
+
 [NOTE]
 ====
 Only the context data of the log event will be modified.
 The contents of the xref:manual/thread-context.adoc[] will remain unchanged.
 ====
-+
+
 [#PropertiesRewritePolicy-elements]
 .`PropertiesRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -740,22 +591,22 @@ xref:manual/configuration.adoc#lazy-property-substitution[runtime property subst
 in the
 xref:manual/lookups.adoc#global-context[_global context_].
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{plugin-reference-marker} Plugin reference for `PropertiesRewritePolicy`]
 
 [#LoggerNameLevelRewritePolicy]
-LoggerNameLevelRewritePolicy::
-+
+==== LoggerNameLevelRewritePolicy
+
 You can use this policy to change the log level of loggers from third-party libraries.
 The `LoggerNameLevelRewritePolicy` will rewrite the level of log event for a given logger name prefix.
-+
+
 [WARNING]
 ====
 The new log levels will only be used by the filter attached to the `Rewrite` appender and those downstream of the appender.
 Filters configured on loggers will use the previous levels.
 See xref:manual/filters.adoc[] for more details on filtering
 ====
-+
+
 [#LoggerNameLevelRewritePolicy-attributes]
 .`LoggerNameLevelRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -769,7 +620,7 @@ See xref:manual/filters.adoc[] for more details on filtering
 The rewrite policy will only be applied to loggers with this logger name and their children.
 
 |===
-+
+
 [#LoggerNameLevelRewritePolicy-elements]
 .`LoggerNameLevelRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -782,7 +633,7 @@ The rewrite policy will only be applied to loggers with this logger name and the
 Provides a mapping between old level names and new level names.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{plugin-reference-marker} Plugin reference for `LoggerNameLevelRewritePolicy`]
 
 [#RewriteAppender-examples]
