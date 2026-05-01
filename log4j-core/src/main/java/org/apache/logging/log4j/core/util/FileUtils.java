@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -34,6 +33,7 @@ import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

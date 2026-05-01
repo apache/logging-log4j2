@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -26,6 +25,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.util.PropertiesUtil;
 

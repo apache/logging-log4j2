@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitor;
@@ -29,6 +28,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**

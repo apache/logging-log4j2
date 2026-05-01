@@ -111,7 +111,7 @@
     <jmh.version>1.37</jmh.version>
     <jspecify.version>1.0.0</jspecify.version>
     <junit.version>4.13.2</junit.version>
-    <junit-jupiter.version>5.13.3</junit-jupiter.version>
+    <junit-jupiter.version>5.13.4</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>3.9.1</kafka.version>
     <lightcouch.version>0.2.0</lightcouch.version>
@@ -132,10 +132,9 @@
     <osgi.annotation.versioning.version>1.1.2</osgi.annotation.versioning.version>
     <pax-exam.version>4.14.0</pax-exam.version>
     <plexus-utils.version>3.6.0</plexus-utils.version>
-    <!-- `com.github.spotbugs:spotbugs-annotations:4.9.0` and onwards require Java 11: -->
-    <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
     <spring-boot.version>2.7.18</spring-boot.version>
     <spring-framework.version>5.3.39</spring-framework.version>
+    <stax2-api.version>4.2.2</stax2-api.version>
     <system-stubs.version>2.0.3</system-stubs.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
@@ -163,7 +162,6 @@
     <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
       biz.aQute.bnd.annotation,
       com.google.errorprone.annotations,
-      com.github.spotbugs.annotations,
       org.osgi.annotation.bundle,
       org.osgi.annotation.versioning
       "</bnd-jpms-module-info>
@@ -794,6 +792,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>${stax2-api.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>uk.org.webcompere</groupId>
         <artifactId>system-stubs-core</artifactId>
         <version>${system-stubs.version}</version>
@@ -874,13 +878,6 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.annotation.versioning</artifactId>
       <version>${osgi.annotation.versioning.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.spotbugs</groupId>
-      <artifactId>spotbugs-annotations</artifactId>
-      <version>${spotbugs-annotations.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -1123,11 +1120,6 @@
               <groupId>org.osgi</groupId>
               <artifactId>org.osgi.annotation.versioning</artifactId>
               <version>${osgi.annotation.versioning.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>com.github.spotbugs</groupId>
-              <artifactId>spotbugs-annotations</artifactId>
-              <version>${spotbugs-annotations.version}</version>
             </dependency>
           </compileOnlyApiDependencies>
         </configuration>

@@ -35,7 +35,7 @@ The class needs to have a public zero-argument constructor.
 The default exception handler will print a message and stack trace to the standard error output stream.
 
 [id=log4j2.asyncLoggerConfigRingBufferSize]
-== `log4j2.asyncLoggerRingConfigBufferSize`
+== `log4j2.asyncLoggerConfigRingBufferSize`
 
 [cols="1h,5"]
 |===
