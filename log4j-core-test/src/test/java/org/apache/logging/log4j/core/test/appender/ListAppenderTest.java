@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.test.appender;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -28,8 +29,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ListAppender}.
@@ -42,6 +43,26 @@ class ListAppenderTest {
                 .setLevel(Level.INFO)
                 .setMessage(new SimpleMessage("event-" + workerId + "-" + index))
                 .build();
+    }
+
+    private static List<String> expectedMessages(final int workerCount, final int eventsPerWorker) {
+        final List<String> expected = new ArrayList<>(workerCount * eventsPerWorker);
+        for (int workerId = 0; workerId < workerCount; workerId++) {
+            for (int i = 0; i < eventsPerWorker; i++) {
+                expected.add("event-" + workerId + "-" + i);
+            }
+        }
+        return expected;
+    }
+
+    private static List<String> expectedEventKeys(final int workerCount, final int eventsPerWorker) {
+        final List<String> expected = new ArrayList<>(workerCount * eventsPerWorker);
+        for (int workerId = 0; workerId < workerCount; workerId++) {
+            for (int i = 0; i < eventsPerWorker; i++) {
+                expected.add("worker-" + workerId + ":event-" + workerId + "-" + i);
+            }
+        }
+        return expected;
     }
 
     @Test
@@ -58,9 +79,7 @@ class ListAppenderTest {
 
     @Test
     void appendWithLayoutStoresMessages() {
-        final PatternLayout layout = PatternLayout.newBuilder()
-                .setPattern("%m")
-                .build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m").build();
         final ListAppender appender = new ListAppender("test", null, layout, false, false);
         appender.start();
 
@@ -88,9 +107,7 @@ class ListAppenderTest {
 
     @Test
     void getMessagesWithTimeoutReturnsOnceMinSizeReached() throws InterruptedException {
-        final PatternLayout layout = PatternLayout.newBuilder()
-                .setPattern("%m")
-                .build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m").build();
         final ListAppender appender = new ListAppender("test", null, layout, false, false);
         appender.start();
 
@@ -119,6 +136,7 @@ class ListAppenderTest {
     void appendIsThreadSafeWithoutLayout() throws InterruptedException {
         final int workerCount = 10;
         final int eventsPerWorker = 1_000;
+        final List<String> expectedEventKeys = expectedEventKeys(workerCount, eventsPerWorker);
 
         final ListAppender appender = new ListAppender("thread-safe-test");
         appender.start();
@@ -149,6 +167,12 @@ class ListAppenderTest {
         assertThat(appender.getEvents())
                 .as("all events were captured without loss or duplication")
                 .hasSize(workerCount * eventsPerWorker);
+
+        assertThat(appender.getEvents())
+                .extracting(event ->
+                        event.getLoggerName() + ":" + event.getMessage().getFormattedMessage())
+                .as("all expected worker/message combinations are present exactly once")
+                .containsExactlyInAnyOrderElementsOf(expectedEventKeys);
     }
 
     /**
@@ -160,10 +184,9 @@ class ListAppenderTest {
     void appendIsThreadSafeWithLayout() throws InterruptedException {
         final int workerCount = 10;
         final int eventsPerWorker = 1_000;
+        final List<String> expectedMessages = expectedMessages(workerCount, eventsPerWorker);
 
-        final PatternLayout layout = PatternLayout.newBuilder()
-                .setPattern("%m")
-                .build();
+        final PatternLayout layout = PatternLayout.newBuilder().setPattern("%m").build();
         final ListAppender appender = new ListAppender("thread-safe-layout-test", null, layout, false, false);
         appender.start();
 
@@ -193,6 +216,9 @@ class ListAppenderTest {
         assertThat(appender.getMessages())
                 .as("all messages were captured without loss or duplication")
                 .hasSize(workerCount * eventsPerWorker);
+
+        assertThat(appender.getMessages())
+                .as("all expected messages are present exactly once")
+                .containsExactlyInAnyOrderElementsOf(expectedMessages);
     }
 }
-
