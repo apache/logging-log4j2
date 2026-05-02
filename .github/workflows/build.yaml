@@ -25,6 +25,11 @@ on:
       - "release/2*"
   pull_request:
 
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions: read-all
 
 jobs:
