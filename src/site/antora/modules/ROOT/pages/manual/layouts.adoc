@@ -55,8 +55,7 @@ include::partial$manual/layouts-location-information.adoc[]
 === Log event content
 
 While layouts are responsible for formatting a log event into a string or byte array, they do not typically modify the content of the event itself.
-If you need to mask sensitive information (such as PII), inject additional metadata, or otherwise manipulate the message text before it reaches the layout, consider using a xref:manual/appenders/delegating.adoc#RewritePolicy[Rewrite Policy].
-Rewrite policies allow for pre-processing of the log event content, ensuring that sensitive data is handled consistently across all configured layouts.
+You can use xref:manual/appenders/delegating.adoc#RewritePolicy[Rewrite Policy] to pre-process log event content for the purpose of, for example, masking sensitive information (such as PII) or injecting additional metadata.
 
 [#collection]
 == Collection
