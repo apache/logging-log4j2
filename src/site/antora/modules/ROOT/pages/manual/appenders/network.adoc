@@ -299,7 +299,7 @@ Otherwise, please have a look at xref:manual/appenders.adoc#third-party[third-pa
 ====
 The implementation uses
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`]
-under the hood.
+The implementation uses https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`] under the hood.
 ====
 
 [#HttpAppender-attributes]
