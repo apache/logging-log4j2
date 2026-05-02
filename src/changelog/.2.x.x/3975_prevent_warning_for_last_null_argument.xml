@@ -8,7 +8,6 @@
     <issue id="3975" link="https://github.com/apache/logging-log4j2/issues/3975"/>
     <issue id="4014" link="https://github.com/apache/logging-log4j2/pull/4014"/>
     <description format="asciidoc">
-      Prevent ParameterFormatter issuing a warning in case there is an extra null argument.
-      Needed to support cases with Throwable parameter that may be null.
+      Prevent `ParameterFormatter` from issuing a warning in case there is an extra null argument
     </description>
 </entry>

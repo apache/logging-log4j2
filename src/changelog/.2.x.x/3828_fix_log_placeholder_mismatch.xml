@@ -7,6 +7,6 @@
        type="fixed">
     <issue id="3828" link="https://github.com/apache/logging-log4j2/issues/3828"/>
     <description format="asciidoc">
-        Corrected an incorrect placeholder count in the AbstractDriverManagerConnectionSource debug log message to prevent unnecessary warnings.
+        Fix the incorrect placeholder count in `AbstractDriverManagerConnectionSource` debug log message to prevent unnecessary warnings
     </description>
 </entry>

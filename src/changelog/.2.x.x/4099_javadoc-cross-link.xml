@@ -8,6 +8,6 @@
   <issue id="4099" link="https://github.com/apache/logging-log4j2/issues/4099"/>
   <issue id="4100" link="https://github.com/apache/logging-log4j2/pull/4100"/>
   <description format="asciidoc">
-    Javadoc references across module boundaries (i.e., cross-references) are fixed
+    Fix Javadoc references across module boundaries (i.e., cross-references)
   </description>
 </entry>

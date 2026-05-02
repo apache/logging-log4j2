@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3835" link="https://github.com/apache/logging-log4j2/issues/3835"/>
   <description format="asciidoc">
-    Fix missing newlines in default logging configuration for log4j-core.
+    Fix missing newlines in default logging configuration for `log4j-core`
   </description>
 </entry>

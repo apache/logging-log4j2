@@ -5,8 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="removed">
-        <issue id="3874" link="https://github.com/apache/logging-log4j2/pull/3874"/>  
-
+    <issue id="3874" link="https://github.com/apache/logging-log4j2/pull/3874"/>
     <description format="asciidoc">
       Remove the `jvmrunargs` lookup.
     </description>

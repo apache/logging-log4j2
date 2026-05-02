@@ -8,6 +8,6 @@
   <issue id="3940" link="https://github.com/apache/logging-log4j2/issues/3940"/>
   <issue id="3955" link="https://github.com/apache/logging-log4j2/pull/3955"/>
   <description format="asciidoc">
-    Fixes `ArrayIndexOutOfBoundsException` thrown by `ThrowableStackTraceRenderer` when the stack trace is mutated concurrently.
+    Fix `ArrayIndexOutOfBoundsException` thrown by `ThrowableStackTraceRenderer` when the stack trace is modified concurrently
   </description>
 </entry>

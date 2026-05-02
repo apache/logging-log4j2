@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3819" link="https://github.com/apache/logging-log4j2/issues/3819"/>
   <description format="asciidoc">
-    Fix potential memory leak involving `LogBuilder` in Log4j API to Logback bridge.
+    Fix potential memory leak involving `LogBuilder` in Log4j API to Logback bridge
   </description>
 </entry>

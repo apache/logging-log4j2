@@ -6,7 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <description format="asciidoc">
-    Fix header write in `RollingRandomAccessFileManager` that was being incorrectly skipped if `append=true` and the file didn't exist before.
+    Fix header write in `RollingRandomAccessFileManager` that was being incorrectly skipped if `append=true` and the file didn't exist before
   </description>
 </entry>
 

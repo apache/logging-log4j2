@@ -7,7 +7,6 @@
        type="changed">
     <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/3176"/>
     <description format="asciidoc">
-      Ensured scripts in global `Scripts container` have explicit names by throwing a `ConfigurationException` for unnamed ones.
-      Refined script identification with `AbstractScript.getId()` and clarified `AbstractScript.getName()`.
+      Ensure scripts in the global `Scripts` element have explicit names by throwing a `ConfigurationException` for unnamed ones.
     </description>
 </entry>

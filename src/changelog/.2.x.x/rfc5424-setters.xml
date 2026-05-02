@@ -6,6 +6,6 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
     <description format="asciidoc">
-        Add missing setters to `Rfc5424LayoutBuilder`.
+        Add missing setters to `Rfc5424LayoutBuilder`
     </description>
 </entry>
