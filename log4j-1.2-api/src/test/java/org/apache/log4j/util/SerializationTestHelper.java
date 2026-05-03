@@ -24,9 +24,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Utiities for serialization tests.
@@ -103,9 +106,13 @@ public final class SerializationTestHelper {
      * @throws Exception thrown on IO or deserialization exception.
      */
     public static Object deserializeStream(final String witness) throws Exception {
-        try (final ObjectInputStream objIs = new ObjectInputStream(new FileInputStream(witness))) {
+        try (final ObjectInputStream objIs = newObjectInputStream(new FileInputStream(witness))) {
             return objIs.readObject();
         }
+    }
+
+    private static ObjectInputStream newObjectInputStream(final InputStream in) throws IOException {
+        return Constants.JAVA_MAJOR_VERSION == 8 ? new FilteredObjectInputStream(in) : new ObjectInputStream(in);
     }
 
     /**
@@ -123,7 +130,7 @@ public final class SerializationTestHelper {
         }
 
         final ByteArrayInputStream src = new ByteArrayInputStream(memOut.toByteArray());
-        final ObjectInputStream objIs = new ObjectInputStream(src);
+        final ObjectInputStream objIs = newObjectInputStream(src);
 
         return objIs.readObject();
     }

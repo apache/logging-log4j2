@@ -20,7 +20,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.any;
 
 import java.io.Serializable;
-import org.apache.commons.lang3.SerializationUtils;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 
@@ -35,7 +35,7 @@ public final class SerializableMatchers {
         return new FeatureMatcher<T, T>(matcher, "serializes round trip", "serializes round trip") {
             @Override
             protected T featureValueOf(final T actual) {
-                return SerializationUtils.roundtrip(actual);
+                return SerialUtil.deserialize(SerialUtil.serialize(actual));
             }
         };
     }
