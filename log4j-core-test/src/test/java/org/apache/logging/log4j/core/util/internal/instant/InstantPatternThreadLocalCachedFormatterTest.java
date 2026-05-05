@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.util.internal.instant;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -30,6 +32,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -37,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.Issue;
 
 class InstantPatternThreadLocalCachedFormatterTest {
 
@@ -288,5 +293,54 @@ class InstantPatternThreadLocalCachedFormatterTest {
         final MutableInstant instant = new MutableInstant();
         instant.initFromEpochMilli(epochMillis, epochMillisNanos);
         return instant;
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3792")
+    void should_be_thread_safe() throws Exception {
+        // Instead of randomly testing the thread safety, we test that the current implementation does not
+        // cache results across threads.
+        //
+        // Modify this test if the implementation changes in the future.
+        final InstantPatternFormatter patternFormatter = mock(InstantPatternFormatter.class);
+        when(patternFormatter.getPrecision()).thenReturn(ChronoUnit.MILLIS);
+
+        final Instant instant = INSTANT0;
+        final String output = "thread-output";
+        doAnswer(invocation -> {
+                    StringBuilder buffer = invocation.getArgument(0);
+                    buffer.append(output)
+                            .append('-')
+                            .append(Thread.currentThread().getName());
+                    return null;
+                })
+                .when(patternFormatter)
+                .formatTo(any(StringBuilder.class), eq(instant));
+
+        final InstantFormatter cachedFormatter =
+                InstantPatternThreadLocalCachedFormatter.ofMilliPrecision(patternFormatter);
+
+        final int threadCount = 2;
+        for (int i = 0; i < threadCount; i++) {
+            formatOnNewThread(cachedFormatter, instant, output);
+        }
+        verify(patternFormatter, times(threadCount)).formatTo(any(StringBuilder.class), eq(instant));
+    }
+
+    private static void formatOnNewThread(
+            final InstantFormatter formatter, final Instant instant, final String expectedOutput)
+            throws ExecutionException, InterruptedException {
+        ExecutorService executor = newSingleThreadExecutor();
+        try {
+            executor.submit(() -> {
+                        String formatted = formatter.format(instant);
+                        assertThat(formatted)
+                                .isEqualTo(expectedOutput + "-"
+                                        + Thread.currentThread().getName());
+                    })
+                    .get();
+        } finally {
+            executor.shutdown();
+        }
     }
 }

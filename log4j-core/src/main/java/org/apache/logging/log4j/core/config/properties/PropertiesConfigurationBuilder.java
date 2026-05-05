@@ -131,6 +131,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 final String name = filterName.trim();
                 builder.add(createFilter(name, PropertiesUtil.extractSubset(rootProperties, "filter." + name)));
             }
+            removeDefinedButUnusedProperties("filter");
         } else {
 
             final Map<String, Properties> filters =
@@ -148,6 +149,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 builder.add(createAppender(
                         appenderName.trim(), PropertiesUtil.extractSubset(rootProperties, "appender." + name)));
             }
+            removeDefinedButUnusedProperties(Appender.ELEMENT_TYPE);
         } else {
             final Map<String, Properties> appenders = PropertiesUtil.partitionOnCommonPrefixes(
                     PropertiesUtil.extractSubset(rootProperties, Appender.ELEMENT_TYPE));
@@ -165,6 +167,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                     builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." + name)));
                 }
             }
+            removeDefinedButUnusedProperties("logger");
         } else {
 
             final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(
@@ -187,7 +190,32 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             builder.add(createRootLogger(props));
         }
 
-        return builder.setLoggerContext(loggerContext).build(false);
+        processRemainingProperties(builder, rootProperties);
+
+        builder.setLoggerContext(loggerContext);
+
+        return builder.build(false);
+    }
+
+    private void removeDefinedButUnusedProperties(final String prefix) {
+        PropertiesUtil.extractSubset(rootProperties, prefix);
+    }
+
+    private void processRemainingProperties(
+            final ConfigurationBuilder<PropertiesConfiguration> builder, final Properties properties) {
+        while (properties.size() > 0) {
+            final String propertyName =
+                    properties.stringPropertyNames().iterator().next();
+            final int index = propertyName.indexOf('.');
+            if (index > 0) {
+                final String prefix = propertyName.substring(0, index);
+                final Properties componentProperties = PropertiesUtil.extractSubset(properties, prefix);
+                ComponentBuilder<?> componentBuilder = createComponent(builder, prefix, componentProperties);
+                builder.addComponent(componentBuilder);
+            } else {
+                properties.remove(propertyName);
+            }
+        }
     }
 
     private ScriptComponentBuilder createScript(final Properties properties) {
@@ -330,12 +358,17 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     private static <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(
             final ComponentBuilder<?> parent, final String key, final Properties properties) {
+        return createComponent(parent.getBuilder(), key, properties);
+    }
+
+    private static <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(
+            final ConfigurationBuilder<?> parentBuilder, final String key, final Properties properties) {
         final String name = (String) properties.remove(CONFIG_NAME);
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for component " + key);
         }
-        final ComponentBuilder<B> componentBuilder = parent.getBuilder().newComponent(name, type);
+        final ComponentBuilder<B> componentBuilder = parentBuilder.newComponent(name, type);
         return processRemainingProperties(componentBuilder, properties);
     }
 

@@ -262,8 +262,8 @@ link:../javadoc/log4j-api/org/apache/logging/log4j/message/FlowMessageFactory.ht
 implementation to be used by all loggers.
 // end::flow-tracing[]
 
-[id=log4j2.instant.formatter]
-== `log4j2.instant.formatter`
+[id=log4j2.instantFormatter]
+== `log4j2.instantFormatter`
 
 [cols="1h,5"]
 |===

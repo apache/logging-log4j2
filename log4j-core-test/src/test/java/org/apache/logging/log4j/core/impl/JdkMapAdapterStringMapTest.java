@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -848,6 +849,26 @@ class JdkMapAdapterStringMapTest {
         state.data = original;
         original.forEach(COUNTER, state);
         assertEquals(state.count, original.size());
+    }
+
+    @Test
+    void testEqualityWithOtherImplementations() {
+        final JdkMapAdapterStringMap left = new JdkMapAdapterStringMap();
+        final SortedArrayStringMap right = new SortedArrayStringMap();
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
+
+        left.putValue("a", "avalue");
+        left.putValue("B", "Bvalue");
+        right.putValue("B", "Bvalue");
+        right.putValue("a", "avalue");
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
+
+        left.remove("a");
+        right.remove("a");
+        assertEquals(left, right);
+        assertEquals(left.hashCode(), right.hashCode());
     }
 
     static Stream<Arguments> testImmutability() {

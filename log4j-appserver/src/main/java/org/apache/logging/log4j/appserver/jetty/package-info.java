@@ -19,7 +19,7 @@
  */
 @Open
 @Export
-@Version("2.20.1")
+@Version("2.25.3")
 package org.apache.logging.log4j.appserver.jetty;
 
 import aQute.bnd.annotation.jpms.Open;

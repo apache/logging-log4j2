@@ -21,7 +21,7 @@
  */
 @Export
 @NullMarked
-@Version("2.25.0")
+@Version("2.25.3")
 package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.jspecify.annotations.NullMarked;

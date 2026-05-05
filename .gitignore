@@ -19,7 +19,6 @@
 .vscode
 /.metadata/
 /.mvn/wrapper/maven-wrapper.jar
-/.mvn/.develocity
 .flattened-pom.xml
 .project
 .settings
@@ -40,3 +39,5 @@ felix-cache/
 node
 node_modules
 package-lock.json
+# Maven extensions
+/.mvn/extensions.xml

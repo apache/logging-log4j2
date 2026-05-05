@@ -92,4 +92,11 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
         }
         toAppendTo.append(pattern.matcher(buf.toString()).replaceAll(substitution));
     }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
+    }
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.filter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -44,6 +43,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.mutable.KeyValuePairConfig;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
@@ -384,8 +384,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                     break;
             }
             switch (result.status) {
-                    // These results cause changes in the filter
-                    // We call the listeners
+                // These results cause changes in the filter
+                // We call the listeners
                 case SUCCESS:
                 case NOT_FOUND:
                 case EMPTY:
@@ -393,7 +393,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         listener.onEvent();
                     }
                     break;
-                    // These results do no cause changes in the filter
+                // These results do no cause changes in the filter
                 case ERROR:
                 case NOT_MODIFIED:
                     break;

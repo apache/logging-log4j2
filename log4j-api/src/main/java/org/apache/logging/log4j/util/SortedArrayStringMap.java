@@ -408,39 +408,22 @@ public class SortedArrayStringMap implements IndexedStringMap {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SortedArrayStringMap)) {
+        if (!(obj instanceof ReadOnlyStringMap)) {
             return false;
         }
-        final SortedArrayStringMap other = (SortedArrayStringMap) obj;
-        if (this.size() != other.size()) {
+        if (size() != ((ReadOnlyStringMap) obj).size()) {
             return false;
         }
-        for (int i = 0; i < size(); i++) {
-            if (!Objects.equals(keys[i], other.keys[i])) {
-                return false;
-            }
-            if (!Objects.equals(values[i], other.values[i])) {
-                return false;
-            }
-        }
-        return true;
+
+        // Convert to maps and compare
+        final Map<String, String> thisMap = toMap();
+        final Map<String, String> otherMap = ((ReadOnlyStringMap) obj).toMap();
+        return thisMap.equals(otherMap);
     }
 
     @Override
     public int hashCode() {
-        int result = 37;
-        result = HASHVAL * result + size;
-        result = HASHVAL * result + hashCode(keys, size);
-        result = HASHVAL * result + hashCode(values, size);
-        return result;
-    }
-
-    private static int hashCode(final Object[] values, final int length) {
-        int result = 1;
-        for (int i = 0; i < length; i++) {
-            result = HASHVAL * result + (values[i] == null ? 0 : values[i].hashCode());
-        }
-        return result;
+        return toMap().hashCode();
     }
 
     @Override

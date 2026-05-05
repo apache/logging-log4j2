@@ -18,6 +18,7 @@ package org.apache.logging.log4j.appserver.jetty;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.appserver.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.eclipse.jetty.util.log.AbstractLogger;
@@ -51,6 +52,7 @@ public class Log4j2Logger extends AbstractLogger {
      */
     private static class PrivateManager extends LogManager {
 
+        @SuppressFBWarnings("HSM_HIDING_METHOD")
         public static LoggerContext getContext() {
             final ClassLoader cl = AbstractLogger.class.getClassLoader();
             return getContext(PARENT_FQCN, cl, false);

@@ -127,7 +127,7 @@ public class Log4jProvider extends Provider {
             case WEB_APP_CONTEXT_MAP:
             case WEB_APP_CLASS_NAME:
                 return new DefaultThreadContextMap();
-                // Old FQCN of the garbage-free context map
+            // Old FQCN of the garbage-free context map
             case "org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap":
             case GARBAGE_FREE_CONTEXT_MAP:
             case GARBAGE_FREE_CLASS_NAME:

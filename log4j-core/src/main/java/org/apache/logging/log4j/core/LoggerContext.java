@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core;
 import static org.apache.logging.log4j.core.jmx.internal.JmxUtil.isJmxDisabled;
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -42,6 +41,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Constants;
@@ -286,6 +286,16 @@ public class LoggerContext extends AbstractLifeCycle
         return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
     }
 
+    /**
+     * Starts the context using the configuration specified by {@link #getConfigLocation()}.
+     * <p>
+     *   If the configuration location is {@code null}, Log4j will search for a configuration file
+     *   using the default classpath resources. For details on the search order and supported formats,
+     *   see the
+     *   <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration">
+     *   Log4j 2 Configuration File Location documentation</a>.
+     * </p>
+     */
     @Override
     public void start() {
         LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
@@ -312,25 +322,36 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
-     * Starts with a specific configuration.
-     *
-     * @param config The new Configuration.
+     * Starts the context using a specific configuration.
+     * <p>
+     *   <strong>Warning:</strong> For backward compatibility, especially with Spring Boot,
+     *   if the context is already started, this method will fall back to {@link #reconfigure(Configuration)}.
+     *   This behavior is maintained for legacy integrations and may change in future major versions.
+     *   New code should not rely on this fallback.
+     * </p>
+     * @param config The new {@link Configuration} to use for this context
      */
     public void start(final Configuration config) {
         LOGGER.info("Starting {}[name={}] with configuration {}...", getClass().getSimpleName(), getName(), config);
         if (configLock.tryLock()) {
             try {
-                if (this.isInitialized() || this.isStopped()) {
+                if (isInitialized() || isStopped()) {
+                    setStarting();
+                    reconfigure(config);
                     if (this.configuration.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
-                    this.setStarted();
+                    setStarted();
+                } else {
+                    // Required for Spring Boot integration:
+                    // Both `Log4jSpringBootLoggingSystem` and its Spring Boot 3.x equivalent
+                    // invoke `start()` even during context reconfiguration.
+                    reconfigure(config);
                 }
             } finally {
                 configLock.unlock();
             }
         }
-        setConfiguration(config);
         LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 

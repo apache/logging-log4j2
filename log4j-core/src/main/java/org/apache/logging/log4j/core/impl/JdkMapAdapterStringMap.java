@@ -219,15 +219,21 @@ public class JdkMapAdapterStringMap implements StringMap {
         if (object == this) {
             return true;
         }
-        if (!(object instanceof JdkMapAdapterStringMap)) {
+        if (!(object instanceof ReadOnlyStringMap)) {
             return false;
         }
-        final JdkMapAdapterStringMap other = (JdkMapAdapterStringMap) object;
-        return map.equals(other.map) && immutable == other.immutable;
+        if (size() != ((ReadOnlyStringMap) object).size()) {
+            return false;
+        }
+
+        // Convert to maps and compare
+        final Map<String, String> thisMap = toMap();
+        final Map<String, String> otherMap = ((ReadOnlyStringMap) object).toMap();
+        return thisMap.equals(otherMap);
     }
 
     @Override
     public int hashCode() {
-        return map.hashCode() + (immutable ? 31 : 0);
+        return toMap().hashCode();
     }
 }

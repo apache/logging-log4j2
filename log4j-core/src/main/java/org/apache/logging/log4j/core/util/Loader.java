@@ -94,6 +94,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
                 final URL url = classLoader.getResource(resource);
                 if (url != null) {
+                    LOGGER.debug("Found [{}] at {} using context class loader.", resource, url);
                     return url;
                 }
             }
@@ -104,6 +105,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using {} class loader.", resource, classLoader);
                 final URL url = classLoader.getResource(resource);
                 if (url != null) {
+                    LOGGER.debug("Found [{}] at {} using {} class loader.", resource, url, classLoader);
                     return url;
                 }
             }
@@ -112,6 +114,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using {} class loader.", resource, defaultLoader);
                 final URL url = defaultLoader.getResource(resource);
                 if (url != null) {
+                    LOGGER.debug("Found [{}] at {} using {} class loader.", resource, url, defaultLoader);
                     return url;
                 }
             }
@@ -127,7 +130,11 @@ public final class Loader {
         // loader which the parent of the system class loader. Hence the
         // code below.
         LOGGER.trace("Trying to find [{}] using ClassLoader.getSystemResource().", resource);
-        return ClassLoader.getSystemResource(resource);
+        final URL url = ClassLoader.getSystemResource(resource);
+        if (url != null) {
+            LOGGER.debug("Found [{}] at {} using system class loader.", resource, url);
+        }
+        return url;
     }
 
     /**
@@ -157,6 +164,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using context class loader {}.", resource, classLoader);
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
+                    LOGGER.debug("Found [{}] using context class loader {}.", resource, classLoader);
                     return is;
                 }
             }
@@ -167,6 +175,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using {} class loader.", resource, classLoader);
                 is = classLoader.getResourceAsStream(resource);
                 if (is != null) {
+                    LOGGER.debug("Found [{}] using {} class loader.", resource, classLoader);
                     return is;
                 }
             }
@@ -176,6 +185,7 @@ public final class Loader {
                 LOGGER.trace("Trying to find [{}] using {} class loader.", resource, defaultLoader);
                 is = defaultLoader.getResourceAsStream(resource);
                 if (is != null) {
+                    LOGGER.debug("Found [{}] using {} class loader.", resource, defaultLoader);
                     return is;
                 }
             }
@@ -191,7 +201,11 @@ public final class Loader {
         // loader which the parent of the system class loader. Hence the
         // code below.
         LOGGER.trace("Trying to find [{}] using ClassLoader.getSystemResource().", resource);
-        return ClassLoader.getSystemResourceAsStream(resource);
+        final InputStream is = ClassLoader.getSystemResourceAsStream(resource);
+        if (is != null) {
+            LOGGER.debug("Found [{}] using system class loader.", resource);
+        }
+        return is;
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
@@ -79,10 +80,16 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
     private static class PrivateLogManager extends org.apache.logging.log4j.LogManager {
         private static final String FQCN = Hierarchy.class.getName();
 
+        @SuppressFBWarnings(
+                value = "HSM_HIDING_METHOD",
+                justification = "The class is private, no confusion can arise.")
         public static LoggerContext getContext() {
             return getContext(FQCN, false);
         }
 
+        @SuppressFBWarnings(
+                value = "HSM_HIDING_METHOD",
+                justification = "The class is private, no confusion can arise.")
         public static org.apache.logging.log4j.Logger getLogger(final String name) {
             return getLogger(FQCN, name);
         }

@@ -51,6 +51,7 @@ public interface LogEvent extends Serializable {
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
      *
      * @return an immutable version of this log event
+     * @since 2.8.1
      */
     LogEvent toImmutable();
 
@@ -187,7 +188,9 @@ public interface LogEvent extends Serializable {
      * Gets throwable proxy associated with logging request.
      *
      * @return throwable, may be null.
+     * @deprecated since 2.25.0. This method should be replaced with {@link #getThrown()}.
      */
+    @Deprecated
     ThrowableProxy getThrownProxy();
 
     /**

@@ -58,11 +58,8 @@ class EventParameterMemoryLeakTest {
                 assertThat(messages).hasSize(4);
                 assertThat(messages.get(0)).isEqualTo("Message with parameter %s", parameter.value);
                 assertThat(messages.get(1)).isEqualTo(parameter.value);
-                assertThat(messages.get(2))
-                        .startsWith(String.format("test%n%s: %s", ObjectThrowable.class.getName(), parameter.value));
-                assertThat(messages.get(3))
-                        .startsWith(
-                                String.format("test hello%n%s: %s", ObjectThrowable.class.getName(), parameter.value));
+                assertThat(messages.get(2)).startsWith(String.format("test%n%s", new ObjectThrowable(parameter)));
+                assertThat(messages.get(3)).startsWith(String.format("test hello%n%s", new ObjectThrowable(parameter)));
 
                 // Return the GC subject
                 return parameter;

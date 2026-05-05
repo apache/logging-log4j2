@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.lookup;
 import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 
 /**
  * A map-based lookup for main arguments.
@@ -74,6 +75,9 @@ public class MainMapLookup extends MapLookup {
      * @param args
      *        An application's {@code public static main(String[])} arguments.
      */
+    @SuppressFBWarnings(
+            value = "HSM_HIDING_METHOD",
+            justification = "The MapLookup.setMainArguments() method hidden by this one is deprecated.")
     public static void setMainArguments(final String... args) {
         if (args == null) {
             return;

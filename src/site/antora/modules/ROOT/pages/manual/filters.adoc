@@ -385,8 +385,7 @@ Timestamp filters use the timestamp of log events to decide whether to accept th
 [#BurstFilter]
 ==== `BurstFilter`
 
-The `BurstFilter` limits the rate of log events.
-The rate limit is only applied to log events less severe than a configured log level.
+The `BurstFilter` limits the rate of log events at or below a configured severity level.
 
 Besides the <<common-configuration-attributes,common configuration attributes>>,
 the `BurstFilter` supports the following parameters:
@@ -399,8 +398,8 @@ the `BurstFilter` supports the following parameters:
 | level
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`]
 | link:../javadoc/log4j-api/org/apache/logging/log4j/Level.html#WARN[`WARN`]
-| The rate limit only applies to log events less severe than this level.
-Events at least as severe as this level will always match.
+| The rate limit is only applied up until and including this level.
+Events more severe than this level will always match.
 
 | rate
 | `float`
@@ -1451,6 +1450,20 @@ include::example$manual/filters/ScriptFilter.properties[tag=global]
 ====
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-filter-ScriptFilter[📖 Plugin reference for `ScriptFilter`]
+
+[#third-party]
+== Third-party filters
+
+[WARNING]
+====
+These filters are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] project.
+====
+
+[#more-log4j2-RoutingFilter]
+=== Routing filter (`more-log4j2`)
+
+`RoutingFilter` by https://github.com/mlangc/more-log4j2[more-log4j2] helps to compose filters by defining routes selected using log event attributes.
+For instance, it can be used to implement log throttling based on log event markers or levels.
 
 [#extending]
 == Extending

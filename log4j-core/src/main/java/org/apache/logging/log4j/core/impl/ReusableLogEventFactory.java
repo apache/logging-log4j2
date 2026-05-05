@@ -66,13 +66,27 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
 
     /**
      * Creates a log event.
-     *
+     * <p>
+     *   <strong>Implementation note:</strong> This method <strong>mutates</strong> the state of the {@code message}
+     *   parameter:
+     * </p>
+     * <ol>
+     *   <li>
+     *     If the message is a {@link org.apache.logging.log4j.message.ReusableMessage}, this method will remove its
+     *     parameter references, which prevents it from being used again.
+     *   </li>
+     *   <li>
+     *     Otherwise the lazy {@link Message#getFormattedMessage()} message might be called.
+     *     See <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.formatMsgAsync">{@code log4j2.formatMsgAsync}</a>
+     *     for details.
+     *   </li>
+     * </ol>
      * @param loggerName The name of the Logger.
      * @param marker An optional Marker.
      * @param fqcn The fully qualified class name of the caller.
      * @param location The location of the caller.
      * @param level The event Level.
-     * @param message The Message.
+     * @param message The log message. The object passed will be <strong>modified</strong> by this method and should not be reused.
      * @param properties Properties to be added to the log event.
      * @param t An optional Throwable.
      * @return The LogEvent.
@@ -105,8 +119,11 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
                 ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack()); // mutable copy
 
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
-            result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
-            result.setThreadPriority(Thread.currentThread().getPriority());
+            Thread currentThread = Thread.currentThread();
+            result.setThreadId(currentThread.getId());
+            // Before JRE 8u102, Thread.getName() allocated objects on each call
+            result.setThreadName(currentThread.getName());
+            result.setThreadPriority(currentThread.getPriority());
         }
         return result;
     }

@@ -387,10 +387,6 @@ public class ExceptionResolver implements EventResolver {
         return logEvent.getThrown();
     }
 
-    static String getName() {
-        return "exception";
-    }
-
     @Override
     public boolean isResolvable() {
         return stackTraceEnabled;

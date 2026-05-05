@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 /**
  * Appender that can be halted and resumed, for testing queue-full scenarios.
@@ -58,7 +57,7 @@ public class BlockingAppender extends AbstractAppender {
         // may be a reusable event, make a copy, don't keep a reference to the original event
         final List<LogEvent> events = logEvents;
         if (events != null) {
-            events.add(Log4jLogEvent.createMemento(event));
+            events.add(event.toImmutable());
         }
 
         if (countDownLatch == null) {

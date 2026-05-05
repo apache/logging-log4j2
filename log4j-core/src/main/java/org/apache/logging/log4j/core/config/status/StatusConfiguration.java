@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.status;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +29,7 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Configuration for setting up the {@link StatusLogger} fallback listener.

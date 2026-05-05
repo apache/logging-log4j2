@@ -367,14 +367,14 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         LogEvent logEvent = ensureImmutable(event);
         if (logEvent.getMessage() instanceof ReusableMessage) {
             if (logEvent instanceof Log4jLogEvent) {
-                ((Log4jLogEvent) logEvent).makeMessageImmutable();
+                logEvent = logEvent.toImmutable();
             } else if (logEvent instanceof MutableLogEvent) {
                 // MutableLogEvents need to be translated into the RingBuffer by the MUTABLE_TRANSLATOR.
                 // That translator calls MutableLogEvent.initFrom to copy the event, which will makeMessageImmutable the
                 // message.
                 if (translator != MUTABLE_TRANSLATOR) { // should not happen...
                     // TRANSLATOR expects an immutable LogEvent
-                    logEvent = ((MutableLogEvent) logEvent).createMemento();
+                    logEvent = logEvent.toImmutable();
                 }
             } else { // custom log event, with a ReusableMessage
                 showWarningAboutCustomLogEventWithReusableMessage(logEvent);
@@ -436,7 +436,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
             // The original event will be re-used and modified in an application thread later,
             // so take a snapshot of it, which can be safely processed in the
             // some-loggers-async background thread.
-            result = ((RingBufferLogEvent) event).createMemento();
+            result = event.toImmutable();
         }
         return result;
     }

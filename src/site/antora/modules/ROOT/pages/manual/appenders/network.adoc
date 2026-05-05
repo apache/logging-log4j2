@@ -67,6 +67,9 @@ https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuid
 If `true`, the host name in X509 certificate will be compared to the requested host name.
 In the case of a mismatch, the connection will fail.
 
+Note that SSL/TLS does not allow IP literals for host name verification – see https://www.rfc-editor.org/rfc/rfc6066.html#section-3[RFC 6066].
+Host name verification will only be effective if the provided host name is not an IP literal and a valid host name per https://www.rfc-editor.org/rfc/rfc1035.html[RFC 1035].
+
 See also
 xref:manual/systemproperties.adoc#log4j2.sslVerifyHostName[`log4j2.sslVerifyHostName`].
 |===
@@ -163,6 +166,8 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 
 The trust store is meant to contain the CA certificates you are willing to trust when a remote party presents its certificate.
 It determines whether the remote authentication credentials (and thus the connection) should be trusted.
+
+include::partial$manual/trust-store-guideline.adoc[]
 
 [#TrustStoreConfiguration-attributes]
 .`TrustStore` configuration attributes
@@ -278,11 +283,23 @@ Additional headers can be configured using the nested
 If the appender receives a response with status code different from `2xx`, an exception is thrown.
 See also <<HttpAppender-attr-ignoreExceptions,`ignoreExceptions`>> configuration attribute.
 
+[WARNING]
+====
+Sending logs synchronously, one by one to an HTTP backend is rarely a good idea.
+In such a setup, every network or backend-related issue will immediately impact all loggers delegating to the HTTP Appender.
+Even when everything is working fine, log statements will block for tens or hundreds of milliseconds in a typical setup.
+This is orders of magnitude more than what you get with the xref:manual/appenders.adoc#ConsoleAppender[console appender] and the xref:manual/appenders/file.adoc[file appender].
+Also consider the number of HTTP requests and the associated network traffic that can result from such a setup.
+
+Consider at least xref:manual/async.adoc[asynchronous loggers] if you want to use this appender.
+Otherwise, please have a look at xref:manual/appenders.adoc#third-party[third-party appenders].
+====
+
 [NOTE]
 ====
 The implementation uses
 https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`]
-under the hood.
+The implementation uses https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/HttpURLConnection.html[`HttpURLConnection`] under the hood.
 ====
 
 [#HttpAppender-attributes]

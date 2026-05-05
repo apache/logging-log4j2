@@ -1,0 +1,120 @@
+[
+  {
+    "name": "org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.logging.log4j.core.LoggerContext",
+          "org.apache.logging.log4j.core.config.ConfigurationSource",
+          "org.apache.logging.log4j.core.config.builder.api.Component"
+        ]
+      }
+    ],
+    "fields": []
+  },
+  {
+    "name": "org.apache.logging.log4j.core.config.properties.PropertiesConfiguration",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.logging.log4j.core.LoggerContext",
+          "org.apache.logging.log4j.core.config.ConfigurationSource",
+          "org.apache.logging.log4j.core.config.builder.api.Component"
+        ]
+      }
+    ],
+    "fields": []
+  },
+  {
+    "name": "org.apache.logging.log4j.core.async.BasicAsyncLoggerContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.selector.BasicContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.selector.JndiContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.selector.ClassLoaderContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.osgi.BundleContextSelector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.config.LockingReliabilityStrategy",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.config.AwaitUnconditionallyReliabilityStrategy",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.config.DefaultReliabilityStrategy",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j.core.config.AwaitCompletionReliabilityStrategy",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  }
+]

@@ -51,6 +51,7 @@
     <!--
       ~ OSGi and JPMS options
       -->
+    <disruptor.support.range>[3.4,5)</disruptor.support.range>
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-extra-package-options>
       <!-- Annotations only -->
@@ -58,14 +59,14 @@
       <!-- External optional dependencies -->
       com.conversantmedia.util.concurrent;resolution:=optional;
       com.fasterxml.jackson.*;resolution:=optional,
-      com.lmax.disruptor.*;resolution:=optional,
+      com.lmax.disruptor.*;version="${disruptor.support.range}";resolution:=optional,
       javax.activation;resolution:=optional,
       javax.jms;version="[1.1,3)";resolution:=optional,
       javax.mail.*;version="[1.6,2)";resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.apache.commons.csv;resolution:=optional,
       org.apache.kafka.*;resolution:=optional,
-      org.codehaus.stax2;resolution:=optional,
+      org.codehaus.stax2.*;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
@@ -214,6 +215,11 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
       <optional>true</optional>
     </dependency>
   </dependencies>

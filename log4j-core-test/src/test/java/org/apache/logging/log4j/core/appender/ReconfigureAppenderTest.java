@@ -144,14 +144,14 @@ class ReconfigureAppenderTest {
         final PatternLayout pattern_layout = pattern_builder.build();
 
         appender = RollingFileAppender.newBuilder()
-                .withLayout(pattern_layout)
-                .withName("rollingfileappender")
-                .withFilePattern("target/filepattern.%i.log")
-                .withPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
-                .withAppend(true)
-                .withStrategy(DirectWriteRolloverStrategy.newBuilder()
-                        .withConfig(logger_context.getConfiguration())
-                        .withMaxFiles("5")
+                .setLayout(pattern_layout)
+                .setName("rollingfileappender")
+                .setFilePattern("target/filepattern.%i.log")
+                .setPolicy(SizeBasedTriggeringPolicy.createPolicy("5 MB"))
+                .setAppend(true)
+                .setStrategy(DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(logger_context.getConfiguration())
+                        .setMaxFiles("5")
                         .build())
                 .setConfiguration(logger_context.getConfiguration())
                 .build();

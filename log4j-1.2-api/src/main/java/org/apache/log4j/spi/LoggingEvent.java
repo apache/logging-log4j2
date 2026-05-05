@@ -35,7 +35,7 @@ public class LoggingEvent {
      * @return the JVM start time.
      */
     public static long getStartTime() {
-        return LogEventAdapter.getStartTime();
+        return LogEventAdapter.getJvmStartTime();
     }
 
     /**

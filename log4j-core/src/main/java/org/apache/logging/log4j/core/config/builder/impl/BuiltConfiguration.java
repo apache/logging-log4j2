@@ -71,7 +71,6 @@ public class BuiltConfiguration extends AbstractConfiguration {
         Objects.requireNonNull(rootComponent, "The 'rootComponent' argument must not be null.");
 
         statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
-
         this.rootComponent = rootComponent;
     }
 

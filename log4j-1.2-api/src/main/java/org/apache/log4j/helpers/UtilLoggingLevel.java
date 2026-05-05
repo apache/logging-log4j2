@@ -21,6 +21,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * An extension of the Level class that provides support for java.util.logging Levels.
@@ -157,6 +158,7 @@ public class UtilLoggingLevel extends Level {
      * @param val numeric value.
      * @return matching level or UtilLoggerLevel.FINEST if no match.
      */
+    @SuppressFBWarnings(value = "HSM_HIDING_METHOD", justification = "Legacy code")
     public static Level toLevel(final int val) {
         return toLevel(val, FINEST);
     }
@@ -184,6 +186,7 @@ public class UtilLoggingLevel extends Level {
      * @param s symbolic name.
      * @return matching level or Level.DEBUG if no match.
      */
+    @SuppressFBWarnings(value = "HSM_HIDING_METHOD", justification = "Legacy code")
     public static Level toLevel(final String s) {
         return toLevel(s, Level.DEBUG);
     }
@@ -195,6 +198,7 @@ public class UtilLoggingLevel extends Level {
      * @param defaultLevel level to return if no match.
      * @return matching level or defaultLevel if no match.
      */
+    @SuppressFBWarnings(value = "HSM_HIDING_METHOD", justification = "Legacy code")
     public static Level toLevel(final String sArg, final Level defaultLevel) {
         if (sArg == null) {
             return defaultLevel;

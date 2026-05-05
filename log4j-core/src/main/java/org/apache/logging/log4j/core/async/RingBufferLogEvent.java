@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.EventFactory;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
@@ -83,7 +85,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private StringBuilder messageText;
     private Object[] parameters;
     private transient Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
@@ -117,7 +118,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         initTime(clock);
         this.nanoTime = nanoClock.nanoTime();
         this.thrown = aThrowable;
-        this.thrownProxy = null;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
@@ -137,7 +137,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public LogEvent toImmutable() {
-        return createMemento();
+        return Log4jLogEvent.createMemento(this);
     }
 
     private void setMessage(final Message msg) {
@@ -334,24 +334,12 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public Throwable getThrown() {
-        // after deserialization, thrown is null but thrownProxy may be non-null
-        if (thrown == null) {
-            if (thrownProxy != null) {
-                thrown = thrownProxy.getThrowable();
-            }
-        }
         return thrown;
     }
 
     @Override
     public ThrowableProxy getThrownProxy() {
-        // lazily instantiate the (expensive) ThrowableProxy
-        if (thrownProxy == null) {
-            if (thrown != null) {
-                thrownProxy = new ThrowableProxy(thrown);
-            }
-        }
-        return this.thrownProxy;
+        return thrown != null ? new ThrowableProxy(thrown) : null;
     }
 
     @Override
@@ -420,7 +408,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.loggerName = null;
         clearMessage();
         this.thrown = null;
-        this.thrownProxy = null;
         clearContextData();
         this.marker = null;
         this.fqcn = null;
@@ -458,26 +445,32 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
     }
 
-    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-        getThrownProxy(); // initialize the ThrowableProxy before serializing
-        out.defaultWriteObject();
+    private Object writeReplace() throws IOException {
+        return Log4jLogEvent.serialize(this, this.includeLocation);
+    }
+
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 
     /**
      * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
      *
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
+     * @deprecated since 2.25.0. Use {@link LogEvent#toImmutable()} instead.
      */
+    @Deprecated
     public LogEvent createMemento() {
-        final Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
-        initializeBuilder(builder);
-        return builder.build();
+        return toImmutable();
     }
 
     /**
      * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code RingBufferLogEvent}.
      * @param builder the builder whose fields to populate
+     *
+     * @deprecated since 2.25.0. Use {@link Log4jLogEvent.Builder#Builder(LogEvent)} instead.
      */
+    @Deprecated
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
         // If the data is not frozen, make a copy of it.
         final StringMap oldContextData = this.contextData;
@@ -503,7 +496,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setThreadName(threadName) //
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
-                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
         ;
     }

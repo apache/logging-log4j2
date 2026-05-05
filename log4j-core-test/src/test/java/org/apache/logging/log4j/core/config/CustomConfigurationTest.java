@@ -59,24 +59,30 @@ class CustomConfigurationTest {
             }
         }
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-                .withConfiguration(config)
+                .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .setConfiguration(config)
                 .build();
         final FileAppender appender = FileAppender.newBuilder()
-                .withFileName(logFile.toString())
-                .withAppend(false)
-                .setName("File")
+                .setBufferedIo(false)
                 .setIgnoreExceptions(false)
-                .withBufferedIo(false)
+                .setName("File")
                 .setLayout(layout)
+                .setAppend(false)
+                .setFileName(logFile.toString())
                 .build();
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[] {ref};
 
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(
-                false, Level.INFO, "org.apache.logging.log4j", "true", refs, null, config, null);
+        final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
+                .setConfig(config)
+                .setAdditivity(false)
+                .setIncludeLocation("true")
+                .setLevel(Level.INFO)
+                .setLoggerName("org.apache.logging.log4j")
+                .setRefs(refs)
+                .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();

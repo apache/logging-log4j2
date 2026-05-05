@@ -72,11 +72,11 @@ class RollingAppenderSizeTest {
                 folder.resolve("rollingtest-%i.log." + fileExtension).toString();
         final RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingFile")
-                .withFileName(fileName)
-                .withFilePattern(filePattern)
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
                 .setLayout(PatternLayout.createDefaultLayout())
-                .withPolicy(SizeBasedTriggeringPolicy.createPolicy("500"))
-                .withCreateOnDemand(createOnDemand)
+                .setPolicy(SizeBasedTriggeringPolicy.createPolicy("500"))
+                .setCreateOnDemand(createOnDemand)
                 .build();
         appender.start();
         return appender;

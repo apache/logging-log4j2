@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.builder.impl;
 
 import aQute.bnd.annotation.baseline.BaselineIgnore;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -58,6 +57,7 @@ import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.jspecify.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
@@ -164,6 +164,11 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      *
      * @throws NullPointerException if the {@code builder} argument is {@code null}
      */
+    @Override
+    public ConfigurationBuilder<T> addComponent(ComponentBuilder<?> builder) {
+        return add(root, builder);
+    }
+
     @Override
     public ConfigurationBuilder<T> add(final CustomLevelComponentBuilder builder) {
         return add(customLevels, builder);

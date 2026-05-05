@@ -114,7 +114,11 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public Message memento() {
-        return new ParameterizedMessage(messagePattern, getTrimmedParams());
+        Message message = new ParameterizedMessage(messagePattern, getTrimmedParams());
+        // Since `toString()` methods are not always pure functions and might depend on the thread and other context
+        // values, we format the message and cache the result.
+        message.getFormattedMessage();
+        return message;
     }
 
     private void init(final String messagePattern, final int argCount, final Object[] args) {

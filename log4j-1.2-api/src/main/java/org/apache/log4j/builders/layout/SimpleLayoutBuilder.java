@@ -35,16 +35,16 @@ public class SimpleLayoutBuilder implements LayoutBuilder {
     @Override
     public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
-                .withPattern("%v1Level - %m%n")
-                .withConfiguration(config)
+                .setPattern("%v1Level - %m%n")
+                .setConfiguration(config)
                 .build());
     }
 
     @Override
     public Layout parse(final PropertiesConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
-                .withPattern("%v1Level - %m%n")
-                .withConfiguration(config)
+                .setPattern("%v1Level - %m%n")
+                .setConfiguration(config)
                 .build());
     }
 }

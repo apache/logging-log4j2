@@ -78,6 +78,7 @@ import org.apache.logging.log4j.core.util.WatcherFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -132,6 +133,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
+    private Set<MonitorResource> monitorResources = Collections.emptySet();
     private final ConcurrentMap<String, String> propertyMap = new ConcurrentHashMap<>();
     private final Interpolator tempLookup = new Interpolator(propertyMap);
     private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
@@ -267,6 +269,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setup();
         setupAdvertisement();
         doConfigure();
+        watchMonitorResources();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
     }
@@ -322,10 +325,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.info("Starting configuration {}...", this);
         this.setStarting();
-        if (watchManager.getIntervalSeconds() >= 0) {
+        if (isConfigurationMonitoringEnabled()) {
             LOGGER.info(
                     "Start watching for changes to {} every {} seconds",
-                    getConfigurationSource(),
+                    watchManager.getConfigurationWatchers().keySet(),
                     watchManager.getIntervalSeconds());
             watchManager.start();
         }
@@ -345,6 +348,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         super.start();
         LOGGER.info("Configuration {} started.", this);
+    }
+
+    private boolean isConfigurationMonitoringEnabled() {
+        return this instanceof Reconfigurable && watchManager.getIntervalSeconds() > 0;
+    }
+
+    private void watchMonitorResources() {
+        if (isConfigurationMonitoringEnabled()) {
+            monitorResources.forEach(monitorResource -> {
+                Source source = new Source(monitorResource.getUri());
+                final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
+                        this, (Reconfigurable) this, listeners, source.getFile().lastModified());
+                watchManager.watch(source, watcher);
+            });
+        }
     }
 
     private boolean hasAsyncLoggers() {
@@ -664,13 +682,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         preConfigure(rootNode);
         configurationScheduler.start();
         // Find the "Properties" node first
+        final List<Node> children = rootNode.getChildren();
         boolean hasProperties = false;
-        for (final Node node : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(node.getName())) {
+        for (final Node child : children) {
+            if ("Properties".equalsIgnoreCase(child.getName())) {
                 hasProperties = true;
-                createConfiguration(node, null);
-                if (node.getObject() != null) {
-                    final StrLookup lookup = node.getObject();
+                createConfiguration(child, null);
+                if (child.getObject() != null) {
+                    final StrLookup lookup = child.getObject();
                     runtimeStrSubstitutor.setVariableResolver(lookup);
                     configurationStrSubstitutor.setVariableResolver(lookup);
                 }
@@ -687,10 +706,28 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
+        for (final Node child : children) {
+            if ("Scripts".equalsIgnoreCase(child.getName())) {
+                createConfiguration(child, null);
+                if (child.getObject() != null) {
+                    for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
+                        if (script instanceof ScriptRef) {
+                            LOGGER.error(
+                                    "Script reference to {} not added. Scripts definition cannot contain script references",
+                                    script.getName());
+                        } else if (scriptManager != null) {
+                            scriptManager.addScript(script);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
         boolean setLoggers = false;
         boolean setRoot = false;
-        for (final Node child : rootNode.getChildren()) {
-            if ("Properties".equalsIgnoreCase(child.getName())) {
+        for (final Node child : children) {
+            if ("Properties".equalsIgnoreCase(child.getName()) || "Scripts".equalsIgnoreCase(child.getName())) {
                 // We already used this node
                 continue;
             }
@@ -698,17 +735,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (child.getObject() == null) {
                 continue;
             }
-            if ("Scripts".equalsIgnoreCase(child.getName())) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error(
-                                "Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else if (scriptManager != null) {
-                        scriptManager.addScript(script);
-                    }
-                }
-            } else if ("Appenders".equalsIgnoreCase(child.getName())) {
+            if ("Appenders".equalsIgnoreCase(child.getName())) {
                 appenders = child.getObject();
             } else if (child.isInstanceOf(Filter.class)) {
                 addFilter(child.getObject(Filter.class));
@@ -729,9 +756,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
                 final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
+            } else if (child.isInstanceOf(MonitorResources.class)) {
+                monitorResources = child.getObject(MonitorResources.class).getResources();
             } else {
                 final List<String> expected = Arrays.asList(
-                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                        "\"Appenders\"",
+                        "\"Loggers\"",
+                        "\"Properties\"",
+                        "\"Scripts\"",
+                        "\"CustomLevels\"",
+                        "\"MonitorResources\"");
                 LOGGER.error(
                         "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
                         child.getName(),
@@ -774,8 +808,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected void setToDefault() {
-        // LOG4J2-1176 facilitate memory leak investigation
-        setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
+        // LOG4J2-3431 don't set a default name if one has already been set
+        if (Strings.isBlank(getName())) {
+            // LOG4J2-1176 facilitate memory leak investigation
+            setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
+        }
         final Appender appender = ConsoleAppender.createDefaultAppenderForLayout(DefaultLayout.INSTANCE);
         appender.start();
         addAppender(appender);

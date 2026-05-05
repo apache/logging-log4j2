@@ -147,13 +147,37 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         return (V) get(key);
     }
 
+    /**
+     * {@return a mutable copy of the current thread context map}
+     */
     @Override
     public Map<String, String> getCopy() {
         final Object[] state = localState.get();
         if (state == null) {
             return new HashMap<>(0);
         }
-        return new HashMap<>(getMap(state));
+
+        final Map<String, String> map = getMap(state);
+
+        // Handle empty map case efficiently - constructor is faster for empty maps
+        if (map.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        // Pre-size HashMap to minimize rehashing operations
+        // Factor 1.35 accounts for HashMap's 0.75 load factor (1/0.75 ≈ 1.33)
+        final HashMap<String, String> copy = new HashMap<>((int) (map.size() * 1.35));
+
+        // Manual iteration avoids megamorphic virtual calls that prevent JIT optimization.
+        // The HashMap(Map) constructor requires (3 + 4n) virtual method calls that become
+        // megamorphic when used with different map types, leading to 24-136% performance
+        // degradation. Manual iteration creates monomorphic call sites that JIT can optimize.
+        // See https://bugs.openjdk.org/browse/JDK-8368292
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            copy.put(entry.getKey(), entry.getValue());
+        }
+
+        return copy;
     }
 
     @Override
@@ -181,20 +205,24 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        final Object[] state = localState.get();
-        result = prime * result + ((state == null) ? 0 : getMap(state).hashCode());
-        return result;
+        return toMap().hashCode();
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj == null) {
             return false;
+        }
+        if (obj instanceof ReadOnlyStringMap) {
+            if (size() != ((ReadOnlyStringMap) obj).size()) {
+                return false;
+            }
+
+            // Convert to maps and compare
+            obj = ((ReadOnlyStringMap) obj).toMap();
         }
         if (!(obj instanceof ThreadContextMap)) {
             return false;

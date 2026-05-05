@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>12.0.0</version>
+    <version>12.1.1</version>
     <relativePath />
   </parent>
 
@@ -279,7 +279,7 @@
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
-    <tag>2.x</tag>
+    <tag>rel/2.25.3</tag>
     <url>https://github.com/apache/logging-log4j2</url>
   </scm>
 
@@ -307,11 +307,11 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.25.0-SNAPSHOT</revision>
+    <revision>2.26.0-SNAPSHOT</revision>
     <!-- Versions used on the site: no snapshots! -->
-    <site-log4j-api.version>2.24.3</site-log4j-api.version>
-    <site-log4j-core.version>2.24.3</site-log4j-core.version>
-    <site-log4j-layout-template-json.version>2.24.3</site-log4j-layout-template-json.version>
+    <site-log4j-api.version>2.25.4</site-log4j-api.version>
+    <site-log4j-core.version>2.25.4</site-log4j-core.version>
+    <site-log4j-layout-template-json.version>2.25.4</site-log4j-layout-template-json.version>
 
     <!-- =================
          Common properties
@@ -325,7 +325,7 @@
          2. This value is employed in various places while creating the distribution
          To mitigate these, we define a *dummy* value here and let the CI replace it during a release.
          Hence, *DO NOT MANUALLY EDIT THIS VALUE*! -->
-    <project.build.outputTimestamp>2024-12-10T10:15:05Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-03-25T07:52:12Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
@@ -340,24 +340,23 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <site-commons-compress.version>1.27.1</site-commons-compress.version>
-    <site-commons-csv.version>1.13.0</site-commons-csv.version>
+    <site-commons-csv.version>1.14.0</site-commons-csv.version>
     <site-commons-logging.version>1.3.5</site-commons-logging.version>
     <site-conversant.version>1.2.21</site-conversant.version>
     <site-disruptor.version>4.0.0</site-disruptor.version>
     <site-flume.version>1.11.0</site-flume.version>
-    <site-jackson.version>2.18.2</site-jackson.version>
+    <site-jackson.version>2.19.2</site-jackson.version>
     <site-javax-mail.version>1.6.2</site-javax-mail.version>
     <site-jctools.version>4.0.5</site-jctools.version>
     <site-je.version>18.3.12</site-je.version>
     <site-jeromq.version>0.6.0</site-jeromq.version>
-    <site-kafka.version>3.9.0</site-kafka.version>
+    <site-kafka.version>3.9.1</site-kafka.version>
     <site-logback.version>1.3.15</site-logback.version>
     <site-slf4j.version>2.0.17</site-slf4j.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <jspecify.version>1.0.0</jspecify.version>
     <log4j-docgen.version>0.9.0</log4j-docgen.version>
     <node.version>21.7.1</node.version>
     <npm.version>10.5.0</npm.version>
@@ -371,8 +370,6 @@
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
-    <!-- Downgrade temporarily Maven Surefire, since it breaks tests statistics on `develocity.apache.org` -->
-    <version.maven-surefire>3.2.5</version.maven-surefire>
   </properties>
 
   <dependencyManagement>
@@ -689,11 +686,11 @@
               <offlineLinks>
                 <link>
                   <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-api</url>
-                  <location>${maven.multiModuleProjectDirectory}/log4j-api/target/site/apidocs/</location>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-api/target/reports/apidocs/</location>
                 </link>
                 <link>
                   <url>https://logging.apache.org/log4j/2.x/javadoc/log4j-core</url>
-                  <location>${maven.multiModuleProjectDirectory}/log4j-core/target/site/apidocs/</location>
+                  <location>${maven.multiModuleProjectDirectory}/log4j-core/target/reports/apidocs/</location>
                 </link>
               </offlineLinks>
             </configuration>
@@ -830,7 +827,7 @@
               <outputDirectory>${maven.multiModuleProjectDirectory}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/site/apidocs</directory>
+                  <directory>${project.build.directory}/reports/apidocs</directory>
                 </resource>
               </resources>
             </configuration>
@@ -955,53 +952,6 @@
   </build>
 
   <profiles>
-
-    <!-- `java8-tests` profile to force using Java 8 while running tests -->
-    <profile>
-
-      <id>java8-tests</id>
-
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
-
-      <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
-           Adding necessary dependencies to workaround them.
-           [1] https://bugs.openjdk.org/browse/JDK-8152174
-           [2] https://github.com/mockito/mockito/issues/1449 -->
-      <dependencies>
-        <dependency>
-          <groupId>org.jspecify</groupId>
-          <artifactId>jspecify</artifactId>
-          <version>${jspecify.version}</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <executions>
-              <!-- Modifies only the `default-test` run -->
-              <execution>
-                <id>default-test</id>
-                <configuration>
-                  <jdkToolchain>
-                    <version>[1.8, 9)</version>
-                  </jdkToolchain>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-
-    </profile>
 
     <profile>
       <id>rerun-tests</id>
