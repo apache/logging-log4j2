@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -32,6 +35,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.iceberg.AppendFiles;
 import org.apache.iceberg.CatalogUtil;
 import org.apache.iceberg.DataFile;
+import org.apache.iceberg.PartitionSpec;
 import org.apache.iceberg.Schema;
 import org.apache.iceberg.Table;
 import org.apache.iceberg.catalog.Catalog;
@@ -65,6 +69,10 @@ class IcebergManager {
             Types.NestedField.optional(6, "thrown", Types.StringType.get()),
             Types.NestedField.required(7, "event_date", Types.DateType.get()));
 
+    static final PartitionSpec PARTITION_SPEC = PartitionSpec.builderFor(LOG_SCHEMA)
+            .day("event_date")
+            .build();
+
     private final String name;
     private final String catalogName;
     private final String catalogImpl;
@@ -74,6 +82,7 @@ class IcebergManager {
     private final String tableName;
     private final int batchSize;
     private final int flushIntervalSeconds;
+    private final Map<String, String> extraCatalogProperties;
 
     private final ReentrantLock lock = new ReentrantLock();
     private List<LogEvent> buffer;
@@ -93,7 +102,8 @@ class IcebergManager {
             final String tableNamespace,
             final String tableName,
             final int batchSize,
-            final int flushIntervalSeconds) {
+            final int flushIntervalSeconds,
+            final Map<String, String> extraCatalogProperties) {
         this.name = name;
         this.catalogName = catalogName;
         this.catalogImpl = catalogImpl;
@@ -103,7 +113,24 @@ class IcebergManager {
         this.tableName = tableName;
         this.batchSize = batchSize;
         this.flushIntervalSeconds = flushIntervalSeconds;
+        this.extraCatalogProperties = extraCatalogProperties != null
+                ? Collections.unmodifiableMap(new HashMap<>(extraCatalogProperties))
+                : Collections.emptyMap();
         this.buffer = new ArrayList<>(batchSize);
+    }
+
+    IcebergManager(
+            final String name,
+            final String catalogName,
+            final String catalogImpl,
+            final String catalogUri,
+            final String catalogWarehouse,
+            final String tableNamespace,
+            final String tableName,
+            final int batchSize,
+            final int flushIntervalSeconds) {
+        this(name, catalogName, catalogImpl, catalogUri, catalogWarehouse,
+                tableNamespace, tableName, batchSize, flushIntervalSeconds, null);
     }
 
     void startup() {
@@ -120,6 +147,7 @@ class IcebergManager {
         if (catalogWarehouse != null) {
             catalogProperties.put("warehouse", catalogWarehouse);
         }
+        catalogProperties.putAll(extraCatalogProperties);
 
         catalog = CatalogUtil.buildIcebergCatalog(catalogName, catalogProperties, new Configuration());
         final TableIdentifier tableId = TableIdentifier.of(Namespace.of(tableNamespace), tableName);
@@ -129,10 +157,11 @@ class IcebergManager {
         }
 
         if (!catalog.tableExists(tableId)) {
-            table = catalog.createTable(tableId, LOG_SCHEMA);
-            LOGGER.info("Created Iceberg table {}", tableId);
+            table = catalog.createTable(tableId, LOG_SCHEMA, PARTITION_SPEC);
+            LOGGER.info("Created Iceberg table {} partitioned by event_date", tableId);
         } else {
             table = catalog.loadTable(tableId);
+            validateSchema(table.schema());
             LOGGER.info("Loaded existing Iceberg table {}", tableId);
         }
 
@@ -145,6 +174,25 @@ class IcebergManager {
                 this::flush, flushIntervalSeconds, flushIntervalSeconds, TimeUnit.SECONDS);
 
         running = true;
+    }
+
+    void validateSchema(final Schema existingSchema) {
+        final Set<String> required = new HashSet<>();
+        for (final Types.NestedField field : LOG_SCHEMA.columns()) {
+            required.add(field.name());
+        }
+        final Set<String> missing = new HashSet<>();
+        for (final String fieldName : required) {
+            if (existingSchema.findField(fieldName) == null) {
+                missing.add(fieldName);
+            }
+        }
+        if (!missing.isEmpty()) {
+            throw new IllegalStateException(
+                    "Iceberg table " + tableNamespace + "." + tableName
+                            + " is missing required columns: " + missing
+                            + ". Expected schema columns: " + required);
+        }
     }
 
     void write(final LogEvent event) {
@@ -240,7 +288,7 @@ class IcebergManager {
 
         try (DataWriter<GenericRecord> writer = Parquet.writeData(outputFile)
                 .schema(LOG_SCHEMA)
-                .withSpec(table.spec())
+                .withSpec(PartitionSpec.unpartitioned())
                 .createWriterFunc(GenericParquetWriter::create)
                 .overwrite()
                 .build()) {
@@ -249,7 +297,7 @@ class IcebergManager {
             }
         }
 
-        return org.apache.iceberg.DataFiles.builder(table.spec())
+        return org.apache.iceberg.DataFiles.builder(PartitionSpec.unpartitioned())
                 .withPath(filename)
                 .withFileSizeInBytes(outputFile.toInputFile().getLength())
                 .withRecordCount(events.size())

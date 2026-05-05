@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.iceberg;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -26,24 +28,39 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  * Log4j appender that writes log events as rows in an Apache Iceberg table
  * backed by Parquet data files.
  *
+ * <p>The table is partitioned by {@code event_date} (day granularity) for efficient
+ * time-range queries and data lifecycle management.</p>
+ *
+ * <p>The {@code catalogImpl} attribute accepts either a short type name
+ * ({@code "hadoop"}, {@code "hive"}, {@code "rest"}) or a fully qualified class name
+ * (e.g. {@code "org.apache.iceberg.rest.RESTCatalog"}).</p>
+ *
+ * <p>Additional catalog properties (e.g. S3 credentials, REST auth headers) can be
+ * passed via nested {@code <Property>} elements under a {@code <CatalogProperties>}
+ * wrapper.</p>
+ *
  * <p>Configuration example:</p>
  * <pre>
  * &lt;Iceberg name="IcebergAppender"
  *          catalogName="my_catalog"
- *          catalogImpl="org.apache.iceberg.rest.RESTCatalog"
+ *          catalogImpl="rest"
  *          catalogUri="http://localhost:8181"
  *          catalogWarehouse="s3://my-bucket/warehouse"
  *          tableNamespace="logs"
  *          tableName="app_logs"
  *          batchSize="1000"
  *          flushIntervalSeconds="30"&gt;
- *   &lt;PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"/&gt;
+ *   &lt;CatalogProperties&gt;
+ *     &lt;Property name="s3.access-key-id"&gt;AKIA...&lt;/Property&gt;
+ *     &lt;Property name="s3.secret-access-key"&gt;secret&lt;/Property&gt;
+ *   &lt;/CatalogProperties&gt;
  * &lt;/Iceberg&gt;
  * </pre>
  */
@@ -94,7 +111,7 @@ public class IcebergAppender extends AbstractAppender {
         private String catalogName = "log4j";
 
         @PluginBuilderAttribute
-        @Required(message = "No catalog implementation class provided")
+        @Required(message = "No catalog implementation provided (use 'hadoop', 'hive', 'rest', or a fully qualified class name)")
         private String catalogImpl;
 
         @PluginBuilderAttribute
@@ -115,6 +132,9 @@ public class IcebergAppender extends AbstractAppender {
 
         @PluginBuilderAttribute
         private int flushIntervalSeconds = 30;
+
+        @PluginElement("CatalogProperties")
+        private Property[] catalogProperties;
 
         public B setCatalogName(final String catalogName) {
             this.catalogName = catalogName;
@@ -156,8 +176,19 @@ public class IcebergAppender extends AbstractAppender {
             return asBuilder();
         }
 
+        public B setCatalogProperties(final Property[] catalogProperties) {
+            this.catalogProperties = catalogProperties;
+            return asBuilder();
+        }
+
         @Override
         public IcebergAppender build() {
+            final Map<String, String> extraProperties = new HashMap<>();
+            if (catalogProperties != null) {
+                for (final Property prop : catalogProperties) {
+                    extraProperties.put(prop.getName(), prop.getValue());
+                }
+            }
             final IcebergManager manager = new IcebergManager(
                     getName(),
                     catalogName,
@@ -167,7 +198,8 @@ public class IcebergAppender extends AbstractAppender {
                     tableNamespace,
                     tableName,
                     batchSize,
-                    flushIntervalSeconds);
+                    flushIntervalSeconds,
+                    extraProperties);
             return new IcebergAppender(getName(), getFilter(), isIgnoreExceptions(), null, manager);
         }
     }

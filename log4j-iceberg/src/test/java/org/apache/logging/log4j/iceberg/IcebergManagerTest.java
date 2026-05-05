@@ -515,4 +515,89 @@ class IcebergManagerTest {
         Thread.interrupted();
         manager.table = original;
     }
+
+    @Test
+    void newTableIsPartitionedByEventDate() {
+        manager = createManager("partitioned_table", 100);
+        manager.startup();
+
+        assertThat(manager.table.spec().isPartitioned()).isTrue();
+        assertThat(manager.table.spec().fields()).hasSize(1);
+        assertThat(manager.table.spec().fields().get(0).name()).isEqualTo("event_date_day");
+    }
+
+    @Test
+    void validateSchemaPassesWithValidTable() {
+        manager = createManager("valid_schema", 100);
+        manager.startup();
+
+        // Should not throw — table was just created with LOG_SCHEMA
+        manager.validateSchema(manager.table.schema());
+    }
+
+    @Test
+    void validateSchemaFailsWithMissingColumns() {
+        manager = createManager("missing_cols", 100);
+        manager.startup();
+
+        final org.apache.iceberg.Schema incompleteSchema = new org.apache.iceberg.Schema(
+                org.apache.iceberg.types.Types.NestedField.required(1, "timestamp",
+                        org.apache.iceberg.types.Types.TimestampType.withZone()),
+                org.apache.iceberg.types.Types.NestedField.required(2, "level",
+                        org.apache.iceberg.types.Types.StringType.get()));
+
+        assertThatThrownBy(() -> manager.validateSchema(incompleteSchema))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("missing required columns");
+    }
+
+    @Test
+    void existingTableWithValidSchemaLoadsSuccessfully() {
+        // Create table first
+        manager = createManager("existing_valid", 100);
+        manager.startup();
+        manager.stop(5, TimeUnit.SECONDS);
+
+        // Re-open — should load existing table and pass validation
+        manager = createManager("existing_valid", 100);
+        manager.startup();
+        assertThat(manager.table).isNotNull();
+    }
+
+    @Test
+    void extraCatalogPropertiesArePassedThrough() {
+        final java.util.Map<String, String> extraProps = new java.util.HashMap<>();
+        extraProps.put("custom.property", "custom-value");
+
+        manager = new IcebergManager(
+                "test",
+                "test_catalog",
+                "hadoop",
+                null,
+                warehouseDir.toAbsolutePath().toString(),
+                "test_ns",
+                "extra_props_table",
+                100,
+                3600,
+                extraProps);
+        manager.startup();
+        assertThat(manager.table).isNotNull();
+    }
+
+    @Test
+    void nullExtraCatalogPropertiesHandledGracefully() {
+        manager = new IcebergManager(
+                "test",
+                "test_catalog",
+                "hadoop",
+                null,
+                warehouseDir.toAbsolutePath().toString(),
+                "test_ns",
+                "null_extra_props",
+                100,
+                3600,
+                null);
+        manager.startup();
+        assertThat(manager.table).isNotNull();
+    }
 }
