@@ -161,11 +161,11 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param name the property name
      * @param value the property value
      * @return this builder (for chaining)
-     * @throws NullPointerException if the given {@code builder} is {@code null}
+     * @throws NullPointerException if either {@code name} or {@code value} is {@code null}
      * @deprecated use {@link #add(PropertyComponentBuilder)}
      */
     @Deprecated
-    ConfigurationBuilder<T> addProperty(@Nullable String name, @Nullable String value);
+    ConfigurationBuilder<T> addProperty(String name, String value);
 
     /**
      * Returns a {@link ScriptComponentBuilder} for creating a {@link Script} component.
@@ -538,7 +538,9 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Sets the configuration's list of packages to search for Log4j plugins.
      * @param packages a comma separated list of packages
      * @return this builder (for chaining)
+     * @deprecated use package metadata and plugin descriptors instead of runtime package scanning
      */
+    @Deprecated
     ConfigurationBuilder<T> setPackages(@Nullable String packages);
 
     /**

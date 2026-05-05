@@ -75,7 +75,9 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
      */
-    T setAttribute(String key, @Nullable Level level);
+    default T setAttribute(String key, @Nullable Level level) {
+        return setAttribute(key, (level != null) ? level.toString() : null);
+    }
 
     /**
      * Sets an enumeration attribute.

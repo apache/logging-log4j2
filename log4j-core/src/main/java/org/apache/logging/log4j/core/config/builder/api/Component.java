@@ -22,14 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Container for building Configurations. This class is not normally directly manipulated by users
- * of the Assembler API.
+ * Container for building configurations. This class is not normally manipulated directly by users
+ * of the builder API.
  * @since 2.4
  */
-@ProviderType
 public class Component {
 
     private final Map<String, String> attributes = new LinkedHashMap<>();
@@ -67,7 +65,8 @@ public class Component {
     /**
      * Puts the given key/value pair to the attribute map.
      * <p>
-     *   If the new value is {@code null}, than any existing entry with the given {@code key} is ejected from the map.
+     *   If the new value is {@code null}, then any existing entry with the given {@code key}
+     *   is removed from the map.
      * </p>
      * @param key the key
      * @param newValue the new value
@@ -101,7 +100,8 @@ public class Component {
     /**
      * Puts the given key/value pair to the attribute map.
      * <p>
-     *   If the new value is {@code null}, than any existing entry with the given {@code key} is ejected from the map.
+     *   If the new value is {@code null}, then any existing entry with the given {@code key}
+     *   is removed from the map.
      * </p>
      * @param key the key
      * @param newValue the new value

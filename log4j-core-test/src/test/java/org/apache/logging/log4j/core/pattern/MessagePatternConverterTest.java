@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
@@ -81,9 +80,9 @@ class MessagePatternConverterTest {
 
     @Test
     void testDefaultDisabledLookup() {
-        final ConfigurationBuilder<?> configurationBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        configurationBuilder.add(configurationBuilder.newProperty("foo", "bar"));
-        final Configuration config = configurationBuilder.build(true);
+        final Configuration config = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .add(ConfigurationBuilderFactory.newConfigurationBuilder().newProperty("foo", "bar"))
+                .build(true);
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
         final Message msg = new ParameterizedMessage("${foo}");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -98,9 +97,9 @@ class MessagePatternConverterTest {
 
     @Test
     void testDisabledLookup() {
-        final ConfigurationBuilder<?> configurationBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        configurationBuilder.add(configurationBuilder.newProperty("foo", "bar"));
-        final Configuration config = configurationBuilder.build(true);
+        final Configuration config = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .add(ConfigurationBuilderFactory.newConfigurationBuilder().newProperty("foo", "bar"))
+                .build(true);
         final MessagePatternConverter converter =
                 MessagePatternConverter.newInstance(config, new String[] {"nolookups"});
         final Message msg = new ParameterizedMessage("${foo}");
@@ -116,9 +115,9 @@ class MessagePatternConverterTest {
 
     @Test
     void testLookup() {
-        final ConfigurationBuilder<?> configurationBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        configurationBuilder.add(configurationBuilder.newProperty("foo", "bar"));
-        final Configuration config = configurationBuilder.build(true);
+        final Configuration config = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .add(ConfigurationBuilderFactory.newConfigurationBuilder().newProperty("foo", "bar"))
+                .build(true);
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, new String[] {"lookups"});
         final Message msg = new ParameterizedMessage("${foo}");
         final LogEvent event = Log4jLogEvent.newBuilder() //

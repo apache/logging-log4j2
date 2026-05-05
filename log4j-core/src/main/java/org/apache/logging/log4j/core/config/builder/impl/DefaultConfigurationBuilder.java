@@ -254,8 +254,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      */
     @Override
     @Deprecated
-    public ConfigurationBuilder<T> addProperty(@Nullable String name, @Nullable String value) {
-        return add(newProperty(name, value));
+    public ConfigurationBuilder<T> addProperty(final String name, final String value) {
+        return add(newProperty(
+                Objects.requireNonNull(name, "The 'name' argument must not be null."),
+                Objects.requireNonNull(value, "The 'value' argument must not be null.")));
     }
 
     /**
@@ -732,6 +734,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     /** {@inheritDoc} */
     @Override
+    @Deprecated
     public ConfigurationBuilder<T> setPackages(final @Nullable String packages) {
         this.packages = packages;
         return this;

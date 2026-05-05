@@ -49,13 +49,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
     private final StatusConfiguration statusConfig;
     private String contentType = DEFAULT_CONTENT_TYPE;
 
-    protected @Nullable Component rootComponent;
-    private @Nullable Component loggersComponent = null;
-    private @Nullable Component appendersComponent = null;
-    private @Nullable Component filtersComponent = null;
-    private @Nullable Component propertiesComponent = null;
-    private @Nullable Component customLevelsComponent = null;
-    private @Nullable Component scriptsComponent;
+    protected Component rootComponent;
 
     /**
      * Constructs a new built-configuration instance.
@@ -78,75 +72,25 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
         statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
 
-        for (final Component component : rootComponent.getComponents()) {
-            switch (component.getPluginType()) {
-                case "Scripts": {
-                    scriptsComponent = component;
-                    break;
-                }
-                case "Loggers": {
-                    loggersComponent = component;
-                    break;
-                }
-                case "Appenders": {
-                    appendersComponent = component;
-                    break;
-                }
-                case "Filters": {
-                    filtersComponent = component;
-                    break;
-                }
-                case "Properties": {
-                    propertiesComponent = component;
-                    break;
-                }
-                case "CustomLevels": {
-                    customLevelsComponent = component;
-                    break;
-                }
-                default: {
-                    // NO-OP
-                    break;
-                }
-            }
-        }
-
         this.rootComponent = rootComponent;
     }
 
     /** {@inheritDoc} */
     @Override
     public void setup() {
-
         final List<Node> children = rootNode.getChildren();
 
-        if (propertiesComponent != null && !propertiesComponent.getComponents().isEmpty()) {
-            children.add(convertToNode(rootNode, propertiesComponent));
-        }
+        for (final Component component : rootComponent.getComponents()) {
+            if (component.getComponents().isEmpty()) {
+                continue;
+            }
 
-        if (scriptsComponent != null && !scriptsComponent.getComponents().isEmpty()) {
-            children.add(convertToNode(rootNode, scriptsComponent));
-        }
-
-        if (customLevelsComponent != null
-                && !customLevelsComponent.getComponents().isEmpty()) {
-            children.add(convertToNode(rootNode, customLevelsComponent));
-        }
-
-        if (loggersComponent != null && !loggersComponent.getComponents().isEmpty()) {
-            children.add(convertToNode(rootNode, loggersComponent));
-        }
-
-        if (appendersComponent != null && !appendersComponent.getComponents().isEmpty()) {
-            children.add(convertToNode(rootNode, appendersComponent));
-        }
-
-        if (filtersComponent != null && !filtersComponent.getComponents().isEmpty()) {
-            if (filtersComponent.getComponents().size() == 1) {
-                children.add(
-                        convertToNode(rootNode, filtersComponent.getComponents().get(0)));
+            // Special handling for Filters: unwrap if single child
+            if ("Filters".equals(component.getPluginType())
+                    && component.getComponents().size() == 1) {
+                children.add(convertToNode(rootNode, component.getComponents().get(0)));
             } else {
-                children.add(convertToNode(rootNode, filtersComponent));
+                children.add(convertToNode(rootNode, component));
             }
         }
 

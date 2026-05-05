@@ -81,15 +81,15 @@ class RollingFileAppenderUpdateDataTest {
     @Test
     void testClosingLoggerContext() {
         // initial config with indexed rollover
-        try (final LoggerContext tLoggerContext1 =
+        try (final LoggerContext LoggerContext1 =
                 Configurator.initialize(buildConfigA().build())) {
-            validateAppender(tLoggerContext1, "target/rolling-update-date/foo.log.%i");
+            validateAppender(LoggerContext1, "target/rolling-update-date/foo.log.%i");
         }
 
         // rebuild config with date based rollover
-        try (final LoggerContext tLoggerContext2 =
+        try (final LoggerContext LoggerContext2 =
                 Configurator.initialize(buildConfigB().build())) {
-            validateAppender(tLoggerContext2, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+            validateAppender(LoggerContext2, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
         }
     }
 

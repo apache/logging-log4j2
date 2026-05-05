@@ -70,7 +70,6 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     public DefaultComponentBuilder(final CB builder, final String pluginType, final @Nullable String name) {
         this(builder, pluginType, name, null);
     }
-
     /**
      * Constructs a new instance with the given configuration builder, plugin-type, name and value.
      * @param builder the configuration builder
@@ -160,10 +159,8 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
      * </p>
      */
     protected void clear() {
-        synchronized (this) {
-            attributes.clear();
-            components.clear();
-        }
+        attributes.clear();
+        components.clear();
     }
 
     /**
@@ -194,7 +191,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
      * Gets the list of child components.
      * @return an <i>immutable</i> list of the child components
      */
-    protected List<Component> getComponents() {
+    protected List<? extends Component> getComponents() {
         return Collections.unmodifiableList(this.components);
     }
 

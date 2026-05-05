@@ -49,26 +49,16 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
     T add(AppenderRefComponentBuilder builder);
 
     /**
-     * Sets the "{@code additivity}" attribute on the logger component.
-     *
-     * @param additivity {@code true} if additive; otherwise, {@code false}
-     * @return this builder (for chaining)
-     */
-    default T setAdditivityAttribute(boolean additivity) {
-        return setAttribute("additivity", additivity);
-    }
-
-    /**
-     * Sets the "{@code additivity}" attribute on the logger component.
+     * Sets the "{@code includeLocation}" attribute on the loggable component.
      * <p>
-     *   If the given {@code additivity} is {@code null}, the attribute will be removed from the component.
+     *   If the given {@code includeLocation} is {@code null}, the attribute will be removed from the component.
      * </p>
      *
-     * @param additivity "{@code true}" if additive; otherwise, {@code false}
+     * @param includeLocation {@code true} to include location information; otherwise, {@code false}
      * @return this builder (for chaining)
      */
-    default T setAdditivityAttribute(String additivity) {
-        return setAttribute("additivity", additivity);
+    default T setIncludeLocation(boolean includeLocation) {
+        return setAttribute("includeLocation", includeLocation);
     }
 
     /**
@@ -81,7 +71,20 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      * @return this builder (for chaining)
      */
     default T setIncludeLocationAttribute(boolean includeLocation) {
-        return setAttribute("includeLocation", includeLocation);
+        return setIncludeLocation(includeLocation);
+    }
+
+    /**
+     * Sets the "{@code level}" attribute on the loggable component.
+     * <p>
+     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param level the level
+     * @return this builder (for chaining)
+     */
+    default T setLevel(@Nullable String level) {
+        return setAttribute("level", level);
     }
 
     /**
@@ -94,6 +97,19 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      * @return this builder (for chaining)
      */
     default T setLevelAttribute(@Nullable String level) {
+        return setLevel(level);
+    }
+
+    /**
+     * Sets the "{@code level}" attribute on the loggable component.
+     * <p>
+     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param level the level
+     * @return this builder (for chaining)
+     */
+    default T setLevel(@Nullable Level level) {
         return setAttribute("level", level);
     }
 
@@ -107,6 +123,6 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      * @return this builder (for chaining)
      */
     default T setLevelAttribute(@Nullable Level level) {
-        return setAttribute("level", level);
+        return setLevel(level);
     }
 }

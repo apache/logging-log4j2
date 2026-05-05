@@ -458,13 +458,10 @@ class Configurator1Test {
                 .setAdditivityAttribute(false));
 
         builder.add(builder.newRootLogger(Level.DEBUG).add(builder.newAppenderRef("rolling")));
-        final Configuration config = builder.build();
-        config.initialize();
+        ctx = Configurator.initialize(builder.build());
+        final Configuration config = ctx.getConfiguration();
         assertNotNull(config.getAppender("rolling"), "No rolling file appender");
         assertEquals("RollingBuilder", config.getName(), "Unexpected Configuration");
-        // Initialize the new configuration
-        final LoggerContext tCtx = Configurator.initialize(config);
-        Configurator.shutdown(tCtx);
     }
 
     @Test
