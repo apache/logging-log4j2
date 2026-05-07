@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/3176"/>
+    <description format="asciidoc">
+      Ensure scripts in the global `Scripts` element have explicit names by throwing a `ConfigurationException` for unnamed ones.
+    </description>
+</entry>
