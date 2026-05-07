@@ -354,6 +354,115 @@
 <article class="doc">
 <h1 class="page">Release notes</h1>
 <div class="sect1">
+<h2 id="release-notes-2-26-0"><a class="anchor" href="#release-notes-2-26-0"></a>2.26.0</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2026-05-02</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This minor release delivers all the fixes in the <code>[2.25.0, 2.25.4]</code> version range, plus some new fixes, and several other improvements and features.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-added"><a class="anchor" href="#release-notes-2-26-0-added"></a>Added</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Add a new <code>ConfigurationFactory::getConfiguration</code> method accepting multiple `URI`s (<a href="https://github.com/apache/logging-log4j2/issues/3775">3775</a>, <a href="https://github.com/apache/logging-log4j2/pull/3921">3921</a>)</p>
+</li>
+<li>
+<p>Add and export <code>org.apache.logging.log4j.core.pattern.NamedInstantPattern</code> enabling users to programmatically access named date &amp; time patterns supported by Pattern Layout (<a href="https://github.com/apache/logging-log4j2/pull/3789">3789</a>)</p>
+</li>
+<li>
+<p>Add <code>log4j.plugin.processor.minAllowedMessageKind</code> annotation processor option to <code>PluginProcessor</code> to filter diagnostic messages by severity. This allows builds that treat compiler notes as errors (e.g. Maven with <code>-Werror</code>) to suppress informational notes emitted during normal plugin processing. (<a href="https://github.com/apache/logging-log4j2/discussions/3380">3380</a>, <a href="https://github.com/apache/logging-log4j2/pull/4063">4063</a>)</p>
+</li>
+<li>
+<p>Add missing setters to <code>Rfc5424LayoutBuilder</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-changed"><a class="anchor" href="#release-notes-2-26-0-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensure scripts in the global <code>Scripts</code> element have explicit names by throwing a <code>ConfigurationException</code> for unnamed ones. (<a href="https://github.com/apache/logging-log4j2/issues/3176">3176</a>)</p>
+</li>
+<li>
+<p>Simplify file manager registry factory methods (<a href="https://github.com/apache/logging-log4j2/pull/3968">3968</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-deprecated"><a class="anchor" href="#release-notes-2-26-0-deprecated"></a>Deprecated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Deprecated withers in builder classes in favor of setters. This change improves API consistency with Log4j Core 3 and helps users adapt to the upcoming changes. (<a href="https://github.com/apache/logging-log4j2/issues/3750">3750</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-fixed"><a class="anchor" href="#release-notes-2-26-0-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix script resolution failure when the <code>Scripts</code> element is placed after a <code>ScriptRef</code> in the configuration. (<a href="https://github.com/apache/logging-log4j2/issues/3336">3336</a>)</p>
+</li>
+<li>
+<p>Fix <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is modified concurrently (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
+</li>
+<li>
+<p>Fix <code>SLF4JLogger.atFatal()</code> returning <code>atLevel(Level.TRACE)</code> instead of <code>atLevel(Level.FATAL)</code>. This was causing <code>FATAL</code>-level log events to be silently discarded when using the fluent API through the <code>log4j-to-slf4j</code> bridge. (<a href="https://github.com/apache/logging-log4j2/issues/4068">4068</a>, <a href="https://github.com/apache/logging-log4j2/pull/4089">4089</a>)</p>
+</li>
+<li>
+<p>Fix Javadoc references across module boundaries (i.e., cross-references) (<a href="https://github.com/apache/logging-log4j2/issues/4099">4099</a>, <a href="https://github.com/apache/logging-log4j2/pull/4100">4100</a>)</p>
+</li>
+<li>
+<p>Fix header write in <code>RollingRandomAccessFileManager</code> that was being incorrectly skipped if <code>append=true</code> and the file didn&#8217;t exist before</p>
+</li>
+<li>
+<p>Fix a properties file configuration regression caused by not referenced loggers, appenders, and filters (<a href="https://github.com/apache/logging-log4j2/issues/4036">4036</a>, <a href="https://github.com/apache/logging-log4j2/pull/4069">4069</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-removed"><a class="anchor" href="#release-notes-2-26-0-removed"></a>Removed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove the <code>jvmrunargs</code> lookup. (<a href="https://github.com/apache/logging-log4j2/pull/3874">3874</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-0-updated"><a class="anchor" href="#release-notes-2-26-0-updated"></a>Updated</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Update <code>org.junit:junit-bom</code> to version <code>5.13.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/3850">3850</a>)</p>
+</li>
+<li>
+<p>Update <code>org.mongodb:bson</code> to version <code>5.6.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/3961">3961</a>)</p>
+</li>
+<li>
+<p>Update <code>org.xerial.snappy:snappy-java</code> to version <code>1.1.10.8</code> (<a href="https://github.com/apache/logging-log4j2/pull/3841">3841</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-25-4"><a class="anchor" href="#release-notes-2-25-4"></a>2.25.4</h2>
 <div class="sectionbody">
 <div class="dlist">
@@ -521,9 +630,6 @@ This is used by <a href="manual/appenders/network.html#SocketAppender" class="xr
 </li>
 <li>
 <p>Fix parsing and merging of literals in <code>InstantPatternDynamicFormatter</code> (<a href="https://github.com/apache/logging-log4j2/issues/3930">3930</a>, <a href="https://github.com/apache/logging-log4j2/pull/3932">3932</a>)</p>
-</li>
-<li>
-<p>Fixes <code>ArrayIndexOutOfBoundsException</code> thrown by <code>ThrowableStackTraceRenderer</code> when the stack trace is mutated concurrently. (<a href="https://github.com/apache/logging-log4j2/issues/3940">3940</a>, <a href="https://github.com/apache/logging-log4j2/pull/3955">3955</a>)</p>
 </li>
 </ul>
 </div>
@@ -988,7 +1094,7 @@ For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref pag
 <dl>
 <dt class="hdlist1">Release date</dt>
 <dd>
-<p>2024-12-13</p>
+<p>2024-12-10</p>
 </dd>
 </dl>
 </div>
@@ -1020,7 +1126,7 @@ For details, refer to <a href="manual/pattern-layout.html#jansi" class="xref pag
 <dl>
 <dt class="hdlist1">Release date</dt>
 <dd>
-<p>2024-11-21</p>
+<p>2024-11-18</p>
 </dd>
 </dl>
 </div>

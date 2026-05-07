@@ -475,6 +475,13 @@ This is always the case if the location information is captured at build time us
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="log-event-content"><a class="anchor" href="#log-event-content"></a>Log event content</h3>
+<div class="paragraph">
+<p>While layouts are responsible for formatting a log event into a string or byte array, they do not typically modify the content of the event itself.
+You can use <a href="appenders/delegating.html#RewriteAppender" class="xref page">Rewrite Appender</a> to modify the log event content to suit your needs; to inject additional metadata, to mask sensitive information (such as PII) as a defensive-in-depth strategy, etc.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">

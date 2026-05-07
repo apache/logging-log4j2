@@ -1222,10 +1222,8 @@ Rewrite policies allow to apply arbitrary modifications to log events.</p>
 <div class="paragraph">
 <p>Log4j Core provides three rewrite policies out-of-the-box:</p>
 </div>
-<div id="MapRewritePolicy" class="dlist">
-<dl>
-<dt class="hdlist1"><code>MapRewritePolicy</code></dt>
-<dd>
+<div class="sect3">
+<h4 id="MapRewritePolicy"><a class="anchor" href="#MapRewritePolicy"></a><code>MapRewritePolicy</code></h4>
 <div class="paragraph">
 <p>The <code>MapRewritePolicy</code> only modifies events that contain a
 <a href="../messages.html#MapMessage" class="xref page"><code>MapMessage</code></a>.
@@ -1294,13 +1292,9 @@ It allows adding or updating the keys of the <code>MapMessage</code>.</p>
 <div class="paragraph">
 <p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>MapRewritePolicy</code></a></p>
 </div>
-</dd>
-</dl>
 </div>
-<div id="PropertiesRewritePolicy" class="dlist">
-<dl>
-<dt class="hdlist1"><code>PropertiesRewritePolicy</code></dt>
-<dd>
+<div class="sect3">
+<h4 id="PropertiesRewritePolicy"><a class="anchor" href="#PropertiesRewritePolicy"></a><code>PropertiesRewritePolicy</code></h4>
 <div class="paragraph">
 <p>The <code>PropertiesRewritePolicy</code> will add properties to the context data of the log event.</p>
 </div>
@@ -1348,13 +1342,9 @@ in the
 <div class="paragraph">
 <p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>PropertiesRewritePolicy</code></a></p>
 </div>
-</dd>
-</dl>
 </div>
-<div id="LoggerNameLevelRewritePolicy" class="dlist">
-<dl>
-<dt class="hdlist1">LoggerNameLevelRewritePolicy</dt>
-<dd>
+<div class="sect3">
+<h4 id="LoggerNameLevelRewritePolicy"><a class="anchor" href="#LoggerNameLevelRewritePolicy"></a>LoggerNameLevelRewritePolicy</h4>
 <div class="paragraph">
 <p>You can use this policy to change the log level of loggers from third-party libraries.
 The <code>LoggerNameLevelRewritePolicy</code> will rewrite the level of log event for a given logger name prefix.</p>
@@ -1425,8 +1415,30 @@ See <a href="../filters.html" class="xref page">Filters</a> for more details on 
 <div class="paragraph">
 <p><a href="../../plugin-reference.html#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy" class="xref page">&#x1F4D6; Plugin reference for <code>LoggerNameLevelRewritePolicy</code></a></p>
 </div>
-</dd>
-</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ThirdPartyRewritePolicies"><a class="anchor" href="#ThirdPartyRewritePolicies"></a>Third Party Rewrite Policies</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These <code>Rewrite Policies</code> are provided by <strong>third-party</strong> vendors and are not maintained by the <a href="https://logging.apache.org/">Apache Logging Services</a> project.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="MessageRewritePolicy"><a class="anchor" href="#MessageRewritePolicy"></a><code>MessageRewritePolicy</code></h4>
+<div class="paragraph">
+<p>The <code>MessageRewritePolicy</code> provided by <a href="https://github.com/Neel1210/log4j-utils">log4j-utils</a> allows you to manipulate the text of a log message before it is processed by a downstream appender.
+This is particularly useful for defining multiple regex-based replacement rules to mask sensitive information (PII) within the log message as a defensive-in-depth strategy.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
