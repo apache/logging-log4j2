@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
@@ -29,13 +27,15 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFormatMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A filter that matches the given regular expression pattern against messages.
@@ -116,6 +116,11 @@ public final class RegexFilter extends AbstractFilter {
         return sb.toString();
     }
 
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
     /**
      * Creates a Filter that matches a regular expression.
      *
@@ -130,48 +135,100 @@ public final class RegexFilter extends AbstractFilter {
      * @param mismatch
      *        The action to perform when a mismatch occurs.
      * @return The RegexFilter.
-     * @throws IllegalAccessException  When there is no access to the definition of the specified member.
-     * @throws IllegalArgumentException When passed an illegal or inappropriate argument.
      */
-    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
-    @PluginFactory
     public static RegexFilter createFilter(
             // @formatter:off
             @PluginAttribute("regex") final String regex,
-            @PluginElement("PatternFlags") final String[] patternFlags,
+            @PluginAttribute("patternFlags") final String[] patternFlags,
             @PluginAttribute("useRawMsg") final Boolean useRawMsg,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch)
-            // @formatter:on
-            throws IllegalArgumentException, IllegalAccessException {
-        if (regex == null) {
-            LOGGER.error("A regular expression must be provided for RegexFilter");
-            return null;
-        }
-        return new RegexFilter(
-                Boolean.TRUE.equals(useRawMsg), Pattern.compile(regex, toPatternFlags(patternFlags)), match, mismatch);
+                // @formatter:on
+            {
+        final String flags = patternFlags == null ? null : String.join(",", patternFlags);
+        return RegexFilter.newBuilder()
+                .setRegex(regex)
+                .setPatternFlags(flags)
+                .setUseRawMsg(Boolean.TRUE.equals(useRawMsg))
+                .setOnMatch(match)
+                .setOnMismatch(mismatch)
+                .build();
     }
 
-    private static int toPatternFlags(final String[] patternFlags)
-            throws IllegalArgumentException, IllegalAccessException {
-        if (patternFlags == null || patternFlags.length == 0) {
+    private static int toPatternFlags(final String patternFlags) {
+        if (Strings.isBlank(patternFlags)) {
             return DEFAULT_PATTERN_FLAGS;
         }
-        final Field[] fields = Pattern.class.getDeclaredFields();
-        final Comparator<Field> comparator = (f1, f2) -> f1.getName().compareTo(f2.getName());
-        Arrays.sort(fields, comparator);
-        final String[] fieldNames = new String[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            fieldNames[i] = fields[i].getName();
-        }
         int flags = DEFAULT_PATTERN_FLAGS;
-        for (final String test : patternFlags) {
-            final int index = Arrays.binarySearch(fieldNames, test);
-            if (index >= 0) {
-                final Field field = fields[index];
-                flags |= field.getInt(Pattern.class);
-            }
+        for (final String flagName : Strings.splitList(patternFlags)) {
+            flags |= toPatternFlag(flagName);
         }
         return flags;
+    }
+
+    private static int toPatternFlag(final String flagName) {
+        if (Strings.isBlank(flagName)) {
+            return DEFAULT_PATTERN_FLAGS;
+        }
+        switch (flagName.trim().toUpperCase(Locale.ROOT)) {
+            case "UNIX_LINES":
+                return Pattern.UNIX_LINES;
+            case "CASE_INSENSITIVE":
+                return Pattern.CASE_INSENSITIVE;
+            case "COMMENTS":
+                return Pattern.COMMENTS;
+            case "MULTILINE":
+                return Pattern.MULTILINE;
+            case "LITERAL":
+                return Pattern.LITERAL;
+            case "DOTALL":
+                return Pattern.DOTALL;
+            case "UNICODE_CASE":
+                return Pattern.UNICODE_CASE;
+            case "CANON_EQ":
+                return Pattern.CANON_EQ;
+            case "UNICODE_CHARACTER_CLASS":
+                return Pattern.UNICODE_CHARACTER_CLASS;
+            default:
+                return DEFAULT_PATTERN_FLAGS;
+        }
+    }
+
+    public static class Builder extends AbstractFilterBuilder<Builder>
+            implements org.apache.logging.log4j.core.util.Builder<RegexFilter> {
+
+        @PluginBuilderAttribute
+        @Required(message = "A regular expression must be provided for RegexFilter")
+        private String regex;
+
+        @PluginBuilderAttribute
+        private String patternFlags;
+
+        @PluginBuilderAttribute("useRawMsg")
+        private boolean useRawMsg;
+
+        public Builder setRegex(final String regex) {
+            this.regex = regex;
+            return this;
+        }
+
+        public Builder setPatternFlags(final String patternFlags) {
+            this.patternFlags = patternFlags;
+            return this;
+        }
+
+        public Builder setUseRawMsg(final boolean useRawMsg) {
+            this.useRawMsg = useRawMsg;
+            return this;
+        }
+
+        @Override
+        public RegexFilter build() {
+            if (!isValid()) {
+                return null;
+            }
+            return new RegexFilter(
+                    useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), getOnMatch(), getOnMismatch());
+        }
     }
 }

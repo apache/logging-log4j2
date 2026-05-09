@@ -767,6 +767,12 @@ Besides the <<common-configuration-attributes,common configuration attributes>>,
 | `boolean`
 | `false`
 | If `true`, for xref:manual/messages.adoc#ParameterizedMessage[`ParameterizedMessage`], xref:manual/messages.adoc#StringFormattedMessage[`StringFormattedMessage`], and xref:manual/messages.adoc#MessageFormatMessage[`MessageFormatMessage`], the message format pattern; for xref:manual/messages.adoc#StructuredDataMessage[`StructuredDataMessage`], the message field will be used as the match target.
+
+| patternFlags
+| `String`
+|
+| Comma-separated list of https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/regex/Pattern.html[`Pattern`] flag names.
+Supported values are `UNIX_LINES`, `CASE_INSENSITIVE`, `COMMENTS`, `MULTILINE`, `LITERAL`, `DOTALL`, `UNICODE_CASE`, `CANON_EQ`, and `UNICODE_CHARACTER_CLASS`.
 |===
 
 [WARNING]
