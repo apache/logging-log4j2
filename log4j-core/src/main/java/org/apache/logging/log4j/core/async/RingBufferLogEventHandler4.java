@@ -64,7 +64,9 @@ class RingBufferLogEventHandler4 implements EventHandler<RingBufferLogEvent> {
 
     private void notifyCallback(final long sequence) {
         if (++counter > NOTIFY_PROGRESS_THRESHOLD) {
-            sequenceCallback.set(sequence);
+            if (sequenceCallback != null) {
+                sequenceCallback.set(sequence);
+            }
             counter = 0;
         }
     }
