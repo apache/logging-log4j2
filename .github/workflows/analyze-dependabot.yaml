@@ -15,33 +15,23 @@
 # limitations under the License.
 #
 
-name: codeql-analysis
+name: "Dependabot Analyze PR"
 
 on:
-  push:
-    branches: [ "2.x", "main" ]
   pull_request:
-    branches: [ "2.x", "main" ]
-  schedule:
-    - cron: '32 12 * * 5'
 
-# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
-permissions: read-all
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
 
 jobs:
 
-  analyze:
-    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@gha/v0
-    with:
-      java-version: |
-        8
-        17
-    # Permissions required to publish Security Alerts
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  analyze-dependabot:
+    # `github.actor` prevents recursive calls when `github-actions[bot]` pushes to the PR;
+    # `github.event.pull_request.user.login` skips PRs not opened by Dependabot.
+    if: ${{
+      github.repository == 'apache/logging-log4j2'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+      }}
+    uses: apache/logging-parent/.github/workflows/analyze-dependabot-reusable.yaml@gha/v0
