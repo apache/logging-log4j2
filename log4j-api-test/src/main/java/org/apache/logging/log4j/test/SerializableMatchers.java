@@ -20,6 +20,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.any;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
@@ -32,10 +34,19 @@ import org.hamcrest.Matcher;
 public final class SerializableMatchers {
 
     public static <T extends Serializable> Matcher<T> serializesRoundTrip(final Matcher<T> matcher) {
+        return serializesRoundTrip(matcher, Collections.emptySet());
+    }
+
+    /**
+     * Same as {@link #serializesRoundTrip(Matcher)} but extends the default deserialization
+     * allow-list on Java 8 (see {@link SerialUtil#deserialize(byte[], Collection)}).
+     */
+    public static <T extends Serializable> Matcher<T> serializesRoundTrip(
+            final Matcher<T> matcher, final Collection<String> allowedExtraClasses) {
         return new FeatureMatcher<T, T>(matcher, "serializes round trip", "serializes round trip") {
             @Override
             protected T featureValueOf(final T actual) {
-                return SerialUtil.deserialize(SerialUtil.serialize(actual));
+                return SerialUtil.deserialize(SerialUtil.serialize(actual), allowedExtraClasses);
             }
         };
     }
@@ -50,6 +61,14 @@ public final class SerializableMatchers {
 
     public static Matcher<? super Serializable> serializesRoundTrip() {
         return serializesRoundTrip(any(Serializable.class));
+    }
+
+    /**
+     * Same as {@link #serializesRoundTrip()} but extends the default deserialization allow-list on
+     * Java 8 (see {@link SerialUtil#deserialize(byte[], Collection)}).
+     */
+    public static Matcher<? super Serializable> serializesRoundTrip(final Collection<String> allowedExtraClasses) {
+        return serializesRoundTrip(any(Serializable.class), allowedExtraClasses);
     }
 
     private SerializableMatchers() {}
