@@ -113,16 +113,16 @@ public final class SerializationTestHelper {
         }
     }
 
-    // FilteredObjectInputStream's default allow-list covers `org.apache.logging.log4j.` but not
-    // the `org.apache.log4j.` 1.2-compatibility namespace, so we have to enumerate the
-    // 1.2 classes that the tests in this module deserialize on Java 8.
-    private static final Collection<String> ALLOWED_LOG4J_1_2_CLASSES =
-            Arrays.asList("org.apache.log4j.Level", "org.apache.log4j.LevelTest$CustomLevel");
-
     private static ObjectInputStream newObjectInputStream(final InputStream in) throws IOException {
-        return Constants.JAVA_MAJOR_VERSION == 8
-                ? new FilteredObjectInputStream(in, ALLOWED_LOG4J_1_2_CLASSES)
-                : new ObjectInputStream(in);
+        if (Constants.JAVA_MAJOR_VERSION == 8) {
+            // FilteredObjectInputStream's default allow-list covers `org.apache.logging.log4j.` but
+            // not the `org.apache.log4j.` 1.2-compatibility namespace, so we have to enumerate the
+            // 1.2 classes that the tests in this module deserialize on Java 8.
+            final Collection<String> allowedLog4j12Classes =
+                    Arrays.asList("org.apache.log4j.Level", "org.apache.log4j.LevelTest$CustomLevel");
+            return new FilteredObjectInputStream(in, allowedLog4j12Classes);
+        }
+        return new ObjectInputStream(in);
     }
 
     /**
