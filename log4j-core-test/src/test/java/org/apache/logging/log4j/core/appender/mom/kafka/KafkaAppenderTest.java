@@ -39,6 +39,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
@@ -219,8 +220,8 @@ public class KafkaAppenderTest {
         final AtomicBoolean errorReported = new AtomicBoolean(false);
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
         final ErrorHandler originalHandler = ((KafkaAppender) appender).getHandler();
-        try {
-            ThreadContext.put("KafkaAppenderRetrySuccessTest", "true");
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.put("KafkaAppenderRetrySuccessTest", "true")) {
             ((KafkaAppender) appender).setHandler(new ErrorHandler() {
                 @Override
                 public void error(final String msg) {
@@ -242,7 +243,6 @@ public class KafkaAppenderTest {
             assertEquals(2, history.size());
             assertFalse("Error should not be reported when retry succeeds", errorReported.get());
         } finally {
-            ThreadContext.clearMap();
             ((KafkaAppender) appender).setHandler(originalHandler);
         }
     }
