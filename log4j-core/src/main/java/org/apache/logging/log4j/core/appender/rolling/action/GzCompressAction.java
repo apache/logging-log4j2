@@ -33,7 +33,6 @@ public final class GzCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8192;
 
-
     /**
      * Source file.
      */
