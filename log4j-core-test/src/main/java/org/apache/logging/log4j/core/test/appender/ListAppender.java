@@ -36,6 +36,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
+import org.awaitility.Awaitility;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
@@ -200,17 +201,14 @@ public class ListAppender extends AbstractAppender {
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public synchronized List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
             throws InterruptedException {
-        final long deadlineNanos = System.nanoTime() + timeUnit.toNanos(timeout);
-        while (messages.size() < minSize) {
-            final long remainingNanos = deadlineNanos - System.nanoTime();
-            if (remainingNanos <= 0) {
-                break;
+        Awaitility.waitAtMost(timeout, timeUnit).until(() -> {
+            synchronized (this) {
+                return messages.size() >= minSize;
             }
-            TimeUnit.NANOSECONDS.timedWait(this, remainingNanos);
-        }
-        return Collections.unmodifiableList(new ArrayList<>(messages));
+        });
+        return getMessages();
     }
 
     /** Returns an immutable snapshot of captured data */
