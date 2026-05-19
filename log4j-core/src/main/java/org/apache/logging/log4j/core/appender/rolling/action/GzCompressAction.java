@@ -33,9 +33,6 @@ public final class GzCompressAction extends AbstractAction {
 
     private static final int BUF_SIZE = 8192;
 
-    private static final int MIN_COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
-
-    private static final int MAX_COMPRESSION_LEVEL = Deflater.BEST_COMPRESSION;
 
     /**
      * Source file.
@@ -65,11 +62,14 @@ public final class GzCompressAction extends AbstractAction {
     private final int maxDelaySeconds;
 
     private static int checkCompressionLevel(final int compressionLevel) {
-        if (compressionLevel < MIN_COMPRESSION_LEVEL || compressionLevel > MAX_COMPRESSION_LEVEL) {
+        final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
+        final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
+
+        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
             throw new IllegalArgumentException("GZIP compression level must be in the range ["
-                    + MIN_COMPRESSION_LEVEL
+                    + minCompressionLevel
                     + ", "
-                    + MAX_COMPRESSION_LEVEL
+                    + maxCompressionLevel
                     + "], got: "
                     + compressionLevel);
         }
@@ -85,7 +85,7 @@ public final class GzCompressAction extends AbstractAction {
      *                     does not cause an exception to be thrown or affect return value.
      * @param compressionLevel
      *                     Gzip deflater compression level.
-     * @since 2.26.0
+     * @since 2.27.0
      * @param maxDelaySeconds
      *                     Maximum delay in seconds before compression.
      */

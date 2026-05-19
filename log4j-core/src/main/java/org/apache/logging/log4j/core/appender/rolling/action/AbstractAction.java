@@ -83,10 +83,10 @@ public abstract class AbstractAction implements Action {
     }
 
     /**
-     * Blocks the current thread for a random delay up to maxDelaySeconds.
+     * Blocks the current thread for a random delay up to {@code maxDelaySeconds}.
      *
-     * @since2.26.0
      * @param maxDelaySeconds maximum delay in seconds before returning.
+     * @since 2.27.0
      */
     static void blockThread(final int maxDelaySeconds) {
         if (maxDelaySeconds > 0) {

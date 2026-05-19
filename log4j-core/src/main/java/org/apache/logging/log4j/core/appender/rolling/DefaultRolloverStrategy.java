@@ -364,6 +364,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             return this;
         }
 
+        /**
+         * Defines maximum delay in seconds before compression.
+         *
+         * @param maxCompressionDelaySeconds maximum delay in seconds before compression.
+         * @return This builder for chaining convenience
+         * @since 2.27.0
+         */
         public Builder setMaxCompressionDelaySeconds(final int maxCompressionDelaySeconds) {
             this.maxCompressionDelaySeconds = maxCompressionDelaySeconds;
             return this;
@@ -504,6 +511,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param tempCompressedFilePatternString File pattern of the working file
      *                                     used during compression, if null no temporary file are used
      * @param maxCompressionDelaySeconds maximum delay in seconds before compression.
+     * @since 2.27.0
      */
     protected DefaultRolloverStrategy(
             final int minIndex,
@@ -555,6 +563,12 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         return tempCompressedFilePattern;
     }
 
+    /**
+     * Returns the maximum delay in seconds before compression.
+     *
+     * @return maximum delay in seconds before compression.
+     * @since 2.27.0
+     */
     public int getMaxCompressionDelaySeconds() {
         return maxCompressionDelaySeconds;
     }

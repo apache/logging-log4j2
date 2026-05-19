@@ -78,8 +78,8 @@ public final class ZipCompressAction extends AbstractAction {
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
      * @param level the compression level
-     * @since2.26.0
      * @param maxDelaySeconds maximum delay in seconds before compression.
+     * @since 2.27.0
      */
     public ZipCompressAction(
             final File source,
@@ -118,16 +118,7 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        if (maxDelaySeconds > 0) {
-            int delay = java.util.concurrent.ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
-            if (delay > 0) {
-                try {
-                    Thread.sleep(delay * 1000L);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
+        blockThread(maxDelaySeconds);
         return execute(source, destination, deleteSource, level);
     }
 
