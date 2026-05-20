@@ -32,9 +32,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 final class DisruptorUtil {
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final String LINKAGE_ERROR_MESSAGE =
-            "Log4j2 detected a linkage error while initializing LMAX Disruptor. "
-                    + "Please check your classpath and ensure Disruptor version is compatible.";
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
@@ -55,13 +52,17 @@ final class DisruptorUtil {
 
     static final int DISRUPTOR_MAJOR_VERSION = detectDisruptorMajorVersion();
 
+    // TODO: replace with LoaderUtil.isClassAvailable() when TCCL is removed
+    // See: https://github.com/apache/logging-log4j2/issues/3706
     private static int detectDisruptorMajorVersion() {
-        // Avoid using `LoaderUtil`, which might choose an incorrect class loader (e.g. TCCL in OSGi) – see #2768.
+        LOGGER.trace("Detecting LMAX Disruptor version from classpath.");
         try {
             Class.forName(
                     "com.lmax.disruptor.SequenceReportingEventHandler", false, DisruptorUtil.class.getClassLoader());
+            LOGGER.debug("LMAX Disruptor version {} detected.", 3);
             return 3;
-        } catch (final ClassNotFoundException | LinkageError ignored) {
+        } catch (final ClassNotFoundException e) {
+            LOGGER.debug("LMAX Disruptor version {} detected.", 4);
             return 4;
         }
     }
@@ -79,12 +80,7 @@ final class DisruptorUtil {
         LOGGER.debug(
                 "Using configured AsyncWaitStrategyFactory {}",
                 asyncWaitStrategyFactory.getClass().getName());
-        try {
-            return asyncWaitStrategyFactory.createWaitStrategy();
-        } catch (final LinkageError e) {
-            logDisruptorLinkageError("while creating the async wait strategy", e);
-            return new DefaultAsyncWaitStrategyFactory(propertyName).createWaitStrategy();
-        }
+        return asyncWaitStrategyFactory.createWaitStrategy();
     }
 
     static int calculateRingBufferSize(final String propertyName) {
@@ -112,9 +108,6 @@ final class DisruptorUtil {
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
             return new AsyncLoggerDefaultExceptionHandler();
-        } catch (final LinkageError e) {
-            logDisruptorLinkageError("while creating AsyncLogger exception handler", e);
-            return new AsyncLoggerDefaultExceptionHandler();
         }
     }
 
@@ -127,14 +120,7 @@ final class DisruptorUtil {
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
             return new AsyncLoggerConfigDefaultExceptionHandler();
-        } catch (final LinkageError e) {
-            logDisruptorLinkageError("while creating AsyncLoggerConfig exception handler", e);
-            return new AsyncLoggerConfigDefaultExceptionHandler();
         }
-    }
-
-    private static void logDisruptorLinkageError(final String phase, final LinkageError error) {
-        LOGGER.error("{} ({})", LINKAGE_ERROR_MESSAGE, phase, error);
     }
 
     /**
