@@ -121,7 +121,6 @@ public class ListAppender extends AbstractAppender {
         } else {
             write(layout.toByteArray(event));
         }
-        notifyAll();
         final CountDownLatch latch = countDownLatch;
         if (latch != null) {
             latch.countDown();
