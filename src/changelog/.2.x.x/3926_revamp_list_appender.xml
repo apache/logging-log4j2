@@ -7,10 +7,6 @@
        type="changed">
     <issue id="3926" link="https://github.com/apache/logging-log4j2/pull/3926"/>
     <description format="asciidoc">
-      Revamped `ListAppender` for thread-safety and clarity:
-      removed `Collections.synchronizedList` wrappers and replaced with `synchronized` on all public methods,
-      replaced `Awaitility` polling in `getMessages(int, long, TimeUnit)` with `Object#wait` / `notifyAll`,
-      improved class and `countDownLatch` Javadoc,
-      and added unit and concurrency tests.
+      Revamp `ListAppender` for thread-safety and clarity.
     </description>
 </entry>
