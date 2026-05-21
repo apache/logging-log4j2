@@ -42,7 +42,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.FileManager;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -56,7 +55,6 @@ import org.apache.logging.log4j.core.util.Log4jThreadFactory;
  */
 public class RollingFileManager extends FileManager {
 
-    private static RollingFileManagerFactory factory = new RollingFileManagerFactory();
     private static final int MAX_TRIES = 3;
     private static final int MIN_DURATION = 100;
     private static final FileTime EPOCH = FileTime.fromMillis(0);
@@ -296,33 +294,74 @@ public class RollingFileManager extends FileManager {
             final String fileOwner,
             final String fileGroup,
             final Configuration configuration) {
-
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
             return null;
         }
-        final String name = fileName == null ? pattern : fileName;
+        String actualName = fileName == null ? pattern : fileName;
+        int actualBufferSize = bufferedIO ? bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
         return narrow(
                 RollingFileManager.class,
                 getManager(
-                        name,
-                        new FactoryData(
-                                fileName,
-                                pattern,
-                                append,
-                                bufferedIO,
-                                policy,
-                                strategy,
-                                advertiseURI,
-                                layout,
-                                bufferSize,
-                                immediateFlush,
-                                createOnDemand,
-                                filePermissions,
-                                fileOwner,
-                                fileGroup,
-                                configuration),
-                        factory));
+                        actualName,
+                        (name, data) -> {
+                            long size = 0;
+                            File file = null;
+                            if (fileName != null) {
+                                file = new File(fileName);
+
+                                if (!createOnDemand) {
+                                    try {
+                                        FileUtils.makeParentDirs(file);
+                                        final boolean created = file.createNewFile();
+                                        LOGGER.trace("New file '{}' created = {}", name, created);
+                                    } catch (final IOException ioe) {
+                                        LOGGER.error("Unable to create file {}", name, ioe);
+                                        return null;
+                                    }
+                                }
+
+                                size = append ? file.length() : 0;
+                            }
+
+                            try {
+                                final ByteBuffer buffer = ByteBuffer.allocate(actualBufferSize);
+                                final OutputStream os = createOnDemand || fileName == null
+                                        ? null
+                                        : new FileOutputStream(fileName, append);
+                                // LOG4J2-531 create file first so time has valid value.
+                                final long initialTime = file == null || !file.exists() ? 0 : initialFileTime(file);
+                                final boolean writeHeader = file != null && file.exists() && file.length() == 0;
+
+                                final RollingFileManager rm = new RollingFileManager(
+                                        data.getLoggerContext(),
+                                        fileName,
+                                        data.getPattern(),
+                                        os,
+                                        append,
+                                        createOnDemand,
+                                        size,
+                                        initialTime,
+                                        data.getTriggeringPolicy(),
+                                        data.getRolloverStrategy(),
+                                        advertiseURI,
+                                        layout,
+                                        filePermissions,
+                                        fileOwner,
+                                        fileGroup,
+                                        writeHeader,
+                                        buffer);
+                                if (os != null && rm.isAttributeViewEnabled()) {
+                                    rm.defineAttributeView(file.toPath());
+                                }
+
+                                return rm;
+                            } catch (final IOException ex) {
+                                LOGGER.error("RollingFileManager ({}): {}", name, ex.getMessage(), ex);
+                            }
+                            return null;
+                        },
+                        new FactoryData(pattern, policy, strategy, configuration)));
     }
 
     /**
@@ -718,69 +757,28 @@ public class RollingFileManager extends FileManager {
 
     /**
      * Factory data.
+     *
+     * <p>This is also used by {@link RollingRandomAccessFileManager}.</p>
      */
-    private static class FactoryData extends ConfigurationFactoryData {
-        private final String fileName;
+    static class FactoryData extends ConfigurationFactoryData {
         private final String pattern;
-        private final boolean append;
-        private final boolean bufferedIO;
-        private final int bufferSize;
-        private final boolean immediateFlush;
-        private final boolean createOnDemand;
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
-        private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
-        private final String filePermissions;
-        private final String fileOwner;
-        private final String fileGroup;
 
         /**
          * Creates the data for the factory.
          * @param pattern The pattern.
-         * @param append The append flag.
-         * @param bufferedIO The bufferedIO flag.
-         * @param advertiseURI
-         * @param layout The Layout.
-         * @param bufferSize the buffer size
-         * @param immediateFlush flush on every write or not
-         * @param createOnDemand true if you want to lazy-create the file (a.k.a. on-demand.)
-         * @param filePermissions File permissions
-         * @param fileOwner File owner
-         * @param fileGroup File group
          * @param configuration The configuration
          */
         public FactoryData(
-                final String fileName,
                 final String pattern,
-                final boolean append,
-                final boolean bufferedIO,
                 final TriggeringPolicy policy,
                 final RolloverStrategy strategy,
-                final String advertiseURI,
-                final Layout<? extends Serializable> layout,
-                final int bufferSize,
-                final boolean immediateFlush,
-                final boolean createOnDemand,
-                final String filePermissions,
-                final String fileOwner,
-                final String fileGroup,
                 final Configuration configuration) {
             super(configuration);
-            this.fileName = fileName;
             this.pattern = pattern;
-            this.append = append;
-            this.bufferedIO = bufferedIO;
-            this.bufferSize = bufferSize;
             this.policy = policy;
             this.strategy = strategy;
-            this.advertiseURI = advertiseURI;
-            this.layout = layout;
-            this.immediateFlush = immediateFlush;
-            this.createOnDemand = createOnDemand;
-            this.filePermissions = filePermissions;
-            this.fileOwner = fileOwner;
-            this.fileGroup = fileGroup;
         }
 
         public TriggeringPolicy getTriggeringPolicy() {
@@ -793,34 +791,6 @@ public class RollingFileManager extends FileManager {
 
         public String getPattern() {
             return pattern;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(super.toString());
-            builder.append("[pattern=");
-            builder.append(pattern);
-            builder.append(", append=");
-            builder.append(append);
-            builder.append(", bufferedIO=");
-            builder.append(bufferedIO);
-            builder.append(", bufferSize=");
-            builder.append(bufferSize);
-            builder.append(", policy=");
-            builder.append(policy);
-            builder.append(", strategy=");
-            builder.append(strategy);
-            builder.append(", advertiseURI=");
-            builder.append(advertiseURI);
-            builder.append(", layout=");
-            builder.append(layout);
-            builder.append(", filePermissions=");
-            builder.append(filePermissions);
-            builder.append(", fileOwner=");
-            builder.append(fileOwner);
-            builder.append("]");
-            return builder.toString();
         }
     }
 
@@ -836,78 +806,6 @@ public class RollingFileManager extends FileManager {
         setRolloverStrategy(factoryData.getRolloverStrategy());
         setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
         setTriggeringPolicy(factoryData.getTriggeringPolicy());
-    }
-
-    /**
-     * Factory to create a RollingFileManager.
-     */
-    private static class RollingFileManagerFactory implements ManagerFactory<RollingFileManager, FactoryData> {
-
-        /**
-         * Creates a RollingFileManager.
-         * @param name The name of the entity to manage.
-         * @param data The data required to create the entity.
-         * @return a RollingFileManager.
-         */
-        @Override
-        @SuppressFBWarnings(
-                value = {"PATH_TRAVERSAL_IN", "PATH_TRAVERSAL_OUT"},
-                justification = "The destination file should be specified in the configuration file.")
-        public RollingFileManager createManager(final String name, final FactoryData data) {
-            long size = 0;
-            File file = null;
-            if (data.fileName != null) {
-                file = new File(data.fileName);
-
-                try {
-                    FileUtils.makeParentDirs(file);
-                    final boolean created = data.createOnDemand ? false : file.createNewFile();
-                    LOGGER.trace("New file '{}' created = {}", name, created);
-                } catch (final IOException ioe) {
-                    LOGGER.error("Unable to create file " + name, ioe);
-                    return null;
-                }
-                size = data.append ? file.length() : 0;
-            }
-
-            try {
-                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
-                final OutputStream os = data.createOnDemand || data.fileName == null
-                        ? null
-                        : new FileOutputStream(data.fileName, data.append);
-                // LOG4J2-531 create file first so time has valid value.
-                final long initialTime = file == null || !file.exists() ? 0 : initialFileTime(file);
-                final boolean writeHeader = file != null && file.exists() && file.length() == 0;
-
-                final RollingFileManager rm = new RollingFileManager(
-                        data.getLoggerContext(),
-                        data.fileName,
-                        data.pattern,
-                        os,
-                        data.append,
-                        data.createOnDemand,
-                        size,
-                        initialTime,
-                        data.policy,
-                        data.strategy,
-                        data.advertiseURI,
-                        data.layout,
-                        data.filePermissions,
-                        data.fileOwner,
-                        data.fileGroup,
-                        writeHeader,
-                        buffer);
-                if (os != null && rm.isAttributeViewEnabled()) {
-                    rm.defineAttributeView(file.toPath());
-                }
-
-                return rm;
-            } catch (final IOException ex) {
-                LOGGER.error("RollingFileManager (" + name + ") " + ex, ex);
-            }
-            return null;
-        }
     }
 
     static long initialFileTime(final File file) {
