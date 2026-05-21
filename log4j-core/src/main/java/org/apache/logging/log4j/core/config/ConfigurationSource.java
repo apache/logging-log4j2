@@ -361,19 +361,22 @@ public class ConfigurationSource {
             final File file = FileUtils.fileFromUri(url.toURI());
             final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             boolean success = false;
+            InputStream openedStream = null;
             try {
                 final ConfigurationSource source;
                 if (file != null) {
-                    source = new ConfigurationSource(urlConnection.getInputStream(), file);
+                    openedStream = urlConnection.getInputStream();
+                    source = new ConfigurationSource(openedStream, file);
                 } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
                     URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
                     File jarFile = new File(jarFileUrl.getFile());
                     long lastModified = jarFile.lastModified();
-                    source = new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+                    openedStream = urlConnection.getInputStream();
+                    source = new ConfigurationSource(openedStream, url, lastModified);
                 } else {
-                    source = new ConfigurationSource(
-                            urlConnection.getInputStream(), url, urlConnection.getLastModified());
+                    openedStream = urlConnection.getInputStream();
+                    source = new ConfigurationSource(openedStream, url, urlConnection.getLastModified());
                 }
                 success = true;
                 return source;
@@ -382,10 +385,12 @@ public class ConfigurationSource {
                 return null;
             } finally {
                 if (!success) {
-                    try {
-                        urlConnection.getInputStream().close();
-                    } catch (final IOException ignored) {
-                        // Best-effort cleanup; the stream may not have been opened
+                    if (openedStream != null) {
+                        try {
+                            openedStream.close();
+                        } catch (final IOException ignored) {
+                            // Best-effort cleanup
+                        }
                     }
                     if (urlConnection instanceof HttpURLConnection) {
                         ((HttpURLConnection) urlConnection).disconnect();

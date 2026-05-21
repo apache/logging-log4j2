@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,21 +110,17 @@ public class ConfigurationSourceTest {
      * or hold a lock on the JAR file.
      */
     @Test
-    void testNoJarFileLeakOnFailure() throws Exception {
+    void testJarFileLeakOnFailure() throws Exception {
         final Path jarFile = prepareJarConfigURL(tempDir);
-        // Path inside JAR that does NOT exist
-        final URL brokenJarConfigURL = new URL("jar:" + jarFile.toUri().toURL() + "!/missing/file.xml");
+        final String jarUriStr = "jar:" + jarFile.toUri().toASCIIString() + "!/" + java.util.UUID.randomUUID();
+        final URI jarUri = URI.create(jarUriStr);
+
         final long expectedFdCount = getOpenFileDescriptorCount();
-        final ConfigurationSource configSource = ConfigurationSource.fromUri(brokenJarConfigURL.toURI());
-        assertNull(configSource, "Source should be null for a missing JAR entry");
-        // This can only fail on UNIX
-        assertEquals(expectedFdCount, getOpenFileDescriptorCount(), "File descriptors leaked after failed JAR load");
-        // This can only fail on Windows
-        try {
-            Files.delete(jarFile);
-        } catch (IOException e) {
-            fail("JAR file locked after failed load: " + e.getMessage());
-        }
+
+        assertNull(ConfigurationSource.fromUri(jarUri));
+
+        assertEquals(expectedFdCount, getOpenFileDescriptorCount());
+        Files.delete(jarFile);
     }
 
     private long getOpenFileDescriptorCount() {
