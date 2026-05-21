@@ -310,14 +310,17 @@ public class RollingFileManager extends FileManager {
                             if (fileName != null) {
                                 file = new File(fileName);
 
-                                try {
-                                    FileUtils.makeParentDirs(file);
-                                    final boolean created = createOnDemand ? false : file.createNewFile();
-                                    LOGGER.trace("New file '{}' created = {}", name, created);
-                                } catch (final IOException ioe) {
-                                    LOGGER.error("Unable to create file {}", name, ioe);
-                                    return null;
+                                if (!createOnDemand) {
+                                    try {
+                                        FileUtils.makeParentDirs(file);
+                                        final boolean created = file.createNewFile();
+                                        LOGGER.trace("New file '{}' created = {}", name, created);
+                                    } catch (final IOException ioe) {
+                                        LOGGER.error("Unable to create file {}", name, ioe);
+                                        return null;
+                                    }
                                 }
+
                                 size = append ? file.length() : 0;
                             }
 
@@ -391,12 +394,10 @@ public class RollingFileManager extends FileManager {
 
     @Override
     protected void createParentDir(File file) {
-        if (directWrite) {
-            final File parent = file.getParentFile();
-            // If the parent is null the file is in the current working directory.
-            if (parent != null) {
-                parent.mkdirs();
-            }
+        try {
+            FileUtils.makeParentDirs(file);
+        } catch (IOException e) {
+            LOGGER.error("Unable to create parent directories for file {}", file, e);
         }
     }
 
