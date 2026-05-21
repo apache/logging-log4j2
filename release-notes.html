@@ -374,6 +374,9 @@
 <div class="ulist">
 <ul>
 <li>
+<p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
+</li>
+<li>
 <p>Improve DST handling in <code>CronExpression</code>, including boundary and short-day behavior, with added DST transition tests (<a href="https://github.com/apache/logging-log4j2/issues/3660">3660</a>, <a href="https://github.com/apache/logging-log4j2/pull/4081">4081</a>)</p>
 </li>
 <li>
