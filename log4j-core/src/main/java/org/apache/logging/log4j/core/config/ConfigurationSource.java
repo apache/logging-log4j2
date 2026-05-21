@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -359,24 +360,39 @@ public class ConfigurationSource {
         try {
             final File file = FileUtils.fileFromUri(url.toURI());
             final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            boolean success = false;
             try {
+                final ConfigurationSource source;
                 if (file != null) {
-                    return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                    source = new ConfigurationSource(urlConnection.getInputStream(), file);
                 } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
                     URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
                     File jarFile = new File(jarFileUrl.getFile());
                     long lastModified = jarFile.lastModified();
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+                    source = new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
-                    return new ConfigurationSource(
+                    source = new ConfigurationSource(
                             urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
-            } catch (FileNotFoundException ex) {
+                success = true;
+                return source;
+            } catch (final FileNotFoundException ex) {
                 ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
                 return null;
+            } finally {
+                if (!success) {
+                    try {
+                        urlConnection.getInputStream().close();
+                    } catch (final IOException ignored) {
+                        // Best-effort cleanup; the stream may not have been opened
+                    }
+                    if (urlConnection instanceof HttpURLConnection) {
+                        ((HttpURLConnection) urlConnection).disconnect();
+                    }
+                }
             }
-        } catch (IOException | URISyntaxException ex) {
+        } catch (final IOException | URISyntaxException ex) {
             ConfigurationFactory.LOGGER.warn(
                     "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
             return null;
