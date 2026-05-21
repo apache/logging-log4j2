@@ -41,6 +41,6 @@ class DisruptorUtilTest {
         final List<StatusData> debugData =
                 statusListener.findStatusData(Level.DEBUG).collect(Collectors.toList());
         assertThat(debugData).anySatisfy(data -> assertThat(data.getMessage().getFormattedMessage())
-                .contains("LMAX Disruptor version " + detectedVersion + " detected."));
+                .contains("LMAX Disruptor version detected: " + detectedVersion));
     }
 }
