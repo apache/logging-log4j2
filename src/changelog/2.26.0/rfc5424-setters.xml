@@ -4,10 +4,8 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
-    <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/3176"/>
+       type="added">
     <description format="asciidoc">
-      Ensured scripts in global `Scripts container` have explicit names by throwing a `ConfigurationException` for unnamed ones.
-      Refined script identification with `AbstractScript.getId()` and clarified `AbstractScript.getName()`.
+        Add missing setters to `Rfc5424LayoutBuilder`
     </description>
 </entry>

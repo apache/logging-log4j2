@@ -4,10 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="added">
-    <issue id="4058" link="https://github.com/apache/logging-log4j2/issues/4058"/>
-    <issue id="4060" link="https://github.com/apache/logging-log4j2/pull/4060"/>
+       type="changed">
+    <issue id="3926" link="https://github.com/apache/logging-log4j2/pull/3926"/>
+    <issue id="4111" link="https://github.com/apache/logging-log4j2/pull/4111"/>
     <description format="asciidoc">
-        Added debug level logs for successful resource loading in `Loader` class to show where resources are found
+      Revamp `ListAppender` for thread-safety and clarity.
     </description>
 </entry>

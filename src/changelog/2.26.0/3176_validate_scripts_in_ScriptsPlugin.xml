@@ -5,9 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-    <issue id="3935" link="https://github.com/apache/logging-log4j2/issues/3935"/>
-    <issue id="3939" link="https://github.com/apache/logging-log4j2/pull/3939"/>
+    <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/3176"/>
     <description format="asciidoc">
-        Optimize `DefaultThreadContextMap.getCopy()` performance by avoiding megamorphic calls in `HashMap` constructor
+      Ensure scripts in the global `Scripts` element have explicit names by throwing a `ConfigurationException` for unnamed ones.
     </description>
 </entry>
