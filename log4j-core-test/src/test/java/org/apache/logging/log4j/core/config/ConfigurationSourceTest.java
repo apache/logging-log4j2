@@ -104,6 +104,28 @@ public class ConfigurationSourceTest {
         }
     }
 
+    /**
+     * Verifies that a failed JAR configuration load (missing entry) does not leak file descriptors
+     * or hold a lock on the JAR file.
+     */
+    @Test
+    void testNoJarFileLeakOnFailure() throws Exception {
+        final Path jarFile = prepareJarConfigURL(tempDir);
+        // Path inside JAR that does NOT exist
+        final URL brokenJarConfigURL = new URL("jar:" + jarFile.toUri().toURL() + "!/missing/file.xml");
+        final long expectedFdCount = getOpenFileDescriptorCount();
+        final ConfigurationSource configSource = ConfigurationSource.fromUri(brokenJarConfigURL.toURI());
+        assertNull(configSource, "Source should be null for a missing JAR entry");
+        // This can only fail on UNIX
+        assertEquals(expectedFdCount, getOpenFileDescriptorCount(), "File descriptors leaked after failed JAR load");
+        // This can only fail on Windows
+        try {
+            Files.delete(jarFile);
+        } catch (IOException e) {
+            fail("JAR file locked after failed load: " + e.getMessage());
+        }
+    }
+
     private long getOpenFileDescriptorCount() {
         final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
         if (os instanceof UnixOperatingSystemMXBean) {
