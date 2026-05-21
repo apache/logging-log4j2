@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -30,14 +31,18 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.Serializer;
+import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.categories.Appenders;
@@ -55,6 +60,8 @@ public class KafkaAppenderTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
 
+    private static final AtomicInteger retrySendCount = new AtomicInteger(0);
+
     private static final MockProducer<byte[], byte[]> kafka =
             new MockProducer<byte[], byte[]>(true, SERIALIZER, SERIALIZER) {
 
@@ -65,12 +72,13 @@ public class KafkaAppenderTest {
 
                     final boolean isRetryTest = "true".equals(ThreadContext.get("KafkaAppenderWithRetryCount"));
                     if (isRetryTest) {
-                        try {
-                            throw new TimeoutException();
-                        } catch (TimeoutException e) {
-                            // TODO Auto-generated catch block
-                            throw new RuntimeException(e);
-                        }
+                        throw new RuntimeException(new TimeoutException());
+                    }
+
+                    final boolean isRetrySuccessTest =
+                            "true".equals(ThreadContext.get("KafkaAppenderRetrySuccessTest"));
+                    if (isRetrySuccessTest && retrySendCount.getAndIncrement() == 0) {
+                        throw new RuntimeException(new TimeoutException());
                     }
 
                     return retVal;
@@ -203,6 +211,39 @@ public class KafkaAppenderTest {
             e.printStackTrace();
         } finally {
             ThreadContext.clearMap();
+        }
+    }
+
+    @Test
+    public void testRetrySuccessDoesNotReportError() {
+        retrySendCount.set(0);
+        final AtomicBoolean errorReported = new AtomicBoolean(false);
+        final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithRetryCount");
+        final ErrorHandler originalHandler = ((KafkaAppender) appender).getHandler();
+        try (final CloseableThreadContext.Instance ignored =
+                CloseableThreadContext.put("KafkaAppenderRetrySuccessTest", "true")) {
+            ((KafkaAppender) appender).setHandler(new ErrorHandler() {
+                @Override
+                public void error(final String msg) {
+                    errorReported.set(true);
+                }
+
+                @Override
+                public void error(final String msg, final Throwable t) {
+                    errorReported.set(true);
+                }
+
+                @Override
+                public void error(final String msg, final LogEvent event, final Throwable t) {
+                    errorReported.set(true);
+                }
+            });
+            appender.append(createLogEvent());
+            final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
+            assertEquals(2, history.size());
+            assertFalse("Error should not be reported when retry succeeds", errorReported.get());
+        } finally {
+            ((KafkaAppender) appender).setHandler(originalHandler);
         }
     }
 

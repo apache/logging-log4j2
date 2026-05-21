@@ -4,8 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="added">
+       type="fixed">
+    <issue id="4036" link="https://github.com/apache/logging-log4j2/issues/4036"/>
+    <issue id="4069" link="https://github.com/apache/logging-log4j2/pull/4069"/>
     <description format="asciidoc">
-        Add missing setters to `Rfc5424LayoutBuilder`.
+        Fix a properties file configuration regression caused by not referenced loggers, appenders, and filters
     </description>
 </entry>
