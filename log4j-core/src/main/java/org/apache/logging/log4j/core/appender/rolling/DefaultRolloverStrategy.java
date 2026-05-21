@@ -30,6 +30,7 @@ import java.util.zip.Deflater;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.DelayedCompressionAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
@@ -109,6 +110,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         @PluginBuilderAttribute(value = "tempCompressedFilePattern")
         private String tempCompressedFilePattern;
 
+        @PluginBuilderAttribute("delayedCompressionSeconds")
+        private String delayedCompressionSecondsStr;
+
+        private long delayedCompressionSeconds;
+
         @PluginConfiguration
         private Configuration config;
 
@@ -145,6 +151,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final String trimmedCompressionLevelStr =
                     compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
             final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
+            final int delayedCompressionSeconds = Integer.parseInt(delayedCompressionSecondsStr, 0);
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor =
                     config != null ? config.getStrSubstitutor() : new StrSubstitutor();
@@ -156,7 +163,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     nonNullStrSubstitutor,
                     customActions,
                     stopCustomActionsOnError,
-                    tempCompressedFilePattern);
+                    tempCompressedFilePattern,
+                    delayedCompressionSeconds);
         }
 
         public String getMax() {
@@ -269,6 +277,18 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          */
         public Builder setTempCompressedFilePattern(final String tempCompressedFilePattern) {
             this.tempCompressedFilePattern = tempCompressedFilePattern;
+            return this;
+        }
+
+        /**
+         * Defines the maximum delay in seconds for compression.
+         *
+         * @param delayedCompressionSeconds the maximum delay in seconds (0 means immediate)
+         * @return This builder for chaining convenience
+         * @since 2.26.0
+         */
+        public Builder setDelayedCompressionSeconds(final String delayedCompressionSeconds) {
+            this.delayedCompressionSecondsStr = delayedCompressionSeconds;
             return this;
         }
 
@@ -419,6 +439,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
     private final PatternProcessor tempCompressedFilePattern;
+    private final int delayedCompressionSeconds;
 
     /**
      * Constructs a new instance.
@@ -446,7 +467,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 strSubstitutor,
                 customActions,
                 stopCustomActionsOnError,
-                null);
+                null,
+                0L);
     }
 
     /**
@@ -467,7 +489,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final StrSubstitutor strSubstitutor,
             final Action[] customActions,
             final boolean stopCustomActionsOnError,
-            final String tempCompressedFilePatternString) {
+            final String tempCompressedFilePatternString,
+            final int delayedCompressionSeconds) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -477,6 +500,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         this.customActions = customActions == null ? Collections.<Action>emptyList() : Arrays.asList(customActions);
         this.tempCompressedFilePattern =
                 tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
+        this.delayedCompressionSeconds = delayedCompressionSeconds;
     }
 
     public int getCompressionLevel() {
@@ -713,7 +737,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         final FileRenameAction renameAction =
                 new FileRenameAction(new File(currentFileName), new File(renameTo), manager.isRenameEmptyFiles());
 
-        final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
+        Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
+
+        if (asyncAction != null && delayedCompressionSeconds > 0) {
+            // Wrap the entire async action with delay - DelayedCompressionAction will provide
+            // delay configuration for RollingFileManager to handle scheduling
+            asyncAction = new DelayedCompressionAction(asyncAction, delayedCompressionSeconds);
+        }
+
         return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
     }
 
@@ -721,4 +752,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     public String toString() {
         return "DefaultRolloverStrategy(min=" + minIndex + ", max=" + maxIndex + ", useMax=" + useMax + ")";
     }
+
+    /**
+     * Gets the maximum delay in seconds for compression.
+     *
+     * @return the maximum delay in seconds
+     */
+    public int getDelayedCompressionSeconds() {
+        return delayedCompressionSeconds;
+    }
+
 }

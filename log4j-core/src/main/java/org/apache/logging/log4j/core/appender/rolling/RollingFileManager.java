@@ -30,9 +30,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.apache.logging.log4j.core.Layout;
@@ -44,6 +44,8 @@ import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.Schedulable;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Constants;
@@ -72,10 +74,18 @@ public class RollingFileManager extends FileManager {
     private final boolean directWrite;
     private final CopyOnWriteArrayList<RolloverListener> rolloverListeners = new CopyOnWriteArrayList<>();
 
-    /* This executor pool will create a new Thread for every work async action to be performed. Using it allows
-    us to make sure all the Threads are completed when the Manager is stopped. */
-    private final ExecutorService asyncExecutor =
-            new ThreadPoolExecutor(0, Integer.MAX_VALUE, 0, TimeUnit.MILLISECONDS, new EmptyQueue(), threadFactory);
+    /* This scheduled executor pool handles both immediate async actions and delayed compression actions.
+     * For immediate tasks, it creates new threads like the original ThreadPoolExecutor.
+     * For delayed tasks, it uses the scheduling capabilities.
+     * Using it allows us to make sure all the Threads are completed when the Manager is stopped. */
+    private final ScheduledExecutorService asyncExecutor = new ScheduledThreadPoolExecutor(0, threadFactory) {
+        @Override
+        public void execute(Runnable command) {
+            // For immediate execution, create a new thread to maintain original behavior
+            Thread thread = getThreadFactory().newThread(command);
+            thread.start();
+        }
+    };
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(
@@ -638,6 +648,14 @@ public class RollingFileManager extends FileManager {
         return this.rolloverStrategy;
     }
 
+    /**
+     * Returns the async executor service for both immediate and delayed actions.
+     * @return The ScheduledExecutorService
+     */
+    public ScheduledExecutorService getAsyncExecutor() {
+        return this.asyncExecutor;
+    }
+
     private boolean rollover(final RolloverStrategy strategy) {
 
         boolean outputStreamClosed = false;
@@ -670,7 +688,7 @@ public class RollingFileManager extends FileManager {
 
                 if (syncActionSuccess && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
+                    scheduleActionsWithDelay(descriptor.getAsynchronous());
                     asyncActionStarted = false;
                 }
             }
@@ -874,5 +892,76 @@ public class RollingFileManager extends FileManager {
             }
             return false;
         }
+    }
+
+    /**
+     * Schedules actions with delays based on their Schedulable interface implementation.
+     * Actions implementing Schedulable with positive delays are scheduled individually,
+     * while others are executed immediately.
+     *
+     * @param action the action to schedule
+     */
+    private void scheduleActionsWithDelay(Action action) {
+        if (action instanceof Schedulable) {
+            Schedulable schedulableAction = (Schedulable) action;
+            int delaySeconds = schedulableAction.getDelaySeconds();
+
+            if (delaySeconds > 0) {
+                // Schedule the action with its specific delay
+                LOGGER.debug("Scheduling action with {} seconds delay", delaySeconds);
+                asyncExecutor.schedule(
+                    new AsyncAction(action, this),
+                    delaySeconds,
+                    TimeUnit.SECONDS
+                );
+                return;
+            }
+        }
+
+        if (action instanceof CompositeAction) {
+            // Handle each action in the composite separately
+            scheduleCompositeAction((CompositeAction) action);
+        } else {
+            // Execute immediately if no delay
+            asyncExecutor.execute(new AsyncAction(action, this));
+        }
+    }
+
+    /**
+     * Schedules actions within a CompositeAction based on their individual delays.
+     *
+     * @param compositeAction the CompositeAction to schedule
+     */
+    private void scheduleCompositeAction(CompositeAction compositeAction) {
+        Action[] actions = compositeAction.getActions();
+        for (Action action : actions) {
+            scheduleIndividualAction(action);
+        }
+    }
+
+    /**
+     * Schedules an individual action based on its Schedulable interface.
+     *
+     * @param action the action to schedule
+     */
+    private void scheduleIndividualAction(Action action) {
+        if (action instanceof Schedulable) {
+            Schedulable schedulableAction = (Schedulable) action;
+            int delaySeconds = schedulableAction.getDelaySeconds();
+
+            if (delaySeconds > 0) {
+                // Schedule the action with its specific delay
+                LOGGER.debug("Scheduling individual action with {} seconds delay", delaySeconds);
+                asyncExecutor.schedule(
+                    new AsyncAction(action, this),
+                    delaySeconds,
+                    TimeUnit.SECONDS
+                );
+                return;
+            }
+        }
+
+        // Execute immediately if no delay
+        asyncExecutor.execute(new AsyncAction(action, this));
     }
 }
