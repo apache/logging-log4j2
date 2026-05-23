@@ -90,7 +90,17 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private static String readPattern(@Nullable final String[] options) {
-        return options != null && options.length > 0 && options[0] != null ? options[0] : DEFAULT_PATTERN;
+        return options != null && options.length > 0 && options[0] != null
+                ? decodeNamedPattern(options[0])
+                : DEFAULT_PATTERN;
+    }
+
+    static String decodeNamedPattern(final String pattern) {
+        try {
+            return NamedInstantPattern.valueOf(pattern).getPattern();
+        } catch (final IllegalArgumentException ignored) {
+            return pattern;
+        }
     }
 
     private static TimeZone readTimeZone(@Nullable final String[] options) {
