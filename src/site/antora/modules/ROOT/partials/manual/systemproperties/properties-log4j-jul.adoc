@@ -63,15 +63,15 @@ Fully qualified name of an alternative `org.apache.logging.jul.tolog4j.spi.Level
 ====
 
 [id=log4j.jul.loggerAdapter]
-== `log4j.jul.loggerAdapter`
+== `log4j.jul.LoggerAdapter`
 
 [cols="1h,5"]
 |===
 | Env. variable | `LOG4J_JUL_LOGGER_ADAPTER`
 | Type          | `Class<? extends AbstractLoggerAdapter>`
-| Default value | `org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter`
+| Default value | `org.apache.logging.log4j.jul.ApiLoggerAdapter`
 |===
 
-Fully qualified class name of a custom `org.apache.logging.jul.tolog4j.spi.AbstractLoggerAdapter` implementation to use, which provides an implementation of the `j.u.l.Logger` mutator methods (e.g., `Logger.setLevel()`).
+Fully qualified class name of a custom `org.apache.logging.log4j.jul.AbstractLoggerAdapter` implementation to use, which provides an implementation of the `j.u.l.Logger` mutator methods (e.g., `Logger.setLevel()`).
 
-By default `org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter` is used and the mutator methods are disabled.
+By default `org.apache.logging.log4j.jul.ApiLoggerAdapter` is used and the mutator methods are disabled.
