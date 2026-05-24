@@ -36,7 +36,7 @@ public class DefaultConfiguration extends AbstractConfiguration {
     /**
      * The default Pattern used for the default Layout.
      */
-    public static final String DEFAULT_PATTERN = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n";
+    public static final String DEFAULT_PATTERN = "%d{ABSOLUTE_PERIOD} [%thread] %-5level %logger{36} - %msg%n";
 
     /**
      * Only for tests.
