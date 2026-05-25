@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FilePermission;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.SecurityManagerExtension;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
@@ -46,13 +46,13 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @ResourceLock("java.lang.SecurityManager")
 public class PropertyFilePropertySourceSecurityManagerIT {
 
-    @BeforeClass
-    public static void beforeClass() {
-        assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+    @BeforeAll
+    public static void beforeAll() {
+        assertTrue(Files.exists(Paths.get(TEST_FIXTURE_PATH)), TEST_FIXTURE_PATH);
     }
 
-    @Rule
-    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+    @RegisterExtension
+    public final SecurityManagerExtension ext = new SecurityManagerExtension(new TestSecurityManager());
 
     private static final String TEST_FIXTURE_PATH = "src/test/resources/PropertiesUtilTest.properties";
 

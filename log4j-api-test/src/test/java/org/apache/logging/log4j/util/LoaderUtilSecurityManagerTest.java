@@ -20,15 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.security.Permission;
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.SecurityManagerExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @ResourceLock("java.lang.SecurityManager")
 public class LoaderUtilSecurityManagerTest {
-    @Rule
-    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+    @RegisterExtension
+    public final SecurityManagerExtension ext = new SecurityManagerExtension(new TestSecurityManager());
 
     private static class TestSecurityManager extends SecurityManager {
         @Override
