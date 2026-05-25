@@ -26,7 +26,9 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.NOPLoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -63,6 +65,10 @@ public final class LogManager {
     private static RepositorySelector repositorySelector;
 
     private static final boolean LOG4J_CORE_PRESENT;
+
+    private static boolean isFullCompatibilityEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
+    }
 
     static {
         LOG4J_CORE_PRESENT = checkLog4jCore();
@@ -201,6 +207,9 @@ public final class LogManager {
     }
 
     public static void resetConfiguration() {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         resetConfiguration(StackLocatorUtil.getCallerClassLoader(2));
     }
 
@@ -225,6 +234,9 @@ public final class LogManager {
      * Shuts down the current configuration.
      */
     public static void shutdown() {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         shutdown(StackLocatorUtil.getCallerClassLoader(2));
     }
 
