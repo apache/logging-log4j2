@@ -22,10 +22,10 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.internal.Maps;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -233,7 +233,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
 
     @Override
     public Map<String, String> toMap() {
-        final Map<String, String> result = new HashMap<>(size);
+        final Map<String, String> result = Maps.newHashMap(size);
         forEach(COPY_INTO_MAP, result);
         return result;
     }

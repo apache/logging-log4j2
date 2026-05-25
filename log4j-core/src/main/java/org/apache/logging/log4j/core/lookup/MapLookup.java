@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.util.Strings;
 
@@ -62,10 +62,6 @@ public class MapLookup implements StrLookup {
         return destMap;
     }
 
-    static HashMap<String, String> newMap(final int initialCapacity) {
-        return new HashMap<>(initialCapacity);
-    }
-
     /**
      * An application's {@code public static main(String[])} method calls this method to make its main arguments
      * available for lookup with the prefix {@code main}.
@@ -102,14 +98,14 @@ public class MapLookup implements StrLookup {
             return null;
         }
         final int size = args.size();
-        return initMap(args.toArray(Strings.EMPTY_ARRAY), newMap(size));
+        return initMap(args.toArray(Strings.EMPTY_ARRAY), Maps.newHashMap(size));
     }
 
     static Map<String, String> toMap(final String[] args) {
         if (args == null) {
             return null;
         }
-        return initMap(args, newMap(args.length));
+        return initMap(args, Maps.newHashMap(args.length));
     }
 
     protected Map<String, String> getMap() {
