@@ -19,12 +19,17 @@ package org.apache.logging.log4j.io;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private InputStream logIn;
+
+    LoggerInputStreamCallerInfoTest(LoggerContext context) {
+        super(context);
+    }
 
     @Test
     public void read() throws Exception {
@@ -45,7 +50,7 @@ public class LoggerInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting 
         assertMessages("after close size", 4, "read");
     }
 
-    @Before
+    @BeforeEach
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
         this.logIn = IoBuilder.forLogger(getLogger())
