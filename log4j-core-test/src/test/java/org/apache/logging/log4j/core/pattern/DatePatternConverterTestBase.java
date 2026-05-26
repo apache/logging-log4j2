@@ -39,7 +39,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 abstract class DatePatternConverterTestBase {
-    // Mid-month instant to keep month-name assertions stable across all time zones.
     private static final long LOCALE_TEST_EPOCH_MILLIS = 1705276800000L;
 
     private static final class MyLogEvent extends AbstractLogEvent {
