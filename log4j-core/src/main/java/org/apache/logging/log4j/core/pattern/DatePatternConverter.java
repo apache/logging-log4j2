@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.core.LogEvent;
@@ -55,8 +56,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static final Set<String> UPPERCASE_TIME_ZONE_IDS = AVAILABLE_TIME_ZONE_IDS.stream()
             .map(id -> id.toUpperCase(Locale.ROOT))
             .collect(Collectors.toSet());
-    private static final String LOCALE_LANGUAGE_ONLY_PATTERN = "[a-zA-Z]{2}";
-    private static final String LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN = "[a-zA-Z]{2,3}([-_][a-zA-Z0-9]{2,8})+";
+    private static final Pattern LOCALE_LANGUAGE_ONLY_PATTERN = Pattern.compile("[a-zA-Z]{2}");
+    private static final Pattern LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN =
+            Pattern.compile("[a-zA-Z]{2,3}([-_][a-zA-Z0-9]{2,8})+");
 
     private final InstantFormatter formatter;
 
@@ -175,8 +177,8 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         if (value == null || isTimeZoneOption(value)) {
             return false;
         }
-        final boolean localeShape =
-                value.matches(LOCALE_LANGUAGE_ONLY_PATTERN) || value.matches(LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN);
+        final boolean localeShape = LOCALE_LANGUAGE_ONLY_PATTERN.matcher(value).matches()
+                || LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN.matcher(value).matches();
         if (!localeShape) {
             return false;
         }
