@@ -25,15 +25,22 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.sun.management.UnixOperatingSystemMXBean;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -121,6 +128,90 @@ public class ConfigurationSourceTest {
 
         assertEquals(expectedFdCount, getOpenFileDescriptorCount());
         Files.delete(jarFile);
+    }
+
+    /**
+     * Verifies that the error-path cleanup in {@code getConfigurationSource}
+     * properly disconnects an {@link HttpURLConnection} on failure without
+     * calling {@link URLConnection#getInputStream()} a second time.
+     *
+     * <p>This test fails against the original code (no cleanup) because
+     * {@code disconnect()} is never called, and fails against an intermediate
+     * fix that added a {@code finally} block calling {@code getInputStream()}
+     * again to obtain a stream for closing.
+     */
+    @Test
+    void getConfigurationSource_disconnectsHttpConnection_onError() throws Exception {
+        final AtomicInteger getInputStreamCalls = new AtomicInteger();
+        final AtomicBoolean disconnected = new AtomicBoolean();
+        final AtomicInteger openConnectionCalls = new AtomicInteger();
+
+        final URLStreamHandler handler = new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(final URL u) {
+                openConnectionCalls.incrementAndGet();
+                return new HttpURLConnection(u) {
+                    @Override
+                    public InputStream getInputStream() throws IOException {
+                        getInputStreamCalls.incrementAndGet();
+                        throw new FileNotFoundException("Mocked 404");
+                    }
+
+                    @Override
+                    public void disconnect() {
+                        disconnected.set(true);
+                    }
+
+                    @Override
+                    public boolean usingProxy() {
+                        return false;
+                    }
+
+                    @Override
+                    public void connect() {}
+                };
+            }
+        };
+
+        final URL url = new URL("http", "example.com", 80, "/missing.xml", handler);
+
+        // Allow the "http" protocol for this test.
+        final String propKey = "log4j2.Configuration.allowedProtocols";
+        final String previous = System.getProperty(propKey);
+        System.setProperty(propKey, "file, https, jar, http");
+        try {
+            openConnectionCalls.set(0);
+            getInputStreamCalls.set(0);
+
+            final Method method =
+                    ConfigurationSource.class.getDeclaredMethod("getConfigurationSource", URL.class);
+            method.setAccessible(true);
+            final Object result = method.invoke(null, url);
+
+            assertTrue(
+                    openConnectionCalls.get() > 0,
+                    "Custom URLStreamHandler was not used by UrlConnectionFactory");
+
+            assertNull(result, "Expected null return for a 404 response");
+
+            // Negative‐test #1: the original code has no finally block, so
+            // disconnect() is never called on the HttpURLConnection.
+            assertTrue(disconnected.get(), "disconnect() must be called on the error path");
+
+            // Negative‐test #2: an intermediate fix called getInputStream()
+            // a second time in the finally block instead of closing the
+            // already-tracked stream reference.
+            assertEquals(
+                    1,
+                    getInputStreamCalls.get(),
+                    "getInputStream() should be called exactly once");
+        } finally {
+            if (previous != null) {
+                System.setProperty(propKey, previous);
+            } else {
+                System.clearProperty(propKey);
+            }
+        }
     }
 
     private long getOpenFileDescriptorCount() {
