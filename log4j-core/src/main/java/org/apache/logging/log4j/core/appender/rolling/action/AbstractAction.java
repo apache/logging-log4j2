@@ -83,6 +83,25 @@ public abstract class AbstractAction implements Action {
     }
 
     /**
+     * Blocks the current thread for a random delay up to {@code maxDelaySeconds}.
+     *
+     * @param maxDelaySeconds maximum delay in seconds before returning.
+     * @since 2.27.0
+     */
+    static void blockThread(final int maxDelaySeconds) {
+        if (maxDelaySeconds > 0) {
+            int delay = java.util.concurrent.ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay * 1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
+    /**
      * Tests if the action is complete.
      *
      * @return true if action is complete.
