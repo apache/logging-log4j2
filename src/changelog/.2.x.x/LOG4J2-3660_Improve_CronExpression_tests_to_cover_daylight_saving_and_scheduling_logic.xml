@@ -5,8 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3835" link="https://github.com/apache/logging-log4j2/issues/3835"/>
+  <issue id="3660" link="https://github.com/apache/logging-log4j2/issues/3660"/>
+  <issue id="4081" link="https://github.com/apache/logging-log4j2/pull/4081"/>
   <description format="asciidoc">
-    Fix missing newlines in default logging configuration for log4j-core.
+    Improve DST handling in `CronExpression`, including boundary and short-day behavior, with added DST transition tests
   </description>
 </entry>

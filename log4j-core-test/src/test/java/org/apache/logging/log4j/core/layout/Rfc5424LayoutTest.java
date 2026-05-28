@@ -747,10 +747,10 @@ class Rfc5424LayoutTest {
                 .setEin("1234.56.7")
                 .setIncludeMDC(true)
                 .setMdcId("RequestContext")
-                .setIncludeNL(true)
+                .setNewLine(true)
                 .setAppName("ATM")
-                .setExcludes("key1, key2, locale")
-                .setUseTLSMessageFormat(true)
+                .setMdcExcludes("key1, key2, locale")
+                .setUseTlsMessageFormat(true)
                 .build();
 
         final ListAppender appender = new ListAppender("List", null, layout, true, false);

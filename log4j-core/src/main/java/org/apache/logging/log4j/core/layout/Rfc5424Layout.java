@@ -751,19 +751,19 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 .setId(id)
                 .setEin(String.valueOf(enterpriseNumber))
                 .setIncludeMDC(includeMDC)
-                .setIncludeNL(newLine)
-                .setEscapeNL(escapeNL)
+                .setNewLine(newLine)
+                .setNewLineEscape(escapeNL)
                 .setMdcId(mdcId)
                 .setMdcPrefix(mdcPrefix)
                 .setEventPrefix(eventPrefix)
                 .setAppName(appName)
                 .setMessageId(msgId)
-                .setExcludes(excludes)
-                .setIncludes(includes)
-                .setRequired(required)
+                .setMdcExcludes(excludes)
+                .setMdcIncludes(includes)
+                .setMdcRequired(required)
                 .setCharset(StandardCharsets.UTF_8)
                 .setExceptionPattern(exceptionPattern)
-                .setUseTLSMessageFormat(useTlsMessageFormat)
+                .setUseTlsMessageFormat(useTlsMessageFormat)
                 .setLoggerFields(loggerFields)
                 .build();
     }
@@ -829,7 +829,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
          *
          * <p>Default is {@code false}.</p>
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private boolean newLine;
 
@@ -846,7 +845,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
          *
          * <p>By default, new lines are not escaped.</p>
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private String newLineEscape;
 
@@ -898,7 +896,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
          *
          * <p>Mutually exclusive with {@link #mdcIncludes}.</p>
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private String mdcExcludes;
 
@@ -915,7 +912,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
          *
          * <p>Mutually exclusive with {@link #mdcExcludes}.</p>
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private String mdcIncludes;
 
@@ -930,7 +926,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         /**
          * A comma separated list of MDC keys that must be present in the MDC.
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private String mdcRequired;
 
@@ -953,7 +948,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
          *
          * <p>Default is {@code false}.</p>
          */
-        @SuppressWarnings("log4j.public.setter")
         @PluginBuilderAttribute
         private boolean useTlsMessageFormat;
 
@@ -1002,13 +996,37 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated Since 2.26.0 use {@link #setNewLine} instead.
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setIncludeNL(final boolean includeNL) {
             this.includeNL = includeNL;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setNewLine(boolean newLine) {
+            this.newLine = newLine;
+            return this;
+        }
+
+        /**
+         * @deprecated Since 2.26.0 use {@link #setNewLineEscape} instead.
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setNewLineEscape(String newLineEscape) {
+            this.newLineEscape = newLineEscape;
             return this;
         }
 
@@ -1037,18 +1055,54 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcExcludes} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setExcludes(final String excludes) {
             this.excludes = excludes;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcExcludes(String mdcExcludes) {
+            this.mdcExcludes = mdcExcludes;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcIncludes} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setIncludes(String includes) {
             this.includes = includes;
             return this;
         }
 
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcIncludes(String mdcIncludes) {
+            this.mdcIncludes = mdcIncludes;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setMdcRequired} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setRequired(final String required) {
             this.required = required;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setMdcRequired(String mdcRequired) {
+            this.mdcRequired = mdcRequired;
             return this;
         }
 
@@ -1062,8 +1116,20 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        /**
+         * @deprecated since 2.26.0 use {@link #setUseTlsMessageFormat} instead
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setUseTLSMessageFormat(final boolean useTLSMessageFormat) {
             this.useTLSMessageFormat = useTLSMessageFormat;
+            return this;
+        }
+
+        /**
+         * @since 2.26.0
+         */
+        public Rfc5424LayoutBuilder setUseTlsMessageFormat(boolean useTlsMessageFormat) {
+            this.useTlsMessageFormat = useTlsMessageFormat;
             return this;
         }
 

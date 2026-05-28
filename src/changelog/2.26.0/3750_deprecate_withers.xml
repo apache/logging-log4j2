@@ -4,9 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
+       type="deprecated">
+  <issue id="3750" link="https://github.com/apache/logging-log4j2/issues/3750"/>
   <description format="asciidoc">
-    Fix header write in `RollingRandomAccessFileManager` that was being incorrectly skipped if `append=true` and the file didn't exist before.
+    Deprecated withers in builder classes in favor of setters.
+    This change improves API consistency with Log4j Core 3 and helps users adapt to the upcoming changes.
   </description>
 </entry>
-

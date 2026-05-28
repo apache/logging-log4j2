@@ -4,10 +4,9 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
-    <issue id="3873" link="https://github.com/apache/logging-log4j2/issues/3873"/>
-    <issue id="3919" link="https://github.com/apache/logging-log4j2/pull/3919"/>
+       type="removed">
+    <issue id="3874" link="https://github.com/apache/logging-log4j2/pull/3874"/>
     <description format="asciidoc">
-        Fix Pattern Layout exception stack trace converters to no longer prepend newlines based on context
+      Remove the `jvmrunargs` lookup.
     </description>
 </entry>
