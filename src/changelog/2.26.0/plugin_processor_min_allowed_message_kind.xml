@@ -5,10 +5,10 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
-    <issue id="3380" link="https://github.com/apache/logging-log4j2/discussions/3380"/>
-    <issue id="4063" link="https://github.com/apache/logging-log4j2/pull/4063"/>
-    <description format="asciidoc">
-        Add `log4j.plugin.processor.minAllowedMessageKind` annotation processor option to `PluginProcessor` to filter diagnostic messages by severity.
-        This allows builds that treat compiler notes as errors (e.g. Maven with `-Werror`) to suppress informational notes emitted during normal plugin processing.
-    </description>
+  <issue id="3380" link="https://github.com/apache/logging-log4j2/discussions/3380"/>
+  <issue id="4063" link="https://github.com/apache/logging-log4j2/pull/4063"/>
+  <description format="asciidoc">
+    Add `log4j.plugin.processor.minAllowedMessageKind` annotation processor option to `PluginProcessor` to filter diagnostic messages by severity.
+    This allows builds that treat compiler notes as errors (e.g. Maven with `-Werror`) to suppress informational notes emitted during normal plugin processing.
+  </description>
 </entry>
