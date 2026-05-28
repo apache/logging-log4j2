@@ -60,7 +60,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         } catch (final Exception error) {
             logOptionReadFailure(options, error, "failed for options: {}, falling back to the default instance");
         }
-        return InstantPatternFormatter.newBuilder().setPattern(NamedInstantPattern.DEFAULT.getPattern()).build();
+        return InstantPatternFormatter.newBuilder()
+                .setPattern(NamedInstantPattern.DEFAULT.getPattern())
+                .build();
     }
 
     private static InstantFormatter createFormatterUnsafely(@Nullable final String[] options) {
