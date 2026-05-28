@@ -1,0 +1,51 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: "Dependabot Process PR"
+
+on:
+  workflow_run:
+    workflows:
+      - "Dependabot Analyze PR"
+    types:
+      - completed
+
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
+
+jobs:
+
+  process-dependabot:
+    # Skip this workflow on commits not pushed by Dependabot
+    if: ${{
+      github.repository == 'apache/logging-log4j2'
+      && github.actor == 'dependabot[bot]'
+      && github.event.workflow_run.conclusion == 'success'
+      }}
+    uses: apache/logging-parent/.github/workflows/process-dependabot-reusable.yaml@gha/v0
+    permissions:
+      # The default GITHUB_TOKEN will be used to enable the "auto-merge" on the PR
+      # This requires the following two permissions:
+      contents: write
+      pull-requests: write
+    secrets:
+      # This token will be used to push new content to the repo and trigger workflows again
+      RECURSIVE_TOKEN: ${{ secrets.DEPENDABOT_TOKEN }}
+    with:
+      # The path to the changelog directory for the current development branch.
+      changelog-path: src/changelog/.2.x.x

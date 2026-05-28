@@ -5,7 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
-    <description format="asciidoc">
-        Add missing setters to `Rfc5424LayoutBuilder`.
-    </description>
+  <issue id="3775" link="https://github.com/apache/logging-log4j2/issues/3775"/>
+  <issue id="3921" link="https://github.com/apache/logging-log4j2/pull/3921"/>
+  <description format="asciidoc">
+    Add a new `ConfigurationFactory::getConfiguration` method accepting multiple `URI`s
+  </description>
 </entry>

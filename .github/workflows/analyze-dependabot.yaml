@@ -14,29 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Develocity - Publish Maven Build Scans
+
+name: "Dependabot Analyze PR"
 
 on:
-  workflow_run:
-    workflows: [ "build" ]
-    types: [ completed ]
+  pull_request:
+
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
 
 jobs:
 
-  publish-build-scans:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      pull-requests: write
-    steps:
-
-      - name: Setup Build Scan link capture
-        uses: gradle/develocity-actions/setup-maven@4a2aed82eea165ba2d5c494fc2a8730d7fdff229   # 1.4
-        with:
-          capture-build-scan-links: true
-
-      - name: Publish Build Scans
-        uses: gradle/develocity-actions/maven-publish-build-scan@4a2aed82eea165ba2d5c494fc2a8730d7fdff229   # 1.4
-        with:
-          develocity-url: 'https://develocity.apache.org'
-          develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+  analyze-dependabot:
+    # `github.actor` prevents recursive calls when `github-actions[bot]` pushes to the PR;
+    # `github.event.pull_request.user.login` skips PRs not opened by Dependabot.
+    if: ${{
+      github.repository == 'apache/logging-log4j2'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+      }}
+    uses: apache/logging-parent/.github/workflows/analyze-dependabot-reusable.yaml@gha/v0

@@ -4,10 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
-    <issue id="3623" link="https://github.com/apache/logging-log4j2/issues/3623"/>
-    <issue id="4033" link="https://github.com/apache/logging-log4j2/pull/4033"/>
+       type="fixed">
+    <issue id="4036" link="https://github.com/apache/logging-log4j2/issues/4036"/>
+    <issue id="4069" link="https://github.com/apache/logging-log4j2/pull/4069"/>
     <description format="asciidoc">
-        Take `Throwable#toString()` into account while rendering stack traces in Pattern Layout.
+        Fix a properties file configuration regression caused by not referenced loggers, appenders, and filters
     </description>
 </entry>

@@ -5,10 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="3779" link="https://github.com/apache/logging-log4j2/issues/3779"/>
-  <issue id="3785" link="https://github.com/apache/logging-log4j2/pull/3785"/>
-  <issue id="3905" link="https://github.com/apache/logging-log4j2/pull/3905"/>
+  <issue id="4099" link="https://github.com/apache/logging-log4j2/issues/4099"/>
+  <issue id="4100" link="https://github.com/apache/logging-log4j2/pull/4100"/>
   <description format="asciidoc">
-    Fix the `com.google.errorprone:error_prone_annotations` dependency whose version property gets erased due to flattening
+    Fix Javadoc references across module boundaries (i.e., cross-references)
   </description>
 </entry>

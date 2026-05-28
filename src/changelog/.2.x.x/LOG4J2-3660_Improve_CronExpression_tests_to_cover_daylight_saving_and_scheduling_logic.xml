@@ -5,9 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="4099" link="https://github.com/apache/logging-log4j2/issues/4099"/>
-  <issue id="4100" link="https://github.com/apache/logging-log4j2/pull/4100"/>
+  <issue id="3660" link="https://github.com/apache/logging-log4j2/issues/3660"/>
+  <issue id="4081" link="https://github.com/apache/logging-log4j2/pull/4081"/>
   <description format="asciidoc">
-    Javadoc references across module boundaries (i.e., cross-references) are fixed
+    Improve DST handling in `CronExpression`, including boundary and short-day behavior, with added DST transition tests
   </description>
 </entry>

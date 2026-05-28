@@ -4,9 +4,10 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="fixed">
-  <issue id="4002" link="https://github.com/apache/logging-log4j2/pull/4002"/>
+       type="deprecated">
+  <issue id="3750" link="https://github.com/apache/logging-log4j2/issues/3750"/>
   <description format="asciidoc">
-    Fix incorrect handling of the host name verification (i.e., `verifyHostName`) in `SslSocketManager`, which is used by Socket Appender when SSL/TLS is enabled
+    Deprecated withers in builder classes in favor of setters.
+    This change improves API consistency with Log4j Core 3 and helps users adapt to the upcoming changes.
   </description>
 </entry>
