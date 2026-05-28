@@ -174,24 +174,37 @@ loadScripts(document, 'script');</script>
 <div class="block">Constructs a new instance.</div>
 </div>
 <div class="col-first odd-row-color"><code>protected </code></div>
-<div class="col-second odd-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
+<div class="col-second odd-row-color"><code><a href="../../appender/rolling/DefaultRolloverStrategy.html#%3Cinit%3E(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,int)" class="member-name-link">DefaultRolloverStrategy</a><wbr>(int&nbsp;minIndex,
+ int&nbsp;maxIndex,
+ boolean&nbsp;useMax,
+ int&nbsp;compressionLevel,
+ <a href="../StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
+ <a href="../../appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
+ boolean&nbsp;stopCustomActionsOnError,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
+ int&nbsp;maxCompressionDelaySeconds)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Constructs a new instance.</div>
+</div>
+<div class="col-first even-row-color"><code>protected </code></div>
+<div class="col-second even-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
  int&nbsp;compressionLevel,
  <a href="../StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
  <a href="../../appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
  boolean&nbsp;stopCustomActionsOnError)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">Since 2.9 Added tempCompressedFilePatternString parameter</div>
 </div>
 </div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-second odd-row-color"><code><a href="../../appender/rolling/DirectWriteRolloverStrategy.html#%3Cinit%3E(int,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String)" class="member-name-link">DirectWriteRolloverStrategy</a><wbr>(int&nbsp;maxFiles,
  int&nbsp;compressionLevel,
  <a href="../StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
  <a href="../../appender/rolling/action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
  boolean&nbsp;stopCustomActionsOnError,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">Constructs a new instance.</div>
 </div>
 </div>

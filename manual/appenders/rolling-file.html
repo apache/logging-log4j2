@@ -1515,6 +1515,14 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum value for the <a href="#conversion-pattern-integer"><code>%i</code></a> conversion pattern.</p>
 <p class="tableblock">This attribute is <strong>ignored</strong> if <a href="#DefaultRolloverStrategy-attr-fileIndex"><code>fileIndex</code></a> is set to <code>nomax</code>.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DefaultRolloverStrategy-attr-maxCompressionDelaySeconds"></a>maxCompressionDelaySeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum random delay, in seconds, before compressing archived log files.</p>
+<p class="tableblock">Use this attribute to spread compression workload when many applications roll over at the same time.
+A value of <code>0</code> disables the delay and starts compression immediately.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">

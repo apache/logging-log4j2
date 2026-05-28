@@ -1479,7 +1479,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -8086,6 +8086,7 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy compressionLevel=""
                          fileIndex=""
                          max=""
+                         maxCompressionDelaySeconds=""
                          min=""
                          stopCustomActionsOnError=""
                          tempCompressedFilePattern=""&gt;
@@ -8137,6 +8138,14 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Defines the maximum number of files to keep.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxCompressionDelaySeconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Defines maximum delay in seconds before compression.</p>
 </div></div></td>
 </tr>
 <tr>
