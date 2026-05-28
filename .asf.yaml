@@ -18,13 +18,6 @@
 # `.asf.yaml` is a branch-specific YAML configuration file for Git repositories to control features such as notifications, GitHub settings, etc.
 # See its documentation for details: https://github.com/apache/infrastructure-asfyaml
 
-#
-# Additional non-standard features
-#
-meta:
-  environments:
-    - github_rulesets
-
 # Bare minimum `notifications` to
 #
 # 1. Forward GitHub _activity_ to `notifications@`
