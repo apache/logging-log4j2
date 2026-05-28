@@ -105,9 +105,21 @@ github:
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
-    # Protect tags
+    # Use raw rules, until a convenience notation for `restrict_update` is introduced.
+    # See: https://github.com/apache/infrastructure-asfyaml/issues/96
+    #
+    # The raw rules need to follow the syntax given in:
+    # https://docs.github.com/en/rest/repos/rules?apiVersion=2026-03-10#update-a-repository-ruleset
     - name: "Tag protection"
-      type: tag
-      branches:
-        includes:
-          - "refs/tags/rel/*"
+      target: tag
+      enforcement: active
+      bypass_actors: []
+      conditions:
+        ref_name:
+          include:
+            - "refs/tags/rel/*"
+          exclude: []
+      rules:
+        - type: deletion
+        - type: non_fast_forward
+        - type: update
