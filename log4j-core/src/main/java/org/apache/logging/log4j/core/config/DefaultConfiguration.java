@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.pattern.NamedInstantPattern;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.plugins.di.DI;
 
@@ -36,7 +37,8 @@ public class DefaultConfiguration extends AbstractConfiguration {
     /**
      * The default Pattern used for the default Layout.
      */
-    public static final String DEFAULT_PATTERN = "%d{ABSOLUTE_PERIOD} [%thread] %-5level %logger{36} - %msg%n";
+    public static final String DEFAULT_PATTERN =
+            "%d{" + NamedInstantPattern.ABSOLUTE_PERIOD + "} [%thread] %-5level %logger{36} - %msg%n";
 
     /**
      * Only for tests.
