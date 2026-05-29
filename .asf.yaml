@@ -72,35 +72,45 @@ github:
     merge:   false
     rebase:  false
 
-  # Enforce Review-then-Commit
-  protected_branches:
-    2.x:
+  # Clear Protected Branches configuration: it is replaced by GitHub Rulesets
+  protected_branches: { }
+
+  rulesets:
+    # Enforce Review-then-Commit
+    - name: "Branch protection"
+      type: branch
+      branches:
+        includes:
+          - "2.x"
+          - "main"
       # All reviews must be addressed before merging
       required_conversation_resolution: true
       # Require checks to pass before merging
       required_status_checks:
-        checks:
-          # The GitHub Actions app: 15368
-          - app_id: 15368
-            context: "build / build (ubuntu-latest)"
-          # The GitHub Advanced Security app: 57789
-          - app_id: 57789
-            context: "CodeQL"
+        # The GitHub Actions app
+        - app_slug: github-actions
+          name: "build / build (ubuntu-latest)"
+        # The GitHub Advanced Security
+        - app_slug: github-advanced-security
+          name: "CodeQL"
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
-    main:
-      # All reviews must be addressed before merging
-      required_conversation_resolution: true
-      # Require checks to pass before merging
-      required_status_checks:
-        checks:
-          # The GitHub Actions app: 15368
-          - app_id: 15368
-            context: "build / build (ubuntu-latest)"
-          # The GitHub Advanced Security app: 57789
-          - app_id: 57789
-            context: "CodeQL"
-      # At least one positive review must be present
-      required_pull_request_reviews:
-        required_approving_review_count: 1
+    # Use raw rules, until a convenience notation for `restrict_update` is introduced.
+    # See: https://github.com/apache/infrastructure-asfyaml/issues/96
+    #
+    # The raw rules need to follow the syntax given in:
+    # https://docs.github.com/en/rest/repos/rules?apiVersion=2026-03-10#update-a-repository-ruleset
+    - name: "Tag protection"
+      target: tag
+      enforcement: active
+      bypass_actors: []
+      conditions:
+        ref_name:
+          include:
+            - "refs/tags/rel/*"
+          exclude: []
+      rules:
+        - type: deletion
+        - type: non_fast_forward
+        - type: update
