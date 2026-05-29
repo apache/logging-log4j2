@@ -61,7 +61,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             logOptionReadFailure(options, error, "failed for options: {}, falling back to the default instance");
         }
         return InstantPatternFormatter.newBuilder()
-                .setPattern(NamedInstantPattern.DEFAULT.getPattern())
+                .setPattern(NamedInstantPattern.DEFAULT_PERIOD.getPattern())
                 .build();
     }
 
@@ -92,7 +92,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static String readPattern(@Nullable final String[] options) {
         return options != null && options.length > 0 && options[0] != null
                 ? decodeNamedPattern(options[0])
-                : NamedInstantPattern.DEFAULT.getPattern();
+                : NamedInstantPattern.DEFAULT_PERIOD.getPattern();
     }
 
     static String decodeNamedPattern(final String pattern) {
