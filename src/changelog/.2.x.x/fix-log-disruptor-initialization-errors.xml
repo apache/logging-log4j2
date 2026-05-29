@@ -8,6 +8,6 @@
     <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/2250"/>
     <issue id="3176" link="https://github.com/apache/logging-log4j2/pull/4124"/>
     <description format="asciidoc">
-        Improved status logging for LinkageError scenarios involving the LMAX Disruptor library to provide better diagnostics and user visibility during initialization failures. This change helps users more easily identify dependency compatibility issues that were previously not surfaced in the status log.
+        Improve logging for `LinkageError` scenarios involving the LMAX Disruptor library
     </description>
 </entry>
