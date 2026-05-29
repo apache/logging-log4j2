@@ -18,24 +18,32 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
+import org.apache.logging.log4j.core.script.Script;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link ScriptComponentBuilder} interface for building a {@link Script} component
+ * for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.5
  */
+@ProviderType
 class DefaultScriptComponentBuilder extends DefaultComponentAndConfigurationBuilder<ScriptComponentBuilder>
         implements ScriptComponentBuilder {
 
+    /**
+     * Constructs a new component builder instance.
+     * @param builder the configuration builder
+     * @param name the script name
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
     public DefaultScriptComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String name,
-            final String language,
-            final String text) {
-        super(builder, name, "Script");
-        if (language != null) {
-            addAttribute("language", language);
-        }
-        if (text != null) {
-            addAttribute("text", text);
-        }
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final @Nullable String name) {
+        super(builder, "Script", name);
     }
 }

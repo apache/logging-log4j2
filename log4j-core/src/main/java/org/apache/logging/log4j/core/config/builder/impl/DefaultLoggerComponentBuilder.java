@@ -16,94 +16,67 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link LoggerComponentBuilder} interface for building
+ * a {@link Logger} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 class DefaultLoggerComponentBuilder extends DefaultComponentAndConfigurationBuilder<LoggerComponentBuilder>
         implements LoggerComponentBuilder {
 
     /**
-     * Configure a logger.
-     * @param builder
-     * @param name
-     * @param level
+     * Create a new logger component builder instance with the default plugin-type "{@code Logger}".
+     * @param builder the configuration builder
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
      */
     public DefaultLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final String level) {
-        super(builder, name, "Logger");
-        if (level != null) {
-            addAttribute("level", level);
-        }
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final @Nullable String name) {
+        this(builder, "Logger", name);
     }
 
     /**
-     * Configure a logger.
-     * @param builder
-     * @param name
-     * @param level
-     * @param includeLocation
+     * Create a new logger component builder instance with the given plugin-type.
+     *
+     * @param builder    the configuration builder
+     * @param pluginType the target plugin-type of the logger component
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
      */
     public DefaultLoggerComponentBuilder(
             final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String name,
-            final String level,
-            final boolean includeLocation) {
-        super(builder, name, "Logger");
-        if (level != null) {
-            addAttribute("level", level);
-        }
-        addAttribute("includeLocation", includeLocation);
+            final String pluginType,
+            final @Nullable String name) {
+        super(builder, pluginType, name);
     }
 
     /**
-     * Configure a logger.
-     * @param builder
-     * @param name
-     * @param level
-     * @param type
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the {@code builder} is {@code null}
      */
-    public DefaultLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String name,
-            final String level,
-            final String type) {
-        super(builder, name, type);
-        if (level != null) {
-            addAttribute("level", level);
-        }
-    }
-
-    /**
-     * Configure a logger.
-     * @param builder
-     * @param name
-     * @param level
-     * @param type
-     * @param includeLocation
-     */
-    public DefaultLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String name,
-            final String level,
-            final String type,
-            final boolean includeLocation) {
-        super(builder, name, type);
-        if (level != null) {
-            addAttribute("level", level);
-        }
-        addAttribute("includeLocation", includeLocation);
-    }
-
     @Override
     public LoggerComponentBuilder add(final AppenderRefComponentBuilder builder) {
         return addComponent(builder);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the {@code builder} is {@code null}
+     */
     @Override
     public LoggerComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);

@@ -16,8 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+
 /**
- * Wraps multiple Filter Component builders.
+ * A builder interface for constructing and configuring {@link CompositeFilter} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
  *
  * @since 2.4
  */
