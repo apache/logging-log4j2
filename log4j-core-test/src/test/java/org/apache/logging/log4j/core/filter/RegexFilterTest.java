@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.filter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +28,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -89,6 +93,18 @@ class RegexFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
+    }
+
+    @Test
+    void testPatternFlagsFromConfiguration() {
+        try (final LoggerContext context =
+                Configurator.initialize("RegexFilterPatternFlagsTest", "filter/RegexFilterPatternFlagsTest.xml")) {
+            final Configuration configuration = context.getConfiguration();
+            final Filter filter = configuration.getFilter();
+            assertNotNull(filter);
+            assertThat(filter.filter(null, null, null, (Object) "ERROR", null), equalTo(Result.ACCEPT));
+            assertThat(filter.filter(null, null, null, (Object) "warn", null), equalTo(Result.DENY));
+        }
     }
 
     @Test
