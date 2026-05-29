@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
@@ -160,5 +161,28 @@ class DatePatternConverterTest {
     @Test
     public void testNewInstanceAllowsNullParameter() {
         DatePatternConverter.newInstance(null); // no errors
+    }
+
+    private static final String[] PATTERN_NAMES =
+            Stream.of(NamedInstantPattern.values()).map(Enum::name).toArray(String[]::new);
+
+    @Test
+    public void testPredefinedFormatWithoutTimezone() {
+        for (final String patternName : PATTERN_NAMES) {
+            assertEquals(
+                    DatePatternConverter.decodeNamedPattern(patternName),
+                    DatePatternConverter.newInstance(new String[] {patternName}).getPattern());
+        }
+    }
+
+    @Test
+    public void testPredefinedFormatWithTimezone() {
+        for (final String patternName : PATTERN_NAMES) {
+            // Pacific Standard Time = UTC-08:00
+            assertEquals(
+                    DatePatternConverter.decodeNamedPattern(patternName),
+                    DatePatternConverter.newInstance(new String[] {patternName, "PST"})
+                            .getPattern());
+        }
     }
 }
