@@ -14,9 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+/**
+ * Utilities for safely serializing and deserializing Log4j objects.
+ * <h2>Internal usage only!</h2>
+ * <p>
+ * This package is intended only for internal Log4j usage.
+ * <b>Log4j users should not use this package!</b>
+ * This package is not subject to any backward compatibility concerns.
+ * </p>
+ *
+ * @since 2.26.0
+ */
 @Export
 @Version("2.26.0")
-package org.apache.logging.log4j.test;
+package org.apache.logging.log4j.util.internal;
 
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
