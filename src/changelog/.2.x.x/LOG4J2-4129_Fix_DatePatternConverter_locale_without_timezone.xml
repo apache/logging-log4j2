@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="4129" link="https://github.com/apache/logging-log4j2/issues/4129"/>
+  <issue id="4130" link="https://github.com/apache/logging-log4j2/pull/4130"/>
+  <description format="asciidoc">
+    Fix locale handling in the Pattern Layout's date pattern converter
+  </description>
+</entry>
+

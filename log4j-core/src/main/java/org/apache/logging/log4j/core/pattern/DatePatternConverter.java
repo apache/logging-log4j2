@@ -21,8 +21,11 @@ import static java.util.Objects.requireNonNull;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.core.LogEvent;
@@ -48,6 +51,14 @@ import org.jspecify.annotations.Nullable;
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
 
     private static final String CLASS_NAME = DatePatternConverter.class.getSimpleName();
+
+    private static final Set<String> AVAILABLE_TIME_ZONE_IDS = new HashSet<>(Arrays.asList(TimeZone.getAvailableIDs()));
+    private static final Set<String> UPPERCASE_TIME_ZONE_IDS = AVAILABLE_TIME_ZONE_IDS.stream()
+            .map(id -> id.toUpperCase(Locale.ROOT))
+            .collect(Collectors.toSet());
+    private static final Pattern LOCALE_LANGUAGE_ONLY_PATTERN = Pattern.compile("[a-zA-Z]{2}");
+    private static final Pattern LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN =
+            Pattern.compile("[a-zA-Z]{2,3}([-_][a-zA-Z0-9]{2,8})+");
 
     private final InstantFormatter formatter;
 
@@ -123,7 +134,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
     private static TimeZone readTimeZone(@Nullable final String[] options) {
         try {
-            if (options != null && options.length > 1 && options[1] != null) {
+            if (options != null && options.length > 1 && options[1] != null && !isLocaleOption(options[1])) {
                 return TimeZone.getTimeZone(options[1]);
             }
         } catch (final Exception error) {
@@ -140,13 +151,45 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             if (options != null && options.length > 2 && options[2] != null) {
                 return Locale.forLanguageTag(options[2]);
             }
+            if (options != null && options.length > 1 && options[1] != null && isLocaleOption(options[1])) {
+                return Locale.forLanguageTag(options[1]);
+            }
         } catch (final Exception error) {
             logOptionReadFailure(
                     options,
                     error,
-                    "failed to read the locale at index 2 of options: {}, falling back to the default locale");
+                    "failed to read the locale at index 1 or 2 of options: {}, falling back to the default locale");
         }
         return Locale.getDefault();
+    }
+
+    /**
+     * Returns {@code true} if the given string looks like a locale tag and is not a timezone ID.
+     *
+     * <p>Supported locale forms include language-only tags ({@code de}), full BCP 47 tags ({@code de-DE},
+     * {@code zh-Hans-CN}), and locale strings using underscore separators ({@code de_DE}). Time zone IDs
+     * always take precedence, including legacy IDs such as {@code GB-Eire} and case variants like {@code utc}.</p>
+     *
+     * @param value the string to test
+     * @return {@code true} if {@code value} is recognized as a locale tag and not as a timezone ID
+     */
+    static boolean isLocaleOption(@Nullable final String value) {
+        if (value == null || isTimeZoneOption(value)) {
+            return false;
+        }
+        final boolean localeShape = LOCALE_LANGUAGE_ONLY_PATTERN.matcher(value).matches()
+                || LOCALE_LANGUAGE_WITH_SUBTAGS_PATTERN.matcher(value).matches();
+        if (!localeShape) {
+            return false;
+        }
+        final Locale locale = Locale.forLanguageTag(value.replace('_', '-'));
+        final String language = locale.getLanguage();
+        return !language.isEmpty() && !"und".equals(language);
+    }
+
+    private static boolean isTimeZoneOption(final String value) {
+        return AVAILABLE_TIME_ZONE_IDS.contains(value)
+                || UPPERCASE_TIME_ZONE_IDS.contains(value.toUpperCase(Locale.ROOT));
     }
 
     private static void logOptionReadFailure(final String[] options, final Exception error, final String message) {

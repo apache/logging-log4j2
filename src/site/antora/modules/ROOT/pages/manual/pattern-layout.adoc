@@ -389,8 +389,14 @@ Outputs the instant of the log event
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
 [source,text]
 ----
-d{pattern}[{timezone}]
-date{pattern}[{timezone}]
+d{pattern}
+d{pattern}{timezone}
+d{pattern}{locale}
+d{pattern}{timezone}{locale}
+date{pattern}
+date{pattern}{timezone}
+date{pattern}{locale}
+date{pattern}{timezone}{locale}
 ----
 
 The date conversion specifier may be followed by a set of braces containing a date and time formatting pattern per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
@@ -450,6 +456,10 @@ The predefined _named_ formats are:
 You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone#getTimeZone(String)`].
 If no date format specifier is given, then the `DEFAULT` format is used.
 
+A locale tag in https://www.rfc-editor.org/rfc/bcp/bcp47.txt[BCP 47] format (e.g., `de-DE`, `fr-FR`) can be supplied as a second argument to control locale-sensitive formatting such as month names.
+When only two arguments are given, the second argument is treated as a *timezone ID* if it matches any known `TimeZone` ID (timezone always takes precedence); otherwise it is treated as a *locale tag* if it is a valid BCP 47 language tag.
+To supply *both* a timezone and a locale, use the three-argument form `%d{pattern}{timezone}{locale}`.
+
 You can also define custom date formats, see following examples:
 
 [%header,cols="2m,3m"]
@@ -462,6 +472,12 @@ You can also define custom date formats, see following examples:
 
 |%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
 |2012-11-02T14:34:02.123Z
+
+|%d{dd-MMMM-yyyy}\{de-DE}
+|02 November 2012
+
+|%d{dd-MMMM-yyyy}\{UTC}\{de-DE}
+|02 November 2012 (UTC timezone, German locale)
 |===
 
 `%d\{UNIX}` outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).
