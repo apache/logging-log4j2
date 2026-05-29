@@ -248,6 +248,7 @@
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
     <module>log4j-fuzz-test</module>
+    <module>log4j-iceberg</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-jms</module>
     <module>log4j-jakarta-smtp</module>
@@ -437,6 +438,12 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-flume-ng</artifactId>
         <version>2.23.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-iceberg</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
