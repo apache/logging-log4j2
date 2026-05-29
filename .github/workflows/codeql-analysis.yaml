@@ -25,12 +25,17 @@ on:
   schedule:
     - cron: '32 12 * * 5'
 
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions: read-all
 
 jobs:
 
   analyze:
-    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@rel/12.1.1
+    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@gha/v0
     with:
       java-version: 17
     # Permissions required to publish Security Alerts
