@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +53,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (maxLineCount > 0) {
             try {
                 C context = createContext(throwable);
-                renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
+                renderThrowable(
+                        buffer, throwable, context, Collections.newSetFromMap(new IdentityHashMap<>()), lineSeparator);
             } catch (final Exception error) {
                 if (error != MAX_LINE_COUNT_EXCEEDED) {
                     throw error;
@@ -64,7 +65,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
 
     @SuppressWarnings("unchecked")
     C createContext(final Throwable throwable) {
-        final Map<Throwable, Context.Metadata> metadataByThrowable = Context.Metadata.ofThrowable(throwable);
+        final Map<Throwable, Context.Metadata> metadataByThrowable = new IdentityHashMap<>();
+        Context.Metadata.populateMetadata(
+                metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);
         return (C) new Context(0, metadataByThrowable);
     }
 
@@ -292,8 +295,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
-                final Map<Throwable, Metadata> metadataByThrowable = new HashMap<>();
-                populateMetadata(metadataByThrowable, new HashSet<>(), null, throwable);
+                final Map<Throwable, Metadata> metadataByThrowable = new IdentityHashMap<>();
+                populateMetadata(
+                        metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);
                 return metadataByThrowable;
             }
 
