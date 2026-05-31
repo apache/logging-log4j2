@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;
 import jakarta.servlet.ServletContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.jupiter.api.AfterEach;
@@ -156,7 +158,10 @@ public class WebLookupTest {
 
             final Configuration config = ctx.getConfiguration();
             assertNotNull(config, "No Configuration");
-
+            assertInstanceOf(
+                    CompositeConfiguration.class,
+                    config,
+                    "Expected CompositeConfiguration for comma-separated log4jConfiguration");
             final StrSubstitutor substitutor = config.getStrSubstitutor();
             assertNotNull(substitutor, "No StrSubstitutor");
 
