@@ -16,7 +16,27 @@
  */
 package org.apache.logging.log4j.web;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import jakarta.servlet.ServletContext;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 public class WebLookupTest {
+
+    @AfterEach
+    void tearDown() {
+        ContextAnchor.THREAD_CONTEXT.remove();
+    }
 
     // TODO: re-enable when https://github.com/spring-projects/spring-framework/issues/25354 is fixed
 
@@ -94,5 +114,66 @@ public class WebLookupTest {
     //        initializer.stop();
     //        ContextAnchor.THREAD_CONTEXT.remove();
     //    }
+    /**
+     * Regression test for GitHub issue #2351:
+     * "Missing servlet context in web lookup when using composite configuration".
+     *
+     * When log4jConfiguration contains a comma-separated list of config files,
+     * the resulting composite LoggerContext must still expose the ServletContext
+     * via WebLoggerContextUtils.getServletContext() so that ${web:*} lookups resolve.
+     */
+    @Test
+    void testCompositeConfigurationServletContextName() throws Exception {
+        ContextAnchor.THREAD_CONTEXT.remove();
 
+        final String expectedServletContextName = "CompositeTest";
+
+        // Use Mockito to create a minimal ServletContext (no Spring dependency needed)
+        final ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getServletContextName()).thenReturn(expectedServletContextName);
+        when(servletContext.getContextPath()).thenReturn("/composite-test");
+        // Composite configuration: two comma-separated config files
+        when(servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION))
+                .thenReturn("log4j2-combined.xml,log4j2-override.xml");
+        // Let the initializer resolve each file via the servlet context resource lookup
+        when(servletContext.getResource("log4j2-combined.xml"))
+                .thenReturn(getClass().getResource("/log4j2-combined.xml"));
+        when(servletContext.getResource("log4j2-override.xml"))
+                .thenReturn(getClass().getResource("/log4j2-override.xml"));
+
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
+        try {
+            initializer.start();
+            initializer.setLoggerContext();
+
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            assertNotNull(ctx, "No LoggerContext");
+
+            // The servlet context MUST be reachable via the web lookup for composite config.
+            // Before the fix this returns null, breaking all ${web:*} lookups.
+            assertNotNull(
+                    WebLoggerContextUtils.getServletContext(),
+                    "ServletContext is null in composite configuration - "
+                            + "${web:*} lookups will not resolve (issue #2351)");
+
+            final Configuration config = ctx.getConfiguration();
+            assertNotNull(config, "No Configuration");
+            assertInstanceOf(
+                    CompositeConfiguration.class,
+                    config,
+                    "Expected CompositeConfiguration for comma-separated log4jConfiguration");
+            final StrSubstitutor substitutor = config.getStrSubstitutor();
+            assertNotNull(substitutor, "No StrSubstitutor");
+
+            // Core assertion: ${web:servletContextName} must resolve to the actual name
+            final String value = substitutor.replace("${web:servletContextName}");
+            assertEquals(
+                    expectedServletContextName,
+                    value,
+                    "${web:servletContextName} did not resolve in composite configuration (issue #2351)");
+        } finally {
+            initializer.stop();
+            ContextAnchor.THREAD_CONTEXT.remove();
+        }
+    }
 }
