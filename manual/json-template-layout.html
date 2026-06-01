@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>JSON Template Layout :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/json-template-layout.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -2192,6 +2192,23 @@ unit          = "unit" -&gt; (
 rounded       = "rounded" -&gt; boolean</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The resolvers based on the <code>epochConfig</code> expression are garbage-free.</p>
+</div>
+<div class="paragraph">
+<p>The resolvers based on the <code>patternConfig</code> expression are low-garbage and generate temporary objects only once a minute.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <details>
 <summary class="title">See examples</summary>
 <div class="content">
@@ -3230,7 +3247,7 @@ Make sure to check those notes of resolvers you employ in templates.</p>
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
     Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>

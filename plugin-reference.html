@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Plugin reference :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/plugin-reference.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -2547,9 +2547,6 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p>Sends log events over HTTP.</p>
-</div>
 <div class="sect4">
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-HttpAppender_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
@@ -2667,7 +2664,12 @@ This attribute is ignored if <code>immediateFlush</code> is set to <code>true</c
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Property</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property">Property</a>?</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>A generic list of key/value properties</p>
+</div>
+<div class="paragraph">
+<p>The meaning of these properties depends on the component.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"></td>
@@ -12348,32 +12350,6 @@ SimpleDateFormat date and time pattern strings.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup"></a>jvmrunargs</h4>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Class</dt>
-<dd>
-<p><code>org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup</code></p>
-</dd>
-<dt class="hdlist1">Provider</dt>
-<dd>
-<p><code>org.apache.logging.log4j:log4j-core</code></p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.</p>
-</div>
-<div class="sect4">
-<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup_XML-snippet"></a>XML snippet</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;jvmrunargs/&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-Log4jLookup"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-Log4jLookup"></a>log4j</h4>
 <div class="dlist">
 <dl>
@@ -12487,9 +12463,6 @@ SimpleDateFormat date and time pattern strings.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup">JmxRuntimeInputArgumentsLookup</a></p>
-</li>
-<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-MainMapLookup">MainMapLookup</a></p>
 </li>
 </ul>
@@ -12590,9 +12563,6 @@ It has a benefit over a map in that it can create the result on demand based on 
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JavaLookup">JavaLookup</a></p>
-</li>
-<li>
-<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-JmxRuntimeInputArgumentsLookup">JmxRuntimeInputArgumentsLookup</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-lookup-Log4jLookup">Log4jLookup</a></p>
@@ -19579,7 +19549,7 @@ If no key is returned or there is no match the default pattern will be used.</p>
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
     Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>

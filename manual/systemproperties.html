@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Configuration properties :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/systemproperties.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -2888,7 +2888,7 @@ for more details.</p>
 </details>
 </div>
 <div class="sect3">
-<h4 id="log4j.jul.loggerAdapter"><a class="anchor" href="#log4j.jul.loggerAdapter"></a><code>log4j.jul.loggerAdapter</code></h4>
+<h4 id="log4j.jul.loggerAdapter"><a class="anchor" href="#log4j.jul.loggerAdapter"></a><code>log4j.jul.LoggerAdapter</code></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -2905,15 +2905,15 @@ for more details.</p>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.logging.log4j.jul.ApiLoggerAdapter</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fully qualified class name of a custom <code>org.apache.logging.jul.tolog4j.spi.AbstractLoggerAdapter</code> implementation to use, which provides an implementation of the <code>j.u.l.Logger</code> mutator methods (e.g., <code>Logger.setLevel()</code>).</p>
+<p>Fully qualified class name of a custom <code>org.apache.logging.log4j.jul.AbstractLoggerAdapter</code> implementation to use, which provides an implementation of the <code>j.u.l.Logger</code> mutator methods (e.g., <code>Logger.setLevel()</code>).</p>
 </div>
 <div class="paragraph">
-<p>By default <code>org.apache.logging.jul.tolog4j.internal.ApiLoggerAdapter</code> is used and the mutator methods are disabled.</p>
+<p>By default <code>org.apache.logging.log4j.jul.ApiLoggerAdapter</code> is used and the mutator methods are disabled.</p>
 </div>
 </div>
 </div>
@@ -3116,7 +3116,7 @@ This property source should be used to change the default values of an applicati
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
     Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>

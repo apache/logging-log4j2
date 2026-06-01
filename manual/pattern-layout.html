@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Pattern Layout :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/pattern-layout.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -2600,7 +2600,8 @@ Format modifiers to control such things as field width, padding, left, and right
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><code><a href="#converter-date">%d<br>
 %date</a></code></p></td>
-<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock">Only the predefined date formats (<code>DEFAULT</code>, <code>ISO8601</code>, <code>UNIX</code>, <code>UNIX_MILLIS</code>, etc.) are garbage-free</p></td>
+<td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock">The numeric formats (<code>UNIX</code> and <code>UNIX_MILLIS</code>) are garbage-free.
+The remaining formats are low-garbage and only generate temporary objects once per minute.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" style="background-color: white;"><p class="tableblock"><code><a href="#converter-encode">%enc{pattern}<br>
@@ -2891,7 +2892,7 @@ To get the most out of it, mind the following checklist:</p>
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
     Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>
