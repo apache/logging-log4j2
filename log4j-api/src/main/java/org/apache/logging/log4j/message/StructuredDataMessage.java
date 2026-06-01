@@ -356,10 +356,26 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     private void asXml(final StructuredDataId structuredDataId, final StringBuilder sb) {
+
         sb.append("<StructuredData>\n");
-        sb.append("<type>").append(type).append("</type>\n");
-        sb.append("<id>").append(structuredDataId).append("</id>\n");
+
+        // Encode type
+        sb.append("<type>");
+        int start = sb.length();
+        sb.append(type);
+        StringBuilders.escapeXml(sb, start);
+        sb.append("</type>\n");
+
+        // Encode ID
+        sb.append("<id>");
+        start = sb.length();
+        sb.append(structuredDataId);
+        StringBuilders.escapeXml(sb, start);
+        sb.append("</id>\n");
+
+        // Encode the rest
         super.asXml(sb);
+
         sb.append("\n</StructuredData>\n");
     }
 
