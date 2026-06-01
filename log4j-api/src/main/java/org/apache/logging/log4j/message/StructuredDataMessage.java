@@ -369,7 +369,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         // Encode ID
         sb.append("<id>");
         start = sb.length();
-        sb.append(structuredDataId);
+        structuredDataId.formatTo(sb);
         StringBuilders.escapeXml(sb, start);
         sb.append("</id>\n");
 
