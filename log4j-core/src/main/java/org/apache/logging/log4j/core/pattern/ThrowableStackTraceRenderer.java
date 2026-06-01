@@ -53,6 +53,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (maxLineCount > 0) {
             try {
                 C context = createContext(throwable);
+                //  `IdentityHashMap` is needed to deal with custom `equals()` and `hashCode()` implementations causing
+                // collisions
                 renderThrowable(
                         buffer, throwable, context, Collections.newSetFromMap(new IdentityHashMap<>()), lineSeparator);
             } catch (final Exception error) {
@@ -65,6 +67,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
 
     @SuppressWarnings("unchecked")
     C createContext(final Throwable throwable) {
+        //  `IdentityHashMap` is needed to deal with custom `equals()` and `hashCode()` implementations causing
+        // collisions
         final Map<Throwable, Context.Metadata> metadataByThrowable = new IdentityHashMap<>();
         Context.Metadata.populateMetadata(
                 metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);
@@ -295,6 +299,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
+                //  `IdentityHashMap` is needed to deal with custom `equals()` and `hashCode()` implementations causing
+                // collisions
                 final Map<Throwable, Metadata> metadataByThrowable = new IdentityHashMap<>();
                 populateMetadata(
                         metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);

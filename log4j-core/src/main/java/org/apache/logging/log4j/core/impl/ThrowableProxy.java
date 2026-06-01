@@ -114,6 +114,8 @@ public class ThrowableProxy implements Serializable {
         this.extendedStackTrace =
                 ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
+        //  `IdentityHashMap` is needed to deal with custom `equals()` and `hashCode()` implementations causing
+        // collisions
         final Set<Throwable> causeVisited = Collections.newSetFromMap(new IdentityHashMap<>(1));
         final Set<Throwable> suppressedVisited =
                 visited == null ? Collections.newSetFromMap(new IdentityHashMap<>()) : visited;

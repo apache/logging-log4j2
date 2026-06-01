@@ -587,4 +587,50 @@ public class ThrowablePatternConverterTest {
         }
         return buffer.toString();
     }
+
+    @Test
+    void testThrowableProxySerializationCollision() throws Exception {
+        class CollidingException extends RuntimeException {
+            public CollidingException(String message, Throwable cause) {
+                super(message, cause);
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj instanceof CollidingException
+                        && java.util.Objects.equals(getMessage(), ((CollidingException) obj).getMessage());
+            }
+
+            @Override
+            public int hashCode() {
+                return java.util.Objects.hashCode(getMessage());
+            }
+        }
+
+        Throwable inner = new CollidingException("collision", null);
+        Throwable middle = new CollidingException("collision", inner);
+        Throwable outer = new CollidingException("collision", middle);
+
+        org.apache.logging.log4j.core.impl.ThrowableProxy proxy =
+                new org.apache.logging.log4j.core.impl.ThrowableProxy(outer);
+
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos)) {
+            oos.writeObject(proxy);
+        }
+
+        org.apache.logging.log4j.core.impl.ThrowableProxy deserializedProxy;
+        try (java.io.ObjectInputStream ois =
+                new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray()))) {
+            deserializedProxy = (org.apache.logging.log4j.core.impl.ThrowableProxy) ois.readObject();
+        }
+
+        String actualStackTrace = deserializedProxy.getExtendedStackTraceAsString();
+
+        long count = java.util.Arrays.stream(actualStackTrace.split("\n"))
+                .filter(line -> line.contains("Caused by:"))
+                .count();
+
+        assertThat(count).isEqualTo(2);
+    }
 }
