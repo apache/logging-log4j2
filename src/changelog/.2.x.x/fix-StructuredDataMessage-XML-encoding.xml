@@ -5,7 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="TBD" link="https://github.com/apache/logging-log4j2/pull/TBD"/>
+  <issue id="4136" link="https://github.com/apache/logging-log4j2/pull/4136"/>
   <description format="asciidoc">
     Fix encoding of `MSGID` and `SD-ID` fields of `StructuredDataMessage` to XML
   </description>
