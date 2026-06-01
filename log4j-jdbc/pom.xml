@@ -104,6 +104,13 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <configuration>
+              <!-- `-Dmaven.test.skip` is used to build the `site`.
+                   That causes this execution to be skipped.
+                   Though test-JAR is required by `log4j-jdbc-dbcp2`.
+                   Hence, ensure test-JAR generation is not skipped. -->
+              <skip>false</skip>
+            </configuration>
           </execution>
         </executions>
       </plugin>
