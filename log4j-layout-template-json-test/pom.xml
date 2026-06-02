@@ -49,7 +49,7 @@
          2. The Docker image version of the ELK-stack
 
          As of 2024-09-16, these all (Maven artifacts and Elastic products) get released with the same version. -->
-    <elastic.version>9.2.0</elastic.version>
+    <elastic.version>9.4.2</elastic.version>
 
   </properties>
 
@@ -140,7 +140,7 @@
     <dependency>
       <groupId>co.elastic.logging</groupId>
       <artifactId>log4j2-ecs-layout</artifactId>
-      <version>1.7.0</version>
+      <version>1.8.0</version>
       <scope>test</scope>
     </dependency>
 
