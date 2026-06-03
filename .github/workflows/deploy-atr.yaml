@@ -59,6 +59,20 @@ jobs:
           git archive --format=tar.gz --prefix="${prefix}" -o "dist/apache-log4j-${version}-src.tar.gz" HEAD
           git archive --format=zip --prefix="${prefix}" -o "dist/apache-log4j-${version}-src.zip" HEAD
 
+      - name: Import GPG key
+        uses: crazymax/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd    # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+
+      - name: Generate checksums and signatures
+        working-directory: dist
+        run: |
+          for file in *.tar.gz *.zip; do
+            sha256sum "${file}" > "${file}.sha256"
+            sha512sum "${file}" > "${file}.sha512"
+            gpg --batch --yes --armor --detach-sign --output "${file}.asc" "${file}"
+          done
+
       - name: Upload to ATR
         uses: apache/tooling-actions/upload-to-atr@5bd24e53798bc79aa7bb69f62154a6b1e18ffd6e
         with:
