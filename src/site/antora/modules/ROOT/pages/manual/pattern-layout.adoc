@@ -391,11 +391,9 @@ Outputs the instant of the log event
 ----
 d{pattern}
 d{pattern}{timezone}
-d{pattern}{locale}
 d{pattern}{timezone}{locale}
 date{pattern}
 date{pattern}{timezone}
-date{pattern}{locale}
 date{pattern}{timezone}{locale}
 ----
 
@@ -456,9 +454,14 @@ The predefined _named_ formats are:
 You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone#getTimeZone(String)`].
 If no date format specifier is given, then the `DEFAULT` format is used.
 
-A locale tag in https://www.rfc-editor.org/rfc/bcp/bcp47.txt[BCP 47] format (e.g., `de-DE`, `fr-FR`) can be supplied as a second argument to control locale-sensitive formatting such as month names.
-When only two arguments are given, the second argument is treated as a *timezone ID* if it matches any known `TimeZone` ID (timezone always takes precedence); otherwise it is treated as a *locale tag* if it is a valid BCP 47 language tag.
-To supply *both* a timezone and a locale, use the three-argument form `%d{pattern}{timezone}{locale}`.
+The conversion supports supplying an optional timezone and/or a locale. A locale tag in https://www.rfc-editor.org/rfc/bcp/bcp47.txt[BCP 47] format (for example, `de-DE` or `fr-FR`) can be supplied to control locale-sensitive formatting such as month and day names.
+
+When only two brace arguments are provided (pattern plus one additional argument), the second argument is interpreted as follows:
+
+- If the value matches a known `TimeZone` ID, it is treated as a timezone ID (timezone always takes precedence).
+- Otherwise, if the value is a valid BCP 47 language tag, it is treated as a locale tag.
+
+To supply both a timezone and a locale, use the three-argument form: `%d{pattern}{timezone}{locale}`.
 
 You can also define custom date formats, see following examples:
 

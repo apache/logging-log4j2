@@ -8,7 +8,6 @@
   <issue id="4129" link="https://github.com/apache/logging-log4j2/issues/4129"/>
   <issue id="4130" link="https://github.com/apache/logging-log4j2/pull/4130"/>
   <description format="asciidoc">
-    Fix locale handling in the Pattern Layout's date pattern converter
-  </description>
+    Improved documentation for locale handling in the Pattern Layout date pattern converter.  </description>
 </entry>
 

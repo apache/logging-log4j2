@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -27,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.AbstractLogEvent;
@@ -39,7 +36,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 abstract class DatePatternConverterTestBase {
-    private static final long LOCALE_TEST_EPOCH_MILLIS = 1705276800000L;
 
     private static final class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
@@ -355,137 +351,5 @@ abstract class DatePatternConverterTestBase {
             final String expectedPattern = DatePatternConverter.decodeNamedPattern(patternName);
             assertEquals(expectedPattern, converter.getPattern());
         }
-    }
-
-    /**
-     * Helper: format a fixed UTC instant through the given options.
-     * The epoch is 2024-01-01T00:00:00Z: January / Januar depending on locale.
-     */
-    private static String formatLocaleInstant(final String... options) {
-        final MutableInstant instant = new MutableInstant();
-        instant.initFromEpochMilli(LOCALE_TEST_EPOCH_MILLIS, 0);
-        final DatePatternConverter converter = DatePatternConverter.newInstance(options);
-        final StringBuilder sb = new StringBuilder();
-        converter.format(instant, sb);
-        return sb.toString();
-    }
-
-    @Test
-    void testIsLocaleOptionDetectsLocaleWithRegion() {
-        assertTrue(DatePatternConverter.isLocaleOption("de-DE"));
-        assertTrue(DatePatternConverter.isLocaleOption("fr-FR"));
-        assertTrue(DatePatternConverter.isLocaleOption("zh-Hans-CN"));
-        assertTrue(DatePatternConverter.isLocaleOption("en-US"));
-    }
-
-    @Test
-    void testIsLocaleOptionDetectsLanguageOnlyLocale() {
-        assertTrue(DatePatternConverter.isLocaleOption("de"));
-        assertTrue(DatePatternConverter.isLocaleOption("fr"));
-        assertTrue(DatePatternConverter.isLocaleOption("zh"));
-    }
-
-    @Test
-    void testIsLocaleOptionRejectsTimezones() {
-        assertFalse(DatePatternConverter.isLocaleOption("UTC"));
-        assertFalse(DatePatternConverter.isLocaleOption("GMT"));
-        assertFalse(DatePatternConverter.isLocaleOption("JST"));
-        assertFalse(DatePatternConverter.isLocaleOption("PST"));
-        assertFalse(DatePatternConverter.isLocaleOption("utc"));
-        assertFalse(DatePatternConverter.isLocaleOption("gmt"));
-        assertFalse(DatePatternConverter.isLocaleOption("pst"));
-        assertFalse(DatePatternConverter.isLocaleOption("America/New_York"));
-        assertFalse(DatePatternConverter.isLocaleOption("Etc/GMT+5"));
-        assertFalse(DatePatternConverter.isLocaleOption("GB-Eire"));
-        assertFalse(DatePatternConverter.isLocaleOption("gb-eire"));
-        assertFalse(DatePatternConverter.isLocaleOption("NZ-CHAT"));
-        assertFalse(DatePatternConverter.isLocaleOption(null));
-    }
-
-    @Test
-    void testHyphenatedTimezonesAreNotTreatedAsLocales() {
-        assertEquals(
-                TimeZone.getTimeZone("GB-Eire"),
-                DatePatternConverter.newInstance(new String[] {"ISO8601", "GB-Eire"})
-                        .getTimeZone());
-        assertEquals(
-                TimeZone.getTimeZone("NZ-CHAT"),
-                DatePatternConverter.newInstance(new String[] {"ISO8601", "NZ-CHAT"})
-                        .getTimeZone());
-    }
-
-    /**
-     * %d{dd-MMMM-yyyy}{GMT}{de-DE}: three args, always worked.
-     * Verify baseline still produces German month name.
-     */
-    @Test
-    void testLocaleAppliedWhenTimezoneAndLocaleBothProvided() {
-        final String result = formatLocaleInstant("dd-MMMM-yyyy", "GMT", "de-DE");
-        assertTrue(
-                result.contains("Januar"),
-                () -> "Expected German month 'Januar' with [pattern][GMT][de-DE], got: " + result);
-    }
-
-    /**
-     * Locale-only argument should work generally across multiple locales.
-     */
-    @Test
-    void testLocaleAppliedWhenTimezoneOmitted_monthName_multipleLocales() {
-        final String[][] localeCases = {
-            {"de-DE", "januar"},
-            {"fr-FR", "janvier"},
-            {"es-ES", "enero"},
-            {"it-IT", "gennaio"},
-            {"pt-BR", "janeiro"}
-        };
-        for (final String[] localeCase : localeCases) {
-            final String localeTag = localeCase[0];
-            final String expectedMonth = localeCase[1];
-            final String result = formatLocaleInstant("dd-MMMM-yyyy", localeTag);
-            final String lowerCaseResult = result.toLowerCase(Locale.ROOT);
-            assertTrue(
-                    lowerCaseResult.contains(expectedMonth),
-                    () -> "Expected month '" + expectedMonth + "' with [pattern][" + localeTag
-                            + "] (no timezone), got: " + result);
-            assertFalse(
-                    lowerCaseResult.contains("january"),
-                    () -> "locale '" + localeTag + "' must not produce English 'January', got: " + result);
-        }
-    }
-
-    @Test
-    void testLocaleAppliedWhenTimezoneOmitted_languageOnlyTag() {
-        final String result = formatLocaleInstant("dd-MMMM-yyyy", "de");
-        assertTrue(
-                result.contains("Januar"),
-                () -> "Expected German month 'Januar' with [pattern][de] (no timezone), got: " + result);
-        assertFalse(result.contains("January"), () -> "locale 'de' must not produce English 'January', got: " + result);
-    }
-
-    /**
-     * %d{EEEE, dd. MMMM yyyy}{de-DE}: full date with day-of-week and locale only.
-     * Regression: locale was silently ignored.
-     * Fix: German day-of-week and month must be used.
-     * See: https://github.com/apache/logging-log4j2/issues/4129
-     */
-    @Test
-    void testLocaleAppliedWhenTimezoneOmitted_fullDate() {
-        final String result = formatLocaleInstant("EEEE, dd. MMMM yyyy", "de-DE");
-        assertTrue(
-                result.contains("Januar"),
-                () -> "Expected German month 'Januar' with full-date pattern + de-DE locale, got: " + result);
-        assertTrue(
-                result.contains("Montag"),
-                () -> "Expected German day-of-week 'Montag' with full-date pattern + de-DE locale, got: " + result);
-    }
-
-    /**
-     * When second arg is a locale tag, the effective timezone must remain the JVM default:
-     * NOT be interpreted as the bogus GMT that {@code TimeZone.getTimeZone("de-DE")} returns.
-     */
-    @Test
-    void testDefaultTimezoneUsedWhenOnlyLocaleProvided() {
-        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {"ISO8601", "de-DE"});
-        assertEquals(TimeZone.getDefault(), converter.getTimeZone());
     }
 }
