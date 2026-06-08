@@ -58,14 +58,12 @@ class PropertiesConfigurationTest {
         assertNotNull(filter, "No Filter");
         assertInstanceOf(ThresholdFilter.class, filter, "Not a Threshold Filter");
 
-        // === CORRECTED ASSERTIONS ===
         final List<Property> rootProperties = config.getRootLogger().getPropertyList();
         assertNotNull(rootProperties, "Root properties list should not be null");
         assertEquals(1, rootProperties.size());
         assertEquals("client.address", rootProperties.get(0).getName());
         assertEquals("${web:request.remoteAddress}", rootProperties.get(0).getValue());
 
-        // Target "org.apache.logging.log4j" instead of "rolling"
         final LoggerConfig log4jLogger = loggers.get("org.apache.logging.log4j");
         assertNotNull(log4jLogger, "org.apache.logging.log4j logger should not be null");
         final List<Property> log4jProperties = log4jLogger.getPropertyList();
@@ -73,7 +71,6 @@ class PropertiesConfigurationTest {
         assertEquals(1, log4jProperties.size());
         assertEquals("subsystem", log4jProperties.get(0).getName());
         assertEquals("Database", log4jProperties.get(0).getValue());
-        // ============================
 
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");

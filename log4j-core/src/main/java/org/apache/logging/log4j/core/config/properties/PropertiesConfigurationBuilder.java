@@ -307,7 +307,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             appenderBuilder.add(createLayout(name, layoutProps));
         }
 
-        // Clean up keys processed by addLoggersToComponent and addFiltersToComponent
         final java.util.List<String> keysToRemove = new java.util.ArrayList<>();
         for (final String propName : properties.stringPropertyNames()) {
             if (propName.startsWith("appenderRef") || propName.startsWith("filter")) {
@@ -324,7 +323,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private FilterComponentBuilder createFilter(final String key, final Properties properties) {
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
-            return null; // Safely ignore duplicate filters with missing types
+            return null;
         }
         final String onMatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MATCH);
         final String onMismatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MISMATCH);
@@ -417,7 +416,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
         }
 
-        // Clean up keys processed by addLoggersToComponent and addFiltersToComponent
         final java.util.List<String> keysToRemove = new java.util.ArrayList<>();
         for (final String propName : properties.stringPropertyNames()) {
             if (propName.startsWith("appenderRef") || propName.startsWith("filter")) {
