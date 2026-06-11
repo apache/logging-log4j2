@@ -211,7 +211,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return null;
     }
 
-    private void constructHierarchy(final Node node, final Element element) {
+    // Package-private for testing
+    void constructHierarchy(final Node node, final Element element) {
         processAttributes(node, element);
         final StringBuilder buffer = new StringBuilder();
         final NodeList list = element.getChildNodes();
@@ -272,7 +273,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final org.w3c.dom.Node w3cNode = attrs.item(i);
             if (w3cNode instanceof Attr) {
                 final Attr attr = (Attr) w3cNode;
-                if (attr.getName().equals("xml:base")) {
+                // The XInclude `fixup-base-uris` and `fixup-language` features (both enabled by default) add
+                // `xml:base` and `xml:lang` attributes to the top-level included elements.
+                if (XMLConstants.XML_NS_URI.equals(attr.getNamespaceURI())) {
                     continue;
                 }
                 attributes.put(attr.getName(), attr.getValue());
