@@ -15,9 +15,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<!-- `xml:lang` on the root gives the inclusion point a language context. This forces the XInclude
-     `fixup-language` feature to stamp an `xml:lang` attribute on the included `<Console>` element, in addition to
-     the `xml:base` added by `fixup-base-uris`. -->
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
   xml:lang="en" status="OFF" name="XIncludeFixup">
   <Appenders>

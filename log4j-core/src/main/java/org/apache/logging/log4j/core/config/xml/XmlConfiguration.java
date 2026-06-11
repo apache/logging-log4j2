@@ -325,12 +325,12 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         private static final EntityResolver INSTANCE = new ConfigurationSourceEntityResolver();
 
         @Override
-public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
-    if (systemId == null) {
-        throw new SAXException("Unable to resolve entity: missing system id");
-    }
-    InputSource source = null;
-    try {
+        public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
+            if (systemId == null) {
+                throw new SAXException("Unable to resolve entity: missing system id");
+            }
+            InputSource source = null;
+            try {
                 final ConfigurationSource configurationSource = ConfigurationSource.fromUri(new URI(systemId));
                 if (configurationSource != null) {
                     source = new InputSource(configurationSource.getInputStream());

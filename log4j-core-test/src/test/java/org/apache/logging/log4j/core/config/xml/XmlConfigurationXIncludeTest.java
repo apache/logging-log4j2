@@ -99,8 +99,8 @@ class XmlConfigurationXIncludeTest {
         // included element receives both `xml:base` (from `fixup-base-uris`) and `xml:lang` (from `fixup-language`).
         final Element rootElement = parse("/log4j-xinclude-fixup.xml", true).getDocumentElement();
 
-        final ConfigurationSource source =
-                ConfigurationSource.fromResource("log4j-xinclude-fixup.xml", getClass().getClassLoader());
+        final ConfigurationSource source = ConfigurationSource.fromResource(
+                "log4j-xinclude-fixup.xml", getClass().getClassLoader());
         final XmlConfiguration configuration = new XmlConfiguration(new LoggerContext("test"), source);
         // `constructHierarchy` resolves child elements to plugin types, so the plugins must be collected first.
         configuration.getPluginManager().collectPlugins();
@@ -121,7 +121,9 @@ class XmlConfigurationXIncludeTest {
     }
 
     private static List<String> collectXmlNamespaceAttributes(final Node node, final List<String> found) {
-        node.getAttributes().keySet().stream().filter(key -> key.startsWith("xml:")).forEach(found::add);
+        node.getAttributes().keySet().stream()
+                .filter(key -> key.startsWith("xml:"))
+                .forEach(found::add);
         node.getChildren().forEach(child -> collectXmlNamespaceAttributes(child, found));
         return found;
     }
