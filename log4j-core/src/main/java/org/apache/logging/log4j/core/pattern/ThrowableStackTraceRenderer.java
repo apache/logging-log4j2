@@ -55,8 +55,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 C context = createContext(throwable);
                 // `IdentityHashMap` is needed for exceptions with identity malfunction.
                 // Consider `equals()` and `hashCode()` implementations causing collisions.
-                renderThrowable(
-                        buffer, throwable, context, Collections.newSetFromMap(new IdentityHashMap<>()), lineSeparator);
+                final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+                renderThrowable(buffer, throwable, context, visitedThrowables, lineSeparator);
             } catch (final Exception error) {
                 if (error != MAX_LINE_COUNT_EXCEEDED) {
                     throw error;
@@ -67,11 +67,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
 
     @SuppressWarnings("unchecked")
     C createContext(final Throwable throwable) {
-        // `IdentityHashMap` is needed for exceptions with identity malfunction.
-        // Consider `equals()` and `hashCode()` implementations causing collisions.
-        final Map<Throwable, Context.Metadata> metadataByThrowable = new IdentityHashMap<>();
-        Context.Metadata.populateMetadata(
-                metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);
+        final Map<Throwable, Context.Metadata> metadataByThrowable = Context.Metadata.ofThrowable(throwable);
         return (C) new Context(0, metadataByThrowable);
     }
 
@@ -302,8 +298,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 // `IdentityHashMap` is needed for exceptions with identity malfunction.
                 // Consider `equals()` and `hashCode()` implementations causing collisions.
                 final Map<Throwable, Metadata> metadataByThrowable = new IdentityHashMap<>();
-                populateMetadata(
-                        metadataByThrowable, Collections.newSetFromMap(new IdentityHashMap<>()), null, throwable);
+                final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+                populateMetadata(metadataByThrowable, visitedThrowables, null, throwable);
                 return metadataByThrowable;
             }
 
