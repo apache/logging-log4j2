@@ -35,7 +35,22 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            return new ZipCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
+            return new ZipCompressAction(
+                    new File(renameTo),
+                    new File(compressedName),
+                    deleteSource,
+                    compressionLevel,
+                    maxCompressionDelaySeconds);
         }
     },
     GZ(".gz") {
@@ -45,7 +60,22 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            return new GzCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
+            return new GzCompressAction(
+                    new File(renameTo),
+                    new File(compressedName),
+                    deleteSource,
+                    compressionLevel,
+                    maxCompressionDelaySeconds);
         }
     },
     BZIP2(".bz2") {
@@ -55,8 +85,19 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
+            return new CommonsCompressAction(
+                    "bzip2", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     DEFLATE(".deflate") {
@@ -66,8 +107,19 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
+            return new CommonsCompressAction(
+                    "deflate", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     PACK200(".pack200") {
@@ -77,8 +129,19 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
+            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
+            return new CommonsCompressAction(
+                    "pack200", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     XZ(".xz") {
@@ -88,8 +151,19 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
+            return new CommonsCompressAction(
+                    "xz", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     },
     ZSTD(".zst") {
@@ -99,8 +173,19 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
+            return createCompressAction(renameTo, compressedName, deleteSource, compressionLevel, 0);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel,
+                final int maxCompressionDelaySeconds) {
             // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("zstd", source(renameTo), target(compressedName), deleteSource);
+            return new CommonsCompressAction(
+                    "zstd", source(renameTo), target(compressedName), deleteSource, maxCompressionDelaySeconds);
         }
     };
 
@@ -131,6 +216,13 @@ public enum FileExtension {
 
     public abstract Action createCompressAction(
             String renameTo, String compressedName, boolean deleteSource, int compressionLevel);
+
+    public abstract Action createCompressAction(
+            String renameTo,
+            String compressedName,
+            boolean deleteSource,
+            int compressionLevel,
+            int maxCompressionDelaySeconds);
 
     public String getExtension() {
         return extension;

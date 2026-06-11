@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +53,10 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
         if (maxLineCount > 0) {
             try {
                 C context = createContext(throwable);
-                renderThrowable(buffer, throwable, context, new HashSet<>(), lineSeparator);
+                // `IdentityHashMap` is needed for exceptions with identity malfunction.
+                // Consider `equals()` and `hashCode()` implementations causing collisions.
+                final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+                renderThrowable(buffer, throwable, context, visitedThrowables, lineSeparator);
             } catch (final Exception error) {
                 if (error != MAX_LINE_COUNT_EXCEEDED) {
                     throw error;
@@ -292,8 +295,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
-                final Map<Throwable, Metadata> metadataByThrowable = new HashMap<>();
-                populateMetadata(metadataByThrowable, new HashSet<>(), null, throwable);
+                // `IdentityHashMap` is needed for exceptions with identity malfunction.
+                // Consider `equals()` and `hashCode()` implementations causing collisions.
+                final Map<Throwable, Metadata> metadataByThrowable = new IdentityHashMap<>();
+                final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+                populateMetadata(metadataByThrowable, visitedThrowables, null, throwable);
                 return metadataByThrowable;
             }
 
