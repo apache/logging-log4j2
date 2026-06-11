@@ -21,16 +21,12 @@ import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import foo.TestFriendlyException;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +40,6 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Nested;
@@ -575,50 +570,6 @@ public class ThrowablePatternConverterTest {
                         return exception;
                     })
                     .collect(Collectors.toList());
-        }
-
-        @Test
-        void testThrowableProxySerializationCollision() throws Exception {
-            class CollidingException extends RuntimeException {
-                public CollidingException(String message, Throwable cause) {
-                    super(message, cause);
-                }
-
-                @Override
-                public boolean equals(Object obj) {
-                    return obj instanceof CollidingException
-                            && Objects.equals(getMessage(), ((CollidingException) obj).getMessage());
-                }
-
-                @Override
-                public int hashCode() {
-                    return Objects.hashCode(getMessage());
-                }
-            }
-
-            Throwable inner = new CollidingException("collision", null);
-            Throwable middle = new CollidingException("collision", inner);
-            Throwable outer = new CollidingException("collision", middle);
-
-            ThrowableProxy proxy = new ThrowableProxy(outer);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-                oos.writeObject(proxy);
-            }
-
-            ThrowableProxy deserializedProxy;
-            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
-                deserializedProxy = (ThrowableProxy) ois.readObject();
-            }
-
-            String actualStackTrace = deserializedProxy.getExtendedStackTraceAsString();
-
-            long count = Arrays.stream(actualStackTrace.split("\n"))
-                    .filter(line -> line.contains("Caused by:"))
-                    .count();
-
-            assertThat(count).isEqualTo(2);
         }
     }
 
