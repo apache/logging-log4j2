@@ -75,6 +75,10 @@ abstract class AbstractLoadBundleTest {
         return installBundle("org.apache.logging.log4j.api.test");
     }
 
+    private Bundle getXmlFactoryBundle() throws BundleException {
+        return installBundle("eu.copernik.xml.factory");
+    }
+
     /**
      * Tests starting, then stopping, then restarting, then stopping, and finally uninstalling the API and Core bundles
      */
@@ -82,19 +86,20 @@ abstract class AbstractLoadBundleTest {
     public void testApiCoreStartStopStartStop() throws BundleException {
 
         final Bundle api = getApiBundle();
+        final Bundle xmlFactory = getXmlFactoryBundle();
         final Bundle core = getCoreBundle();
         assertEquals(Bundle.INSTALLED, api.getState(), "api is not in INSTALLED state");
         assertEquals(Bundle.INSTALLED, core.getState(), "core is not in INSTALLED state");
 
         // 1st start-stop
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, xmlFactory, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, xmlFactory, api);
 
         // 2nd start-stop
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, xmlFactory, core);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, xmlFactory, api);
 
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, xmlFactory, api);
     }
 
     /**
@@ -104,9 +109,10 @@ abstract class AbstractLoadBundleTest {
     public void testClassNotFoundErrorLogger() throws BundleException {
 
         final Bundle api = getApiBundle();
+        final Bundle xmlFactory = getXmlFactoryBundle();
         final Bundle core = getCoreBundle();
 
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, xmlFactory);
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
@@ -126,8 +132,8 @@ abstract class AbstractLoadBundleTest {
         }
         assertEquals(Bundle.ACTIVE, core.getState(), String.format("`%s` bundle state mismatch", core));
 
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, api);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, xmlFactory, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, core, xmlFactory, api);
     }
 
     /**
@@ -138,10 +144,11 @@ abstract class AbstractLoadBundleTest {
     public void testLog4J12Fragement() throws BundleException, ReflectiveOperationException {
 
         final Bundle api = getApiBundle();
+        final Bundle xmlFactory = getXmlFactoryBundle();
         final Bundle core = getCoreBundle();
         final Bundle compat = get12ApiBundle();
 
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, xmlFactory, core);
 
         final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
@@ -156,8 +163,8 @@ abstract class AbstractLoadBundleTest {
                 levelClassFromAPI.getClassLoader(),
                 "expected 1.2 API Level NOT to have the same class loader as API Level");
 
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, api);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, core, xmlFactory, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, compat, core, xmlFactory, api);
     }
 
     /**
@@ -166,13 +173,14 @@ abstract class AbstractLoadBundleTest {
     @Test
     public void testServiceLoader() throws BundleException, ReflectiveOperationException {
         final Bundle api = getApiBundle();
+        final Bundle xmlFactory = getXmlFactoryBundle();
         final Bundle core = getCoreBundle();
         final Bundle apiTests = getApiTestsBundle();
 
         final Class<?> osgiServiceLocator = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocator");
         assertTrue((boolean) osgiServiceLocator.getMethod("isAvailable").invoke(null), "OsgiServiceLocator is active");
 
-        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, core, apiTests);
+        doOnBundlesAndVerifyState(Bundle::start, Bundle.ACTIVE, api, xmlFactory, core, apiTests);
 
         final Class<?> osgiServiceLocatorTest =
                 apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
@@ -187,8 +195,8 @@ abstract class AbstractLoadBundleTest {
                 "org.apache.logging.log4j.core.impl.Log4jProvider",
                 services.get(0).getClass().getName());
 
-        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, apiTests, core, api);
-        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, apiTests, core, api);
+        doOnBundlesAndVerifyState(Bundle::stop, Bundle.RESOLVED, apiTests, core, xmlFactory, api);
+        doOnBundlesAndVerifyState(Bundle::uninstall, Bundle.UNINSTALLED, apiTests, core, xmlFactory, api);
     }
 
     private static void doOnBundlesAndVerifyState(

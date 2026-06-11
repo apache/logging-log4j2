@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
@@ -103,6 +104,7 @@ class ConfigurationFactoryTest {
     }
 
     @Test
+    @SetTestProperty(key = "log4j2.configurationEnableXInclude", value = "true")
     @LoggerContextSource("log4j-xinclude.xml")
     void xinclude(final LoggerContext context) throws IOException {
         checkConfiguration(context);

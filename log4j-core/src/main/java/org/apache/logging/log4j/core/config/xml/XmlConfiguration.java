@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import eu.copernik.xml.factory.XmlFactories;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +38,7 @@ import javax.xml.validation.Validator;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -45,13 +49,14 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -60,8 +65,7 @@ import org.xml.sax.SAXException;
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
-    private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
+    private static final String ENABLE_XINCLUDE_PROP = "log4j2.configurationEnableXInclude";
 
     private final List<Status> status = new ArrayList<>();
     private Element rootElement;
@@ -84,24 +88,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             source.setSystemId(configSource.getLocation());
-            final DocumentBuilder documentBuilder = newDocumentBuilder(true);
-            Document document;
-            try {
-                document = documentBuilder.parse(source);
-            } catch (final Exception e) {
-                // LOG4J2-1127
-                final Throwable throwable = Throwables.getRootCause(e);
-                if (throwable instanceof UnsupportedOperationException) {
-                    LOGGER.warn(
-                            "The DocumentBuilder {} does not support an operation: {}."
-                                    + "Trying again without XInclude...",
-                            documentBuilder,
-                            e);
-                    document = newDocumentBuilder(false).parse(source);
-                } else {
-                    throw e;
-                }
-            }
+            final boolean xIncludeAware = PropertiesUtil.getProperties().getBooleanProperty(ENABLE_XINCLUDE_PROP);
+            final DocumentBuilder documentBuilder = newDocumentBuilder(xIncludeAware);
+            final Document document = documentBuilder.parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
@@ -135,6 +124,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             statusConfig.initialize();
         } catch (final SAXException | IOException | ParserConfigurationException e) {
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
+            throw new ConfigurationException("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
             try (final InputStream is =
@@ -172,67 +162,22 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     /**
      * Creates a new DocumentBuilder suitable for parsing a configuration file.
      *
-     * @param xIncludeAware enabled XInclude
+     * @param enableXInclude enabled XInclude
      * @return a new DocumentBuilder
      * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
      */
-    static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    static DocumentBuilder newDocumentBuilder(final boolean enableXInclude) throws ParserConfigurationException {
+        final DocumentBuilderFactory factory = XmlFactories.newDocumentBuilderFactory();
         factory.setNamespaceAware(true);
-
-        disableDtdProcessing(factory);
-
-        if (xIncludeAware) {
-            enableXInclude(factory);
-        }
-        return factory.newDocumentBuilder();
-    }
-
-    private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
-        factory.setValidating(false);
-        factory.setExpandEntityReferences(false);
-        setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
-        setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
-        setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-    }
-
-    private static void setFeature(
-            final DocumentBuilderFactory factory, final String featureName, final boolean value) {
-        try {
-            factory.setFeature(featureName, value);
-        } catch (final ParserConfigurationException e) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory, featureName, e);
-        } catch (final AbstractMethodError err) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
-        }
-    }
-
-    /**
-     * Enables XInclude for the given DocumentBuilderFactory
-     *
-     * @param factory a DocumentBuilderFactory
-     */
-    private static void enableXInclude(final DocumentBuilderFactory factory) {
-        try {
+        if (enableXInclude) {
             factory.setXIncludeAware(true);
-            // LOG4J2-3531: Xerces only checks if the feature is supported when creating a factory. To reproduce:
-            // -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11NonValidatingConfiguration
-            try {
-                factory.newDocumentBuilder();
-            } catch (final ParserConfigurationException e) {
-                factory.setXIncludeAware(false);
-                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-            }
-        } catch (final UnsupportedOperationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-        } catch (final AbstractMethodError | NoSuchMethodError err) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
         }
-        setFeature(factory, XINCLUDE_FIXUP_BASE_URIS, true);
-        setFeature(factory, XINCLUDE_FIXUP_LANGUAGE, true);
+
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        if (enableXInclude) {
+            builder.setEntityResolver(ConfigurationSourceEntityResolver.INSTANCE);
+        }
+        return builder;
     }
 
     @Override
@@ -366,6 +311,33 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         @Override
         public String toString() {
             return "Status [name=" + name + ", element=" + element + ", errorType=" + errorType + "]";
+        }
+    }
+
+    /**
+     * Entity resolver that resolves external entities the same way the configuration itself is resolved.
+     */
+    private static class ConfigurationSourceEntityResolver implements EntityResolver {
+
+        private static final EntityResolver INSTANCE = new ConfigurationSourceEntityResolver();
+
+        @Override
+        public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
+            InputSource source = null;
+            try {
+                final ConfigurationSource configurationSource = ConfigurationSource.fromUri(new URI(systemId));
+                if (configurationSource != null) {
+                    source = new InputSource(configurationSource.getInputStream());
+                    source.setPublicId(publicId);
+                    source.setSystemId(systemId);
+                }
+            } catch (final URISyntaxException e) {
+                throw new SAXException("Unable to resolve system id " + systemId, e);
+            }
+            if (source == null) {
+                throw new SAXException("Unable to resolve entity: " + systemId);
+            }
+            return source;
         }
     }
 }
