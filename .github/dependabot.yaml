@@ -131,6 +131,15 @@ updates:
       # Kafka 4.x is not compatible with our appender
       - dependency-name: "org.apache.kafka:*"
         versions: [ "[4,)" ]
+      # Keep JUnit below 6.x on 2.x: JUnit 6+ requires Java 17 and breaks Java 8 test runs
+      - dependency-name: "org.junit:junit-bom"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.jupiter:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.platform:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.vintage:*"
+        versions: [ "[6,)" ]
 
   - package-ecosystem: maven
     directories:

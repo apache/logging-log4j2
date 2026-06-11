@@ -1591,6 +1591,11 @@ public final class CronExpression {
     }
 
     public Date getPrevFireTime(final Date targetDate) {
+        // Cron expressions have second precision. If the input has a millisecond fraction,
+        // include fire times at that same wall-clock second by shifting into the next second.
+        if (targetDate.getTime() % 1000 != 0) {
+            return getTimeBefore(new Date(targetDate.getTime() + 999));
+        }
         return getTimeBefore(targetDate);
     }
 
@@ -1610,7 +1615,9 @@ public final class CronExpression {
         } else if (hours.first() == ALL_SPEC_INT) {
             return 3600000;
         }
-        return 86400000;
+        // DST spring-forward days can be 23 hours, so using 24 hours here can skip
+        // a valid previous fire time around midnight transitions.
+        return 23L * 60L * 60L * 1000L;
     }
 
     private int minInSet(final TreeSet<Integer> set) {
