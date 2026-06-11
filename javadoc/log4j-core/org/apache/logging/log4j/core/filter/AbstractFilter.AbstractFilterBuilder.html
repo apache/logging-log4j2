@@ -78,7 +78,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="BurstFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">BurstFilter.Builder</a></code>, <code><a href="DenyAllFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">DenyAllFilter.Builder</a></code>, <code><a href="LevelMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">LevelMatchFilter.Builder</a></code>, <code><a href="MutableThreadContextMapFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">MutableThreadContextMapFilter.Builder</a></code>, <code><a href="NoMarkerFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">NoMarkerFilter.Builder</a></code>, <code><a href="StringMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></code></dd>
+<dd><code><a href="BurstFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">BurstFilter.Builder</a></code>, <code><a href="DenyAllFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">DenyAllFilter.Builder</a></code>, <code><a href="LevelMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">LevelMatchFilter.Builder</a></code>, <code><a href="MutableThreadContextMapFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">MutableThreadContextMapFilter.Builder</a></code>, <code><a href="NoMarkerFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">NoMarkerFilter.Builder</a></code>, <code><a href="RegexFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter.Builder</a></code>, <code><a href="StringMatchFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></code></dd>
 </dl>
 <dl class="notes">
 <dt>Enclosing class:</dt>
@@ -137,10 +137,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getOnMatch()" class="member-name-link">getOnMatch</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the action to apply when a match occurs</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getOnMismatch()" class="member-name-link">getOnMismatch</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the action to apply when a mismatch occurs</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AbstractFilter.AbstractFilterBuilder.html" title="type parameter in AbstractFilter.AbstractFilterBuilder">B</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setOnMatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMatch</a><wbr>(<a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -222,12 +226,22 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getOnMatch()">
 <h3>getOnMatch</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">getOnMatch</span>()</div>
+<div class="block">Returns the action to apply when a match occurs</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the match result</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getOnMismatch()">
 <h3>getOnMismatch</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">getOnMismatch</span>()</div>
+<div class="block">Returns the action to apply when a mismatch occurs</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the mismatch result</dd>
+</dl>
 </section>
 </li>
 <li>

@@ -524,34 +524,39 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="class-use/RegexFilter.html#org.apache.logging.log4j.core.filter">RegexFilter</a></div>
 <div class="col-last even-row-color">
-<div class="block">A filter that matches the given regular expression pattern against messages.</div>
+<div class="block">This filter returns the <code>onMatch</code> result if the message exactly matches the configured
+ "<code>regex</code>" regular-expression pattern; otherwise, it returns the <code>onMismatch</code> result.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/ScriptFilter.html#org.apache.logging.log4j.core.filter">ScriptFilter</a></div>
+<div class="col-first odd-row-color"><a href="class-use/RegexFilter.Builder.html#org.apache.logging.log4j.core.filter">RegexFilter.Builder</a></div>
 <div class="col-last odd-row-color">
+<div class="block">A <a href="RegexFilter.html" title="class in org.apache.logging.log4j.core.filter"><code>RegexFilter</code></a> builder instance.</div>
+</div>
+<div class="col-first even-row-color"><a href="class-use/ScriptFilter.html#org.apache.logging.log4j.core.filter">ScriptFilter</a></div>
+<div class="col-last even-row-color">
 <div class="block">Returns the onMatch result if the script returns True and returns the onMismatch value otherwise.</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/StringMatchFilter.html#org.apache.logging.log4j.core.filter">StringMatchFilter</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/StringMatchFilter.html#org.apache.logging.log4j.core.filter">StringMatchFilter</a></div>
+<div class="col-last odd-row-color">
 <div class="block">This filter returns the onMatch result if the logging level in the event matches the specified logging level
  exactly.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/StringMatchFilter.Builder.html#org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="class-use/StructuredDataFilter.html#org.apache.logging.log4j.core.filter">StructuredDataFilter</a></div>
-<div class="col-last even-row-color">
+<div class="col-first even-row-color"><a href="class-use/StringMatchFilter.Builder.html#org.apache.logging.log4j.core.filter">StringMatchFilter.Builder</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="class-use/StructuredDataFilter.html#org.apache.logging.log4j.core.filter">StructuredDataFilter</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Filter based on data in a StructuredDataMessage.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/ThreadContextMapFilter.html#org.apache.logging.log4j.core.filter">ThreadContextMapFilter</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/ThreadContextMapFilter.html#org.apache.logging.log4j.core.filter">ThreadContextMapFilter</a></div>
+<div class="col-last even-row-color">
 <div class="block">Filter based on a value in the Thread Context Map (MDC).</div>
 </div>
-<div class="col-first even-row-color"><a href="class-use/ThresholdFilter.html#org.apache.logging.log4j.core.filter">ThresholdFilter</a></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><a href="class-use/ThresholdFilter.html#org.apache.logging.log4j.core.filter">ThresholdFilter</a></div>
+<div class="col-last odd-row-color">
 <div class="block">This filter returns the onMatch result if the level in the <a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core"><code>LogEvent</code></a> is the same or more specific
  than the configured level and the <code>onMismatch</code> value otherwise.</div>
 </div>
-<div class="col-first odd-row-color"><a href="class-use/TimeFilter.html#org.apache.logging.log4j.core.filter">TimeFilter</a></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><a href="class-use/TimeFilter.html#org.apache.logging.log4j.core.filter">TimeFilter</a></div>
+<div class="col-last even-row-color">
 <div class="block">Filters events that fall within a specified time period in each day.</div>
 </div>
 </div>

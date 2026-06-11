@@ -89,9 +89,11 @@ loadScripts(document, 'script');</script>
         <a href="../config/plugins/Plugin.html#category()">category</a>="Core",
         <a href="../config/plugins/Plugin.html#elementType()">elementType</a>="filter",
         <a href="../config/plugins/Plugin.html#printObject()">printObject</a>=true)
+@NullMarked
 </span><span class="modifiers">public final class </span><span class="element-name type-name-label">RegexFilter</span>
 <span class="extends-implements">extends <a href="AbstractFilter.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter</a></span></div>
-<div class="block">A filter that matches the given regular expression pattern against messages.</div>
+<div class="block">This filter returns the <code>onMatch</code> result if the message exactly matches the configured
+ "<code>regex</code>" regular-expression pattern; otherwise, it returns the <code>onMismatch</code> result.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -99,6 +101,17 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="nested-class-summary" id="nested-class-summary">
 <h2>Nested Class Summary</h2>
+<div class="caption"><span>Nested Classes</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static final class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="RegexFilter.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.filter">RegexFilter.Builder</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">A <a href="RegexFilter.html" title="class in org.apache.logging.log4j.core.filter"><code>RegexFilter</code></a> builder instance.</div>
+</div>
+</div>
 <div class="inherited-list">
 <h2 id="nested-classes-inherited-from-class-org.apache.logging.log4j.core.filter.AbstractFilter">Nested classes/interfaces inherited from class&nbsp;org.apache.logging.log4j.core.filter.<a href="AbstractFilter.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter</a></h2>
 <code><a href="AbstractFilter.AbstractFilterBuilder.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter.AbstractFilterBuilder</a>&lt;<a href="AbstractFilter.AbstractFilterBuilder.html" title="type parameter in AbstractFilter.AbstractFilterBuilder">B</a> extends <a href="AbstractFilter.AbstractFilterBuilder.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilter.AbstractFilterBuilder</a>&lt;<a href="AbstractFilter.AbstractFilterBuilder.html" title="type parameter in AbstractFilter.AbstractFilterBuilder">B</a>&gt;&gt;</code></div>
@@ -130,56 +143,78 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="RegexFilter.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createFilter(java.lang.String,java.lang.String%5B%5D,java.lang.Boolean,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">createFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;patternFlags,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useRawMsg,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;match,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;mismatch)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Creates a Filter that matches a regular expression.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="RegexFilter.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#createFilter(java.lang.String,java.lang.String%5B%5D,java.lang.Boolean,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">createFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> @Nullable []&nbsp;patternFlags,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useRawMsg,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;match,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;mismatch)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#newBuilder()"><code>newBuilder()</code></a> to instantiate builder</div>
+</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">filter</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;message,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appender Filter method.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)" class="member-name-link">filter</a><wbr>(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> @Nullable ...&nbsp;params)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appender Filter method.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;message,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appender Filter method.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.LogEvent)" class="member-name-link">filter</a><wbr>(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Context Filter method.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appender Filter method.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html" title="class or interface in java.util.regex" class="external-link">Pattern</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPattern()" class="member-name-link">getPattern</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appender Filter method.</div>
+<div class="block">Returns the compiled regular-expression pattern.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)" class="member-name-link">filter</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRegex()" class="member-name-link">getRegex</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appender Filter method.</div>
+<div class="block">Returns the regular-expression.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isUseRawMessage()" class="member-name-link">isUseRawMessage</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns whether the raw-message should be used.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="RegexFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Creates a new builder instance.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"></div>
 </div>
 </div>
 </div>
@@ -210,15 +245,65 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="getPattern()">
+<h3>getPattern</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html" title="class or interface in java.util.regex" class="external-link">Pattern</a></span>&nbsp;<span class="element-name">getPattern</span>()</div>
+<div class="block">Returns the compiled regular-expression pattern.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the pattern (will never be <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getRegex()">
+<h3>getRegex</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getRegex</span>()</div>
+<div class="block">Returns the regular-expression.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the regular-expression (it may be an empty string but never <code>null</code>)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isUseRawMessage()">
+<h3>isUseRawMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isUseRawMessage</span>()</div>
+<div class="block">Returns whether the raw-message should be used.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if the raw message should be used; otherwise, <code>false</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)">
 <h3>filter</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>...&nbsp;params)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)">AbstractFilter</a></code></span></div>
-<div class="block">Appender Filter method. The default returns NEUTRAL.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;msg,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> @Nullable ...&nbsp;params)</span></div>
+<div class="block">Appender Filter method. The default returns NEUTRAL.
+ <p>
+   This implementation performs the filter evaluation against the given message formatted with
+   the given parameters.
+ </p>
+ <p>
+   The following method arguments are ignored by this filter method implementation:
+   <ul>
+     <li><code>logger</code></li>
+     <li><code>level</code></li>
+     <li><code>marker</code></li>
+   </ul>
+ </p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../Filter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.String,java.lang.Object...)">filter</a></code>&nbsp;in interface&nbsp;<code><a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a></code></dd>
@@ -238,13 +323,24 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)">
 <h3>filter</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)">AbstractFilter</a></code></span></div>
-<div class="block">Appender Filter method. The default returns NEUTRAL.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;message,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<div class="block">Appender Filter method. The default returns NEUTRAL.
+ <p>
+   This implementation performs the filter evaluation against the given message.
+ </p>
+ <p>
+   The following method arguments are ignored by this filter method implementation:
+   <ul>
+     <li><code>logger</code></li>
+     <li><code>level</code></li>
+     <li><code>marker</code></li>
+     <li><code>throwable</code></li>
+   </ul>
+ </p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../Filter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,java.lang.Object,java.lang.Throwable)">filter</a></code>&nbsp;in interface&nbsp;<code><a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a></code></dd>
@@ -254,8 +350,8 @@ loadScripts(document, 'script');</script>
 <dd><code>logger</code> - the Logger.</dd>
 <dd><code>level</code> - The logging Level.</dd>
 <dd><code>marker</code> - The Marker, if any.</dd>
-<dd><code>msg</code> - The message, if present.</dd>
-<dd><code>t</code> - A throwable or null.</dd>
+<dd><code>message</code> - The message, if present.</dd>
+<dd><code>throwable</code> - A throwable or null.</dd>
 <dt>Returns:</dt>
 <dd>The Result of filtering.</dd>
 </dl>
@@ -264,13 +360,24 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)">
 <h3>filter</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;msg,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;t)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)">AbstractFilter</a></code></span></div>
-<div class="block">Appender Filter method. The default returns NEUTRAL.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(@Nullable <a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Marker.html" title="class or interface in org.apache.logging.log4j" class="external-link">Marker</a>&nbsp;marker,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/Message.html" title="class or interface in org.apache.logging.log4j.message" class="external-link">Message</a>&nbsp;message,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;throwable)</span></div>
+<div class="block">Appender Filter method. The default returns NEUTRAL.
+ <p>
+   This implementation performs the filter evaluation against the given message.
+ </p>
+ <p>
+   The following method arguments are ignored by this filter method implementation:
+   <ul>
+     <li><code>logger</code></li>
+     <li><code>level</code></li>
+     <li><code>marker</code></li>
+     <li><code>throwable</code></li>
+   </ul>
+ </p></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../Filter.html#filter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.Level,org.apache.logging.log4j.Marker,org.apache.logging.log4j.message.Message,java.lang.Throwable)">filter</a></code>&nbsp;in interface&nbsp;<code><a href="../Filter.html" title="interface in org.apache.logging.log4j.core">Filter</a></code></dd>
@@ -280,8 +387,8 @@ loadScripts(document, 'script');</script>
 <dd><code>logger</code> - the Logger.</dd>
 <dd><code>level</code> - The logging Level.</dd>
 <dd><code>marker</code> - The Marker, if any.</dd>
-<dd><code>msg</code> - The message, if present.</dd>
-<dd><code>t</code> - A throwable or null.</dd>
+<dd><code>message</code> - The message, if present.</dd>
+<dd><code>throwable</code> - A throwable or null.</dd>
 <dt>Returns:</dt>
 <dd>The Result of filtering.</dd>
 </dl>
@@ -291,7 +398,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="filter(org.apache.logging.log4j.core.LogEvent)">
 <h3>filter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a></span>&nbsp;<span class="element-name">filter</span><wbr><span class="parameters">(<a href="../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event)</span></div>
-<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="AbstractFilter.html#filter(org.apache.logging.log4j.core.LogEvent)">AbstractFilter</a></code></span></div>
 <div class="block">Context Filter method. The default returns NEUTRAL.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -302,6 +408,8 @@ loadScripts(document, 'script');</script>
 <dd><code>event</code> - The LogEvent.</dd>
 <dt>Returns:</dt>
 <dd>The Result of filtering.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the <code>event</code> argument is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -316,27 +424,45 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="newBuilder()">
+<h3>newBuilder</h3>
+<div class="member-signature"><span class="annotations"><a href="../config/plugins/PluginBuilderFactory.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginBuilderFactory</a>
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="RegexFilter.Builder.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter.Builder</a></span>&nbsp;<span class="element-name">newBuilder</span>()</div>
+<div class="block">Creates a new builder instance.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the new builder instance</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="createFilter(java.lang.String,java.lang.String[],java.lang.Boolean,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)">
 <h3>createFilter</h3>
-<div class="member-signature"><span class="annotations"><a href="../config/plugins/PluginFactory.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginFactory</a>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="RegexFilter.html" title="class in org.apache.logging.log4j.core.filter">RegexFilter</a></span>&nbsp;<span class="element-name">createFilter</span><wbr><span class="parameters">(<a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("regex")
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;regex,
- <a href="../config/plugins/PluginElement.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginElement</a>("PatternFlags")
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;patternFlags,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> @Nullable []&nbsp;patternFlags,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("useRawMsg")
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useRawMsg,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;useRawMsg,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("onMatch")
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;match,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;match,
  <a href="../config/plugins/PluginAttribute.html" title="annotation in org.apache.logging.log4j.core.config.plugins">@PluginAttribute</a>("onMismatch")
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;mismatch)</span>
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;mismatch)</span>
                                 throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a>,
 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalAccessException.html" title="class or interface in java.lang" class="external-link">IllegalAccessException</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#newBuilder()"><code>newBuilder()</code></a> to instantiate builder</div>
+</div>
 <div class="block">Creates a Filter that matches a regular expression.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>regex</code> - The regular expression to match.</dd>
-<dd><code>patternFlags</code> - An array of Strings where each String is a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#compile-java.lang.String-int-" title="class or interface in java.util.regex" class="external-link"><code>Pattern.compile(String, int)</code></a> compilation flag.</dd>
-<dd><code>useRawMsg</code> - If <code>true</code>, for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>ParameterizedMessage</code></a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StringFormattedMessage</code></a>, and <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>MessageFormatMessage</code></a>, the message format pattern; for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a>, the message field will be used as the match target.</dd>
+<dd><code>patternFlags</code> - Ignored, kept for backward compatibility.</dd>
+<dd><code>useRawMsg</code> - If <code>true</code>, for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>ParameterizedMessage</code></a>, <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StringFormattedMessage</code></a>,
+                     and <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>MessageFormatMessage</code></a>, the message format pattern; for <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StructuredDataMessage.html" title="class or interface in org.apache.logging.log4j.message" class="external-link"><code>StructuredDataMessage</code></a>,
+                     the message field will be used as the match target.</dd>
 <dd><code>match</code> - The action to perform when a match occurs.</dd>
 <dd><code>mismatch</code> - The action to perform when a mismatch occurs.</dd>
 <dt>Returns:</dt>
