@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-    <issue id="3176" link="https://github.com/apache/logging-log4j2/issues/2250"/>
-    <issue id="3176" link="https://github.com/apache/logging-log4j2/pull/4124"/>
+    <issue id="2250" link="https://github.com/apache/logging-log4j2/issues/2250"/>
+    <issue id="4124" link="https://github.com/apache/logging-log4j2/pull/4124"/>
     <description format="asciidoc">
         Improve logging for `LinkageError` scenarios involving the LMAX Disruptor library
     </description>

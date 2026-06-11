@@ -74,6 +74,64 @@ class StructuredDataMessageTest {
     }
 
     @Test
+    void testXmlEncodingOfIdAndType1() {
+        final String id = "i<&d>" + XmlFixture.TEXT;
+        final String type = "t>yp<e&" + XmlFixture.TEXT;
+        final String actualXml =
+                new StructuredDataMessage(id, "discarded message", type).getFormattedMessage(new String[] {"XML"});
+        final String expectedXml = "<StructuredData>\n"
+                + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
+                + "</type>\n"
+                + "<id>i&lt;&amp;d&gt;" + XmlFixture.ENCODED_TEXT
+                + "</id>\n"
+                // Following part is encoded by `MapMessage::asXml`, hence, fuzzed & tested elsewhere
+                + "<Map>\n"
+                + "</Map>\n"
+                + "</StructuredData>\n";
+        assertEquals(expectedXml, actualXml);
+    }
+
+    @Test
+    void testXmlEncodingOfIdAndType2() {
+        final String idName = "id&<-name>" + XmlFixture.TEXT;
+        final String idEnterpriseNumber = "id&<-enterprise-number>" + XmlFixture.TEXT;
+        final String[] idRequired = {"id&<-required>" + XmlFixture.TEXT};
+        final String[] idOptional = {"id&<-optional>" + XmlFixture.TEXT};
+        final String type = "t>yp<e&" + XmlFixture.TEXT;
+        final StructuredDataId id =
+                new StructuredDataId(idName, idEnterpriseNumber, idRequired, idOptional, Integer.MAX_VALUE);
+        final String actualXml =
+                new StructuredDataMessage(id, "discarded message", type).getFormattedMessage(new String[] {"XML"});
+        final String expectedXml = "<StructuredData>\n"
+                + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
+                + "</type>\n"
+                + "<id>" + "id&amp;&lt;-name&gt;" + XmlFixture.ENCODED_TEXT
+                + "@id&amp;&lt;-enterprise-number&gt;" + XmlFixture.ENCODED_TEXT
+                + "</id>\n"
+                // Following part is encoded by `MapMessage::asXml`, hence, fuzzed & tested elsewhere
+                + "<Map>\n"
+                + "</Map>\n"
+                + "</StructuredData>\n";
+        assertEquals(expectedXml, actualXml);
+    }
+
+    private enum XmlFixture {
+        ;
+
+        private static final String TEXT;
+
+        private static final String ENCODED_TEXT;
+
+        static {
+            final String notBmp = new String(Character.toChars(0x10000));
+            final String invalid = "A\uD800B\uDE00C\0\1\2\3";
+            final String encodedInvalid = "A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD";
+            TEXT = " '\"\t\r\n" + notBmp + invalid;
+            ENCODED_TEXT = " &apos;&quot;\t\r\n" + notBmp + encodedInvalid;
+        }
+    }
+
+    @Test
     void testBuilder() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert")
