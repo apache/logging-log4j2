@@ -454,15 +454,6 @@ The predefined _named_ formats are:
 You can also use a set of braces containing a time zone id per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)[`TimeZone#getTimeZone(String)`].
 If no date format specifier is given, then the `DEFAULT` format is used.
 
-The conversion supports supplying an optional timezone and/or a locale. A locale tag in https://www.rfc-editor.org/rfc/bcp/bcp47.txt[BCP 47] format (for example, `de-DE` or `fr-FR`) can be supplied to control locale-sensitive formatting such as month and day names.
-
-When only two brace arguments are provided (pattern plus one additional argument), the second argument is interpreted as follows:
-
-- If the value matches a known `TimeZone` ID, it is treated as a timezone ID (timezone always takes precedence).
-- Otherwise, if the value is a valid BCP 47 language tag, it is treated as a locale tag.
-
-To supply both a timezone and a locale, use the three-argument form: `%d{pattern}{timezone}{locale}`.
-
 You can also define custom date formats, see following examples:
 
 [%header,cols="2m,3m"]
@@ -476,8 +467,6 @@ You can also define custom date formats, see following examples:
 |%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
 |2012-11-02T14:34:02.123Z
 
-|%d{dd-MMMM-yyyy}\{de-DE}
-|02 November 2012
 
 |%d{dd-MMMM-yyyy}\{UTC}\{de-DE}
 |02 November 2012 (UTC timezone, German locale)
