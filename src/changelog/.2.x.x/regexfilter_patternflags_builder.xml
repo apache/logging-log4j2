@@ -4,6 +4,7 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="removed">
   <issue id="3239" link="https://github.com/apache/logging-log4j2/issues/3239"/>
+  <issue id="3512" link="https://github.com/apache/logging-log4j2/pull/3512"/>
   <issue id="4119" link="https://github.com/apache/logging-log4j2/pull/4119"/>
   <description format="asciidoc">
     Remove the `patternFlags` attribute from `RegexFilter`.
