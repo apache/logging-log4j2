@@ -51,10 +51,12 @@ class XmlConfigurationXIncludeTest {
     private Document parse(final String resource, final boolean enableXInclude) throws Exception {
         final URL url = getClass().getResource(resource);
         final DocumentBuilder builder = XmlConfiguration.newDocumentBuilder(enableXInclude);
-        final InputSource source = new InputSource(url.openStream());
-        // Required so that relative `href` attributes can be resolved against the configuration location.
-        source.setSystemId(url.toExternalForm());
-        return builder.parse(source);
+        try (final java.io.InputStream is = url.openStream()) {
+            final InputSource source = new InputSource(is);
+            // Required so that relative `href` attributes can be resolved against the configuration location.
+            source.setSystemId(url.toExternalForm());
+            return builder.parse(source);
+        }
     }
 
     @Test
