@@ -49,13 +49,13 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
          * The action to perform when a match occurs.
          */
         @PluginBuilderAttribute(ATTR_ON_MATCH)
-        protected Result onMatch = Result.NEUTRAL;
+        private Result onMatch = Result.NEUTRAL;
 
         /**
          * The action to perform when a mismatch occurs.
          */
         @PluginBuilderAttribute(ATTR_ON_MISMATCH)
-        protected Result onMismatch = Result.DENY;
+        private Result onMismatch = Result.DENY;
 
         /**
          * Returns the action to apply when a match occurs
@@ -130,11 +130,10 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
      * Constructs a new instance configured by the given builder
      * @param builder the builder
      * @throws NullPointerException if the builder argument is {@code null}
+     * @since 2.27.0
      */
     protected AbstractFilter(final AbstractFilterBuilder<?> builder) {
-
-        Objects.requireNonNull(builder, "The 'builder' argument cannot be null.");
-
+        Objects.requireNonNull(builder, "builder");
         this.onMatch = Optional.ofNullable(builder.onMatch).orElse(Result.NEUTRAL);
         this.onMismatch = Optional.ofNullable(builder.onMismatch).orElse(Result.DENY);
     }

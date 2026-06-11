@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.Level;
@@ -72,16 +72,16 @@ class RegexFilterTest {
                 .setMessage(new SimpleMessage("test")) //
                 .build();
         assertSame(Filter.Result.DENY, filter.filter(event));
-        filter = RegexFilter.newBuilder().build();
-        assertNull(filter);
+        final RegexFilter.Builder filterBuilder = RegexFilter.newBuilder();
+        assertThrows(IllegalArgumentException.class, filterBuilder::build);
     }
 
     @Test
     void testDotAllPattern() throws Exception {
         final String singleLine = "test single line matches";
         final String multiLine = "test multi line matches\nsome more lines";
-        final RegexFilter filter = RegexFilter.createFilter(
-                ".*line.*", new String[] {"DOTALL", "COMMENTS"}, false, Filter.Result.DENY, Filter.Result.ACCEPT);
+        final RegexFilter filter =
+                RegexFilter.createFilter("(?xs).*line.*", null, false, Filter.Result.DENY, Filter.Result.ACCEPT);
         final Result singleLineResult = filter.filter(null, null, null, (Object) singleLine, null);
         final Result multiLineResult = filter.filter(null, null, null, (Object) multiLine, null);
         assertThat(singleLineResult, equalTo(Result.DENY));
@@ -190,10 +190,8 @@ class RegexFilterTest {
      */
     @Test
     void testBuilderWithoutRegexNotValid() {
-
         final RegexFilter.Builder builder = RegexFilter.newBuilder();
-
-        assertNull(builder.build());
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 
     /**
@@ -201,11 +199,8 @@ class RegexFilterTest {
      */
     @Test
     void testBuilderWithInvalidRegexNotValid() {
-
         final RegexFilter.Builder builder = RegexFilter.newBuilder();
-
         builder.setRegex("[a-z");
-
-        assertNull(builder.build());
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 }
