@@ -179,6 +179,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns all the elements in the stack in a List.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#assertFiltered(java.io.ObjectInputStream)" class="member-name-link">assertFiltered(ObjectInputStream)</a> - Static method in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/MapMessage.html#asString()" class="member-name-link">asString()</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/MapMessage.html" title="class in org.apache.logging.log4j.message">MapMessage</a></dt>
 <dd>
 <div class="block">Formats the Structured data as described in <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>.</div>
@@ -5429,6 +5431,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Internal utility classes for the Log4j 2 API.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/util/internal/package-summary.html">org.apache.logging.log4j.util.internal</a> - package org.apache.logging.log4j.util.internal</dt>
+<dd>
+<div class="block">Utilities for safely serializing and deserializing Log4j objects.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#ORIGIN" class="member-name-link">ORIGIN</a> - Static variable in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
 <dd>
 <div class="block">RFC 5424 Origin.</div>
@@ -5810,6 +5816,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Read-only view of the data structure that implements MDC behavior for <a href="org/apache/logging/log4j/ThreadContext.html" title="class in org.apache.logging.log4j"><code>ThreadContext</code></a>.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#readWrappedObject(java.io.ObjectInputStream)" class="member-name-link">readWrappedObject(ObjectInputStream)</a> - Static method in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/ParameterizedMessage.html#RECURSION_PREFIX" class="member-name-link">RECURSION_PREFIX</a> - Static variable in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/ParameterizedMessage.html" title="class in org.apache.logging.log4j.message">ParameterizedMessage</a></dt>
 <dd>
 <div class="block">Prefix for recursion.</div>
@@ -5913,6 +5921,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates a new string repeating given <code>str</code> <code>count</code> times.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#REQUIRED_JAVA_CLASSES" class="member-name-link">REQUIRED_JAVA_CLASSES</a> - Static variable in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#REQUIRED_JAVA_PACKAGES" class="member-name-link">REQUIRED_JAVA_PACKAGES</a> - Static variable in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/spi/AbstractLogger.html#requiresLocation()" class="member-name-link">requiresLocation()</a> - Method in class org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/AbstractLogger.html" title="class in org.apache.logging.log4j.spi">AbstractLogger</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataId.html#RESERVED" class="member-name-link">RESERVED</a> - Static variable in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataId.html" title="class in org.apache.logging.log4j.message">StructuredDataId</a></dt>
@@ -5977,6 +5989,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/util/ServiceLoaderUtil.html#safeStream(java.lang.Class,java.util.ServiceLoader,org.apache.logging.log4j.Logger)" class="member-name-link">safeStream(Class&lt;S&gt;, ServiceLoader&lt;? extends S&gt;, Logger)</a> - Static method in class org.apache.logging.log4j.util.<a href="org/apache/logging/log4j/util/ServiceLoaderUtil.html" title="class in org.apache.logging.log4j.util">ServiceLoaderUtil</a></dt>
 <dd>
 <div class="block">Retrieves services registered with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html" title="class or interface in java.util" class="external-link"><code>ServiceLoader</code></a></div>
+</dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" class="type-name-link" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a> - Class in <a href="org/apache/logging/log4j/util/internal/package-summary.html">org.apache.logging.log4j.util.internal</a></dt>
+<dd>
+<div class="block">Provides methods to increase the safety of object serialization/deserialization.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/util/ServiceLoaderUtil.html" class="type-name-link" title="class in org.apache.logging.log4j.util">ServiceLoaderUtil</a> - Class in <a href="org/apache/logging/log4j/util/package-summary.html">org.apache.logging.log4j.util</a></dt>
 <dd>
@@ -6303,6 +6319,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/util/Strings.html" class="type-name-link" title="class in org.apache.logging.log4j.util">Strings</a> - Class in <a href="org/apache/logging/log4j/util/package-summary.html">org.apache.logging.log4j.util</a></dt>
 <dd>
 <div class="block"><em>Consider this class private.</em></div>
+</dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#stripArray(java.lang.Class)" class="member-name-link">stripArray(Class&lt;?&gt;)</a> - Static method in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>
+<div class="block">Gets the class name of an array component recursively.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#stripArray(java.lang.String)" class="member-name-link">stripArray(String)</a> - Static method in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>
+<div class="block">Gets the class name of an array component recursively.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataCollectionMessage.html" class="type-name-link" title="class in org.apache.logging.log4j.message">StructuredDataCollectionMessage</a> - Class in <a href="org/apache/logging/log4j/message/package-summary.html">org.apache.logging.log4j.message</a></dt>
 <dd>
@@ -7553,6 +7577,8 @@ the order they are declared.</div>
 <dd>
 <div class="block">Creates a ThreadDumpMessageProxy that can be serialized.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/util/internal/SerializationUtil.html#writeWrappedObject(java.io.Serializable,java.io.ObjectOutputStream)" class="member-name-link">writeWrappedObject(Serializable, ObjectOutputStream)</a> - Static method in class org.apache.logging.log4j.util.internal.<a href="org/apache/logging/log4j/util/internal/SerializationUtil.html" title="class in org.apache.logging.log4j.util.internal">SerializationUtil</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:X">X</h2>
 <dl class="index">
