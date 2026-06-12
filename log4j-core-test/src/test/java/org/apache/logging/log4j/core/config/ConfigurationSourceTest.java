@@ -178,23 +178,17 @@ public class ConfigurationSourceTest {
             openConnectionCalls.set(0);
             getInputStreamCalls.set(0);
 
-            final Method method =
-                    ConfigurationSource.class.getDeclaredMethod("getConfigurationSource", URL.class);
+            final Method method = ConfigurationSource.class.getDeclaredMethod("getConfigurationSource", URL.class);
             method.setAccessible(true);
             final Object result = method.invoke(null, url);
 
-            assertTrue(
-                    openConnectionCalls.get() > 0,
-                    "Custom URLStreamHandler was not used by UrlConnectionFactory");
+            assertTrue(openConnectionCalls.get() > 0, "Custom URLStreamHandler was not used by UrlConnectionFactory");
 
             assertNull(result, "Expected null return for a 404 response");
 
             assertTrue(disconnected.get(), "disconnect() must be called on the error path");
 
-            assertEquals(
-                    1,
-                    getInputStreamCalls.get(),
-                    "getInputStream() should be called exactly once");
+            assertEquals(1, getInputStreamCalls.get(), "getInputStream() should be called exactly once");
         } finally {
             if (previous != null) {
                 System.setProperty(propKey, previous);
