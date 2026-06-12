@@ -23,10 +23,10 @@
  * This package is not subject to any backward compatibility concerns.
  * </p>
  *
- * @since 2.26.0
+ * @since 2.27.0
  */
 @Export
-@Version("2.26.0")
+@Version("2.27.0")
 package org.apache.logging.log4j.util.internal;
 
 import org.osgi.annotation.bundle.Export;
