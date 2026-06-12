@@ -134,11 +134,6 @@ public class ConfigurationSourceTest {
      * Verifies that the error-path cleanup in {@code getConfigurationSource}
      * properly disconnects an {@link HttpURLConnection} on failure without
      * calling {@link URLConnection#getInputStream()} a second time.
-     *
-     * <p>This test fails against the original code (no cleanup) because
-     * {@code disconnect()} is never called, and fails against an intermediate
-     * fix that added a {@code finally} block calling {@code getInputStream()}
-     * again to obtain a stream for closing.
      */
     @Test
     void getConfigurationSource_disconnectsHttpConnection_onError() throws Exception {
@@ -194,13 +189,8 @@ public class ConfigurationSourceTest {
 
             assertNull(result, "Expected null return for a 404 response");
 
-            // Negative‐test #1: the original code has no finally block, so
-            // disconnect() is never called on the HttpURLConnection.
             assertTrue(disconnected.get(), "disconnect() must be called on the error path");
 
-            // Negative‐test #2: an intermediate fix called getInputStream()
-            // a second time in the finally block instead of closing the
-            // already-tracked stream reference.
             assertEquals(
                     1,
                     getInputStreamCalls.get(),

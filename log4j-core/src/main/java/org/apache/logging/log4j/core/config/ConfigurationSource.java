@@ -357,49 +357,39 @@ public class ConfigurationSource {
             value = "PATH_TRAVERSAL_IN",
             justification = "The name of the accessed files is based on a configuration value.")
     private static /*@Nullable*/ ConfigurationSource getConfigurationSource(final URL url) {
+        final File file;
+        final URLConnection urlConnection;
         try {
-            final File file = FileUtils.fileFromUri(url.toURI());
-            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            boolean success = false;
-            InputStream openedStream = null;
-            try {
-                final ConfigurationSource source;
-                if (file != null) {
-                    openedStream = urlConnection.getInputStream();
-                    source = new ConfigurationSource(openedStream, file);
-                } else if (urlConnection instanceof JarURLConnection) {
-                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
-                    URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
-                    File jarFile = new File(jarFileUrl.getFile());
-                    long lastModified = jarFile.lastModified();
-                    openedStream = urlConnection.getInputStream();
-                    source = new ConfigurationSource(openedStream, url, lastModified);
-                } else {
-                    openedStream = urlConnection.getInputStream();
-                    source = new ConfigurationSource(openedStream, url, urlConnection.getLastModified());
-                }
-                success = true;
-                return source;
-            } catch (final FileNotFoundException ex) {
-                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
-                return null;
-            } finally {
-                if (!success) {
-                    if (openedStream != null) {
-                        try {
-                            openedStream.close();
-                        } catch (final IOException ignored) {
-                            // Best-effort cleanup
-                        }
-                    }
-                    if (urlConnection instanceof HttpURLConnection) {
-                        ((HttpURLConnection) urlConnection).disconnect();
-                    }
-                }
-            }
+            file = FileUtils.fileFromUri(url.toURI());
+            urlConnection = UrlConnectionFactory.createConnection(url);
         } catch (final IOException | URISyntaxException ex) {
             ConfigurationFactory.LOGGER.warn(
                     "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
+            return null;
+        }
+        try {
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), file);
+            } else if (urlConnection instanceof JarURLConnection) {
+                // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                final URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
+                final File jarFile = new File(jarFileUrl.getFile());
+                final long lastModified = jarFile.lastModified();
+                return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+            } else {
+                final long lastModified = urlConnection.getLastModified();
+                return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+            }
+        } catch (final IOException ex) {
+            if (ex instanceof FileNotFoundException) {
+                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+            } else {
+                ConfigurationFactory.LOGGER.warn(
+                        "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
+            }
+            if (urlConnection instanceof HttpURLConnection) {
+                ((HttpURLConnection) urlConnection).disconnect();
+            }
             return null;
         }
     }
