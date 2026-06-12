@@ -26,8 +26,15 @@
  * @since 2.27.0
  */
 @Export
+@ExportTo({
+    "org.apache.logging.log4j.core",
+    "org.apache.log4j",
+    "org.apache.logging.log4j.slf4j.impl",
+    "org.apache.logging.log4j.slf4j2.impl"
+})
 @Version("2.27.0")
 package org.apache.logging.log4j.util.internal;
 
+import aQute.bnd.annotation.jpms.ExportTo;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
