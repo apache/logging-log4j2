@@ -152,7 +152,10 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @param name The context name.
      * @param externalContext The external context.
+     * @deprecated Use {@link #LoggerContext(String)} and {@link #putObject(String, Object)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     public LoggerContext(final String name, final Object externalContext) {
         this(name, externalContext, (URI) null);
     }
@@ -163,11 +166,14 @@ public class LoggerContext extends AbstractLifeCycle
      * @param name The context name.
      * @param externalContext The external context.
      * @param configLocn The location of the configuration as a URI.
+     * @deprecated Use {@link #LoggerContext(String)} and {@link #putObject(String, Object)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this.contextName = name;
         if (externalContext != null) {
-            externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
+            this.putObject(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
     }
@@ -531,7 +537,10 @@ public class LoggerContext extends AbstractLifeCycle
      * Sets the external context.
      *
      * @param context The external context.
+     * @deprecated Use {@link #putObject(String, Object)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     public void setExternalContext(final Object context) {
         if (context != null) {
             this.externalMap.put(EXTERNAL_CONTEXT_KEY, context);
@@ -544,8 +553,11 @@ public class LoggerContext extends AbstractLifeCycle
      * Returns the external context.
      *
      * @return The external context.
+     * @deprecated Use {@link #getObject(String)} instead.
+     * @since 2.27.0
      */
     @Override
+    @Deprecated
     public Object getExternalContext() {
         return this.externalMap.get(EXTERNAL_CONTEXT_KEY);
     }
@@ -766,7 +778,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Reconfigures the context.
      */
     private void reconfigure(final URI configURI) {
-        final Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
+        final Object externalContext = getExternalContext();
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
         LOGGER.debug(
                 "Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",

@@ -148,8 +148,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @since 2.27.0
      */
     @Override
+    @Deprecated
     public LoggerContext getContext(
             final String fqcn, final ClassLoader loader, final Object externalContext, final boolean currentContext) {
         final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
@@ -171,7 +174,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param source The configuration source.
      * @return The LoggerContext.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     public LoggerContext getContext(
             final String fqcn,
             final ClassLoader loader,
@@ -205,7 +211,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param configuration The Configuration.
      * @return The LoggerContext.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     public LoggerContext getContext(
             final String fqcn,
             final ClassLoader loader,
@@ -236,8 +245,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param configLocation The location of the configuration for the LoggerContext (or null).
      * @return The LoggerContext.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @since 2.27.0
      */
     @Override
+    @Deprecated
     public LoggerContext getContext(
             final String fqcn,
             final ClassLoader loader,
@@ -293,6 +305,19 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return ctx;
     }
 
+    /**
+     * Loads the LoggerContext using the ContextSelector.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param loader The ClassLoader to use or null.
+     * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
+     * @param currentContext If true returns the current Context, if false returns the Context appropriate
+     * for the caller if a more appropriate Context can be determined.
+     * @param configLocations The locations of the configuration for the LoggerContext (or null).
+     * @return The LoggerContext.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @since 2.27.0
+     */
+    @Deprecated
     public LoggerContext getContext(
             final String fqcn,
             final ClassLoader loader,
@@ -300,17 +325,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             final boolean currentContext,
             final List<URI> configLocations,
             final String name) {
-        final LoggerContext ctx;
-        if (externalContext instanceof Map.Entry) {
-            @SuppressWarnings("unchecked")
-            final Map.Entry<String, Object> entry = (Map.Entry<String, Object>) externalContext;
-            ctx = selector.getContext(fqcn, loader, entry, currentContext, null);
-        } else {
-            ctx = selector.getContext(fqcn, loader, currentContext, null);
-            if (externalContext != null && ctx.getExternalContext() == null) {
-                ctx.setExternalContext(externalContext);
-            }
+        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        if (externalContext != null && ctx.getExternalContext() == null) {
+            ctx.setExternalContext(externalContext);
         }
+
         if (name != null) {
             ctx.setName(name);
         }

@@ -30,9 +30,14 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
@@ -52,6 +57,8 @@ import org.apache.logging.log4j.util.Strings;
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
 
     private static final String WEB_INF = "/WEB-INF/";
+
+    private static final String SERVLET_CONTEXT_KEY = "org.apache.logging.log4j.web.servletContext";
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
@@ -133,8 +140,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.namedContextSelector = (NamedContextSelector) selector;
-                context = this.namedContextSelector.locateContext(
-                        this.name, WebLoggerContextUtils.createExternalEntry(this.servletContext), configLocation);
+                context = this.namedContextSelector.locateContext(this.name, null, configLocation);
+                context.putObject(SERVLET_CONTEXT_KEY, this.servletContext);
                 ContextAnchor.THREAD_CONTEXT.set(context);
                 if (context.isInitialized()) {
                     context.start();
@@ -168,17 +175,54 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             LOGGER.error("No Log4j context configuration provided. This is very unusual.");
             this.name = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
         }
+
         if (location != null && location.contains(",")) {
             final List<URI> uris = getConfigURIs(location);
-            this.loggerContext = Configurator.initialize(
-                    this.name,
-                    this.getClassLoader(),
-                    uris,
-                    WebLoggerContextUtils.createExternalEntry(this.servletContext));
+            final LoggerContextFactory factory = LogManager.getFactory();
+            if (factory instanceof Log4jContextFactory) {
+                final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
+                this.loggerContext = selector.getContext(
+                        Log4jWebInitializerImpl.class.getName(), this.getClassLoader(), false, null);
+                if (this.loggerContext != null) {
+                    this.loggerContext.putObject(SERVLET_CONTEXT_KEY, this.servletContext);
+                    if (this.name != null) {
+                        this.loggerContext.setName(this.name);
+                    }
+                    if (this.loggerContext.getState() == LifeCycle.State.INITIALIZED) {
+                        ContextAnchor.THREAD_CONTEXT.set(this.loggerContext);
+                        try {
+                            final List<AbstractConfiguration> configurations = new ArrayList<>(uris.size());
+                            for (final URI configLocation : uris) {
+                                final Configuration config = ConfigurationFactory.getInstance()
+                                        .getConfiguration(this.loggerContext, this.name, configLocation);
+                                if (config instanceof AbstractConfiguration) {
+                                    configurations.add((AbstractConfiguration) config);
+                                }
+                            }
+                            if (configurations.size() == 1) {
+                                this.loggerContext.start(configurations.get(0));
+                            } else if (configurations.size() > 1) {
+                                this.loggerContext.start(new CompositeConfiguration(configurations));
+                            } else {
+                                this.loggerContext.start();
+                            }
+                        } finally {
+                            ContextAnchor.THREAD_CONTEXT.remove();
+                        }
+                    }
+                }
+            } else {
+                this.loggerContext =
+                        Configurator.initialize(this.name, this.getClassLoader(), uris, this.servletContext);
+                if (this.loggerContext != null) {
+                    this.loggerContext.putObject(SERVLET_CONTEXT_KEY, this.servletContext);
+                }
+            }
             return;
         }
 
         final URI uri = getConfigURI(location);
+        // Use Map.Entry version for single URI to ensure ServletContext is available before configuration loads
         this.loggerContext = Configurator.initialize(
                 this.name, this.getClassLoader(), uri, WebLoggerContextUtils.createExternalEntry(this.servletContext));
     }
@@ -275,7 +319,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                     this.namedContextSelector.removeContext(this.name);
                 }
                 this.loggerContext.stop(timeout, timeUnit);
-                this.loggerContext.setExternalContext(null);
+                this.loggerContext.removeObject(SERVLET_CONTEXT_KEY);
                 this.loggerContext = null;
             }
             this.setStopped();
