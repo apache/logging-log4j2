@@ -58,6 +58,8 @@ final class LineReadingTcpServer implements AutoCloseable {
 
     private volatile boolean running;
 
+    private InetAddress bindAddress = InetAddress.getLoopbackAddress();
+
     private ServerSocket serverSocket;
 
     private Socket clientSocket;
@@ -74,6 +76,11 @@ final class LineReadingTcpServer implements AutoCloseable {
         this.serverSocketFactory = serverSocketFactory;
     }
 
+    // For testing purposes
+    void setBindAddress(final InetAddress bindAddress) {
+        this.bindAddress = bindAddress;
+    }
+
     synchronized void start(final String name, final int port) throws IOException {
         if (!running) {
             running = true;
@@ -83,8 +90,7 @@ final class LineReadingTcpServer implements AutoCloseable {
     }
 
     private ServerSocket createServerSocket(final int port) throws IOException {
-        final ServerSocket serverSocket =
-                serverSocketFactory.createServerSocket(port, 1, InetAddress.getLoopbackAddress());
+        final ServerSocket serverSocket = serverSocketFactory.createServerSocket(port, 1, bindAddress);
         serverSocket.setReuseAddress(true);
         serverSocket.setSoTimeout(0); // Zero indicates `accept()` will block indefinitely
         await("server socket binding")
@@ -104,12 +110,12 @@ final class LineReadingTcpServer implements AutoCloseable {
     }
 
     private void acceptClients() {
-        try {
-            while (running) {
+        while (running) {
+            try {
                 acceptClient();
+            } catch (final Exception error) {
+                LOGGER.error("failed accepting client connections", error);
             }
-        } catch (final Exception error) {
-            LOGGER.error("failed accepting client connections", error);
         }
     }
 

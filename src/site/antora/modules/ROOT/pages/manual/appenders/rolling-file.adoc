@@ -713,6 +713,15 @@ Minimum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
 Maximum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
 
 This attribute is **ignored** if <<DefaultRolloverStrategy-attr-fileIndex,`fileIndex`>> is set to `nomax`.
+
+| [[DefaultRolloverStrategy-attr-maxCompressionDelaySeconds]]maxCompressionDelaySeconds
+| `int`
+| `0`
+|
+Maximum random delay, in seconds, before compressing archived log files.
+
+Use this attribute to spread compression workload when many applications roll over at the same time.
+A value of `0` disables the delay and starts compression immediately.
 |===
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy[{plugin-reference-marker} Plugin reference for `DefaultRolloverStrategy`]

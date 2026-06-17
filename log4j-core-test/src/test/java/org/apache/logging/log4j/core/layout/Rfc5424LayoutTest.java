@@ -27,14 +27,21 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -42,21 +49,28 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.ProcessIdUtil;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
@@ -76,11 +90,13 @@ class Rfc5424LayoutTest {
                     + "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
             PROCESSID);
     private static final String lineEscaped3 = String.format(
-            "ATM %s - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled mdc",
+            "ATM %s - [RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" loginId=\"JohnDoe\"] filled"
+                    + " mdc",
             PROCESSID);
     private static final String lineEscaped4 = String.format(
-            "ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]"
-                    + "[RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\" ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
+            "ATM %s Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\""
+                    + " ToAccount=\"123456\"][RequestContext@3692 escaped=\"Testing escaping #012 \\\" \\] \\\"\""
+                    + " ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete",
             PROCESSID);
     private static final String collectionLine1 =
             "[Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" " + "ToAccount=\"123456\"]";
@@ -89,7 +105,13 @@ class Rfc5424LayoutTest {
             "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
 
+    private static final String NEW_LINE_ESCAPE = "\\n";
+    private static final String INCLUDED_KEYS = "key1, key2, locale";
+    private static final String EXCLUDED_KEYS = "key3, key4";
+
     static ConfigurationFactory cf = new BasicConfigurationFactory();
+
+    private static PluginManager pluginManager;
 
     @BeforeAll
     static void setupClass() {
@@ -97,10 +119,15 @@ class Rfc5424LayoutTest {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
+
+        pluginManager = new PluginManager(Node.CATEGORY);
+        pluginManager.collectPlugins();
     }
 
     @AfterAll
     static void cleanupClass() {
+        pluginManager = null;
+
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -720,10 +747,10 @@ class Rfc5424LayoutTest {
                 .setEin("1234.56.7")
                 .setIncludeMDC(true)
                 .setMdcId("RequestContext")
-                .setIncludeNL(true)
+                .setNewLine(true)
                 .setAppName("ATM")
-                .setExcludes("key1, key2, locale")
-                .setUseTLSMessageFormat(true)
+                .setMdcExcludes("key1, key2, locale")
+                .setUseTlsMessageFormat(true)
                 .build();
 
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
@@ -749,9 +776,7 @@ class Rfc5424LayoutTest {
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
         checkDefaultValues(layout);
 
-        final PluginManager manager = new PluginManager(Node.CATEGORY);
-        manager.collectPlugins();
-        final Object obj = new PluginBuilder(manager.getPluginType("Rfc5424Layout"))
+        final Object obj = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
                 .withConfigurationNode(new Node())
                 .withConfiguration(new DefaultConfiguration())
                 .build();
@@ -791,5 +816,170 @@ class Rfc5424LayoutTest {
         final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
         final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
         assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
+    }
+
+    private static Map<String, String> attributeMap(String... keyValuePairs) {
+        Map<String, String> result = new HashMap<>();
+        for (int i = 0; i < keyValuePairs.length; i += 2) {
+            result.put(keyValuePairs[i], keyValuePairs[i + 1]);
+        }
+        return result;
+    }
+
+    private static Rfc5424Layout buildRfc5424Layout(Map<String, String> attributes) {
+        Node node = new Node();
+        node.getAttributes().putAll(attributes);
+
+        Object object = new PluginBuilder(pluginManager.getPluginType("Rfc5424Layout"))
+                .withConfigurationNode(node)
+                .withConfiguration(new DefaultConfiguration())
+                .build();
+
+        assertThat(object).isInstanceOf(Rfc5424Layout.class);
+        return (Rfc5424Layout) object;
+    }
+
+    private static Stream<Arguments> testAcceptsDocumentedAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of(
+                        "documented attributes",
+                        attributeMap(
+                                "newLine",
+                                "true",
+                                "newLineEscape",
+                                NEW_LINE_ESCAPE,
+                                "useTlsMessageFormat",
+                                "true",
+                                "mdcRequired",
+                                INCLUDED_KEYS)),
+                Arguments.of(
+                        "compatibility aliases",
+                        attributeMap(
+                                "includeNL",
+                                "true",
+                                "escapeNL",
+                                NEW_LINE_ESCAPE,
+                                "useTLSMessageFormat",
+                                "true",
+                                "required",
+                                INCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsDocumentedAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.isIncludeNewLine()).isTrue();
+        // The field contains Matcher.quote() escaped value, so we expect the backslash to be escaped.
+        assertThat(layout.getEscapeNewLine()).isEqualTo("\\\\n");
+        assertThat(layout.isUseTlsMessageFormat()).isTrue();
+        assertThat(layout.getMdcRequired()).containsExactly("key1", "key2", "locale");
+    }
+
+    private static Stream<Arguments> testAcceptsIncludeAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of("documented attributes", attributeMap("mdcIncludes", INCLUDED_KEYS)),
+                Arguments.of("compatibility aliases", attributeMap("includes", INCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsIncludeAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.getMdcIncludes()).containsExactly("key1", "key2", "locale");
+        assertThat(layout.getMdcExcludes()).isNullOrEmpty();
+    }
+
+    private static Stream<Arguments> testAcceptsExcludeAttributesAndCompatibilityAliases() {
+        return Stream.of(
+                Arguments.of("documented attributes", attributeMap("mdcExcludes", EXCLUDED_KEYS)),
+                Arguments.of("compatibility aliases", attributeMap("excludes", EXCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAcceptsExcludeAttributesAndCompatibilityAliases(
+            String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        assertThat(layout.getMdcExcludes()).containsExactly("key3", "key4");
+        assertThat(layout.getMdcIncludes()).isNullOrEmpty();
+    }
+
+    private static Stream<Arguments> testRejectsIncludesAndExcludesTogether() {
+        return Stream.of(
+                Arguments.of(
+                        "documented attributes",
+                        attributeMap("mdcIncludes", INCLUDED_KEYS, "mdcExcludes", EXCLUDED_KEYS)),
+                Arguments.of(
+                        "compatibility aliases", attributeMap("includes", INCLUDED_KEYS, "excludes", EXCLUDED_KEYS)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testRejectsIncludesAndExcludesTogether(String ignoredDisplayName, Map<String, String> attributes) {
+
+        Rfc5424Layout layout = buildRfc5424Layout(attributes);
+
+        // If both includes and excludes are specified, the layout will ignore the includes and log an error about the
+        // invalid configuration.
+        assertThat(layout.getMdcExcludes()).containsExactly("key3", "key4");
+        assertThat(layout.getMdcIncludes()).isNullOrEmpty();
+    }
+
+    private static LogEvent createLogEventWithMdcParamName(final String paramName) {
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(1L, 0);
+
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue(paramName, "");
+
+        return Log4jLogEvent.newBuilder()
+                .setInstant(instant)
+                .setMessage(new SimpleMessage("MSG"))
+                .setContextData(contextData)
+                .build();
+    }
+
+    private static Stream<Arguments> testParamNameSanitization() {
+        return Stream.of(
+                Arguments.of("validName", "[mdc@32473 validName=\"\"]"),
+                Arguments.of("user name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user=name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user]name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("user\"name", "[mdc@32473 user?name=\"\"]"),
+                Arguments.of("", "[mdc@32473 ?=\"\"]"),
+                Arguments.of(
+                        "0123456789012345678901234567890123456789",
+                        "[mdc@32473 01234567890123456789012345678901=\"\"]"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testParamNameSanitization(final String paramName, final String expectedStructuredData) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+
+        final String actual = layout.toSerializable(createLogEventWithMdcParamName(paramName));
+
+        final String expected = formatExpectedMessage(layout, expectedStructuredData);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private static String formatExpectedMessage(final Rfc5424Layout layout, final String expectedStructuredData) {
+
+        final String timestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.ofEpochMilli(1L));
+
+        return String.format(
+                "<128>1 %s %s - %s - %s MSG", timestamp, layout.getLocalHostName(), PROCESSID, expectedStructuredData);
     }
 }
