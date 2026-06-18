@@ -222,7 +222,6 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
 
         final URI uri = getConfigURI(location);
-        // Use Map.Entry version for single URI to ensure ServletContext is available before configuration loads
         this.loggerContext = Configurator.initialize(
                 this.name, this.getClassLoader(), uri, WebLoggerContextUtils.createExternalEntry(this.servletContext));
     }
