@@ -15,15 +15,26 @@
  * limitations under the license.
  */
 /**
- * Log4j 2 Filter support. {@link org.apache.logging.log4j.core.Filter} plugins should use the
- * {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#category() plugin category}
- * {@link org.apache.logging.log4j.core.config.Node#CATEGORY Core} and the
- * {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#elementType() element type}
- * {@link org.apache.logging.log4j.core.Filter#ELEMENT_TYPE filter}.
+ * Utilities for safely serializing and deserializing Log4j objects.
+ * <h2>Internal usage only!</h2>
+ * <p>
+ * This package is intended only for internal Log4j usage.
+ * <b>Log4j users should not use this package!</b>
+ * This package is not subject to any backward compatibility concerns.
+ * </p>
+ *
+ * @since 2.27.0
  */
 @Export
+@ExportTo({
+    "org.apache.logging.log4j.core",
+    "org.apache.log4j",
+    "org.apache.logging.log4j.slf4j.impl",
+    "org.apache.logging.log4j.slf4j2.impl"
+})
 @Version("2.27.0")
-package org.apache.logging.log4j.core.filter;
+package org.apache.logging.log4j.util.internal;
 
+import aQute.bnd.annotation.jpms.ExportTo;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
