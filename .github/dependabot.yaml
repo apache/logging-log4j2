@@ -219,22 +219,6 @@ updates:
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
 
-  - package-ecosystem: maven
-    directories:
-      - "/log4j-slf4j-impl"
-    schedule:
-      interval: "monthly"
-    groups:
-      dependencies:
-        patterns: [ "*" ]
-    target-branch: "main"
-    registries:
-      - maven-central
-    ignore:
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
-
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
