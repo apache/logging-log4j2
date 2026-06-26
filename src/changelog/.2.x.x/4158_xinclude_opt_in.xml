@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="4064" link="https://github.com/apache/logging-log4j2/issues/4064"/>
+  <issue id="4158" link="https://github.com/apache/logging-log4j2/pull/4158"/>
   <description format="asciidoc">
     Make XInclude processing in XML configurations opt-in (disabled by default): it can be enabled with the `log4j2.configurationEnableXInclude` property.
   </description>
