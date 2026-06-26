@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.filter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -109,5 +110,12 @@ public class RegexFilterTest {
                 Result.DENY);
         final Result fmtResult = fmtFilter.filter(null, null, null, msg, params);
         assertThat(fmtResult, equalTo(Result.ACCEPT));
+    }
+
+    @Test
+    void testRegexFilterDoesNotThrowWithAllTheParametersExceptRegexEqualNull() {
+        assertDoesNotThrow(() -> {
+            RegexFilter.createFilter(".* test .*", null, null, null, null);
+        });
     }
 }
