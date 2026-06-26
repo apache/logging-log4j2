@@ -54,6 +54,14 @@ This setting also enables "XML strict mode" and allows one to specify an element
 XML configuration files can include other files with
 https://www.w3.org/TR/xinclude/[XInclude].
 
+[IMPORTANT]
+====
+Since version `2.27.0`, XInclude processing is **disabled by default**.
+Set the
+xref:manual/systemproperties.adoc#log4j2.configurationEnableXInclude[`log4j2.configurationEnableXInclude`]
+configuration property to `true` to enable it.
+====
+
 NOTE: The list of `XInclude` and `XPath` features supported depends upon your
 https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/xml/jaxp/index.html[JAXP implementation].
 
