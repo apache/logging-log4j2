@@ -169,7 +169,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         disableDtdProcessing(factory);
 
         if (xIncludeAware) {
-            enableXInclude(factory);
+            factory.setXIncludeAware(true);
         }
         return factory.newDocumentBuilder();
     }
@@ -192,30 +192,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final AbstractMethodError err) {
             LOGGER.warn(
                     "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
-        }
-    }
-
-    /**
-     * Enables XInclude for the given DocumentBuilderFactory
-     *
-     * @param factory a DocumentBuilderFactory
-     */
-    private static void enableXInclude(final DocumentBuilderFactory factory) {
-        try {
-            factory.setXIncludeAware(true);
-            // LOG4J2-3531: Xerces only checks if the feature is supported when creating a factory. To reproduce:
-            // -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11NonValidatingConfiguration
-            try {
-                factory.newDocumentBuilder();
-            } catch (final ParserConfigurationException e) {
-                factory.setXIncludeAware(false);
-                LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-            }
-        } catch (final UnsupportedOperationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-        } catch (final AbstractMethodError | NoSuchMethodError err) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
         }
     }
 
