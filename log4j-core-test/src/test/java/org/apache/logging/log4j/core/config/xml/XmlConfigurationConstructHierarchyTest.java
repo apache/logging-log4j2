@@ -210,7 +210,7 @@ class XmlConfigurationConstructHierarchyTest {
 
     /**
      * Checks the relevance of Log4j's attribute stripping
-     * 
+     *
      * <p>The XInclude {@code fixup-base-uris} and {@code fixup-language} features default to {@code true}, so a normal
      * XInclude parse really does add {@code xml:base} and {@code xml:lang} to the included element.</p>
      */
@@ -289,8 +289,8 @@ class XmlConfigurationConstructHierarchyTest {
         givenPlugin("Console");
         // `nested.xml` (an `<Appenders>` fragment) is included by absolute URI and itself includes `included.xml`
         // (a `<Console>`) by a relative href.
-        final String document = "<Configuration xmlns:xi=\"http://www.w3.org/2001/XInclude\">"
-                + "<xi:include href=\"" + NESTED_URI + "\"/></Configuration>";
+        final String document = "<Configuration xmlns:xi=\"http://www.w3.org/2001/XInclude\">" + "<xi:include href=\""
+                + NESTED_URI + "\"/></Configuration>";
         final Element element = parse(document, true);
 
         final Node configuration = new Node();
