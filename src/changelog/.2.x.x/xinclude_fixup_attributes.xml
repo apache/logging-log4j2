@@ -5,6 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
+  <issue id="4155" link="https://github.com/apache/logging-log4j2/pull/4155"/>
   <description format="asciidoc">
     Fix XML configurations exposing the reserved `xml:base` and `xml:lang` attributes as configuration attributes.
   </description>
