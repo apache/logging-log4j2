@@ -634,6 +634,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
 
         @PluginBuilderAttribute
+        @SuppressWarnings("log4j.public.setter")
         private Integer enterpriseNumber;
 
         @PluginBuilderAttribute
