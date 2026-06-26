@@ -55,33 +55,39 @@ public final class CommonsCompressAction extends AbstractAction {
     private final boolean deleteSource;
 
     /**
+     * Minimum delay in seconds before compression.
+     */
+    private final int minDelaySeconds;
+
+    /**
      * Maximum delay in seconds before compression.
      */
     private final int maxDelaySeconds;
 
     /**
-     * Creates new instance of Bzip2CompressAction.
+     * Creates new instance of CommonsCompressAction.
      *
-     * @param name the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-     * @param source file to compress, may not be null.
-     * @param destination compressed file, may not be null.
+     * @param name         the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
+     * @param source       file to compress, may not be null.
+     * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
-     *            to be thrown or affect return value.
+     *                     to be thrown or affect return value.
      */
     public CommonsCompressAction(
             final String name, final File source, final File destination, final boolean deleteSource) {
-        this(name, source, destination, deleteSource, 0);
+        this(name, source, destination, deleteSource, 0, 0);
     }
 
     /**
-     * Creates new instance of Bzip2CompressAction.
+     * Creates new instance of CommonsCompressAction.
      *
-     * @param name the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-     * @param source file to compress, may not be null.
-     * @param destination compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
-     *            to be thrown or affect return value.
-     * @param maxDelaySeconds maximum delay in seconds before compression.
+     * @param name            the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
+     * @param source          file to compress, may not be null.
+     * @param destination     compressed file, may not be null.
+     * @param deleteSource    if true, attempt to delete file on completion. Failure to delete does not cause an
+     *                        exception to be thrown or affect return value.
+     * @param minDelaySeconds minimum delay in seconds before compression (inclusive).
+     * @param maxDelaySeconds maximum delay in seconds before compression (inclusive).
      * @since 2.27.0
      */
     public CommonsCompressAction(
@@ -89,6 +95,7 @@ public final class CommonsCompressAction extends AbstractAction {
             final File source,
             final File destination,
             final boolean deleteSource,
+            final int minDelaySeconds,
             final int maxDelaySeconds) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
@@ -96,7 +103,31 @@ public final class CommonsCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
+        this.minDelaySeconds = minDelaySeconds;
         this.maxDelaySeconds = maxDelaySeconds;
+    }
+
+    /**
+     * Creates new instance of CommonsCompressAction.
+     *
+     * @param name            the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
+     * @param source          file to compress, may not be null.
+     * @param destination     compressed file, may not be null.
+     * @param deleteSource    if true, attempt to delete file on completion. Failure to delete does not cause an
+     *                        exception to be thrown or affect return value.
+     * @param maxDelaySeconds maximum delay in seconds before compression.
+     * @since 2.27.0
+     * @deprecated Use {@link #CommonsCompressAction(String, File, File, boolean, int, int)} with an explicit minimum
+     *             delay.
+     */
+    @Deprecated
+    public CommonsCompressAction(
+            final String name,
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int maxDelaySeconds) {
+        this(name, source, destination, deleteSource, 0, maxDelaySeconds);
     }
 
     /**
@@ -107,7 +138,7 @@ public final class CommonsCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        blockThread(maxDelaySeconds);
+        blockThread(minDelaySeconds, maxDelaySeconds);
         return execute(name, source, destination, deleteSource);
     }
 

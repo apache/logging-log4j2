@@ -52,6 +52,11 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     /**
+     * Minimum delay in seconds before compression.
+     */
+    private final int minDelaySeconds;
+
+    /**
      * Maximum delay in seconds before compression.
      */
     private final int maxDelaySeconds;
@@ -71,14 +76,15 @@ public final class ZipCompressAction extends AbstractAction {
     }
 
     /**
-     * Creates new instance of GzCompressAction.
+     * Creates new instance of ZipCompressAction.
      *
-     * @param source file to compress, may not be null.
-     * @param destination compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
-     *            to be thrown or affect return value.
-     * @param level the compression level
-     * @param maxDelaySeconds maximum delay in seconds before compression.
+     * @param source          file to compress, may not be null.
+     * @param destination     compressed file, may not be null.
+     * @param deleteSource    if true, attempt to delete file on completion. Failure to delete does not cause an
+     *                        exception to be thrown or affect return value.
+     * @param level           the compression level
+     * @param minDelaySeconds minimum delay in seconds before compression (inclusive).
+     * @param maxDelaySeconds maximum delay in seconds before compression (inclusive).
      * @since 2.27.0
      */
     public ZipCompressAction(
@@ -86,6 +92,7 @@ public final class ZipCompressAction extends AbstractAction {
             final File destination,
             final boolean deleteSource,
             final int level,
+            final int minDelaySeconds,
             final int maxDelaySeconds) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
@@ -94,20 +101,43 @@ public final class ZipCompressAction extends AbstractAction {
         this.destination = destination;
         this.deleteSource = deleteSource;
         this.level = checkLevel(level);
+        this.minDelaySeconds = minDelaySeconds;
         this.maxDelaySeconds = maxDelaySeconds;
+    }
+
+    /**
+     * Creates new instance of ZipCompressAction.
+     *
+     * @param source          file to compress, may not be null.
+     * @param destination     compressed file, may not be null.
+     * @param deleteSource    if true, attempt to delete file on completion. Failure to delete does not cause an
+     *                        exception to be thrown or affect return value.
+     * @param level           the compression level
+     * @param maxDelaySeconds maximum delay in seconds before compression.
+     * @since 2.27.0
+     * @deprecated Use {@link #ZipCompressAction(File, File, boolean, int, int, int)} with an explicit minimum delay.
+     */
+    @Deprecated
+    public ZipCompressAction(
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int level,
+            final int maxDelaySeconds) {
+        this(source, destination, deleteSource, level, 0, maxDelaySeconds);
     }
 
     /**
      * Creates new instance.
      *
-     * @param source file to compress, may not be null.
-     * @param destination compressed file, may not be null.
+     * @param source       file to compress, may not be null.
+     * @param destination  compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
-     *            to be thrown or affect return value.
-     * @param level the compression level
+     *                     to be thrown or affect return value.
+     * @param level        the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        this(source, destination, deleteSource, level, 0);
+        this(source, destination, deleteSource, level, 0, 0);
     }
 
     /**
@@ -118,7 +148,7 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        blockThread(maxDelaySeconds);
+        blockThread(minDelaySeconds, maxDelaySeconds);
         return execute(source, destination, deleteSource, level);
     }
 

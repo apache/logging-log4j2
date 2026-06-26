@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -88,6 +89,78 @@ class AbstractActionTest {
         assertEquals(Level.WARN, statusData.getLevel());
         final String formattedMessage = statusData.getFormattedStatus();
         assertThat(formattedMessage, containsString("Exception reported by action"));
+    }
+
+    // ── blockThread(min, max) ─────────────────────────────────────────────
+
+    /**
+     * blockThread(0, 0) must return immediately without sleeping.
+     */
+    @Test
+    void testBlockThreadBothZeroIsInstant() {
+        long start = System.currentTimeMillis();
+        AbstractAction.blockThread(0, 0);
+        long elapsed = System.currentTimeMillis() - start;
+        assertTrue(elapsed < 500, "blockThread(0,0) should be instant, took " + elapsed + "ms");
+    }
+
+    /**
+     * blockThread(min, max) with min == max must sleep for exactly that many seconds.
+     */
+    @Test
+    void testBlockThreadFixedDelay() {
+        int fixedDelay = 1;
+        long start = System.currentTimeMillis();
+        AbstractAction.blockThread(fixedDelay, fixedDelay);
+        long elapsed = System.currentTimeMillis() - start;
+        assertTrue(
+                elapsed >= fixedDelay * 1000L - 100,
+                "blockThread(" + fixedDelay + "," + fixedDelay + ") should sleep ~" + fixedDelay + "s, took "
+                        + elapsed + "ms");
+        assertTrue(
+                elapsed <= fixedDelay * 1000L + 500,
+                "blockThread(" + fixedDelay + "," + fixedDelay + ") exceeded expected duration, took " + elapsed
+                        + "ms");
+    }
+
+    /**
+     * blockThread(min, max) with a range must sleep within [min, max] seconds.
+     */
+    @Test
+    void testBlockThreadRangeDelay() {
+        int min = 1;
+        int max = 2;
+        long start = System.currentTimeMillis();
+        AbstractAction.blockThread(min, max);
+        long elapsed = System.currentTimeMillis() - start;
+        assertTrue(
+                elapsed >= min * 1000L - 100,
+                "blockThread(" + min + "," + max + ") should sleep at least " + min + "s, took " + elapsed + "ms");
+        assertTrue(
+                elapsed <= max * 1000L + 500,
+                "blockThread(" + min + "," + max + ") should sleep at most " + max + "s, took " + elapsed + "ms");
+    }
+
+    /**
+     * blockThread with invalid arguments (min > max) must return immediately without sleeping.
+     */
+    @Test
+    void testBlockThreadInvalidArgsAreIgnored() {
+        long start = System.currentTimeMillis();
+        AbstractAction.blockThread(5, 2); // min > max — invalid
+        long elapsed = System.currentTimeMillis() - start;
+        assertTrue(elapsed < 500, "blockThread with invalid args should be instant, took " + elapsed + "ms");
+    }
+
+    /**
+     * blockThread with negative min must return immediately without sleeping.
+     */
+    @Test
+    void testBlockThreadNegativeMinIsIgnored() {
+        long start = System.currentTimeMillis();
+        AbstractAction.blockThread(-1, 2);
+        long elapsed = System.currentTimeMillis() - start;
+        assertTrue(elapsed < 500, "blockThread with negative min should be instant, took " + elapsed + "ms");
     }
 
     private static final class TestAction extends AbstractAction {

@@ -56,6 +56,11 @@ public final class GzCompressAction extends AbstractAction {
     private final int compressionLevel;
 
     /**
+     * Minimum delay in seconds before compression.
+     */
+    private final int minDelaySeconds;
+
+    /**
      * Maximum delay in seconds before compression.
      */
     private final int maxDelaySeconds;
@@ -78,21 +83,21 @@ public final class GzCompressAction extends AbstractAction {
     /**
      * Create new instance of GzCompressAction.
      *
-     * @param source       file to compress, may not be null.
-     * @param destination  compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
-     *                     does not cause an exception to be thrown or affect return value.
-     * @param compressionLevel
-     *                     Gzip deflater compression level.
+     * @param source           file to compress, may not be null.
+     * @param destination      compressed file, may not be null.
+     * @param deleteSource     if true, attempt to delete file on completion.  Failure to delete
+     *                         does not cause an exception to be thrown or affect return value.
+     * @param compressionLevel Gzip deflater compression level.
+     * @param minDelaySeconds  minimum delay in seconds before compression (inclusive).
+     * @param maxDelaySeconds  maximum delay in seconds before compression (inclusive).
      * @since 2.27.0
-     * @param maxDelaySeconds
-     *                     Maximum delay in seconds before compression.
      */
     public GzCompressAction(
             final File source,
             final File destination,
             final boolean deleteSource,
             final int compressionLevel,
+            final int minDelaySeconds,
             final int maxDelaySeconds) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
@@ -101,7 +106,30 @@ public final class GzCompressAction extends AbstractAction {
         this.destination = destination;
         this.deleteSource = deleteSource;
         this.compressionLevel = checkCompressionLevel(compressionLevel);
+        this.minDelaySeconds = minDelaySeconds;
         this.maxDelaySeconds = maxDelaySeconds;
+    }
+
+    /**
+     * Create new instance of GzCompressAction.
+     *
+     * @param source           file to compress, may not be null.
+     * @param destination      compressed file, may not be null.
+     * @param deleteSource     if true, attempt to delete file on completion.  Failure to delete
+     *                         does not cause an exception to be thrown or affect return value.
+     * @param compressionLevel Gzip deflater compression level.
+     * @param maxDelaySeconds  maximum delay in seconds before compression.
+     * @since 2.27.0
+     * @deprecated Use {@link #GzCompressAction(File, File, boolean, int, int, int)} with an explicit minimum delay.
+     */
+    @Deprecated
+    public GzCompressAction(
+            final File source,
+            final File destination,
+            final boolean deleteSource,
+            final int compressionLevel,
+            final int maxDelaySeconds) {
+        this(source, destination, deleteSource, compressionLevel, 0, maxDelaySeconds);
     }
 
     /**
@@ -113,7 +141,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        this(source, destination, deleteSource, compressionLevel, 0);
+        this(source, destination, deleteSource, compressionLevel, 0, 0);
     }
 
     /**
@@ -123,7 +151,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Deprecated
     public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
-        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION, 0);
+        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION, 0, 0);
     }
 
     /**
@@ -134,7 +162,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        blockThread(maxDelaySeconds);
+        blockThread(minDelaySeconds, maxDelaySeconds);
         return execute(source, destination, deleteSource, compressionLevel);
     }
 

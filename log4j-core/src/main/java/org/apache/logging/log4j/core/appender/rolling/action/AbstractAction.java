@@ -83,22 +83,42 @@ public abstract class AbstractAction implements Action {
     }
 
     /**
+     * Blocks the current thread for a random delay in the range [{@code minDelaySeconds}, {@code maxDelaySeconds}].
+     *
+     * <p>If {@code minDelaySeconds} equals {@code maxDelaySeconds} the delay is fixed. If both are zero no delay
+     * is applied. The method validates that {@code maxDelaySeconds >= minDelaySeconds >= 0}; values that violate
+     * this constraint are silently ignored (no sleep is performed).</p>
+     *
+     * @param minDelaySeconds minimum delay in seconds (inclusive).
+     * @param maxDelaySeconds maximum delay in seconds (inclusive).
+     * @since 2.27.0
+     */
+    static void blockThread(final int minDelaySeconds, final int maxDelaySeconds) {
+        if (minDelaySeconds < 0 || maxDelaySeconds < minDelaySeconds) {
+            return;
+        }
+        final int range = maxDelaySeconds - minDelaySeconds;
+        final int delay = minDelaySeconds
+                + (range == 0 ? 0 : java.util.concurrent.ThreadLocalRandom.current().nextInt(range + 1));
+        if (delay > 0) {
+            try {
+                Thread.sleep(delay * 1000L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    /**
      * Blocks the current thread for a random delay up to {@code maxDelaySeconds}.
      *
      * @param maxDelaySeconds maximum delay in seconds before returning.
      * @since 2.27.0
+     * @deprecated Use {@link #blockThread(int, int)} with an explicit minimum delay.
      */
+    @Deprecated
     static void blockThread(final int maxDelaySeconds) {
-        if (maxDelaySeconds > 0) {
-            int delay = java.util.concurrent.ThreadLocalRandom.current().nextInt(maxDelaySeconds + 1);
-            if (delay > 0) {
-                try {
-                    Thread.sleep(delay * 1000L);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
+        blockThread(0, maxDelaySeconds);
     }
 
     /**
