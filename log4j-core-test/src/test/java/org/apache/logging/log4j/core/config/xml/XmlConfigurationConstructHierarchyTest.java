@@ -51,6 +51,7 @@ class XmlConfigurationConstructHierarchyTest {
     private static final String INCLUDED_URI = resourceUri("included.xml");
     private static final String FRAGMENT_URI = resourceUri("included-fragment.xml");
     private static final String WITH_ID_URI = resourceUri("included-with-id.xml");
+    private static final String NESTED_URI = resourceUri("nested.xml");
 
     @Mock
     private PluginManager pluginManager;
@@ -274,6 +275,33 @@ class XmlConfigurationConstructHierarchyTest {
         assertThat(appenders.getChildren()).singleElement().satisfies(child -> {
             assertThat(child.getName()).isEqualTo("Console");
             assertThat(child.getAttributes()).containsEntry("name", "OTHER");
+        });
+    }
+
+    /**
+     * XInclude resolution is recursive: an included document may itself contain an {@code xi:include}. The inner
+     * {@code href} is relative and must resolve against the <em>included</em> document's own location, not the
+     * top-level configuration's.
+     */
+    @Test
+    void xIncludeResolvesNestedIncludes() throws Exception {
+        givenPlugin("Appenders");
+        givenPlugin("Console");
+        // `nested.xml` (an `<Appenders>` fragment) is included by absolute URI and itself includes `included.xml`
+        // (a `<Console>`) by a relative href.
+        final String document = "<Configuration xmlns:xi=\"http://www.w3.org/2001/XInclude\">"
+                + "<xi:include href=\"" + NESTED_URI + "\"/></Configuration>";
+        final Element element = parse(document, true);
+
+        final Node configuration = new Node();
+        XmlConfiguration.constructHierarchy(configuration, element, pluginManager, false);
+
+        assertThat(configuration.getChildren()).singleElement().satisfies(appenders -> {
+            assertThat(appenders.getName()).isEqualTo("Appenders");
+            assertThat(appenders.getChildren()).singleElement().satisfies(console -> {
+                assertThat(console.getName()).isEqualTo("Console");
+                assertThat(console.getAttributes()).containsEntry("name", "STDOUT");
+            });
         });
     }
 }
