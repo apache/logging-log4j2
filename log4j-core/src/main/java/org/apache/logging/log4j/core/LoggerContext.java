@@ -51,6 +51,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.core.util.internal.InternalLoggerRegistry;
 import org.apache.logging.log4j.kit.env.PropertyEnvironment;
 import org.apache.logging.log4j.kit.env.internal.ContextualEnvironmentPropertySource;
 import org.apache.logging.log4j.kit.env.internal.ContextualJavaPropsPropertySource;
@@ -88,7 +89,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
-    private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
+    private final InternalLoggerRegistry loggerRegistry = new InternalLoggerRegistry();
     private final MessageFactory defaultMessageFactory;
 
     private final Collection<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
@@ -571,15 +572,9 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public Logger getLogger(final String name, final MessageFactory messageFactory) {
         final MessageFactory actualMessageFactory = messageFactory != null ? messageFactory : defaultMessageFactory;
-        // Note: This is the only method where we add entries to the 'loggerRegistry' ivar.
-        Logger logger = loggerRegistry.getLogger(name, actualMessageFactory);
-        if (logger != null) {
-            checkMessageFactory(logger, actualMessageFactory);
-            return logger;
-        }
-        logger = newLogger(name, actualMessageFactory);
-        loggerRegistry.putIfAbsent(name, logger.getMessageFactory(), logger);
-        return loggerRegistry.getLogger(name, logger.getMessageFactory());
+        final Logger logger = loggerRegistry.computeIfAbsent(name, actualMessageFactory, this::newLogger);
+        checkMessageFactory(logger, actualMessageFactory);
+        return logger;
     }
 
     /**
