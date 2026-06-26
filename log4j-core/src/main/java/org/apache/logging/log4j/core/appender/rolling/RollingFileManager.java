@@ -26,9 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.Collection;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -44,8 +43,6 @@ import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.Schedulable;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Constants;
@@ -75,17 +72,13 @@ public class RollingFileManager extends FileManager {
     private final CopyOnWriteArrayList<RolloverListener> rolloverListeners = new CopyOnWriteArrayList<>();
 
     /* This scheduled executor pool handles both immediate async actions and delayed compression actions.
-     * For immediate tasks, it creates new threads like the original ThreadPoolExecutor.
-     * For delayed tasks, it uses the scheduling capabilities.
-     * Using it allows us to make sure all the Threads are completed when the Manager is stopped. */
-    private final ScheduledExecutorService asyncExecutor = new ScheduledThreadPoolExecutor(0, threadFactory) {
-        @Override
-        public void execute(Runnable command) {
-            // For immediate execution, create a new thread to maintain original behavior
-            Thread thread = getThreadFactory().newThread(command);
-            thread.start();
-        }
-    };
+     * A core pool size of 1 ensures the pool keeps at least one thread alive for scheduling,
+     * while still allowing the pool to grow for concurrent rollover actions.
+     * Using ScheduledThreadPoolExecutor allows us to make sure all threads are completed
+     * when the Manager is stopped via awaitTermination. */
+    private final ScheduledExecutorService asyncExecutor = new ScheduledThreadPoolExecutor(1, threadFactory);
+
+    private final Random delayRandom = new Random();
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(
@@ -649,11 +642,40 @@ public class RollingFileManager extends FileManager {
     }
 
     /**
-     * Returns the async executor service for both immediate and delayed actions.
+     * Returns the async executor service used for both immediate and delayed rollover actions.
      * @return The ScheduledExecutorService
      */
     public ScheduledExecutorService getAsyncExecutor() {
         return this.asyncExecutor;
+    }
+
+    /**
+     * Schedules an asynchronous rollover action, applying a random delay in the range
+     * {@code [minDelaySeconds, maxDelaySeconds]}. If both values are 0 the action is
+     * submitted for immediate execution.
+     *
+     * @param action          the action to execute
+     * @param minDelaySeconds minimum delay in seconds (inclusive, must be &gt;= 0)
+     * @param maxDelaySeconds maximum delay in seconds (inclusive, must be &gt;= minDelaySeconds)
+     */
+    private void scheduleAsyncAction(final Action action, final int minDelaySeconds, final int maxDelaySeconds) {
+        final long delaySeconds;
+        if (maxDelaySeconds <= 0) {
+            delaySeconds = 0;
+        } else if (maxDelaySeconds == minDelaySeconds) {
+            delaySeconds = minDelaySeconds;
+        } else {
+            // ThreadLocalRandom would be ideal but Random is sufficient and avoids an import
+            delaySeconds = minDelaySeconds + (long) (delayRandom.nextInt(maxDelaySeconds - minDelaySeconds + 1));
+        }
+
+        if (delaySeconds <= 0) {
+            LOGGER.debug("RollingFileManager scheduling async action for immediate execution");
+            asyncExecutor.execute(new AsyncAction(action, this));
+        } else {
+            LOGGER.debug("RollingFileManager scheduling async action with {} second delay", delaySeconds);
+            asyncExecutor.schedule(new AsyncAction(action, this), delaySeconds, TimeUnit.SECONDS);
+        }
     }
 
     private boolean rollover(final RolloverStrategy strategy) {
@@ -688,7 +710,7 @@ public class RollingFileManager extends FileManager {
 
                 if (syncActionSuccess && descriptor.getAsynchronous() != null) {
                     LOGGER.debug("RollingFileManager executing async {}", descriptor.getAsynchronous());
-                    scheduleActionsWithDelay(descriptor.getAsynchronous());
+                    scheduleAsyncAction(descriptor.getAsynchronous(), descriptor.getMinAsyncDelay(), descriptor.getMaxAsyncDelay());
                     asyncActionStarted = false;
                 }
             }
@@ -851,117 +873,5 @@ public class RollingFileManager extends FileManager {
         return Math.round(millis / 1000d) * 1000;
     }
 
-    private static class EmptyQueue extends ArrayBlockingQueue<Runnable> {
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1L;
-
-        EmptyQueue() {
-            super(1);
-        }
-
-        @Override
-        public int remainingCapacity() {
-            return 0;
-        }
-
-        @Override
-        public boolean add(final Runnable runnable) {
-            throw new IllegalStateException("Queue is full");
-        }
-
-        @Override
-        public void put(final Runnable runnable) throws InterruptedException {
-            /* No point in going into a permanent wait */
-            throw new InterruptedException("Unable to insert into queue");
-        }
-
-        @Override
-        public boolean offer(final Runnable runnable, final long timeout, final TimeUnit timeUnit)
-                throws InterruptedException {
-            Thread.sleep(timeUnit.toMillis(timeout));
-            return false;
-        }
-
-        @Override
-        public boolean addAll(final Collection<? extends Runnable> collection) {
-            if (collection.size() > 0) {
-                throw new IllegalArgumentException("Too many items in collection");
-            }
-            return false;
-        }
-    }
-
-    /**
-     * Schedules actions with delays based on their Schedulable interface implementation.
-     * Actions implementing Schedulable with positive delays are scheduled individually,
-     * while others are executed immediately.
-     *
-     * @param action the action to schedule
-     */
-    private void scheduleActionsWithDelay(Action action) {
-        if (action instanceof Schedulable) {
-            Schedulable schedulableAction = (Schedulable) action;
-            int delaySeconds = schedulableAction.getDelaySeconds();
-
-            if (delaySeconds > 0) {
-                // Schedule the action with its specific delay
-                LOGGER.debug("Scheduling action with {} seconds delay", delaySeconds);
-                asyncExecutor.schedule(
-                    new AsyncAction(action, this),
-                    delaySeconds,
-                    TimeUnit.SECONDS
-                );
-                return;
-            }
-        }
-
-        if (action instanceof CompositeAction) {
-            // Handle each action in the composite separately
-            scheduleCompositeAction((CompositeAction) action);
-        } else {
-            // Execute immediately if no delay
-            asyncExecutor.execute(new AsyncAction(action, this));
-        }
-    }
-
-    /**
-     * Schedules actions within a CompositeAction based on their individual delays.
-     *
-     * @param compositeAction the CompositeAction to schedule
-     */
-    private void scheduleCompositeAction(CompositeAction compositeAction) {
-        Action[] actions = compositeAction.getActions();
-        for (Action action : actions) {
-            scheduleIndividualAction(action);
-        }
-    }
-
-    /**
-     * Schedules an individual action based on its Schedulable interface.
-     *
-     * @param action the action to schedule
-     */
-    private void scheduleIndividualAction(Action action) {
-        if (action instanceof Schedulable) {
-            Schedulable schedulableAction = (Schedulable) action;
-            int delaySeconds = schedulableAction.getDelaySeconds();
-
-            if (delaySeconds > 0) {
-                // Schedule the action with its specific delay
-                LOGGER.debug("Scheduling individual action with {} seconds delay", delaySeconds);
-                asyncExecutor.schedule(
-                    new AsyncAction(action, this),
-                    delaySeconds,
-                    TimeUnit.SECONDS
-                );
-                return;
-            }
-        }
-
-        // Execute immediately if no delay
-        asyncExecutor.execute(new AsyncAction(action, this));
-    }
 }
+

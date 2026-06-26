@@ -30,7 +30,6 @@ import java.util.zip.Deflater;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.DelayedCompressionAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
@@ -110,10 +109,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         @PluginBuilderAttribute(value = "tempCompressedFilePattern")
         private String tempCompressedFilePattern;
 
-        @PluginBuilderAttribute("delayedCompressionSeconds")
-        private String delayedCompressionSecondsStr;
+        @PluginBuilderAttribute("minDelaySeconds")
+        private String minDelaySeconds;
 
-        private long delayedCompressionSeconds;
+        @PluginBuilderAttribute("maxDelaySeconds")
+        private String maxDelaySeconds;
 
         @PluginConfiguration
         private Configuration config;
@@ -151,7 +151,16 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final String trimmedCompressionLevelStr =
                     compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
             final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
-            final int delayedCompressionSeconds = Integer.parseInt(delayedCompressionSecondsStr, 0);
+            int minDelaySecs = Integers.parseInt(minDelaySeconds, 0);
+            int maxDelaySecs = Integers.parseInt(maxDelaySeconds, 0);
+            if (maxDelaySecs < minDelaySecs) {
+                LOGGER.error(
+                        "maxDelaySeconds ({}) must be >= minDelaySeconds ({}); both will be set to 0",
+                        maxDelaySecs,
+                        minDelaySecs);
+                minDelaySecs = 0;
+                maxDelaySecs = 0;
+            }
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor =
                     config != null ? config.getStrSubstitutor() : new StrSubstitutor();
@@ -164,7 +173,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     customActions,
                     stopCustomActionsOnError,
                     tempCompressedFilePattern,
-                    delayedCompressionSeconds);
+                    minDelaySecs,
+                    maxDelaySecs);
         }
 
         public String getMax() {
@@ -281,14 +291,30 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         }
 
         /**
-         * Defines the maximum delay in seconds for compression.
+         * Defines the minimum delay in seconds before the asynchronous compression action is scheduled.
+         * The actual delay will be a random value in the range {@code [minDelaySeconds, maxDelaySeconds]}.
+         * A value of 0 means the action may be executed immediately.
          *
-         * @param delayedCompressionSeconds the maximum delay in seconds (0 means immediate)
+         * @param minDelaySeconds the minimum delay in seconds (0 means no minimum delay)
          * @return This builder for chaining convenience
          * @since 2.26.0
          */
-        public Builder setDelayedCompressionSeconds(final String delayedCompressionSeconds) {
-            this.delayedCompressionSecondsStr = delayedCompressionSeconds;
+        public Builder setMinDelaySeconds(final String minDelaySeconds) {
+            this.minDelaySeconds = minDelaySeconds;
+            return this;
+        }
+
+        /**
+         * Defines the maximum delay in seconds before the asynchronous compression action is scheduled.
+         * The actual delay will be a random value in the range {@code [minDelaySeconds, maxDelaySeconds]}.
+         * A value of 0 means the action is executed immediately.
+         *
+         * @param maxDelaySeconds the maximum delay in seconds (0 means immediate execution)
+         * @return This builder for chaining convenience
+         * @since 2.26.0
+         */
+        public Builder setMaxDelaySeconds(final String maxDelaySeconds) {
+            this.maxDelaySeconds = maxDelaySeconds;
             return this;
         }
 
@@ -439,7 +465,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
     private final PatternProcessor tempCompressedFilePattern;
-    private final int delayedCompressionSeconds;
+    private final int minDelaySeconds;
+    private final int maxDelaySeconds;
 
     /**
      * Constructs a new instance.
@@ -468,7 +495,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 customActions,
                 stopCustomActionsOnError,
                 null,
-                0L);
+                0,
+                0);
     }
 
     /**
@@ -490,7 +518,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final Action[] customActions,
             final boolean stopCustomActionsOnError,
             final String tempCompressedFilePatternString,
-            final int delayedCompressionSeconds) {
+            final int minDelaySeconds,
+            final int maxDelaySeconds) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -500,7 +529,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         this.customActions = customActions == null ? Collections.<Action>emptyList() : Arrays.asList(customActions);
         this.tempCompressedFilePattern =
                 tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
-        this.delayedCompressionSeconds = delayedCompressionSeconds;
+        this.minDelaySeconds = minDelaySeconds;
+        this.maxDelaySeconds = maxDelaySeconds;
     }
 
     public int getCompressionLevel() {
@@ -737,15 +767,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         final FileRenameAction renameAction =
                 new FileRenameAction(new File(currentFileName), new File(renameTo), manager.isRenameEmptyFiles());
 
-        Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
+        final Action asyncAction = merge(compressAction, customActions, stopCustomActionsOnError);
 
-        if (asyncAction != null && delayedCompressionSeconds > 0) {
-            // Wrap the entire async action with delay - DelayedCompressionAction will provide
-            // delay configuration for RollingFileManager to handle scheduling
-            asyncAction = new DelayedCompressionAction(asyncAction, delayedCompressionSeconds);
-        }
-
-        return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction);
+        return new RolloverDescriptionImpl(currentFileName, false, renameAction, asyncAction, minDelaySeconds, maxDelaySeconds);
     }
 
     @Override
@@ -754,12 +778,24 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     }
 
     /**
-     * Gets the maximum delay in seconds for compression.
+     * Gets the minimum delay in seconds before the asynchronous compression action is scheduled.
      *
-     * @return the maximum delay in seconds
+     * @return the minimum delay in seconds (0 means no minimum)
+     * @since 2.26.0
      */
-    public int getDelayedCompressionSeconds() {
-        return delayedCompressionSeconds;
+    public int getMinDelaySeconds() {
+        return minDelaySeconds;
+    }
+
+    /**
+     * Gets the maximum delay in seconds before the asynchronous compression action is scheduled.
+     * The actual delay is a random value in the range {@code [minDelaySeconds, maxDelaySeconds]}.
+     *
+     * @return the maximum delay in seconds (0 means immediate execution)
+     * @since 2.26.0
+     */
+    public int getMaxDelaySeconds() {
+        return maxDelaySeconds;
     }
 
 }

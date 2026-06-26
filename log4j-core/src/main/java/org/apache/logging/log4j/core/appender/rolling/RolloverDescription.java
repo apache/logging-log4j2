@@ -51,4 +51,28 @@ public interface RolloverDescription {
      * @return action, may be null.
      */
     Action getAsynchronous();
+
+    /**
+     * The minimum delay in seconds before the asynchronous action should be executed.
+     * A value of 0 means the action should be executed immediately.
+     * The actual delay will be a random value in the range {@code [minAsyncDelay, maxAsyncDelay]}.
+     *
+     * @return minimum delay in seconds, 0 means no delay.
+     * @since 2.26.0
+     */
+    default int getMinAsyncDelay() {
+        return 0;
+    }
+
+    /**
+     * The maximum delay in seconds before the asynchronous action should be executed.
+     * A value of 0 means the action should be executed immediately.
+     * The actual delay will be a random value in the range {@code [minAsyncDelay, maxAsyncDelay]}.
+     *
+     * @return maximum delay in seconds, 0 means no delay.
+     * @since 2.26.0
+     */
+    default int getMaxAsyncDelay() {
+        return 0;
+    }
 }

@@ -46,7 +46,18 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
     private final Action asynchronous;
 
     /**
-     * Create new instance.
+     * Minimum delay in seconds before the asynchronous action is scheduled.
+     */
+    private final int minAsyncDelay;
+
+    /**
+     * Maximum delay in seconds before the asynchronous action is scheduled.
+     * The actual delay is a random value in [minAsyncDelay, maxAsyncDelay].
+     */
+    private final int maxAsyncDelay;
+
+    /**
+     * Create new instance with no async delay (immediate execution).
      *
      * @param activeFileName active log file name after rollover, may not be null.
      * @param append         true if active log file after rollover should be opened for appending.
@@ -56,12 +67,46 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
      */
     public RolloverDescriptionImpl(
             final String activeFileName, final boolean append, final Action synchronous, final Action asynchronous) {
+        this(activeFileName, append, synchronous, asynchronous, 0, 0);
+    }
+
+    /**
+     * Create new instance with a random async delay in the range {@code [minAsyncDelay, maxAsyncDelay]}.
+     *
+     * @param activeFileName active log file name after rollover, may not be null.
+     * @param append         true if active log file after rollover should be opened for appending.
+     * @param synchronous    action to be completed after close of current active log file, may be null.
+     * @param asynchronous   action to be completed after close of current active log file and
+     *                       before next rollover attempt.
+     * @param minAsyncDelay  minimum delay in seconds before the asynchronous action is scheduled (0 = immediate).
+     * @param maxAsyncDelay  maximum delay in seconds before the asynchronous action is scheduled (0 = immediate).
+     * @since 2.26.0
+     */
+    public RolloverDescriptionImpl(
+            final String activeFileName,
+            final boolean append,
+            final Action synchronous,
+            final Action asynchronous,
+            final int minAsyncDelay,
+            final int maxAsyncDelay) {
         Objects.requireNonNull(activeFileName, "activeFileName");
+        if (minAsyncDelay < 0) {
+            throw new IllegalArgumentException("minAsyncDelay must be >= 0, got: " + minAsyncDelay);
+        }
+        if (maxAsyncDelay < 0) {
+            throw new IllegalArgumentException("maxAsyncDelay must be >= 0, got: " + maxAsyncDelay);
+        }
+        if (maxAsyncDelay < minAsyncDelay) {
+            throw new IllegalArgumentException(
+                    "maxAsyncDelay (" + maxAsyncDelay + ") must be >= minAsyncDelay (" + minAsyncDelay + ")");
+        }
 
         this.append = append;
         this.activeFileName = activeFileName;
         this.synchronous = synchronous;
         this.asynchronous = asynchronous;
+        this.minAsyncDelay = minAsyncDelay;
+        this.maxAsyncDelay = maxAsyncDelay;
     }
 
     /**
@@ -102,5 +147,21 @@ public final class RolloverDescriptionImpl implements RolloverDescription {
     @Override
     public Action getAsynchronous() {
         return asynchronous;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getMinAsyncDelay() {
+        return minAsyncDelay;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getMaxAsyncDelay() {
+        return maxAsyncDelay;
     }
 }
