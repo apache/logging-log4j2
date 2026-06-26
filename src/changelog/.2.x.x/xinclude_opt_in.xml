@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="4064" link="https://github.com/apache/logging-log4j2/issues/4064"/>
+  <description format="asciidoc">
+    Make XInclude processing in XML configurations opt-in (disabled by default): it can be enabled with the `log4j2.configurationEnableXInclude` property.
+  </description>
+</entry>

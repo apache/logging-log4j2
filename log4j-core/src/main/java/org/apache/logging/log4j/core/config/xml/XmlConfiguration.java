@@ -45,7 +45,7 @@ import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,6 +59,11 @@ import org.xml.sax.SAXException;
  * Creates a Node hierarchy from an XML file.
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
+
+    /**
+     * Property that enables XInclude processing in XML configuration files. Disabled by default.
+     */
+    private static final String ENABLE_XINCLUDE_PROP = "log4j2.configurationEnableXInclude";
 
     private Element rootElement;
     private boolean strict;
@@ -80,24 +85,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             source.setSystemId(configSource.getLocation());
-            final DocumentBuilder documentBuilder = newDocumentBuilder(true);
-            Document document;
-            try {
-                document = documentBuilder.parse(source);
-            } catch (final Exception e) {
-                // LOG4J2-1127
-                final Throwable throwable = Throwables.getRootCause(e);
-                if (throwable instanceof UnsupportedOperationException) {
-                    LOGGER.warn(
-                            "The DocumentBuilder {} does not support an operation: {}."
-                                    + "Trying again without XInclude...",
-                            documentBuilder,
-                            e);
-                    document = newDocumentBuilder(false).parse(source);
-                } else {
-                    throw e;
-                }
-            }
+            final boolean xIncludeAware = PropertiesUtil.getProperties().getBooleanProperty(ENABLE_XINCLUDE_PROP);
+            final DocumentBuilder documentBuilder = newDocumentBuilder(xIncludeAware);
+            final Document document = documentBuilder.parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
