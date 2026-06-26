@@ -20,14 +20,6 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This patch release addresses several bugs in version 2.26.0, in particular:
-
-* Fixes "Identity Malfunction" in `ThrowableStackTraceRenderer` by using `IdentityHashMap` for metadata caching.
-* Fixes resource leaks in `ConfigurationSource` when loading configurations via URL.
-* Fixes `DatePatternConverter` locale parsing when the timezone is omitted.
-* Improves logging for `LinkageError` and Disruptor initialization failures to provide better diagnostics.
-* Fixes `RollingFileAppender` with `createOnDemand="true"` to prevent the eager creation of parent directories when no logs are being written.
-* Fixes `KafkaAppender` retry logic to prevent reporting spurious errors to the error handler after a successful retry.
-* Fixes encoding of MSGID and SD-ID fields of `StructuredDataMessage` to XML.
+This patch release delivers certain fixes on top of `2.26.0`.
 
 <#include "../.changelog.adoc.ftl">
