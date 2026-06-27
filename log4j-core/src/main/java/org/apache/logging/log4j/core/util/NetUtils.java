@@ -187,7 +187,7 @@ public final class NetUtils {
         // - an absolute path becomes a `file:` URI holding the full path,
         // - a relative one becomes a scheme-less URI, to be resolved later as a file or a class path resource.
         final File file = new File(path);
-        return file.isAbsolute() ? file.toURI() : toRelativeUri(file);
+        return file.isAbsolute() ? file.toURI() : toRelativeUri(path);
     }
 
     /**
@@ -197,13 +197,13 @@ public final class NetUtils {
      * A leading Windows drive letter is escaped too ({@code C:} becomes {@code C%3A}),
      * so the result is a relative reference rather than a URI whose scheme is the drive letter.</p>
      */
-    private static URI toRelativeUri(final File file) {
+    private static URI toRelativeUri(final String path) {
         try {
-            final URI uri = new URI(null, null, file.toString(), null);
+            final URI uri = new URI(null, null, path, null);
             return uri.isAbsolute() ? URI.create(uri.toASCIIString().replaceFirst(":", "%3A")) : uri;
         } catch (final URISyntaxException e) {
             // Unreachable: the multi-argument constructor escapes every character illegal in a URI.
-            throw new IllegalArgumentException("Cannot convert to a relative URI: " + file, e);
+            throw new IllegalArgumentException("Cannot convert to a relative URI: " + path, e);
         }
     }
 
