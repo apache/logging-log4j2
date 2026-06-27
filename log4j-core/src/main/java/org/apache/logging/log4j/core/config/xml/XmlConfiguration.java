@@ -59,9 +59,9 @@ import org.w3c.dom.Text;
 import org.w3c.dom.ls.LSException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.EntityResolver2;
 
 /**
  * Creates a Node hierarchy from an XML file.
@@ -318,24 +318,38 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     /**
      * Resolves the resources referenced by an XML configuration through {@link ConfigurationSource}, the same way the
-     * configuration file itself is resolved: the targets of {@code xi:include} (as an {@link EntityResolver}) and the
+     * configuration file itself is resolved: the targets of {@code xi:include} (as an {@link EntityResolver2}) and the
      * resources imported by an XML Schema (as an {@link LSResourceResolver}).
      *
      * <p>This adds support for the Log4j URI conventions (such as the {@code classpath:} scheme) and subjects every
      * referenced resource to the {@code ALLOWED_PROTOCOLS} restrictions.</p>
      */
-    private static final class ConfigurationSourceResolver implements EntityResolver, LSResourceResolver {
+    private static final class ConfigurationSourceResolver implements EntityResolver2, LSResourceResolver {
 
         private static final ConfigurationSourceResolver INSTANCE = new ConfigurationSourceResolver();
 
         /**
          * Resolves an external entity, used while expanding {@code xi:include} elements.
+         *
+         * <p>{@link EntityResolver2} receives both the system id and base URI to interpret it.</p>
          */
         @Override
-        public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
-            final InputSource inputSource = toInputSource(toConfigurationSource(systemId, null));
+        public InputSource resolveEntity(
+                final String name, final String publicId, final String baseURI, final String systemId)
+                throws SAXException {
+            final InputSource inputSource = toInputSource(toConfigurationSource(systemId, baseURI));
             inputSource.setPublicId(publicId);
             return inputSource;
+        }
+
+        @Override
+        public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
+            return resolveEntity(null, publicId, null, systemId);
+        }
+
+        @Override
+        public InputSource getExternalSubset(final String name, final String baseURI) {
+            return null;
         }
 
         /**
