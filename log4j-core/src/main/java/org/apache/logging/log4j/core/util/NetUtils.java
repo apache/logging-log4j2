@@ -156,28 +156,100 @@ public final class NetUtils {
     }
 
     /**
-     * Converts a URI string or file path to a URI object.
+     * Converts a configuration location, expressed as either a {@link URI} or a file system path, into a {@link URI}.
      *
-     * @param path the URI string or path
-     * @return the URI object
+     * <p>The argument is classified by syntax:</p>
+     *
+     * <ul>
+     * <li>An <strong>absolute URI</strong> (one bearing a scheme) is returned unchanged.
+     * A single-letter scheme is the exception: it is read as a Windows drive letter, not a URI scheme.</li>
+     * <li>An <strong>absolute file system path</strong> for the current OS is converted to a {@code file:} URI.</li>
+     * <li>A <strong>relative</strong> path or URI ({@code log4j2.xml}, {@code config/log4j2.xml}) is returned as a
+     * relative URI and will require disambiguation later.</li>
+     * </ul>
+     *
+     * <p><em>Note:</em> URI parsing is performed leniently and might fix minor syntax errors.</p>
+     *
+     * @param path a URI string or a file system path
+     * @return the matching URI, never {@code null}
      */
     @SuppressFBWarnings(
             value = "PATH_TRAVERSAL_IN",
             justification = "Currently `path` comes from a configuration file.")
     public static URI toURI(final String path) {
-        try {
-            // Resolves absolute URI
-            return new URI(path);
-        } catch (final URISyntaxException e) {
-            // A file path or a Apache Commons VFS URL might contain blanks.
-            // A file path may start with a driver letter
-            try {
-                final URL url = new URL(path);
-                return new URI(url.getProtocol(), url.getHost(), url.getPath(), null);
-            } catch (MalformedURLException | URISyntaxException nestedEx) {
-                return new File(path).toURI();
-            }
+        final URI uri = parseURI(path);
+        // 1. A genuine absolute URI (a real scheme, not a Windows drive letter) is used as commanded.
+        if (uri != null && uri.isAbsolute() && !isWindowsDriveLetter(uri.getScheme())) {
+            return uri;
         }
+        // 2. Otherwise, the value is a file system path:
+        //
+        // - an absolute path becomes a `file:` URI holding the full path,
+        // - a relative one becomes a scheme-less URI, to be resolved later as a file or a class path resource.
+        final File file = new File(path);
+        return file.isAbsolute() ? file.toURI() : toRelativeUri(file);
+    }
+
+    /**
+     * Converts a relative file system path into a scheme-less {@link URI}.
+     *
+     * <p>Characters illegal in a URI (such as {@code \} or blanks) are percent-encoded.
+     * A leading Windows drive letter is escaped too ({@code C:} becomes {@code C%3A}),
+     * so the result is a relative reference rather than a URI whose scheme is the drive letter.</p>
+     */
+    private static URI toRelativeUri(final File file) {
+        try {
+            final URI uri = new URI(null, null, file.toString(), null);
+            return uri.isAbsolute() ? URI.create(uri.toASCIIString().replaceFirst(":", "%3A")) : uri;
+        } catch (final URISyntaxException e) {
+            // Unreachable: the multi-argument constructor escapes every character illegal in a URI.
+            throw new IllegalArgumentException("Cannot convert to a relative URI: " + file, e);
+        }
+    }
+
+    /**
+     * Leniently parses a string into a {@link URI}.
+     *
+     * <p>The string is first parsed with {@link URI#URI(String)}. If it is not valid URI syntax,
+     * it is parsed with {@link URL#URL(String)} and rebuilt into a properly encoded URI.</p>
+     *
+     * <p>The {@link URL} step consults the installed {@link java.net.URLStreamHandler URL stream handlers},
+     * so a scheme contributed by Apache Commons VFS (or any other {@link java.net.URLStreamHandlerFactory}) is
+     * recognized and its illegal characters are encoded.</p>
+     *
+     * @param value the value to parse
+     * @return the parsed {@link URI}, or {@code null} if neither {@link URI} nor {@link URL} can parse it
+     */
+    private static /*@Nullable*/ URI parseURI(final String value) {
+        try {
+            return new URI(value);
+        } catch (URISyntaxException e) {
+            LOGGER.trace("Could not parse value '{}' as URI. Falling back to URL parsing.", value, e);
+        }
+        try {
+            final URL url = new URL(value);
+            return new URI(
+                    url.getProtocol(),
+                    url.getUserInfo(),
+                    url.getHost(),
+                    url.getPort(),
+                    url.getPath(),
+                    url.getQuery(),
+                    null);
+        } catch (MalformedURLException | URISyntaxException e) {
+            LOGGER.trace("Could not parse value '{}' as URL.", value, e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns {@code true} if the given URI scheme is in fact a Windows drive letter, that is, a single letter.
+     *
+     * <p>No registered URI scheme is a single letter, so a single-letter scheme always denotes the drive letter of a
+     * path such as {@code C:/dir/file} that happens to be valid URI syntax.</p>
+     */
+    private static boolean isWindowsDriveLetter(final /* @Nullable */ String scheme) {
+        return scheme != null && scheme.length() == 1 && Character.isLetter(scheme.charAt(0));
     }
 
     public static List<URI> toURIs(final String path) {
