@@ -52,6 +52,7 @@ public class DisruptorTest {
     public Option[] config() {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
+                linkBundle("eu.copernik.xml.factory"),
                 linkBundle("org.apache.logging.log4j.core"),
                 linkBundle("com.lmax.disruptor"),
                 // required by Pax Exam's logging
