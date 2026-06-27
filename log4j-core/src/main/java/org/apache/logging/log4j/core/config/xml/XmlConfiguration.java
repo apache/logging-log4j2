@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import eu.copernik.xml.factory.XmlFactories;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +80,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @SuppressFBWarnings(
             value = "XXE_DOCUMENT",
-            justification = "The `newDocumentBuilder` method disables DTD processing.")
+            justification = "The parsers are hardened by `copernik-xml-factory`; SpotBugs cannot see into the library.")
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
         byte[] buffer = null;
@@ -146,11 +147,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
      */
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // Hardened factory: by the library's contract it and what it produces never fetch external resources.
+        final DocumentBuilderFactory factory = XmlFactories.newDocumentBuilderFactory();
         factory.setNamespaceAware(true);
-
-        disableDtdProcessing(factory);
-
         if (xIncludeAware) {
             factory.setXIncludeAware(true);
         }
@@ -163,27 +162,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return builder;
     }
 
-    private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
-        factory.setValidating(false);
-        factory.setExpandEntityReferences(false);
-        setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
-        setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
-        setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-    }
-
-    private static void setFeature(
-            final DocumentBuilderFactory factory, final String featureName, final boolean value) {
-        try {
-            factory.setFeature(featureName, value);
-        } catch (final ParserConfigurationException e) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory, featureName, e);
-        } catch (final AbstractMethodError err) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
-        }
-    }
-
     private static void validateDocument(final Document document, final String schemaLocation)
             throws ConfigurationException {
         try {
@@ -194,7 +172,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 // a schema has its own modularity features (`xsd:include`/`xsd:import`).
                 final Document schemaDocument =
                         newDocumentBuilder(false).parse(ConfigurationSourceResolver.toInputSource(schemaSource));
-                final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                // Hardened factory: by the library's contract it and what it produces never fetch external resources.
+                final SchemaFactory factory = XmlFactories.newSchemaFactory();
                 factory.setResourceResolver(ConfigurationSourceResolver.INSTANCE);
                 // The system id is the base URI against which the schema's `xsd:include`/`xsd:import` resources
                 // are resolved by the resource resolver above.
