@@ -34,6 +34,11 @@ The XML format supports the following additional attributes on the `Configuratio
 
 Specifies the path to a classpath resource containing an XML schema.
 
+The schema's own `xsd:include`/`xsd:import` resources are resolved through the same mechanism as the configuration
+file itself, so they support the Log4j URI conventions, such as the `classpath:` scheme, and are subject to the
+xref:manual/systemproperties.adoc#log4j2.configurationAllowedProtocols[`log4j2.configurationAllowedProtocols`]
+restrictions.
+
 [id=configuration-attribute-strict]
 === `strict`
 
@@ -43,8 +48,11 @@ Specifies the path to a classpath resource containing an XML schema.
 | Default value | `false`
 |===
 
-If set to `true,` all configuration files will be checked against the XML schema provided by the
-<<configuration-attribute-schema>>.
+If set to `true`, all configuration files are checked against the XML schema provided by the
+<<configuration-attribute-schema>>, and a configuration that does not conform to it is rejected.
+
+NOTE: Schema validation is a configuration-authoring aid, not a security control.
+The configuration file is trusted, so validation offers no protection against a configuration that an attacker can already modify.
 
 This setting also enables "XML strict mode" and allows one to specify an element's **plugin type** through a `type` attribute instead of the tag name.
 
@@ -56,10 +64,17 @@ https://www.w3.org/TR/xinclude/[XInclude].
 
 [IMPORTANT]
 ====
-Since version `2.27.0`, XInclude processing is **disabled by default**.
+Since version `2.27.0`:
+
+* XInclude processing is **disabled by default**.
 Set the
 xref:manual/systemproperties.adoc#log4j2.configurationEnableXInclude[`log4j2.configurationEnableXInclude`]
 configuration property to `true` to enable it.
+* The `href` of an `xi:include` is resolved through the same mechanism as the configuration file itself.
+It therefore supports the Log4j URI conventions, such as the `classpath:` scheme,
+and is subject to the
+xref:manual/systemproperties.adoc#log4j2.configurationAllowedProtocols[`log4j2.configurationAllowedProtocols`]
+restrictions.
 ====
 
 NOTE: The list of `XInclude` and `XPath` features supported depends upon your
