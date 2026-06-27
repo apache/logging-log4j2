@@ -45,8 +45,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 class ConfigurationFactoryUnitTest {
 
-    // The File appender creates the log file at construction time, not at startup.
-    // This directory will hold the created files and delete them after the test.
+    // Holds the log files created by the loaded configurations, deleted after the test.
     @TempLoggingDir
     private static Path loggingDir;
 
@@ -55,8 +54,7 @@ class ConfigurationFactoryUnitTest {
                 ConfigurationFactoryUnitTest.class.getResource("/" + resource).toURI();
         final Configuration configuration =
                 ConfigurationFactory.getInstance().getConfiguration(new LoggerContext("test"), resource, uri);
-        configuration.initialize();
-        return configuration;
+        return startConfiguration(configuration);
     }
 
     private static Configuration loadComposite(final String... resources) throws Exception {
@@ -68,7 +66,19 @@ class ConfigurationFactoryUnitTest {
         }
         final Configuration configuration =
                 ConfigurationFactory.getInstance().getConfiguration(new LoggerContext("test"), "composite", uris);
-        configuration.initialize();
+        return startConfiguration(configuration);
+    }
+
+    /**
+     * Initializes <em>and</em> starts the configuration.
+     *
+     * <p>A {@link FileAppender} opens its file when it is constructed, during {@link Configuration#initialize()}, but
+     * {@link Configuration#stop()} only closes appenders that have been started. The configuration must therefore be
+     * started so that the matching {@code stop()} in each test releases the file handles; otherwise the open files
+     * would, on Windows, prevent deletion of the temporary logging directory.</p>
+     */
+    private static Configuration startConfiguration(final Configuration configuration) {
+        configuration.start();
         return configuration;
     }
 
