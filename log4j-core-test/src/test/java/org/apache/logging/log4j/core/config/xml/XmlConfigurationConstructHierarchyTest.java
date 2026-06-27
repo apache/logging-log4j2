@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config.xml;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -29,13 +30,16 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Unit tests for {@link XmlConfiguration#constructHierarchy(Node, Element, PluginManager, boolean)}.
@@ -303,5 +307,35 @@ class XmlConfigurationConstructHierarchyTest {
                 assertThat(console.getAttributes()).containsEntry("name", "STDOUT");
             });
         });
+    }
+
+    /**
+     * The custom {@code EntityResolver} routes {@code xi:include} through {@code ConfigurationSource}, which
+     * understands the {@code classpath:} scheme that the default XInclude resolver cannot handle.
+     */
+    @Test
+    void xIncludeResolvesClasspathScheme() throws Exception {
+        givenPlugin("Console");
+        final Element element =
+                parse(including("classpath:XmlConfigurationConstructHierarchyTest/included.xml", null), true);
+
+        final Node appenders = new Node();
+        XmlConfiguration.constructHierarchy(appenders, element, pluginManager, false);
+
+        assertThat(appenders.getChildren()).singleElement().satisfies(child -> {
+            assertThat(child.getName()).isEqualTo("Console");
+            assertThat(child.getAttributes()).containsEntry("name", "STDOUT");
+        });
+    }
+
+    /**
+     * Checks that {@code xi:include} is subject to {@code ALLOWED_PROTOCOLS} restrictions.
+     */
+    @Test
+    @Timeout(5)
+    @SetTestProperty(key = "log4j2.configurationAllowedProtocols", value = "file")
+    void xIncludeRespectsAllowedProtocols() {
+        assertThatThrownBy(() -> parse(including("http://localhost:12345/evil.xml", null), true))
+                .isInstanceOf(SAXException.class);
     }
 }
