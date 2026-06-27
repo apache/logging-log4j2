@@ -5,6 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
+  <issue id="4161" link="https://github.com/apache/logging-log4j2/pull/4161"/>
   <description format="asciidoc">
     Resolve the resources referenced by an XML configuration through `ConfigurationSource`.
   </description>
