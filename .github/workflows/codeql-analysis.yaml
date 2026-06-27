@@ -21,7 +21,7 @@ on:
   push:
     branches: [ "2.x", "main" ]
   pull_request:
-    branches: [ "2.x", "main" ]
+    branches: [ "2.x", "main", "feat/2.x/xinclude-resolver" ]
     types:
       # Standard types
       - opened
