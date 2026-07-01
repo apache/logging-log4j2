@@ -394,12 +394,10 @@ public class RollingFileManager extends FileManager {
 
     @Override
     protected void createParentDir(File file) {
-        if (directWrite) {
-            final File parent = file.getParentFile();
-            // If the parent is null the file is in the current working directory.
-            if (parent != null) {
-                parent.mkdirs();
-            }
+        try {
+            FileUtils.makeParentDirs(file);
+        } catch (IOException e) {
+            LOGGER.error("Unable to create parent directories for file {}", file, e);
         }
     }
 
