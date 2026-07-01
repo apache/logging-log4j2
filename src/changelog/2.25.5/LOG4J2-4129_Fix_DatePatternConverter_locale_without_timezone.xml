@@ -5,8 +5,10 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="TBD" link="https://github.com/apache/logging-log4j2/pull/TBD"/>
+  <issue id="4129" link="https://github.com/apache/logging-log4j2/issues/4129"/>
+  <issue id="4130" link="https://github.com/apache/logging-log4j2/pull/4130"/>
   <description format="asciidoc">
-    Fix handling of non-finite numbers while encoding `MapMessage` to JSON
+    Improve documentation for locale handling in the Pattern Layout date pattern converter
   </description>
 </entry>
+
