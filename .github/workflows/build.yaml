@@ -24,28 +24,36 @@ on:
       - "2.25.x"
       - "release/2*"
   pull_request:
+    types:
+      # Standard types
+      - opened
+      - synchronize
+      - reopened
+      # Used in Dependabot PRs to retrigger required workflows
+      - ready_for_review
+
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions: read-all
 
 jobs:
 
   build:
-    if: github.actor != 'dependabot[bot]'
-    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@rel/12.1.1
-    secrets:
-      DV_ACCESS_TOKEN: ${{ startsWith(github.ref_name, 'release/') && '' || secrets.DEVELOCITY_ACCESS_KEY }}
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@gha/v0
     with:
       java-version: |
         8
         17
       site-enabled: true
       reproducibility-check-enabled: false
-      develocity-enabled: ${{ ! startsWith(github.ref_name, 'release/') }}
 
   deploy-snapshot:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@rel/12.1.1
+    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@gha/v0
     # Secrets for deployments
     secrets:
       NEXUS_USERNAME: ${{ secrets.NEXUS_USER }}
@@ -58,7 +66,7 @@ jobs:
   deploy-release:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
-    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@rel/12.1.1
+    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@gha/v0
     # Secrets for deployments
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
@@ -79,7 +87,7 @@ jobs:
     needs: [ deploy-snapshot, deploy-release ]
     if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
     name: "verify-reproducibility (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
-    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@rel/12.1.1
+    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@gha/v0
     with:
       nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || 'https://repository.apache.org/content/groups/snapshots' }}
       # Encode the `runs-on` input as JSON array
