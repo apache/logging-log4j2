@@ -4616,6 +4616,7 @@ OTOH, a Writer cannot print byte streams.</p>
              ignoreExceptions=""
              immediateFlush=""
              locking=""
+             maxRandomDelay=""
              name=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;a-Layout-implementation/&gt;
@@ -4732,6 +4733,12 @@ OTOH, a Writer cannot print byte streams.</p>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxRandomDelay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -4821,6 +4828,7 @@ OTOH, a Writer cannot print byte streams.</p>
                          filePermissions=""
                          ignoreExceptions=""
                          immediateFlush=""
+                         maxRandomDelay=""
                          name=""&gt;
     &lt;a-Filter-implementation/&gt;
     &lt;a-Layout-implementation/&gt;
@@ -4921,6 +4929,12 @@ OTOH, a Writer cannot print byte streams.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>immediateFlush</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxRandomDelay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -8086,7 +8100,6 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy compressionLevel=""
                          fileIndex=""
                          max=""
-                         maxCompressionDelaySeconds=""
                          min=""
                          stopCustomActionsOnError=""
                          tempCompressedFilePattern=""&gt;
@@ -8138,14 +8151,6 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Defines the maximum number of files to keep.</p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxCompressionDelaySeconds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Defines maximum delay in seconds before compression.</p>
 </div></div></td>
 </tr>
 <tr>

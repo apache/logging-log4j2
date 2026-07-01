@@ -182,19 +182,6 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">Constructs a new instance.</div>
 </div>
-<div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action%5B%5D,boolean,java.lang.String,int)" class="member-name-link">DefaultRolloverStrategy</a><wbr>(int&nbsp;minIndex,
- int&nbsp;maxIndex,
- boolean&nbsp;useMax,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- int&nbsp;maxCompressionDelaySeconds)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Constructs a new instance.</div>
-</div>
 </div>
 </section>
 </li>
@@ -229,36 +216,31 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCustomActions()" class="member-name-link">getCustomActions</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxCompressionDelaySeconds()" class="member-name-link">getMaxCompressionDelaySeconds</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the maximum delay in seconds before compression.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxIndex()" class="member-name-link">getMaxIndex</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMinIndex()" class="member-name-link">getMinIndex</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxIndex()" class="member-name-link">getMaxIndex</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTempCompressedFilePattern()" class="member-name-link">getTempCompressedFilePattern</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMinIndex()" class="member-name-link">getMinIndex</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isStopCustomActionsOnError()" class="member-name-link">isStopCustomActionsOnError</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTempCompressedFilePattern()" class="member-name-link">getTempCompressedFilePattern</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isUseMax()" class="member-name-link">isUseMax</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isStopCustomActionsOnError()" class="member-name-link">isStopCustomActionsOnError</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RolloverDescription.html" title="interface in org.apache.logging.log4j.core.appender.rolling">RolloverDescription</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollover(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">rollover</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isUseMax()" class="member-name-link">isUseMax</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RolloverDescription.html" title="interface in org.apache.logging.log4j.core.appender.rolling">RolloverDescription</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollover(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">rollover</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Performs the rollover.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -323,33 +305,6 @@ loadScripts(document, 'script');</script>
 <dd><code>stopCustomActionsOnError</code> - whether to stop executing asynchronous actions if an error occurs</dd>
 <dd><code>tempCompressedFilePatternString</code> - File pattern of the working file
                                      used during compression, if null no temporary file are used</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="&lt;init&gt;(int,int,boolean,int,org.apache.logging.log4j.core.lookup.StrSubstitutor,org.apache.logging.log4j.core.appender.rolling.action.Action[],boolean,java.lang.String,int)">
-<h3>DefaultRolloverStrategy</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">DefaultRolloverStrategy</span><wbr><span class="parameters">(int&nbsp;minIndex,
- int&nbsp;maxIndex,
- boolean&nbsp;useMax,
- int&nbsp;compressionLevel,
- <a href="../../lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a>&nbsp;strSubstitutor,
- <a href="action/Action.html" title="interface in org.apache.logging.log4j.core.appender.rolling.action">Action</a>[]&nbsp;customActions,
- boolean&nbsp;stopCustomActionsOnError,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tempCompressedFilePatternString,
- int&nbsp;maxCompressionDelaySeconds)</span></div>
-<div class="block">Constructs a new instance.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>minIndex</code> - The minimum index.</dd>
-<dd><code>maxIndex</code> - The maximum index.</dd>
-<dd><code>customActions</code> - custom actions to perform asynchronously after rollover</dd>
-<dd><code>stopCustomActionsOnError</code> - whether to stop executing asynchronous actions if an error occurs</dd>
-<dd><code>tempCompressedFilePatternString</code> - File pattern of the working file
-                                     used during compression, if null no temporary file are used</dd>
-<dd><code>maxCompressionDelaySeconds</code> - maximum delay in seconds before compression.</dd>
-<dt>Since:</dt>
-<dd>2.27.0</dd>
 </dl>
 </section>
 </li>
@@ -433,19 +388,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getTempCompressedFilePattern()">
 <h3>getTempCompressedFilePattern</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></span>&nbsp;<span class="element-name">getTempCompressedFilePattern</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="getMaxCompressionDelaySeconds()">
-<h3>getMaxCompressionDelaySeconds</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaxCompressionDelaySeconds</span>()</div>
-<div class="block">Returns the maximum delay in seconds before compression.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>maximum delay in seconds before compression.</dd>
-<dt>Since:</dt>
-<dd>2.27.0</dd>
-</dl>
 </section>
 </li>
 <li>

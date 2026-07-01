@@ -726,6 +726,16 @@ Consider using</p>
 <p class="tableblock">Note that the effects of this setting depend on the Operating System: some systems like most POSIX OSes do not offer mandatory locking, but only advisory file locking.</p>
 <p class="tableblock">This setting can also reduce the performance of the appender.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RollingFileAppender-attr-maxRandomDelay"></a>maxRandomDelay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Maximum random delay, in seconds, before the asynchronous rollover action chain starts.
+This can spread compression workload if many applications roll over at the same time.
+A value of <code>0</code> starts asynchronous actions immediately.</p>
+</div></div></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -762,6 +772,16 @@ Consider using</p>
 <p class="tableblock">This setting does not give the same atomicity guarantees as for the
 <a href="#RollingFileAppender-attr-append"><code>RollingFile</code> Appender</a>.
 The log file cannot be opened by multiple applications at the same time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RollingRandomAccessFile-attr-maxRandomDelay"></a>maxRandomDelay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Maximum random delay, in seconds, before the asynchronous rollover action chain starts.
+This can spread compression workload if many applications roll over at the same time.
+A value of <code>0</code> starts asynchronous actions immediately.</p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -1514,14 +1534,6 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>7</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum value for the <a href="#conversion-pattern-integer"><code>%i</code></a> conversion pattern.</p>
 <p class="tableblock">This attribute is <strong>ignored</strong> if <a href="#DefaultRolloverStrategy-attr-fileIndex"><code>fileIndex</code></a> is set to <code>nomax</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="DefaultRolloverStrategy-attr-maxCompressionDelaySeconds"></a>maxCompressionDelaySeconds</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum random delay, in seconds, before compressing archived log files.</p>
-<p class="tableblock">Use this attribute to spread compression workload when many applications roll over at the same time.
-A value of <code>0</code> disables the delay and starts compression immediately.</p></td>
 </tr>
 </tbody>
 </table>
