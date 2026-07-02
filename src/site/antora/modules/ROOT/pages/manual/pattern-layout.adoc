@@ -467,8 +467,7 @@ You can also define custom date formats, see following examples:
 |%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
 |2012-11-02T14:34:02.123Z
 
-
-|%d{dd-MMMM-yyyy}\{UTC}\{de-DE}
+|%d\{dd-MMMM-yyyy}\{UTC}\{de-DE}
 |02 November 2012 (UTC timezone, German locale)
 |===
 
