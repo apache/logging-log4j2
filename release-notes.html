@@ -439,6 +439,60 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="release-notes-2-26-1"><a class="anchor" href="#release-notes-2-26-1"></a>2.26.1</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2026-06-29</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This patch release delivers certain fixes on top of <code>2.26.0</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-1-changed"><a class="anchor" href="#release-notes-2-26-1-changed"></a>Changed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Improve logging for <code>LinkageError</code> scenarios involving the LMAX Disruptor library (<a href="https://github.com/apache/logging-log4j2/issues/2250">2250</a>, <a href="https://github.com/apache/logging-log4j2/pull/4124">4124</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-26-1-fixed"><a class="anchor" href="#release-notes-2-26-1-fixed"></a>Fixed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
+</li>
+<li>
+<p>Improve documentation for locale handling in the Pattern Layout date pattern converter (<a href="https://github.com/apache/logging-log4j2/issues/4129">4129</a>, <a href="https://github.com/apache/logging-log4j2/pull/4130">4130</a>)</p>
+</li>
+<li>
+<p>Fix handling of non-finite numbers while encoding <code>MapMessage</code> to JSON (<a href="https://github.com/apache/logging-log4j2/pull/4163">4163</a>)</p>
+</li>
+<li>
+<p>Fix encoding of <code>MSGID</code> and <code>SD-ID</code> fields of <code>StructuredDataMessage</code> to XML (<a href="https://github.com/apache/logging-log4j2/pull/4136">4136</a>)</p>
+</li>
+<li>
+<p>Fix stack trace rendering for exceptions with identity malfunction (e.g., colliding <code>equals()</code> and/or <code>hashCode()</code> implementations) (<a href="https://github.com/apache/logging-log4j2/issues/3933">3933</a>, <a href="https://github.com/apache/logging-log4j2/pull/4133">4133</a>)</p>
+</li>
+<li>
+<p>Fix resource leaks in <code>ConfigurationSource</code> when loading configuration via URL fails (<a href="https://github.com/apache/logging-log4j2/pull/4127">4127</a>)</p>
+</li>
+<li>
+<p>Fix <code>KafkaAppender</code> reporting error to error handler even after a successful retry (<a href="https://github.com/apache/logging-log4j2/pull/4125">4125</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release-notes-2-26-0"><a class="anchor" href="#release-notes-2-26-0"></a>2.26.0</h2>
 <div class="sectionbody">
 <div class="dlist">
