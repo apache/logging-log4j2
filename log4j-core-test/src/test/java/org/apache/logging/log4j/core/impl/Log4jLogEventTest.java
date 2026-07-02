@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import static org.apache.logging.log4j.test.junit.SerialUtil.deserialize;
 import static org.apache.logging.log4j.test.junit.SerialUtil.serialize;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -36,6 +38,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
@@ -45,6 +49,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -540,5 +545,149 @@ public class Log4jLogEventTest {
     void testToString() {
         // Throws an NPE in 2.6.2
         assertNotNull(new Log4jLogEvent().toString());
+    }
+
+    @Test
+    public void testCustomLegacyLogEventDefaultBehavior() {
+        // Create an anonymous/stub class implementing LogEvent without implementing getTraceId/getSpanId/getTraceFlags
+        final LogEvent legacyEvent = new LogEvent() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public LogEvent toImmutable() {
+                return this;
+            }
+
+            @Override
+            @Deprecated
+            public Map<String, String> getContextMap() {
+                return java.util.Collections.emptyMap();
+            }
+
+            @Override
+            public ReadOnlyStringMap getContextData() {
+                return ContextDataFactory.emptyFrozenContextData();
+            }
+
+            @Override
+            public ThreadContext.ContextStack getContextStack() {
+                return ThreadContext.EMPTY_STACK;
+            }
+
+            @Override
+            public String getLoggerFqcn() {
+                return null;
+            }
+
+            @Override
+            public Level getLevel() {
+                return Level.INFO;
+            }
+
+            @Override
+            public String getLoggerName() {
+                return "LegacyLogger";
+            }
+
+            @Override
+            public Marker getMarker() {
+                return null;
+            }
+
+            @Override
+            public Message getMessage() {
+                return new SimpleMessage("Legacy msg");
+            }
+
+            @Override
+            public long getTimeMillis() {
+                return 0;
+            }
+
+            @Override
+            public Instant getInstant() {
+                return new MutableInstant();
+            }
+
+            @Override
+            public StackTraceElement getSource() {
+                return null;
+            }
+
+            @Override
+            public String getThreadName() {
+                return "main";
+            }
+
+            @Override
+            public long getThreadId() {
+                return 1;
+            }
+
+            @Override
+            public int getThreadPriority() {
+                return 5;
+            }
+
+            @Override
+            public Throwable getThrown() {
+                return null;
+            }
+
+            @Override
+            @Deprecated
+            public ThrowableProxy getThrownProxy() {
+                return null;
+            }
+
+            @Override
+            public boolean isEndOfBatch() {
+                return false;
+            }
+
+            @Override
+            public boolean isIncludeLocation() {
+                return false;
+            }
+
+            @Override
+            public void setEndOfBatch(boolean endOfBatch) {}
+
+            @Override
+            public void setIncludeLocation(boolean locationRequired) {}
+
+            @Override
+            public long getNanoTime() {
+                return 0;
+            }
+        };
+
+        // Assert Java 8 default method fallbacks return null without throwing abstract method exceptions
+        assertNull(legacyEvent.getTraceId());
+        assertNull(legacyEvent.getSpanId());
+        assertNull(legacyEvent.getTraceFlags());
+    }
+
+    @Test
+    void testTracingFieldsInBuilderAndCopy() {
+        final Log4jLogEvent originalEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("TestLogger")
+                .setLevel(Level.DEBUG)
+                .setMessage(new org.apache.logging.log4j.message.SimpleMessage("Test message"))
+                .setTraceId("4bf92f3577b34da6a3ce929d0e0e4736")
+                .setSpanId("00f067aa0ba902b7")
+                .setTraceFlags("01")
+                .build();
+
+        // 1. Verify getters on original
+        assertThat(originalEvent.getTraceId()).isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
+        assertThat(originalEvent.getSpanId()).isEqualTo("00f067aa0ba902b7");
+        assertThat(originalEvent.getTraceFlags()).isEqualTo("01");
+
+        // 2. Verify Builder Copy Constructor
+        final Log4jLogEvent copiedEvent = new Log4jLogEvent.Builder(originalEvent).build();
+        assertThat(copiedEvent.getTraceId()).isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
+        assertThat(copiedEvent.getSpanId()).isEqualTo("00f067aa0ba902b7");
+        assertThat(copiedEvent.getTraceFlags()).isEqualTo("01");
     }
 }

@@ -241,4 +241,24 @@ public interface LogEvent extends Serializable {
      * @since Log4J 2.4
      */
     long getNanoTime();
+    /**
+     * Returns the standard Trace ID.
+     */
+    default String getTraceId() {
+        return null;
+    }
+
+    /**
+     * Returns the standard Span ID.
+     */
+    default String getSpanId() {
+        return null;
+    }
+
+    /**
+     * Returns the standard Trace Flags.
+     */
+    default String getTraceFlags() {
+        return null;
+    }
 }

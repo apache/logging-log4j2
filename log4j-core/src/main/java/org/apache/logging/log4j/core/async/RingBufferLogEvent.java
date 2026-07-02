@@ -91,6 +91,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private String fqcn;
     private StackTraceElement location;
     private ContextStack contextStack;
+    private String traceId;
+    private String spanId;
+    private String traceFlags;
 
     private transient AsyncLogger asyncLogger;
 
@@ -109,7 +112,10 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             final int threadPriority,
             final StackTraceElement aLocation,
             final Clock clock,
-            final NanoClock nanoClock) {
+            final NanoClock nanoClock,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -125,7 +131,48 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.contextData = mutableContextData;
         this.contextStack = aContextStack;
         this.asyncLogger = anAsyncLogger;
+        this.traceId = traceId;
+        this.spanId = spanId;
+        this.traceFlags = traceFlags;
         this.populated = true;
+    }
+
+    public void setValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final StringMap mutableContextData,
+            final ContextStack aContextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement aLocation,
+            final Clock clock,
+            final NanoClock nanoClock) {
+        setValues(
+                anAsyncLogger,
+                aLoggerName,
+                aMarker,
+                theFqcn,
+                aLevel,
+                msg,
+                aThrowable,
+                mutableContextData,
+                aContextStack,
+                threadId,
+                threadName,
+                threadPriority,
+                aLocation,
+                clock,
+                nanoClock,
+                null, // traceId default
+                null, // spanId default
+                null // traceFlags default
+                );
     }
 
     private void initTime(final Clock clock) {
@@ -399,6 +446,21 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return nanoTime;
     }
 
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    @Override
+    public String getSpanId() {
+        return spanId;
+    }
+
+    @Override
+    public String getTraceFlags() {
+        return traceFlags;
+    }
+
     /**
      * Release references held by ring buffer to allow objects to be garbage-collected.
      */
@@ -415,6 +477,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.location = null;
         this.contextStack = null;
         this.asyncLogger = null;
+        this.traceId = null;
+        this.spanId = null;
+        this.traceFlags = null;
     }
 
     private void clearMessage() {
@@ -499,6 +564,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setInstant(instant) //
-        ;
+                .setTraceId(traceId)
+                .setSpanId(spanId)
+                .setTraceFlags(traceFlags);
     }
 }

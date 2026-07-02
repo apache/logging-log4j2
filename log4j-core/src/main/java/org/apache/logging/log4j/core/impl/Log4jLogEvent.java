@@ -38,11 +38,13 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.TraceContextProviderService;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -94,6 +96,10 @@ public class Log4jLogEvent implements LogEvent {
     // 5. Deprecated fields, only used for serialization
     private ThrowableProxy thrownProxy;
 
+    // 6. Tracing fields
+    private final String traceId;
+    private final String spanId;
+    private final String traceFlags;
     /** LogEvent Builder helper class. */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<LogEvent> {
 
@@ -123,9 +129,28 @@ public class Log4jLogEvent implements LogEvent {
         private StringMap contextData;
         private ThreadContext.ContextStack contextStack;
 
+        private String traceId = Strings.EMPTY;
+        private String spanId = Strings.EMPTY;
+        private String traceFlags = Strings.EMPTY;
+
         public Builder() {
             this.contextData = createContextData((List<Property>) null);
             this.contextStack = ThreadContext.getImmutableStack();
+
+            final TraceContextProvider provider = TraceContextProviderService.getActiveProvider();
+
+            final String tId = provider.getTraceId();
+            if (tId != null) {
+                this.traceId = tId;
+            }
+            final String sId = provider.getSpanId();
+            if (sId != null) {
+                this.spanId = sId;
+            }
+            final String flags = provider.getTraceFlags();
+            if (flags != null) {
+                this.traceFlags = flags;
+            }
         }
 
         /**
@@ -159,6 +184,10 @@ public class Log4jLogEvent implements LogEvent {
             //   but since we are copying the event, we want to call it.
             this.source = other.getSource();
 
+            this.traceId = other.getTraceId();
+            this.spanId = other.getSpanId();
+            this.traceFlags = other.getTraceFlags();
+
             Message message = other.getMessage();
             this.message = message instanceof ReusableMessage
                     ? ((ReusableMessage) message).memento()
@@ -173,6 +202,21 @@ public class Log4jLogEvent implements LogEvent {
 
             // TODO: The immutability of the context stack is not checked.
             this.contextStack = other.getContextStack();
+        }
+
+        public Builder setTraceId(String traceId) {
+            this.traceId = traceId;
+            return this;
+        }
+
+        public Builder setSpanId(String spanId) {
+            this.spanId = spanId;
+            return this;
+        }
+
+        public Builder setTraceFlags(String traceFlags) {
+            this.traceFlags = traceFlags;
+            return this;
         }
 
         public Builder setLevel(final Level level) {
@@ -303,7 +347,10 @@ public class Log4jLogEvent implements LogEvent {
                     source,
                     instant.getEpochMillisecond(),
                     instant.getNanoOfMillisecond(),
-                    nanoTime);
+                    nanoTime,
+                    traceId,
+                    spanId,
+                    traceFlags);
             result.setIncludeLocation(includeLocation);
             result.setEndOfBatch(endOfBatch);
             return result;
@@ -339,7 +386,10 @@ public class Log4jLogEvent implements LogEvent {
                 0,
                 null,
                 CLOCK,
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
     }
 
     /**
@@ -363,7 +413,10 @@ public class Log4jLogEvent implements LogEvent {
                 null,
                 timestamp,
                 0,
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
     }
 
     /**
@@ -420,7 +473,10 @@ public class Log4jLogEvent implements LogEvent {
                 0, // thread priority
                 null, // StackTraceElement source
                 CLOCK, //
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
     }
 
     /**
@@ -457,7 +513,10 @@ public class Log4jLogEvent implements LogEvent {
                 0, // thread priority
                 source, // StackTraceElement source
                 CLOCK, //
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
     }
 
     /**
@@ -503,7 +562,10 @@ public class Log4jLogEvent implements LogEvent {
                 location,
                 timestampMillis,
                 0,
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
     }
 
     /**
@@ -552,7 +614,10 @@ public class Log4jLogEvent implements LogEvent {
                 location,
                 timestamp,
                 0,
-                nanoClock.nanoTime());
+                nanoClock.nanoTime(),
+                Strings.EMPTY,
+                Strings.EMPTY,
+                Strings.EMPTY);
         return result;
     }
 
@@ -590,7 +655,10 @@ public class Log4jLogEvent implements LogEvent {
             final StackTraceElement source,
             final long timestampMillis,
             final int nanoOfMillisecond,
-            final long nanoTime) {
+            final long nanoTime,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this(
                 loggerName,
                 marker,
@@ -604,7 +672,10 @@ public class Log4jLogEvent implements LogEvent {
                 threadName,
                 threadPriority,
                 source,
-                nanoTime);
+                nanoTime,
+                traceId,
+                spanId,
+                traceFlags);
         final long millis =
                 message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);
@@ -624,7 +695,10 @@ public class Log4jLogEvent implements LogEvent {
             final int threadPriority,
             final StackTraceElement source,
             final Clock clock,
-            final long nanoTime) {
+            final long nanoTime,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this(
                 loggerName,
                 marker,
@@ -638,7 +712,10 @@ public class Log4jLogEvent implements LogEvent {
                 threadName,
                 threadPriority,
                 source,
-                nanoTime);
+                nanoTime,
+                traceId,
+                spanId,
+                traceFlags);
         if (message instanceof TimestampMessage) {
             instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
         } else {
@@ -659,7 +736,10 @@ public class Log4jLogEvent implements LogEvent {
             final String threadName,
             final int threadPriority,
             final StackTraceElement source,
-            final long nanoTime) {
+            final long nanoTime,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this.loggerName = loggerName;
         this.marker = marker;
         this.loggerFqcn = loggerFQCN;
@@ -676,6 +756,9 @@ public class Log4jLogEvent implements LogEvent {
             ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
         }
         this.nanoTime = nanoTime;
+        this.traceId = traceId;
+        this.spanId = spanId;
+        this.traceFlags = traceFlags;
     }
 
     private static StringMap createContextData(final Map<String, String> contextMap) {
@@ -985,7 +1068,10 @@ public class Log4jLogEvent implements LogEvent {
                     proxy.source,
                     proxy.timeMillis,
                     proxy.nanoOfMillisecond,
-                    proxy.nanoTime);
+                    proxy.nanoTime,
+                    proxy.traceId,
+                    proxy.spanId,
+                    proxy.traceFlags);
             result.setEndOfBatch(proxy.isEndOfBatch);
             result.setIncludeLocation(proxy.isLocationRequired);
             return result;
@@ -1093,6 +1179,15 @@ public class Log4jLogEvent implements LogEvent {
         if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
             return false;
         }
+        if (traceId != null ? !traceId.equals(that.traceId) : that.traceId != null) {
+            return false;
+        }
+        if (spanId != null ? !spanId.equals(that.spanId) : that.spanId != null) {
+            return false;
+        }
+        if (traceFlags != null ? !traceFlags.equals(that.traceFlags) : that.traceFlags != null) {
+            return false;
+        }
 
         return true;
     }
@@ -1116,10 +1211,27 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (includeLocation ? 1 : 0);
         result = 31 * result + (endOfBatch ? 1 : 0);
+        result = 31 * result + (traceId != null ? traceId.hashCode() : 0);
+        result = 31 * result + (spanId != null ? spanId.hashCode() : 0);
+        result = 31 * result + (traceFlags != null ? traceFlags.hashCode() : 0);
         // Check:ON: MagicNumber
         return result;
     }
 
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    @Override
+    public String getSpanId() {
+        return spanId;
+    }
+
+    @Override
+    public String getTraceFlags() {
+        return traceFlags;
+    }
     /**
      * Proxy pattern used to serialize the LogEvent.
      */
@@ -1160,6 +1272,10 @@ public class Log4jLogEvent implements LogEvent {
         /** @since 2.4 */
         private final transient long nanoTime;
 
+        private final String traceId;
+        private final String spanId;
+        private final String traceFlags;
+
         public LogEventProxy(final Log4jLogEvent event, final boolean includeLocation) {
             this.loggerFQCN = event.loggerFqcn;
             this.marker = event.marker;
@@ -1180,6 +1296,9 @@ public class Log4jLogEvent implements LogEvent {
             this.isLocationRequired = includeLocation;
             this.isEndOfBatch = event.endOfBatch;
             this.nanoTime = event.nanoTime;
+            this.traceId = event.getTraceId();
+            this.spanId = event.getSpanId();
+            this.traceFlags = event.getTraceFlags();
         }
 
         public LogEventProxy(final LogEvent event, final boolean includeLocation) {
@@ -1210,6 +1329,9 @@ public class Log4jLogEvent implements LogEvent {
             this.isLocationRequired = includeLocation;
             this.isEndOfBatch = event.isEndOfBatch();
             this.nanoTime = event.getNanoTime();
+            this.traceId = event.getTraceId();
+            this.spanId = event.getSpanId();
+            this.traceFlags = event.getTraceFlags();
         }
 
         private static Message memento(final ReusableMessage message) {
@@ -1257,7 +1379,10 @@ public class Log4jLogEvent implements LogEvent {
                     source,
                     timeMillis,
                     nanoOfMillisecond,
-                    nanoTime);
+                    nanoTime,
+                    traceId,
+                    spanId,
+                    traceFlags);
             result.setEndOfBatch(isEndOfBatch);
             result.setIncludeLocation(isLocationRequired);
             result.thrownProxy = thrownProxy;
