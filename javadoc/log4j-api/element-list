@@ -4,3 +4,4 @@ org.apache.logging.log4j.simple
 org.apache.logging.log4j.spi
 org.apache.logging.log4j.status
 org.apache.logging.log4j.util
+org.apache.logging.log4j.util.internal

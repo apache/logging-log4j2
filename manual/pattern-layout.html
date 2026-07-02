@@ -1041,8 +1041,12 @@ See <a href="layouts.html#LocationInformation" class="xref page">this section of
 <div class="listingblock">
 <div class="title"><a href="../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html"><code>DatePatternConverter</code></a> specifier grammar</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">d{pattern}[{timezone}]
-date{pattern}[{timezone}]</code></pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">d{pattern}
+d{pattern}{timezone}
+d{pattern}{timezone}{locale}
+date{pattern}
+date{pattern}{timezone}
+date{pattern}{timezone}{locale}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1149,6 +1153,10 @@ If no date format specifier is given, then the <code>DEFAULT</code> format is us
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{yyyy-mm-dd&#8217;T&#8217;HH:mm:ss.SSS&#8217;Z'}{UTC}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2012-11-02T14:34:02.123Z</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d{dd-MMMM-yyyy}{UTC}{de-DE}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>02 November 2012 (UTC timezone, German locale)</code></p></td>
 </tr>
 </tbody>
 </table>
