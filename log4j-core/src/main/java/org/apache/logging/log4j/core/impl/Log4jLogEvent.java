@@ -474,9 +474,9 @@ public class Log4jLogEvent implements LogEvent {
                 null, // StackTraceElement source
                 CLOCK, //
                 nanoClock.nanoTime(),
-                Strings.EMPTY,
-                Strings.EMPTY,
-                Strings.EMPTY);
+                TraceContextProviderService.getActiveProvider().getTraceId(),
+                TraceContextProviderService.getActiveProvider().getSpanId(),
+                TraceContextProviderService.getActiveProvider().getTraceFlags());
     }
 
     /**
@@ -514,9 +514,9 @@ public class Log4jLogEvent implements LogEvent {
                 source, // StackTraceElement source
                 CLOCK, //
                 nanoClock.nanoTime(),
-                Strings.EMPTY,
-                Strings.EMPTY,
-                Strings.EMPTY);
+                TraceContextProviderService.getActiveProvider().getTraceId(),
+                TraceContextProviderService.getActiveProvider().getSpanId(),
+                TraceContextProviderService.getActiveProvider().getTraceFlags());
     }
 
     /**
@@ -756,9 +756,9 @@ public class Log4jLogEvent implements LogEvent {
             ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
         }
         this.nanoTime = nanoTime;
-        this.traceId = traceId;
-        this.spanId = spanId;
-        this.traceFlags = traceFlags;
+        this.traceId = traceId != null ? traceId : Strings.EMPTY;
+        this.spanId = spanId != null ? spanId : Strings.EMPTY;
+        this.traceFlags = traceFlags != null ? traceFlags : Strings.EMPTY;
     }
 
     private static StringMap createContextData(final Map<String, String> contextMap) {

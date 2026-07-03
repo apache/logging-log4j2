@@ -22,7 +22,8 @@ import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Service registry designed to discover and cache the active {@link TraceContextProvider}.
+ * Service registry designed to discover and cache the active {@link TraceContextProvider}
+ * natively using the standard Java ServiceLoader.
  */
 public final class TraceContextProviderService {
 
@@ -31,9 +32,21 @@ public final class TraceContextProviderService {
     static {
         TraceContextProvider found = null;
         try {
-            final ServiceLoader<TraceContextProvider> loader =
-                    ServiceLoader.load(TraceContextProvider.class, TraceContextProviderService.class.getClassLoader());
-            final Iterator<TraceContextProvider> iterator = loader.iterator();
+            // Standard ServiceLoader lookup using the Thread Context ClassLoader (TCCL)
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            if (cl == null) {
+                cl = TraceContextProviderService.class.getClassLoader();
+            }
+
+            ServiceLoader<TraceContextProvider> loader = ServiceLoader.load(TraceContextProvider.class, cl);
+            Iterator<TraceContextProvider> iterator = loader.iterator();
+
+            if (!iterator.hasNext() && cl != TraceContextProviderService.class.getClassLoader()) {
+                loader = ServiceLoader.load(
+                        TraceContextProvider.class, TraceContextProviderService.class.getClassLoader());
+                iterator = loader.iterator();
+            }
+
             if (iterator.hasNext()) {
                 found = iterator.next();
                 StatusLogger.getLogger()
