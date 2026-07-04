@@ -19,9 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-/**
- * Built-in converter to format W3C standard trace ID natively.
- */
 @Plugin(name = "TraceIdPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"traceId"})
 public final class TraceIdPatternConverter extends LogEventPatternConverter {

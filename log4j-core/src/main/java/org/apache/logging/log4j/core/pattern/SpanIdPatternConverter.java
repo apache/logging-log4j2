@@ -19,9 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-/**
- * converter to format W3C standard span ID natively.
- */
 @Plugin(name = "SpanIdPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"spanId"})
 public final class SpanIdPatternConverter extends LogEventPatternConverter {

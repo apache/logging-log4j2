@@ -152,26 +152,26 @@ public class TraceContextIntegrationTest {
 
     @Test
     public void testTracePatternConverters() {
-        // 1. Setup an event with trace data
+        // Setup an event with trace data
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setTraceId("test-trace-123")
                 .setSpanId("test-span-456")
                 .setTraceFlags("01")
                 .build();
 
-        // 2. Test Trace ID Converter
+        // Test Trace ID Converter
         final StringBuilder traceSb = new StringBuilder();
         org.apache.logging.log4j.core.pattern.TraceIdPatternConverter.newInstance(null)
                 .format(event, traceSb);
         assertThat(traceSb.toString()).isEqualTo("test-trace-123");
 
-        // 3. Test Span ID Converter
+        // Test Span ID Converter
         final StringBuilder spanSb = new StringBuilder();
         org.apache.logging.log4j.core.pattern.SpanIdPatternConverter.newInstance(null)
                 .format(event, spanSb);
         assertThat(spanSb.toString()).isEqualTo("test-span-456");
 
-        // 4. Test Trace Flags Converter
+        // Test Trace Flags Converter
         final StringBuilder flagsSb = new StringBuilder();
         org.apache.logging.log4j.core.pattern.TraceFlagsPatternConverter.newInstance(null)
                 .format(event, flagsSb);

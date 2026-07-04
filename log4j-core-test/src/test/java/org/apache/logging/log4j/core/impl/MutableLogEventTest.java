@@ -378,18 +378,18 @@ class MutableLogEventTest {
 
         final MutableLogEvent mutableEvent = new MutableLogEvent();
 
-        // 1. Initially empty
+        // Initially empty
         assertThat(mutableEvent.getTraceId()).isNull();
         assertThat(mutableEvent.getSpanId()).isNull();
         assertThat(mutableEvent.getTraceFlags()).isNull();
 
-        // 2. Verify propagation via initFrom
+        // Verify propagation via initFrom
         mutableEvent.initFrom(sourceEvent);
         assertThat(mutableEvent.getTraceId()).isEqualTo("trace-xyz-123");
         assertThat(mutableEvent.getSpanId()).isEqualTo("span-abc-456");
         assertThat(mutableEvent.getTraceFlags()).isEqualTo("01");
 
-        // 3. Verify clearing removes tracking state to prevent leakage on pool reuse
+        // Verify clearing removes tracking state to prevent leakage on pool reuse
         mutableEvent.clear();
         assertThat(mutableEvent.getTraceId()).isNull();
         assertThat(mutableEvent.getSpanId()).isNull();

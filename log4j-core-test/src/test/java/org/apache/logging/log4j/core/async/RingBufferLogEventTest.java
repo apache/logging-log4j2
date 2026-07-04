@@ -476,12 +476,12 @@ class RingBufferLogEventTest {
     void testRingBufferLogEventTracingFieldsAndClear() {
         final RingBufferLogEvent event = new RingBufferLogEvent();
 
-        // 1. Check initial state
+        // Check initial state
         assertThat(event.getTraceId()).isNull();
         assertThat(event.getSpanId()).isNull();
         assertThat(event.getTraceFlags()).isNull();
 
-        // 2. Initialize with trace fields inside 18-parameter setValues
+        // Initialize with trace fields inside 18-parameter setValues
         event.setValues(
                 null,
                 "TestLogger",
@@ -502,12 +502,12 @@ class RingBufferLogEventTest {
                 "span-id-ringbuffer",
                 "01");
 
-        // 3. Assert values are retrievable
+        // Assert values are retrievable
         assertThat(event.getTraceId()).isEqualTo("trace-id-ringbuffer");
         assertThat(event.getSpanId()).isEqualTo("span-id-ringbuffer");
         assertThat(event.getTraceFlags()).isEqualTo("01");
 
-        // 4. Verify clearing wipes tracing state to avoid leakage on slot reuse
+        // Verify clearing wipes tracing state to avoid leakage on slot reuse
         event.clear();
         assertNull(event.getTraceId());
         assertNull(event.getSpanId());

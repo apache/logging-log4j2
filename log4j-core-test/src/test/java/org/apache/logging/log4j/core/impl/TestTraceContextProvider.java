@@ -18,10 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.spi.TraceContextProvider;
 
-/**
- * A test-only TraceContextProvider designed to simulate thread-local trace contexts.
- * Mimics active span context lookups in systems like OpenTelemetry or Micrometer.
- */
 public class TestTraceContextProvider implements TraceContextProvider {
 
     private static final ThreadLocal<String> TRACE_ID = new ThreadLocal<>();

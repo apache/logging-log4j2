@@ -52,10 +52,8 @@ public class AsyncTraceContextBenchmark {
         message = new SimpleMessage("Test performance message");
     }
 
-    /**
-     * Reusable thread-local state to match how Disruptor events and translators
-     * are held per-thread in production.
-     */
+    // Reusable thread-local state to match Disruptor events and translators.
+
     @State(Scope.Thread)
     public static class ThreadState {
         final RingBufferLogEvent event = new RingBufferLogEvent();

@@ -19,9 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-/**
- * Built-in converter to format W3C standard trace flags natively.
- */
 @Plugin(name = "TraceFlagsPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"traceFlags"})
 public final class TraceFlagsPatternConverter extends LogEventPatternConverter {

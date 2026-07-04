@@ -169,9 +169,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 aLocation,
                 clock,
                 nanoClock,
-                null, // traceId default
-                null, // spanId default
-                null // traceFlags default
+                null, // traceId
+                null, // spanId
+                null // traceFlags
                 );
     }
 

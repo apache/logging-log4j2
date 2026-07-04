@@ -17,8 +17,19 @@
 package org.apache.logging.log4j.spi;
 
 /**
- * Service Provider Interface (SPI) for retrieving standard W3C tracing metadata from the active context.
- * Placed in the API module to allow third-party providers to compile against it with minimal dependencies.
+ * Service Provider Interface (SPI) for retrieving distributed tracing metadata (such as W3C Trace Context)
+ * from the active execution context.
+ * <p>
+ * Implementing this SPI allows tracing frameworks (e.g., OpenTelemetry, Micrometer, Zipkin) to pass native
+ * trace identifiers directly to Log4j events. This completely bypasses the {@link org.apache.logging.log4j.ThreadContext}
+ * map, eliminating map-cloning and garbage collection overhead during asynchronous logging.
+ * </p>
+ * <p>
+ * Log4j locates implementations of this interface using the standard Java {@link java.util.ServiceLoader} mechanism.
+ * To register a custom provider, create a plain-text file named
+ * {@code org.apache.logging.log4j.spi.TraceContextProvider} in the {@code META-INF/services/} directory
+ * containing the fully qualified class name of the implementation.
+ * </p>
  *
  * @since 2.27.0
  */
