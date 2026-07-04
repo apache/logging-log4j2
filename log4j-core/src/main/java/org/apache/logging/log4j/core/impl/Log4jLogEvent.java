@@ -44,7 +44,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -137,17 +136,15 @@ public class Log4jLogEvent implements LogEvent {
             this.contextData = createContextData((List<Property>) null);
             this.contextStack = ThreadContext.getImmutableStack();
 
-            final TraceContextProvider provider = TraceContextProviderService.getActiveProvider();
-
-            final String tId = provider.getTraceId();
+            final String tId = TraceContextProviderService.getTraceId();
             if (tId != null) {
                 this.traceId = tId;
             }
-            final String sId = provider.getSpanId();
+            final String sId = TraceContextProviderService.getSpanId();
             if (sId != null) {
                 this.spanId = sId;
             }
-            final String flags = provider.getTraceFlags();
+            final String flags = TraceContextProviderService.getTraceFlags();
             if (flags != null) {
                 this.traceFlags = flags;
             }
@@ -474,9 +471,9 @@ public class Log4jLogEvent implements LogEvent {
                 null, // StackTraceElement source
                 CLOCK, //
                 nanoClock.nanoTime(),
-                TraceContextProviderService.getActiveProvider().getTraceId(),
-                TraceContextProviderService.getActiveProvider().getSpanId(),
-                TraceContextProviderService.getActiveProvider().getTraceFlags());
+                TraceContextProviderService.getTraceId(),
+                TraceContextProviderService.getSpanId(),
+                TraceContextProviderService.getTraceFlags());
     }
 
     /**
@@ -514,9 +511,9 @@ public class Log4jLogEvent implements LogEvent {
                 source, // StackTraceElement source
                 CLOCK, //
                 nanoClock.nanoTime(),
-                TraceContextProviderService.getActiveProvider().getTraceId(),
-                TraceContextProviderService.getActiveProvider().getSpanId(),
-                TraceContextProviderService.getActiveProvider().getTraceFlags());
+                TraceContextProviderService.getTraceId(),
+                TraceContextProviderService.getSpanId(),
+                TraceContextProviderService.getTraceFlags());
     }
 
     /**

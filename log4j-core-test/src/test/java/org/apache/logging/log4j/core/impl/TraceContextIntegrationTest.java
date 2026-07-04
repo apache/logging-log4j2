@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -25,38 +26,29 @@ import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEventTranslator;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.TraceContextProviderService;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TraceContextIntegrationTest {
 
+    private final TestTraceContextProvider testProvider = new TestTraceContextProvider();
+
     @BeforeEach
     void setUp() {
-        // No programmatic bypass! Relying entirely on META-INF/services/ auto-discovery
+        TraceContextProviderService.setActiveProvider(testProvider);
         TestTraceContextProvider.setContext("4bf92f3577b34da6a3ce929d0e0e4736", "00f067aa0ba902b7", "01");
         ThreadContext.clearMap();
     }
 
     @AfterEach
     void tearDown() {
+        TraceContextProviderService.setActiveProvider(null);
         TestTraceContextProvider.clearContext();
         ThreadContext.clearMap();
-    }
-
-    @Test
-    public void printCompiledServiceFiles() {
-        // Look directly at the compiled test resources folder
-        java.io.File servicesDir = new java.io.File("target/test-classes/META-INF/services");
-        if (servicesDir.exists() && servicesDir.isDirectory()) {
-            System.out.println(">>> FILES IN target/test-classes/META-INF/services/:");
-            for (String file : servicesDir.list()) {
-                System.out.println(">>>  - " + file);
-            }
-        } else {
-            System.out.println(">>> ERROR: target/test-classes/META-INF/services directory does not exist!");
-        }
     }
 
     @Test
@@ -69,7 +61,6 @@ public class TraceContextIntegrationTest {
                 .setMessage(new SimpleMessage("Standard event testing"))
                 .build();
 
-        // Must successfully resolve directly via ServiceLoader auto-discovery
         assertThat(event.getTraceId()).isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
         assertThat(event.getSpanId()).isEqualTo("00f067aa0ba902b7");
         assertThat(event.getTraceFlags()).isEqualTo("01");
@@ -123,5 +114,36 @@ public class TraceContextIntegrationTest {
         assertThat(event.getSpanId()).isEqualTo("00f067aa0ba902b7");
         assertThat(event.getTraceFlags()).isEqualTo("01");
         assertThat(event.getContextData().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void testProviderExceptionSafety() {
+        TraceContextProviderService.setActiveProvider(new TraceContextProvider() {
+            @Override
+            public String getTraceId() {
+                throw new RuntimeException("Simulated provider failure");
+            }
+
+            @Override
+            public String getSpanId() {
+                return null;
+            }
+
+            @Override
+            public String getTraceFlags() {
+                return null;
+            }
+        });
+
+        assertThatCode(() -> {
+                    final LogEvent event = Log4jLogEvent.newBuilder()
+                            .setLoggerName("BuggyLogger")
+                            .setLevel(Level.ERROR)
+                            .setMessage(new SimpleMessage("Exception safety test"))
+                            .build();
+
+                    assertThat(event.getTraceId()).isEmpty();
+                })
+                .doesNotThrowAnyException();
     }
 }

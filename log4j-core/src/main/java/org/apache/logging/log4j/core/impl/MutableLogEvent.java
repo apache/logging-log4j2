@@ -37,7 +37,6 @@ import org.apache.logging.log4j.message.ParameterVisitable;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -371,10 +370,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             instant.initFrom(clock);
         }
         nanoTime = nanoClock.nanoTime();
-        final TraceContextProvider provider = TraceContextProviderService.getActiveProvider();
-        this.traceId = provider.getTraceId();
-        this.spanId = provider.getSpanId();
-        this.traceFlags = provider.getTraceFlags();
+        this.traceId = TraceContextProviderService.getTraceId();
+        this.spanId = TraceContextProviderService.getSpanId();
+        this.traceFlags = TraceContextProviderService.getTraceFlags();
     }
 
     @Override

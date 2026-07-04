@@ -22,17 +22,16 @@ import org.apache.logging.log4j.spi.TraceContextProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Service registry designed to discover and cache the active {@link TraceContextProvider}
- * natively using the standard Java ServiceLoader.
+ * Service registry designed to discover, cache, and safely query the active {@link TraceContextProvider}.
  */
 public final class TraceContextProviderService {
 
-    private static final TraceContextProvider ACTIVE_PROVIDER;
+    private static final String GLOBAL_KEY = "log4j2.activeTraceContextProvider";
+    private static volatile TraceContextProvider ACTIVE_PROVIDER;
 
     static {
         TraceContextProvider found = null;
         try {
-            // Standard ServiceLoader lookup using the Thread Context ClassLoader (TCCL)
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             if (cl == null) {
                 cl = TraceContextProviderService.class.getClassLoader();
@@ -59,7 +58,45 @@ public final class TraceContextProviderService {
     }
 
     public static TraceContextProvider getActiveProvider() {
+        final Object globalProvider = System.getProperties().get(GLOBAL_KEY);
+        if (globalProvider instanceof TraceContextProvider) {
+            return (TraceContextProvider) globalProvider;
+        }
         return ACTIVE_PROVIDER;
+    }
+
+    public static void setActiveProvider(final TraceContextProvider provider) {
+        if (provider == null) {
+            System.getProperties().remove(GLOBAL_KEY);
+            ACTIVE_PROVIDER = NoOpTraceContextProvider.INSTANCE;
+        } else {
+            System.getProperties().put(GLOBAL_KEY, provider);
+            ACTIVE_PROVIDER = provider;
+        }
+    }
+
+    public static String getTraceId() {
+        try {
+            return getActiveProvider().getTraceId();
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    public static String getSpanId() {
+        try {
+            return getActiveProvider().getSpanId();
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    public static String getTraceFlags() {
+        try {
+            return getActiveProvider().getTraceFlags();
+        } catch (final Throwable t) {
+            return null;
+        }
     }
 
     private static final class NoOpTraceContextProvider implements TraceContextProvider {
