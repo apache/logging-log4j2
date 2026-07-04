@@ -662,7 +662,6 @@ public class Log4jLogEventTest {
             }
         };
 
-        // Assert Java 8 default method fallbacks return null without throwing abstract method exceptions
         assertNull(legacyEvent.getTraceId());
         assertNull(legacyEvent.getSpanId());
         assertNull(legacyEvent.getTraceFlags());
@@ -679,15 +678,32 @@ public class Log4jLogEventTest {
                 .setTraceFlags("01")
                 .build();
 
-        // 1. Verify getters on original
         assertThat(originalEvent.getTraceId()).isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
         assertThat(originalEvent.getSpanId()).isEqualTo("00f067aa0ba902b7");
         assertThat(originalEvent.getTraceFlags()).isEqualTo("01");
 
-        // 2. Verify Builder Copy Constructor
         final Log4jLogEvent copiedEvent = new Log4jLogEvent.Builder(originalEvent).build();
         assertThat(copiedEvent.getTraceId()).isEqualTo("4bf92f3577b34da6a3ce929d0e0e4736");
         assertThat(copiedEvent.getSpanId()).isEqualTo("00f067aa0ba902b7");
         assertThat(copiedEvent.getTraceFlags()).isEqualTo("01");
+    }
+
+    @Test
+    void testTracingFieldsSerialization() throws Exception {
+        final Log4jLogEvent originalEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("SerializationLogger")
+                .setMessage(new org.apache.logging.log4j.message.SimpleMessage("dummy message"))
+                .setTraceId("trace-serialize-123")
+                .setSpanId("span-serialize-456")
+                .setTraceFlags("01")
+                .build();
+
+        final byte[] serializedBytes = serialize(originalEvent);
+
+        final Log4jLogEvent deserializedEvent = deserialize(serializedBytes);
+
+        assertThat(deserializedEvent.getTraceId()).isEqualTo("trace-serialize-123");
+        assertThat(deserializedEvent.getSpanId()).isEqualTo("span-serialize-456");
+        assertThat(deserializedEvent.getTraceFlags()).isEqualTo("01");
     }
 }

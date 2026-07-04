@@ -24,6 +24,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEventTranslator;
+import org.apache.logging.log4j.core.pattern.SpanIdPatternConverter;
+import org.apache.logging.log4j.core.pattern.TraceFlagsPatternConverter;
+import org.apache.logging.log4j.core.pattern.TraceIdPatternConverter;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.TraceContextProviderService;
@@ -145,5 +148,47 @@ public class TraceContextIntegrationTest {
                     assertThat(event.getTraceId()).isEmpty();
                 })
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void testTracePatternConverters() {
+        // 1. Setup an event with trace data
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setTraceId("test-trace-123")
+                .setSpanId("test-span-456")
+                .setTraceFlags("01")
+                .build();
+
+        // 2. Test Trace ID Converter
+        final StringBuilder traceSb = new StringBuilder();
+        org.apache.logging.log4j.core.pattern.TraceIdPatternConverter.newInstance(null)
+                .format(event, traceSb);
+        assertThat(traceSb.toString()).isEqualTo("test-trace-123");
+
+        // 3. Test Span ID Converter
+        final StringBuilder spanSb = new StringBuilder();
+        org.apache.logging.log4j.core.pattern.SpanIdPatternConverter.newInstance(null)
+                .format(event, spanSb);
+        assertThat(spanSb.toString()).isEqualTo("test-span-456");
+
+        // 4. Test Trace Flags Converter
+        final StringBuilder flagsSb = new StringBuilder();
+        org.apache.logging.log4j.core.pattern.TraceFlagsPatternConverter.newInstance(null)
+                .format(event, flagsSb);
+        assertThat(flagsSb.toString()).isEqualTo("01");
+    }
+
+    @Test
+    public void testTracePatternConvertersWithNullValues() {
+        TestTraceContextProvider.clearContext();
+
+        final LogEvent event = Log4jLogEvent.newBuilder().build();
+        final StringBuilder sb = new StringBuilder();
+
+        TraceIdPatternConverter.newInstance(null).format(event, sb);
+        SpanIdPatternConverter.newInstance(null).format(event, sb);
+        TraceFlagsPatternConverter.newInstance(null).format(event, sb);
+
+        assertThat(sb.toString()).isEmpty();
     }
 }
