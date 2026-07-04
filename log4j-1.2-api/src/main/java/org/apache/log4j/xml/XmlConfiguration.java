@@ -774,6 +774,9 @@ public class XmlConfiguration extends Log4j1Configuration {
                     break;
                 case APPENDER_TAG:
                     final Appender appender = parseAppender(currentElement);
+                    if (appender == null) {
+                        break;
+                    }
                     appenderMap.put(appender.getName(), appender);
                     addAppender(AppenderAdapter.adapt(appender));
                     break;
