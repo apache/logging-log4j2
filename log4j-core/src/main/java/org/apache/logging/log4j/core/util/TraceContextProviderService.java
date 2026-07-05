@@ -58,20 +58,29 @@ public final class TraceContextProviderService {
     }
 
     public static TraceContextProvider getActiveProvider() {
-        final Object globalProvider = System.getProperties().get(GLOBAL_KEY);
-        if (globalProvider instanceof TraceContextProvider) {
-            return (TraceContextProvider) globalProvider;
+        try {
+            final Object globalProvider = System.getProperties().get(GLOBAL_KEY);
+            if (globalProvider instanceof TraceContextProvider) {
+                return (TraceContextProvider) globalProvider;
+            }
+        } catch (final SecurityException ignored) {
+            // Gracefully ignore SecurityManager restrictions in strict environments
         }
         return ACTIVE_PROVIDER;
     }
 
     public static void setActiveProvider(final TraceContextProvider provider) {
-        if (provider == null) {
-            System.getProperties().remove(GLOBAL_KEY);
-            ACTIVE_PROVIDER = NoOpTraceContextProvider.INSTANCE;
-        } else {
-            System.getProperties().put(GLOBAL_KEY, provider);
-            ACTIVE_PROVIDER = provider;
+        try {
+            if (provider == null) {
+                System.getProperties().remove(GLOBAL_KEY);
+                ACTIVE_PROVIDER = NoOpTraceContextProvider.INSTANCE;
+            } else {
+                System.getProperties().put(GLOBAL_KEY, provider);
+                ACTIVE_PROVIDER = provider;
+            }
+        } catch (final SecurityException ignored) {
+            // Fallback for strict environments
+            ACTIVE_PROVIDER = provider != null ? provider : NoOpTraceContextProvider.INSTANCE;
         }
     }
 

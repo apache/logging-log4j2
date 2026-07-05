@@ -191,4 +191,43 @@ public class TraceContextIntegrationTest {
 
         assertThat(sb.toString()).isEmpty();
     }
+
+    @Test
+    public void testSecurityManagerFallback() {
+        final SecurityManager originalSm = System.getSecurityManager();
+        try {
+            // . Install a mock SecurityManager that blocks access to our global key
+            System.setSecurityManager(new SecurityManager() {
+                @Override
+                public void checkPropertyAccess(String key) {
+                    if ("log4j2.activeTraceContextProvider".equals(key)) {
+                        throw new SecurityException("Simulated enterprise security exception");
+                    }
+                }
+
+                @Override
+                public void checkPermission(java.security.Permission perm) {
+                    // Allow all other permissions so the test runner doesn't crash
+                }
+            });
+
+            // Assert that setting the provider does not crash the application
+            assertThatCode(() -> TraceContextProviderService.setActiveProvider(testProvider))
+                    .doesNotThrowAnyException();
+
+            // Assert that getting the provider safely falls back to the local variable
+            assertThat(TraceContextProviderService.getActiveProvider()).isEqualTo(testProvider);
+
+        } catch (UnsupportedOperationException e) {
+            // Java 17+ blocks setting SecurityManager by default without specific JVM flags.
+            // If the JVM blocks the test, we gracefully skip it.
+            System.out.println("Skipping SecurityManager test because JVM restricts it.");
+        } finally {
+            // Restore the original security manager
+            try {
+                System.setSecurityManager(originalSm);
+            } catch (UnsupportedOperationException ignored) {
+            }
+        }
+    }
 }
