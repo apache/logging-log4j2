@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEventTranslator;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -127,5 +128,54 @@ public class AsyncTraceContextBenchmark {
                         .include(AsyncTraceContextBenchmark.class.getSimpleName())
                         .build())
                 .run();
+    }
+    /**
+     * Simulates ContextDataProvider approach.
+     * It avoids MDC, but forces the creation of multiple StringMaps for every log event.
+     */
+    @Benchmark
+    public void contextDataProviderTracing(final ThreadState state) {
+        // OTel allocates a brand new map for the trace context (Allocation 1)
+        final org.apache.logging.log4j.util.StringMap providerMap = ContextDataFactory.createContextData();
+        providerMap.putValue("traceId", "4bf92f3577b34da6a3ce929d0e0e4736");
+        providerMap.putValue("spanId", "00f067aa0ba902b7");
+        providerMap.putValue("traceFlags", "01");
+
+        // Log4j's internal ContextDataInjector sees the RingBuffer map is frozen.
+        // To avoid crashing, it allocates a NEW map to safely merge the data (Allocation 2)
+        final org.apache.logging.log4j.util.StringMap newMergedMap = ContextDataFactory.createContextData();
+        newMergedMap.putAll(providerMap); // Merges the OTel data
+
+        // Execute translator setup (keeps CPU comparison fair)
+        state.translator.setBasicValues(
+                null,
+                "Logger",
+                null,
+                "FQCN",
+                Level.INFO,
+                message,
+                null,
+                null,
+                null,
+                ClockFactory.getClock(),
+                new DummyNanoClock());
+
+        // Simulate translateTo() injecting the new map directly into the RingBuffer slot
+        state.event.setValues(
+                null,
+                "Logger",
+                null,
+                "FQCN",
+                Level.INFO,
+                message,
+                null,
+                newMergedMap, // Log4j injects the newly allocated map here
+                ThreadContext.getImmutableStack(),
+                1L,
+                "main",
+                5,
+                null,
+                ClockFactory.getClock(),
+                new DummyNanoClock());
     }
 }
