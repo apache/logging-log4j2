@@ -2942,6 +2942,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the root logger.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/spi/TraceContextProvider.html#getSpanId()" class="member-name-link">getSpanId()</a> - Method in interface org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/TraceContextProvider.html" title="interface in org.apache.logging.log4j.spi">TraceContextProvider</a></dt>
+<dd>
+<div class="block">Returns the standard span ID from the active context, or <code>null</code>.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/status/StatusData.html#getStackTraceElement()" class="member-name-link">getStackTraceElement()</a> - Method in class org.apache.logging.log4j.status.<a href="org/apache/logging/log4j/status/StatusData.html" title="class in org.apache.logging.log4j.status">StatusData</a></dt>
 <dd>
 <div class="block">Returns the method that created the event.</div>
@@ -3089,6 +3093,14 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.23.0, use <a href="org/apache/logging/log4j/status/StatusData.html#getInstant()"><code>StatusData.getInstant()</code></a> instead.</div>
 </div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/TraceContextProvider.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Method in interface org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/TraceContextProvider.html" title="interface in org.apache.logging.log4j.spi">TraceContextProvider</a></dt>
+<dd>
+<div class="block">Returns the standard trace flags from the active context, or <code>null</code>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/TraceContextProvider.html#getTraceId()" class="member-name-link">getTraceId()</a> - Method in interface org.apache.logging.log4j.spi.<a href="org/apache/logging/log4j/spi/TraceContextProvider.html" title="interface in org.apache.logging.log4j.spi">TraceContextProvider</a></dt>
+<dd>
+<div class="block">Returns the standard trace ID from the active context, or <code>null</code>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/message/StructuredDataMessage.html#getType()" class="member-name-link">getType()</a> - Method in class org.apache.logging.log4j.message.<a href="org/apache/logging/log4j/message/StructuredDataMessage.html" title="class in org.apache.logging.log4j.message">StructuredDataMessage</a></dt>
 <dd>
@@ -6958,6 +6970,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/Level.html#TRACE" class="member-name-link">TRACE</a> - Static variable in class org.apache.logging.log4j.<a href="org/apache/logging/log4j/Level.html" title="class in org.apache.logging.log4j">Level</a></dt>
 <dd>
 <div class="block">A fine-grained debug message, typically capturing the flow through the application.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/spi/TraceContextProvider.html" class="type-name-link" title="interface in org.apache.logging.log4j.spi">TraceContextProvider</a> - Interface in <a href="org/apache/logging/log4j/spi/package-summary.html">org.apache.logging.log4j.spi</a></dt>
+<dd>
+<div class="block">Service Provider Interface (SPI) for retrieving distributed tracing metadata (such as W3C Trace Context)
+ from the active execution context.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/Logger.html#traceEntry()" class="member-name-link">traceEntry()</a> - Method in interface org.apache.logging.log4j.<a href="org/apache/logging/log4j/Logger.html" title="interface in org.apache.logging.log4j">Logger</a></dt>
 <dd>

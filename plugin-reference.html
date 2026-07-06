@@ -1479,7 +1479,7 @@ Originally developed by Ceki Glc and Anders Kristensen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>header</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>
@@ -16249,10 +16249,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17703,10 +17703,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -17902,10 +17902,10 @@ Supports Lookup expressions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
 </div>
 <div class="paragraph">
-<p>If "true", includes the stacktrace of any Throwable in the generated JSON, defaults to "true".</p>
+<p>If "true", includes the stacktrace of any Throwable in the generated data, defaults to "true".</p>
 </div></div></td>
 </tr>
 <tr>
@@ -19666,6 +19666,9 @@ Each of which is responsible for converting an object in a converter specific ma
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SequenceNumberPatternConverter">SequenceNumberPatternConverter</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter">SpanIdPatternConverter</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter">StyleConverter</a></p>
 </li>
 <li>
@@ -19679,6 +19682,12 @@ Each of which is responsible for converting an object in a converter specific ma
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter">ThrowablePatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter">TraceFlagsPatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter">TraceIdPatternConverter</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-UuidPatternConverter">UuidPatternConverter</a></p>
@@ -20664,6 +20673,9 @@ The names in values MUST come from the <code>org.apache.logging.log4j.core.patte
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SequenceNumberPatternConverter">SequenceNumberPatternConverter</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter">SpanIdPatternConverter</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter">StyleConverter</a></p>
 </li>
 <li>
@@ -20677,6 +20689,12 @@ The names in values MUST come from the <code>org.apache.logging.log4j.core.patte
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter">ThrowablePatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter">TraceFlagsPatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter">TraceIdPatternConverter</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-UuidPatternConverter">UuidPatternConverter</a></p>
@@ -21169,6 +21187,9 @@ toString(), or to output the value of a specific key within the property bundle 
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SequenceNumberPatternConverter">SequenceNumberPatternConverter</a></p>
 </li>
 <li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter">SpanIdPatternConverter</a></p>
+</li>
+<li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter">StyleConverter</a></p>
 </li>
 <li>
@@ -21182,6 +21203,12 @@ toString(), or to output the value of a specific key within the property bundle 
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-ThrowablePatternConverter">ThrowablePatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter">TraceFlagsPatternConverter</a></p>
+</li>
+<li>
+<p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter">TraceIdPatternConverter</a></p>
 </li>
 <li>
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-UuidPatternConverter">UuidPatternConverter</a></p>
@@ -21414,6 +21441,29 @@ toString(), or to output the value of a specific key within the property bundle 
 </div>
 </div>
 <div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter"></a>SpanIdPatternConverter</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.pattern.SpanIdPatternConverter</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-core</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-SpanIdPatternConverter_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;SpanIdPatternConverter/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-StyleConverter"></a>style</h4>
 <div class="dlist">
 <dl>
@@ -21559,6 +21609,52 @@ toString(), or to output the value of a specific key within the property bundle 
 <p><a href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-RootThrowablePatternConverter">RootThrowablePatternConverter</a></p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter"></a>TraceFlagsPatternConverter</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.pattern.TraceFlagsPatternConverter</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-core</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceFlagsPatternConverter_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;TraceFlagsPatternConverter/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter"></a>TraceIdPatternConverter</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Class</dt>
+<dd>
+<p><code>org.apache.logging.log4j.core.pattern.TraceIdPatternConverter</code></p>
+</dd>
+<dt class="hdlist1">Provider</dt>
+<dd>
+<p><code>org.apache.logging.log4j:log4j-core</code></p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-pattern-TraceIdPatternConverter_XML-snippet"></a>XML snippet</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;TraceIdPatternConverter/&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>

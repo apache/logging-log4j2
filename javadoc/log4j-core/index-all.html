@@ -5837,6 +5837,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/SpanIdPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/SpanIdPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">SpanIdPatternConverter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/StyleConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/StyleConverter.html" title="class in org.apache.logging.log4j.core.pattern">StyleConverter</a></dt>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
@@ -5857,6 +5859,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceFlagsPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/TraceFlagsPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">TraceFlagsPatternConverter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceIdPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/TraceIdPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">TraceIdPatternConverter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html#format(org.apache.logging.log4j.core.LogEvent,java.lang.StringBuilder)" class="member-name-link">format(LogEvent, StringBuilder)</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></dt>
 <dd>
 <div class="block">Formats an event into a string buffer.</div>
@@ -6094,6 +6100,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">For internal use by the ReliabilityStrategy; returns the LoggerConfig to use.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html#getActiveProvider()" class="member-name-link">getActiveProvider()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/db/jdbc/AbstractDriverManagerConnectionSource.html#getActualConnectionString()" class="member-name-link">getActualConnectionString()</a> - Method in class org.apache.logging.log4j.core.appender.db.jdbc.<a href="org/apache/logging/log4j/core/appender/db/jdbc/AbstractDriverManagerConnectionSource.html" title="class in org.apache.logging.log4j.core.appender.db.jdbc">AbstractDriverManagerConnectionSource</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketOptions.html#getActualTrafficClass()" class="member-name-link">getActualTrafficClass()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketOptions.html" title="class in org.apache.logging.log4j.core.net">SocketOptions</a></dt>
@@ -9006,6 +9014,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the Source being monitored.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#getSpanId()" class="member-name-link">getSpanId()</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getSpanId()" class="member-name-link">getSpanId()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#getSpanId()" class="member-name-link">getSpanId()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/LogEvent.html#getSpanId()" class="member-name-link">getSpanId()</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a></dt>
+<dd>
+<div class="block">Returns the distributed tracing Span ID from the active context (e.g., W3C Trace Context).</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html#getSpanId()" class="member-name-link">getSpanId()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/db/jdbc/JdbcDatabaseManager.html#getSqlStatement()" class="member-name-link">getSqlStatement()</a> - Method in class org.apache.logging.log4j.core.appender.db.jdbc.<a href="org/apache/logging/log4j/core/appender/db/jdbc/JdbcDatabaseManager.html" title="class in org.apache.logging.log4j.core.appender.db.jdbc">JdbcDatabaseManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/HttpAppender.Builder.html#getSslConfiguration()" class="member-name-link">getSslConfiguration()</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/HttpAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">HttpAppender.Builder</a></dt>
@@ -9387,6 +9407,30 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaAppender.Builder.html#getTopic()" class="member-name-link">getTopic()</a> - Method in class org.apache.logging.log4j.core.appender.mom.kafka.<a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender.mom.kafka">KafkaAppender.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaManager.html#getTopic()" class="member-name-link">getTopic()</a> - Method in class org.apache.logging.log4j.core.appender.mom.kafka.<a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaManager.html" title="class in org.apache.logging.log4j.core.appender.mom.kafka">KafkaManager</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/LogEvent.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a></dt>
+<dd>
+<div class="block">Returns the distributed tracing Trace Flags from the active context (e.g., W3C Trace Context).</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html#getTraceFlags()" class="member-name-link">getTraceFlags()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#getTraceId()" class="member-name-link">getTraceId()</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getTraceId()" class="member-name-link">getTraceId()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#getTraceId()" class="member-name-link">getTraceId()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/LogEvent.html#getTraceId()" class="member-name-link">getTraceId()</a> - Method in interface org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a></dt>
+<dd>
+<div class="block">Returns the distributed tracing Trace ID from the active context (e.g., W3C Trace Context).</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html#getTraceId()" class="member-name-link">getTraceId()</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketOptions.html#getTrafficClass()" class="member-name-link">getTrafficClass()</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketOptions.html" title="class in org.apache.logging.log4j.core.net">SocketOptions</a></dt>
 <dd>
@@ -12950,6 +12994,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Obtains an instance of SequencePatternConverter.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/SpanIdPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/SpanIdPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">SpanIdPatternConverter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/ThreadIdPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/ThreadIdPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">ThreadIdPatternConverter</a></dt>
 <dd>
 <div class="block">Obtains an instance of ThreadPatternConverter.</div>
@@ -12962,6 +13008,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Obtains an instance of ThreadPatternConverter.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceFlagsPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/TraceFlagsPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">TraceFlagsPatternConverter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceIdPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/TraceIdPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">TraceIdPatternConverter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html#newInstance(java.lang.String%5B%5D)" class="member-name-link">newInstance(String[])</a> - Static method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern">UuidPatternConverter</a></dt>
 <dd>
 <div class="block">Creates an instance of <a href="org/apache/logging/log4j/core/pattern/UuidPatternConverter.html" title="class in org.apache.logging.log4j.core.pattern"><code>UuidPatternConverter</code></a>.</div>
@@ -15255,6 +15305,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sets the value of a property on this object to an array of nested complex objects.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html#setActiveProvider(org.apache.logging.log4j.spi.TraceContextProvider)" class="member-name-link">setActiveProvider(TraceContextProvider)</a> - Static method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html#setAdditionalFields(org.apache.logging.log4j.core.util.KeyValuePair%5B%5D)" class="member-name-link">setAdditionalFields(KeyValuePair[])</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.Builder.html" title="class in org.apache.logging.log4j.core.layout">GelfLayout.Builder</a></dt>
 <dd>
 <div class="block">Additional fields to set on each log event.</div>
@@ -15371,6 +15423,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Define base path to apply condition before execute POSIX file attribute action.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.html#setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.util.Clock,org.apache.logging.log4j.core.util.NanoClock)" class="member-name-link">setBasicValues(AsyncLogger, String, Marker, String, Level, Message, Throwable, ThreadContext.ContextStack, StackTraceElement, Clock, NanoClock)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEventTranslator</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.html#setBasicValues(org.apache.logging.log4j.core.async.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.ThreadContext.ContextStack,java.lang.StackTraceElement,org.apache.logging.log4j.core.util.Clock,org.apache.logging.log4j.core.util.NanoClock,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">setBasicValues(AsyncLogger, String, Marker, String, Level, Message, Throwable, ThreadContext.ContextStack, StackTraceElement, Clock, NanoClock, String, String, String)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEventTranslator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/SmtpAppender.Builder.html#setBcc(java.lang.String)" class="member-name-link">setBcc(String)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/SmtpAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">SmtpAppender.Builder</a></dt>
 <dd>
@@ -16656,6 +16710,10 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">Not used internally, no replacement.</div>
 </div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html#setSpanId(java.lang.String)" class="member-name-link">setSpanId(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#setSpanId(java.lang.String)" class="member-name-link">setSpanId(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/HttpAppender.Builder.html#setSslConfiguration(org.apache.logging.log4j.core.net.ssl.SslConfiguration)" class="member-name-link">setSslConfiguration(SslConfiguration)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/HttpAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">HttpAppender.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/SmtpAppender.Builder.html#setSslConfiguration(org.apache.logging.log4j.core.net.ssl.SslConfiguration)" class="member-name-link">setSslConfiguration(SslConfiguration)</a> - Method in class org.apache.logging.log4j.core.appender.<a href="org/apache/logging/log4j/core/appender/SmtpAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender">SmtpAppender.Builder</a></dt>
@@ -16795,6 +16853,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaAppender.Builder.html#setTopic(java.lang.String)" class="member-name-link">setTopic(String)</a> - Method in class org.apache.logging.log4j.core.appender.mom.kafka.<a href="org/apache/logging/log4j/core/appender/mom/kafka/KafkaAppender.Builder.html" title="class in org.apache.logging.log4j.core.appender.mom.kafka">KafkaAppender.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html#setTraceFlags(java.lang.String)" class="member-name-link">setTraceFlags(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#setTraceFlags(java.lang.String)" class="member-name-link">setTraceFlags(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html#setTraceId(java.lang.String)" class="member-name-link">setTraceId(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.Builder.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html#setTraceId(java.lang.String)" class="member-name-link">setTraceId(String)</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/MutableLogEvent.html" title="class in org.apache.logging.log4j.core.impl">MutableLogEvent</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/net/SocketOptions.html#setTrafficClass(int)" class="member-name-link">setTrafficClass(int)</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/SocketOptions.html" title="class in org.apache.logging.log4j.core.net">SocketOptions</a></dt>
 <dd>
 <div class="block">See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html#setTrafficClass-int-" title="class or interface in java.net" class="external-link"><code>Socket.setTrafficClass(int)</code></a>.</div>
@@ -16876,6 +16942,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Sets the variable default value delimiter matcher to use.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#setValues(org.apache.logging.log4j.core.async.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.util.StringMap,org.apache.logging.log4j.ThreadContext.ContextStack,long,java.lang.String,int,java.lang.StackTraceElement,org.apache.logging.log4j.core.util.Clock,org.apache.logging.log4j.core.util.NanoClock)" class="member-name-link">setValues(AsyncLogger, String, Marker, String, Level, Message, Throwable, StringMap, ThreadContext.ContextStack, long, String, int, StackTraceElement, Clock, NanoClock)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#setValues(org.apache.logging.log4j.core.async.AsyncLogger,java.lang.String,org.apache.logging.log4j.Marker,java.lang.String,org.apache.logging.log4j.Level,org.apache.logging.log4j.message.Message,java.lang.Throwable,org.apache.logging.log4j.util.StringMap,org.apache.logging.log4j.ThreadContext.ContextStack,long,java.lang.String,int,java.lang.StackTraceElement,org.apache.logging.log4j.core.util.Clock,org.apache.logging.log4j.core.util.NanoClock,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">setValues(AsyncLogger, String, Marker, String, Level, Message, Throwable, StringMap, ThreadContext.ContextStack, long, String, int, StackTraceElement, Clock, NanoClock, String, String, String)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html#setVariablePrefix(char)" class="member-name-link">setVariablePrefix(char)</a> - Method in class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StrSubstitutor.html" title="class in org.apache.logging.log4j.core.lookup">StrSubstitutor</a></dt>
 <dd>
@@ -17138,6 +17206,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns a matcher which matches the space character.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/SpanIdPatternConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">SpanIdPatternConverter</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/JCToolsBlockingQueueFactory.WaitStrategy.html#SPIN" class="member-name-link">SPIN</a> - Enum constant in enum org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/JCToolsBlockingQueueFactory.WaitStrategy.html" title="enum in org.apache.logging.log4j.core.async">JCToolsBlockingQueueFactory.WaitStrategy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/lookup/StrMatcher.html#splitMatcher()" class="member-name-link">splitMatcher()</a> - Static method in class org.apache.logging.log4j.core.lookup.<a href="org/apache/logging/log4j/core/lookup/StrMatcher.html" title="class in org.apache.logging.log4j.core.lookup">StrMatcher</a></dt>
@@ -18323,6 +18393,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Constructs an XML configuration from this builder.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html#toXmlConfiguration()" class="member-name-link">toXmlConfiguration()</a> - Method in class org.apache.logging.log4j.core.config.builder.impl.<a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html" title="class in org.apache.logging.log4j.core.config.builder.impl">DefaultConfigurationBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/util/TraceContextProviderService.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">TraceContextProviderService</a> - Class in <a href="org/apache/logging/log4j/core/util/package-summary.html">org.apache.logging.log4j.core.util</a></dt>
+<dd>
+<div class="block">Service registry designed to discover, cache, and safely query the active <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/TraceContextProvider.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>TraceContextProvider</code></a>.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceFlagsPatternConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">TraceFlagsPatternConverter</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/pattern/TraceIdPatternConverter.html" class="type-name-link" title="class in org.apache.logging.log4j.core.pattern">TraceIdPatternConverter</a> - Class in <a href="org/apache/logging/log4j/core/pattern/package-summary.html">org.apache.logging.log4j.core.pattern</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/Transform.html" class="type-name-link" title="class in org.apache.logging.log4j.core.util">Transform</a> - Class in <a href="org/apache/logging/log4j/core/util/package-summary.html">org.apache.logging.log4j.core.util</a></dt>
 <dd>
