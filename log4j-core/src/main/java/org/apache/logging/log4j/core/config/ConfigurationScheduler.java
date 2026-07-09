@@ -147,15 +147,23 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public CronScheduledFuture<?> scheduleWithCron(
             final CronExpression cronExpression, final Date startDate, final Runnable command) {
         final Date fireDate = cronExpression.getNextValidTimeAfter(startDate == null ? new Date() : startDate);
-        final CronScheduledFuture<?>[] placeholder = new CronScheduledFuture<?>[1];
+
         final CronRunnable runnable = new CronRunnable(command, cronExpression);
-        placeholder[0] = new CronScheduledFuture<>(null, fireDate);
-        runnable.setScheduledFuture(placeholder[0]);
+        final CronScheduledFuture<?> cronScheduledFuture = new CronScheduledFuture<>(null, fireDate);
+        runnable.setScheduledFuture(cronScheduledFuture);
+
         final ScheduledFuture<?> future = schedule(runnable, nextFireInterval(fireDate), TimeUnit.MILLISECONDS);
-        placeholder[0].reset(future, fireDate);
+
+        synchronized (cronScheduledFuture) {
+            Date currentFireTime = cronScheduledFuture.getFireTime();
+            if (currentFireTime == null || !currentFireTime.after(fireDate)) {
+                cronScheduledFuture.reset(future, fireDate);
+            }
+        }
+
         LOGGER.debug(
                 "{} scheduled cron expression {} to fire at {}", name, cronExpression.getCronExpression(), fireDate);
-        return placeholder[0];
+        return cronScheduledFuture;
     }
 
     /**
@@ -254,8 +262,14 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
                         name,
                         cronExpression.getCronExpression(),
                         fireDate);
+
                 if (scheduledFuture != null) {
-                    scheduledFuture.reset(future, fireDate);
+                    synchronized (scheduledFuture) {
+                        Date currentFireTime = scheduledFuture.getFireTime();
+                        if (currentFireTime == null || currentFireTime.before(fireDate)) {
+                            scheduledFuture.reset(future, fireDate);
+                        }
+                    }
                 }
             }
         }
