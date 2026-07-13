@@ -109,9 +109,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         @PluginBuilderAttribute(value = "tempCompressedFilePattern")
         private String tempCompressedFilePattern;
 
-        @PluginBuilderAttribute("maxCompressionDelaySeconds")
-        private int maxCompressionDelaySeconds = 0;
-
         @PluginConfiguration
         private Configuration config;
 
@@ -159,8 +156,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     nonNullStrSubstitutor,
                     customActions,
                     stopCustomActionsOnError,
-                    tempCompressedFilePattern,
-                    maxCompressionDelaySeconds);
+                    tempCompressedFilePattern);
         }
 
         public String getMax() {
@@ -363,18 +359,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             this.config = config;
             return this;
         }
-
-        /**
-         * Defines maximum delay in seconds before compression.
-         *
-         * @param maxCompressionDelaySeconds maximum delay in seconds before compression.
-         * @return This builder for chaining convenience
-         * @since 2.27.0
-         */
-        public Builder setMaxCompressionDelaySeconds(final int maxCompressionDelaySeconds) {
-            this.maxCompressionDelaySeconds = maxCompressionDelaySeconds;
-            return this;
-        }
     }
 
     @PluginBuilderFactory
@@ -438,7 +422,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private final List<Action> customActions;
     private final boolean stopCustomActionsOnError;
     private final PatternProcessor tempCompressedFilePattern;
-    private final int maxCompressionDelaySeconds;
 
     /**
      * Constructs a new instance.
@@ -466,8 +449,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 strSubstitutor,
                 customActions,
                 stopCustomActionsOnError,
-                null,
-                0);
+                null);
     }
 
     /**
@@ -489,40 +471,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final Action[] customActions,
             final boolean stopCustomActionsOnError,
             final String tempCompressedFilePatternString) {
-        this(
-                minIndex,
-                maxIndex,
-                useMax,
-                compressionLevel,
-                strSubstitutor,
-                customActions,
-                stopCustomActionsOnError,
-                tempCompressedFilePatternString,
-                0);
-    }
-
-    /**
-     * Constructs a new instance.
-     *
-     * @param minIndex The minimum index.
-     * @param maxIndex The maximum index.
-     * @param customActions custom actions to perform asynchronously after rollover
-     * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
-     * @param tempCompressedFilePatternString File pattern of the working file
-     *                                     used during compression, if null no temporary file are used
-     * @param maxCompressionDelaySeconds maximum delay in seconds before compression.
-     * @since 2.27.0
-     */
-    protected DefaultRolloverStrategy(
-            final int minIndex,
-            final int maxIndex,
-            final boolean useMax,
-            final int compressionLevel,
-            final StrSubstitutor strSubstitutor,
-            final Action[] customActions,
-            final boolean stopCustomActionsOnError,
-            final String tempCompressedFilePatternString,
-            final int maxCompressionDelaySeconds) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -532,7 +480,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         this.customActions = customActions == null ? Collections.<Action>emptyList() : Arrays.asList(customActions);
         this.tempCompressedFilePattern =
                 tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
-        this.maxCompressionDelaySeconds = maxCompressionDelaySeconds;
     }
 
     public int getCompressionLevel() {
@@ -561,16 +508,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     public PatternProcessor getTempCompressedFilePattern() {
         return tempCompressedFilePattern;
-    }
-
-    /**
-     * Returns the maximum delay in seconds before compression.
-     *
-     * @return maximum delay in seconds before compression.
-     * @since 2.27.0
-     */
-    public int getMaxCompressionDelaySeconds() {
-        return maxCompressionDelaySeconds;
     }
 
     private int purge(final int lowIndex, final int highIndex, final RollingFileManager manager) {
@@ -746,17 +683,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 }
                 compressAction = new CompositeAction(
                         Arrays.asList(
-                                fileExtension.createCompressAction(
-                                        renameTo,
-                                        tmpCompressedName,
-                                        true,
-                                        compressionLevel,
-                                        maxCompressionDelaySeconds),
+                                fileExtension.createCompressAction(renameTo, tmpCompressedName, true, compressionLevel),
                                 new FileRenameAction(tmpCompressedNameFile, renameToFile, true)),
                         true);
             } else {
-                compressAction = fileExtension.createCompressAction(
-                        renameTo, compressedName, true, compressionLevel, maxCompressionDelaySeconds);
+                compressAction = fileExtension.createCompressAction(renameTo, compressedName, true, compressionLevel);
             }
         }
 

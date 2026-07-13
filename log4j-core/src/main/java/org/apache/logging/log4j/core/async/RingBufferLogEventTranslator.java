@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.TraceContextProviderService;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -51,6 +52,9 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     private StackTraceElement location;
     private Clock clock;
     private NanoClock nanoClock;
+    private String traceId;
+    private String spanId;
+    private String traceFlags;
 
     // Due to the usage pattern of this class, these are effectively final
     private long threadId = Thread.currentThread().getId();
@@ -79,7 +83,10 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                     threadPriority,
                     location,
                     clock,
-                    nanoClock);
+                    nanoClock,
+                    traceId,
+                    spanId,
+                    traceFlags);
         } finally {
             clear(); // clear the translator
         }
@@ -100,7 +107,10 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                 null, // contextStack
                 null, // location
                 null, // clock
-                null // nanoClock
+                null, // nanoClock
+                null, // traceId
+                null, // spanId
+                null // traceFlags
                 );
     }
 
@@ -115,7 +125,10 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
             final ContextStack aContextStack,
             final StackTraceElement aLocation,
             final Clock aClock,
-            final NanoClock aNanoClock) {
+            final NanoClock aNanoClock,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this.asyncLogger = anAsyncLogger;
         this.loggerName = aLoggerName;
         this.marker = aMarker;
@@ -127,8 +140,40 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
         this.location = aLocation;
         this.clock = aClock;
         this.nanoClock = aNanoClock;
+        this.traceId = traceId;
+        this.spanId = spanId;
+        this.traceFlags = traceFlags;
     }
 
+    public void setBasicValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final ContextStack aContextStack,
+            final StackTraceElement aLocation,
+            final Clock aClock,
+            final NanoClock aNanoClock) {
+
+        setBasicValues(
+                anAsyncLogger,
+                aLoggerName,
+                aMarker,
+                theFqcn,
+                aLevel,
+                msg,
+                aThrowable,
+                aContextStack,
+                aLocation,
+                aClock,
+                aNanoClock,
+                TraceContextProviderService.getTraceId(),
+                TraceContextProviderService.getSpanId(),
+                TraceContextProviderService.getTraceFlags());
+    }
     /**
      * @deprecated since 2.25.0. {@link RingBufferLogEventTranslator} instances should only be used on the thread that
      * created it.
