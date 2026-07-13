@@ -106,7 +106,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
 
     /** {@inheritDoc} */
     @Override
-    public @NonNull CB getBuilder() {
+    public CB getBuilder() {
         return builder;
     }
 
