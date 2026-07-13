@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -356,29 +357,39 @@ public class ConfigurationSource {
             value = "PATH_TRAVERSAL_IN",
             justification = "The name of the accessed files is based on a configuration value.")
     private static /*@Nullable*/ ConfigurationSource getConfigurationSource(final URL url) {
+        final File file;
+        final URLConnection urlConnection;
         try {
-            final File file = FileUtils.fileFromUri(url.toURI());
-            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            try {
-                if (file != null) {
-                    return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-                } else if (urlConnection instanceof JarURLConnection) {
-                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
-                    URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
-                    File jarFile = new File(jarFileUrl.getFile());
-                    long lastModified = jarFile.lastModified();
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
-                } else {
-                    return new ConfigurationSource(
-                            urlConnection.getInputStream(), url, urlConnection.getLastModified());
-                }
-            } catch (FileNotFoundException ex) {
-                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
-                return null;
-            }
-        } catch (IOException | URISyntaxException ex) {
+            file = FileUtils.fileFromUri(url.toURI());
+            urlConnection = UrlConnectionFactory.createConnection(url);
+        } catch (final IOException | URISyntaxException ex) {
             ConfigurationFactory.LOGGER.warn(
                     "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
+            return null;
+        }
+        try {
+            if (file != null) {
+                return new ConfigurationSource(urlConnection.getInputStream(), file);
+            } else if (urlConnection instanceof JarURLConnection) {
+                // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                final URL jarFileUrl = ((JarURLConnection) urlConnection).getJarFileURL();
+                final File jarFile = new File(jarFileUrl.getFile());
+                final long lastModified = jarFile.lastModified();
+                return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+            } else {
+                final long lastModified = urlConnection.getLastModified();
+                return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
+            }
+        } catch (final IOException ex) {
+            if (ex instanceof FileNotFoundException) {
+                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+            } else {
+                ConfigurationFactory.LOGGER.warn(
+                        "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
+            }
+            if (urlConnection instanceof HttpURLConnection) {
+                ((HttpURLConnection) urlConnection).disconnect();
+            }
             return null;
         }
     }

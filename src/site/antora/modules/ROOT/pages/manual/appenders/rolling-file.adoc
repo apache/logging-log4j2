@@ -280,6 +280,14 @@ If `true`, Log4j will lock the log file at **each** log event.
 Note that the effects of this setting depend on the Operating System: some systems like most POSIX OSes do not offer mandatory locking, but only advisory file locking.
 
 This setting can also reduce the performance of the appender.
+
+| [[RollingFileAppender-attr-maxRandomDelay]]maxRandomDelay
+| `int`
+| `0`
+a|
+Maximum random delay, in seconds, before the asynchronous rollover action chain starts.
+This can spread compression workload if many applications roll over at the same time.
+A value of `0` starts asynchronous actions immediately.
 |===
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingFileAppender[{plugin-reference-marker} Plugin reference for `RollingFile`]
@@ -304,6 +312,14 @@ If `true`, the appender starts writing at the end of the file.
 This setting does not give the same atomicity guarantees as for the
 <<RollingFileAppender-attr-append,`RollingFile` Appender>>.
 The log file cannot be opened by multiple applications at the same time.
+
+| [[RollingRandomAccessFile-attr-maxRandomDelay]]maxRandomDelay
+| `int`
+| `0`
+a|
+Maximum random delay, in seconds, before the asynchronous rollover action chain starts.
+This can spread compression workload if many applications roll over at the same time.
+A value of `0` starts asynchronous actions immediately.
 |===
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-RollingRandomAccessFileAppender[{plugin-reference-marker} Plugin reference for `RollingRandomAccessFile`]
@@ -714,14 +730,6 @@ Maximum value for the <<conversion-pattern-integer,`%i`>> conversion pattern.
 
 This attribute is **ignored** if <<DefaultRolloverStrategy-attr-fileIndex,`fileIndex`>> is set to `nomax`.
 
-| [[DefaultRolloverStrategy-attr-maxCompressionDelaySeconds]]maxCompressionDelaySeconds
-| `int`
-| `0`
-|
-Maximum random delay, in seconds, before compressing archived log files.
-
-Use this attribute to spread compression workload when many applications roll over at the same time.
-A value of `0` disables the delay and starts compression immediately.
 |===
 
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy[{plugin-reference-marker} Plugin reference for `DefaultRolloverStrategy`]

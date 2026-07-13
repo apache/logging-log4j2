@@ -1,0 +1,40 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+/**
+ * Utilities for safely serializing and deserializing Log4j objects.
+ * <h2>Internal usage only!</h2>
+ * <p>
+ * This package is intended only for internal Log4j usage.
+ * <b>Log4j users should not use this package!</b>
+ * This package is not subject to any backward compatibility concerns.
+ * </p>
+ *
+ * @since 2.27.0
+ */
+@Export
+@ExportTo({
+    "org.apache.logging.log4j.core",
+    "org.apache.log4j",
+    "org.apache.logging.log4j.slf4j.impl",
+    "org.apache.logging.log4j.slf4j2.impl"
+})
+@Version("2.27.0")
+package org.apache.logging.log4j.util.internal;
+
+import aQute.bnd.annotation.jpms.ExportTo;
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

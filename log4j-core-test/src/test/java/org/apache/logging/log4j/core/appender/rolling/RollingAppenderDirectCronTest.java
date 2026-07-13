@@ -50,10 +50,10 @@ class RollingAppenderDirectCronTest {
     @LoggerContextSource("classpath:appender/rolling/RollingAppenderDirectCronTest.xml")
     void testAppender(final LoggerContext ctx, @Named("RollingFile") final RollingFileAppender app) throws Exception {
         final Logger logger = ctx.getLogger(RollingAppenderDirectCronTest.class);
+        final RolloverDelay delay = new RolloverDelay(app.getManager());
         int msgNumber = 1;
         logger.debug("This is test message number {}.", msgNumber++);
         assertThat(loggingPath).isNotEmptyDirectory();
-        final RolloverDelay delay = new RolloverDelay(app.getManager());
         delay.waitForRollover();
 
         delay.reset(3);
@@ -100,11 +100,11 @@ class RollingAppenderDirectCronTest {
                 final Path path = Paths.get(fileName);
                 final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
                 assertThat(matcher).as("Rolled file").matches();
-                waitAtMost(2, TimeUnit.SECONDS).untilAsserted(() -> {
-                    final List<String> lines = Files.readAllLines(path);
-                    assertThat(lines).isNotEmpty();
-                    assertThat(lines.get(0)).startsWith(matcher.group(1));
-                });
+                final List<String> lines = Files.readAllLines(path);
+                if (lines.isEmpty()) {
+                    return;
+                }
+                assertThat(lines.get(0)).startsWith(matcher.group(1));
                 latch.countDown();
             } catch (final Exception ex) {
                 verificationFailure =
