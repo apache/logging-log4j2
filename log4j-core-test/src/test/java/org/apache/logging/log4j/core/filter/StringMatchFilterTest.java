@@ -55,14 +55,14 @@ class StringMatchFilterTest {
     }
 
     /**
-     * Test that if a {@code null} string is set as a match-pattern, an {@code IllegalArgumentExeption} is thrown.
+     * Test that if a {@code null} string is set as a match-pattern, a {@link NullPointerException} is thrown.
      */
     @Test
     @SuppressWarnings({"DataFlowIssue" // invalid null parameter explicitly being tested
     })
     void testFilterBuilderFailsWithExceptionOnNullText() {
         StringMatchFilter.Builder stringMatchFilterBuilder = StringMatchFilter.newBuilder();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> stringMatchFilterBuilder.setText(null));
+        Assertions.assertThrows(NullPointerException.class, () -> stringMatchFilterBuilder.setText(null));
     }
 
     /**
@@ -91,6 +91,7 @@ class StringMatchFilterTest {
 
     /**
      * Test that if a {@link StringMatchFilter} is specified without a 'text' attribute it is not instantiated.
+     *
      *
      * @param configuration the configuration
      */

@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <Configuration status="warn">
-   <StringMatchFfilter/> <!-- this typo is intentional! -->
+   <StringMatchFilter/> <!-- no 'text' attribute: the @Required constraint must skip this plugin -->
    <Loggers>
       <Root/> <!-- one logger to avoid test warning about no defined loggers -->
    </Loggers>

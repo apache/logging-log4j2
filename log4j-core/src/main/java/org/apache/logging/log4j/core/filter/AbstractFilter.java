@@ -110,29 +110,25 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
         this.onMismatch = onMismatch == null ? Result.DENY : onMismatch;
     }
 
-    /**
-     * Constructor which obtains its parameterization from the given builder.
-     * @param builder the builder
-     */
-    protected AbstractFilter(final AbstractFilterBuilder<?> builder) {
-        this(builder.getOnMatch(), builder.getOnMismatch());
-    }
-
-    /** {@inheritDoc} */
     @Override
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean equalsImpl(final Object other) {
-        // identity check - fast exit
-        if (this == other) {
+    protected boolean equalsImpl(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        // type check and superclass
-        if (other == null || this.getClass() != other.getClass()) {
+        if (!super.equalsImpl(obj)) {
             return false;
         }
-        // field equality
-        final AbstractFilter that = (AbstractFilter) other;
-        return super.equalsImpl(that) && this.onMatch == that.onMatch && this.onMismatch == that.onMismatch;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractFilter other = (AbstractFilter) obj;
+        if (onMatch != other.onMatch) {
+            return false;
+        }
+        if (onMismatch != other.onMismatch) {
+            return false;
+        }
+        return true;
     }
 
     /**
