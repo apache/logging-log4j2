@@ -51,8 +51,7 @@ public class PluginProcessorPublicSetterTest {
     void setup() {
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         diagnosticCollector = new DiagnosticCollector<>();
-        final StandardJavaFileManager fileManager =
-                compiler.getStandardFileManager(null, Locale.ROOT, UTF_8);
+        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.ROOT, UTF_8);
 
         final Path sourceFile = Paths.get(FAKE_PLUGIN_CLASS_PATH);
 
@@ -62,8 +61,7 @@ public class PluginProcessorPublicSetterTest {
         createdFile = new File(orig.getParentFile(), "FakePluginPublicSetter.java");
         assertDoesNotThrow(() -> FileUtils.copyFile(orig, createdFile));
 
-        final Iterable<? extends JavaFileObject> compilationUnits =
-                fileManager.getJavaFileObjects(createdFile);
+        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(createdFile);
 
         final JavaCompiler.CompilationTask task = compiler.getTask(
                 null,
@@ -91,27 +89,23 @@ public class PluginProcessorPublicSetterTest {
 
     @Test
     void warnWhenPluginBuilderAttributeLacksPublicSetter() {
-        assertThat(errorDiagnostics)
-                .anyMatch(errorMessage -> errorMessage
-                        .getMessage(Locale.ROOT)
-                        .contains("The field `attributeWithoutPublicSetter` does not have a public setter"));
+        assertThat(errorDiagnostics).anyMatch(errorMessage -> errorMessage
+                .getMessage(Locale.ROOT)
+                .contains("The field `attributeWithoutPublicSetter` does not have a public setter"));
     }
 
     @Test
     void ignoreWarningWhenSuppressWarningsIsPresent() {
-        assertThat(errorDiagnostics)
-                .allMatch(errorMessage -> !errorMessage
-                        .getMessage(Locale.ROOT)
-                        .contains(
-                                "The field `attributeWithoutPublicSetterButWithSuppressAnnotation`"
-                                        + " does not have a public setter"));
+        assertThat(errorDiagnostics).allMatch(errorMessage -> !errorMessage
+                .getMessage(Locale.ROOT)
+                .contains("The field `attributeWithoutPublicSetterButWithSuppressAnnotation`"
+                        + " does not have a public setter"));
     }
 
     @Test
     void noWarningWhenPublicSetterExists() {
-        assertThat(errorDiagnostics)
-                .allMatch(errorMessage -> !errorMessage
-                        .getMessage(Locale.ROOT)
-                        .contains("The field `attribute` does not have a public setter"));
+        assertThat(errorDiagnostics).allMatch(errorMessage -> !errorMessage
+                .getMessage(Locale.ROOT)
+                .contains("The field `attribute` does not have a public setter"));
     }
 }

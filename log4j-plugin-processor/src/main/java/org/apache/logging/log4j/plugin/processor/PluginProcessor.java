@@ -40,7 +40,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -136,12 +135,10 @@ public class PluginProcessor extends AbstractProcessor {
         for (TypeElement annotation : annotations) {
             final String fqn = annotation.getQualifiedName().toString();
             if (fqn.equals("org.apache.logging.log4j.plugins.Plugin")) {
-                processPluginAnnotatedClasses(
-                        ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(annotation)));
+                processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(annotation)));
             } else if (fqn.equals("org.apache.logging.log4j.plugins.PluginBuilderAttribute")
                     || fqn.equals("org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute")) {
-                processBuilderAttributeFields(
-                        roundEnv.getElementsAnnotatedWith(annotation));
+                processBuilderAttributeFields(roundEnv.getElementsAnnotatedWith(annotation));
             }
         }
         // Write the generated code
@@ -196,8 +193,7 @@ public class PluginProcessor extends AbstractProcessor {
         final String fieldName = element.getSimpleName().toString();
         // Check for @SuppressWarnings("log4j.public.setter")
         final SuppressWarnings suppress = element.getAnnotation(SuppressWarnings.class);
-        if (suppress != null
-                && Arrays.asList(suppress.value()).contains(SUPPRESS_WARNING_PUBLIC_SETTER)) {
+        if (suppress != null && Arrays.asList(suppress.value()).contains(SUPPRESS_WARNING_PUBLIC_SETTER)) {
             return;
         }
         final Element enclosingElement = element.getEnclosingElement();
@@ -214,15 +210,14 @@ public class PluginProcessor extends AbstractProcessor {
                             && methodElement.getParameters().size() == 1) {
                         final Types typeUtils = processingEnv.getTypeUtils();
                         final boolean followsNamePattern = methodName.equals(
-                                String.format("set%s", expectedFieldNameInASetter(fieldName)))
+                                        String.format("set%s", expectedFieldNameInASetter(fieldName)))
                                 || methodName.equals(String.format("with%s", expectedFieldNameInASetter(fieldName)));
                         final boolean isPublicMethod =
                                 methodElement.getModifiers().contains(Modifier.PUBLIC);
                         final boolean checkForAssignable = typeUtils.isAssignable(
                                 methodElement.getReturnType(),
                                 methodElement.getEnclosingElement().asType());
-                        final boolean foundPublicSetter =
-                                followsNamePattern && checkForAssignable && isPublicMethod;
+                        final boolean foundPublicSetter = followsNamePattern && checkForAssignable && isPublicMethod;
                         if (foundPublicSetter) {
                             return;
                         }
@@ -246,9 +241,7 @@ public class PluginProcessor extends AbstractProcessor {
         if (fieldName.startsWith("is")) {
             fieldName = fieldName.substring(2);
         }
-        return fieldName.isEmpty()
-                ? fieldName
-                : Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+        return fieldName.isEmpty() ? fieldName : Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
     }
 
     private static void processConfigurableAnnotation(TypeElement pluginClass, PluginEntry.Builder builder) {
