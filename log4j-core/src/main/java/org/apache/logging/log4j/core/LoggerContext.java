@@ -89,8 +89,8 @@ public class LoggerContext extends AbstractLifeCycle
 
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
-    private final InternalLoggerRegistry loggerRegistry = new InternalLoggerRegistry();
     private final MessageFactory defaultMessageFactory;
+    private final InternalLoggerRegistry loggerRegistry;
 
     private final Collection<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
     private final Collection<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
@@ -148,6 +148,7 @@ public class LoggerContext extends AbstractLifeCycle
         this.environment = instanceFactory.getInstance(PropertyEnvironment.class);
         this.configurationScheduler = instanceFactory.getInstance(ConfigurationScheduler.class);
         this.defaultMessageFactory = instanceFactory.getInstance(MessageFactory.class);
+        this.loggerRegistry = new InternalLoggerRegistry(this.defaultMessageFactory);
 
         this.configuration = new DefaultConfiguration(this);
         this.nullConfiguration = new NullConfiguration(this);

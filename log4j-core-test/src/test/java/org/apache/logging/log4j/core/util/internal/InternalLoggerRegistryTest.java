@@ -33,7 +33,6 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.junit.jupiter.api.AfterEach;
@@ -101,13 +100,13 @@ class InternalLoggerRegistryTest {
 
             final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
                     reflectAndGetLoggerMapFromRegistry();
-            final Map<String, WeakReference<Logger>> loggerRefByName =
-                    loggerRefByNameByMessageFactory.get(ParameterizedMessageFactory.INSTANCE);
 
             int unexpectedCount = 0;
-            for (int i = 0; i < numberOfLoggers; i++) {
-                if (loggerRefByName.containsKey(loggerNamePrefix + i)) {
-                    unexpectedCount++;
+            for (final Map<String, WeakReference<Logger>> loggerRefByName : loggerRefByNameByMessageFactory.values()) {
+                for (int i = 0; i < numberOfLoggers; i++) {
+                    if (loggerRefByName.containsKey(loggerNamePrefix + i)) {
+                        unexpectedCount++;
+                    }
                 }
             }
             assertEquals(

@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.jspecify.annotations.NullMarked;
@@ -61,7 +60,19 @@ public class InternalLoggerRegistry extends LoggerRegistry<Logger> {
 
     private final ReferenceQueue<Logger> staleLoggerRefs = new ReferenceQueue<>();
 
-    public InternalLoggerRegistry() {}
+    private final MessageFactory defaultMessageFactory;
+
+    /**
+     * Constructs a registry whose default message factory (used when a lookup is requested with a
+     * {@code null} message factory) matches the one a {@link org.apache.logging.log4j.spi.LoggerContext}
+     * uses to create loggers. The two must resolve {@code null} to the same instance, otherwise
+     * loggers stored under the context default will not be found by null-factory lookups.
+     *
+     * @param defaultMessageFactory the default message factory (non-null)
+     */
+    public InternalLoggerRegistry(final MessageFactory defaultMessageFactory) {
+        this.defaultMessageFactory = requireNonNull(defaultMessageFactory, "defaultMessageFactory");
+    }
 
     private void expungeStaleEntries() {
         final Reference<? extends Logger> loggerRef = staleLoggerRefs.poll();
@@ -90,7 +101,7 @@ public class InternalLoggerRegistry extends LoggerRegistry<Logger> {
     @Override
     public @Nullable Logger getLogger(final String name, @Nullable final MessageFactory messageFactory) {
         requireNonNull(name, "name");
-        final MessageFactory mf = messageFactory != null ? messageFactory : ParameterizedMessageFactory.INSTANCE;
+        final MessageFactory mf = messageFactory != null ? messageFactory : defaultMessageFactory;
         expungeStaleEntries();
         readLock.lock();
         try {
