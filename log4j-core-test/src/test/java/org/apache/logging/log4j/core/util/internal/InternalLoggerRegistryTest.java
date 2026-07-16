@@ -47,8 +47,7 @@ class InternalLoggerRegistryTest {
 
     @BeforeEach
     void setUp(final TestInfo testInfo) throws Exception {
-        loggerContext = new LoggerContext(
-                testInfo.getDisplayName(), null, (URI) null, DI.createInitializedFactory());
+        loggerContext = new LoggerContext(testInfo.getDisplayName(), null, (URI) null, DI.createInitializedFactory());
         final Field registryField = LoggerContext.class.getDeclaredField("loggerRegistry");
         registryField.setAccessible(true);
         registry = (InternalLoggerRegistry) registryField.get(loggerContext);
@@ -96,29 +95,24 @@ class InternalLoggerRegistryTest {
             logger.info("Using logger {}", logger.getName());
         }
 
-        await()
-                .atMost(10, SECONDS)
-                .pollInterval(100, MILLISECONDS)
-                .untilAsserted(() -> {
-                    System.gc();
-                    registry.getLogger("triggerExpunge", null);
+        await().atMost(10, SECONDS).pollInterval(100, MILLISECONDS).untilAsserted(() -> {
+            System.gc();
+            registry.getLogger("triggerExpunge", null);
 
-                    final Map<MessageFactory, Map<String, WeakReference<Logger>>>
-                            loggerRefByNameByMessageFactory = reflectAndGetLoggerMapFromRegistry();
-                    final Map<String, WeakReference<Logger>> loggerRefByName =
-                            loggerRefByNameByMessageFactory.get(ParameterizedMessageFactory.INSTANCE);
+            final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
+                    reflectAndGetLoggerMapFromRegistry();
+            final Map<String, WeakReference<Logger>> loggerRefByName =
+                    loggerRefByNameByMessageFactory.get(ParameterizedMessageFactory.INSTANCE);
 
-                    int unexpectedCount = 0;
-                    for (int i = 0; i < numberOfLoggers; i++) {
-                        if (loggerRefByName.containsKey(loggerNamePrefix + i)) {
-                            unexpectedCount++;
-                        }
-                    }
-                    assertEquals(
-                            0,
-                            unexpectedCount,
-                            "Found " + unexpectedCount + " unexpected stale entries for MessageFactory");
-                });
+            int unexpectedCount = 0;
+            for (int i = 0; i < numberOfLoggers; i++) {
+                if (loggerRefByName.containsKey(loggerNamePrefix + i)) {
+                    unexpectedCount++;
+                }
+            }
+            assertEquals(
+                    0, unexpectedCount, "Found " + unexpectedCount + " unexpected stale entries for MessageFactory");
+        });
     }
 
     @Test
@@ -128,25 +122,21 @@ class InternalLoggerRegistryTest {
         logger.info("Using logger {}", logger.getName());
         logger = null;
 
-        await()
-                .atMost(10, SECONDS)
-                .pollInterval(100, MILLISECONDS)
-                .untilAsserted(() -> {
-                    System.gc();
-                    registry.getLogger("triggerExpunge", null);
+        await().atMost(10, SECONDS).pollInterval(100, MILLISECONDS).untilAsserted(() -> {
+            System.gc();
+            registry.getLogger("triggerExpunge", null);
 
-                    final Map<MessageFactory, Map<String, WeakReference<Logger>>>
-                            loggerRefByNameByMessageFactory = reflectAndGetLoggerMapFromRegistry();
-                    assertNull(
-                            loggerRefByNameByMessageFactory.get(mockMessageFactory),
-                            "Stale MessageFactory entry was not removed from the outer map");
-                });
+            final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerRefByNameByMessageFactory =
+                    reflectAndGetLoggerMapFromRegistry();
+            assertNull(
+                    loggerRefByNameByMessageFactory.get(mockMessageFactory),
+                    "Stale MessageFactory entry was not removed from the outer map");
+        });
     }
 
     private Map<MessageFactory, Map<String, WeakReference<Logger>>> reflectAndGetLoggerMapFromRegistry()
             throws NoSuchFieldException, IllegalAccessException {
-        final Field loggerMapField =
-                InternalLoggerRegistry.class.getDeclaredField("loggerRefByNameByMessageFactory");
+        final Field loggerMapField = InternalLoggerRegistry.class.getDeclaredField("loggerRefByNameByMessageFactory");
         loggerMapField.setAccessible(true);
         @SuppressWarnings("unchecked")
         final Map<MessageFactory, Map<String, WeakReference<Logger>>> loggerMap =
