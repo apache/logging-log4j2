@@ -16,9 +16,11 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -97,6 +99,23 @@ class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         file = new File("target/temp.A2");
         assertTrue(file.exists(), "File A2 was not created");
         assertTrue(file.length() > 0, "File A2 is empty");
+    }
+
+    /**
+     * Invalid appender class names make {@code parseAppender} return null.
+     * Configuration must skip those elements without throwing NPE on getName().
+     */
+    @Test
+    void testInvalidAppenderDoesNotNpe() throws Exception {
+        final LoggerContext loggerContext =
+                assertDoesNotThrow(() -> TestConfigurator.configure("target/test-classes/log4j1-invalid-appender.xml"));
+        final Configuration configuration = loggerContext.getConfiguration();
+        assertNotNull(configuration, "Configuration should still be created");
+        // The invalid appender must not be registered.
+        assertNull(configuration.getAppender("bad"), "Invalid appender should not be registered");
+        // The valid ListAppender must still load.
+        final Appender list = configuration.getAppender("list");
+        assertNotNull(list, "Valid list appender should be registered");
     }
 
     @Override
