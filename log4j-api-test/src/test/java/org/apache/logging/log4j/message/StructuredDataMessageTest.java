@@ -111,8 +111,7 @@ class StructuredDataMessageTest {
         final String id = "i<&d>" + XmlFixture.TEXT;
         final String type = "t>yp<e&" + XmlFixture.TEXT;
         // null message: keep this test focused on id/type escaping (and covers omission of <message>)
-        final String actualXml =
-                new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
+        final String actualXml = new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
         final String expectedXml = "<StructuredData>\n"
                 + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
                 + "</type>\n"
@@ -134,8 +133,7 @@ class StructuredDataMessageTest {
         final String type = "t>yp<e&" + XmlFixture.TEXT;
         final StructuredDataId id =
                 new StructuredDataId(idName, idEnterpriseNumber, idRequired, idOptional, Integer.MAX_VALUE);
-        final String actualXml =
-                new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
+        final String actualXml = new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
         final String expectedXml = "<StructuredData>\n"
                 + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
                 + "</type>\n"
