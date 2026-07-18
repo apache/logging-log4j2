@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4141" link="https://github.com/apache/logging-log4j2/issues/4141"/>
+  <issue id="4180" link="https://github.com/apache/logging-log4j2/pull/4180"/>
   <description format="asciidoc">
     Include the free-form `message` field when encoding `StructuredDataMessage` to XML
   </description>
