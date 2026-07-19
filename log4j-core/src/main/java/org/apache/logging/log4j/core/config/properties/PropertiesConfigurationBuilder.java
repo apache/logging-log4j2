@@ -257,8 +257,8 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Filter " + key);
         }
-        final String onMatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MATCH);
-        final String onMismatch = (String) properties.remove(AbstractFilterBuilder.ATTR_ON_MISMATCH);
+        final String onMatch = removeIgnoreCase(properties, AbstractFilterBuilder.ATTR_ON_MATCH);
+        final String onMismatch = removeIgnoreCase(properties, AbstractFilterBuilder.ATTR_ON_MISMATCH);
         final FilterComponentBuilder filterBuilder = builder.newFilter(type, onMatch, onMismatch);
         return processRemainingProperties(filterBuilder, properties);
     }
@@ -417,5 +417,16 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
 
     public LoggerContext getLoggerContext() {
         return loggerContext;
+    }
+
+    private static String removeIgnoreCase(final Properties properties, final String key) {
+        for (final String k : properties.stringPropertyNames()) {
+            if (k.equalsIgnoreCase(key)) {
+                final String value = properties.getProperty(k);
+                properties.remove(k);
+                return value;
+            }
+        }
+        return null;
     }
 }
