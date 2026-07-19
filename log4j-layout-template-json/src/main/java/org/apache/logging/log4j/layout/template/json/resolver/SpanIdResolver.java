@@ -14,11 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Export
-@Open("org.apache.logging.log4j.core")
-@Version("2.22.0")
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import aQute.bnd.annotation.jpms.Open;
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+
+/**
+ * Resolves the W3C standard span ID.
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the span ID:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "spanId"
+ * }
+ * </pre>
+ */
+public final class SpanIdResolver implements EventResolver {
+
+    private static final SpanIdResolver INSTANCE = new SpanIdResolver();
+
+    SpanIdResolver() {}
+
+    static SpanIdResolver getInstance() {
+        return INSTANCE;
+    }
+
+    static String getName() {
+        return "spanId";
+    }
+
+    @Override
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
+        jsonWriter.writeString(logEvent.getSpanId());
+    }
+}
