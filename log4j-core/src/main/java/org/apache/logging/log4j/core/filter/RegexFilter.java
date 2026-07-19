@@ -139,7 +139,11 @@ public final class RegexFilter extends AbstractFilter {
             LOGGER.error("A regular expression must be provided for RegexFilter");
             return null;
         }
-        return new RegexFilter(useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), onMatch, onMismatch);
+        return new RegexFilter(
+                Boolean.TRUE.equals(useRawMsg),
+                Pattern.compile(regex, toPatternFlags(patternFlags)),
+                onMatch,
+                onMismatch);
     }
 
     private static int toPatternFlags(final String[] patternFlags)
