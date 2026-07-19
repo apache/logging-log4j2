@@ -3,7 +3,7 @@ package org.apache.logging.log4j.core.config.properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.apache.logging.log4j.core.Configuration;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
