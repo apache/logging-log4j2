@@ -775,8 +775,6 @@ public class XmlConfiguration extends Log4j1Configuration {
                 case APPENDER_TAG:
                     final Appender appender = parseAppender(currentElement);
                     if (appender == null) {
-                        // parseAppender already logs the creation failure; warn at this
-                        // site so the configuration skip is visible to users.
                         LOGGER.warn(
                                 "Could not create appender named [{}] of class [{}]; ignoring.",
                                 subst(currentElement.getAttribute(NAME_ATTR)),

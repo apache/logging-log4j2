@@ -101,19 +101,13 @@ class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertTrue(file.length() > 0, "File A2 is empty");
     }
 
-    /**
-     * Invalid appender class names make {@code parseAppender} return null.
-     * Configuration must skip those elements without throwing NPE on getName().
-     */
     @Test
     void testInvalidAppenderDoesNotNpe() throws Exception {
         final LoggerContext loggerContext =
                 assertDoesNotThrow(() -> TestConfigurator.configure("target/test-classes/log4j1-invalid-appender.xml"));
         final Configuration configuration = loggerContext.getConfiguration();
         assertNotNull(configuration, "Configuration should still be created");
-        // The invalid appender must not be registered.
         assertNull(configuration.getAppender("bad"), "Invalid appender should not be registered");
-        // The valid ListAppender must still load.
         final Appender list = configuration.getAppender("list");
         assertNotNull(list, "Valid list appender should be registered");
     }
