@@ -195,6 +195,16 @@
       <timezone>Europe/Berlin</timezone>
     </developer>
 
+    <developer>
+      <id>ramanathan</id>
+      <name>Ramanathan Muthu</name>
+      <email>ramanathan@apache.org</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>Asia/Kolkata</timezone>
+    </developer>
+
   </developers>
 
   <mailingLists>
