@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -26,7 +27,10 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.util.Assert;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This filter returns the onMatch result if the message in the event matches the specified text
@@ -37,12 +41,15 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class StringMatchFilter extends AbstractFilter {
 
-    public static final String ATTR_MATCH = "match";
     private final String text;
 
-    private StringMatchFilter(final String text, final Result onMatch, final Result onMismatch) {
-        super(onMatch, onMismatch);
-        this.text = text;
+    private StringMatchFilter(final Builder builder) {
+        super(builder.getOnMatch(), builder.getOnMismatch());
+        this.text = Assert.requireNonEmpty(builder.text, "The 'text' argument must not be null or empty.");
+    }
+
+    public String getText() {
+        return text;
     }
 
     @Override
@@ -230,28 +237,35 @@ public final class StringMatchFilter extends AbstractFilter {
     }
 
     @PluginFactory
-    public static StringMatchFilter.Builder newBuilder() {
-        return new StringMatchFilter.Builder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public static class Builder extends AbstractFilterBuilder<StringMatchFilter.Builder>
-            implements org.apache.logging.log4j.core.util.Builder<StringMatchFilter> {
+    public static class Builder extends AbstractFilterBuilder<Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<StringMatchFilter> {
+
         @PluginBuilderAttribute
-        private String text = "";
+        @Required(message = "No text provided for StringMatchFilter")
+        private String text;
 
         /**
          * Sets the text to search in event messages.
          * @param text the text to search in event messages.
          * @return this instance.
          */
-        public StringMatchFilter.Builder setMatchString(final String text) {
-            this.text = text;
+        public Builder setText(@NonNull final String text) {
+            Objects.requireNonNull(text, "The 'text' argument must not be null.");
+            this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be empty.");
             return this;
         }
 
         @Override
         public StringMatchFilter build() {
-            return new StringMatchFilter(this.text, this.getOnMatch(), this.getOnMismatch());
+            if (this.text == null) {
+                LOGGER.error("Unable to create StringMatchFilter: The 'text' attribute must be configured.");
+                return null;
+            }
+            return new StringMatchFilter(this);
         }
     }
 }
