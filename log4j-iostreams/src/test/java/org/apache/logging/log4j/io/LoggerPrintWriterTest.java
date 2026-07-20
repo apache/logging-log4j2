@@ -16,16 +16,21 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LoggerPrintWriterTest extends AbstractLoggerWriterTest {
     private PrintWriter print;
+
+    LoggerPrintWriterTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected StringWriter createWriter() {

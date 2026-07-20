@@ -24,21 +24,25 @@ import static org.hamcrest.Matchers.startsWith;
 
 import java.io.PrintStream;
 import java.util.List;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
+@LoggerContextSource("log4j2-streams-calling-info.xml")
 public class IoBuilderTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-streams-calling-info.xml");
+    private LoggerContext context = null;
+
+    IoBuilderTest(LoggerContext context) {
+        this.context = context;
+    }
 
     @Test
     public void testNoArgBuilderCallerClassInfo() {
         try (final PrintStream ps = IoBuilder.forLogger().buildPrintStream()) {
             ps.println("discarded");
-            final ListAppender app = context.getListAppender("IoBuilderTest");
+            final ListAppender app = context.getConfiguration().getAppender("IoBuilderTest");
             final List<String> messages = app.getMessages();
             assertThat(messages, not(empty()));
             assertThat(messages, hasSize(1));
