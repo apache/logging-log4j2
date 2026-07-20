@@ -16,21 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1967
  */
 public class RollingFileAppenderReconfigureUndefinedSystemPropertyTest {
 
-    @Rule
-    public final LoggerContextRule loggerContextRule =
-            new LoggerContextRule("src/test/rolling-file-appender-reconfigure.original.xml");
-
     @Test
-    public void testReconfigure() {
-        loggerContextRule.reconfigure();
+    @LoggerContextSource("src/test/rolling-file-appender-reconfigure.original.xml")
+    public void testReconfigure(final LoggerContext loggerContext) {
+        loggerContext.reconfigure();
     }
 }
