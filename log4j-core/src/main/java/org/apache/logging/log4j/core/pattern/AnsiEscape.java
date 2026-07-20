@@ -78,9 +78,14 @@ public enum AnsiEscape {
     DIM("2"),
 
     /**
+     * Italic general attribute.
+     */
+    ITALIC("3"),
+
+    /**
      * Underline general attribute.
      */
-    UNDERLINE("3"),
+    UNDERLINE("4"),
 
     /**
      * Blink general attribute.

@@ -1465,7 +1465,7 @@ In EBNF form the syntax of a style expression is:
                    | <keyword>
 <hex> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
         | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
-<keyword> ::= "normal" | "bold" | "dim" | "underline"
+<keyword> ::= "normal" | "bold" | "dim" | "italic" | "underline"
             | "blink" | "reverse" | "hidden"
             | "black" | "bg_black" | "bright_black" | "bg_bright_black"
             | "red" | "bg_red" | "bright_red" | "bg_bright_red"
@@ -1484,6 +1484,7 @@ The style specifiers have the following effects (see https://en.wikipedia.org/wi
 `normal`:: Reverts all parameters to their default value
 `bold`:: Increases the font weight or the color intensity
 `dim`:: Decreases the fond weight or the color intensity
+`italic`:: Renders the text in italic on terminals that support it
 `underline`:: Underlines the text on some terminals
 `blink`:: Causes the text to blink
 `reverse`:: Swaps foreground and background colors

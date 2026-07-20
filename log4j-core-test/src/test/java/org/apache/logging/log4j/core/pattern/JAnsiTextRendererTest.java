@@ -39,6 +39,11 @@ class JAnsiTextRendererTest {
                         "",
                         "@|white key|@ = @|cyan,bold some value|@",
                         "\u001b[37mkey\u001b[m = \u001b[36;1msome value\u001b[m"),
+                // GitHub issue #4105: italic = SGR 3, underline = SGR 4
+                Arguments.of(
+                        "",
+                        "@|italic italic text|@ and @|underline underlined text|@",
+                        "\u001b[3mitalic text\u001b[m and \u001b[4munderlined text\u001b[m"),
                 // Return broken escapes as is
                 Arguments.of("", "Hello @|crazy|@ world!", "Hello @|crazy|@ world!"),
                 Arguments.of("", "Hello @|world!", "Hello @|world!"));
