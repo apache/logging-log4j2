@@ -67,6 +67,10 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean implements Notifica
         cat.debug("addAppender called with " + appenderClass + ", " + appenderName);
         final Appender appender =
                 (Appender) OptionConverter.instantiateByClassName(appenderClass, org.apache.log4j.Appender.class, null);
+        if (appender == null) {
+            cat.error("Could not instantiate appender class [" + appenderClass + "] for name [" + appenderName + "].");
+            return;
+        }
         appender.setName(appenderName);
         logger.addAppender(appender);
 
