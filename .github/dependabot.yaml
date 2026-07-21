@@ -131,6 +131,15 @@ updates:
       # Kafka 4.x is not compatible with our appender
       - dependency-name: "org.apache.kafka:*"
         versions: [ "[4,)" ]
+      # Keep JUnit below 6.x on 2.x: JUnit 6+ requires Java 17 and breaks Java 8 test runs
+      - dependency-name: "org.junit:junit-bom"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.jupiter:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.platform:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.vintage:*"
+        versions: [ "[6,)" ]
 
   - package-ecosystem: maven
     directories:
@@ -156,6 +165,27 @@ updates:
       dependencies:
         patterns: [ "*" ]
     target-branch: "2.x"
+
+  # The `2.26.x` maintenance branch only receives patch-level Maven updates.
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      # "Bump the Maven patch updates group across N directories with M updates"
+      Maven patch updates:
+        patterns: [ "*" ]
+    target-branch: "2.26.x"
+    registries:
+      - maven-central
+    ignore:
+      # Only allow patch-level upgrades on this maintenance branch
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   - package-ecosystem: maven
     directory: "/"
@@ -188,22 +218,6 @@ updates:
       # see https://github.com/apache/logging-log4j2/issues/1736
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
-
-  - package-ecosystem: maven
-    directories:
-      - "/log4j-slf4j-impl"
-    schedule:
-      interval: "monthly"
-    groups:
-      dependencies:
-        patterns: [ "*" ]
-    target-branch: "main"
-    registries:
-      - maven-central
-    ignore:
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"

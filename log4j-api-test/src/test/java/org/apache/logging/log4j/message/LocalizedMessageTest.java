@@ -18,10 +18,9 @@ package org.apache.logging.log4j.message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.Serializable;
 import java.util.Locale;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.test.junit.Mutable;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -33,8 +32,8 @@ import org.junit.jupiter.api.parallel.Resources;
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 class LocalizedMessageTest {
 
-    private <T extends Serializable> T roundtrip(final T msg) {
-        return SerializationUtils.roundtrip(msg);
+    private LocalizedMessage roundtrip(final LocalizedMessage msg) {
+        return SerialUtil.deserialize(SerialUtil.serialize(msg));
     }
 
     @Test

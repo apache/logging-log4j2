@@ -55,15 +55,27 @@ public final class GzCompressAction extends AbstractAction {
      */
     private final int compressionLevel;
 
+    private static int checkCompressionLevel(final int compressionLevel) {
+        final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
+        final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
+
+        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
+            throw new IllegalArgumentException("GZIP compression level must be in the range ["
+                    + minCompressionLevel
+                    + ", "
+                    + maxCompressionLevel
+                    + "], got: "
+                    + compressionLevel);
+        }
+        return compressionLevel;
+    }
+
     /**
-     * Create new instance of GzCompressAction.
-     *
-     * @param source       file to compress, may not be null.
-     * @param destination  compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
-     *                     does not cause an exception to be thrown or affect return value.
-     * @param compressionLevel
-     *                     Gzip deflater compression level.
+     * Creates a new instance.
+     * @param source file to compress, may not be null.
+     * @param destination compressed file, may not be null.
+     * @param deleteSource if true, attempt to delete file on completion.
+     * @param compressionLevel Gzip deflater compression level.
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
@@ -73,7 +85,7 @@ public final class GzCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.compressionLevel = compressionLevel;
+        this.compressionLevel = checkCompressionLevel(compressionLevel);
     }
 
     /**
@@ -129,6 +141,7 @@ public final class GzCompressAction extends AbstractAction {
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
+        checkCompressionLevel(compressionLevel);
         if (source.exists()) {
             try (final FileInputStream fis = new FileInputStream(source);
                     final OutputStream fos = new FileOutputStream(destination);
