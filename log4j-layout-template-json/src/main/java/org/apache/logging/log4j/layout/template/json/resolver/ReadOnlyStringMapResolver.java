@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -204,12 +207,16 @@ class ReadOnlyStringMapResolver implements EventResolver {
         if (pattern == null && replacement != null) {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
         }
+        final List<String> keyExcludesList = config.getList("keyExcludes", String.class);
+        final Set<String> keyExcludes =
+                keyExcludesList == null || keyExcludesList.isEmpty() ? null : new HashSet<>(keyExcludesList);
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
-            return createResolver(recyclerFactory, flatten, prefix, pattern, replacement, stringified, mapAccessor);
+            return createResolver(
+                    recyclerFactory, flatten, prefix, pattern, replacement, keyExcludes, stringified, mapAccessor);
         }
     }
 
@@ -243,6 +250,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
+            final Set<String> keyExcludes,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -258,6 +266,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
             loopContext.pattern = compiledPattern;
             loopContext.replacement = replacement;
+            loopContext.keyExcludes = keyExcludes;
             loopContext.stringified = stringified;
             return loopContext;
         });
@@ -331,6 +340,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private String replacement;
 
+        private Set<String> keyExcludes;
+
         private boolean stringified;
 
         private JsonWriter jsonWriter;
@@ -345,6 +356,9 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
+            if (loopContext.keyExcludes != null && loopContext.keyExcludes.contains(key)) {
+                return;
+            }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;
             final boolean keyMatched = matcher == null || matcher.matches();
             if (keyMatched) {
