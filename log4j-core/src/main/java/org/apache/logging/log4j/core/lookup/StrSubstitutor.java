@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -472,7 +473,7 @@ public class StrSubstitutor implements ConfigurationAware {
     }
 
     private static Map<String, String> toTypeSafeMap(final Properties properties) {
-        final Map<String, String> map = new HashMap<>(properties.size());
+        final Map<String, String> map = Maps.newHashMap(properties.size());
         for (final String name : properties.stringPropertyNames()) {
             map.put(name, properties.getProperty(name));
         }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rewrite;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -55,7 +55,7 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
 
     private PropertiesRewritePolicy(final Configuration config, final List<Property> props) {
         this.config = config;
-        this.properties = new HashMap<>(props.size());
+        this.properties = Maps.newHashMap(props.size());
         for (final Property property : props) {
             final Boolean interpolate = Boolean.valueOf(property.getValue().contains("${"));
             properties.put(property, interpolate);
