@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.xml;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
@@ -774,7 +774,21 @@ public class XmlConfiguration extends Log4j1Configuration {
                     break;
                 case APPENDER_TAG:
                     final Appender appender = parseAppender(currentElement);
-                    appenderMap.put(appender.getName(), appender);
+                    if (appender == null) {
+                        LOGGER.warn(
+                                "Could not create appender named [{}] of class [{}]; ignoring.",
+                                subst(currentElement.getAttribute(NAME_ATTR)),
+                                subst(currentElement.getAttribute(CLASS_ATTR)));
+                        break;
+                    }
+                    final String appenderName = appender.getName();
+                    if (appenderName == null) {
+                        LOGGER.warn(
+                                "Appender of class [{}] has a null name; ignoring.",
+                                subst(currentElement.getAttribute(CLASS_ATTR)));
+                        break;
+                    }
+                    appenderMap.put(appenderName, appender);
                     addAppender(AppenderAdapter.adapt(appender));
                     break;
                 default:

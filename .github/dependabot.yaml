@@ -44,55 +44,21 @@ registries:
 updates:
 
   - package-ecosystem: maven
-    directories:
-      - "/log4j-1.2-api"
-      - "/log4j-api-test"
-      - "/log4j-api"
-      - "/log4j-appserver"
-      - "/log4j-cassandra"
-      - "/log4j-core-fuzz-test"
-      - "/log4j-core-its"
-      - "/log4j-core-test"
-      - "/log4j-core"
-      - "/log4j-couchdb"
-      - "/log4j-docker"
-      - "/log4j-fuzz-test"
-      - "/log4j-iostreams"
-      - "/log4j-jakarta-jms"
-      - "/log4j-jakarta-smtp"
-      - "/log4j-jakarta-web"
-      - "/log4j-jcl"
-      - "/log4j-jdbc-dbcp2"
-      - "/log4j-jpa"
-      - "/log4j-jpl"
-      - "/log4j-jul"
-      - "/log4j-layout-template-json-fuzz-test"
-      - "/log4j-layout-template-json-test"
-      - "/log4j-layout-template-json"
-      - "/log4j-mongodb"
-        # `log4j-mongodb4` is in a separate run
-      - "/log4j-osgi-test"
-      - "/log4j-parent"
-      - "/log4j-perf-test"
-        # `log4j-slf4j-impl` is in a separate run
-      - "/log4j-slf4j2-impl-fuzz-test"
-      - "/log4j-slf4j2-impl"
-      - "/log4j-spring-boot"
-      - "/log4j-spring-cloud-config-client"
-      - "/log4j-taglib"
-      - "/log4j-to-jul"
-      - "/log4j-to-slf4j"
-      - "/log4j-web"
-    open-pull-requests-limit: 10
+    directory: "/"
+    exclude-paths:
+      # These use versions of MongoDB and SLF4J different
+      # from the remaining artifacts
+      - "log4j-mongodb4/**"
+      - "log4j-slf4j-impl/**"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "2.x"
     registries:
       - maven-central
     ignore:
-      # `com.github.spotbugs:spotbugs-annotations:4.9.0` and onwards require Java 11
-      - dependency-name: "com.github.spotbugs:spotbugs-annotations"
-        versions: [ "[4.9.0,)" ]
       # Jetty 10.x does not have an internal logging API
       - dependency-name: "org.eclipse.jetty:*"
         versions: [ "[10,)" ]
@@ -165,13 +131,24 @@ updates:
       # Kafka 4.x is not compatible with our appender
       - dependency-name: "org.apache.kafka:*"
         versions: [ "[4,)" ]
+      # Keep JUnit below 6.x on 2.x: JUnit 6+ requires Java 17 and breaks Java 8 test runs
+      - dependency-name: "org.junit:junit-bom"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.jupiter:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.platform:*"
+        versions: [ "[6,)" ]
+      - dependency-name: "org.junit.vintage:*"
+        versions: [ "[6,)" ]
 
   - package-ecosystem: maven
     directories:
       - "/log4j-mongodb4"
-    open-pull-requests-limit: 10
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "2.x"
     registries:
       - maven-central
@@ -183,20 +160,40 @@ updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "2.x"
 
-  - package-ecosystem: npm
+  # The `2.26.x` maintenance branch only receives patch-level Maven updates.
+  - package-ecosystem: maven
     directory: "/"
     schedule:
-      interval: "daily"
-    target-branch: "2.x"
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      # "Bump the Maven patch updates group across N directories with M updates"
+      Maven patch updates:
+        patterns: [ "*" ]
+    target-branch: "2.26.x"
+    registries:
+      - maven-central
+    ignore:
+      # Only allow patch-level upgrades on this maintenance branch
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   - package-ecosystem: maven
     directory: "/"
-    open-pull-requests-limit: 10
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "main"
     registries:
       - maven-central
@@ -222,28 +219,20 @@ updates:
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
 
-  - package-ecosystem: maven
-    directories:
-      - "/log4j-slf4j-impl"
-    open-pull-requests-limit: 10
-    schedule:
-      interval: "daily"
-    target-branch: "main"
-    registries:
-      - maven-central
-    ignore:
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
-
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "main"
 
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns: [ "*" ]
     target-branch: "main"

@@ -1,0 +1,63 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.core.async;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
+
+@UsingStatusListener
+class DisruptorUtilTest {
+
+    @Test
+    void detectDisruptorMajorVersion_returnsValidVersion() throws Exception {
+        final Method method = DisruptorUtil.class.getDeclaredMethod("detectDisruptorMajorVersion");
+        method.setAccessible(true);
+        final int detectedVersion = (int) method.invoke(null);
+
+        assertThat(detectedVersion).isIn(3, 4);
+    }
+
+    @Test
+    void detectDisruptorMajorVersion_logsVersionDetection(final ListStatusListener statusListener) throws Exception {
+        final Method method = DisruptorUtil.class.getDeclaredMethod("detectDisruptorMajorVersion");
+        method.setAccessible(true);
+        final int detectedVersion = (int) method.invoke(null);
+
+        final List<StatusData> debugData =
+                statusListener.findStatusData(Level.DEBUG).collect(Collectors.toList());
+
+        if (detectedVersion == 4) {
+            // v4 path: ClassNotFoundException caught, falls through to LOGGER.debug()
+            assertThat(debugData)
+                    .anySatisfy(data -> assertThat(data.getMessage().getFormattedMessage())
+                            .contains("LMAX Disruptor version detected: 4"));
+        } else {
+            // v3 path: early `return 3` inside try — LOGGER.debug() is never reached
+            assertThat(debugData)
+                    .noneSatisfy(data -> assertThat(data.getMessage().getFormattedMessage())
+                            .contains("LMAX Disruptor version detected:"));
+        }
+    }
+}

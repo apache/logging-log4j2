@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,6 +41,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -380,10 +380,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return A DefaultRolloverStrategy.
      * @deprecated Since 2.9 Usage of Builder API is preferable
      */
+
+    /**
+     * Legacy factory method for backward compatibility (no delay parameter).
+     * @deprecated Since 2.9 Usage of Builder API is preferable
+     */
     @PluginFactory
     @Deprecated
     public static DefaultRolloverStrategy createStrategy(
-            // @formatter:off
             @PluginAttribute("max") final String max,
             @PluginAttribute("min") final String min,
             @PluginAttribute("fileIndex") final String fileIndex,
@@ -401,7 +405,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 .setStopCustomActionsOnError(stopCustomActionsOnError)
                 .setConfig(config)
                 .build();
-        // @formatter:on
     }
 
     /**

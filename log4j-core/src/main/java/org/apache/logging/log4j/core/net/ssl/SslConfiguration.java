@@ -132,8 +132,8 @@ public class SslConfiguration {
             @Nullable final TrustStoreConfiguration trustStoreConfig) {
         try {
             final SSLContext sslContext = SSLContext.getInstance(protocol);
-            final KeyManager[] keyManagers = loadKeyManagers(keyStoreConfig);
-            final TrustManager[] trustManagers = loadTrustManagers(trustStoreConfig);
+            @Nullable final KeyManager[] keyManagers = loadKeyManagers(keyStoreConfig);
+            @Nullable final TrustManager[] trustManagers = loadTrustManagers(trustStoreConfig);
             sslContext.init(keyManagers, trustManagers, null);
             return sslContext;
         } catch (final Exception error) {
@@ -144,9 +144,11 @@ public class SslConfiguration {
         }
     }
 
+    @Nullable
+    @NullUnmarked
     private static KeyManager[] loadKeyManagers(@Nullable final KeyStoreConfiguration config) throws Exception {
         if (config == null) {
-            return new KeyManager[0];
+            return null;
         }
         final KeyManagerFactory factory = KeyManagerFactory.getInstance(config.getKeyManagerFactoryAlgorithm());
         final char[] password = config.getPasswordAsCharArray();
@@ -158,9 +160,11 @@ public class SslConfiguration {
         return factory.getKeyManagers();
     }
 
+    @Nullable
+    @NullUnmarked
     private static TrustManager[] loadTrustManagers(@Nullable final TrustStoreConfiguration config) throws Exception {
         if (config == null) {
-            return new TrustManager[0];
+            return null;
         }
         final TrustManagerFactory factory = TrustManagerFactory.getInstance(config.getTrustManagerFactoryAlgorithm());
         factory.init(config.getKeyStore());
@@ -176,13 +180,10 @@ public class SslConfiguration {
      * @return a new SslConfiguration
      */
     @NullUnmarked
-    @PluginFactory
     public static SslConfiguration createSSLConfiguration(
-            // @formatter:off
-            @PluginAttribute("protocol") final String protocol,
-            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
-            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
-        // @formatter:on
+            final String protocol,
+            final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig) {
         return new SslConfiguration(protocol, false, keyStoreConfig, trustStoreConfig);
     }
 
@@ -197,6 +198,7 @@ public class SslConfiguration {
      * @since 2.12
      */
     @NullUnmarked
+    @PluginFactory
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
             @PluginAttribute("protocol") final String protocol,

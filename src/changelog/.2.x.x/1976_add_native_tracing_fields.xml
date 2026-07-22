@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+    <issue id="1976" link="https://github.com/apache/logging-log4j2/issues/1976"/>
+    <issue id="4171" link="https://github.com/apache/logging-log4j2/pull/4171"/>
+    <description format="asciidoc">
+        Add native W3C tracing fields (`traceId`, `spanId`, `traceFlags`) to `LogEvent` and introduce the `TraceContextProvider` SPI for garbage-free distributed tracing context propagation.
+    </description>
+</entry>

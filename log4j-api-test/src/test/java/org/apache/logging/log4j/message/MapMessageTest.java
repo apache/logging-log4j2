@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,6 +32,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -72,12 +75,26 @@ class MapMessageTest {
 
     @Test
     void testXMLEscape() {
-        final String testMsg = "Test message <foo>";
+        final String notBmp = new String(Character.toChars(0x10000));
+        final String invalid = "A\uD800B\uDE00C\0\1\2\3";
+        final String expectedInvalid = "A\uFFFDB\uFFFDC\uFFFD\uFFFD\uFFFD\uFFFD";
+        final String key = "k<e&y> '\"\t\r\n" + notBmp + invalid;
+        final String value = "v>al<u& '\"\t\r\n" + notBmp + invalid;
         final StringMapMessage msg = new StringMapMessage();
-        msg.put("message", testMsg);
+        msg.put(key, value);
         final String result = msg.getFormattedMessage(new String[] {"XML"});
-        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" + "</Map>";
-        assertEquals(expected, result);
+
+        assertThat(result)
+                .isEqualTo(
+                        "<Map>\n" //
+                                + "  <Entry key=\"k&lt;e&amp;y&gt; &apos;&quot;\t\r\n"
+                                + notBmp
+                                + expectedInvalid
+                                + "\">v&gt;al&lt;u&amp; &apos;&quot;\t\r\n"
+                                + notBmp
+                                + expectedInvalid
+                                + "</Entry>\n" //
+                                + "</Map>");
     }
 
     @Test
@@ -153,6 +170,30 @@ class MapMessageTest {
                         + "'objects':['foo','bar']"
                         + "}}")
                 .replace('\'', '"');
+        assertEquals(expectedJson, actualJson);
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY})
+    void testJsonFormatterDoubleNonFiniteSupport(final double number) {
+        final String expectedJson = String.format("{'number':'%s','numbers':['%s']}", number, number)
+                .replace('\'', '"');
+        final String actualJson = new ObjectMapMessage()
+                .with("number", number)
+                .with("numbers", new double[] {number})
+                .getFormattedMessage(new String[] {"JSON"});
+        assertEquals(expectedJson, actualJson);
+    }
+
+    @ParameterizedTest
+    @ValueSource(floats = {Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY})
+    void testJsonFormatterFloatNonFiniteSupport(final float number) {
+        final String expectedJson = String.format("{'number':'%s','numbers':['%s']}", number, number)
+                .replace('\'', '"');
+        final String actualJson = new ObjectMapMessage()
+                .with("number", number)
+                .with("numbers", new float[] {number})
+                .getFormattedMessage(new String[] {"JSON"});
         assertEquals(expectedJson, actualJson);
     }
 
