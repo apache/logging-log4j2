@@ -57,7 +57,7 @@ If not for yours, keep on reading.
 In order to have a garbage-free Log4j Core, you need to
 
 * <<core-properties,configure it using properties>>,
-* and employ garbage-free <<Layouts,layouts>>, <<Appenders,appenders>>, and <<Filters,filters>>.
+* and employ garbage-free <<Layouts>>, <<Appenders>>, and <<Filters>>.
 
 [#core-properties]
 === Properties
