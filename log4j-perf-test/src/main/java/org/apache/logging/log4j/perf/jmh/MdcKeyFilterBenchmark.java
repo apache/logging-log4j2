@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -28,6 +29,7 @@ import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
@@ -39,43 +41,51 @@ import org.openjdk.jmh.annotations.Warmup;
 @State(Scope.Benchmark)
 public class MdcKeyFilterBenchmark {
 
-    private static final String[] MDC_KEYS = {
-        "userId", "transactionId", "userRole",
-        "@timestamp", "message", "log.level"
-    };
+    private JsonTemplateLayout patternLayout;
+    private JsonTemplateLayout keyExcludesLayout;
+    private LogEvent logEvent;
 
-    private static final Pattern PATTERN = Pattern.compile(
-            "^(?!@timestamp|message|log\\.logger|log\\.level|event\\.dataset|process\\.thread\\.name|process\\.thread\\.id|ecs\\.version).*$");
+    @Setup
+    public void setup() {
 
-    private static final Set<String> EXCLUDED_KEYS = new HashSet<>(Arrays.asList(
-            "@timestamp",
-            "message",
-            "log.logger",
-            "log.level",
-            "event.dataset",
-            "process.thread.name",
-            "process.thread.id",
-            "ecs.version"));
+        SortedArrayStringMap contextData = new SortedArrayStringMap();
+        contextData.putValue("userId", "12345");
+        contextData.putValue("transactionId", "tx-98765");
+        contextData.putValue("userRole", "admin");
+        contextData.putValue("@timestamp", "2026-07-22T10:15:30.123Z");
+        contextData.putValue("message", "Tx completed");
+        contextData.putValue("log.level", "INFO");
 
-    @Benchmark
-    public int testRegex() {
-        int allowedCount = 0;
-        for (String key : MDC_KEYS) {
-            if (PATTERN.matcher(key).matches()) {
-                allowedCount++;
-            }
-        }
-        return allowedCount;
+        logEvent = Log4jLogEvent.newBuilder().setContextData(contextData).build();
+
+        // Layout using regex pattern
+        String patternTemplate = "{" + "\"$resolver\": \"mdc\", "
+                + "\"pattern\": \"^(?!@timestamp|message|log\\\\.logger|log\\\\.level|event\\\\.dataset|process\\\\.thread\\\\.name|process\\\\.thread\\\\.id|ecs\\\\.version).*$\""
+                + "}";
+
+        patternLayout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setEventTemplate(patternTemplate)
+                .build();
+
+        // Layout using keyExcludes HashSet
+        String keyExcludesTemplate = "{" + "\"$resolver\": \"mdc\", "
+                + "\"keyExcludes\": [\"@timestamp\", \"message\", \"log.logger\", \"log.level\", \"event.dataset\", \"process.thread.name\", \"process.thread.id\", \"ecs.version\"]"
+                + "}";
+
+        keyExcludesLayout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setEventTemplate(keyExcludesTemplate)
+                .build();
     }
 
     @Benchmark
-    public int testKeyExcludes() {
-        int allowedCount = 0;
-        for (String key : MDC_KEYS) {
-            if (!EXCLUDED_KEYS.contains(key)) {
-                allowedCount++;
-            }
-        }
-        return allowedCount;
+    public String testPatternResolver() {
+        return patternLayout.toSerializable(logEvent);
+    }
+
+    @Benchmark
+    public String testKeyExcludesResolver() {
+        return keyExcludesLayout.toSerializable(logEvent);
     }
 }
