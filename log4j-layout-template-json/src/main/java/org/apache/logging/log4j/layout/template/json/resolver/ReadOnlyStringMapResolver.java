@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.NonNull;
 
 /**
  * {@link ReadOnlyStringMap} resolver.
@@ -208,8 +210,9 @@ class ReadOnlyStringMapResolver implements EventResolver {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
         }
         final List<String> keyExcludesList = config.getList("keyExcludes", String.class);
-        final Set<String> keyExcludes =
-                keyExcludesList == null || keyExcludesList.isEmpty() ? null : new HashSet<>(keyExcludesList);
+        final Set<String> keyExcludes = keyExcludesList == null || keyExcludesList.isEmpty()
+                ? Collections.emptySet()
+                : new HashSet<>(keyExcludesList);
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
@@ -340,6 +343,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private String replacement;
 
+        @NonNull
         private Set<String> keyExcludes;
 
         private boolean stringified;
@@ -356,7 +360,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
-            if (loopContext.keyExcludes != null && loopContext.keyExcludes.contains(key)) {
+            if (loopContext.keyExcludes.contains(key)) {
                 return;
             }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;

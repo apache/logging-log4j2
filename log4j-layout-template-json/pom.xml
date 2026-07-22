@@ -61,6 +61,10 @@
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+    </dependency>
 
   </dependencies>
 
