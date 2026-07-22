@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+    <issue id="4166" link="https://github.com/apache/logging-log4j2/issues/4166"/>
+    <issue id="4186" link="https://github.com/apache/logging-log4j2/pull/4186"/>
+    <description format="asciidoc">
+        Add `keyExcludes` to MDC resolvers to prevent user-controlled variables from overwriting structural log fields.
+    </description>
+</entry>

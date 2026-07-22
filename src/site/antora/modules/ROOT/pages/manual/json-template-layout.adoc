@@ -1438,6 +1438,7 @@ stringified   = "stringified" -> boolean
 multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
 pattern       = "pattern" -> string
 replacement   = "replacement" -> string
+keyExcludes   = "keyExcludes" -> "[" , string , { "," , string } , "]"
 flatten       = "flatten" -> ( boolean | flattenConfig )
 flattenConfig = [ flattenPrefix ]
 flattenPrefix = "prefix" -> string
@@ -1451,6 +1452,8 @@ Enabling `stringified` flag converts each value to its string representation.
 Regex provided in the `pattern` is used to match against the keys.
 If provided, `replacement` will be used to replace the matched keys.
 These two are analogous to `Pattern.compile(pattern).matcher(key).matches()` and `Pattern.compile(pattern).matcher(key).replaceAll(replacement)` calls.
+
+`keyExcludes` allows specifying keys that should be excluded from the resolution process.
 
 [WARNING]
 ====
@@ -1524,6 +1527,15 @@ Resolve all fields whose keys match with the `user:(role|rank)` regex into an ob
   "$resolver": "…",
   "pattern": "user:(role|rank)",
   "replacement": "$1"
+}
+----
+Resolve all fields into an object, but silently drop `message` and `log.level`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "keyExcludes": ["message", "log.level"]
 }
 ----
 
