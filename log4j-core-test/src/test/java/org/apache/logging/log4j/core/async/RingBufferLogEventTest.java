@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.apache.logging.log4j.core.util.ClockFactory.getClock;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -31,6 +33,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.core.util.Clock;
@@ -467,5 +470,47 @@ class RingBufferLogEventTest {
 
         // Verify interaction exhaustion
         verifyNoMoreInteractions(asyncLogger, message, throwable, contextData, contextStack);
+    }
+
+    @Test
+    void testRingBufferLogEventTracingFieldsAndClear() {
+        final RingBufferLogEvent event = new RingBufferLogEvent();
+
+        // Check initial state
+        assertThat(event.getTraceId()).isNull();
+        assertThat(event.getSpanId()).isNull();
+        assertThat(event.getTraceFlags()).isNull();
+
+        // Initialize with trace fields inside 18-parameter setValues
+        event.setValues(
+                null,
+                "TestLogger",
+                null,
+                "FQCN",
+                Level.INFO,
+                new SimpleMessage("msg"),
+                null,
+                ContextDataFactory.createContextData(),
+                ThreadContext.EMPTY_STACK,
+                123L,
+                "thread-name",
+                5,
+                null,
+                getClock(),
+                new DummyNanoClock(),
+                "trace-id-ringbuffer",
+                "span-id-ringbuffer",
+                "01");
+
+        // Assert values are retrievable
+        assertThat(event.getTraceId()).isEqualTo("trace-id-ringbuffer");
+        assertThat(event.getSpanId()).isEqualTo("span-id-ringbuffer");
+        assertThat(event.getTraceFlags()).isEqualTo("01");
+
+        // Verify clearing wipes tracing state to avoid leakage on slot reuse
+        event.clear();
+        assertNull(event.getTraceId());
+        assertNull(event.getSpanId());
+        assertNull(event.getTraceFlags());
     }
 }

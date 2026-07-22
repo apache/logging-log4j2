@@ -55,11 +55,6 @@ public final class CommonsCompressAction extends AbstractAction {
     private final boolean deleteSource;
 
     /**
-     * Maximum delay in seconds before compression.
-     */
-    private final int maxDelaySeconds;
-
-    /**
      * Creates new instance of Bzip2CompressAction.
      *
      * @param name the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
@@ -70,33 +65,12 @@ public final class CommonsCompressAction extends AbstractAction {
      */
     public CommonsCompressAction(
             final String name, final File source, final File destination, final boolean deleteSource) {
-        this(name, source, destination, deleteSource, 0);
-    }
-
-    /**
-     * Creates new instance of Bzip2CompressAction.
-     *
-     * @param name the compressor name. One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-     * @param source file to compress, may not be null.
-     * @param destination compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
-     *            to be thrown or affect return value.
-     * @param maxDelaySeconds maximum delay in seconds before compression.
-     * @since 2.27.0
-     */
-    public CommonsCompressAction(
-            final String name,
-            final File source,
-            final File destination,
-            final boolean deleteSource,
-            final int maxDelaySeconds) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
         this.name = name;
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.maxDelaySeconds = maxDelaySeconds;
     }
 
     /**
@@ -107,7 +81,6 @@ public final class CommonsCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        blockThread(maxDelaySeconds);
         return execute(name, source, destination, deleteSource);
     }
 
