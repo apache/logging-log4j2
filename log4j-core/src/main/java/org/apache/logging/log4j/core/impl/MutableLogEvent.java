@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.TraceContextProviderService;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
@@ -71,6 +72,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
     transient boolean reserved = false;
+    private String traceId;
+    private String spanId;
+    private String traceFlags;
 
     public MutableLogEvent() {
         // messageText and the parameter array are lazily initialized
@@ -133,6 +137,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.endOfBatch = event.isEndOfBatch();
         this.includeLocation = event.isIncludeLocation();
         this.nanoTime = event.getNanoTime();
+
+        this.traceId = event.getTraceId();
+        this.spanId = event.getSpanId();
+        this.traceFlags = event.getTraceFlags();
         setMessage(event.getMessage());
     }
 
@@ -157,6 +165,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         }
         contextStack = null;
 
+        traceId = null;
+        spanId = null;
+        traceFlags = null;
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
         // where this instance is kept in a ThreadLocal, so it usually does not change.
         // threadName = null; // no need to clear threadName
@@ -359,6 +370,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             instant.initFrom(clock);
         }
         nanoTime = nanoClock.nanoTime();
+        this.traceId = TraceContextProviderService.getTraceId();
+        this.spanId = TraceContextProviderService.getSpanId();
+        this.traceFlags = TraceContextProviderService.getTraceFlags();
     }
 
     @Override
@@ -485,6 +499,33 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.nanoTime = nanoTime;
     }
 
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public void setTraceId(final String traceId) {
+        this.traceId = traceId;
+    }
+
+    @Override
+    public String getSpanId() {
+        return spanId;
+    }
+
+    public void setSpanId(final String spanId) {
+        this.spanId = spanId;
+    }
+
+    @Override
+    public String getTraceFlags() {
+        return traceFlags;
+    }
+
+    public void setTraceFlags(final String traceFlags) {
+        this.traceFlags = traceFlags;
+    }
+
     /**
      * Creates a LogEventProxy that can be serialized.
      * @return a LogEventProxy.
@@ -534,6 +575,8 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setInstant(instant) //
-        ;
+                .setTraceId(traceId)
+                .setSpanId(spanId)
+                .setTraceFlags(traceFlags);
     }
 }
