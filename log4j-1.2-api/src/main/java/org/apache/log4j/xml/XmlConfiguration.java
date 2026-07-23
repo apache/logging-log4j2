@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -162,7 +163,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         }
 
         try {
-            dbf.setValidating(true);
+            disableDtdProcessing(dbf);
 
             final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
@@ -177,6 +178,27 @@ public class XmlConfiguration extends Log4j1Configuration {
             }
             // I know this is miserable...
             LOGGER.error("Could not parse " + action.toString() + ".", e);
+        }
+    }
+
+    private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
+        factory.setValidating(false);
+        factory.setExpandEntityReferences(false);
+        setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
+        setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
+        setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    }
+
+    private static void setFeature(
+            final DocumentBuilderFactory factory, final String featureName, final boolean value) {
+        try {
+            factory.setFeature(featureName, value);
+        } catch (final ParserConfigurationException e) {
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory, featureName, e);
+        } catch (final AbstractMethodError err) {
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
         }
     }
 
