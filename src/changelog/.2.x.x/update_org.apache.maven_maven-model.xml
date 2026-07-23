@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
   <issue id="4197" link="https://github.com/apache/logging-log4j2/pull/4197"/>
-  <description format="asciidoc">Update `org.apache.activemq:activemq-broker` to version `6.2.7`</description>
+  <description format="asciidoc">Update `org.apache.maven:maven-model` to version `3.9.16`</description>
 </entry>

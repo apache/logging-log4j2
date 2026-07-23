@@ -64,7 +64,7 @@
     <!-- Additional version of LMAX Disruptor to test -->
     <disruptor4.version>4.0.0</disruptor4.version>
     <json-unit.version>2.40.1</json-unit.version>
-    <bouncycastle.version>1.83</bouncycastle.version>
+    <bouncycastle.version>1.85</bouncycastle.version>
   </properties>
 
   <dependencyManagement>
