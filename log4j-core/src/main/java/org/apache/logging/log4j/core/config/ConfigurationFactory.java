@@ -293,7 +293,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation) {
         if (!isActive()) {
-            return null;
+            throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         if (configLocation != null) {
             final ConfigurationSource source = ConfigurationSource.fromUri(configLocation);
@@ -317,7 +317,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     public Configuration getConfiguration(
             final LoggerContext loggerContext, final String name, final URI configLocation, final ClassLoader loader) {
         if (!isActive()) {
-            return null;
+            throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         if (loader == null) {
             return getConfiguration(loggerContext, name, configLocation);
@@ -489,6 +489,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
@@ -520,6 +523,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 // configLocation != null
                 final String configLocationStr = configLocation.toString();
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
@@ -577,6 +583,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
             if (source != null) {
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                         continue;
                     }
@@ -601,6 +610,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             final boolean named = Strings.isNotEmpty(name);
             final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
             for (final ConfigurationFactory factory : getFactories()) {
+                if (!factory.isActive()) {
+                    continue;
+                }
                 String configName;
                 final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
                 final String[] types = factory.getSupportedTypes();
@@ -616,12 +628,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
                     final ConfigurationSource source = ConfigurationSource.fromResource(configName, loader);
                     if (source != null) {
-                        if (!factory.isActive()) {
-                            LOGGER.error(
-                                    "Found configuration file `{}` for the inactive `{}`. This `ConfigurationFactory` implementation might be inactive due to a missing dependency.",
-                                    configName,
-                                    factory.getClass().getName());
-                        }
                         return factory.getConfiguration(loggerContext, source);
                     }
                 }
@@ -639,6 +645,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             if (source != null) {
                 final String config = source.getLocation();
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
