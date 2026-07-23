@@ -63,13 +63,16 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (!isActive) {
-            return null;
+            throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         return new YamlConfiguration(loggerContext, source);
     }
 
     @Override
     public String[] getSupportedTypes() {
+        if (!isActive) {
+            throw new IllegalStateException(getClass().getName() + " is inactive");
+        }
         return SUFFIXES;
     }
 }

@@ -44,16 +44,24 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     protected static final String DEFAULT_PREFIX = "log4j";
 
     @Override
+    protected boolean isActive() {
+        return PropertiesUtil.getProperties()
+                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE);
+    }
+
+    @Override
     protected String[] getSupportedTypes() {
-        if (!PropertiesUtil.getProperties()
-                .getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
-            return null;
+        if (!isActive()) {
+            throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         return new String[] {FILE_EXTENSION};
     }
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        if (!isActive()) {
+            throw new IllegalStateException(getClass().getName() + " is inactive");
+        }
         final int interval = PropertiesUtil.getProperties().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
         return new PropertiesConfiguration(loggerContext, source, interval);
     }

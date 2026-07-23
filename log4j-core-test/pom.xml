@@ -436,6 +436,34 @@
               <groups>org.apache.logging.log4j.core.test.categories.AsyncLoggers</groups>
             </configuration>
           </execution>
+          <execution>
+            <id>test-without-jackson-databind</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>com.fasterxml.jackson.core:jackson-databind</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/JsonConfigurationFactoryMissingDependenciesIT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-without-jackson-dataformat-yaml</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/YamlConfigurationFactoryMissingDependenciesIT.java</include>
+              </includes>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
