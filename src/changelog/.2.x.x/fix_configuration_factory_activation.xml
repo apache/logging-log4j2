@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="3896" link="https://github.com/apache/logging-log4j2/issues/3896"/>
+  <description format="asciidoc">
+    Make `ConfigurationFactory` implementations consistently report active state and decline configuration creation
+    when inactive, while retaining diagnostics for matching configuration files
+  </description>
+</entry>
