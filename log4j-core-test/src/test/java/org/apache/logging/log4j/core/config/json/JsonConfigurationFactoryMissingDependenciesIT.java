@@ -16,21 +16,32 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.net.URL;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.junit.jupiter.api.Test;
 
 class JsonConfigurationFactoryMissingDependenciesIT {
 
     @Test
     void inactiveFactoryRejectsDirectUse() {
+        final ClassLoader loader = getClass().getClassLoader();
+        assertDoesNotThrow(() -> Class.forName("com.fasterxml.jackson.core.JsonParser", false, loader));
+        assertThrows(
+                ClassNotFoundException.class,
+                () -> Class.forName("com.fasterxml.jackson.databind.ObjectMapper", false, loader));
+
         final JsonConfigurationFactory factory = new JsonConfigurationFactory();
         assertFalse(factory.isActive());
         assertThrows(IllegalStateException.class, factory::getSupportedTypes);
@@ -53,7 +64,11 @@ class JsonConfigurationFactoryMissingDependenciesIT {
         final URL resource = getClass().getResource("/log4j-test1.xml");
         assertNotNull(resource);
         try (final LoggerContext context = new LoggerContext("test")) {
-            assertNotNull(ConfigurationFactory.getInstance().getConfiguration(context, "test", resource.toURI()));
+            final Configuration configuration =
+                    ConfigurationFactory.getInstance().getConfiguration(context, "test", resource.toURI());
+            assertInstanceOf(XmlConfiguration.class, configuration);
+            assertEquals(
+                    resource.toURI(), configuration.getConfigurationSource().getURI());
         }
     }
 }

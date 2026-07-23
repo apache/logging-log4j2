@@ -61,7 +61,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        if (!isActive) {
+        if (!isActive()) {
             throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         return new JsonConfiguration(loggerContext, source);
@@ -69,7 +69,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public String[] getSupportedTypes() {
-        if (!isActive) {
+        if (!isActive()) {
             throw new IllegalStateException(getClass().getName() + " is inactive");
         }
         return SUFFIXES;
