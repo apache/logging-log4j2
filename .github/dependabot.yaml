@@ -140,6 +140,13 @@ updates:
         versions: [ "[6,)" ]
       - dependency-name: "org.junit.vintage:*"
         versions: [ "[6,)" ]
+      # WireMock 3.x requires Java 11 and Jakarta EE (Jetty 11)
+      - dependency-name: "org.wiremock:*"
+        versions: [ "[3,)" ]
+      # WireMock changed its Group ID from com.github.tomakehurst to org.wiremock in v3.
+      # We must also ignore the old Group ID so Dependabot doesn't try to auto-migrate it.
+      - dependency-name: "com.github.tomakehurst:wiremock*"
+        versions: [ "[3,)" ]
 
   - package-ecosystem: maven
     directories:
@@ -218,6 +225,13 @@ updates:
       # see https://github.com/apache/logging-log4j2/issues/1736
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
+      # WireMock 3.x requires Java 11 and Jakarta EE (Jetty 11)
+      - dependency-name: "org.wiremock:*"
+        versions: [ "[3,)" ]
+      # WireMock changed its Group ID from com.github.tomakehurst to org.wiremock in v3.
+      # We must also ignore the old Group ID so Dependabot doesn't try to auto-migrate it.
+      - dependency-name: "com.github.tomakehurst:wiremock*"
+        versions: [ "[3,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"
