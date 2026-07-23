@@ -16,23 +16,33 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.Appender;
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
- * Builder for constructing Appender Components.
+ * A builder interface for constructing and configuring {@link Appender} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 public interface AppenderComponentBuilder extends FilterableComponentBuilder<AppenderComponentBuilder> {
 
     /**
-     * Adds a Layout to the Appender component.
-     * @param builder The LayoutComponentBuilder with all of its attributes set.
-     * @return this builder.
+     * Adds a {@link LayoutComponentBuilder} to this Appender component builder.
+     * <p>
+     *   Note: the provided {@code builder} will be built by this method; therefore, it must be fully configured
+     *   <i>before</i> calling this method.  Changes to the builder after calling this method will not have
+     *   any effect.
+     * </p>
+     *
+     * @param builder The {@code LayoutComponentBuilder} with all of its attributes set.
+     * @return this component builder (for chaining)
+     * @throws NullPointerException if the given {@code builder} argument is {@code null}
      */
     AppenderComponentBuilder add(LayoutComponentBuilder builder);
-
-    /**
-     * Returns the name of the Appender.
-     * @return the name of the Appender.
-     */
-    @Override
-    String getName();
 }

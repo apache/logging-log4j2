@@ -17,17 +17,34 @@
 package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.CustomLevelConfig;
 import org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link CustomLevelComponentBuilder} interface for building
+ * a {@link CustomLevelConfig} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 class DefaultCustomLevelComponentBuilder extends DefaultComponentAndConfigurationBuilder<CustomLevelComponentBuilder>
         implements CustomLevelComponentBuilder {
 
+    /**
+     * Constructs a new component builder instance.
+     * @param builder the configuration builder
+     * @param name the component name
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
     public DefaultCustomLevelComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final int level) {
-        super(builder, name, "CustomLevel");
-        addAttribute("intLevel", level);
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final @Nullable String name) {
+
+        super(builder, "CustomLevel", name);
     }
 }

@@ -16,8 +16,63 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.Logger;
+
 /**
- * Assembler for constructing Logger Components.
+ * A builder interface for constructing and configuring {@link Logger} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.4
  */
-public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerComponentBuilder> {}
+public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerComponentBuilder> {
+
+    /**
+     * Sets the "{@code additivity}" attribute on the logger component.
+     *
+     * @param additivity {@code true} if additive; otherwise, {@code false}
+     * @return this builder (for chaining)
+     */
+    default LoggerComponentBuilder setAdditivity(boolean additivity) {
+        return setAttribute("additivity", additivity);
+    }
+
+    /**
+     * Sets the "{@code additivity}" attribute on the logger component.
+     *
+     * @param additivity {@code true} if additive; otherwise, {@code false}
+     * @return this builder (for chaining)
+     */
+    default LoggerComponentBuilder setAdditivityAttribute(boolean additivity) {
+        return setAdditivity(additivity);
+    }
+
+    /**
+     * Sets the "{@code additivity}" attribute on the logger component.
+     * <p>
+     *   If the given {@code additivity} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param additivity "{@code true}" if additive; otherwise, {@code false}
+     * @return this builder (for chaining)
+     */
+    default LoggerComponentBuilder setAdditivity(String additivity) {
+        return setAttribute("additivity", additivity);
+    }
+
+    /**
+     * Sets the "{@code additivity}" attribute on the logger component.
+     * <p>
+     *   If the given {@code additivity} is {@code null}, the attribute will be removed from the component.
+     * </p>
+     *
+     * @param additivity "{@code true}" if additive; otherwise, "{@code false}"
+     * @return this builder (for chaining)
+     */
+    default LoggerComponentBuilder setAdditivityAttribute(String additivity) {
+        return setAdditivity(additivity);
+    }
+}
