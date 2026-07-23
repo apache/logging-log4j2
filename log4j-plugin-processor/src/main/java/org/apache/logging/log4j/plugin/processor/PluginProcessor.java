@@ -40,9 +40,14 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -72,7 +77,11 @@ import org.jspecify.annotations.NullMarked;
  * </p>
  */
 @NullMarked
-@SupportedAnnotationTypes("org.apache.logging.log4j.plugins.Plugin")
+@SupportedAnnotationTypes({
+    "org.apache.logging.log4j.plugins.Plugin",
+    "org.apache.logging.log4j.plugins.PluginBuilderAttribute",
+    "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute"
+})
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 public class PluginProcessor extends AbstractProcessor {
 
@@ -91,6 +100,8 @@ public class PluginProcessor extends AbstractProcessor {
      * </p>
      */
     public static final String PLUGIN_PACKAGE = "log4j.plugin.package";
+
+    private static final String SUPPRESS_WARNING_PUBLIC_SETTER = "log4j.public.setter";
 
     private static final String SERVICE_FILE_NAME =
             "META-INF/services/org.apache.logging.log4j.plugins.model.PluginService";
@@ -121,8 +132,14 @@ public class PluginProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         // Process the elements for this round
-        if (!annotations.isEmpty()) {
-            processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(Plugin.class)));
+        for (TypeElement annotation : annotations) {
+            final String fqn = annotation.getQualifiedName().toString();
+            if (fqn.equals("org.apache.logging.log4j.plugins.Plugin")) {
+                processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(annotation)));
+            } else if (fqn.equals("org.apache.logging.log4j.plugins.PluginBuilderAttribute")
+                    || fqn.equals("org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute")) {
+                processBuilderAttributeFields(roundEnv.getElementsAnnotatedWith(annotation));
+            }
         }
         // Write the generated code
         if (roundEnv.processingOver() && !pluginIndex.isEmpty()) {
@@ -162,6 +179,69 @@ public class PluginProcessor extends AbstractProcessor {
             }
             processedElements.add(pluginClass);
         }
+    }
+
+    private void processBuilderAttributeFields(final Iterable<? extends Element> elements) {
+        for (final Element element : elements) {
+            if (element instanceof VariableElement) {
+                processBuilderAttributeField((VariableElement) element);
+            }
+        }
+    }
+
+    private void processBuilderAttributeField(final VariableElement element) {
+        final String fieldName = element.getSimpleName().toString();
+        // Check for @SuppressWarnings("log4j.public.setter")
+        final SuppressWarnings suppress = element.getAnnotation(SuppressWarnings.class);
+        if (suppress != null && Arrays.asList(suppress.value()).contains(SUPPRESS_WARNING_PUBLIC_SETTER)) {
+            return;
+        }
+        final Element enclosingElement = element.getEnclosingElement();
+        // element is a field, its enclosing element is a type
+        if (enclosingElement instanceof TypeElement) {
+            final TypeElement typeElement = (TypeElement) enclosingElement;
+            // Check the siblings of the field for a matching setter
+            for (final Element enclosedElement : typeElement.getEnclosedElements()) {
+                if (enclosedElement instanceof ExecutableElement) {
+                    final ExecutableElement methodElement = (ExecutableElement) enclosedElement;
+                    final String methodName = methodElement.getSimpleName().toString();
+                    if ((methodName.toLowerCase(Locale.ROOT).startsWith("set")
+                                    || methodName.toLowerCase(Locale.ROOT).startsWith("with"))
+                            && methodElement.getParameters().size() == 1) {
+                        final Types typeUtils = processingEnv.getTypeUtils();
+                        final boolean followsNamePattern = methodName.equals(
+                                        String.format("set%s", expectedFieldNameInASetter(fieldName)))
+                                || methodName.equals(String.format("with%s", expectedFieldNameInASetter(fieldName)));
+                        final boolean isPublicMethod =
+                                methodElement.getModifiers().contains(Modifier.PUBLIC);
+                        final boolean checkForAssignable = typeUtils.isAssignable(
+                                methodElement.getReturnType(),
+                                methodElement.getEnclosingElement().asType());
+                        final boolean foundPublicSetter = followsNamePattern && checkForAssignable && isPublicMethod;
+                        if (foundPublicSetter) {
+                            return;
+                        }
+                    }
+                }
+            }
+            // No setter found: emit a compilation error
+            processingEnv
+                    .getMessager()
+                    .printMessage(
+                            javax.tools.Diagnostic.Kind.ERROR,
+                            String.format(
+                                    "The field `%s` does not have a public setter. "
+                                            + "Note that @SuppressWarnings(\"%s\") can be used on the field to suppress this error.",
+                                    fieldName, SUPPRESS_WARNING_PUBLIC_SETTER),
+                            element);
+        }
+    }
+
+    private static String expectedFieldNameInASetter(String fieldName) {
+        if (fieldName.startsWith("is")) {
+            fieldName = fieldName.substring(2);
+        }
+        return fieldName.isEmpty() ? fieldName : Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
     }
 
     private static void processConfigurableAnnotation(TypeElement pluginClass, PluginEntry.Builder builder) {
