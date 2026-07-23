@@ -83,7 +83,7 @@
     <error-prone-annotations.version>2.38.0</error-prone-annotations.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>4.0.32</groovy.version>
-    <guava.version>33.4.8-jre</guava.version>
+    <guava.version>33.6.0-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
