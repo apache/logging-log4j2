@@ -64,6 +64,7 @@ class StructuredDataMessageTest {
         final String expected = "<StructuredData>\n"
                 + "<type>Alert</type>\n"
                 + "<id>MsgId@12345</id>\n"
+                + "<message>Test message {}</message>\n"
                 + "<Map>\n"
                 + "  <Entry key=\"memo\">This is a very long test memo to prevent regression of LOG4J2-114</Entry>\n"
                 + "  <Entry key=\"message\">Test message {}</Entry>\n"
@@ -74,11 +75,43 @@ class StructuredDataMessageTest {
     }
 
     @Test
+    void testMsgXmlIncludesConstructorMessage() {
+        // #4141: constructor message must appear (and be escaped) even when not put into the map
+        final StructuredDataMessage msg = new StructuredDataMessage("an id", "a <msg> & more", "a type");
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
+        final String expected = "<StructuredData>\n"
+                + "<type>a type</type>\n"
+                + "<id>an id</id>\n"
+                + "<message>a &lt;msg&gt; &amp; more</message>\n"
+                + "<Map>\n"
+                + "</Map>\n"
+                + "</StructuredData>\n";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testMsgXmlDistinguishesConstructorMessageFromMapEntry() {
+        // #4141: free-form message and a map entry keyed "message" are independent
+        final StructuredDataMessage msg = new StructuredDataMessage("an id", "a message", "a type");
+        msg.put("message", "foo");
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
+        final String expected = "<StructuredData>\n"
+                + "<type>a type</type>\n"
+                + "<id>an id</id>\n"
+                + "<message>a message</message>\n"
+                + "<Map>\n"
+                + "  <Entry key=\"message\">foo</Entry>\n"
+                + "</Map>\n"
+                + "</StructuredData>\n";
+        assertEquals(expected, result);
+    }
+
+    @Test
     void testXmlEncodingOfIdAndType1() {
         final String id = "i<&d>" + XmlFixture.TEXT;
         final String type = "t>yp<e&" + XmlFixture.TEXT;
-        final String actualXml =
-                new StructuredDataMessage(id, "discarded message", type).getFormattedMessage(new String[] {"XML"});
+        // null message: keep this test focused on id/type escaping (and covers omission of <message>)
+        final String actualXml = new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
         final String expectedXml = "<StructuredData>\n"
                 + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
                 + "</type>\n"
@@ -100,8 +133,7 @@ class StructuredDataMessageTest {
         final String type = "t>yp<e&" + XmlFixture.TEXT;
         final StructuredDataId id =
                 new StructuredDataId(idName, idEnterpriseNumber, idRequired, idOptional, Integer.MAX_VALUE);
-        final String actualXml =
-                new StructuredDataMessage(id, "discarded message", type).getFormattedMessage(new String[] {"XML"});
+        final String actualXml = new StructuredDataMessage(id, null, type).getFormattedMessage(new String[] {"XML"});
         final String expectedXml = "<StructuredData>\n"
                 + "<type>t&gt;yp&lt;e&amp;" + XmlFixture.ENCODED_TEXT
                 + "</type>\n"
