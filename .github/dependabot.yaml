@@ -52,9 +52,13 @@ updates:
       - "log4j-slf4j-impl/**"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
-        patterns: [ "*" ]
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
       - maven-central
@@ -153,9 +157,13 @@ updates:
       - "/log4j-mongodb4"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
-        patterns: [ "*" ]
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
       - maven-central
@@ -198,9 +206,13 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
-        patterns: [ "*" ]
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "main"
     registries:
       - maven-central
