@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -56,6 +57,21 @@ class PropertiesConfigurationTest {
         final Filter filter = config.getFilter();
         assertNotNull(filter, "No Filter");
         assertInstanceOf(ThresholdFilter.class, filter, "Not a Threshold Filter");
+
+        final List<Property> rootProperties = config.getRootLogger().getPropertyList();
+        assertNotNull(rootProperties, "Root properties list should not be null");
+        assertEquals(1, rootProperties.size());
+        assertEquals("client.address", rootProperties.get(0).getName());
+        assertEquals("${web:request.remoteAddress}", rootProperties.get(0).getValue());
+
+        final LoggerConfig log4jLogger = loggers.get("org.apache.logging.log4j");
+        assertNotNull(log4jLogger, "org.apache.logging.log4j logger should not be null");
+        final List<Property> log4jProperties = log4jLogger.getPropertyList();
+        assertNotNull(log4jProperties, "org.apache.logging.log4j properties list should not be null");
+        assertEquals(1, log4jProperties.size());
+        assertEquals("subsystem", log4jProperties.get(0).getName());
+        assertEquals("Database", log4jProperties.get(0).getValue());
+
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
     }
