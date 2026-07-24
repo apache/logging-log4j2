@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Container for building Configurations. This class is not normally directly manipulated by users
- * of the Assembler API.
+ * Container for building configurations. This class is not normally manipulated directly by users
+ * of the builder API.
  * @since 2.4
  */
 public class Component {
@@ -31,34 +33,51 @@ public class Component {
     private final Map<String, String> attributes = new LinkedHashMap<>();
     private final List<Component> components = new ArrayList<>();
     private final String pluginType;
-    private final String value;
+    private final @Nullable String value;
+
+    /**
+     * Default constructor.
+     *
+     * @deprecated - use {@link Component(String)} - a non-{@code null} '{@code pluginType}' must be specified
+     */
+    @Deprecated
+    public Component() {
+        this.pluginType = "";
+        this.value = null;
+    }
 
     public Component(final String pluginType) {
         this(pluginType, null, null);
     }
 
-    public Component(final String pluginType, final String name) {
+    public Component(final String pluginType, final @Nullable String name) {
         this(pluginType, name, null);
     }
 
-    public Component(final String pluginType, final String name, final String value) {
+    public Component(final String pluginType, @Nullable final String name, @Nullable final String value) {
         this.pluginType = pluginType;
         this.value = value;
-        if (name != null && name.length() > 0) {
+        if (name != null && !name.isEmpty()) {
             attributes.put("name", name);
         }
     }
 
-    public Component() {
-        this.pluginType = null;
-        this.value = null;
-    }
-
-    public String addAttribute(final String key, final String newValue) {
-        return attributes.put(key, newValue);
+    /**
+     * Puts the given key/value pair to the attribute map.
+     * <p>
+     *   If the new value is {@code null}, then any existing entry with the given {@code key}
+     *   is removed from the map.
+     * </p>
+     * @param key the key
+     * @param newValue the new value
+     * @return the previous value or {@code null} if none was set
+     */
+    public @Nullable String addAttribute(final String key, final @Nullable String newValue) {
+        return putAttribute(key, newValue);
     }
 
     public void addComponent(final Component component) {
+        Objects.requireNonNull(component, "The 'component' argument cannot be null.");
         components.add(component);
     }
 
@@ -74,7 +93,28 @@ public class Component {
         return pluginType;
     }
 
-    public String getValue() {
+    public @Nullable String getValue() {
         return value;
+    }
+
+    /**
+     * Puts the given key/value pair to the attribute map.
+     * <p>
+     *   If the new value is {@code null}, then any existing entry with the given {@code key}
+     *   is removed from the map.
+     * </p>
+     * @param key the key
+     * @param newValue the new value
+     * @return the previous value or {@code null} if none was set
+     */
+    protected @Nullable String putAttribute(final String key, final @Nullable String newValue) {
+
+        Objects.requireNonNull(key, "The 'key' argument cannot be null.");
+
+        if (newValue == null) {
+            return attributes.remove(key);
+        } else {
+            return attributes.put(key, newValue);
+        }
     }
 }

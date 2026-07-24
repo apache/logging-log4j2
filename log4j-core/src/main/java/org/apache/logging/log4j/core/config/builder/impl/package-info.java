@@ -19,9 +19,13 @@
  *
  * @since 2.4
  */
+@BaselineIgnore("2.26.0")
 @Export
-@Version("2.25.3")
+@NullMarked
+@Version("2.26.0")
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
+import org.jspecify.annotations.NullMarked;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;
