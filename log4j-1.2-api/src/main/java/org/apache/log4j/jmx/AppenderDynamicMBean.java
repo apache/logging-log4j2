@@ -187,6 +187,11 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
         } else if (operationName.equals("setLayout")) {
             final Layout layout =
                     (Layout) OptionConverter.instantiateByClassName((String) params[0], Layout.class, null);
+            if (layout == null) {
+                cat.error("Could not instantiate layout class [" + params[0] + "] for appender ["
+                        + getAppenderName(appender) + "].");
+                return "Could not instantiate layout class.";
+            }
             appender.setLayout(layout);
             registerLayoutMBean(layout);
         }
