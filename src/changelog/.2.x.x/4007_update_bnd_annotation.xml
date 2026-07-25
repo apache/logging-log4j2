@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <issue id="4007" link="https://github.com/apache/logging-log4j2/issues/4007"/>
+    <issue id="4213" link="https://github.com/apache/logging-log4j2/pull/4213"/>
+    <description format="asciidoc">
+        Bump `biz.aQute.bnd.annotation` to version `7.2.3` to fix compiler warnings for Java 8.
+    </description>
+</entry>
