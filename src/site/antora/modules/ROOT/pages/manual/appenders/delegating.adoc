@@ -945,6 +945,25 @@ If the `Route` element contains an appender definition, the appender will be ins
 * once for each value of the key, if the `Route` has the default key.
 ====
 
+[#RoutingAppender-security]
+=== Security considerations
+
+When a default <<Route,`Route`>> embeds an appender definition, the `Routing` Appender creates **one subordinate appender per distinct routing key value**.
+If the key is derived from untrusted or high-cardinality data (for example `${ctx:userId}`, a client IP, or a free-form request header), an attacker or a busy system can force creation of an unbounded number of appenders.
+
+That growth commonly leads to:
+
+* exhaustion of file descriptors (when each route opens a `File` or rolling file appender)
+* elevated memory use for appender state, buffers, and managers
+* difficulty shutting down or reconfiguring the application cleanly
+
+Mitigations:
+
+* Prefer <<Route-element-AppenderRef,appender references>> to a fixed, predeclared set of appenders when the set of destinations is known.
+* When dynamic routes are required, always configure a <<PurgePolicy,`PurgePolicy`>> (typically <<IdlePurgePolicy,`IdlePurgePolicy`>>) so idle route appenders are stopped and released.
+* Constrain routing keys to a low-cardinality, validated domain (allow-lists, enums, hashed buckets) instead of raw user input.
+* Avoid routing on pure user-controlled identifiers when each value would create a new file-backed appender.
+
 [#PurgePolicy]
 === Purge Policy
 
