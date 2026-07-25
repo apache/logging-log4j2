@@ -93,14 +93,22 @@ jobs:
       # Encode the `runs-on` input as JSON array
       runs-on: '["ubuntu-latest", "macos-latest"]'
 
-  # Run integration-tests automatically after a snapshot or RC is published
-  integration-test:
-    needs: [ deploy-snapshot, deploy-release ]
-    if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
-    name: "integration-test (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
+  # Run integration-tests automatically after a snapshot is published
+  integration-test-snapshot:
+    needs: deploy-snapshot
     uses: apache/logging-log4j-samples/.github/workflows/integration-test.yaml@main
     with:
-      log4j-version: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }}
-      log4j-repository-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || needs.deploy-snapshot.outputs.nexus-url }}
+      log4j-version: ${{ needs.deploy-snapshot.outputs.project-version }}
+      # Use the `main` branch of `logging-log4j-samples`
+      samples-ref: 'refs/heads/main'
+
+  # Run integration-tests automatically after an RC is published
+  integration-test-release:
+    needs: deploy-release
+    uses: apache/logging-log4j-samples/.github/workflows/integration-test.yaml@main
+    with:
+      log4j-version: ${{ needs.deploy-release.outputs.project-version }}
+      # URL of the staging repository
+      log4j-repository-url: ${{ needs.deploy-release.outputs.nexus-url }}
       # Use the `main` branch of `logging-log4j-samples`
       samples-ref: 'refs/heads/main'
