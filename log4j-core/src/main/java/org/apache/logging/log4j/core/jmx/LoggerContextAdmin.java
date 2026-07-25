@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.jmx;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +46,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -128,14 +130,26 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location " + configLocation);
         final File configFile = new File(configLocation);
-        ConfigurationSource configSource = null;
+        final ConfigurationSource configSource;
+        // Read the configuration into memory and close the underlying stream before handing
+        // off to ConfigurationFactory. ConfigurationSource(InputStream, File/URL) leaves stream
+        // ownership with the caller; without buffering, failures during getConfiguration/start
+        // can leave FileInputStream/URLConnection streams open.
         if (configFile.exists()) {
             LOGGER.debug("Opening config file {}", configFile.getAbsolutePath());
-            configSource = new ConfigurationSource(new FileInputStream(configFile), configFile);
+            final byte[] data;
+            try (final InputStream in = new FileInputStream(configFile)) {
+                data = toByteArray(in);
+            }
+            configSource = new ConfigurationSource(new Source(configFile), data, configFile.lastModified());
         } else {
             final URL configURL = new URL(configLocation);
             LOGGER.debug("Opening config URL {}", configURL);
-            configSource = new ConfigurationSource(configURL.openStream(), configURL);
+            final byte[] data;
+            try (final InputStream in = configURL.openStream()) {
+                data = toByteArray(in);
+            }
+            configSource = new ConfigurationSource(new Source(configURL), data, 0L);
         }
         final Configuration config = ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
         loggerContext.start(config);
@@ -252,5 +266,15 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     private long now() {
         return System.currentTimeMillis();
+    }
+
+    private static byte[] toByteArray(final InputStream inputStream) throws IOException {
+        final ByteArrayOutputStream contents = new ByteArrayOutputStream(Math.max(4096, inputStream.available()));
+        final byte[] buff = new byte[4096];
+        int length;
+        while ((length = inputStream.read(buff)) >= 0) {
+            contents.write(buff, 0, length);
+        }
+        return contents.toByteArray();
     }
 }
