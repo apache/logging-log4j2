@@ -380,6 +380,8 @@
     <log4j.docgen.pluginDescriptorsDir.phase1>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase1</log4j.docgen.pluginDescriptorsDir.phase1>
     <log4j.docgen.pluginDescriptorsDir.phase2>${maven.multiModuleProjectDirectory}/target/plugin-descriptors/phase2</log4j.docgen.pluginDescriptorsDir.phase2>
 
+    <!-- log4j-api-kotlin> -->
+    <log4j-api-kotlin.version>1.5.0</log4j-api-kotlin.version>
   </properties>
 
   <dependencyManagement>
@@ -495,6 +497,12 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-kotlin</artifactId>
+        <version>${log4j-api-kotlin.version}</version>
       </dependency>
 
       <dependency>
