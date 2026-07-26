@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
@@ -60,10 +60,6 @@ import org.xml.sax.SAXException;
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
-    private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
-
-    private final List<Status> status = new ArrayList<>();
     private Element rootElement;
     private boolean strict;
     private String schemaResource;
@@ -231,8 +227,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn(
                     "The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
         }
-        setFeature(factory, XINCLUDE_FIXUP_BASE_URIS, true);
-        setFeature(factory, XINCLUDE_FIXUP_LANGUAGE, true);
     }
 
     @Override
@@ -241,13 +235,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.error("No logging configuration");
             return;
         }
-        constructHierarchy(rootNode, rootElement);
-        if (!status.isEmpty()) {
-            for (final Status s : status) {
-                LOGGER.error("Error processing element {} ({}): {}", s.name, s.element, s.errorType);
-            }
-            return;
-        }
+        constructHierarchy(rootNode, rootElement, pluginManager, strict);
         rootElement = null;
     }
 
@@ -266,7 +254,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return null;
     }
 
-    private void constructHierarchy(final Node node, final Element element) {
+    // Package-private for testing
+    static void constructHierarchy(
+            final Node node, final Element element, final PluginManager pluginManager, final boolean strict) {
         processAttributes(node, element);
         final StringBuilder buffer = new StringBuilder();
         final NodeList list = element.getChildNodes();
@@ -275,16 +265,16 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final org.w3c.dom.Node w3cNode = list.item(i);
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
-                final String name = getType(child);
+                final String name = getType(child, strict);
                 final PluginType<?> type = pluginManager.getPluginType(name);
                 final Node childNode = new Node(node, name, type);
-                constructHierarchy(childNode, child);
+                constructHierarchy(childNode, child, pluginManager, strict);
                 if (type == null) {
                     final String value = childNode.getValue();
                     if (!childNode.hasChildren() && value != null) {
                         node.getAttributes().put(name, value);
                     } else {
-                        status.add(new Status(name, element, ErrorType.CLASS_NOT_FOUND));
+                        LOGGER.error("Error processing element {} ({}): CLASS_NOT_FOUND", name, element);
                     }
                 } else {
                     children.add(childNode);
@@ -301,7 +291,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
     }
 
-    private String getType(final Element element) {
+    private static String getType(final Element element, final boolean strict) {
         if (strict) {
             final NamedNodeMap attrs = element.getAttributes();
             for (int i = 0; i < attrs.getLength(); ++i) {
@@ -319,7 +309,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return element.getTagName();
     }
 
-    private Map<String, String> processAttributes(final Node node, final Element element) {
+    private static Map<String, String> processAttributes(final Node node, final Element element) {
         final NamedNodeMap attrs = element.getAttributes();
         final Map<String, String> attributes = node.getAttributes();
 
@@ -327,7 +317,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final org.w3c.dom.Node w3cNode = attrs.item(i);
             if (w3cNode instanceof Attr) {
                 final Attr attr = (Attr) w3cNode;
-                if (attr.getName().equals("xml:base")) {
+                // The XInclude `fixup-base-uris` and `fixup-language` features (both enabled by default) add
+                // `xml:base` and `xml:lang` attributes to the top-level included elements.
+                if (XMLConstants.XML_NS_URI.equals(attr.getNamespaceURI())) {
                     continue;
                 }
                 attributes.put(attr.getName(), attr.getValue());
@@ -340,32 +332,5 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     public String toString() {
         return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
                 + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
-    }
-
-    /**
-     * The error that occurred.
-     */
-    private enum ErrorType {
-        CLASS_NOT_FOUND
-    }
-
-    /**
-     * Status for recording errors.
-     */
-    private static class Status {
-        private final Element element;
-        private final String name;
-        private final ErrorType errorType;
-
-        public Status(final String name, final Element element, final ErrorType errorType) {
-            this.name = name;
-            this.element = element;
-            this.errorType = errorType;
-        }
-
-        @Override
-        public String toString() {
-            return "Status [name=" + name + ", element=" + element + ", errorType=" + errorType + "]";
-        }
     }
 }
