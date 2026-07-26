@@ -83,13 +83,21 @@ jobs:
         17
       project-id: log4j
 
-  verify-reproducibility:
-    needs: [ deploy-snapshot, deploy-release ]
-    if: ${{ always() && (needs.deploy-snapshot.result == 'success' || needs.deploy-release.result == 'success') }}
-    name: "verify-reproducibility (${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.project-version || needs.deploy-snapshot.outputs.project-version }})"
+  verify-reproducibility-snapshot:
+    needs: deploy-snapshot
     uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@gha/v0
     with:
-      nexus-url: ${{ needs.deploy-release.result == 'success' && needs.deploy-release.outputs.nexus-url || 'https://repository.apache.org/content/groups/snapshots' }}
+      # Name of the artifact uploaded by `deploy-snapshot`
+      reference-artifact-name: ${{ needs.deploy-snapshot.outputs.repository-artifact-name }}
+      # Encode the `runs-on` input as JSON array
+      runs-on: '["ubuntu-latest", "macos-latest"]'
+
+  verify-reproducibility-release:
+    needs: deploy-release
+    uses: apache/logging-parent/.github/workflows/verify-reproducibility-reusable.yaml@gha/v0
+    with:
+      # URL of staging repository
+      nexus-url: ${{ needs.deploy-release.outputs.nexus-url }}
       # Encode the `runs-on` input as JSON array
       runs-on: '["ubuntu-latest", "macos-latest"]'
 
