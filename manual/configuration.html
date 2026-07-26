@@ -3201,6 +3201,68 @@ The list of <code>XInclude</code> and <code>XPath</code> features supported depe
 &lt;/Loggers&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Instead of a whole file, you can include a single element by appending an
+<a href="https://www.w3.org/TR/xptr-framework/">XPointer</a> to the <code>href</code>.
+The JDK&#8217;s XInclude engine only implements the <code>element()</code> scheme and <strong>shorthand</strong> pointers, so two forms are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>positional</strong> pointer addresses an element by its position in the document.
+For example <code>xpointer="element(/1/2)"</code> selects the second child element of the document root:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;xi:include href="xinclude-appenders.xml" xpointer="element(/1/2)"/&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>A <strong>shorthand</strong> pointer addresses an element by an attribute of type <code>ID</code>.
+The appender <code>name</code> is a natural identifier:</p>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.3/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-xpointer-appenders.xml"><code>xinclude-xpointer-appenders.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Appenders [
+  &lt;!-- Typing `name` as `ID` lets an `xpointer` shorthand select an appender by its name. --&gt;
+  &lt;!ATTLIST Console name ID #IMPLIED&gt;
+  &lt;!ATTLIST File name ID #IMPLIED&gt;
+]&gt;
+&lt;Appenders&gt;
+  &lt;Console name="CONSOLE"&gt;
+    &lt;PatternLayout pattern="%d %m%n"/&gt;
+  &lt;/Console&gt;
+  &lt;File name="FILE" fileName="${filename}"&gt;
+    &lt;PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/&gt;
+  &lt;/File&gt;
+&lt;/Appenders&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Snippet from an example <a href="https://github.com/apache/logging-log4j2/tree/rel/2.25.3/src/site/antora/modules/ROOT/examples/manual/configuration/xinclude-xpointer-main.xml"><code>log4j2.xml</code></a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;xi:include href="xinclude-xpointer-appenders.xml" xpointer="CONSOLE"/&gt;</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The JDK&#8217;s XInclude engine does <strong>not</strong> recognize the <code>xml:id</code> attribute as an <code>ID</code>, and it does <strong>not</strong> implement the full <code>xpointer()</code> scheme.
+Only an attribute typed <code>ID</code> through a DTD (in practice, the included file&#8217;s internal subset) can be addressed by a shorthand pointer.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
