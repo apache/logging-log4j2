@@ -23,7 +23,7 @@ on:
     types: [opened, synchronize, reopened, milestoned, demilestoned]
 
 jobs:
-  validate-milestone:
+  Require Milestone:
     name: Require Milestone
     runs-on: ubuntu-latest
     steps:

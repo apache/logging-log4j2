@@ -52,7 +52,6 @@ github:
     - log4j2
     - logging
     - logger
-    - api
     - syslog
 
   # Pull Request settings:
