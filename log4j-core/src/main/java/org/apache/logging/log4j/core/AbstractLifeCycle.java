@@ -47,21 +47,24 @@ public class AbstractLifeCycle implements LifeCycle {
 
     private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
 
-    protected boolean equalsImpl(final Object obj) {
-        if (this == obj) {
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * @param other the other object to compare to
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    protected boolean equalsImpl(final Object other) {
+        // identity check - fast exit
+        if (this == other) {
             return true;
         }
-        if (obj == null) {
+        // exact class check
+        if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final LifeCycle other = (LifeCycle) obj;
-        if (state != other.getState()) {
-            return false;
-        }
-        return true;
+        // field check
+        final AbstractLifeCycle that = (AbstractLifeCycle) other;
+        return (this.state == that.state);
     }
 
     @Override
