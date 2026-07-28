@@ -175,6 +175,4 @@ class LoggerConfigTest {
         assertSame(filter, viaTypo.getFilter());
         assertSame(filter, viaAlias.getFilter());
     }
-
-
 }
