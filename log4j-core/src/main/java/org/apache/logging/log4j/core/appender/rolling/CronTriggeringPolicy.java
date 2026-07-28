@@ -150,7 +150,9 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private void rollover() {
         // If possible, use the time rollover was supposed to occur, not the actual time.
         final Date rollTime = future != null ? future.getFireTime() : new Date();
-        manager.rollover(cronExpression.getPrevFireTime(rollTime), lastRollDate);
+        // The file being rolled covers the period that ends at `rollTime`, so it is named after
+        // that period's start. The file replacing it opens the period beginning at `rollTime`.
+        manager.rollover(cronExpression.getPrevFireTime(rollTime), rollTime);
         if (future != null) {
             lastRollDate = future.getFireTime();
         }
