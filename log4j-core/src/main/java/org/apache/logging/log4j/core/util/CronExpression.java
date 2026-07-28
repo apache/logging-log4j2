@@ -1581,6 +1581,13 @@ public final class CronExpression {
         Date prevFireTime;
         do {
             final Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            // `getTimeAfter()` never returns a fire time before 1970, so once the candidate
+            // date precedes `MIN_DATE` the loop condition below can no longer be satisfied.
+            // Bail out here, otherwise the search walks back millennia one increment at a
+            // time before `getTimeAfter()` finally gives up at the calendar's upper bound.
+            if (prevCheckDate.before(MIN_DATE)) {
+                return null;
+            }
             prevFireTime = getTimeAfter(prevCheckDate);
             if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
                 return null;

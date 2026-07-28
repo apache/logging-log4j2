@@ -29,9 +29,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Class Description goes here.
@@ -179,6 +181,21 @@ class CronExpressionTest {
         System.err.println(sdf.format(fireDate));
         final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
         assertEquals(expected, fireDate, "Dates not equal.");
+    }
+
+    /*
+     * There is no fire time before 1970, so `getPrevFireTime()` must return `null` for a target at
+     * the epoch. It must also return promptly: `getTimeAfter()` clamps its result to 1970, so a
+     * backward search that is not bounded below never satisfies its exit condition and instead
+     * grinds through several millennia of candidate dates, taking ~3 seconds per call. The timeout
+     * is deliberately well under that; the bounded search answers in well under a millisecond.
+     */
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.SECONDS)
+    void testPrevFireTimeAtEpochReturnsNullPromptly() throws Exception {
+        // A weekly schedule is the worst case: `findMinIncrement()` returns a day-sized step.
+        final CronExpression parser = new CronExpression("0 0 0 ? * SUN");
+        assertThat(parser.getPrevFireTime(new Date(0))).isNull();
     }
 
     /**
