@@ -5,6 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
+    <issue id="4226" link="https://github.com/apache/logging-log4j2/pull/4226"/>
     <description format="asciidoc">
         Fix a multi-second startup delay in `CronTriggeringPolicy` for appenders configured without a `fileName`.
         `CronExpression.getPrevFireTime()` now bounds its backward search at 1970 instead of scanning millennia of
