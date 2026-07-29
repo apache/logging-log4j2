@@ -542,6 +542,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param intervalSeconds the number of seconds that should pass between checks of the configuration source
      * @return this builder instance
      * @throws NumberFormatException if the {@code intervalSeconds} argument is not a valid integer representation
+     * @since 2.27.0
      */
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
