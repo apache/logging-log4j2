@@ -3,10 +3,8 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="2791" link="https://github.com/apache/logging-log4j2/issues/2791"/>
+  <issue id="4116" link="https://github.com/apache/logging-log4j2/pull/4116"/>
   <description format="asciidoc">
-    Fix problem when null attribute values are set on DefaultComponentBuilder. GitHub issue #2791.
-    Added JSpecify annotations to config.builder.* packages.
-    Updated Builder APIs and Default***Builder implementations.
+    Rework programmatic configuration API and its implementations.
   </description>
 </entry>
