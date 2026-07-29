@@ -112,7 +112,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @SuppressWarnings("unchecked")
     public DefaultConfigurationBuilder() {
         this((Class<T>) BuiltConfiguration.class);
-        root.addAttribute("name", "Built");
+        root.putAttribute("name", "Built");
     }
 
     /**

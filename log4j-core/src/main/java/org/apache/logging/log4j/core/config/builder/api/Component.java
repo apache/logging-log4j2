@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import com.google.errorprone.annotations.InlineMe;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,8 +72,11 @@ public class Component {
      * @param key the key
      * @param newValue the new value
      * @return the previous value or {@code null} if none was set
+     * @deprecated use {@link #putAttribute(String, String)}
      */
-    public @Nullable String addAttribute(final String key, final @Nullable String newValue) {
+    @Deprecated
+    @InlineMe(replacement = "this.putAttribute(key, newValue)")
+    public final @Nullable String addAttribute(final String key, final @Nullable String newValue) {
         return putAttribute(key, newValue);
     }
 
@@ -107,7 +111,7 @@ public class Component {
      * @param newValue the new value
      * @return the previous value or {@code null} if none was set
      */
-    protected @Nullable String putAttribute(final String key, final @Nullable String newValue) {
+    public @Nullable String putAttribute(final String key, final @Nullable String newValue) {
 
         Objects.requireNonNull(key, "The 'key' argument cannot be null.");
 
