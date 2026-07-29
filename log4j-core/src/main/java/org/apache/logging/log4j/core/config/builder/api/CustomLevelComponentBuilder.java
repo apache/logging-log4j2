@@ -32,14 +32,11 @@ public interface CustomLevelComponentBuilder extends ComponentBuilder<CustomLeve
 
     /**
      * Sets the 'intLevel' attribute on the custom-level component.
-     * <p>
-     *   If the given {@code onMismatch} argument is {@code} the attribute will be removed (if present).
-     * </p>
      *
      * @param intLevel the integer level value
      * @return this builder (for chaining)
      */
-    default CustomLevelComponentBuilder setIntLevelAttribute(int intLevel) {
+    default CustomLevelComponentBuilder setIntLevel(int intLevel) {
         return setAttribute("intLevel", intLevel);
     }
 }

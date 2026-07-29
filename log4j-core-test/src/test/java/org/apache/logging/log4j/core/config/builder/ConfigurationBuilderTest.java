@@ -37,7 +37,7 @@ class ConfigurationBuilderTest {
         builder.setStatusLevel(Level.ERROR);
         builder.setShutdownTimeout(5000, TimeUnit.MILLISECONDS);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
-                .setIsWatchedAttribute(true));
+                .setIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .setAttribute("level", Level.DEBUG));
 
@@ -59,7 +59,7 @@ class ConfigurationBuilderTest {
 
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
                 .add(builder.newAppenderRef("Stdout"))
-                .setAdditivityAttribute(false));
+                .setAdditivity(false));
         builder.add(builder.newLogger("org.apache.logging.log4j.core").add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         builder.add(builder.newProperty("MyKey", "MyValue"));

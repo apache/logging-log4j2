@@ -39,7 +39,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * @param language the language
      * @return this builder (for chaining)
      */
-    default ScriptFileComponentBuilder setLanguageAttribute(@Nullable String language) {
+    default ScriptFileComponentBuilder setLanguage(@Nullable String language) {
         return setAttribute("language", language);
     }
 
@@ -48,7 +48,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * @param isWatched {@code true} to watch the script file; otherwise, {@code false}
      * @return this builder (for chaining)
      */
-    default ScriptFileComponentBuilder setIsWatchedAttribute(boolean isWatched) {
+    default ScriptFileComponentBuilder setIsWatched(boolean isWatched) {
         return setAttribute("isWatched", isWatched);
     }
 
@@ -60,7 +60,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * @param isWatched the string value of the flag
      * @return this builder (for chaining)
      */
-    default ScriptFileComponentBuilder setIsWatchedAttribute(@Nullable String isWatched) {
+    default ScriptFileComponentBuilder setIsWatched(@Nullable String isWatched) {
         return setAttribute("isWatched", isWatched);
     }
 
@@ -72,7 +72,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * @param charset the charset
      * @return this builder (for chaining)
      */
-    default ScriptFileComponentBuilder setCharsetAttribute(@Nullable String charset) {
+    default ScriptFileComponentBuilder setCharset(@Nullable String charset) {
         return setAttribute("charset", charset);
     }
 
@@ -84,7 +84,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * @param path the script file path
      * @return this builder (for chaining)
      */
-    default ScriptFileComponentBuilder setPathAttribute(@Nullable String path) {
+    default ScriptFileComponentBuilder setPath(@Nullable String path) {
         return setAttribute("path", path);
     }
 
@@ -95,11 +95,11 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param language the language
      * @return this builder (for chaining)
-     * @deprecated use {@link #setLanguageAttribute(String)}
+     * @deprecated use {@link #setLanguage(String)}
      */
     @Deprecated
     default ScriptFileComponentBuilder addLanguage(@Nullable String language) {
-        return setLanguageAttribute(language);
+        return setLanguage(language);
     }
 
     /**
@@ -109,11 +109,11 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param isWatched the string value of the flag
      * @return this builder (for chaining)
-     * @deprecated use {@link #setIsWatchedAttribute(boolean)} (String)}
+     * @deprecated use {@link #setIsWatched(boolean)}
      */
     @Deprecated
     default ScriptFileComponentBuilder addIsWatched(boolean isWatched) {
-        return setIsWatchedAttribute(isWatched);
+        return setIsWatched(isWatched);
     }
 
     /**
@@ -123,11 +123,11 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param isWatched the string value of the flag
      * @return this builder (for chaining)
-     * @deprecated use {@link #setIsWatchedAttribute(String)}
+     * @deprecated use {@link #setIsWatched(String)}
      */
     @Deprecated
     default ScriptFileComponentBuilder addIsWatched(String isWatched) {
-        return setIsWatchedAttribute(isWatched);
+        return setIsWatched(isWatched);
     }
 
     /**
@@ -137,10 +137,10 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param charset the charset
      * @return this builder (for chaining)
-     * @deprecated use {@link #setCharsetAttribute(String)}
+     * @deprecated use {@link #setCharset(String)}
      */
     @Deprecated
     default ScriptFileComponentBuilder addCharset(String charset) {
-        return setCharsetAttribute(charset);
+        return setCharset(charset);
     }
 }

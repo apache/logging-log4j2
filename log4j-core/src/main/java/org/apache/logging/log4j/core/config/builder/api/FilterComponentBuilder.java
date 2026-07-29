@@ -41,7 +41,7 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
      * @param onMatch the attribute value
      * @return this builder (for chaining)
      */
-    default FilterComponentBuilder setOnMatchAttribute(@Nullable String onMatch) {
+    default FilterComponentBuilder setOnMatch(@Nullable String onMatch) {
         return setAttribute("onMatch", onMatch);
     }
 
@@ -54,7 +54,7 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
      * @param onMatch the attribute value
      * @return this builder (for chaining)
      */
-    default FilterComponentBuilder setOnMatchAttribute(@Nullable Result onMatch) {
+    default FilterComponentBuilder setOnMatch(@Nullable Result onMatch) {
         return setAttribute("onMatch", onMatch);
     }
 
@@ -67,7 +67,7 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
      * @param onMismatch the attribute value
      * @return this builder (for chaining)
      */
-    default FilterComponentBuilder setOnMismatchAttribute(@Nullable String onMismatch) {
+    default FilterComponentBuilder setOnMismatch(@Nullable String onMismatch) {
         return setAttribute("onMismatch", onMismatch);
     }
 
@@ -80,7 +80,7 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
      * @param onMismatch the attribute value
      * @return this builder (for chaining)
      */
-    default FilterComponentBuilder setOnMismatchAttribute(@Nullable Result onMismatch) {
+    default FilterComponentBuilder setOnMismatch(@Nullable Result onMismatch) {
         return setAttribute("onMismatch", onMismatch);
     }
 }

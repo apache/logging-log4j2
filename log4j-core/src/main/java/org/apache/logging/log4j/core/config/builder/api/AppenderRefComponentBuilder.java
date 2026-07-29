@@ -46,19 +46,6 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
     }
 
     /**
-     * Sets the "{@code level}" attribute on the appender-reference component.
-     * <p>
-     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
-     * </p>
-     *
-     * @param level the level
-     * @return this builder (for chaining)
-     */
-    default AppenderRefComponentBuilder setLevelAttribute(@Nullable String level) {
-        return setLevel(level);
-    }
-
-    /**
      * Sets the "{@code level}" attribute on the appender reference component.
      * <p>
      *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
@@ -72,19 +59,6 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
     }
 
     /**
-     * Sets the "{@code level}" attribute on the appender reference component.
-     * <p>
-     *   If the given {@code level} is {@code null}, the attribute will be removed from the component.
-     * </p>
-     *
-     * @param level the level
-     * @return this builder (for chaining)
-     */
-    default AppenderRefComponentBuilder setLevelAttribute(@Nullable Level level) {
-        return setLevel(level);
-    }
-
-    /**
      * Sets the "{@code ref}" attribute on the appender reference component.
      * <p>
      *   If the given {@code refAppenderName} is {@code null}, the attribute will be removed from the component.
@@ -95,18 +69,5 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
      */
     default AppenderRefComponentBuilder setRef(@Nullable String refAppenderName) {
         return setAttribute("ref", refAppenderName);
-    }
-
-    /**
-     * Sets the "{@code ref}" attribute on the appender reference component.
-     * <p>
-     *   If the given {@code refAppenderName} is {@code null}, the attribute will be removed from the component.
-     * </p>
-     *
-     * @param refAppenderName the name of the appender being referenced
-     * @return this builder (for chaining)
-     */
-    default AppenderRefComponentBuilder setRefAttribute(@Nullable String refAppenderName) {
-        return setRef(refAppenderName);
     }
 }

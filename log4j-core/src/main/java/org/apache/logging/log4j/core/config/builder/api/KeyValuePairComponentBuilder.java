@@ -40,7 +40,7 @@ public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValueP
      * @param key the attribute value
      * @return this builder (for chaining)
      */
-    default KeyValuePairComponentBuilder setKeyAttribute(final @Nullable String key) {
+    default KeyValuePairComponentBuilder setKey(final @Nullable String key) {
         return setAttribute("key", key);
     }
 
@@ -53,7 +53,7 @@ public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValueP
      * @param value the attribute value
      * @return this builder (for chaining)
      */
-    default KeyValuePairComponentBuilder setValueAttribute(final @Nullable String value) {
+    default KeyValuePairComponentBuilder setValue(final @Nullable String value) {
         return setAttribute("value", value);
     }
 }

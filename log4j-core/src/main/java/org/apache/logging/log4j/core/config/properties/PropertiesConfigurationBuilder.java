@@ -271,7 +271,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         final AppenderRefComponentBuilder appenderRefBuilder = builder.newAppenderRef(ref);
         final String level = Strings.trimToNull((String) properties.remove("level"));
         if (!Strings.isEmpty(level)) {
-            appenderRefBuilder.setLevelAttribute(level);
+            appenderRefBuilder.setLevel(level);
         }
         return addFiltersToComponent(appenderRefBuilder, properties);
     }
@@ -308,7 +308,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         addFiltersToComponent(loggerBuilder, properties);
         final String additivity = (String) properties.remove("additivity");
         if (!Strings.isEmpty(additivity)) {
-            loggerBuilder.setAdditivityAttribute(additivity);
+            loggerBuilder.setAdditivity(additivity);
         }
         if (levelAndRefs != null) {
             loggerBuilder.setAttribute("levelAndRefs", levelAndRefs);

@@ -42,16 +42,6 @@ public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerC
 
     /**
      * Sets the "{@code additivity}" attribute on the logger component.
-     *
-     * @param additivity {@code true} if additive; otherwise, {@code false}
-     * @return this builder (for chaining)
-     */
-    default LoggerComponentBuilder setAdditivityAttribute(boolean additivity) {
-        return setAdditivity(additivity);
-    }
-
-    /**
-     * Sets the "{@code additivity}" attribute on the logger component.
      * <p>
      *   If the given {@code additivity} is {@code null}, the attribute will be removed from the component.
      * </p>
@@ -61,18 +51,5 @@ public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerC
      */
     default LoggerComponentBuilder setAdditivity(String additivity) {
         return setAttribute("additivity", additivity);
-    }
-
-    /**
-     * Sets the "{@code additivity}" attribute on the logger component.
-     * <p>
-     *   If the given {@code additivity} is {@code null}, the attribute will be removed from the component.
-     * </p>
-     *
-     * @param additivity "{@code true}" if additive; otherwise, "{@code false}"
-     * @return this builder (for chaining)
-     */
-    default LoggerComponentBuilder setAdditivityAttribute(String additivity) {
-        return setAdditivity(additivity);
     }
 }

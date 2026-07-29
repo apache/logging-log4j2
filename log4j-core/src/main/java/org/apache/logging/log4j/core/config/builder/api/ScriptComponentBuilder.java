@@ -40,7 +40,7 @@ public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponent
      * @param language the script language
      * @return this builder (for chaining)
      */
-    default ScriptComponentBuilder setLanguageAttribute(final @Nullable String language) {
+    default ScriptComponentBuilder setLanguage(final @Nullable String language) {
         return setAttribute("language", language);
     }
 
@@ -53,7 +53,7 @@ public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponent
      * @param text the script text
      * @return this builder (for chaining)
      */
-    default ScriptComponentBuilder setTextAttribute(final @Nullable String text) {
+    default ScriptComponentBuilder setText(final @Nullable String text) {
         return setAttribute("text", text);
     }
 }

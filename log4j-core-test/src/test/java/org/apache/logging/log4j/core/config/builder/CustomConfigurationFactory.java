@@ -39,7 +39,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
         builder.setConfigurationName(name);
         builder.setStatusLevel(Level.ERROR);
         builder.add(builder.newScriptFile("target/test-classes/scripts/filter.groovy")
-                .setIsWatchedAttribute(true));
+                .setIsWatched(true));
         builder.add(builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
                 .setAttribute("level", Level.DEBUG));
 
@@ -61,7 +61,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
 
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG, true)
                 .add(builder.newAppenderRef("Stdout"))
-                .setAdditivityAttribute(false));
+                .setAdditivity(false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
 
         builder.add(builder.newCustomLevel("Panic", 17));

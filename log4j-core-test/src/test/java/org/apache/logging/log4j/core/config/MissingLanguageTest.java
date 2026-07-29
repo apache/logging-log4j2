@@ -59,7 +59,7 @@ class MissingLanguageTest {
         builder.setStatusLevel(Level.ERROR);
         builder.setConfigurationName("BuilderTest");
         builder.add(builder.newScriptFile("filter.groovy", "target/test-classes/scripts/filter.groovy")
-                .setIsWatchedAttribute(true));
+                .setIsWatched(true));
         final AppenderComponentBuilder appenderBuilder =
                 builder.newAppender("Stdout", "CONSOLE").setAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
         appenderBuilder.add(builder.newLayout("PatternLayout")
@@ -78,7 +78,7 @@ class MissingLanguageTest {
         builder.add(appenderBuilder);
         builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
                 .add(builder.newAppenderRef("Stdout"))
-                .setAdditivityAttribute(false));
+                .setAdditivity(false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();

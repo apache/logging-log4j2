@@ -331,20 +331,20 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     public ScriptComponentBuilder newScript(
             final @Nullable String name, final @Nullable String language, final @Nullable String text) {
         return new DefaultScriptComponentBuilder(this, name)
-                .setLanguageAttribute(language)
-                .setTextAttribute(text);
+                .setLanguage(language)
+                .setText(text);
     }
 
     /** {@inheritDoc} */
     @Override
     public ScriptFileComponentBuilder newScriptFile(final @Nullable String path) {
-        return new DefaultScriptFileComponentBuilder(this, path).setPathAttribute(path);
+        return new DefaultScriptFileComponentBuilder(this, path).setPath(path);
     }
 
     /** {@inheritDoc} */
     @Override
     public ScriptFileComponentBuilder newScriptFile(final @Nullable String name, final @Nullable String path) {
-        return new DefaultScriptFileComponentBuilder(this, (name != null) ? name : path).setPathAttribute(path);
+        return new DefaultScriptFileComponentBuilder(this, (name != null) ? name : path).setPath(path);
     }
 
     /** {@inheritDoc} */
@@ -356,7 +356,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public AppenderRefComponentBuilder newAppenderRef(final @Nullable String ref) {
-        return new DefaultAppenderRefComponentBuilder(this).setRefAttribute(ref);
+        return new DefaultAppenderRefComponentBuilder(this).setRef(ref);
     }
 
     /** {@inheritDoc} */
@@ -368,35 +368,33 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newAsyncLogger(final @Nullable String name, final boolean includeLocation) {
-        return this.newAsyncLogger(name).setIncludeLocationAttribute(includeLocation);
+        return this.newAsyncLogger(name).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newAsyncLogger(final @Nullable String name, final @Nullable Level level) {
-        return this.newAsyncLogger(name).setLevelAttribute(level);
+        return this.newAsyncLogger(name).setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newAsyncLogger(
             final @Nullable String name, final @Nullable Level level, final boolean includeLocation) {
-        return this.newAsyncLogger(name)
-                .setIncludeLocationAttribute(includeLocation)
-                .setLevelAttribute(level);
+        return this.newAsyncLogger(name).setIncludeLocation(includeLocation).setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newAsyncLogger(final @Nullable String name, final @Nullable String level) {
-        return this.newAsyncLogger(name).setLevelAttribute(level);
+        return this.newAsyncLogger(name).setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newAsyncLogger(
             final @Nullable String name, final @Nullable String level, final boolean includeLocation) {
-        return this.newAsyncLogger(name).setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return this.newAsyncLogger(name).setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
@@ -408,31 +406,31 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final boolean includeLocation) {
-        return newAsyncRootLogger().setIncludeLocationAttribute(includeLocation);
+        return newAsyncRootLogger().setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final @Nullable Level level) {
-        return newAsyncRootLogger().setLevelAttribute(level);
+        return newAsyncRootLogger().setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final @Nullable Level level, final boolean includeLocation) {
-        return newAsyncRootLogger().setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return newAsyncRootLogger().setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final @Nullable String level) {
-        return newAsyncRootLogger().setLevelAttribute(level);
+        return newAsyncRootLogger().setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newAsyncRootLogger(final @Nullable String level, final boolean includeLocation) {
-        return newAsyncRootLogger().setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return newAsyncRootLogger().setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
@@ -464,15 +462,13 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public KeyValuePairComponentBuilder newKeyValuePair(final @Nullable String key, final @Nullable String value) {
-        return new DefaultKeyValuePairComponentBuilder(this)
-                .setKeyAttribute(key)
-                .setValueAttribute(value);
+        return new DefaultKeyValuePairComponentBuilder(this).setKey(key).setValue(value);
     }
 
     /** {@inheritDoc} */
     @Override
     public CustomLevelComponentBuilder newCustomLevel(final @Nullable String name, final int intLevel) {
-        return new DefaultCustomLevelComponentBuilder(this, name).setIntLevelAttribute(intLevel);
+        return new DefaultCustomLevelComponentBuilder(this, name).setIntLevel(intLevel);
     }
 
     /**
@@ -493,7 +489,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public FilterComponentBuilder newFilter(
             final String pluginType, final @Nullable Result onMatch, final @Nullable Result onMismatch) {
-        return newFilter(pluginType).setOnMatchAttribute(onMatch).setOnMismatchAttribute(onMismatch);
+        return newFilter(pluginType).setOnMatch(onMatch).setOnMismatch(onMismatch);
     }
 
     /**
@@ -504,7 +500,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public FilterComponentBuilder newFilter(
             final String pluginType, final @Nullable String onMatch, final @Nullable String onMismatch) {
-        return newFilter(pluginType).setOnMatchAttribute(onMatch).setOnMismatchAttribute(onMismatch);
+        return newFilter(pluginType).setOnMatch(onMatch).setOnMismatch(onMismatch);
     }
 
     /**
@@ -526,33 +522,33 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newLogger(final @Nullable String name, final boolean includeLocation) {
-        return newLogger(name).setIncludeLocationAttribute(includeLocation);
+        return newLogger(name).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newLogger(final @Nullable String name, final @Nullable Level level) {
-        return newLogger(name).setLevelAttribute(level);
+        return newLogger(name).setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newLogger(
             final @Nullable String name, final @Nullable Level level, final boolean includeLocation) {
-        return newLogger(name).setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return newLogger(name).setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newLogger(final @Nullable String name, final @Nullable String level) {
-        return newLogger(name).setLevelAttribute(level);
+        return newLogger(name).setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public LoggerComponentBuilder newLogger(
             final @Nullable String name, final @Nullable String level, final boolean includeLocation) {
-        return newLogger(name).setIncludeLocationAttribute(includeLocation).setLevelAttribute(level);
+        return newLogger(name).setIncludeLocation(includeLocation).setLevel(level);
     }
 
     @Override
@@ -563,31 +559,31 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newRootLogger(final boolean includeLocation) {
-        return newRootLogger().setIncludeLocationAttribute(includeLocation);
+        return newRootLogger().setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newRootLogger(final @Nullable Level level) {
-        return newRootLogger().setLevelAttribute(level);
+        return newRootLogger().setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newRootLogger(final @Nullable Level level, final boolean includeLocation) {
-        return newRootLogger().setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return newRootLogger().setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newRootLogger(final @Nullable String level) {
-        return newRootLogger().setLevelAttribute(level);
+        return newRootLogger().setLevel(level);
     }
 
     /** {@inheritDoc} */
     @Override
     public RootLoggerComponentBuilder newRootLogger(final @Nullable String level, final boolean includeLocation) {
-        return newRootLogger().setLevelAttribute(level).setIncludeLocationAttribute(includeLocation);
+        return newRootLogger().setLevel(level).setIncludeLocation(includeLocation);
     }
 
     /**
