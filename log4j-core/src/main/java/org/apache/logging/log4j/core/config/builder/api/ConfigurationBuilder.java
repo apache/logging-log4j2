@@ -159,9 +159,10 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(RootLoggerComponentBuilder builder);
 
     /**
-     * Adds a the {@link Property} component built by the given {@link PropertyComponentBuilder}.
+     * Adds the {@link Property} component built by the given {@link PropertyComponentBuilder}.
      * @param builder the {@code PropertyComponentBuilder} to add
      * @return this builder (for chaining)
+     * @throws NullPointerException if the given {@code builder} is {@code null}
      */
     ConfigurationBuilder<T> add(PropertyComponentBuilder builder);
 
