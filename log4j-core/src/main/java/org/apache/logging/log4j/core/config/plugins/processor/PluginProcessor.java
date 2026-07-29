@@ -68,6 +68,7 @@ public class PluginProcessor extends AbstractProcessor {
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
     private static final Element[] EMPTY_ELEMENT_ARRAY = {};
+    private static final String MESSAGE_PREFIX = "[Log4j] ";
 
     private static final String SUPPRESS_WARNING_PUBLIC_SETTER_STRING = "log4j.public.setter";
 
@@ -105,17 +106,15 @@ public class PluginProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
-                processingEnv
-                        .getMessager()
-                        .printMessage(
-                                Diagnostic.Kind.WARNING,
-                                String.format(
-                                        "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                        PluginProcessor.class.getName(),
-                                        kindValue,
-                                        MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                        Diagnostic.Kind.NOTE,
-                                        Arrays.toString(Diagnostic.Kind.values())));
+                printMessage(
+                        Diagnostic.Kind.WARNING,
+                        String.format(
+                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                PluginProcessor.class.getName(),
+                                kindValue,
+                                MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                Diagnostic.Kind.NOTE,
+                                Arrays.toString(Diagnostic.Kind.values())));
             }
         }
     }
@@ -134,7 +133,7 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private void printMessage(final Diagnostic.Kind kind, final String message) {
         if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
-            processingEnv.getMessager().printMessage(kind, message);
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message);
         }
     }
 
@@ -144,7 +143,7 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private void printMessage(final Diagnostic.Kind kind, final String message, final Element element) {
         if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
-            processingEnv.getMessager().printMessage(kind, message, element);
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message, element);
         }
     }
 
