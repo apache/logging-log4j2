@@ -369,6 +369,10 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         return new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                if (attrs.isSymbolicLink()) {
+                    LOGGER.trace("Not defining POSIX attribute on symbolic link {}", file);
+                    return FileVisitResult.CONTINUE;
+                }
                 for (final PathCondition pathFilter : conditions) {
                     final Path relative = basePath.relativize(file);
                     if (!pathFilter.accept(basePath, relative, attrs)) {
