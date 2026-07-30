@@ -77,11 +77,7 @@ import org.jspecify.annotations.NullMarked;
  * </p>
  */
 @NullMarked
-@SupportedAnnotationTypes({
-    "org.apache.logging.log4j.plugins.Plugin",
-    "org.apache.logging.log4j.plugins.PluginBuilderAttribute",
-    "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute"
-})
+@SupportedAnnotationTypes("org.apache.logging.log4j.plugins.Plugin")
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 public class PluginProcessor extends AbstractProcessor {
 
@@ -102,6 +98,10 @@ public class PluginProcessor extends AbstractProcessor {
     public static final String PLUGIN_PACKAGE = "log4j.plugin.package";
 
     private static final String SUPPRESS_WARNING_PUBLIC_SETTER = "log4j.public.setter";
+
+    private static final List<String> BUILDER_ATTRIBUTE_ANNOTATIONS = List.of(
+            "org.apache.logging.log4j.plugins.PluginBuilderAttribute",
+            "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute");
 
     private static final String SERVICE_FILE_NAME =
             "META-INF/services/org.apache.logging.log4j.plugins.model.PluginService";
@@ -133,14 +133,12 @@ public class PluginProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         // Process the elements for this round
         for (TypeElement annotation : annotations) {
-            final String fqn = annotation.getQualifiedName().toString();
-            if (fqn.equals("org.apache.logging.log4j.plugins.Plugin")) {
+            if (annotation.getQualifiedName().contentEquals("org.apache.logging.log4j.plugins.Plugin")) {
                 processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(annotation)));
-            } else if (fqn.equals("org.apache.logging.log4j.plugins.PluginBuilderAttribute")
-                    || fqn.equals("org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute")) {
-                processBuilderAttributeFields(roundEnv.getElementsAnnotatedWith(annotation));
             }
         }
+        // Validate @PluginBuilderAttribute fields in builder classes
+        processBuilderAttributeFields(roundEnv);
         // Write the generated code
         if (roundEnv.processingOver() && !pluginIndex.isEmpty()) {
             try {
@@ -181,10 +179,17 @@ public class PluginProcessor extends AbstractProcessor {
         }
     }
 
-    private void processBuilderAttributeFields(final Iterable<? extends Element> elements) {
-        for (final Element element : elements) {
-            if (element instanceof VariableElement) {
-                processBuilderAttributeField((VariableElement) element);
+    private void processBuilderAttributeFields(final RoundEnvironment roundEnv) {
+        final Elements elements = processingEnv.getElementUtils();
+        for (final String annotationFqn : BUILDER_ATTRIBUTE_ANNOTATIONS) {
+            final TypeElement annotationType = elements.getTypeElement(annotationFqn);
+            if (annotationType == null) {
+                continue;
+            }
+            for (final Element element : roundEnv.getElementsAnnotatedWith(annotationType)) {
+                if (element instanceof VariableElement) {
+                    processBuilderAttributeField((VariableElement) element);
+                }
             }
         }
     }

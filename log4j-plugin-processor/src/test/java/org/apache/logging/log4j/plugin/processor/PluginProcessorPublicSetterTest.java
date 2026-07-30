@@ -21,27 +21,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class PluginProcessorPublicSetterTest {
 
     private static final String FAKE_PLUGIN_CLASS_PATH =
             "src/test/resources/setter-test/FakePluginPublicSetter.java.source";
+
+    @TempDir
+    Path outputDir;
 
     private File createdFile;
     private DiagnosticCollector<JavaFileObject> diagnosticCollector;
@@ -63,6 +70,15 @@ public class PluginProcessorPublicSetterTest {
 
         final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(createdFile);
 
+        // Route generated files (Log4jPlugins.java, META-INF/services/...) to the temp directory
+        final File outputDirFile = outputDir.toFile();
+        try {
+            fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Set.of(outputDirFile));
+            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Set.of(outputDirFile));
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to set output location", e);
+        }
+
         final JavaCompiler.CompilationTask task = compiler.getTask(
                 null,
                 fileManager,
@@ -80,11 +96,6 @@ public class PluginProcessorPublicSetterTest {
     @AfterEach
     void tearDown() {
         assertDoesNotThrow(() -> FileUtils.delete(createdFile));
-        // Clean up generated processor artifacts
-        final File pluginsDatFile = Paths.get("Log4j2Plugins.dat").toFile();
-        if (pluginsDatFile.exists()) {
-            assertDoesNotThrow(() -> FileUtils.delete(pluginsDatFile));
-        }
     }
 
     @Test
