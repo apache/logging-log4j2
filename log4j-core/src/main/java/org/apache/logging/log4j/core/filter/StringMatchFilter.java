@@ -41,6 +41,8 @@ import org.jspecify.annotations.NonNull;
 @PerformanceSensitive("allocation")
 public final class StringMatchFilter extends AbstractFilter {
 
+    public static final String ATTR_MATCH = "match";
+
     private final String text;
 
     private StringMatchFilter(final Builder builder) {
@@ -257,6 +259,14 @@ public final class StringMatchFilter extends AbstractFilter {
             Objects.requireNonNull(text, "The 'text' argument must not be null.");
             this.text = Assert.requireNonEmpty(text, "The 'text' argument must not be empty.");
             return this;
+        }
+
+        /**
+         * @deprecated Use {@link #setText(String)} instead.
+         */
+        @Deprecated
+        public Builder setMatchString(final String text) {
+            return setText(text);
         }
 
         @Override
