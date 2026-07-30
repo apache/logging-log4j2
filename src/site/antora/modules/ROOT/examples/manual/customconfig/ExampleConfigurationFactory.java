@@ -20,12 +20,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.Plugin;
 
 // tag::class[]
-@Order(100)
-@Plugin(name = "ExampleConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+@Ordered(100)
+@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin(name = "ExampleConfigurationFactory")
 public class ExampleConfigurationFactory extends ConfigurationFactory {
 
     @Override

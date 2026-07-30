@@ -114,6 +114,9 @@ To allow the current `Configuration` to populate the correct arguments for the `
 
 link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAliases.html[`@PluginAliases`]::
 Identifies a list of aliases for a `@Plugin`, `@PluginAttribute`, or `@PluginBuilderAttribute`.
+Aliases allow a plugin to be referenced by multiple names in configuration files.
+For example, a plugin with `@PluginAliases({"MyApp", "MyApplication"})` can be referred to by any of those names.
+Aliases are also supported for plugin attributes, allowing configuration elements to use alternative attribute names.
 
 link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginAttribute.html[`@PluginAttribute`]::
 Denotes a configuration element attribute.
@@ -180,6 +183,26 @@ This uses the same validation as https://docs.oracle.com/javase/{java-target-ver
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/plugins/validation/constraints/ValidPort.html[`@ValidPort`]::
 This annotation validates that a value corresponds to a valid port number between 0 and 65535.
+
+[#conditional-annotations]
+==== Plugin factory conditional annotations
+
+Conditional annotations allow plugins to be registered only when certain conditions are met.
+They are typically used on bundle classes or factory methods to control whether bindings should be created based on the runtime environment.
+
+The following built-in conditional annotations are available:
+
+link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/condition/ConditionalOnMissingBinding.html[`@ConditionalOnMissingBinding`]::
+Checks if a binding exists for the return type of the annotated factory method.
+When no binding exists for that key, the method will be considered for binding.
+This is commonly used to provide default implementations that can be overridden by user-defined plugins.
+
+link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/condition/ConditionalOnPresentBindings.html[`@ConditionalOnPresentBindings`]::
+Only creates a binding if all the requested dependencies exist.
+The required dependencies are specified via the `bindings` attribute.
+This is useful for plugins that require optional dependencies to be present on the classpath.
+
+Custom conditions can be created by implementing the `Condition` interface and annotating a custom annotation with `@Conditional`.
 
 [#plugin-registry]
 == Registering plugins
