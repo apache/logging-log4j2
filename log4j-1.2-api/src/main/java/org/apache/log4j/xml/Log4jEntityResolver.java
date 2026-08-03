@@ -27,7 +27,9 @@ import org.xml.sax.InputSource;
 /**
  * An {@link EntityResolver} specifically designed to return
  * <code>log4j.dtd</code> which is embedded within the log4j jar
- * file.
+ * file. Any other external resource resolves to an empty source, so the
+ * parser never fetches external entities from the file system or the
+ * network.
  */
 public class Log4jEntityResolver implements EntityResolver {
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -46,6 +48,7 @@ public class Log4jEntityResolver implements EntityResolver {
             }
             return new InputSource(in);
         }
-        return null;
+        LOGGER.warn("Ignoring external resource with public ID [{}] and system ID [{}].", publicId, systemId);
+        return new InputSource(new ByteArrayInputStream(Constants.EMPTY_BYTE_ARRAY));
     }
 }

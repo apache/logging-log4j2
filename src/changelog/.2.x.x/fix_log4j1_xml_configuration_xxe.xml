@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="4198" link="https://github.com/apache/logging-log4j2/pull/4198"/>
   <description format="asciidoc">
-    Disable external entity resolution in the Log4j 1.x `XmlConfiguration` XML reader
+    Constrain external entity resolution in the Log4j 1.x `XmlConfiguration` reader to the bundled `log4j.dtd`
   </description>
 </entry>
