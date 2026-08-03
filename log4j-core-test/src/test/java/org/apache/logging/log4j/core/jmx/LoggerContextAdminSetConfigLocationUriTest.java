@@ -17,25 +17,45 @@
 package org.apache.logging.log4j.core.jmx;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import com.sun.management.UnixOperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Regression for stream ownership in {@link LoggerContextAdmin#setConfigLocationUri(String)}.
- * The method buffers configuration bytes and closes the underlying File/URL stream before
- * ConfigurationFactory runs.
+ * Regression for caller-owned stream cleanup in
+ * {@link LoggerContextAdmin#setConfigLocationUri(String)}.
+ *
+ * <p>{@code ConfigurationSource(InputStream, File/URL)} leaves stream ownership
+ * with the caller. Built-in factories ({@code XmlConfiguration},
+ * {@code JsonConfiguration}, {@code PropertiesConfigurationFactory}) close
+ * {@code getInputStream()} when they consume it, but that is not a substitute
+ * for caller-side try-with-resources when a factory path never reads the stream.
  */
 class LoggerContextAdminSetConfigLocationUriTest {
 
     @TempDir
     Path tempDir;
+
+    @AfterEach
+    void resetConfigurationFactory() {
+        ConfigurationFactory.resetConfigurationFactory();
+    }
 
     @Test
     void setConfigLocationUri_loadsValidFileAndReconfigures() throws Exception {
@@ -70,6 +90,44 @@ class LoggerContextAdminSetConfigLocationUriTest {
         assertThrows(IllegalArgumentException.class, () -> admin.setConfigLocationUri(null));
     }
 
+    /**
+     * Fails without the try-with-resources around {@code getConfiguration}/{@code start}:
+     * a factory that never consumes the stream leaves the {@code FileInputStream} open.
+     * With the fix, the caller always closes it.
+     */
+    @Test
+    void setConfigLocationUri_closesCallerOwnedStreamWhenFactoryDoesNotConsumeIt() throws Exception {
+        final Path config = tempDir.resolve("log4j2-unconsumed.xml");
+        writeConfig(config, "Unconsumed");
+
+        ConfigurationFactory.setConfigurationFactory(new ConfigurationFactory() {
+            @Override
+            public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+                // Intentionally leave source.getInputStream() unconsumed and unclosed.
+                return new DefaultConfiguration();
+            }
+
+            @Override
+            protected String[] getSupportedTypes() {
+                return new String[] {"*"};
+            }
+        });
+
+        final long expectedFdCount = getOpenFileDescriptorCount();
+        final LoggerContext ctx = new LoggerContext("jmx-admin-stream-close");
+        final LoggerContextAdmin admin = new LoggerContextAdmin(ctx, Runnable::run);
+        admin.setConfigLocationUri(config.toAbsolutePath().toString());
+
+        // UNIX: unclosed FileInputStream would leave an extra descriptor.
+        assertEquals(expectedFdCount, getOpenFileDescriptorCount());
+        // Windows: an open FileInputStream locks the file against delete.
+        try {
+            Files.delete(config);
+        } catch (final Exception e) {
+            fail(e);
+        }
+    }
+
     private static void writeConfig(final Path config, final String appenderName) throws Exception {
         final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<Configuration status=\"OFF\">\n"
@@ -77,5 +135,13 @@ class LoggerContextAdminSetConfigLocationUriTest {
                 + "  <Loggers><Root level=\"error\"><AppenderRef ref=\"" + appenderName + "\"/></Root></Loggers>\n"
                 + "</Configuration>\n";
         Files.write(config, xml.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static long getOpenFileDescriptorCount() {
+        final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+        if (os instanceof UnixOperatingSystemMXBean) {
+            return ((UnixOperatingSystemMXBean) os).getOpenFileDescriptorCount();
+        }
+        return 0;
     }
 }

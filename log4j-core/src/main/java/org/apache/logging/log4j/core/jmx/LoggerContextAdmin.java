@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.jmx;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,7 +45,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -130,29 +128,29 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location " + configLocation);
         final File configFile = new File(configLocation);
-        final ConfigurationSource configSource;
-        // Read the configuration into memory and close the underlying stream before handing
-        // off to ConfigurationFactory. ConfigurationSource(InputStream, File/URL) leaves stream
-        // ownership with the caller; without buffering, failures during getConfiguration/start
-        // can leave FileInputStream/URLConnection streams open.
+        // ConfigurationSource(InputStream, File/URL) documents that the caller owns the stream.
+        // XmlConfiguration, JsonConfiguration, and PropertiesConfigurationFactory close
+        // getInputStream() when they consume it, but that is factory-side cleanup. Keep a
+        // stream-backed source (so resetInputStream/reconfigure still re-reads the file for
+        // monitorInterval) and always close the caller-owned stream via try-with-resources.
         if (configFile.exists()) {
             LOGGER.debug("Opening config file {}", configFile.getAbsolutePath());
-            final byte[] data;
             try (final InputStream in = new FileInputStream(configFile)) {
-                data = toByteArray(in);
+                final ConfigurationSource configSource = new ConfigurationSource(in, configFile);
+                final Configuration config =
+                        ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
+                loggerContext.start(config);
             }
-            configSource = new ConfigurationSource(new Source(configFile), data, configFile.lastModified());
         } else {
             final URL configURL = new URL(configLocation);
             LOGGER.debug("Opening config URL {}", configURL);
-            final byte[] data;
             try (final InputStream in = configURL.openStream()) {
-                data = toByteArray(in);
+                final ConfigurationSource configSource = new ConfigurationSource(in, configURL);
+                final Configuration config =
+                        ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
+                loggerContext.start(config);
             }
-            configSource = new ConfigurationSource(new Source(configURL), data, 0L);
         }
-        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
-        loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
     }
 
@@ -266,15 +264,5 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
 
     private long now() {
         return System.currentTimeMillis();
-    }
-
-    private static byte[] toByteArray(final InputStream inputStream) throws IOException {
-        final ByteArrayOutputStream contents = new ByteArrayOutputStream(Math.max(4096, inputStream.available()));
-        final byte[] buff = new byte[4096];
-        int length;
-        while ((length = inputStream.read(buff)) >= 0) {
-            contents.write(buff, 0, length);
-        }
-        return contents.toByteArray();
     }
 }
