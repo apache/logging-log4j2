@@ -99,6 +99,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private static final int SD_PARAM_NAME_MAX_LENGTH = 32;
 
+    /**
+     * Characters that RFC 5424 excludes from an {@code SD-NAME}.
+     */
+    private static final String SD_NAME_EXCLUDED_CHARACTERS = "=]\"";
+
     private static final String LF = "\n";
     private static final int TWO_DIGITS = 10;
     private static final int THREE_DIGITS = 100;
@@ -346,9 +351,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final boolean isStructured = message instanceof StructuredDataMessage;
         final String type = isStructured ? ((StructuredDataMessage) message).getType() : null;
         if (type != null) {
-            buffer.append(type);
+            buffer.append(sanitizeMsgId(type));
         } else if (messageId != null) {
-            buffer.append(messageId);
+            buffer.append(sanitizeMsgId(messageId));
         } else {
             buffer.append('-');
         }
@@ -558,7 +563,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         sb.append('[');
-        sb.append(id);
+        sb.append(sanitizeSdId(id));
         if (!mdcSdId.toString().equals(id)) {
             appendMap(data.getPrefix(), data.getFields(), sb, ListChecker.NOOP_CHECKER);
         } else {
@@ -663,6 +668,51 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     private static boolean isParamNameCharacterValid(final char c) {
         return c > 32 && c <= 126 && c != '=' && c != ']' && c != '"';
+    }
+
+    /**
+     * Sanitizes an RFC 5424 {@code SD-ID}.
+     *
+     * <p>{@code SD-ID} uses the same {@code SD-NAME} production as {@code PARAM-NAME}, so invalid
+     * characters are replaced with {@code '?'}. The length is left alone, because
+     * {@link StructuredDataId} lets callers raise the 32 character limit.</p>
+     *
+     * @param id the original structured data id
+     * @return a structured data id compliant with RFC 5424
+     */
+    private static String sanitizeSdId(final String id) {
+        return sanitizePrintableUsAscii(id, SD_NAME_EXCLUDED_CHARACTERS);
+    }
+
+    /**
+     * Sanitizes an RFC 5424 {@code MSGID}.
+     *
+     * <p>{@code MSGID} is restricted to printable US-ASCII, so invalid characters are replaced with
+     * {@code '?'}.</p>
+     *
+     * @param msgId the original message id
+     * @return a message id compliant with RFC 5424
+     */
+    private static String sanitizeMsgId(final String msgId) {
+        return sanitizePrintableUsAscii(msgId, Strings.EMPTY);
+    }
+
+    private static String sanitizePrintableUsAscii(final String value, final String excluded) {
+        StringBuilder output = null;
+        for (int i = 0; i < value.length(); i++) {
+            final char cur = value.charAt(i);
+            if (cur > 32 && cur <= 126 && excluded.indexOf(cur) < 0) {
+                if (output != null) {
+                    output.append(cur);
+                }
+            } else {
+                if (output == null) {
+                    output = new StringBuilder(value.substring(0, i));
+                }
+                output.append('?');
+            }
+        }
+        return output != null ? output.toString() : value;
     }
 
     private String escapeParamValue(final String value) {
