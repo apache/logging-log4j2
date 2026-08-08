@@ -36,7 +36,8 @@ class SyslogAppenderTest {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        initTCPTestEnvironment(null);
+        syslogServer = MockSyslogServerFactory.createUDPSyslogServer();
+        syslogServer.start();
         System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
         System.setProperty(
                 ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
@@ -61,10 +62,5 @@ class SyslogAppenderTest {
             }
         }
         assertThat(messages, hasSize(1));
-    }
-
-    protected static void initTCPTestEnvironment(final String messageFormat) throws IOException {
-        syslogServer = MockSyslogServerFactory.createTCPSyslogServer();
-        syslogServer.start();
     }
 }
