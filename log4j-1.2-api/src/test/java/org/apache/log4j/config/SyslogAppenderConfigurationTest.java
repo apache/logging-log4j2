@@ -90,7 +90,7 @@ class SyslogAppenderConfigurationTest {
 
     @Test
     void testPropertiesProtocolDefault() throws Exception {
-        checkProtocolPropertiesConfig(Protocol.TCP, "target/test-classes/log4j1-syslog-protocol-default.properties");
+        checkProtocolPropertiesConfig(Protocol.UDP, "target/test-classes/log4j1-syslog-protocol-default.properties");
     }
 
     @Test
@@ -105,7 +105,7 @@ class SyslogAppenderConfigurationTest {
 
     @Test
     void testXmlProtocolDefault() throws Exception {
-        checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-syslog.xml");
+        checkProtocolXmlConfig(Protocol.UDP, "target/test-classes/log4j1-syslog.xml");
     }
 
     @Test

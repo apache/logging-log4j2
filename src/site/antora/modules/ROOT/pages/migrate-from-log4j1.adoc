@@ -386,6 +386,8 @@ Log4j 2 contains an equivalent for most Log4j 1 appenders:
 | {log4j1-url}/apidocs/org/apache/log4j/net/SyslogAppender.html[org.apache.log4j.net.SyslogAppender]
 | xref:manual/appenders/network.adoc#SyslogAppender[Syslog]
 | Does not support custom layouts.
+The `protocol` parameter is a `log4j-1.2-api` extension and defaults to `UDP`, matching Log4j 1 behavior.
+Other values are not recommended because `Log4j1SyslogLayout` does not escape newline characters for stream framing.
 
 | {log4j1-url}/apidocs/org/apache/log4j/rewrite/RewriteAppender.html[org.apache.log4j.rewrite.RewriteAppender]
 | xref:manual/appenders/delegating.adoc#RewriteAppender[Rewrite]
