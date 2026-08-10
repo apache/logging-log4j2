@@ -16,11 +16,13 @@
  */
 package org.apache.log4j.jmx;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import javax.management.MBeanException;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
 import org.junit.jupiter.api.Test;
@@ -36,11 +38,13 @@ class AppenderDynamicMBeanTest {
         appender.setName("jmx-layout-test");
         final AppenderDynamicMBean mbean = new AppenderDynamicMBean(appender);
 
-        final Object result = assertDoesNotThrow(
+        final MBeanException thrown = assertThrows(
+                MBeanException.class,
                 () -> mbean.invoke("setLayout", new Object[] {"this.class.does.not.exist.MissingLayout"}, new String[] {
                     String.class.getName()
                 }));
-        assertTrue(result == null || result.toString().contains("Could not instantiate"));
+        assertTrue(thrown.getMessage().contains("Could not instantiate layout class"));
+        assertInstanceOf(IllegalArgumentException.class, thrown.getTargetException());
         assertNull(appender.getLayout());
     }
 
