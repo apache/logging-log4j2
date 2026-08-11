@@ -23,8 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,17 +36,35 @@ import org.junit.jupiter.api.Test;
  */
 class AppenderDynamicMBeanTest {
 
+    private static final String[] SET_LAYOUT_SIGNATURE = {String.class.getName()};
+
+    private MBeanServer server;
+
+    @BeforeEach
+    void createMBeanServer() {
+        server = MBeanServerFactory.newMBeanServer();
+    }
+
+    /**
+     * Registration is required: {@code preRegister} injects the server that
+     * {@code registerLayoutMBean} dereferences on the success path.
+     */
+    private AppenderDynamicMBean registerAppenderMBean(final ConsoleAppender appender) throws Exception {
+        final AppenderDynamicMBean mbean = new AppenderDynamicMBean(appender);
+        server.registerMBean(mbean, new ObjectName("log4j:appender=" + appender.getName()));
+        return mbean;
+    }
+
     @Test
-    void setLayoutDoesNotNpeWhenClassCannotBeInstantiated() throws Exception {
+    void setLayoutFailsWhenClassCannotBeInstantiated() throws Exception {
         final ConsoleAppender appender = new ConsoleAppender();
         appender.setName("jmx-layout-test");
-        final AppenderDynamicMBean mbean = new AppenderDynamicMBean(appender);
+        final AppenderDynamicMBean mbean = registerAppenderMBean(appender);
 
         final MBeanException thrown = assertThrows(
                 MBeanException.class,
-                () -> mbean.invoke("setLayout", new Object[] {"this.class.does.not.exist.MissingLayout"}, new String[] {
-                    String.class.getName()
-                }));
+                () -> mbean.invoke(
+                        "setLayout", new Object[] {"this.class.does.not.exist.MissingLayout"}, SET_LAYOUT_SIGNATURE));
         assertTrue(thrown.getMessage().contains("Could not instantiate layout class"));
         assertInstanceOf(IllegalArgumentException.class, thrown.getTargetException());
         assertNull(appender.getLayout());
@@ -52,10 +74,12 @@ class AppenderDynamicMBeanTest {
     void setLayoutStillAttachesValidLayout() throws Exception {
         final ConsoleAppender appender = new ConsoleAppender();
         appender.setName("jmx-layout-valid");
-        final AppenderDynamicMBean mbean = new AppenderDynamicMBean(appender);
+        final AppenderDynamicMBean mbean = registerAppenderMBean(appender);
 
-        mbean.invoke("setLayout", new Object[] {PatternLayout.class.getName()}, new String[] {String.class.getName()});
+        mbean.invoke("setLayout", new Object[] {PatternLayout.class.getName()}, SET_LAYOUT_SIGNATURE);
         assertNotNull(appender.getLayout());
-        assertTrue(appender.getLayout() instanceof PatternLayout);
+        assertInstanceOf(PatternLayout.class, appender.getLayout());
+        assertTrue(server.isRegistered(
+                new ObjectName("log4j:appender=" + appender.getName() + ",layout=" + PatternLayout.class.getName())));
     }
 }

@@ -16,11 +16,14 @@
  */
 package org.apache.log4j.jmx;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Enumeration;
+import javax.management.MBeanException;
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
@@ -28,26 +31,39 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Regression for invalid JMX {@code addAppender} class names: instantiation can
- * return null and must not NPE when calling {@code setName}.
+ * return null, which must not NPE when calling {@code setName} and must not be
+ * reported to the client as a successful invocation.
  */
 class LoggerDynamicMBeanTest {
 
+    private static final String[] ADD_APPENDER_SIGNATURE = {String.class.getName(), String.class.getName()};
+
     @Test
-    void addAppenderDoesNotNpeWhenClassCannotBeInstantiated() {
+    void addAppenderFailsWhenClassCannotBeInstantiated() throws Exception {
         final Logger logger = Logger.getLogger("jmx.LoggerDynamicMBeanTest.invalid");
         final LoggerDynamicMBean mbean = new LoggerDynamicMBean(logger);
 
-        assertDoesNotThrow(() -> mbean.addAppender("this.class.does.not.exist.MissingAppender", "should-not-attach"));
+        final MBeanException thrown = assertThrows(
+                MBeanException.class,
+                () -> mbean.invoke(
+                        "addAppender",
+                        new Object[] {"this.class.does.not.exist.MissingAppender", "should-not-attach"},
+                        ADD_APPENDER_SIGNATURE));
+        assertTrue(thrown.getMessage().contains("Could not instantiate appender class"));
+        assertInstanceOf(IllegalArgumentException.class, thrown.getTargetException());
         assertFalse(hasAppenderNamed(logger, "should-not-attach"));
     }
 
     @Test
-    void addAppenderStillAttachesValidAppender() {
+    void addAppenderStillAttachesValidAppender() throws Exception {
         final Logger logger = Logger.getLogger("jmx.LoggerDynamicMBeanTest.valid");
         final LoggerDynamicMBean mbean = new LoggerDynamicMBean(logger);
 
-        mbean.addAppender(ConsoleAppender.class.getName(), "console-jmx");
+        final Object result = mbean.invoke(
+                "addAppender", new Object[] {ConsoleAppender.class.getName(), "console-jmx"}, ADD_APPENDER_SIGNATURE);
         assertTrue(hasAppenderNamed(logger, "console-jmx"));
+        // Legacy success return value, pinned so the fix cannot silently change it.
+        assertEquals("Hello world.", result);
     }
 
     private static boolean hasAppenderNamed(final Logger logger, final String name) {
