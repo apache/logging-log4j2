@@ -316,6 +316,7 @@ public class ConfigurationSource {
      * @return The ConfigurationSource for the configuration or {@code null}.
      */
     public static /*@Nullable*/ ConfigurationSource fromUri(final URI configLocation) {
+        ConfigurationFactory.validateConfigurationUri(configLocation);
         final File configFile = FileUtils.fileFromUri(configLocation);
         if (configFile != null && configFile.exists() && configFile.canRead()) {
             try {

@@ -45,6 +45,10 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
+import org.apache.logging.log4j.trustgate.TrustGateException;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
+import org.apache.logging.log4j.trustgate.spi.InputType;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -146,6 +150,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     private static final String[] PREFIXES = {"log4j2.", "log4j2.Configuration."};
 
     private static volatile AuthorizationProvider authorizationProvider;
+
+    private static volatile InputSanitizer inputSanitizer;
+    private static volatile boolean inputSanitizerInitialized;
 
     /**
      * Returns the ConfigurationFactory.
@@ -296,6 +303,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return null;
         }
         if (configLocation != null) {
+            validateConfigurationUri(configLocation);
             final ConfigurationSource source = ConfigurationSource.fromUri(configLocation);
             if (source != null) {
                 return getConfiguration(loggerContext, source);
@@ -323,6 +331,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return getConfiguration(loggerContext, name, configLocation);
         }
         if (isClassLoaderUri(configLocation)) {
+            validateConfigurationUri(configLocation);
             final String path = extractClassLoaderUriPath(configLocation);
             final ConfigurationSource source = ConfigurationSource.fromResource(path, loader);
             if (source != null) {
@@ -356,15 +365,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             final LoggerContext loggerContext, final String name, final List<URI> configLocations) {
 
         // Sanitize URIs
-        final int[] configLocationIndex = {0};
-        final List<URI> distinctConfigLocations = Objects.requireNonNull(configLocations, "configLocations").stream()
-                .peek(uri -> {
-                    if (uri == null) {
-                        final String message = String.format("configLocations[%d]", configLocationIndex[0]);
-                        throw new NullPointerException(message);
-                    }
-                    configLocationIndex[0]++;
-                })
+        final List<URI> configLocationsList = Objects.requireNonNull(configLocations, "configLocations");
+        for (int i = 0; i < configLocationsList.size(); i++) {
+            if (configLocationsList.get(i) == null) {
+                throw new NullPointerException(String.format("configLocations[%d]", i));
+            }
+        }
+        final List<URI> distinctConfigLocations = configLocationsList.stream()
+                .peek(ConfigurationFactory::validateConfigurationUri)
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -424,6 +432,50 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     static String extractClassLoaderUriPath(final URI uri) {
         return uri.getScheme() == null ? uri.getPath() : uri.getSchemeSpecificPart();
+    }
+
+    static void validateConfigurationUri(final URI configLocation) {
+        if (configLocation == null) {
+            return;
+        }
+        final String scheme = configLocation.getScheme();
+        if (scheme == null || scheme.isEmpty()) {
+            return;
+        }
+        // jar and resource URIs are validated by UrlConnectionFactory allowed-protocol checks.
+        if ("jar".equalsIgnoreCase(scheme) || "resource".equalsIgnoreCase(scheme)) {
+            return;
+        }
+        final InputSanitizer sanitizer = getInputSanitizer();
+        if (sanitizer == null || !sanitizer.isEnabled()) {
+            return;
+        }
+        try {
+            sanitizer.validate(scheme, InputType.URI_SCHEME);
+        } catch (final TrustGateException ex) {
+            throw new ConfigurationException(
+                    "Configuration URI scheme '" + scheme + "' is not allowed: " + configLocation, ex);
+        }
+    }
+
+    private static InputSanitizer getInputSanitizer() {
+        if (!inputSanitizerInitialized) {
+            LOCK.lock();
+            try {
+                if (!inputSanitizerInitialized) {
+                    try {
+                        inputSanitizer = new DefaultInputSanitizer();
+                    } catch (final LinkageError | Exception ex) {
+                        LOGGER.warn("Unable to initialize TrustGate InputSanitizer, URI validation disabled", ex);
+                        inputSanitizer = null;
+                    }
+                    inputSanitizerInitialized = true;
+                }
+            } finally {
+                LOCK.unlock();
+            }
+        }
+        return inputSanitizer;
     }
 
     /**
