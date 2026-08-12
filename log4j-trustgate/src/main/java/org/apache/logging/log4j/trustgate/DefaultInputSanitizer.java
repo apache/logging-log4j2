@@ -29,17 +29,24 @@ import org.apache.logging.log4j.trustgate.spi.ValidationRule;
  */
 public final class DefaultInputSanitizer implements InputSanitizer {
 
+    static final String STRICTNESS_PROPERTY = "log4j2.trustgate.strictness";
     static final String STRICT_PROPERTY = "log4j2.trustgate.strict";
     private static final String EMPTY_INPUT_RULE = "empty-input";
 
     private final List<ValidationRule> rules;
+    private final StrictnessLevel strictnessLevel;
 
     public DefaultInputSanitizer() {
-        this(loadRules());
+        this(loadRules(), resolveStrictnessLevel());
     }
 
     DefaultInputSanitizer(final List<ValidationRule> rules) {
+        this(rules, resolveStrictnessLevel());
+    }
+
+    DefaultInputSanitizer(final List<ValidationRule> rules, final StrictnessLevel strictnessLevel) {
         this.rules = Collections.unmodifiableList(new ArrayList<>(rules));
+        this.strictnessLevel = strictnessLevel;
     }
 
     private static List<ValidationRule> loadRules() {
@@ -50,14 +57,73 @@ public final class DefaultInputSanitizer implements InputSanitizer {
         return loaded;
     }
 
+    static StrictnessLevel resolveStrictnessLevel() {
+        final PropertyReadResult strictnessProperty = readProperty(STRICTNESS_PROPERTY);
+        if (strictnessProperty.securityDenied) {
+            return StrictnessLevel.STRICT;
+        }
+        if (strictnessProperty.value != null) {
+            final StrictnessLevel parsed = StrictnessLevel.fromString(strictnessProperty.value);
+            if (parsed == StrictnessLevel.STRICT && !isRecognizedStrictnessValue(strictnessProperty.value)) {
+                System.err.println("[TrustGate] Unrecognized strictness value '"
+                        + strictnessProperty.value
+                        + "', defaulting to STRICT");
+            }
+            return parsed;
+        }
+
+        final PropertyReadResult legacyStrictProperty = readProperty(STRICT_PROPERTY);
+        if (legacyStrictProperty.securityDenied) {
+            return StrictnessLevel.STRICT;
+        }
+        if (legacyStrictProperty.value != null) {
+            return Boolean.parseBoolean(legacyStrictProperty.value) ? StrictnessLevel.STRICT : StrictnessLevel.DISABLED;
+        }
+
+        return StrictnessLevel.STRICT;
+    }
+
+    private static boolean isRecognizedStrictnessValue(final String value) {
+        final String normalized = value.trim();
+        if (normalized.isEmpty()) {
+            return false;
+        }
+        for (final StrictnessLevel level : StrictnessLevel.values()) {
+            if (level.name().equalsIgnoreCase(normalized)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static PropertyReadResult readProperty(final String propertyName) {
+        try {
+            return new PropertyReadResult(System.getProperty(propertyName), false);
+        } catch (final SecurityException ex) {
+            System.err.println(
+                    "[TrustGate] Unable to read system property '" + propertyName + "', defaulting to STRICT");
+            return new PropertyReadResult(null, true);
+        }
+    }
+
+    private static final class PropertyReadResult {
+        private final String value;
+        private final boolean securityDenied;
+
+        private PropertyReadResult(final String value, final boolean securityDenied) {
+            this.value = value;
+            this.securityDenied = securityDenied;
+        }
+    }
+
     @Override
     public boolean isEnabled() {
-        return Boolean.parseBoolean(System.getProperty(STRICT_PROPERTY, "true"));
+        return strictnessLevel != StrictnessLevel.DISABLED;
     }
 
     @Override
     public ValidationResult validate(final String input, final InputType type) {
-        if (!isEnabled()) {
+        if (strictnessLevel == StrictnessLevel.DISABLED) {
             return ValidationResult.valid();
         }
         if (input == null || input.isEmpty()) {
@@ -65,7 +131,17 @@ public final class DefaultInputSanitizer implements InputSanitizer {
         }
         for (final ValidationRule rule : rules) {
             if (rule.matches(input, type)) {
-                throw new TrustGateException("Input rejected by rule: " + rule.getRuleName());
+                final String reason = "Input rejected by rule: " + rule.getRuleName();
+                if (strictnessLevel == StrictnessLevel.PERMISSIVE) {
+                    System.err.println("[TrustGate PERMISSIVE] Validation rule "
+                            + rule.getRuleName()
+                            + " would reject input of type "
+                            + type
+                            + ": "
+                            + reason);
+                    return ValidationResult.valid();
+                }
+                throw new TrustGateException(reason);
             }
         }
         return ValidationResult.valid();
