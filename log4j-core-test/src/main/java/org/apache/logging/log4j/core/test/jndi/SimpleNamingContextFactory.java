@@ -14,14 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.spring.cloud.config.client;
+package org.apache.logging.log4j.core.test.jndi;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import java.util.Hashtable;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.spi.InitialContextFactory;
 
 /**
- * Test configuration that imports the module auto-configuration.
+ * {@link InitialContextFactory} for in-memory JNDI contexts used in unit tests.
  */
-@Configuration
-@Import(Log4j2SpringCloudConfigClientAutoConfiguration.class)
-public class SpringConfiguration {}
+@SuppressWarnings("BanJNDI")
+public final class SimpleNamingContextFactory implements InitialContextFactory {
+
+    @Override
+    public Context getInitialContext(final Hashtable<?, ?> environment) throws NamingException {
+        return new SimpleNamingContext(SimpleNamingContextBuilder.getCurrentBindings());
+    }
+}

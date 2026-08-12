@@ -22,7 +22,7 @@ import javax.naming.Context;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.apache.logging.log4j.core.test.jndi.SimpleNamingContextBuilder;
 
 /**
  * JUnit rule to create a mock {@link Context} and bind an object to a name.

@@ -51,7 +51,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.apache.logging.log4j.core.test.jndi.SimpleNamingContextBuilder;
 
 /**
  * CVE regression suite for TrustGate validation (WO-010).

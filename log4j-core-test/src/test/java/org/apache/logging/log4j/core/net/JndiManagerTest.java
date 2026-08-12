@@ -26,7 +26,7 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.trustgate.TrustGateException;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.apache.logging.log4j.core.test.jndi.SimpleNamingContextBuilder;
 
 /**
  * Tests {@link JndiManager}.

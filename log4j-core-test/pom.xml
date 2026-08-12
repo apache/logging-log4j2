@@ -150,7 +150,7 @@
       <artifactId>junit-platform-commons</artifactId>
     </dependency>
 
-    <!-- Needed for JNDI mocks using `org.springframework.mock.jndi` -->
+    <!-- Optional; retained for compatibility with test utilities that may use Spring Test APIs -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
