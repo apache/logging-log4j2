@@ -55,6 +55,7 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
+ * Configuration instances implement {@link org.apache.logging.log4j.config.spi.ConfigurationSPI}.
  * ConfigurationFactory allows the configuration implementation to be
  * dynamically chosen in 1 of 3 ways:
  * <ol>

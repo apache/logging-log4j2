@@ -80,7 +80,9 @@
       javax.management.*;resolution:=optional,
       <!-- `java.naming` is optional -->
       javax.naming;resolution:=optional,
-      org.apache.logging.log4j.trustgate.*;resolution:=optional
+      org.apache.logging.log4j.trustgate.*;resolution:=optional,
+      org.apache.logging.log4j.common.*;resolution:=optional,
+      org.apache.logging.log4j.config.spi.*;resolution:=optional
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- OSGI is optional in JPMS and it shouldn't be transitive either (#1895) -->
@@ -98,6 +100,8 @@
       java.management;transitive=false;static=true,
       java.naming;transitive=false,
       org.apache.logging.log4j.trustgate;transitive=false;static=true,
+      org.apache.logging.log4j.common;transitive=false,
+      org.apache.logging.log4j.config.spi;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.jspecify;transitive=false,
       org.zeromq.jeromq;transitive=false,
@@ -146,6 +150,14 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>config-spi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

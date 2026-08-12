@@ -61,29 +61,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile-module-info</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <release>9</release>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-              </compileSourceRoots>
-              <multiReleaseOutput>true</multiReleaseOutput>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>

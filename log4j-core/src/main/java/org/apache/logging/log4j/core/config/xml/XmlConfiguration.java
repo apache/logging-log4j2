@@ -57,6 +57,9 @@ import org.xml.sax.SAXException;
 
 /**
  * Creates a Node hierarchy from an XML file.
+ * <p>
+ * {@link org.apache.logging.log4j.config.spi.ConfigurationSourceSPI} for portable configuration loading.
+ * </p>
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 

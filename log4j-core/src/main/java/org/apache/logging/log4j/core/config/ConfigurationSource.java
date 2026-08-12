@@ -38,7 +38,8 @@ import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.common.util.Source;
+import org.apache.logging.log4j.config.spi.ConfigurationSourceSPI;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -47,7 +48,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * Represents the source for the logging configuration.
  */
 /*@NullMarked*/
-public class ConfigurationSource {
+public class ConfigurationSource implements ConfigurationSourceSPI {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -154,7 +155,12 @@ public class ConfigurationSource {
      * @param data data from the source
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final Source source, final byte[] data, final long lastModified) {
+    public ConfigurationSource(
+            final org.apache.logging.log4j.core.util.Source source, final byte[] data, final long lastModified) {
+        this(Objects.requireNonNull(source, "source is null").asCommonSource(), data, lastModified);
+    }
+
+    ConfigurationSource(final Source source, final byte[] data, final long lastModified) {
         Objects.requireNonNull(source, "source is null");
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
@@ -217,7 +223,7 @@ public class ConfigurationSource {
      * @deprecated Not used internally, no replacement.
      */
     @Deprecated
-    public void setSource(final Source ignored) {
+    public void setSource(final org.apache.logging.log4j.core.util.Source ignored) {
         LOGGER.warn("Ignoring call of deprecated method `ConfigurationSource#setSource()`.");
     }
 

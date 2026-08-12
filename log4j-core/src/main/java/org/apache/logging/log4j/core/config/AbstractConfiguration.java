@@ -71,7 +71,7 @@ import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NanoClock;
-import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.common.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
@@ -287,7 +287,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     final long lastModified = file.lastModified();
                     final ConfigurationFileWatcher watcher =
                             new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModified);
-                    watchManager.watch(cfgSource, watcher);
+                    watchManager.watch(org.apache.logging.log4j.core.util.Source.fromCommon(cfgSource), watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
                 }
@@ -305,9 +305,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             File file = configSource.getFile();
             final Source cfgSource = file != null ? new Source(file) : new Source(uri);
             final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
-                    .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
+                    .newWatcher(
+                            org.apache.logging.log4j.core.util.Source.fromCommon(cfgSource),
+                            this,
+                            reconfigurable,
+                            listeners,
+                            configSource.getLastModified());
             if (watcher != null) {
-                watchManager.watch(cfgSource, watcher);
+                watchManager.watch(org.apache.logging.log4j.core.util.Source.fromCommon(cfgSource), watcher);
             }
         } else {
             LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
@@ -359,8 +364,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             monitorResources.forEach(monitorResource -> {
                 Source source = new Source(monitorResource.getUri());
                 final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(
-                        this, (Reconfigurable) this, listeners, source.getFile().lastModified());
-                watchManager.watch(source, watcher);
+                        this,
+                        (Reconfigurable) this,
+                        listeners,
+                        source.getFile() != null ? source.getFile().lastModified() : 0);
+                watchManager.watch(org.apache.logging.log4j.core.util.Source.fromCommon(source), watcher);
             });
         }
     }

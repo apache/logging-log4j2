@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
@@ -37,6 +36,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Represents the source for the logging configuration as an immutable object.
+ *
+ * <p>Compatibility facade delegating storage to {@link org.apache.logging.log4j.common.util.Source}.</p>
  */
 @NullMarked
 public class Source {
@@ -85,9 +86,7 @@ public class Source {
         }
     }
 
-    private final @Nullable File file;
-    private final URI uri;
-    private final String location;
+    private final org.apache.logging.log4j.common.util.Source delegate;
 
     /**
      * Constructs a Source from a ConfigurationSource.
@@ -96,9 +95,12 @@ public class Source {
      * @throws NullPointerException if {@code source} is {@code null}.
      */
     public Source(final ConfigurationSource source) {
-        this.file = source.getFile();
-        this.uri = requireNonNull(source.getURI());
-        this.location = requireNonNull(source.getLocation());
+        this(new org.apache.logging.log4j.common.util.Source(
+                source.getFile(), requireNonNull(source.getURI()), requireNonNull(source.getLocation())));
+    }
+
+    private Source(final org.apache.logging.log4j.common.util.Source delegate) {
+        this.delegate = delegate;
     }
 
     /**
@@ -109,9 +111,8 @@ public class Source {
      * @throws NullPointerException if {@code file} is {@code null}.
      */
     public Source(final File file) {
-        this.file = requireNonNull(file, "file");
-        this.location = normalize(file);
-        this.uri = file.toURI();
+        this(new org.apache.logging.log4j.common.util.Source(
+                requireNonNull(file, "file"), file.toURI(), normalize(file)));
     }
 
     /**
@@ -121,10 +122,7 @@ public class Source {
      * @throws NullPointerException if {@code path} is {@code null}.
      */
     public Source(final Path path) {
-        final Path normPath = requireNonNull(path, "path").normalize();
-        this.file = toFile(normPath);
-        this.uri = normPath.toUri();
-        this.location = normPath.toString();
+        delegate = new org.apache.logging.log4j.common.util.Source(path);
     }
 
     /**
@@ -134,10 +132,7 @@ public class Source {
      * @throws NullPointerException if {@code uri} is {@code null}.
      */
     public Source(final URI uri) {
-        final URI normUri = requireNonNull(uri, "uri").normalize();
-        this.uri = normUri;
-        this.location = normUri.toString();
-        this.file = toFile(normUri);
+        delegate = new org.apache.logging.log4j.common.util.Source(uri);
     }
 
     /**
@@ -162,9 +157,28 @@ public class Source {
      *         converted to a URI.
      */
     public Source(final URL url) {
-        this.uri = toURI(url);
-        this.location = uri.toString();
-        this.file = toFile(uri);
+        delegate = new org.apache.logging.log4j.common.util.Source(url);
+    }
+
+    /**
+     * Returns the shared {@link org.apache.logging.log4j.common.util.Source} delegate.
+     *
+     * @return the common source delegate
+     * @since 3.0.0
+     */
+    public org.apache.logging.log4j.common.util.Source asCommonSource() {
+        return delegate;
+    }
+
+    /**
+     * Creates a core {@code Source} from a {@link org.apache.logging.log4j.common.util.Source}.
+     *
+     * @param source the common source
+     * @return a core source facade
+     * @since 3.0.0
+     */
+    public static Source fromCommon(final org.apache.logging.log4j.common.util.Source source) {
+        return new Source(requireNonNull(source, "source"));
     }
 
     @Override
@@ -176,7 +190,7 @@ public class Source {
             return false;
         }
         final Source other = (Source) obj;
-        return Objects.equals(location, other.location);
+        return delegate.equals(other.delegate);
     }
 
     /**
@@ -186,7 +200,7 @@ public class Source {
      * @return the configuration source file, or {@code null}
      */
     public @Nullable File getFile() {
-        return file;
+        return delegate.getFile();
     }
 
     /**
@@ -196,7 +210,7 @@ public class Source {
      * @return a string describing the configuration source file or URI, or {@code null}
      */
     public String getLocation() {
-        return location;
+        return delegate.getLocation();
     }
 
     /**
@@ -208,7 +222,8 @@ public class Source {
             value = "PATH_TRAVERSAL_IN",
             justification = "The `file`, `uri` and `location` fields come from Log4j properties.")
     public Path getPath() {
-        return file != null ? file.toPath() : Paths.get(uri);
+        final File file = delegate.getFile();
+        return file != null ? file.toPath() : Paths.get(delegate.getURI());
     }
 
     /**
@@ -218,7 +233,7 @@ public class Source {
      * @return the configuration source URI, or {@code null}
      */
     public URI getURI() {
-        return uri;
+        return delegate.getURI();
     }
 
     /**
@@ -227,20 +242,16 @@ public class Source {
      * @return the configuration source URI, or {@code null}
      */
     public URL getURL() {
-        try {
-            return uri.toURL();
-        } catch (final MalformedURLException e) {
-            throw new IllegalStateException(e);
-        }
+        return delegate.getURL();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(location);
+        return delegate.hashCode();
     }
 
     @Override
     public String toString() {
-        return location;
+        return delegate.toString();
     }
 }

@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Objects;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Represents a key/value pair in the configuration.
+ * <p>
+ * This class is a strangler facade over {@link org.apache.logging.log4j.common.config.Property}.
+ * </p>
  */
 @Plugin(name = "Property", category = Node.CATEGORY, printObject = true)
 public final class Property {
@@ -38,18 +37,10 @@ public final class Property {
      */
     public static final Property[] EMPTY_ARRAY = {};
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    private final org.apache.logging.log4j.common.config.Property delegate;
 
-    private final String name;
-    private final String rawValue;
-    private final String value;
-    private final boolean valueNeedsLookup;
-
-    private Property(final String name, final String rawValue, final String value) {
-        this.name = name;
-        this.rawValue = rawValue;
-        this.value = value;
-        this.valueNeedsLookup = value != null && value.contains("${");
+    private Property(final org.apache.logging.log4j.common.config.Property delegate) {
+        this.delegate = delegate;
     }
 
     /**
@@ -57,7 +48,7 @@ public final class Property {
      * @return the property name.
      */
     public String getName() {
-        return name;
+        return delegate.getName();
     }
 
     /**
@@ -65,7 +56,7 @@ public final class Property {
      * @return the raw value of the property, or empty string if it is not set.
      */
     public String getRawValue() {
-        return Objects.toString(rawValue, Strings.EMPTY);
+        return delegate.getRawValue();
     }
 
     /**
@@ -73,7 +64,7 @@ public final class Property {
      * @return the value of the property.
      */
     public String getValue() {
-        return Objects.toString(value, Strings.EMPTY); // LOG4J2-1313 null would be same as Property not existing
+        return delegate.getValue();
     }
 
     /**
@@ -81,7 +72,7 @@ public final class Property {
      * @return {@code true} if the value contains {@code "${}"}, {@code false} otherwise
      */
     public boolean isValueNeedsLookup() {
-        return valueNeedsLookup;
+        return delegate.isValueNeedsLookup();
     }
 
     /**
@@ -90,10 +81,19 @@ public final class Property {
      * with the given substitutor.
      */
     public String evaluate(final StrSubstitutor substitutor) {
-        return valueNeedsLookup
+        return delegate.isValueNeedsLookup()
                 // Unescape the raw value first, handling '$${ctx:foo}' -> '${ctx:foo}'
                 ? substitutor.replace(PropertiesPlugin.unescape(getRawValue()))
                 : getValue();
+    }
+
+    /**
+     * Returns the shared {@link org.apache.logging.log4j.common.config.Property} delegate.
+     *
+     * @return the shared property value
+     */
+    public org.apache.logging.log4j.common.config.Property asCommonProperty() {
+        return delegate;
     }
 
     /**
@@ -116,10 +116,7 @@ public final class Property {
      * @return A Property.
      */
     public static Property createProperty(final String name, final String rawValue, final String value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Property name cannot be null");
-        }
-        return new Property(name, rawValue, value);
+        return new Property(org.apache.logging.log4j.common.config.Property.createProperty(name, rawValue, value));
     }
 
     /**
@@ -145,6 +142,6 @@ public final class Property {
 
     @Override
     public String toString() {
-        return name + '=' + getValue();
+        return delegate.toString();
     }
 }
