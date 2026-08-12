@@ -36,6 +36,9 @@
     <!-- Ignore less important (high rank) bugs for test artifacts -->
     <spotbugs.maxRank>9</spotbugs.maxRank>
 
+    <!-- WireMock 3.x requires Java 11 and Jakarta EE (Jetty 11) -->
+    <surefire.jdkToolchain>[11, )</surefire.jdkToolchain>
+
     <!--
       ~ OSGi and JPMS options
       -->
