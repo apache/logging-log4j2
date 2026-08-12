@@ -49,6 +49,11 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-common</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.jspecify</groupId>
       <artifactId>jspecify</artifactId>
       <scope>provided</scope>

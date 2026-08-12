@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import org.apache.logging.log4j.config.spi.FileWatcher;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;

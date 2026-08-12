@@ -14,27 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.config.spi;
 
-import java.io.File;
+import org.apache.logging.log4j.common.util.Source;
 
 /**
- * Watches for changes in a {@link File} and performs an action when the file is modified.
+ * Watches for changes in a configuration {@link Source} and performs an action when it is modified.
  *
- * @see WatchManager
- * @deprecated Use {@link org.apache.logging.log4j.config.spi.FileWatcher} from {@code config-spi}. This
- *             interface remains as a compatibility facade for third-party plugins.
+ * @since 3.0.0
  */
-@Deprecated
-public interface FileWatcher extends org.apache.logging.log4j.config.spi.FileWatcher {
+public interface Watcher extends FileWatcher {
 
     /**
-     * Called when a {@link WatchManager} detects that the given {@link File} changed.
+     * Returns the time the source was last modified or {@code 0} if it is not available.
      *
-     * @param file
-     *            the file that changed.
-     * @see WatchManager
+     * @return the time the source was last modified
      */
-    @Override
-    void fileModified(File file);
+    long getLastModified();
+
+    /**
+     * Called when the watcher is registered for the given source.
+     *
+     * @param source the source that is being watched
+     */
+    void watching(Source source);
 }

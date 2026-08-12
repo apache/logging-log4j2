@@ -35,6 +35,11 @@ public final class SystemClock implements Clock, PreciseClock {
     }
 
     @Override
+    public long nanoTime() {
+        return System.nanoTime();
+    }
+
+    @Override
     public void init(final MutableInstant mutableInstant) {
         final Instant instant = java.time.Clock.systemUTC().instant();
         mutableInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());

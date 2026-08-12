@@ -62,4 +62,9 @@ public class FixedPreciseClock implements PreciseClock {
     public long currentTimeMillis() {
         return currentTimeMillis;
     }
+
+    @Override
+    public long nanoTime() {
+        return currentTimeMillis * 1_000_000L + nanosOfMillisecond;
+    }
 }

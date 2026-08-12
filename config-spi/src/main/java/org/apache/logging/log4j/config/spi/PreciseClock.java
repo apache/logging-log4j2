@@ -14,27 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util;
-
-import java.io.File;
+package org.apache.logging.log4j.config.spi;
 
 /**
- * Watches for changes in a {@link File} and performs an action when the file is modified.
+ * Extension of {@link Clock} that can provide high-resolution time information.
  *
- * @see WatchManager
- * @deprecated Use {@link org.apache.logging.log4j.config.spi.FileWatcher} from {@code config-spi}. This
- *             interface remains as a compatibility facade for third-party plugins.
+ * @since 3.0.0
  */
-@Deprecated
-public interface FileWatcher extends org.apache.logging.log4j.config.spi.FileWatcher {
+public interface PreciseClock extends Clock {
 
     /**
-     * Called when a {@link WatchManager} detects that the given {@link File} changed.
+     * Returns the current value of the running Java Virtual Machine's high-resolution time source, in
+     * nanoseconds.
      *
-     * @param file
-     *            the file that changed.
-     * @see WatchManager
+     * @return high-resolution time in nanoseconds
      */
-    @Override
-    void fileModified(File file);
+    long nanoTime();
 }

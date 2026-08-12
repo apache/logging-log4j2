@@ -18,12 +18,18 @@ package org.apache.logging.log4j.core.util;
 
 /**
  * Provides the time stamp used in log events.
+ *
+ * @deprecated Use {@link org.apache.logging.log4j.config.spi.Clock} from {@code config-spi}. This interface
+ *             remains as a compatibility facade for third-party plugins.
  */
-public interface Clock {
+@Deprecated
+public interface Clock extends org.apache.logging.log4j.config.spi.Clock {
+
     /**
      * Returns the time in milliseconds since the epoch.
      *
      * @return the time in milliseconds since the epoch
      */
+    @Override
     long currentTimeMillis();
 }

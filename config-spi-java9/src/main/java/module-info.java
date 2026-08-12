@@ -16,6 +16,7 @@
  */
 module org.apache.logging.log4j.config.spi {
     requires transitive org.apache.logging.log4j;
+    requires org.apache.logging.log4j.common;
 
     exports org.apache.logging.log4j.config.spi;
 }

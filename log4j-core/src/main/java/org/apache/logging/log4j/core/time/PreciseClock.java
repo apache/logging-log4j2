@@ -22,9 +22,13 @@ import org.apache.logging.log4j.core.util.Clock;
  * Extension of the {@link Clock} interface that is able to provide more accurate time information than milliseconds
  * since the epoch. {@code PreciseClock} implementations are free to return millisecond-precision time
  * if that is the most accurate time information available on this platform.
+ *
+ * @deprecated Use {@link org.apache.logging.log4j.config.spi.PreciseClock} from {@code config-spi} for the portable
+ *             contract. This interface adds {@link MutableInstant} initialization for core log events.
  * @since 2.11
  */
-public interface PreciseClock extends Clock {
+@Deprecated
+public interface PreciseClock extends org.apache.logging.log4j.config.spi.PreciseClock, Clock {
 
     /**
      * Initializes the specified instant with time information as accurate as available on this platform.

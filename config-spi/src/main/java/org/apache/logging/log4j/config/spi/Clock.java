@@ -14,27 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.util;
-
-import java.io.File;
+package org.apache.logging.log4j.config.spi;
 
 /**
- * Watches for changes in a {@link File} and performs an action when the file is modified.
+ * Provides the time stamp used in log events.
  *
- * @see WatchManager
- * @deprecated Use {@link org.apache.logging.log4j.config.spi.FileWatcher} from {@code config-spi}. This
- *             interface remains as a compatibility facade for third-party plugins.
+ * @since 3.0.0
  */
-@Deprecated
-public interface FileWatcher extends org.apache.logging.log4j.config.spi.FileWatcher {
+public interface Clock {
 
     /**
-     * Called when a {@link WatchManager} detects that the given {@link File} changed.
+     * Returns the time in milliseconds since the epoch.
      *
-     * @param file
-     *            the file that changed.
-     * @see WatchManager
+     * @return the time in milliseconds since the epoch
      */
-    @Override
-    void fileModified(File file);
+    long currentTimeMillis();
 }
