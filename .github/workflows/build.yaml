@@ -121,6 +121,26 @@ jobs:
       - name: Validate Jakarta module bytecode namespace purity
         run: tools/validate-jakarta-namespace.sh
 
+  # WO-052: explicit CI gate for banCircularDependencies and dependencyConvergence.
+  # Both rules run at Maven validate (enforce-ban-circular-dependencies and
+  # enforce-dependency-convergence in log4j-parent/pom.xml); the reusable build
+  # job also reaches validate via verify, but this job fails fast with a clear signal.
+  module-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Validate module dependency graph
+        run: ./mvnw -B validate
+
   build-time-start:
     runs-on: ubuntu-latest
     outputs:
