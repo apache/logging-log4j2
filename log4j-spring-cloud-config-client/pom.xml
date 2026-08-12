@@ -36,6 +36,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- Dependency versions -->
+    <!-- Spring Cloud 2025.0.x (Northfields) release train; 4.3.x aligns with Spring Boot 3.5.x -->
     <spring-cloud.version>4.3.3</spring-cloud.version>
 
     <!--
