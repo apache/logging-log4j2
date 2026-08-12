@@ -8,5 +8,6 @@
     <description format="asciidoc">
         Update Spring Boot integration to version `3.5.16`. The `log4j-spring-boot` and
         `log4j-spring-cloud-config-client` modules require Java 17 or later.
+        See xref:manual/migration-spring-boot-3.adoc[Spring Boot 3.5.x migration guide] for upgrade instructions.
     </description>
 </entry>

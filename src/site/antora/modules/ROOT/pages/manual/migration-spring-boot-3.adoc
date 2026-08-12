@@ -1,0 +1,191 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Migrating Log4j Spring integration to Spring Boot 3.5.x
+
+Starting with Log4j `2.27.0`, the `log4j-spring-boot` and `log4j-spring-cloud-config-client` modules target Spring Boot `3.5.x`, Spring Framework `6.2.x`, and Spring Cloud Context `4.3.x`.
+
+This page describes the prerequisites, version changes, and step-by-step migration from Spring Boot `2.7.x` with Log4j 2.
+
+[IMPORTANT]
+====
+The Spring integration modules require *Java 17 or later*.
+Applications that must remain on Java 8 should continue using Log4j `2.26.x` (or earlier) and must *not* upgrade these Spring modules.
+====
+
+[#affected-modules]
+== Affected modules
+
+[cols="2,3"]
+|===
+| Maven artifact | Purpose
+
+| `log4j-spring-boot`
+| Spring Boot logging system integration, `SpringProfile` XML conditions, and `spring:` lookups
+
+| `log4j-spring-cloud-config-client`
+| Refreshes Log4j 2 configuration when Spring Cloud Config publishes `EnvironmentChangeEvent`
+|===
+
+Other Log4j modules (for example `log4j-core`, `log4j-api`, appenders) continue to support Java 8 unless documented otherwise.
+
+[#version-changes]
+== Version changes
+
+[cols="2,2,2"]
+|===
+| Component | Before (Log4j 2.26.x) | After (Log4j 2.27.0+)
+
+| Java (Spring modules only)
+| Java 8+
+| Java 17+
+
+| Spring Boot
+| 2.7.x
+| 3.5.x
+
+| Spring Framework
+| 5.3.x
+| 6.2.x
+
+| Spring Cloud Context (`log4j-spring-cloud-config-client`)
+| 3.x / 4.0.x (Boot 2.7 line)
+| 4.3.x (Boot 3.5 line)
+|===
+
+[#migration-steps]
+== Step-by-step migration
+
+=== 1. Upgrade the JDK
+
+Move the application build and runtime to Java 17 or later before upgrading the Log4j Spring modules.
+
+=== 2. Upgrade Spring Boot and Spring Cloud
+
+Upgrade the application to Spring Boot `3.5.x` following the https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide[Spring Boot 3.0 migration guide] and subsequent release notes.
+
+For Spring Cloud Config refresh support, align `spring-cloud-context` with the Boot `3.5.x` release train (Spring Cloud `2025.0.x`, artifact version `4.3.x`).
+
+=== 3. Update Log4j Spring dependencies
+
+Use the xref:components.adoc#log4j-bom[`log4j-bom`] to manage versions and ensure both Spring modules are on Log4j `2.27.0` or later:
+
+[tabs]
+====
+Maven::
++
+[source,xml]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-spring-boot</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-spring-cloud-config-client</artifactId>
+</dependency>
+----
+
+Gradle::
++
+[source,groovy]
+----
+implementation 'org.apache.logging.log4j:log4j-spring-boot'
+implementation 'org.apache.logging.log4j:log4j-spring-cloud-config-client'
+----
+====
+
+=== 4. Keep your Log4j 2 configuration
+
+Existing `log4j2.xml`, `log4j2-spring.xml`, and `log4j2-springProfile.xml` files generally work unchanged.
+Verify profile activation after upgrading:
+
+* `<SpringProfile name="dev">` still resolves active profiles from the Spring `Environment`.
+* The `spring:` lookup prefix (for example `${spring:application.name}`) continues to work.
+
+=== 5. Enable Spring Cloud Config watch (optional)
+
+To refresh Log4j 2 when remote configuration changes, enable the watch feature:
+
+[source,properties]
+----
+spring.cloud.config.watch.enabled=true
+----
+
+When enabled, Log4j registers an `EnvironmentChangeEvent` listener that notifies Log4j's `WatchManager`.
+
+[#behavioral-differences]
+== Behavioral differences
+
+=== Logging system delegation
+
+Spring Boot `3.5.x` implements credential-aware remote Log4j 2 configuration loading in `Log4J2LoggingSystem`.
+The `log4j-spring-boot` module now delegates most configuration loading to the base class and only customizes `LoggingSystem` factory selection.
+
+To force Spring Boot's default Log4j 2 logging system instead of the Log4j Cloud Config variant, set:
+
+[source,properties]
+----
+log4j2.disableCloudConfigLoggingSystem=true
+----
+
+=== Spring Environment access
+
+Production code should obtain the Spring `Environment` through Spring Boot's API:
+
+[source,java]
+----
+Log4J2LoggingSystem.getEnvironment(loggerContext)
+----
+
+The legacy `LoggerContext` object key `SpringEnvironment` (`Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY`) is retained for tests and manual wiring but is no longer the primary integration path.
+
+=== Auto-configuration registration
+
+`log4j-spring-cloud-config-client` registers its auto-configuration through Boot 3's `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` file instead of `spring.factories`.
+
+=== Spring Cloud Config watch property
+
+The config refresh listener is registered only when `spring.cloud.config.watch.enabled` is `true`.
+Ensure this property is set in applications that rely on automatic Log4j reconfiguration after config server updates.
+
+[#troubleshooting]
+== Troubleshooting
+
+[cols="2,3"]
+|===
+| Symptom | Likely cause / fix
+
+| `ClassNotFoundException` for Jakarta classes
+| Spring Boot 3 uses Jakarta EE namespaces; ensure third-party libraries are Boot 3 compatible.
+
+| Spring profiles in Log4j XML not applied
+| Confirm the Spring `Environment` is available when Log4j initializes; check active profiles in Boot logs.
+
+| Log4j does not reload after config server push
+| Set `spring.cloud.config.watch.enabled=true` and include `log4j-spring-cloud-config-client` on the classpath.
+
+| Cannot compile on Java 8 after upgrade
+| Pin Log4j to `2.26.x` or split the application onto Java 17 for modules that use Spring integration.
+|===
+
+[#related]
+== Related documentation
+
+* xref:manual/configuration.adoc[Log4j 2 configuration]
+* xref:manual/lookups.adoc[Lookups (`spring:` prefix)]
+* xref:manual/jakarta-migration.adoc[Jakarta integration module migration]

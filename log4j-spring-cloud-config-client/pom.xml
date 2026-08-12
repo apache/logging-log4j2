@@ -30,7 +30,7 @@
   <packaging>jar</packaging>
 
   <name>Apache Log4j Spring Cloud Config Client Support</name>
-  <description>Apache Log4j Spring Cloud Config Client Support</description>
+  <description>Apache Log4j Spring Cloud Config Client Support for Spring Boot 3.5.x and Spring Cloud Context 4.3.x (requires Java 17)</description>
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
