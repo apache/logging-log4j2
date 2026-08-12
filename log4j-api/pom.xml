@@ -37,6 +37,8 @@
 
   <properties>
     <maven.javadoc.skip>false</maven.javadoc.skip>
+    <!-- WO-054: enforce japicmp binary compatibility against the Maven Central baseline. -->
+    <japicmp.skip>false</japicmp.skip>
 
     <!--
       ~ OSGi and JPMS options

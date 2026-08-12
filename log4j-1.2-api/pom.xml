@@ -33,6 +33,8 @@
 
   <properties>
     <module.name>org.apache.log4j</module.name>
+    <!-- WO-054: enforce japicmp binary compatibility against the Maven Central baseline. -->
+    <japicmp.skip>false</japicmp.skip>
 
     <!--
       ~ OSGi and JPMS options

@@ -141,6 +141,39 @@ jobs:
       - name: Validate module dependency graph
         run: ./mvnw -B validate
 
+  # WO-054: japicmp binary compatibility gate for public API modules (SPI modules skip until first GA).
+  binary-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Verify japicmp binary compatibility
+        run: |
+          ./mvnw -B verify \
+            -pl log4j-trustgate,log4j-api,log4j-api-java9,log4j-core,log4j-core-java9,log4j-1.2-api,config-spi-java9,config-spi,log4j-common \
+            -DskipTests \
+            -Dspotless.check.skip=true \
+            -Dbnd.baseline.skip=true
+
+      - name: Upload japicmp reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: japicmp-reports
+          path: |
+            log4j-api/target/japicmp/
+            log4j-core/target/japicmp/
+            log4j-1.2-api/target/japicmp/
+          if-no-files-found: warn
+
   build-time-start:
     runs-on: ubuntu-latest
     outputs:
