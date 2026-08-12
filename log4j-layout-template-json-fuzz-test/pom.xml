@@ -34,6 +34,8 @@
 
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <log4j.docgen.skip>true</log4j.docgen.skip>
+    <!-- WO-016: compile dep on log4j-fuzz-test is unresolved at validate-only (jar packaged later in reactor) -->
+    <log4j.enforcer.banCircularDependencies.skip>true</log4j.enforcer.banCircularDependencies.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>

@@ -245,6 +245,9 @@
     <module>config-spi-java9</module>
     <module>log4j-core-java9</module>
 
+    <!-- WO-016: trustgate is a compile dependency of log4j-api and must be packaged before consumers -->
+    <module>log4j-trustgate</module>
+
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
@@ -255,12 +258,13 @@
     <module>log4j-common</module>
     <module>config-spi</module>
     <module>log4j-core</module>
+    <!-- WO-016: fuzz-test helpers must be packaged before their *-fuzz-test wrappers -->
+    <module>log4j-fuzz-test</module>
     <module>log4j-core-fuzz-test</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
-    <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-jms</module>
     <module>log4j-jakarta-jpa</module>
@@ -274,8 +278,9 @@
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-fuzz-test</module>
     <module>log4j-layout-template-json-test</module>
-    <module>log4j-mongodb</module>
+    <!-- WO-016: mongodb4 must be packaged before log4j-mongodb -->
     <module>log4j-mongodb4</module>
+    <module>log4j-mongodb</module>
     <module>log4j-osgi-test</module>
     <module>log4j-perf-test</module>
     <module>log4j-slf4j-impl</module>
@@ -283,11 +288,11 @@
     <module>log4j-slf4j2-impl-fuzz-test</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config-client</module>
+    <!-- WO-016: log4j-web must be packaged before log4j-taglib -->
+    <module>log4j-web</module>
     <module>log4j-taglib</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-to-jul</module>
-    <module>log4j-trustgate</module>
-    <module>log4j-web</module>
 
   </modules>
 

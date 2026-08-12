@@ -82,6 +82,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <error-prone-annotations.version>2.50.0</error-prone-annotations.version>
+    <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>4.0.27</groovy.version>
     <guava.version>33.6.0-jre</guava.version>
@@ -156,6 +157,9 @@
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <jna.version>5.19.1</jna.version>
+
+    <!-- Set to true when compile deps on later reactor modules are unresolved at validate-only -->
+    <log4j.enforcer.banCircularDependencies.skip>false</log4j.enforcer.banCircularDependencies.skip>
 
     <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
          to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
@@ -1008,6 +1012,19 @@
           </executions>
         </plugin>
 
+        <!-- WO-016: extra-enforcer-rules supplies banCircularDependencies -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>${extra-enforcer-rules.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -1053,6 +1070,26 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
+          <!-- WO-016: fail validate on circular classpath dependencies -->
+          <execution>
+            <id>enforce-ban-circular-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <skip>${log4j.enforcer.banCircularDependencies.skip}</skip>
+              <failFast>true</failFast>
+              <rules>
+                <banCircularDependencies>
+                  <!-- Optional deps can create apparent cycles without a real classpath loop -->
+                  <ignoreOptionals>true</ignoreOptionals>
+                  <!-- Test-scoped reactor modules may be unresolved at validate; slf4j-impl↔to-slf4j loop is test-only -->
+                  <ignoredScopes>test</ignoredScopes>
+                </banCircularDependencies>
+              </rules>
+            </configuration>
+          </execution>
           <!-- WO-021: fail validate when transitive dependency versions diverge across the reactor -->
           <execution>
             <id>enforce-dependency-convergence</id>
