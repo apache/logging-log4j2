@@ -34,6 +34,8 @@
 
   <properties>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <!-- WO-019: no Maven Central release yet — remove japicmp.skip after first GA release. -->
+    <japicmp.skip>true</japicmp.skip>
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.common</bnd-module-name>
     <bnd-extra-module-options>org.jspecify;transitive=false</bnd-extra-module-options>

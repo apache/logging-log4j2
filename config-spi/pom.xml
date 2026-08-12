@@ -35,6 +35,8 @@
 
   <properties>
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <!-- WO-019: no Maven Central release yet — remove japicmp.skip after first GA release. -->
+    <japicmp.skip>true</japicmp.skip>
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--

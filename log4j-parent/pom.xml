@@ -53,6 +53,7 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.48.1</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.14.0</exam-maven-plugin.version>
+    <japicmp-maven-plugin.version>0.26.1</japicmp-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.5.2</surefire.version>
@@ -161,6 +162,11 @@
     <!-- Set to true when compile deps on later reactor modules are unresolved at validate-only.
          See tools/CIRCULAR-DEPS.md for current status and intentional skips (WO-025). -->
     <log4j.enforcer.banCircularDependencies.skip>false</log4j.enforcer.banCircularDependencies.skip>
+
+    <!-- WO-019: Latest GA release on Maven Central used as the japicmp comparison baseline. -->
+    <log4j.japicmp.baseline.version>2.26.1</log4j.japicmp.baseline.version>
+    <!-- WO-019: Opt-in per module; new modules without a prior release keep japicmp.skip=true. -->
+    <japicmp.skip>true</japicmp.skip>
 
     <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
          to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
@@ -1026,6 +1032,52 @@
           </dependencies>
         </plugin>
 
+        <!--
+          WO-019: japicmp complements BND Baseline (OSGi package versioning from logging-parent) with
+          Java binary API compatibility checks against ${log4j.japicmp.baseline.version} on Maven Central.
+          Modules without a prior release set japicmp.skip=true until their first GA release.
+          Intentional API breaks require documented parameter/excludes overrides with issue references.
+        -->
+        <plugin>
+          <groupId>com.github.siom79.japicmp</groupId>
+          <artifactId>japicmp-maven-plugin</artifactId>
+          <version>${japicmp-maven-plugin.version}</version>
+          <configuration>
+            <skip>${japicmp.skip}</skip>
+            <oldVersion>
+              <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${log4j.japicmp.baseline.version}</version>
+                <type>${project.packaging}</type>
+              </dependency>
+            </oldVersion>
+            <newVersion>
+              <file>
+                <path>${project.build.directory}/${project.build.finalName}.${project.packaging}</path>
+              </file>
+            </newVersion>
+            <parameter>
+              <onlyModified>true</onlyModified>
+              <accessModifier>public</accessModifier>
+              <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+              <breakBuildOnSourceIncompatibleModifications>true</breakBuildOnSourceIncompatibleModifications>
+              <skipPomModules>true</skipPomModules>
+              <includeSynthetic>false</includeSynthetic>
+              <ignoreMissingClasses>true</ignoreMissingClasses>
+            </parameter>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-binary-compatibility</id>
+              <goals>
+                <goal>cmp</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+          </executions>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -1217,6 +1269,12 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- WO-019: inherited by modules; override japicmp.skip=false to enforce binary compatibility. -->
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
       </plugin>
 
       <!-- Add annotation library dependencies (defined as <scope>provided</scope> in this file) as compileOnlyApi
