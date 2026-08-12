@@ -158,7 +158,8 @@
     <httpcore.version>4.4.16</httpcore.version>
     <jna.version>5.19.1</jna.version>
 
-    <!-- Set to true when compile deps on later reactor modules are unresolved at validate-only -->
+    <!-- Set to true when compile deps on later reactor modules are unresolved at validate-only.
+         See tools/CIRCULAR-DEPS.md for current status and intentional skips (WO-025). -->
     <log4j.enforcer.banCircularDependencies.skip>false</log4j.enforcer.banCircularDependencies.skip>
 
     <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
@@ -1070,7 +1071,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
-          <!-- WO-016: fail validate on circular classpath dependencies -->
+          <!-- WO-016/WO-025: fail validate on circular classpath dependencies; see tools/CIRCULAR-DEPS.md -->
           <execution>
             <id>enforce-ban-circular-dependencies</id>
             <goals>
