@@ -14,22 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.test.junit;
+package org.apache.logging.log4j.core.test.categories;
 
 /**
- * Container for a Junit 5 tags used in tests.
+ * Cross-module integration tests that exercise multiple Log4j artifacts together.
  */
-public final class Tags {
-
-    /**
-     * Tests that use LMAX Disruptor. Same name as the JUnit 4 category.
-     */
-    public static final String ASYNC_LOGGERS = "org.apache.logging.log4j.core.test.categories.AsyncLoggers";
-
-    /**
-     * Cross-module integration tests. Same name as the JUnit 4 category.
-     */
-    public static final String INTEGRATION_TESTS = "org.apache.logging.log4j.core.test.categories.IntegrationTests";
-
-    private Tags() {}
-}
+public interface IntegrationTests {}
