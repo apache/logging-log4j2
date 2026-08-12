@@ -37,9 +37,7 @@ import org.junit.jupiter.api.Test;
  * package cycles that block modularization. Cycles are tracked with a baseline threshold so CI
  * fails only when new cycles appear.
  */
-@AnalyzeClasses(
-        packages = ArchitectureTestSupport.CORE_PACKAGE,
-        importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(packages = ArchitectureTestSupport.CORE_PACKAGE, importOptions = ImportOption.DoNotIncludeTests.class)
 class CircularDependencyTest {
 
     /**

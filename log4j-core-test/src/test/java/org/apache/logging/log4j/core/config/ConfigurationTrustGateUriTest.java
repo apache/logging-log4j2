@@ -59,8 +59,8 @@ class ConfigurationTrustGateUriTest {
     @Test
     void rejectsLdapSchemeInConfigurationFactory() {
         final URI ldapUri = URI.create("ldap://evil.example/cn=config");
-        final ConfigurationException exception =
-                assertThrows(ConfigurationException.class, () -> ConfigurationFactory.validateConfigurationUri(ldapUri));
+        final ConfigurationException exception = assertThrows(
+                ConfigurationException.class, () -> ConfigurationFactory.validateConfigurationUri(ldapUri));
         assertTrue(exception.getMessage().contains("ldap"));
     }
 

@@ -42,9 +42,7 @@ import org.junit.jupiter.api.Test;
  * <p>{@code Log4j1ConfigurationParser} lives in {@code log4j-1.2-api}, which is not on this
  * module's classpath; see {@code Log4j1ConfigurationParserTrustGateInvocationTest} in that module.
  */
-@AnalyzeClasses(
-        packages = ArchitectureTestSupport.CORE_PACKAGE,
-        importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(packages = ArchitectureTestSupport.CORE_PACKAGE, importOptions = ImportOption.DoNotIncludeTests.class)
 class TrustGateInvocationTest {
 
     private static JavaClasses coreClasses;
@@ -76,7 +74,13 @@ class TrustGateInvocationTest {
         final JavaMethod substitute = coreClasses
                 .get(StrSubstitutor.class)
                 .getMethod(
-                        "substitute", LogEvent.class, StringBuilder.class, int.class, int.class, List.class, boolean.class);
+                        "substitute",
+                        LogEvent.class,
+                        StringBuilder.class,
+                        int.class,
+                        int.class,
+                        List.class,
+                        boolean.class);
         assertCallsMethod(substitute, StrSubstitutor.class, "validateLookupPattern", String.class);
 
         final JavaMethod validateLookupPattern =
@@ -100,6 +104,7 @@ class TrustGateInvocationTest {
     }
 
     private static boolean isInputSanitizerValidateCall(final JavaMethodCall call) {
-        return call.getTargetOwner().isAssignableTo(InputSanitizer.class) && call.getName().equals("validate");
+        return call.getTargetOwner().isAssignableTo(InputSanitizer.class)
+                && call.getName().equals("validate");
     }
 }

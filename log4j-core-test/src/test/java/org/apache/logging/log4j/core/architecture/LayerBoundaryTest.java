@@ -20,11 +20,11 @@ import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSu
 import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.collectLayerViolations;
 import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.importCoreProductionClasses;
 
-import org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import java.util.List;
+import org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -39,9 +39,7 @@ import org.junit.jupiter.api.Test;
  * branch. The threshold ratchets down as decoupling PRs land; do not increase it without explicit
  * architecture review.
  */
-@AnalyzeClasses(
-        packages = ArchitectureTestSupport.CORE_PACKAGE,
-        importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(packages = ArchitectureTestSupport.CORE_PACKAGE, importOptions = ImportOption.DoNotIncludeTests.class)
 class LayerBoundaryTest {
 
     /**
@@ -57,17 +55,19 @@ class LayerBoundaryTest {
     @Test
     void utilToConfigDependenciesDoNotExceedBaseline() {
         final JavaClasses classes = importCoreProductionClasses();
-        final List<String> violations = collectLayerViolations(classes, ArchitectureTestSupport::isUtilLayerClass, ArchitectureTestSupport::isConfigLayerClass);
-        assertViolationCountWithinBaseline("util layer must not depend on config layer", violations, UTIL_TO_CONFIG_VIOLATION_BASELINE);
+        final List<String> violations = collectLayerViolations(
+                classes, ArchitectureTestSupport::isUtilLayerClass, ArchitectureTestSupport::isConfigLayerClass);
+        assertViolationCountWithinBaseline(
+                "util layer must not depend on config layer", violations, UTIL_TO_CONFIG_VIOLATION_BASELINE);
     }
 
     @Test
     void utilToConfigViolationsIdentifyClassesAndPackages() {
         final JavaClasses classes = importCoreProductionClasses();
-        final List<String> violations = collectLayerViolations(classes, ArchitectureTestSupport::isUtilLayerClass, ArchitectureTestSupport::isConfigLayerClass);
-        Assertions.assertThat(violations)
-                .allSatisfy(violation -> Assertions.assertThat(violation)
-                        .contains(ArchitectureTestSupport.UTIL_LAYER_PREFIX)
-                        .contains(ArchitectureTestSupport.CONFIG_LAYER_PREFIX));
+        final List<String> violations = collectLayerViolations(
+                classes, ArchitectureTestSupport::isUtilLayerClass, ArchitectureTestSupport::isConfigLayerClass);
+        Assertions.assertThat(violations).allSatisfy(violation -> Assertions.assertThat(violation)
+                .contains(ArchitectureTestSupport.UTIL_LAYER_PREFIX)
+                .contains(ArchitectureTestSupport.CONFIG_LAYER_PREFIX));
     }
 }

@@ -35,9 +35,7 @@ import org.junit.jupiter.api.Test;
  * util APIs rather than {@code org.apache.logging.log4j.core.util.internal..} implementation
  * details. A baseline threshold prevents new inappropriate couplings during modularization.
  */
-@AnalyzeClasses(
-        packages = ArchitectureTestSupport.CORE_PACKAGE,
-        importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(packages = ArchitectureTestSupport.CORE_PACKAGE, importOptions = ImportOption.DoNotIncludeTests.class)
 class ModuleBoundaryTest {
 
     /**
@@ -61,7 +59,9 @@ class ModuleBoundaryTest {
         final List<String> violations = collectLayerViolations(
                 classes, ModuleBoundaryTest::isIntegrationClass, ModuleBoundaryTest::isUtilInternalClass);
         assertViolationCountWithinBaseline(
-                "integration packages must not depend on util.internal", violations, INTEGRATION_TO_UTIL_INTERNAL_BASELINE);
+                "integration packages must not depend on util.internal",
+                violations,
+                INTEGRATION_TO_UTIL_INTERNAL_BASELINE);
     }
 
     private static boolean isIntegrationClass(final JavaClass clazz) {
