@@ -90,11 +90,11 @@
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.4</hsqldb.version>
     <jackson-bom.version>2.22.1</jackson-bom.version>
-    <!-- Override the version in Jakarta EE 9 BOM: -->
+    <!-- Override the version in Jakarta EE 10 BOM: -->
     <jakarta-activation.version>2.1.4</jakarta-activation.version>
     <jakarta-mail.version>2.1.5</jakarta-mail.version>
-    <!-- BOM with Jakarta EE 9 APIs: -->
-    <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
+    <!-- BOM with Jakarta EE 10 APIs: -->
+    <jakartaee-bom.version>10.0.0</jakartaee-bom.version>
     <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
     <javax-activation.version>1.2.0</javax-activation.version>
     <javax-inject.version>1</javax-inject.version>
