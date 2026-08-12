@@ -41,6 +41,10 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
+import org.apache.logging.log4j.trustgate.TrustGateException;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
+import org.apache.logging.log4j.trustgate.spi.InputType;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -73,6 +77,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Log4j1ConfigurationParser {
 
+    private static final InputSanitizer INPUT_SANITIZER = new DefaultInputSanitizer();
+
     private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
     private static final String ROOTLOGGER = "rootLogger";
     private static final String ROOTCATEGORY = "rootCategory";
@@ -101,6 +107,7 @@ public class Log4j1ConfigurationParser {
             throws IOException {
         try {
             properties.load(input);
+            removeInvalidPropertyKeys();
             final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
             final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
             if (rootCategoryValue == null && rootLoggerValue == null) {
@@ -142,11 +149,48 @@ public class Log4j1ConfigurationParser {
         }
     }
 
+    private void removeInvalidPropertyKeys() {
+        for (final Object keyObj : new TreeMap<>(properties).keySet()) {
+            if (keyObj != null && !isValidPropertyKey(keyObj.toString())) {
+                properties.remove(keyObj);
+            }
+        }
+    }
+
+    private boolean isValidPropertyKey(final String key) {
+        if (!INPUT_SANITIZER.isEnabled()) {
+            return true;
+        }
+        try {
+            INPUT_SANITIZER.validate(key, InputType.PROPERTY_KEY);
+            return true;
+        } catch (final TrustGateException ex) {
+            reportWarning("Skipping property with rejected key: " + key);
+            return false;
+        }
+    }
+
+    private String sanitizePropertyValue(final String value) {
+        if (value == null || value.isEmpty() || !INPUT_SANITIZER.isEnabled()) {
+            return value;
+        }
+        try {
+            INPUT_SANITIZER.validate(value, InputType.CONFIGURATION_VALUE);
+            return value;
+        } catch (final TrustGateException ex) {
+            reportWarning("Replacing rejected property value with empty string");
+            return Strings.EMPTY;
+        }
+    }
+
     private void buildProperties() {
         for (final Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
+            if (!isValidPropertyKey(key)) {
+                continue;
+            }
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
-                builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+                builder.addProperty(key, sanitizePropertyValue(Objects.toString(entry.getValue(), Strings.EMPTY)));
             }
         }
     }
@@ -163,12 +207,15 @@ public class Log4j1ConfigurationParser {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
                 final String key = keyObj.toString().trim();
+                if (!isValidPropertyKey(key)) {
+                    continue;
+                }
                 if (key.startsWith(prefix)) {
                     if (key.indexOf('.', preLength) < 0) {
                         final String name = key.substring(preLength);
                         final Object value = entry.getValue();
                         if (value != null) {
-                            map.put(name, value.toString().trim());
+                            map.put(name, sanitizePropertyValue(value.toString().trim()));
                         }
                     }
                 }
@@ -428,12 +475,15 @@ public class Log4j1ConfigurationParser {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
                 final String key = keyObj.toString().trim();
+                if (!isValidPropertyKey(key)) {
+                    continue;
+                }
                 if (key.startsWith(prefix)) {
                     final String name = key.substring(preLength);
                     final Object value = entry.getValue();
                     if (value != null) {
                         // a Level may be followed by a list of Appender refs.
-                        final String valueStr = value.toString().trim();
+                        final String valueStr = sanitizePropertyValue(value.toString().trim());
                         final String[] split = valueStr.split(COMMA_DELIMITED_RE);
                         final String level = getLevelString(split, null);
                         if (level == null) {
@@ -461,9 +511,16 @@ public class Log4j1ConfigurationParser {
     }
 
     private String getProperty(final String key) {
+        if (!isValidPropertyKey(key)) {
+            return null;
+        }
         final String value = properties.getProperty(key);
         final String substVars = OptionConverter.substVars(value, properties);
-        return substVars == null ? null : substVars.trim();
+        if (substVars == null) {
+            return null;
+        }
+        final String sanitized = sanitizePropertyValue(substVars);
+        return sanitized == null ? null : sanitized.trim();
     }
 
     private String getProperty(final String key, final String defaultValue) {

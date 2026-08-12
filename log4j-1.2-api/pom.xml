@@ -46,7 +46,8 @@
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Log4j Core is optional -->
-      org.apache.logging.log4j.core;static=true
+      org.apache.logging.log4j.core;static=true,
+      org.apache.logging.log4j.trustgate;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
@@ -75,6 +76,11 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-trustgate</artifactId>
     </dependency>
 
     <dependency>

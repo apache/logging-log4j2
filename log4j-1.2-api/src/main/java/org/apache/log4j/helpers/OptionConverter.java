@@ -37,11 +37,17 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
+import org.apache.logging.log4j.trustgate.TrustGateException;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
+import org.apache.logging.log4j.trustgate.spi.InputType;
 
 /**
  * A convenience class to convert property values to specific types.
  */
 public class OptionConverter {
+
+    private static final InputSanitizer INPUT_SANITIZER = new DefaultInputSanitizer();
 
     private static class CharMap {
         final char key;
@@ -442,6 +448,11 @@ public class OptionConverter {
             }
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
+            if (!isValidLookupExpression(key)) {
+                sbuf.append(DELIM_START).append(key).append(DELIM_STOP);
+                i = k + DELIM_STOP_LEN;
+                continue;
+            }
             // first try in System properties
             String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
             // then try props parameter
@@ -466,6 +477,19 @@ public class OptionConverter {
                 }
             }
             i = k + DELIM_STOP_LEN;
+        }
+    }
+
+    private static boolean isValidLookupExpression(final String key) {
+        if (!INPUT_SANITIZER.isEnabled()) {
+            return true;
+        }
+        try {
+            INPUT_SANITIZER.validate(DELIM_START + key + DELIM_STOP, InputType.LOOKUP_PATTERN);
+            return true;
+        } catch (final TrustGateException ex) {
+            LOGGER.warn("TrustGate rejected variable expression in configuration: {}{}{}", DELIM_START, key, DELIM_STOP, ex);
+            return false;
         }
     }
 
