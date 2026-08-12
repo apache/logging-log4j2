@@ -590,7 +590,6 @@
             <exclude>src/site/resources/font-awesome-4.7.0/fonts/fontawesome-webfont.svg</exclude>
             <!-- Generated files -->
             <exclude>**/.toDelete</exclude>
-            <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>**/README.md</exclude>
             <exclude>SECURITY.md</exclude>

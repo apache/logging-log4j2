@@ -136,7 +136,6 @@
     <spring-framework.version>5.3.39</spring-framework.version>
     <stax2-api.version>4.3.0</stax2-api.version>
     <system-stubs.version>2.0.3</system-stubs.version>
-    <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.12.0</xmlunit.version>
     <xz.version>1.12</xz.version>
@@ -808,12 +807,6 @@
         <groupId>uk.org.webcompere</groupId>
         <artifactId>system-stubs-jupiter</artifactId>
         <version>${system-stubs.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>${velocity.version}</version>
       </dependency>
 
       <!-- Used for testing `HttpAppender`: -->
