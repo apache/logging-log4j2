@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
@@ -106,8 +105,9 @@ public class WatchManager extends AbstractLifeCycle {
         @Override
         public void run() {
             logger.trace("{} run triggered.", SIMPLE_NAME);
-            for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-                final Source source = entry.getKey();
+            for (final Map.Entry<org.apache.logging.log4j.common.util.Source, ConfigurationMonitor> entry :
+                    watchers.entrySet()) {
+                final org.apache.logging.log4j.common.util.Source source = entry.getKey();
                 final ConfigurationMonitor monitor = entry.getValue();
                 if (monitor.getWatcher().isModified()) {
                     final long lastModified = monitor.getWatcher().getLastModified();
@@ -125,7 +125,8 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     private static final Logger logger = StatusLogger.getLogger();
-    private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<org.apache.logging.log4j.common.util.Source, ConfigurationMonitor> watchers =
+            new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
 
@@ -155,8 +156,9 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public Map<Source, Watcher> getConfigurationWatchers() {
         final Map<Source, Watcher> map = new HashMap<>(watchers.size());
-        for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getWatcher());
+        for (final Map.Entry<org.apache.logging.log4j.common.util.Source, ConfigurationMonitor> entry :
+                watchers.entrySet()) {
+            map.put(Source.fromCommon(entry.getKey()), entry.getValue().getWatcher());
         }
         return map;
     }
@@ -183,12 +185,12 @@ public class WatchManager extends AbstractLifeCycle {
     @Deprecated
     public Map<File, FileWatcher> getWatchers() {
         final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
-        for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-            if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
-                map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
+        for (Map.Entry<org.apache.logging.log4j.common.util.Source, ConfigurationMonitor> entry : watchers.entrySet()) {
+            final Watcher watcher = entry.getValue().getWatcher();
+            if (watcher instanceof FileWatcher) {
+                map.put(entry.getKey().getFile(), (FileWatcher) watcher);
             } else {
-                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher)
-                        entry.getValue().getWatcher()));
+                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) watcher));
             }
         }
         return map;
@@ -214,8 +216,8 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public void reset() {
         logger.debug("Resetting {}", this);
-        for (final Source source : watchers.keySet()) {
-            reset(source);
+        for (final org.apache.logging.log4j.common.util.Source source : watchers.keySet()) {
+            reset(Source.fromCommon(source));
         }
     }
 
@@ -234,8 +236,7 @@ public class WatchManager extends AbstractLifeCycle {
         if (file == null) {
             return;
         }
-        final Source source = new Source(file);
-        reset(source);
+        reset(new Source(file));
     }
 
     /**
@@ -253,7 +254,7 @@ public class WatchManager extends AbstractLifeCycle {
         if (source == null) {
             return;
         }
-        final ConfigurationMonitor monitor = watchers.get(source);
+        final ConfigurationMonitor monitor = watchers.get(source.asCommonSource());
         if (monitor != null) {
             final Watcher watcher = monitor.getWatcher();
             if (watcher.isModified()) {
@@ -322,7 +323,7 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public void unwatch(final Source source) {
         logger.debug("Unwatching configuration {}", source);
-        watchers.remove(source);
+        watchers.remove(source.asCommonSource());
     }
 
     /**
@@ -351,7 +352,7 @@ public class WatchManager extends AbstractLifeCycle {
                     millisToString(lastModified),
                     lastModified);
         }
-        watchers.put(source, new ConfigurationMonitor(lastModified, watcher));
+        watchers.put(source.asCommonSource(), new ConfigurationMonitor(lastModified, watcher));
     }
 
     /**

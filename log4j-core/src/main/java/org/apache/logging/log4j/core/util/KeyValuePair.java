@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Key/Value pair configuration item.
  *
+ * <p>Compatibility facade delegating storage to {@link org.apache.logging.log4j.common.util.KeyValuePair}.</p>
+ *
  * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}
  */
 @Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)
@@ -35,8 +37,7 @@ public final class KeyValuePair {
      */
     public static final KeyValuePair[] EMPTY_ARRAY = {};
 
-    private final String key;
-    private final String value;
+    private final org.apache.logging.log4j.common.util.KeyValuePair delegate;
 
     /**
      * Constructs a key/value pair. The constructor should only be called from test classes.
@@ -44,8 +45,32 @@ public final class KeyValuePair {
      * @param value The value.
      */
     public KeyValuePair(final String key, final String value) {
-        this.key = key;
-        this.value = value;
+        this.delegate = new org.apache.logging.log4j.common.util.KeyValuePair(key, value);
+    }
+
+    private KeyValuePair(final org.apache.logging.log4j.common.util.KeyValuePair delegate) {
+        this.delegate = delegate;
+    }
+
+    /**
+     * Returns the shared {@link org.apache.logging.log4j.common.util.KeyValuePair} delegate.
+     *
+     * @return the common key/value pair delegate
+     * @since 3.0.0
+     */
+    public org.apache.logging.log4j.common.util.KeyValuePair asCommonKeyValuePair() {
+        return delegate;
+    }
+
+    /**
+     * Creates a core {@code KeyValuePair} from a {@link org.apache.logging.log4j.common.util.KeyValuePair}.
+     *
+     * @param keyValuePair the common key/value pair
+     * @return a core key/value pair facade
+     * @since 3.0.0
+     */
+    public static KeyValuePair fromCommon(final org.apache.logging.log4j.common.util.KeyValuePair keyValuePair) {
+        return new KeyValuePair(Objects.requireNonNull(keyValuePair, "keyValuePair"));
     }
 
     /**
@@ -53,7 +78,7 @@ public final class KeyValuePair {
      * @return the key.
      */
     public String getKey() {
-        return key;
+        return delegate.getKey();
     }
 
     /**
@@ -61,12 +86,12 @@ public final class KeyValuePair {
      * @return The value.
      */
     public String getValue() {
-        return value;
+        return delegate.getValue();
     }
 
     @Override
     public String toString() {
-        return key + '=' + value;
+        return delegate.toString();
     }
 
     @PluginBuilderFactory
@@ -100,7 +125,7 @@ public final class KeyValuePair {
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, value);
+        return delegate.hashCode();
     }
 
     @Override
@@ -111,16 +136,12 @@ public final class KeyValuePair {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        if (obj instanceof KeyValuePair) {
+            return delegate.equals(((KeyValuePair) obj).delegate);
         }
-        final KeyValuePair other = (KeyValuePair) obj;
-        if (!Objects.equals(key, other.key)) {
-            return false;
+        if (obj instanceof org.apache.logging.log4j.common.util.KeyValuePair) {
+            return delegate.equals(obj);
         }
-        if (!Objects.equals(value, other.value)) {
-            return false;
-        }
-        return true;
+        return false;
     }
 }

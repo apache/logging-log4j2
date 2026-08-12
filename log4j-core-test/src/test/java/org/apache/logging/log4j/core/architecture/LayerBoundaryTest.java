@@ -50,7 +50,7 @@ class LayerBoundaryTest {
      * edge count ({@value #UTIL_TO_CONFIG_VIOLATION_BASELINE}) on this branch is the CI gate.
      * Reduce this constant as violations are remediated.
      */
-    private static final int UTIL_TO_CONFIG_VIOLATION_BASELINE = 57;
+    private static final int UTIL_TO_CONFIG_VIOLATION_BASELINE = 56;
 
     @Test
     void utilToConfigDependenciesDoNotExceedBaseline() {

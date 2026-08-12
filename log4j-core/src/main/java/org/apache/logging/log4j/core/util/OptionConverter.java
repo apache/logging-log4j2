@@ -24,9 +24,12 @@ import java.util.List;
 import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.config.spi.PropertyEnvironmentSPI;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.util.spi.ChainedPropertyEnvironment;
+import org.apache.logging.log4j.core.util.spi.PropertiesPropertyEnvironment;
+import org.apache.logging.log4j.core.util.spi.SystemPropertiesPropertyEnvironment;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -348,10 +351,26 @@ public final class OptionConverter {
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
     public static String substVars(final String val, final Properties props) throws IllegalArgumentException {
-        return substVars(val, props, new ArrayList<>());
+        return substVars(val, new ChainedPropertyEnvironment(
+                new SystemPropertiesPropertyEnvironment(), new PropertiesPropertyEnvironment(props)));
     }
 
-    private static String substVars(final String val, final Properties props, final List<String> keys)
+    /**
+     * Perform variable substitution in string {@code val} using the supplied property environment.
+     *
+     * @param val the string on which variable substitution is performed
+     * @param environment the property environment to use for substitution
+     * @return the string after substitution
+     * @throws IllegalArgumentException if {@code val} is malformed
+     * @since 3.0.0
+     */
+    public static String substVars(final String val, final PropertyEnvironmentSPI environment)
+            throws IllegalArgumentException {
+        return substVars(val, environment, new ArrayList<>());
+    }
+
+    private static String substVars(
+            final String val, final PropertyEnvironmentSPI environment, final List<String> keys)
             throws IllegalArgumentException {
 
         final StringBuilder sbuf = new StringBuilder();
@@ -379,12 +398,7 @@ public final class OptionConverter {
             }
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
-            // first try in System properties
-            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
-            // then try props parameter
-            if (replacement == null && props != null) {
-                replacement = props.getProperty(key);
-            }
+            String replacement = environment.getProperty(key);
 
             if (replacement != null) {
 
@@ -396,7 +410,7 @@ public final class OptionConverter {
                 if (!keys.contains(key)) {
                     final List<String> usedKeys = new ArrayList<>(keys);
                     usedKeys.add(key);
-                    final String recursiveReplacement = substVars(replacement, props, usedKeys);
+                    final String recursiveReplacement = substVars(replacement, environment, usedKeys);
                     sbuf.append(recursiveReplacement);
                 } else {
                     sbuf.append(replacement);
