@@ -41,6 +41,42 @@ permissions: read-all
 
 jobs:
 
+  owasp-dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - name: Cache OWASP Dependency-Check NVD data
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-dependency-check-data-${{ runner.os }}-${{ hashFiles('dependency-check-suppressions.xml', 'log4j-parent/pom.xml', 'pom.xml') }}
+          restore-keys: |
+            owasp-dependency-check-data-${{ runner.os }}-
+
+      - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: ./mvnw -B -Powasp-check -N verify
+
+      - name: Upload dependency-check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: |
+            target/dependency-check-report.html
+            target/dependency-check-report.json
+          if-no-files-found: warn
+
   build:
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@gha/v0
     with:

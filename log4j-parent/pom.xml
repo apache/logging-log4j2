@@ -894,6 +894,22 @@
     <pluginManagement>
       <plugins>
 
+        <!-- used by `owasp-check` profile -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${dependency-check-maven.version}</version>
+          <configuration>
+            <failBuildOnCVSS>7.0</failBuildOnCVSS>
+            <formats>
+              <format>HTML</format>
+              <format>JSON</format>
+            </formats>
+            <suppressionFile>${maven.multiModuleProjectDirectory}/dependency-check-suppressions.xml</suppressionFile>
+            <nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+          </configuration>
+        </plugin>
+
         <!-- used by `docker` profile -->
         <plugin>
           <groupId>io.fabric8</groupId>
@@ -1177,6 +1193,33 @@
                     <version>[1.8, 9)</version>
                   </jdkToolchain>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+    <!-- `owasp-check` profile to scan dependencies for known vulnerabilities.
+         Activate manually with `-Powasp-check` (see `.github/workflows/build.yaml`). -->
+    <profile>
+
+      <id>owasp-check</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>owasp-dependency-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
