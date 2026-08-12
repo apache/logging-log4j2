@@ -1,0 +1,2 @@
+Class <org.apache.log4j.config.InputStreamWrapper> does not reside in a package 'org.apache.log4j.bridge' in (InputStreamWrapper.java:0)
+Class <org.apache.log4j.helpers.OptionConverter$LevelWrapper> does not reside in a package 'org.apache.log4j.bridge' in (OptionConverter.java:0)

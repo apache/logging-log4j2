@@ -1,0 +1,3 @@
+org.apache.log4j.config.InputStreamWrapper is not covered by api-mapping or allowlist
+org.apache.log4j.helpers.OptionConverter$LevelWrapper is not covered by api-mapping or allowlist
+org.apache.log4j.layout.Log4j1SyslogLayout$Builder is not covered by api-mapping or allowlist

@@ -1,0 +1,5 @@
+#
+#Wed Aug 12 16:54:03 IST 2026
+classes\ that\ are\ top\ level\ classes\ and\ have\ simple\ name\ ending\ with\ 'Adapter'\ or\ have\ simple\ name\ ending\ with\ 'Wrapper'\ and\ reside\ in\ a\ package\ 'org.apache.log4j..'\ should\ reside\ in\ a\ package\ 'org.apache.log4j.bridge',\ because\ top-level\ Adapter\ and\ Wrapper\ bridge\ types\ must\ live\ in\ org.apache.log4j.bridge=bcc07042-2374-41d6-98c0-d6b4540e8d49
+classes\ that\ reside\ in\ a\ package\ 'org.apache.log4j.bridge'\ and\ are\ top\ level\ classes\ and\ have\ simple\ name\ ending\ with\ 'Adapter'\ should\ have\ matching\ Wrapper\ type=a35739dc-6452-4500-a83e-d8d64162c890
+classes\ that\ reside\ in\ any\ package\ ['org.apache.log4j.bridge',\ 'org.apache.log4j.builders..']\ and\ are\ top\ level\ classes\ and\ have\ simple\ name\ ending\ with\ 'Adapter'\ or\ have\ simple\ name\ ending\ with\ 'Wrapper'\ or\ have\ simple\ name\ ending\ with\ 'Builder'\ and\ are\ not\ interfaces\ and\ do\ not\ have\ modifier\ ABSTRACT\ should\ be\ documented\ in\ api-mapping\ or\ explicit\ allowlist=40cce7e6-59c5-441d-a57f-4bc120b0bd19
