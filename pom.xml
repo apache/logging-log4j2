@@ -282,6 +282,7 @@
     <module>log4j-taglib</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-to-jul</module>
+    <module>log4j-trustgate</module>
     <module>log4j-web</module>
 
   </modules>
@@ -548,6 +549,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-jul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-trustgate</artifactId>
         <version>${project.version}</version>
       </dependency>
 
