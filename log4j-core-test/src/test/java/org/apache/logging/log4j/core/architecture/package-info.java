@@ -27,9 +27,10 @@
  * <h2>Measured baselines (2026-08-12, {@code feat/forge-modernization-swarm})</h2>
  *
  * <ul>
- *   <li>{@link LayerBoundaryTest}: 57 direct util-to-config dependency edges (ForgeScore estimated
- *       1,214 total cross-layer couplings using broader static metrics; the measured ArchUnit edge
- *       count is authoritative for CI).
+ *   <li>{@link LayerBoundaryTest}: 56 direct util-to-config dependency edges, 171 config-to-util
+ *       edges, and 227 layeredArchitecture diagnostic entries scoped to util/config packages
+ *       (ForgeScore estimated 1,214 total cross-layer couplings using broader static metrics; the
+ *       measured ArchUnit edge counts are authoritative for CI).
  *   <li>{@link CircularDependencyTest}: 100 ArchUnit cycle diagnostic entries among top-level core
  *       packages.
  *   <li>{@link ModuleBoundaryTest}: 1 integration-to-{@code util.internal} dependency edge.

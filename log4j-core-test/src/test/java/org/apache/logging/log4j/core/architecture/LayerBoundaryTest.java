@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core.architecture;
 
 import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.assertViolationCountWithinBaseline;
+import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.collectLayerRuleViolations;
 import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.collectLayerViolations;
 import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.importCoreProductionClasses;
+import static org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport.utilAndConfigLayersAreIndependent;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -34,6 +36,10 @@ import org.junit.jupiter.api.Test;
  * <p>The util layer ({@code org.apache.logging.log4j.core.util..}) must remain independent of the
  * config layer ({@code org.apache.logging.log4j.core.config..}). Dependencies from util to config
  * represent upward layer violations that the SPI extraction work (EPIC-08) aims to eliminate.
+ *
+ * <p>Both layers may depend on {@code org.apache.logging.log4j.config.spi..} (config-spi) and
+ * {@code org.apache.logging.log4j.common..} (log4j-common) types; those dependencies are outside
+ * the scanned {@code log4j-core} tree and are therefore not counted here.
  *
  * <p>Baseline measured on 2026-08-12 against the current {@code feat/forge-modernization-swarm}
  * branch. The threshold ratchets down as decoupling PRs land; do not increase it without explicit
@@ -52,6 +58,17 @@ class LayerBoundaryTest {
      */
     private static final int UTIL_TO_CONFIG_VIOLATION_BASELINE = 56;
 
+    /**
+     * Direct config-to-util dependency edges measured on 2026-08-12.
+     */
+    private static final int CONFIG_TO_UTIL_VIOLATION_BASELINE = 171;
+
+    /**
+     * ArchUnit layeredArchitecture diagnostic entries for util/config coupling (dependencies scoped to
+     * util and config packages only), measured on 2026-08-12.
+     */
+    private static final int LAYERED_ARCHITECTURE_VIOLATION_BASELINE = 227;
+
     @Test
     void utilToConfigDependenciesDoNotExceedBaseline() {
         final JavaClasses classes = importCoreProductionClasses();
@@ -62,6 +79,25 @@ class LayerBoundaryTest {
     }
 
     @Test
+    void configToUtilDependenciesDoNotExceedBaseline() {
+        final JavaClasses classes = importCoreProductionClasses();
+        final List<String> violations = collectLayerViolations(
+                classes, ArchitectureTestSupport::isConfigLayerClass, ArchitectureTestSupport::isUtilLayerClass);
+        assertViolationCountWithinBaseline(
+                "config layer must not depend on util layer", violations, CONFIG_TO_UTIL_VIOLATION_BASELINE);
+    }
+
+    @Test
+    void layeredArchitectureUtilConfigCouplingDoNotExceedBaseline() {
+        final JavaClasses classes = importCoreProductionClasses();
+        final List<String> violations = collectLayerRuleViolations(classes, utilAndConfigLayersAreIndependent());
+        assertViolationCountWithinBaseline(
+                "util and config layers must not access each other",
+                violations,
+                LAYERED_ARCHITECTURE_VIOLATION_BASELINE);
+    }
+
+    @Test
     void utilToConfigViolationsIdentifyClassesAndPackages() {
         final JavaClasses classes = importCoreProductionClasses();
         final List<String> violations = collectLayerViolations(
@@ -69,5 +105,15 @@ class LayerBoundaryTest {
         Assertions.assertThat(violations).allSatisfy(violation -> Assertions.assertThat(violation)
                 .contains(ArchitectureTestSupport.UTIL_LAYER_PREFIX)
                 .contains(ArchitectureTestSupport.CONFIG_LAYER_PREFIX));
+    }
+
+    @Test
+    void configToUtilViolationsIdentifyClassesAndPackages() {
+        final JavaClasses classes = importCoreProductionClasses();
+        final List<String> violations = collectLayerViolations(
+                classes, ArchitectureTestSupport::isConfigLayerClass, ArchitectureTestSupport::isUtilLayerClass);
+        Assertions.assertThat(violations).allSatisfy(violation -> Assertions.assertThat(violation)
+                .contains(ArchitectureTestSupport.CONFIG_LAYER_PREFIX)
+                .contains(ArchitectureTestSupport.UTIL_LAYER_PREFIX));
     }
 }
