@@ -1,0 +1,191 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements. See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+////
+
+= Log4j 1.x to 2.x API mapping reference
+:log4j1-url: https://logging.apache.org/log4j/1.x
+
+This page summarizes how Log4j 1.x types map to Log4j 2 equivalents when using the
+xref:migrate-from-log4j1.adoc#Log4j12Bridge[Log4j 1 to Log4j 2 bridge (`log4j-1.2-api`)].
+It complements the migration guide sections on
+<<migrate-from-log4j1.adoc#api-code-migration,API code migration>> and
+<<migrate-from-log4j1.adoc#ConfigurationCompatibility,runtime configuration conversion>>.
+
+The machine-readable source of truth is attached as
+xref:attachment$api-mapping-1x-to-2x.json[`api-mapping-1x-to-2x.json`].
+The mapping is validated by `ApiMappingReferenceTest` in the `log4j-1.2-api` module.
+
+For hands-on migration examples, see the code samples referenced from
+xref:migrate-from-log4j1.adoc#api-code-migration[]:
+
+[source,java,indent=0]
+----
+include::example$manual/migration/Migration1Example.java[tag=guards]
+----
+
+[source,java,indent=0]
+----
+include::example$manual/migration/Migration2Example.java[tag=guards]
+----
+
+== API types
+
+.API type mapping
+[cols="2m,2m,2m,3"]
+|===
+| 1.x Type | 2.x Equivalent | Bridge Class | Behavioral Differences
+
+| `org.apache.log4j.Logger`
+| `org.apache.logging.log4j.Logger`
+| `org.apache.log4j.Logger`
+| `Logger.getLogger(String, LoggerFactory)` is unsupported; `getEffectiveLevel()` maps to `Logger.getLevel()`.
+
+| `org.apache.log4j.Category`
+| `org.apache.logging.log4j.Logger`
+| `org.apache.log4j.Category`
+| Deprecated since Log4j 1.2; programmatic `setLevel()` requires `log4j1.compatibility=true`.
+
+| `org.apache.log4j.LogManager`
+| `org.apache.logging.log4j.LogManager`
+| `org.apache.log4j.LogManager`
+| Default configuration file remains `log4j.properties`; `shutdown()` behavior depends on the backend.
+
+| `org.apache.log4j.Level`
+| `org.apache.logging.log4j.Level`
+| `org.apache.log4j.Level`
+| Adds TRACE (since 1.2.12); each constant wraps a paired Log4j 2 level.
+
+| `org.apache.log4j.Priority`
+| `org.apache.logging.log4j.Level`
+| `org.apache.log4j.Priority`
+| Legacy base type; Log4j 2 `Level` does not expose syslog equivalent integers.
+|===
+
+== Context types
+
+.Context type mapping
+[cols="2m,2m,2m,3"]
+|===
+| 1.x Type | 2.x Equivalent | Bridge Class | Behavioral Differences
+
+| `org.apache.log4j.MDC`
+| `org.apache.logging.log4j.ThreadContext`
+| `org.apache.log4j.MDC`
+| `put(String, Object)` stores locally but forwards `toString()` to ThreadContext; `getContext()` returns a copy.
+
+| `org.apache.log4j.NDC`
+| `org.apache.logging.log4j.ThreadContext`
+| `org.apache.log4j.NDC`
+| Uses raw `Stack` types; use `%ndc` instead of `%x` in patterns for exact Log4j 1 NDC output.
+|===
+
+== Appender types
+
+.Appender type mapping
+[cols="2m,2m,2m,3"]
+|===
+| 1.x Type | 2.x Equivalent | Bridge Class | Behavioral Differences
+
+| `org.apache.log4j.Appender`
+| `org.apache.logging.log4j.core.Appender`
+| `org.apache.log4j.bridge.AppenderAdapter`
+| Unnamed appenders receive a synthetic name; `AppenderWrapper` maps Log4j 2 appenders back to Log4j 1.
+
+| `org.apache.log4j.ConsoleAppender`
+| `org.apache.logging.log4j.core.appender.ConsoleAppender`
+| `org.apache.log4j.builders.appender.ConsoleAppenderBuilder`
+| `System.out`/`System.err` target mapping; Follow and ImmediateFlush follow Log4j 2 defaults when omitted.
+
+| `org.apache.log4j.FileAppender`
+| `org.apache.logging.log4j.core.appender.FileAppender`
+| `org.apache.log4j.builders.appender.FileAppenderBuilder`
+| Append mode controlled by Append parameter; buffering may differ from native Log4j 1.
+
+| `org.apache.log4j.RollingFileAppender`
+| `org.apache.logging.log4j.core.appender.RollingFileAppender`
+| `org.apache.log4j.builders.appender.RollingFileAppenderBuilder`
+| Rollover index strategy differs; set `fileIndex="min"` and explicit `filePattern` for matching behavior.
+
+| `org.apache.log4j.DailyRollingFileAppender`
+| `org.apache.logging.log4j.core.appender.RollingFileAppender`
+| `org.apache.log4j.builders.appender.DailyRollingFileAppenderBuilder`
+| DatePattern translated to Log4j 2 `filePattern`; archived file naming may differ.
+
+| `org.apache.log4j.net.SyslogAppender`
+| `org.apache.logging.log4j.core.appender.SyslogAppender`
+| `org.apache.log4j.builders.appender.SyslogAppenderBuilder`
+| Custom layouts use `Log4j1SyslogLayout`; facility settings may format differently.
+
+| `org.apache.log4j.AsyncAppender`
+| `org.apache.logging.log4j.core.appender.AsyncAppender`
+| `org.apache.log4j.builders.appender.AsyncAppenderBuilder`
+| Buffer-full blocking follows Log4j 2 AsyncAppender semantics.
+
+| `org.apache.log4j.net.SocketAppender`
+| `org.apache.logging.log4j.core.appender.SocketAppender`
+| `org.apache.log4j.builders.appender.SocketAppenderBuilder`
+| RemoteHost and Port required; LogEvent serialization differs from Log4j 1 object streams.
+|===
+
+See also the appender conversion table in
+xref:migrate-from-log4j1.adoc#configuration-appenders[].
+
+== Layout types
+
+.Layout type mapping
+[cols="2m,2m,2m,3"]
+|===
+| 1.x Type | 2.x Equivalent | Bridge Class | Behavioral Differences
+
+| `org.apache.log4j.Layout`
+| `org.apache.logging.log4j.core.Layout`
+| `org.apache.log4j.bridge.LayoutAdapter`
+| `LayoutWrapper` provides reverse mapping; binary layouts are not supported on the Log4j 1 interface.
+
+| `org.apache.log4j.PatternLayout`
+| `org.apache.logging.log4j.core.layout.PatternLayout`
+| `org.apache.log4j.builders.layout.PatternLayoutBuilder`
+| Use `%v1Level`, `%ndc`, `%properties` for exact `%p`, `%x`, `%X` compatibility; `EnhancedPatternLayout` is aliased.
+|===
+
+See also the layout conversion rules in
+xref:migrate-from-log4j1.adoc#configuration-layouts[].
+
+== Configuration types
+
+.Configuration type mapping
+[cols="2m,2m,2m,3"]
+|===
+| 1.x Type | 2.x Equivalent | Bridge Class | Behavioral Differences
+
+| `org.apache.log4j.BasicConfigurator`
+| `org.apache.logging.log4j.core.config.Configurator`
+| `org.apache.log4j.BasicConfigurator`
+| `configure()` triggers Log4j 2 auto-configuration instead of hard-coding a TTCC ConsoleAppender.
+
+| `org.apache.log4j.PropertyConfigurator`
+| `org.apache.logging.log4j.core.config.ConfigurationFactory`
+| `org.apache.log4j.PropertyConfigurator`
+| `configureAndWatch()` requires `log4j1.compatibility=true`; interpolation syntax differs in native Log4j 2 files.
+
+| `org.apache.log4j.xml.DOMConfigurator`
+| `org.apache.logging.log4j.core.config.ConfigurationFactory`
+| `org.apache.log4j.xml.DOMConfigurator`
+| `configure(Element)` is a no-op; XML file watching requires `log4j1.compatibility=true`.
+|===
+
+For converting configuration files offline, see
+xref:migrate-from-log4j1.adoc#Log4j2ConfigurationFormat[].

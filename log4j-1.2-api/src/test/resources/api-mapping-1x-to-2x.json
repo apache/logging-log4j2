@@ -1,0 +1,242 @@
+[
+  {
+    "sourceClass": "org.apache.log4j.Logger",
+    "targetClass": "org.apache.logging.log4j.Logger",
+    "bridgeClass": "org.apache.log4j.Logger",
+    "bridgeMechanism": "Extends org.apache.log4j.Category and delegates logging calls to org.apache.logging.log4j.spi.ExtendedLogger obtained from the active LoggerContext.",
+    "behavioralDifferences": [
+      "Logger.getLogger(String, LoggerFactory) is not supported; use Log4j 2 extension mechanisms instead.",
+      "Category.getEffectiveLevel() maps to Logger.getLevel() rather than computing an inherited effective level in all cases."
+    ],
+    "category": "api",
+    "deprecationNotes": "Prefer org.apache.logging.log4j.LogManager.getLogger() for new code."
+  },
+  {
+    "sourceClass": "org.apache.log4j.Category",
+    "targetClass": "org.apache.logging.log4j.Logger",
+    "bridgeClass": "org.apache.log4j.Category",
+    "bridgeMechanism": "Wraps an org.apache.logging.log4j.Logger instance and forwards log methods via maybeLog() while preserving Log4j 1 hierarchy and appender attachment semantics.",
+    "behavioralDifferences": [
+      "Category has been deprecated since Log4j 1.2; Logger is the supported Log4j 1 type.",
+      "Programmatic setLevel() and appender attachment require log4j1.compatibility=true for full Log4j 1 backend behavior."
+    ],
+    "category": "api",
+    "deprecationNotes": "Category is deprecated; migrate to org.apache.logging.log4j.Logger."
+  },
+  {
+    "sourceClass": "org.apache.log4j.LogManager",
+    "targetClass": "org.apache.logging.log4j.LogManager",
+    "bridgeClass": "org.apache.log4j.LogManager",
+    "bridgeMechanism": "Maintains a Log4j 1 LoggerRepository backed by org.apache.logging.log4j.spi.LoggerContext via org.apache.log4j.Hierarchy.",
+    "behavioralDifferences": [
+      "Default configuration file remains log4j.properties rather than log4j2.xml.",
+      "LogManager.shutdown() behavior depends on the logging backend; Log4j Core registers its own shutdown hook."
+    ],
+    "category": "api",
+    "deprecationNotes": "RepositorySelector and Hierarchy APIs are legacy; new code should use org.apache.logging.log4j.LogManager directly."
+  },
+  {
+    "sourceClass": "org.apache.log4j.Level",
+    "targetClass": "org.apache.logging.log4j.Level",
+    "bridgeClass": "org.apache.log4j.Level",
+    "bridgeMechanism": "Each org.apache.log4j.Level constant wraps a corresponding org.apache.logging.log4j.Level via the Priority.level2 field.",
+    "behavioralDifferences": [
+      "Log4j 1 Level adds TRACE (since 1.2.12) mapped to org.apache.logging.log4j.Level.TRACE.",
+      "Custom Level subclasses create paired org.apache.logging.log4j.Level instances at construction time."
+    ],
+    "category": "api",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.Priority",
+    "targetClass": "org.apache.logging.log4j.Level",
+    "bridgeClass": "org.apache.log4j.Priority",
+    "bridgeMechanism": "Base class for org.apache.log4j.Level; integer priority values are translated to org.apache.logging.log4j.Level through OptionConverter and Level.toLevel().",
+    "behavioralDifferences": [
+      "Priority is a legacy type; Level should be used instead.",
+      "Log4j 2 Level does not expose syslogEquivalent or the Log4j 1 integer level field directly."
+    ],
+    "category": "api",
+    "deprecationNotes": "Refrain from using Priority directly; use org.apache.log4j.Level or org.apache.logging.log4j.Level."
+  },
+  {
+    "sourceClass": "org.apache.log4j.MDC",
+    "targetClass": "org.apache.logging.log4j.ThreadContext",
+    "bridgeClass": "org.apache.log4j.MDC",
+    "bridgeMechanism": "Maintains a local ThreadLocal map and mirrors put/remove/clear operations to org.apache.logging.log4j.ThreadContext.",
+    "behavioralDifferences": [
+      "MDC.put(String, Object) stores the object locally but converts values to String when forwarding to ThreadContext.",
+      "MDC.getContext() returns a Hashtable copy rather than the live ThreadContext map."
+    ],
+    "category": "context",
+    "deprecationNotes": "Migrate to org.apache.logging.log4j.ThreadContext for new code."
+  },
+  {
+    "sourceClass": "org.apache.log4j.NDC",
+    "targetClass": "org.apache.logging.log4j.ThreadContext",
+    "bridgeClass": "org.apache.log4j.NDC",
+    "bridgeMechanism": "Delegates stack push/pop/peek operations to org.apache.logging.log4j.ThreadContext stack APIs, converting between java.util.Stack and ThreadContext stack.",
+    "behavioralDifferences": [
+      "NDC uses raw Stack types without generics for source compatibility.",
+      "Pattern converter %x in Log4j 2 uses a different default format; use %ndc in the bridge for exact Log4j 1 NDC output."
+    ],
+    "category": "context",
+    "deprecationNotes": "NDC is deprecated in favor of ThreadContext stack operations."
+  },
+  {
+    "sourceClass": "org.apache.log4j.Appender",
+    "targetClass": "org.apache.logging.log4j.core.Appender",
+    "bridgeClass": "org.apache.log4j.bridge.AppenderAdapter",
+    "bridgeMechanism": "AppenderAdapter.adapt() wraps native Log4j 1 appenders in an AbstractAppender that converts Log4j 2 LogEvent to org.apache.log4j.spi.LoggingEvent via LogEventWrapper.",
+    "behavioralDifferences": [
+      "Log4j 1 appenders without a name receive a synthetic name based on their hash code.",
+      "AppenderWrapper provides the reverse mapping when a Log4j 2 appender is referenced from Log4j 1 configuration."
+    ],
+    "category": "appender",
+    "deprecationNotes": "Custom appenders should be rewritten as Log4j 2 plugins when possible."
+  },
+  {
+    "sourceClass": "org.apache.log4j.ConsoleAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.ConsoleAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.ConsoleAppenderBuilder",
+    "bridgeMechanism": "ConsoleAppenderBuilder parses Log4j 1 properties/XML and constructs a Log4j 2 ConsoleAppender wrapped in AppenderWrapper.",
+    "behavioralDifferences": [
+      "Target parameter System.out/System.err maps to ConsoleAppender.Target enum values.",
+      "Follow and ImmediateFlush parameters are supported; behavior follows Log4j 2 ConsoleAppender defaults when omitted."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.FileAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.FileAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.FileAppenderBuilder",
+    "bridgeMechanism": "FileAppenderBuilder converts Log4j 1 FileAppender configuration into a Log4j 2 FileAppender with LayoutAdapter for the layout.",
+    "behavioralDifferences": [
+      "Append parameter controls whether the file is opened in append mode.",
+      "BufferedIO and buffer size settings may differ from native Log4j 1 FileAppender buffering."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.RollingFileAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.RollingFileAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.RollingFileAppenderBuilder",
+    "bridgeMechanism": "RollingFileAppenderBuilder maps Log4j 1 size-based rolling settings to Log4j 2 RollingFileAppender with SizeBasedTriggeringPolicy.",
+    "behavioralDifferences": [
+      "Log4j 2 default rollover file index strategy differs from Log4j 1; set DefaultRolloverStrategy fileIndex=min for matching behavior.",
+      "Implicit filePattern app.%i must be configured explicitly in Log4j 2."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.DailyRollingFileAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.RollingFileAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.DailyRollingFileAppenderBuilder",
+    "bridgeMechanism": "DailyRollingFileAppenderBuilder converts date-based rolling to Log4j 2 RollingFileAppender with TimeBasedTriggeringPolicy.",
+    "behavioralDifferences": [
+      "DatePattern values are translated to Log4j 2 filePattern; verify timezone handling matches expectations.",
+      "Log4j 2 uses a different default archived file naming scheme than Log4j 1."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.net.SyslogAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.SyslogAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.SyslogAppenderBuilder",
+    "bridgeMechanism": "SyslogAppenderBuilder builds a Log4j 2 SyslogAppender; layout conversion uses Log4j1SyslogLayout when a Log4j 1 layout is specified.",
+    "behavioralDifferences": [
+      "Custom layouts on SyslogAppender are not supported in native Log4j 2; the bridge uses Log4j1SyslogLayout for compatibility.",
+      "Facility and facilityPrinting parameters map to Log4j 2 SyslogAppender settings with possible formatting differences."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.AsyncAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.AsyncAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.AsyncAppenderBuilder",
+    "bridgeMechanism": "AsyncAppenderBuilder wraps referenced Log4j 1 appenders (via AppenderAdapter) in a Log4j 2 AsyncAppender.",
+    "behavioralDifferences": [
+      "Blocking behavior when the buffer is full follows Log4j 2 AsyncAppender semantics.",
+      "LocationInfo (includeLocation) parameter affects whether caller data is captured asynchronously."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.net.SocketAppender",
+    "targetClass": "org.apache.logging.log4j.core.appender.SocketAppender",
+    "bridgeClass": "org.apache.log4j.builders.appender.SocketAppenderBuilder",
+    "bridgeMechanism": "SocketAppenderBuilder converts Log4j 1 SocketAppender host/port/reconnection settings to Log4j 2 SocketAppender.",
+    "behavioralDifferences": [
+      "RemoteHost and Port parameters are required; defaults differ from some Log4j 1 versions.",
+      "LocationInfo forwarding depends on Log4j 2 serialization of LogEvent over the socket."
+    ],
+    "category": "appender",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.Layout",
+    "targetClass": "org.apache.logging.log4j.core.Layout",
+    "bridgeClass": "org.apache.log4j.bridge.LayoutAdapter",
+    "bridgeMechanism": "LayoutAdapter implements org.apache.logging.log4j.core.Layout by converting Log4j 2 LogEvent to org.apache.log4j.spi.LoggingEvent and calling Layout.format().",
+    "behavioralDifferences": [
+      "LayoutWrapper provides reverse adaptation when a Log4j 2 layout is exposed as a Log4j 1 Layout.",
+      "Binary layouts and byte-buffer destinations are not supported by the Log4j 1 Layout interface."
+    ],
+    "category": "layout",
+    "deprecationNotes": "Implement org.apache.logging.log4j.core.Layout directly for new components."
+  },
+  {
+    "sourceClass": "org.apache.log4j.PatternLayout",
+    "targetClass": "org.apache.logging.log4j.core.layout.PatternLayout",
+    "bridgeClass": "org.apache.log4j.builders.layout.PatternLayoutBuilder",
+    "bridgeMechanism": "PatternLayoutBuilder reads ConversionPattern from Log4j 1 configuration and creates a Log4j 2 PatternLayout wrapped in LayoutWrapper; native org.apache.log4j.PatternLayout uses Log4j 1 PatternParser.",
+    "behavioralDifferences": [
+      "Pattern converters %p, %x, and %X differ between Log4j 1 and Log4j 2; use %v1Level, %ndc, and %properties in the bridge for exact compatibility.",
+      "EnhancedPatternLayout is aliased to the same builder as PatternLayout."
+    ],
+    "category": "layout",
+    "deprecationNotes": null
+  },
+  {
+    "sourceClass": "org.apache.log4j.BasicConfigurator",
+    "targetClass": "org.apache.logging.log4j.core.config.Configurator",
+    "bridgeClass": "org.apache.log4j.BasicConfigurator",
+    "bridgeMechanism": "configure() calls LogManager.reconfigure() to bootstrap Log4j 2 Core; configure(Appender) attaches an appender to the root logger via the Log4j 1 hierarchy.",
+    "behavioralDifferences": [
+      "BasicConfigurator.configure() no longer hard-codes a ConsoleAppender with TTCC pattern; it triggers standard Log4j 2 auto-configuration.",
+      "resetConfiguration() delegates to LogManager.resetConfiguration() on the active hierarchy."
+    ],
+    "category": "configuration",
+    "deprecationNotes": "Use log4j2.xml or log4j2.properties for production configuration."
+  },
+  {
+    "sourceClass": "org.apache.log4j.PropertyConfigurator",
+    "targetClass": "org.apache.logging.log4j.core.config.ConfigurationFactory",
+    "bridgeClass": "org.apache.log4j.PropertyConfigurator",
+    "bridgeMechanism": "Parses log4j.properties and builds a Log4j 2 Configuration via org.apache.log4j.config.PropertiesConfiguration and Log4j1ConfigurationParser when log4j1.compatibility is enabled.",
+    "behavioralDifferences": [
+      "configureAndWatch() requires log4j1.compatibility=true; otherwise a warning is logged and watching is disabled.",
+      "Property interpolation uses ${foo} syntax; Log4j 2 requires ${sys:foo} in native configuration files."
+    ],
+    "category": "configuration",
+    "deprecationNotes": "Convert log4j.properties to log4j2.xml using org.apache.log4j.config.Log4j1ConfigurationConverter."
+  },
+  {
+    "sourceClass": "org.apache.log4j.xml.DOMConfigurator",
+    "targetClass": "org.apache.logging.log4j.core.config.ConfigurationFactory",
+    "bridgeClass": "org.apache.log4j.xml.DOMConfigurator",
+    "bridgeMechanism": "When log4j1.compatibility=true, loads log4j.xml via org.apache.log4j.config.XmlConfigurationFactory and applies it through org.apache.logging.log4j.core.config.Configurator.reconfigure().",
+    "behavioralDifferences": [
+      "configure(Element) and parseElement() are no-ops in the bridge implementation.",
+      "configureAndWatch() for XML requires log4j1.compatibility=true and uses XMLWatchdog for file monitoring."
+    ],
+    "category": "configuration",
+    "deprecationNotes": "Convert log4j.xml to log4j2.xml for native Log4j 2 configuration."
+  }
+]
