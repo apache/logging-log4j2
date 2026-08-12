@@ -27,7 +27,9 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import java.net.URI;
 import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.test.architecture.ArchitectureTestSupport;
@@ -39,8 +41,10 @@ import org.junit.jupiter.api.Test;
  * ArchUnit fitness functions ensuring TrustGate {@link InputSanitizer#validate} is wired into core
  * trust-boundary entry points.
  *
- * <p>{@code Log4j1ConfigurationParser} lives in {@code log4j-1.2-api}, which is not on this
- * module's classpath; see {@code Log4j1ConfigurationParserTrustGateInvocationTest} in that module.
+ * <p>Log4j 1.x bridge entry points ({@code Log4j1ConfigurationParser}, {@code OptionConverter})
+ * live in {@code log4j-1.2-api}, which is not on this module's classpath; see
+ * {@code Log4j1ConfigurationParserTrustGateInvocationTest} and
+ * {@code OptionConverterTrustGateInvocationTest} in that module.
  */
 @AnalyzeClasses(packages = ArchitectureTestSupport.CORE_PACKAGE, importOptions = ImportOption.DoNotIncludeTests.class)
 class TrustGateInvocationTest {
@@ -67,6 +71,27 @@ class TrustGateInvocationTest {
         final JavaMethod validateUri =
                 coreClasses.get(ConfigurationFactory.class).getMethod("validateConfigurationUri", URI.class);
         assertCallsInputSanitizerValidate(validateUri);
+    }
+
+    @Test
+    void configurationSourceFromUriInvokesValidateConfigurationUri() {
+        final JavaMethod fromUri =
+                coreClasses.get(ConfigurationSource.class).getMethod("fromUri", URI.class);
+        assertCallsMethod(fromUri, ConfigurationFactory.class, "validateConfigurationUri", URI.class);
+    }
+
+    @Test
+    void configurationFactoryGetConfigurationInvokesValidateConfigurationUri() {
+        final JavaMethod getConfiguration = coreClasses
+                .get(ConfigurationFactory.class)
+                .getMethod("getConfiguration", LoggerContext.class, String.class, URI.class);
+        assertCallsMethod(getConfiguration, ConfigurationFactory.class, "validateConfigurationUri", URI.class);
+
+        final JavaMethod getConfigurationWithLoader = coreClasses
+                .get(ConfigurationFactory.class)
+                .getMethod("getConfiguration", LoggerContext.class, String.class, URI.class, ClassLoader.class);
+        assertCallsMethod(
+                getConfigurationWithLoader, ConfigurationFactory.class, "validateConfigurationUri", URI.class);
     }
 
     @Test
