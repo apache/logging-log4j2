@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.reset;
 
 import jakarta.servlet.FilterChain;
@@ -28,6 +29,7 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,6 +99,27 @@ class Log4jServletFilterTest {
         then(initializer).should().setLoggerContext();
         then(chain).should().doFilter(same(request), same(response));
         then(chain).shouldHaveNoMoreInteractions();
+        then(initializer).should().clearLoggerContext();
+        then(request).should().removeAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE);
+    }
+
+    @Test
+    void testDoFilterClearsContextWhenChainThrows() throws Exception {
+        this.filter.init(this.filterConfig);
+
+        then(initializer).should().clearLoggerContext();
+        reset(initializer);
+
+        given(request.getAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE))
+                .willReturn(null);
+        willThrow(new IOException("chain failure")).given(chain).doFilter(same(request), same(response));
+
+        assertThrows(
+                IOException.class,
+                () -> this.filter.doFilter(request, response, chain),
+                "Expected the filter to propagate chain exceptions");
+
+        then(initializer).should().setLoggerContext();
         then(initializer).should().clearLoggerContext();
         then(request).should().removeAttribute(Log4jServletFilter.ALREADY_FILTERED_ATTRIBUTE);
     }

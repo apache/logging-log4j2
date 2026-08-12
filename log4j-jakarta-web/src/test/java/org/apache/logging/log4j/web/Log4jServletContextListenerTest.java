@@ -96,6 +96,15 @@ class Log4jServletContextListenerTest {
     }
 
     @Test
+    void testDestroyWithNoInit() {
+        final Log4jServletContextListener listener = new Log4jServletContextListener();
+
+        listener.contextDestroyed(event);
+
+        then(initializer).shouldHaveNoInteractions();
+    }
+
+    @Test
     void testInitFailure() {
         willThrow(new IllegalStateException(Strings.EMPTY)).given(initializer).start();
         final Log4jServletContextListener listener = new Log4jServletContextListener();
