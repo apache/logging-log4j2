@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.net;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static java.util.Objects.requireNonNull;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.apache.logging.log4j.core.config.ConfigurationSourceTest.PATH_IN_JAR;
 import static org.apache.logging.log4j.core.net.WireMockUtil.createMapping;
 import static org.assertj.core.api.Assertions.assertThat;
