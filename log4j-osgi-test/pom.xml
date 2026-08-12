@@ -87,6 +87,26 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-jms</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-smtp</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
       <scope>test</scope>
@@ -238,6 +258,7 @@
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.FelixLoadApiBundleTest</exclude>
+                <exclude>org.apache.logging.log4j.osgi.tests.FelixJakartaFragmentInstallTest</exclude>
                 <exclude>org.apache.logging.log4j.osgi.tests.DisruptorTest</exclude>
               </excludes>
             </configuration>
@@ -273,6 +294,7 @@
               </classpathDependencyExcludes>
               <excludes>
                 <exclude>org.apache.logging.log4j.osgi.tests.EquinoxLoadApiBundleTest</exclude>
+                <exclude>org.apache.logging.log4j.osgi.tests.EquinoxJakartaFragmentInstallTest</exclude>
                 <exclude>org.apache.logging.log4j.osgi.tests.DisruptorTest</exclude>
               </excludes>
             </configuration>
