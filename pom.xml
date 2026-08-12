@@ -242,6 +242,7 @@
 
     <!-- Next unpublished, but internally and *implicitly* (e.g., as a plugin dependency) consumed modules in alphabetical order: -->
     <module>log4j-api-java9</module>
+    <module>config-spi-java9</module>
     <module>log4j-core-java9</module>
 
     <!-- Last comes the rest of the modules in alphabetical order.
@@ -251,6 +252,8 @@
     <module>log4j-api-test</module>
     <module>log4j-appserver</module>
     <module>log4j-cassandra</module>
+    <module>log4j-common</module>
+    <module>config-spi</module>
     <module>log4j-core</module>
     <module>log4j-core-fuzz-test</module>
     <module>log4j-core-its</module>
@@ -392,6 +395,12 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>config-spi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -417,6 +426,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-cassandra</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-common</artifactId>
         <version>${project.version}</version>
       </dependency>
 

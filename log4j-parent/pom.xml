@@ -235,6 +235,13 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>config-spi-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api-java9</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
