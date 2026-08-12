@@ -27,9 +27,8 @@
   <name>Apache Log4j TrustGate</name>
   <description>Apache Log4j input validation and sanitization SPI.</description>
   <properties>
-    <!-- This is a new module, remove this property after the release. -->
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
     <bnd.baseline.skip>true</bnd.baseline.skip>
-    <!-- WO-019: no Maven Central release yet — remove japicmp.skip after first GA release. -->
     <japicmp.skip>true</japicmp.skip>
     <!-- OSGi and JPMS options -->
     <bnd-multi-release>true</bnd-multi-release>

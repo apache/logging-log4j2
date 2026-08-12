@@ -27,8 +27,9 @@
   <name>Apache Log4j Jakarta JMS</name>
   <description>Apache Log4j Java Message Service (JMS), version for Jakarta.</description>
   <properties>
-    <!-- This is a new module in 2.25.0, remove this property after the release. -->
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
     <bnd.baseline.skip>true</bnd.baseline.skip>
+    <japicmp.skip>true</japicmp.skip>
     <!-- OSGi and JPMS options -->
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.jakarta.jms</bnd-module-name>

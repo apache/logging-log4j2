@@ -34,6 +34,10 @@
   <properties>
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
+    <bnd.baseline.skip>true</bnd.baseline.skip>
+    <japicmp.skip>true</japicmp.skip>
+
     <!--
       ~ OSGi and JPMS options
       -->

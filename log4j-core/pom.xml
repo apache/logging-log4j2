@@ -45,7 +45,7 @@
     <!-- Tests are located elsewhere, no need to do any processing for the `src/test` directory: -->
     <maven.test.skip>true</maven.test.skip>
 
-    <!-- WO-054: enforce japicmp binary compatibility against the Maven Central baseline. -->
+    <!-- WO-060: enforce japicmp binary compatibility against the Maven Central baseline. -->
     <japicmp.skip>false</japicmp.skip>
 
     <!-- `log4j-core` plugin descriptor needs to be consumed before other modules' descriptors -->
@@ -298,7 +298,7 @@
         </executions>
       </plugin>
 
-      <!-- WO-054: documented exclusions for intentional modernization API moves (WO-018). -->
+      <!-- WO-060: documented exclusions for intentional modernization API moves (see compatibility-breaks.adoc). -->
       <plugin>
         <groupId>com.github.siom79.japicmp</groupId>
         <artifactId>japicmp-maven-plugin</artifactId>

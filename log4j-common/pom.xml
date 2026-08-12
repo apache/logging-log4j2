@@ -33,8 +33,8 @@
   <description>Shared value types for the Log4j project.</description>
 
   <properties>
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
     <bnd.baseline.skip>true</bnd.baseline.skip>
-    <!-- WO-019: no Maven Central release yet — remove japicmp.skip after first GA release. -->
     <japicmp.skip>true</japicmp.skip>
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.common</bnd-module-name>

@@ -28,6 +28,9 @@
   <name>Apache Log4j Jakarta SMTP</name>
   <description>Apache Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9.</description>
   <properties>
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
+    <bnd.baseline.skip>true</bnd.baseline.skip>
+    <japicmp.skip>true</japicmp.skip>
 
     <!--
       ~ OSGi and JPMS options

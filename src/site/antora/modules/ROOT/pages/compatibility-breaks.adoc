@@ -1,0 +1,163 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Documented compatibility breaks
+
+This page lists **intentional** API changes introduced during the Log4j modernization effort.
+They are excluded from the
+https://github.com/siom79/japicmp[japicmp] binary compatibility check in `log4j-core` and documented here so integrators can plan migrations.
+
+For the general semver and maintenance policy, see xref:versioning.adoc[].
+For Jakarta EE artifact moves, see xref:manual/jakarta-migration.adoc[].
+
+[#overview]
+== Overview
+
+Log4j enforces backward compatibility on released artifacts using:
+
+* **BND Baseline** — OSGi package versioning for public packages.
+* **japicmp** — Java binary and source compatibility against the last GA release on Maven Central.
+
+Modules with a prior GA release (`log4j-api`, `log4j-core`, `log4j-1.2-api`) set `japicmp.skip=false`.
+New modules (`config-spi`, `log4j-common`, `log4j-trustgate`, and the `log4j-jakarta-*` artifacts) skip both checks until their first GA release.
+
+During SPI extraction, core types remain as **compatibility facades** that extend or delegate to the new modules.
+Existing plugins compiled against core types continue to work without recompilation.
+
+[#config-spi]
+== Configuration SPI (`config-spi`)
+
+Configuration contracts are extracted into a dedicated artifact so integrators can depend on configuration interfaces without pulling in Log4j Core implementation classes.
+
+[cols="2,2,3"]
+|===
+| Core type (deprecated facade) | New type | Notes
+
+| `org.apache.logging.log4j.core.util.Clock`
+| `org.apache.logging.log4j.config.spi.Clock`
+| Timestamp source for log events and filters.
+
+| `org.apache.logging.log4j.core.time.PreciseClock`
+| `org.apache.logging.log4j.config.spi.PreciseClock`
+| High-resolution clock; core facade adds `init(MutableInstant)` for log event construction.
+
+| `org.apache.logging.log4j.core.util.FileWatcher`
+| `org.apache.logging.log4j.config.spi.FileWatcher`
+| Callback when a watched configuration file changes.
+
+| `org.apache.logging.log4j.core.util.Watcher`
+| `org.apache.logging.log4j.config.spi.Watcher`
+| Configuration source watcher; core facade adds listener and reconfiguration integration.
+
+| _(new)_
+| `org.apache.logging.log4j.config.spi.ConfigurationSPI`
+| Marker interface implemented by core `Configuration` types.
+
+| _(new)_
+| `org.apache.logging.log4j.config.spi.ConfigurationSourceSPI`
+| Portable configuration source loading contract.
+
+| _(new)_
+| `org.apache.logging.log4j.config.spi.PropertyEnvironmentSPI`
+| Property lookup without core substitutor types.
+
+| _(new)_
+| `org.apache.logging.log4j.config.spi.PropertyLookupSPI`
+| SPI for custom property resolution.
+|===
+
+=== Maven dependency
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>config-spi</artifactId>
+</dependency>
+----
+
+=== JPMS module
+
+`org.apache.logging.log4j.config.spi`
+
+=== Migration
+
+* **Existing custom plugins** that implement or reference the core `Clock`, `PreciseClock`, `FileWatcher`, or `Watcher` interfaces require **no code changes** — the core types extend the new SPI types and remain on the classpath through `log4j-core`.
+* **New integrations** that should avoid a compile-time dependency on `log4j-core` should import types from `org.apache.logging.log4j.config.spi` and depend on the `config-spi` artifact directly.
+* **Custom `PreciseClock` implementations** that override `init(MutableInstant)` should continue to implement the core `PreciseClock` interface when used from Log4j Core log event construction.
+
+[#log4j-common]
+== Shared value types (`log4j-common`)
+
+Immutable value types shared across API, Core, and configuration layers are consolidated into `log4j-common`.
+
+[cols="2,2,3"]
+|===
+| Core type (facade) | New type | Notes
+
+| `org.apache.logging.log4j.core.util.Source`
+| `org.apache.logging.log4j.common.util.Source`
+| Configuration source location (file, URI, URL, path).
+
+| `org.apache.logging.log4j.core.util.KeyValuePair`
+| `org.apache.logging.log4j.common.util.KeyValuePair`
+| Key/value configuration element.
+
+| `org.apache.logging.log4j.core.config.Property`
+| `org.apache.logging.log4j.common.config.Property`
+| Named configuration property with optional value substitution.
+|===
+
+=== Maven dependency
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-common</artifactId>
+</dependency>
+----
+
+=== JPMS module
+
+`org.apache.logging.log4j.common`
+
+=== Migration
+
+* Core facade types delegate to the `log4j-common` implementations; binary compatibility is preserved for callers using core packages.
+* Use `asCommonSource()`, `asCommonKeyValuePair()`, or `asCommonProperty()` on the core facades when bridging to the shared types.
+* Prefer `org.apache.logging.log4j.common..` types in new code that must not depend on `log4j-core`.
+
+[#japicmp-exclusions]
+== japicmp exclusions in `log4j-core`
+
+The following public types are excluded from japicmp comparison because their contracts intentionally delegate to `config-spi`:
+
+* `org.apache.logging.log4j.core.util.Clock`
+* `org.apache.logging.log4j.core.util.FileWatcher`
+* `org.apache.logging.log4j.core.util.WrappedFileWatcher`
+* `org.apache.logging.log4j.core.util.WatchManager`
+* `org.apache.logging.log4j.core.time.PreciseClock`
+
+See the `japicmp-maven-plugin` configuration in the `log4j-core` POM for the authoritative list.
+
+[#related]
+== Related documentation
+
+* xref:versioning.adoc[Versioning and maintenance policy]
+* xref:manual/jakarta-migration.adoc[Migrating to Jakarta integration modules]
+* xref:manual/customconfig.adoc[Custom configuration] — notes on core internal APIs

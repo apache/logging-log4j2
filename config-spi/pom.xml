@@ -34,8 +34,8 @@
     This module defines the configuration SPI contracts without implementation classes.</description>
 
   <properties>
+    <!-- WO-060: new module — remove bnd.baseline.skip and japicmp.skip after first GA release. -->
     <bnd.baseline.skip>true</bnd.baseline.skip>
-    <!-- WO-019: no Maven Central release yet — remove japicmp.skip after first GA release. -->
     <japicmp.skip>true</japicmp.skip>
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
