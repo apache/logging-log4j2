@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginLoggerContext;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.util.StringUtils;
@@ -110,7 +111,11 @@ public final class SpringProfileArbiter implements Arbiter {
                     configuration.getStrSubstitutor().replace(name)));
             Environment environment = null;
             if (loggerContext != null) {
-                environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+                environment = Log4J2LoggingSystem.getEnvironment(loggerContext);
+                if (environment == null) {
+                    environment =
+                            (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+                }
                 if (environment == null) {
                     LOGGER.debug("Creating Arbiter without a Spring Environment");
                 }

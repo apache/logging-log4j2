@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 import org.springframework.core.env.Environment;
 
 /**
@@ -116,7 +117,10 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
     @Override
     public void setLoggerContext(final LoggerContext loggerContext) {
         if (loggerContext != null) {
-            environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+            environment = Log4J2LoggingSystem.getEnvironment(loggerContext);
+            if (environment == null) {
+                environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+            }
         } else {
             LOGGER.warn("Attempt to set LoggerContext reference to null in SpringLookup");
         }
