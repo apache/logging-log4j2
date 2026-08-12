@@ -18,7 +18,9 @@ module org.apache.logging.log4j.trustgate {
     exports org.apache.logging.log4j.trustgate;
     exports org.apache.logging.log4j.trustgate.rules;
     exports org.apache.logging.log4j.trustgate.spi;
+    uses org.apache.logging.log4j.trustgate.spi.InputSanitizer;
     uses org.apache.logging.log4j.trustgate.spi.ValidationRule;
+    provides org.apache.logging.log4j.trustgate.spi.InputSanitizer with org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
     provides org.apache.logging.log4j.trustgate.spi.ValidationRule with
             org.apache.logging.log4j.trustgate.rules.JndiSchemeValidationRule,
             org.apache.logging.log4j.trustgate.rules.UriSchemeValidationRule,

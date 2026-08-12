@@ -19,6 +19,7 @@ package org.apache.logging.log4j.trustgate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
 import org.apache.logging.log4j.trustgate.spi.InputType;
@@ -32,9 +33,29 @@ public final class DefaultInputSanitizer implements InputSanitizer {
     static final String STRICTNESS_PROPERTY = "log4j2.trustgate.strictness";
     static final String STRICT_PROPERTY = "log4j2.trustgate.strict";
     private static final String EMPTY_INPUT_RULE = "empty-input";
+    private static final InputSanitizer INSTANCE = createInstance();
 
     private final List<ValidationRule> rules;
     private final StrictnessLevel strictnessLevel;
+
+    /**
+     * Returns the shared {@link InputSanitizer} instance, falling back to a no-op implementation when TrustGate
+     * cannot be initialized.
+     *
+     * @return the shared input sanitizer
+     */
+    public static InputSanitizer getInstance() {
+        return INSTANCE;
+    }
+
+    private static InputSanitizer createInstance() {
+        try {
+            return new DefaultInputSanitizer();
+        } catch (final ServiceConfigurationError | LinkageError ex) {
+            System.err.println("[TrustGate] Failed to initialize DefaultInputSanitizer: " + ex.getMessage());
+            return NoOpInputSanitizer.INSTANCE;
+        }
+    }
 
     public DefaultInputSanitizer() {
         this(loadRules(), resolveStrictnessLevel());

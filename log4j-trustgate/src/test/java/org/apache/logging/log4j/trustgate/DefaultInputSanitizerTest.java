@@ -30,6 +30,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
 import org.apache.logging.log4j.trustgate.spi.InputType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +69,14 @@ class DefaultInputSanitizerTest {
         } else {
             System.setProperty(propertyName, previousValue);
         }
+    }
+
+    @Test
+    void getInstanceReturnsServiceLoaderImplementation() {
+        final InputSanitizer sanitizer = DefaultInputSanitizer.getInstance();
+
+        assertTrue(sanitizer instanceof DefaultInputSanitizer);
+        assertTrue(sanitizer.isEnabled());
     }
 
     @Test
