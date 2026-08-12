@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+    <description format="asciidoc">
+        Introduce the `log4j-trustgate` module with fail-closed input validation for configuration
+        parsing paths. TrustGate provides `DefaultInputSanitizer` and built-in `ValidationRule`
+        implementations for JNDI scheme blocking, URI scheme allowlists, lookup patterns, recursive
+        lookup depth limits, and property key validation. Configure strictness via
+        `log4j2.trustgate.strictness` (`STRICT`, `PERMISSIVE`, `DISABLED`; default `STRICT`).
+    </description>
+</entry>

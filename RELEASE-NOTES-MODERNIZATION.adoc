@@ -1,0 +1,253 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Log4j Modernization Release Notes (Draft)
+
+:toc:
+:toclevels: 2
+
+[IMPORTANT]
+====
+This document is a **draft** for the upcoming `2.27.0` modernization release.
+It aggregates changes from the Forge modernization initiative (EPIC-01 through EPIC-09).
+Final wording, version numbers, and cross-links will be reconciled when WO-061 (compatibility
+and benchmark reports) completes.
+====
+
+[#release-notes-modernization]
+== Overview
+
+Apache Log4j `2.27.0` introduces security hardening through TrustGate, architectural decoupling
+via new SPI modules, expanded Jakarta EE support, and updated Spring and test dependency baselines.
+
+== Security Changes (TrustGate)
+
+=== New module: `log4j-trustgate`
+
+TrustGate is a fail-closed input validation layer integrated into configuration parsing paths
+(for example, variable substitution and URI resolution in Log4j Core and the Log4j 1.x bridge).
+
+* **JPMS module:** `org.apache.logging.log4j.trustgate`
+* **SPI:** `org.apache.logging.log4j.trustgate.spi.InputSanitizer`, `ValidationRule`
+* **Default implementation:** `DefaultInputSanitizer` (loaded via `ServiceLoader`)
+
+Built-in validation rules:
+
+|===
+| Rule | Purpose
+
+| `JndiSchemeValidationRule`
+| Rejects `jndi:` URI schemes in untrusted input
+
+| `UriSchemeValidationRule`
+| Restricts allowed URI schemes (configurable)
+
+| `LookupPatternValidationRule`
+| Validates lookup expression syntax
+
+| `RecursiveLookupValidationRule`
+| Limits nested lookup depth
+
+| `PropertyKeyValidationRule`
+| Validates property keys in configuration sources
+|===
+
+=== Configuration properties
+
+[cols="2h,3"]
+|===
+| Property | Description
+
+| `log4j2.trustgate.strictness`
+| Primary strictness control: `STRICT` (default), `PERMISSIVE`, or `DISABLED`
+
+| `log4j2.trustgate.strict`
+| Legacy boolean property; `true` maps to `STRICT`, `false` to `PERMISSIVE`
+
+| `log4j2.trustgate.allowedSchemes`
+| Comma-separated list of permitted URI schemes for `UriSchemeValidationRule`
+
+| `log4j2.trustgate.maxLookupDepth`
+| Maximum nested lookup depth for `RecursiveLookupValidationRule`
+|===
+
+**Default behavior is fail-closed (`STRICT`).** When validation fails, a `TrustGateException` is
+thrown and the offending input is rejected. In `PERMISSIVE` mode, violations are logged to
+`System.err` and processing continues. If TrustGate cannot initialize, the sanitizer falls back
+to a no-op implementation and emits a diagnostic on `System.err`.
+
+== Architecture Changes (SPI Extraction)
+
+=== `config-spi`
+
+Configuration SPI contracts are extracted into a dedicated module so downstream integrators can
+depend on configuration interfaces without pulling in Log4j Core implementation classes.
+
+* **Artifact:** `org.apache.logging.log4j:config-spi`
+* **JPMS module:** `org.apache.logging.log4j.config.spi`
+* **Multi-release:** Java 9+ `module-info` supplied via `config-spi-java9`
+
+=== `log4j-common`
+
+Shared value types used across Log4j modules are consolidated into `log4j-common`, reducing
+coupling between API, Core, and configuration layers.
+
+* **Artifact:** `org.apache.logging.log4j:log4j-common`
+* **JPMS module:** `org.apache.logging.log4j.common`
+
+=== Core wiring
+
+`log4j-core` now declares compile dependencies on `config-spi` and `log4j-common`.
+The util and configuration layers use strangler facades during the migration; public API
+signatures remain stable while internal packages move to the new modules.
+
+== Jakarta Migration
+
+=== New and updated Jakarta modules
+
+|===
+| Jakarta artifact | Replaces (javax) | JPMS module | Notes
+
+| `log4j-jakarta-web`
+| `log4j-web`
+| `org.apache.logging.log4j.web`
+| Servlet 5.0+ lifecycle, filters, and web lookup
+
+| `log4j-jakarta-jms`
+| `log4j-jms`
+| `org.apache.logging.log4j.jakarta.jms`
+| Jakarta JMS appender (added in 2.25.0; JPMS descriptors in 2.27.0)
+
+| `log4j-jakarta-jpa`
+| `log4j-jpa`
+| `org.apache.logging.log4j.jakarta.jpa`
+| **New in 2.27.0** — Jakarta Persistence 3.x appender
+
+| `log4j-jakarta-smtp`
+| `log4j-smtp`
+| `org.apache.logging.log4j.jakarta.smtp`
+| Jakarta Mail 2.0+ SMTP appender
+|===
+
+[IMPORTANT]
+====
+Do not deploy a Jakarta module alongside its javax counterpart (for example,
+`log4j-jakarta-web` and `log4j-web` together).
+====
+
+=== Migration guide: javax to Jakarta
+
+==== Maven coordinates
+
+Replace javax artifacts with their Jakarta equivalents:
+
+[source,xml,subs="verbatim,attributes"]
+----
+<!-- Before (javax / Java EE) -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-web</artifactId>
+</dependency>
+
+<!-- After (Jakarta EE 9+) -->
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jakarta-web</artifactId>
+</dependency>
+----
+
+|===
+| javax artifact | Jakarta replacement
+
+| `log4j-web` | `log4j-jakarta-web`
+| `log4j-jms` | `log4j-jakarta-jms`
+| `log4j-jpa` | `log4j-jakarta-jpa`
+| `log4j-smtp` | `log4j-jakarta-smtp`
+|===
+
+==== Import statement changes
+
+|===
+| javax import | jakarta import
+
+| `javax.servlet.*` | `jakarta.servlet.*`
+| `javax.jms.*` | `jakarta.jms.*`
+| `javax.persistence.*` | `jakarta.persistence.*`
+| `javax.mail.*` | `jakarta.mail.*`
+|===
+
+==== Configuration element names
+
+Jakarta JMS appenders use the `JMS-Jakarta` plugin name in XML configuration.
+Legacy `JMS`, `JMSQueue`, and `JMSTopic` element names remain supported on the javax module.
+
+See xref:jakarta.adoc[Integrating with Jakarta EE] for application-server deployment guidance.
+
+== Spring Upgrade
+
+=== Spring Boot 3.5.x
+
+The `log4j-spring-boot` module targets Spring Boot `3.5.16` and requires **Java 17** or later
+(`maven.compiler.release=17`).
+
+Applications using Log4j Spring Boot integration should align their Spring Boot BOM with
+`3.5.x` and verify that custom `Environment` lookups still resolve as expected.
+
+=== Spring Framework 6.2.x
+
+The parent POM imports `spring-framework-bom` at version `6.2.19`, aligned with Spring Boot 3.5.
+
+=== Spring Cloud Config
+
+`log4j-spring-cloud-config-client` uses Spring Cloud Context `4.3.3` and also requires Java 17+.
+
+== Dependency Upgrades
+
+Baseline versions managed in `log4j-parent/pom.xml` for the modernization release:
+
+|===
+| Dependency | Version
+
+| Spring Boot BOM | `3.5.16`
+| Spring Framework BOM | `6.2.19`
+| Spring Cloud Context | `4.3.3`
+| Mockito BOM | `5.23.0`
+| WireMock | `3.13.2`
+| JUnit Jupiter BOM | (see `junit-jupiter.version` in parent POM)
+|===
+
+WireMock 3.x requires Java 11+ and uses Jakarta EE (Jetty 11) internally; test modules that
+embed WireMock (`log4j-core-test`) inherit this baseline.
+
+== Binary Compatibility
+
+Detailed binary and behavioral compatibility analysis is pending completion of WO-061.
+When available, consult the project's compatibility breaks documentation and the TrustGate JMH
+benchmark report (WO-011) for performance impact measurements.
+
+== Performance Validation
+
+TrustGate JMH benchmarks (WO-011) cover common and attack-path inputs, end-to-end
+`DefaultInputSanitizer` behavior, URI/lookup validation, and comparison with legacy
+`StrSubstitutor` paths. Full benchmark tables will be linked from the final release notes
+after WO-061 publishes consolidated results.
+
+== Related Documentation
+
+* https://logging.apache.org/log4j/2.x/release-notes.html[Official release notes]
+* xref:jakarta.adoc[Jakarta EE integration guide]
+* xref:components.adoc[Component reference]

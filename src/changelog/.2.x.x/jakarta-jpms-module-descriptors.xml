@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <description format="asciidoc">
+        Add JPMS `module-info` descriptors for Jakarta modules (`log4j-jakarta-web`,
+        `log4j-jakarta-jms`, `log4j-jakarta-jpa`, `log4j-jakarta-smtp`) as multi-release JAR
+        entries under `java9/`.
+    </description>
+</entry>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="added">
+    <description format="asciidoc">
+        Extract shared value types into the new `log4j-common` module
+        (`org.apache.logging.log4j.common`) to decouple API, Core, and configuration layers.
+    </description>
+</entry>

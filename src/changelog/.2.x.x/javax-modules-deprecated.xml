@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="deprecated">
+    <description format="asciidoc">
+        Prefer Jakarta EE modules (`log4j-jakarta-web`, `log4j-jakarta-jms`, `log4j-jakarta-jpa`,
+        `log4j-jakarta-smtp`) over their javax counterparts (`log4j-web`, `log4j-jms`, `log4j-jpa`,
+        `log4j-smtp`) on Jakarta EE 9+ and Servlet 5.0+ runtimes. Do not deploy javax and Jakarta
+        variants together.
+    </description>
+</entry>

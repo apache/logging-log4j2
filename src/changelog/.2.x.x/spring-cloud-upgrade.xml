@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="updated">
+    <description format="asciidoc">
+        Update `log4j-spring-cloud-config-client` to Spring Cloud Context `4.3.3`, aligned with
+        Spring Boot `3.5.x`.
+    </description>
+</entry>
