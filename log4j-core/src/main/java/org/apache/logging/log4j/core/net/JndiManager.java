@@ -27,6 +27,10 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
+import org.apache.logging.log4j.trustgate.TrustGateException;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
+import org.apache.logging.log4j.trustgate.spi.InputType;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -39,6 +43,7 @@ public class JndiManager extends AbstractManager {
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String PREFIX = "log4j2.enableJndi";
     private static final String JAVA_SCHEME = "java";
+    private static final InputSanitizer INPUT_SANITIZER = initializeInputSanitizer();
 
     private final InitialContext context;
 
@@ -245,6 +250,7 @@ public class JndiManager extends AbstractManager {
         if (context == null) {
             return null;
         }
+        validateJndiName(name);
         try {
             final URI uri = new URI(name);
             if (uri.getScheme() == null || uri.getScheme().equals(JAVA_SCHEME)) {
@@ -255,6 +261,28 @@ public class JndiManager extends AbstractManager {
             LOGGER.warn("Invalid JNDI URI - {}", name);
         }
         return null;
+    }
+
+    private static void validateJndiName(final String name) throws NamingException {
+        if (INPUT_SANITIZER == null) {
+            return;
+        }
+        try {
+            INPUT_SANITIZER.validate(name, InputType.JNDI_LOOKUP);
+        } catch (final TrustGateException ex) {
+            final NamingException namingException = new NamingException(ex.getMessage());
+            namingException.setRootCause(ex);
+            throw namingException;
+        }
+    }
+
+    private static InputSanitizer initializeInputSanitizer() {
+        try {
+            return DefaultInputSanitizer.getInstance();
+        } catch (final LinkageError | Exception ex) {
+            LOGGER.warn("TrustGate unavailable; using inline JNDI validation only.", ex);
+            return null;
+        }
     }
 
     private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {

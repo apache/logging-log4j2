@@ -16,12 +16,17 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
+import javax.naming.NamingException;
+import org.apache.logging.log4j.trustgate.TrustGateException;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 /**
  * Tests {@link JndiManager}.
@@ -29,6 +34,8 @@ import org.junit.jupiter.api.Test;
 class JndiManagerTest {
 
     private static final String TRUE = "true";
+    private static final String TEST_RESOURCE = "java:comp/env/logging/context-name";
+    private static final String TEST_VALUE = "app-1";
 
     @Test
     void testIsJndiContextSelectorEnabled() {
@@ -90,5 +97,34 @@ class JndiManagerTest {
         assertThrows(
                 IllegalStateException.class,
                 () -> JndiManager.getJndiManager("A", "A", "A", "A", "A", new Properties()));
+    }
+
+    @Test
+    void rejectsLdapSchemeBeforeInlineCheck() throws Exception {
+        System.setProperty("log4j2.enableJndiLookup", TRUE);
+        try {
+            SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+            try (JndiManager manager = JndiManager.getDefaultManager()) {
+                final NamingException exception =
+                        assertThrows(NamingException.class, () -> manager.lookup("ldap://evil.example/a"));
+                assertInstanceOf(TrustGateException.class, exception.getRootCause());
+            }
+        } finally {
+            System.clearProperty("log4j2.enableJndiLookup");
+        }
+    }
+
+    @Test
+    void allowsJavaSchemeLookup() throws Exception {
+        System.setProperty("log4j2.enableJndiLookup", TRUE);
+        try {
+            final SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+            builder.bind(TEST_RESOURCE, TEST_VALUE);
+            try (JndiManager manager = JndiManager.getDefaultManager()) {
+                assertEquals(TEST_VALUE, manager.lookup(TEST_RESOURCE));
+            }
+        } finally {
+            System.clearProperty("log4j2.enableJndiLookup");
+        }
     }
 }
