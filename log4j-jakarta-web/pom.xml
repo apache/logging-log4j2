@@ -37,7 +37,9 @@
     <!--
       ~ OSGi and JPMS options
       -->
+    <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.web</bnd-module-name>
+    <bnd-extra-module-options>jakarta.servlet;transitive=false;static=true</bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
     <jakarta.support.range>[5.0,7)</jakarta.support.range>
     <bnd-extra-package-options>jakarta.servlet;version="${jakarta.support.range}",
@@ -84,5 +86,30 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-module-info</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <release>11</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+              <multiReleaseOutput>true</multiReleaseOutput>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

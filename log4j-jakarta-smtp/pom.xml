@@ -32,7 +32,12 @@
     <!--
       ~ OSGi and JPMS options
       -->
+    <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.smtp</bnd-module-name>
+    <bnd-extra-module-options>
+      jakarta.activation;transitive=false;static=true,
+      jakarta.mail;transitive=false;static=true
+    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
@@ -92,5 +97,30 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-module-info</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <release>11</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+              <multiReleaseOutput>true</multiReleaseOutput>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
