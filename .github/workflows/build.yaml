@@ -104,7 +104,8 @@ jobs:
         run: |
           ./mvnw -B verify \
             -pl log4j-jakarta-web,log4j-jakarta-jms,log4j-jakarta-smtp,log4j-jakarta-jpa \
-            -am
+            -am \
+            -Pjakarta-module
 
       - name: Check Jakarta modules for javax/jakarta classpath conflicts
         run: |
@@ -116,6 +117,9 @@ jobs:
             echo "::error::Jakarta modules must not depend on legacy javax APIs"
             exit 1
           fi
+
+      - name: Validate Jakarta module bytecode namespace purity
+        run: tools/validate-jakarta-namespace.sh
 
   build-time-start:
     runs-on: ubuntu-latest

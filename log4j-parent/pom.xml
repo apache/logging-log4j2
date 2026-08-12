@@ -1140,6 +1140,44 @@
               </scripts>
             </configuration>
           </execution>
+          <execution>
+            <id>validate-jakarta-namespace</id>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <continueExecuting>false</continueExecuting>
+              <scripts>
+                <script><![CDATA[
+                  if (!project.artifactId.startsWith("log4j-jakarta-")) {
+                      return
+                  }
+                  if ("jar" != project.packaging) {
+                      log.info("Skipping Jakarta namespace check, since the project type is not `jar`.")
+                      return
+                  }
+                  String jarFile = project.build.directory + "/" + project.build.finalName + ".jar"
+                  if (!new File(jarFile).exists()) {
+                      log.info("Skipping Jakarta namespace check, since `" + jarFile + "` is missing.")
+                      return
+                  }
+                  File script = new File(project.basedir.parentFile, "tools/validate-jakarta-namespace.sh")
+                  if (!script.exists()) {
+                      throw new RuntimeException("Missing Jakarta namespace validation script: " + script)
+                  }
+                  ProcessBuilder builder = new ProcessBuilder("bash", script.absolutePath, jarFile)
+                  builder.redirectErrorStream(true)
+                  Process process = builder.start()
+                  process.inputStream.eachLine { line -> log.info(line) }
+                  int exitCode = process.waitFor()
+                  if (exitCode != 0) {
+                      throw new RuntimeException("Jakarta namespace validation failed for `" + jarFile + "`.")
+                  }
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -1399,6 +1437,54 @@
 
             </executions>
 
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+    <!--
+      ~ Jakarta module validation (WO-055): bans legacy javax.* EE API dependencies.
+      ~ Activate with -Pjakarta-module (see .github/workflows/build.yaml).
+      ~
+      ~ Bytecode namespace purity for artifactId prefixes log4j-jakarta-* is checked during
+      ~ verify by the validate-jakarta-namespace gmavenplus execution above.
+      -->
+    <profile>
+
+      <id>jakarta-module</id>
+
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ban-javax-ee-apis-in-jakarta-modules</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <phase>validate</phase>
+                <configuration>
+                  <rules>
+                    <bannedDependencies>
+                      <searchTransitive>true</searchTransitive>
+                      <excludes>
+                        <exclude>javax.servlet:*</exclude>
+                        <exclude>javax.servlet.jsp:*</exclude>
+                        <exclude>javax.jms:*</exclude>
+                        <exclude>javax.mail:*</exclude>
+                        <exclude>javax.persistence:*</exclude>
+                      </excludes>
+                      <message>Jakarta modules must not depend on legacy javax.* EE APIs; use jakarta.* equivalents.</message>
+                    </bannedDependencies>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
 
         </plugins>
