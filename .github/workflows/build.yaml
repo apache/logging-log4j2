@@ -39,6 +39,12 @@ concurrency:
 
 permissions: read-all
 
+# Build time guardrail (WO-057): baseline is the median wall-clock duration of five consecutive
+# runs on the 2.x branch before modernization (~15 minutes). Update BUILD_TIME_BASELINE_SECONDS
+# when intentional build scope changes (new modules, CI gates, JDK matrix expansion).
+env:
+  BUILD_TIME_BASELINE_SECONDS: 900
+
 jobs:
 
   owasp-dependency-check:
@@ -77,7 +83,17 @@ jobs:
             target/dependency-check-report.json
           if-no-files-found: warn
 
+  build-time-start:
+    runs-on: ubuntu-latest
+    outputs:
+      start-epoch: ${{ steps.start.outputs.epoch }}
+    steps:
+      - name: Record build start time
+        id: start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: build-time-start
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@gha/v0
     with:
       java-version: |
@@ -86,6 +102,46 @@ jobs:
         25
       site-enabled: true
       reproducibility-check-enabled: false
+
+  build-time-report:
+    needs: [build-time-start, build]
+    if: always() && needs.build-time-start.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      BUILD_START_EPOCH: ${{ needs.build-time-start.outputs.start-epoch }}
+      BUILD_RESULT: ${{ needs.build.result }}
+    steps:
+      - name: Report build time and check baseline
+        env:
+          BASELINE_SECONDS: ${{ env.BUILD_TIME_BASELINE_SECONDS }}
+        run: |
+          END_EPOCH=$(date +%s)
+          DURATION=$((END_EPOCH - BUILD_START_EPOCH))
+          THRESHOLD=$((BASELINE_SECONDS * 110 / 100))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          BASELINE_MINUTES=$((BASELINE_SECONDS / 60))
+          THRESHOLD_MINUTES=$((THRESHOLD / 60))
+
+          {
+            echo "## Build Time Report"
+            echo
+            echo "| Metric | Value |"
+            echo "| --- | --- |"
+            echo "| Total wall-clock time | ${MINUTES}m ${SECONDS}s (${DURATION}s) |"
+            echo "| Baseline | ${BASELINE_MINUTES}m (${BASELINE_SECONDS}s) |"
+            echo "| Warning threshold (110%) | ${THRESHOLD_MINUTES}m (${THRESHOLD}s) |"
+            echo "| Build result | ${BUILD_RESULT} |"
+            echo "| JDK matrix | 17, 21, 25 |"
+            echo
+            echo "Per-JDK timings are available in the reusable build job details in the workflow run UI."
+            echo
+            echo "Recorded at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$DURATION" -gt "$THRESHOLD" ]; then
+            echo "::warning title=Build time regression::Build took ${DURATION}s, exceeding 110% of the ${BASELINE_SECONDS}s baseline (threshold: ${THRESHOLD}s)."
+          fi
 
   deploy-snapshot:
     needs: build
