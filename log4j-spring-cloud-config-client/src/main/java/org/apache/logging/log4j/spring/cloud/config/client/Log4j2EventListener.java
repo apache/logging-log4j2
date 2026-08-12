@@ -18,13 +18,9 @@ package org.apache.logging.log4j.spring.cloud.config.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnProperty(value = "spring.cloud.config.watch.enabled")
 public class Log4j2EventListener implements ApplicationListener<EnvironmentChangeEvent> {
     private static Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
 
