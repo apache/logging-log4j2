@@ -33,6 +33,8 @@
   <description>Apache Log4j Spring Cloud Config Client Support</description>
 
   <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+
     <!-- Dependency versions -->
     <spring-cloud.version>4.3.3</spring-cloud.version>
 
