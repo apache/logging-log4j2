@@ -132,6 +132,7 @@
     <osgi.annotation.bundle.version>2.0.0</osgi.annotation.bundle.version>
     <osgi.annotation.versioning.version>1.1.2</osgi.annotation.versioning.version>
     <pax-exam.version>4.14.0</pax-exam.version>
+    <plexus-classworlds.version>2.11.0</plexus-classworlds.version>
     <plexus-utils.version>3.6.1</plexus-utils.version>
     <spring-boot.version>3.5.16</spring-boot.version>
     <spring-framework.version>6.2.19</spring-framework.version>
@@ -150,7 +151,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.6</asm.version>
-    <byte-buddy.version>1.17.7</byte-buddy.version>
+    <byte-buddy.version>1.18.3</byte-buddy.version>
     <commons-pool2.version>2.13.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
@@ -338,6 +339,13 @@
         <groupId>com.datastax.cassandra</groupId>
         <artifactId>cassandra-driver-core</artifactId>
         <version>${cassandra-driver.version}</version>
+        <exclusions>
+          <!-- WO-021: unmaintained driver resolves slf4j-api 1.7.22 and 1.7.25 on different paths; Log4j does not use SLF4J inside the driver -->
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -596,6 +604,13 @@
         <version>${jmh.version}</version>
       </dependency>
 
+      <!-- WO-021: assertj-core (1.18.3) and mockito-core (1.17.7) diverged on byte-buddy -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${byte-buddy.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
@@ -754,6 +769,13 @@
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>pax-exam-spi</artifactId>
         <version>${pax-exam.version}</version>
+      </dependency>
+
+      <!-- WO-021: maven-core resolves plexus-classworlds 2.11.0 and 2.9.0 via org.eclipse.sisu.plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>${plexus-classworlds.version}</version>
       </dependency>
 
       <dependency>
@@ -1031,6 +1053,19 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
+          <!-- WO-021: fail validate when transitive dependency versions diverge across the reactor -->
+          <execution>
+            <id>enforce-dependency-convergence</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <rules>
+                <dependencyConvergence />
+              </rules>
+            </configuration>
+          </execution>
           <execution>
             <id>ban-logging-dependencies</id>
             <goals>
