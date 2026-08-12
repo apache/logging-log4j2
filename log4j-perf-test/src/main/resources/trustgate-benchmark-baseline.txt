@@ -1,0 +1,56 @@
+TrustGateValidationBenchmark baseline (WO-011)
+==============================================
+
+Hardware : Apple M3 (arm64)
+JVM      : OpenJDK 21.0.10 (Homebrew)
+JMH      : 1.37
+Command  : java -jar log4j-perf-test/target/log4j-perf-test-*-uber.jar TrustGateValidationBenchmark -wi 3 -i 5 -f 1
+Date     : 2026-08-12
+
+JMH parameters (class defaults unless noted):
+  @Warmup(iterations = 5, time = 1 s)
+  @Measurement(iterations = 10, time = 1 s)
+  @Fork(1)
+  strSubstitutorWithoutTrustGateLookup uses @Fork(jvmArgs = "-Dlog4j2.trustgate.strictness=disabled")
+
+NFR targets:
+  Common-path validation : < 100 ns/op per rule invocation
+  Attack-path validation : < 500 ns/op per rule invocation (acceptable; rare path)
+  StrSubstitutor lookup  : <= 2% throughput degradation with TrustGate enabled
+
+Results (AverageTime benchmarks in ns/op; Throughput benchmarks in ops/s)
+---------------------------------------------------------------------------
+Benchmark                                                             Mode  Cnt         Score         Error  Units
+TrustGateValidationBenchmark.strSubstitutorPlainText                 thrpt    5  29182110.718 ± 1678357.904  ops/s
+TrustGateValidationBenchmark.strSubstitutorWithTrustGateLookup       thrpt    5   2600794.548 ±   93489.487  ops/s
+TrustGateValidationBenchmark.strSubstitutorWithTrustGateMultiLookup  thrpt    5   1387053.660 ±   36372.556  ops/s
+TrustGateValidationBenchmark.strSubstitutorWithoutTrustGateLookup    thrpt    5   2828214.771 ±  492730.600  ops/s
+TrustGateValidationBenchmark.jndiRuleAttackPath                       avgt    5       188.864 ±       2.240  ns/op
+TrustGateValidationBenchmark.jndiRuleCommonPath                       avgt    5        64.353 ±       1.529  ns/op
+TrustGateValidationBenchmark.lookupRuleAttackPath                     avgt    5         3.972 ±       0.928  ns/op
+TrustGateValidationBenchmark.lookupRuleCommonPath                     avgt    5         9.471 ±       0.018  ns/op
+TrustGateValidationBenchmark.propertyKeyRuleAttackPath                avgt    5         8.133 ±       0.032  ns/op
+TrustGateValidationBenchmark.propertyKeyRuleCommonPath                avgt    5         8.194 ±       0.021  ns/op
+TrustGateValidationBenchmark.recursiveRuleAttackPath                  avgt    5        13.948 ±       0.127  ns/op
+TrustGateValidationBenchmark.recursiveRuleCommonPath                  avgt    5         7.086 ±       0.034  ns/op
+TrustGateValidationBenchmark.sanitizerAttackJndiLookup                avgt    5       944.446 ±       8.023  ns/op
+TrustGateValidationBenchmark.sanitizerAttackLookupPattern             avgt    5        39.524 ±       0.207  ns/op
+TrustGateValidationBenchmark.sanitizerCommonJndiLookup                avgt    5        81.749 ±       0.538  ns/op
+TrustGateValidationBenchmark.sanitizerCommonLogMessage                avgt    5        28.252 ±       0.454  ns/op
+TrustGateValidationBenchmark.sanitizerCommonLookupPattern             avgt    5        26.643 ±       0.433  ns/op
+TrustGateValidationBenchmark.sanitizerLongLogMessage                  avgt    5       774.222 ±     129.664  ns/op
+TrustGateValidationBenchmark.uriRuleAttackPath                        avgt    5         4.278 ±       0.078  ns/op
+TrustGateValidationBenchmark.uriRuleCommonPath                        avgt    5         6.529 ±       0.040  ns/op
+TrustGateValidationBenchmark.uriRuleConfigurationAttackPath           avgt    5       176.384 ±       5.845  ns/op
+TrustGateValidationBenchmark.uriRuleConfigurationCommonPath           avgt    5        68.160 ±       0.909  ns/op
+
+NFR assessment (this run):
+  Common-path rule latency     : PASS — all individual rules < 100 ns/op (max 64.4 ns JNDI common path)
+  Common-path sanitizer e2e    : PASS — 26–82 ns/op on typical inputs (774 ns/op on ~6.4 KB log line)
+  Attack-path rule latency     : PASS — all individual rules < 500 ns/op (max 188.9 ns JNDI attack path)
+  StrSubstitutor lookup delta  : ~8% lower throughput with TrustGate vs disabled fork on this hardware;
+                                 track relative regressions across releases rather than absolute numbers.
+
+Regenerate:
+  ./mvnw -Denforcer.skip -Dmaven.test.skip=true package -pl log4j-perf-test
+  java -jar log4j-perf-test/target/log4j-perf-test-*-uber.jar TrustGateValidationBenchmark

