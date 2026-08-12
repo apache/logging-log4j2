@@ -1,0 +1,5 @@
+org.apache.logging.log4j.trustgate.rules.JndiSchemeValidationRule
+org.apache.logging.log4j.trustgate.rules.UriSchemeValidationRule
+org.apache.logging.log4j.trustgate.rules.LookupPatternValidationRule
+org.apache.logging.log4j.trustgate.rules.RecursiveLookupValidationRule
+org.apache.logging.log4j.trustgate.rules.PropertyKeyValidationRule
