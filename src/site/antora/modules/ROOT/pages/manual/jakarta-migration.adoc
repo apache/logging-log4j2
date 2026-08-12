@@ -1,0 +1,402 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Migrating to Jakarta integration modules
+
+Starting with Log4j `2.27.0`, the legacy `javax`-namespace integration artifacts are deprecated in favor of dedicated Jakarta modules.
+This page explains how to migrate each integration point and which module to use on your application server.
+
+If you are deploying to a Jakarta EE application server for the first time, also read xref:jakarta.adoc[Integrating with Jakarta EE].
+
+[#overview]
+== Overview
+
+Log4j provides separate Maven artifacts for Java EE (`javax`) and Jakarta EE (`jakarta`) integrations:
+
+[cols="2,2,3"]
+|===
+| Integration | Legacy (`javax`) artifact | Jakarta artifact
+
+| Servlet / Web
+| `log4j-web`
+| `log4j-jakarta-web`
+
+| JPA database appender
+| `log4j-jpa`
+| `log4j-jakarta-jpa`
+
+| JMS appender
+| `log4j-core` (plugin `JMS-Javax`)
+| `log4j-jakarta-jms` (plugin `JMS-Jakarta`)
+
+| SMTP appender
+| `log4j-core` (via `javax.mail`)
+| `log4j-jakarta-smtp` (via Jakarta Mail)
+|===
+
+[IMPORTANT]
+====
+Never deploy a legacy and Jakarta module for the same integration point in the same application.
+They register equivalent plugins or services and will cause classpath conflicts.
+====
+
+[#deprecation-timeline]
+== Deprecation timeline
+
+The legacy artifacts listed above were deprecated in Log4j `2.27.0`.
+They remain available in the `2.x` release line so you can migrate at your own pace.
+
+* Deprecated since Log4j `2.27.0` — use the corresponding `log4j-jakarta-*` artifact instead.
+* Planned removal in the next **major** Log4j release (Log4j 3).
+
+If you cannot upgrade your application server to a Jakarta EE runtime yet, continue using the legacy modules until you are ready.
+See <<container-matrix>> to choose the correct module for your container.
+
+[#servlet]
+== Servlet / Web migration
+
+Replace `log4j-web` with `log4j-jakarta-web` when your application runs on a Jakarta Servlet container (Servlet 5.0 or later).
+
+=== Maven dependency
+
+[tabs]
+====
+Before (`log4j-web`)::
++
+We assume you use xref:components.adoc#log4j-bom[`log4j-bom`] for dependency management.
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-web</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+After (`log4j-jakarta-web`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jakarta-web</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+====
+
+=== `web.xml` changes
+
+When auto-initialization is disabled and you register listeners or filters manually, update the `web-app` descriptor namespace to the Jakarta EE schema.
+The Log4j class names are unchanged:
+
+* `org.apache.logging.log4j.web.Log4jServletContextListener`
+* `org.apache.logging.log4j.web.Log4jServletFilter`
+
+.Before (`javax.servlet`, Java EE)
+[source,xml,indent=0]
+----
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <listener>
+    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>log4jServletFilter</filter-name>
+    <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+  </filter>
+</web-app>
+----
+
+.After (`jakarta.servlet`, Jakarta EE 9+)
+[source,xml,indent=0]
+----
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+  <listener>
+    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>log4jServletFilter</filter-name>
+    <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+  </filter>
+</web-app>
+----
+
+On Servlet 3.0 or later, `log4j-jakarta-web` registers a
+https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
+automatically; explicit `web.xml` entries are only required when auto-initialization is disabled.
+See xref:jakarta.adoc#log4j-jakarta-web[Integrating with web applications] for configuration details.
+
+[#jpa]
+== JPA migration
+
+Replace `log4j-jpa` with `log4j-jakarta-jpa` when your persistence unit uses Jakarta Persistence 3.0 or later.
+
+=== Maven dependency
+
+[tabs]
+====
+Before (`log4j-jpa`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jpa</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+After (`log4j-jakarta-jpa`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jakarta-jpa</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+====
+
+=== `persistence.xml` changes
+
+Update the root element namespace, schema location, version, and JDBC property prefixes:
+
+.Before (Java Persistence / Jakarta Persistence 2.x)
+[source,xml,indent=0]
+----
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+  <persistence-unit name="logging">
+    <properties>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:Log4j"/>
+    </properties>
+  </persistence-unit>
+</persistence>
+----
+
+.After (Jakarta Persistence 3.0+)
+[source,xml,indent=0]
+----
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+  <persistence-unit name="logging">
+    <properties>
+      <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:Log4j"/>
+    </properties>
+  </persistence-unit>
+</persistence>
+----
+
+The Log4j configuration element name remains `JPA`.
+Entity and converter class names under `org.apache.logging.log4j.core.appender.db.jpa` are shared between both modules.
+See xref:manual/appenders/database.adoc#JpaAppender[JPA Appender] for appender configuration.
+
+[#jms]
+== JMS migration
+
+The legacy JMS appender in `log4j-core` uses the `JMS-Javax` plugin name and the `javax.jms` API.
+For Jakarta Messaging 3.0 or later, add `log4j-jakarta-jms` and use the `JMS-Jakarta` plugin name instead.
+
+=== Maven dependency
+
+[tabs]
+====
+Before (`JMS-Javax`)::
++
+The JMS appender is built into `log4j-core`.
+You must also provide the Java EE Messaging API on the classpath:
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-core</artifactId>
+</dependency>
+<dependency>
+  <groupId>javax.jms</groupId>
+  <artifactId>javax.jms-api</artifactId>
+  <scope>provided</scope>
+</dependency>
+----
+
+After (`JMS-Jakarta`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jakarta-jms</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+====
+
+=== Log4j configuration
+
+Replace the appender element name in your configuration file:
+
+.Before
+[source,xml,indent=0]
+----
+<JMS-Javax name="JmsAppender"
+           factoryBindingName="java:/ConnectionFactory"
+           destinationBindingName="java:/queue/LogQueue"/>
+----
+
+.After
+[source,xml,indent=0]
+----
+<JMS-Jakarta name="JmsAppender"
+             factoryBindingName="java:/ConnectionFactory"
+             destinationBindingName="java:/queue/LogQueue"/>
+----
+
+As of Log4j `2.17.0`, JMS appenders must be enabled explicitly by setting
+xref:manual/systemproperties.adoc#log4j2.enableJndiJms[`log4j2.enableJndiJms`] to `true`.
+See xref:manual/appenders/message-queue.adoc#JmsAppender[JMS Appender] for full configuration options.
+
+[#smtp]
+== SMTP migration
+
+The SMTP appender in `log4j-core` delegates mail delivery to a `MailManager` loaded via `ServiceLoader`.
+With `javax.mail` on the classpath, the built-in manager is used.
+Add `log4j-jakarta-smtp` to switch to Jakarta Mail (Eclipse Angus).
+
+=== Maven dependency
+
+[tabs]
+====
+Before (`javax.mail`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-core</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.sun.mail</groupId>
+  <artifactId>javax.mail</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+
+After (`jakarta.mail`)::
++
+[source,xml,subs="+attributes"]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-jakarta-smtp</artifactId>
+  <scope>runtime</scope>
+</dependency>
+<dependency>
+  <groupId>org.eclipse.angus</groupId>
+  <artifactId>angus-mail</artifactId>
+  <scope>runtime</scope>
+</dependency>
+----
+====
+
+=== Log4j configuration
+
+The appender element name remains `SMTP`; no configuration changes are required beyond the dependency swap.
+See xref:manual/appenders/network.adoc#SmtpAppender[SMTP Appender] for attribute reference.
+
+[#container-matrix]
+== Container compatibility matrix
+
+Choose the legacy or Jakarta module based on the Servlet/Jakarta EE version provided by your runtime:
+
+[cols="2,2,2,3"]
+|===
+| Container | Minimum version (Jakarta) | Servlet spec | Recommended Log4j module
+
+| Apache Tomcat
+| 10.1+
+| Servlet 6.0
+| `log4j-jakarta-web`
+
+| Eclipse Jetty
+| 12+
+| Servlet 6.0
+| `log4j-jakarta-web`
+
+| WildFly
+| 27+
+| Jakarta EE 10
+| `log4j-jakarta-web`
+
+| Apache Tomcat
+| 9.x and earlier
+| Servlet 4.0 and earlier
+| `log4j-web`
+
+| Eclipse Jetty
+| 11 and earlier
+| Servlet 4.0 and earlier
+| `log4j-web`
+
+| WildFly
+| 26 and earlier
+| Java EE 8
+| `log4j-web`
+|===
+
+[NOTE]
+====
+*Tomcat 10.0* shipped a transitional Servlet API and is not recommended for new deployments.
+Use Tomcat 10.1 or later with `log4j-jakarta-web`, or Tomcat 9.x with `log4j-web`.
+
+The JPA, JMS, and SMTP Jakarta modules follow the same split: use them when your application classpath uses Jakarta Persistence, Jakarta Messaging, or Jakarta Mail APIs respectively.
+====
+
+[#mixed-classpath]
+== Mixed `javax` and `jakarta` dependencies
+
+If Maven or Gradle resolves both `javax.*` and `jakarta.*` API jars for the same specification, the application may fail at startup with linkage or classloader errors.
+
+To resolve conflicts:
+
+. Pick one namespace per integration point and use the matching Log4j module from <<overview>>.
+. Exclude transitive legacy API dependencies from other libraries where possible.
+. Run `mvn dependency:tree` (or `./gradlew dependencies`) to verify only one mail, servlet, persistence, or JMS API is present.
+
+[#further-reading]
+== Further reading
+
+* xref:jakarta.adoc[Integrating with Jakarta EE] — web application lifecycle, shared Log4j Core, and server-specific setup
+* xref:components.adoc[Components] — artifact reference and JPMS module names
+* xref:versioning.adoc[Versioning and maintenance policy] — deprecation and release policy

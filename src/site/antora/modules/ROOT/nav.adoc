@@ -74,6 +74,7 @@
 * xref:graalvm.adoc[]
 * xref:hibernate.adoc[]
 * xref:jakarta.adoc[]
+* xref:manual/jakarta-migration.adoc[]
 * xref:soa.adoc[]
 * xref:development.adoc[]
 
