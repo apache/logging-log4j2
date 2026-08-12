@@ -24,8 +24,11 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * A JPA 2.1 attribute converter for {@link StackTraceElement}s in {@link org.apache.logging.log4j.core.LogEvent}s. This
  * converter is capable of converting both to and from {@link String}s.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @Converter(autoApply = false)
+@Deprecated
 public class StackTraceElementAttributeConverter implements AttributeConverter<StackTraceElement, String> {
     private static final int UNKNOWN_SOURCE = -1;
 

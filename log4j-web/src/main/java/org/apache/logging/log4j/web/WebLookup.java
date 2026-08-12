@@ -24,7 +24,12 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.util.Strings;
 
+/**
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
+ */
+
 @Plugin(name = "web", category = "Lookup")
+@Deprecated
 public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";

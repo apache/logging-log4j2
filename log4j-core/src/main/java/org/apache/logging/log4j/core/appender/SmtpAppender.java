@@ -269,6 +269,7 @@ public final class SmtpAppender extends AbstractAppender {
             return super.setFilter(filter);
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public SmtpAppender build() {
             if (getLayout() == null) {

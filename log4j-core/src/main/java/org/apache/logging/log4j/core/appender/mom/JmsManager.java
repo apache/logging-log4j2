@@ -45,7 +45,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * JMS connection and destination manager. Uses a MessageProducer to send log events to a JMS Destination.
  * </p>
  *
- * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsManager}.
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jms} instead.
  */
 @Deprecated
 public class JmsManager extends AbstractManager {

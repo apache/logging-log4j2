@@ -37,7 +37,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * This filter is a once-per-request filter. It is capable of filtering all the different types of requests
  * (standard, asynchronous, error, etc.) but will not apply processing if the filter matches multiple times on the same
  * logical request.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
+@Deprecated
 public class Log4jServletFilter implements Filter {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

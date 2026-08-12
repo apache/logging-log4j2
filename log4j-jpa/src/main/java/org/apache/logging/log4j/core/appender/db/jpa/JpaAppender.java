@@ -38,8 +38,11 @@ import org.apache.logging.log4j.util.Strings;
  * {@link AbstractLogEventWrapperEntity} class decorated with JPA annotations.
  *
  * @see AbstractLogEventWrapperEntity
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @Plugin(name = "JPA", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Deprecated
 public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
 
     private final String description;

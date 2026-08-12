@@ -31,7 +31,10 @@ import org.apache.logging.log4j.util.Strings;
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
  * else happens in application initialization. In all environments, this shuts down Log4j after the application shuts
  * down.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
+@Deprecated
 public class Log4jServletContextListener implements ServletContextListener {
 
     static final String START_COUNT_ATTR = Log4jServletContextListener.class.getName() + ".START_COUNT";

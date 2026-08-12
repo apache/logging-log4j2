@@ -26,8 +26,11 @@ import javax.persistence.Converter;
  * {@link #convertToEntityAttribute(String)} method throws an {@link UnsupportedOperationException}. If you need to
  * support converting to an entity attribute, you should use the {@link ContextMapJsonAttributeConverter} for conversion
  * both ways.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @Converter(autoApply = false)
+@Deprecated
 public class ContextMapAttributeConverter implements AttributeConverter<Map<String, String>, String> {
     @Override
     public String convertToDatabaseColumn(final Map<String, String> contextMap) {

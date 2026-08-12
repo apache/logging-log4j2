@@ -20,7 +20,11 @@ import java.util.Objects;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.ThreadContext;
+/**
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
+ */
 
+@Deprecated
 public class ServletRequestThreadContext {
 
     public static void put(final String key, final ServletRequest servletRequest) {

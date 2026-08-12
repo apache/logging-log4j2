@@ -66,9 +66,12 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * </p>
  *
  * @see BasicLogEventEntity
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Deprecated
 public abstract class AbstractLogEventWrapperEntity implements LogEvent {
     private static final long serialVersionUID = 1L;
 

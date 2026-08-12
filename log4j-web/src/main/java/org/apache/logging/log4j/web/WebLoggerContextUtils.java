@@ -32,7 +32,10 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
  * Servlet container that bootstrapped Log4j.
  *
  * @since 2.0.1
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
+@Deprecated
 public final class WebLoggerContextUtils {
     private WebLoggerContextUtils() {}
 

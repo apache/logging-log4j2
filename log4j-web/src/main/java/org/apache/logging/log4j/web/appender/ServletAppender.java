@@ -32,8 +32,11 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
 
 /**
  * Logs using the ServletContext's log method
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
+@Deprecated
 public final class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>

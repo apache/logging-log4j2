@@ -30,7 +30,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * In a Servlet 3.0 or newer environment, this initializer is responsible for starting up Log4j logging before anything
  * else happens in application initialization. For consistency across all containers, if the effective Servlet major
  * version of the application is less than 3.0, this initializer does nothing.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
+@Deprecated
 public class Log4jServletContainerInitializer implements ServletContainerInitializer {
 
     @Override

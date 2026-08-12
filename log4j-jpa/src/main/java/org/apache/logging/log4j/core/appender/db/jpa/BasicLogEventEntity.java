@@ -63,8 +63,11 @@ import org.apache.logging.log4j.message.Message;
  * {@link javax.persistence.Transient @Transient}.
  *
  * @see AbstractLogEventWrapperEntity
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @MappedSuperclass
+@Deprecated
 public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity {
     private static final long serialVersionUID = 1L;
 

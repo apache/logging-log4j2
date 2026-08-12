@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
  * Javax JMS Appender plugin. This Appender replaces the previous split classes.
  * Configurations set up for the 2.0 version of the JMS appenders will still work.
  *
- * @deprecated Use {@code org.apache.logging.log4j.core.appender.mom.jakarta.JmsAppender}.
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jms} instead.
  */
 @Deprecated
 @Plugin(name = "JMS-Javax", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)

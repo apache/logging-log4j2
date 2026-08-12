@@ -26,7 +26,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+/**
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
+ */
 
+@Deprecated
 public class Log4jShutdownOnContextDestroyedListener implements ServletContextListener {
 
     private static final int DEFAULT_STOP_TIMEOUT = 30;

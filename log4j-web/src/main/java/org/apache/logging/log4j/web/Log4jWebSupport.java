@@ -30,7 +30,10 @@ import org.apache.logging.log4j.spi.LoggerContext;
  * the {@link LoggerContext} instance for your web application by retrieving the {@code ServletContext} attribute named
  * {@code org.apache.logging.log4j.spi.LoggerContext.INSTANCE}.
  * </p>
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-web} instead.
  */
+@Deprecated
 public interface Log4jWebSupport {
     /**
      * The {@link javax.servlet.ServletContext} parameter name for the name of the

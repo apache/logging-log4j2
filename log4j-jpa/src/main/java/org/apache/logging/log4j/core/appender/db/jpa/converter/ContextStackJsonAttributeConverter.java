@@ -34,8 +34,11 @@ import org.apache.logging.log4j.util.Strings;
  *
  * In addition to other optional dependencies required by the JPA appender, this converter requires the Jackson Data
  * Processor.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
 @Converter(autoApply = false)
+@Deprecated
 public class ContextStackJsonAttributeConverter implements AttributeConverter<ThreadContext.ContextStack, String> {
     @Override
     public String convertToDatabaseColumn(final ThreadContext.ContextStack contextStack) {

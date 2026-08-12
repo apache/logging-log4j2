@@ -50,7 +50,10 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Manager for sending SMTP events.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-smtp} instead.
  */
+@Deprecated
 public class SmtpManager extends MailManager {
     public static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
 

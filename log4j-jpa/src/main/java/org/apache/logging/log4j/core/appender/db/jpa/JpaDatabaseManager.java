@@ -30,7 +30,10 @@ import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.
+ *
+ * @deprecated since 2.27.0 use {@code log4j-jakarta-jpa} instead.
  */
+@Deprecated
 public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private static final JPADatabaseManagerFactory FACTORY = new JPADatabaseManagerFactory();
 
