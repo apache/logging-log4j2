@@ -143,6 +143,25 @@ jobs:
             echo "::warning title=Build time regression::Build took ${DURATION}s, exceeding 110% of the ${BASELINE_SECONDS}s baseline (threshold: ${THRESHOLD}s)."
           fi
 
+  aggregate-test-results:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download test reports
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: test-report-ubuntu-latest-*
+          merge-multiple: true
+          path: .
+
+      - name: Aggregate test results
+        run: ./tools/aggregate-test-results.sh
+
   deploy-snapshot:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
