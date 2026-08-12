@@ -39,6 +39,8 @@
     <bnd-multi-release>true</bnd-multi-release>
     <bnd-module-name>org.apache.logging.log4j.common</bnd-module-name>
     <bnd-extra-module-options>org.jspecify;transitive=false</bnd-extra-module-options>
+    <!-- Reactor log4j-api target/classes is not a named module; use the packaged JAR for JPMS. -->
+    <log4j.common.module.path>${project.basedir}/../log4j-api/target/log4j-api-${project.version}.jar${path.separator}${project.basedir}/../log4j-trustgate/target/log4j-trustgate-${project.version}.jar${path.separator}${settings.localRepository}/org/jspecify/jspecify/${jspecify.version}/jspecify-${jspecify.version}.jar</log4j.common.module.path>
   </properties>
 
   <dependencies>
@@ -81,6 +83,10 @@
                 <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
               </compileSourceRoots>
               <multiReleaseOutput>true</multiReleaseOutput>
+              <compilerArgs>
+                <arg>--module-path</arg>
+                <arg>${log4j.common.module.path}</arg>
+              </compilerArgs>
             </configuration>
           </execution>
         </executions>
