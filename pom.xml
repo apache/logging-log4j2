@@ -263,6 +263,7 @@
     <module>log4j-fuzz-test</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-jms</module>
+    <module>log4j-jakarta-jpa</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
@@ -475,6 +476,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jakarta-jms</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
 
