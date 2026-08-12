@@ -249,19 +249,19 @@ link:javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/WebLoggerContextUtil
 helper class is made available.
 Using this class you can either decorate a `Runnable` with method calls that bind the appropriate logger context to the thread:
 
-.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServlet.java[`AsyncServlet.java`]
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServletJakarta.java[`AsyncServletJakarta.java`]
 [source,java,indent=0]
 ----
-include::example$manual/webapp/AsyncServlet.java[tag=automatic]
+include::example$manual/webapp/AsyncServletJakarta.java[tag=automatic]
 ----
 
 or, if more flexibility is required, you can apply the same logic by using
 link:javadoc/log4j-jakarta-web/org/apache/logging/log4j/web/Log4jWebSupport.html[`Log4jWebSupport`]:
 
-.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServlet.java[`AsyncServlet.java`]
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServletJakarta.java[`AsyncServletJakarta.java`]
 [source,java,indent=0]
 ----
-include::example$manual/webapp/AsyncServlet.java[tag=manual]
+include::example$manual/webapp/AsyncServletJakarta.java[tag=manual]
 ----
 
 [#log4j-taglib]

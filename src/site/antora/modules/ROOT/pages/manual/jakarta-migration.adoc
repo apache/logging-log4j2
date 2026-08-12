@@ -21,6 +21,7 @@ Starting with Log4j `2.27.0`, the legacy `javax`-namespace integration artifacts
 This page explains how to migrate each integration point and which module to use on your application server.
 
 If you are deploying to a Jakarta EE application server for the first time, also read xref:jakarta.adoc[Integrating with Jakarta EE].
+For the broader module layout introduced in the modernization release, see xref:architecture-overview.adoc[Modernization architecture overview].
 
 [#overview]
 == Overview
@@ -148,6 +149,27 @@ On Servlet 3.0 or later, `log4j-jakarta-web` registers a
 https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/servletcontainerinitializer[`ServletContainerInitializer`]
 automatically; explicit `web.xml` entries are only required when auto-initialization is disabled.
 See xref:jakarta.adoc#log4j-jakarta-web[Integrating with web applications] for configuration details.
+
+=== Asynchronous servlet requests
+
+When migrating servlet code to the Jakarta namespace, update `javax.servlet` imports to `jakarta.servlet` and use `log4j-jakarta-web` on the classpath.
+Async request handling requires propagating the Log4j web logger context to worker threads — the API is unchanged; only the Servlet types differ.
+
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServletJakarta.java[`AsyncServletJakarta.java`]
+[source,java,indent=0]
+----
+include::example$manual/webapp/AsyncServletJakarta.java[tag=automatic]
+----
+
+For manual context binding with `Log4jWebSupport`:
+
+.Snippet from an example {antora-examples-url}/manual/webapp/AsyncServletJakarta.java[`AsyncServletJakarta.java`]
+[source,java,indent=0]
+----
+include::example$manual/webapp/AsyncServletJakarta.java[tag=manual]
+----
+
+See xref:jakarta.adoc#async[Asynchronous requests and threads] for background on why this is required.
 
 [#jpa]
 == JPA migration
@@ -398,5 +420,6 @@ To resolve conflicts:
 == Further reading
 
 * xref:jakarta.adoc[Integrating with Jakarta EE] — web application lifecycle, shared Log4j Core, and server-specific setup
+* xref:architecture-overview.adoc[Modernization architecture overview] — module dependency diagram including Jakarta integration artifacts
 * xref:components.adoc[Components] — artifact reference and JPMS module names
 * xref:versioning.adoc[Versioning and maintenance policy] — deprecation and release policy

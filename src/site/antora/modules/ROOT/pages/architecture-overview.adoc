@@ -1,0 +1,125 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Modernization architecture overview
+
+Log4j `2.27.0` refactors the project into smaller, purpose-built modules while keeping the public logging API stable.
+This page summarizes how the new modules relate to each other and to optional integration artifacts.
+
+For runtime class relationships inside Log4j Core, see xref:manual/architecture.adoc[Architecture].
+For security hardening details, see xref:trustgate.adoc[TrustGate input validation].
+For Jakarta EE migration steps, see xref:manual/jakarta-migration.adoc[Migrating to Jakarta integration modules].
+
+[#module-diagram]
+== Module dependency diagram
+
+The diagram below shows compile-time Maven dependencies among the modernization modules and representative integration artifacts.
+Arrows point from a consumer to its dependency (`A --> B` means *A depends on B*).
+
+.Modernization module dependencies (compile scope)
+[mermaid]
+....
+graph TD
+  api["log4j-api"]
+  trustgate["log4j-trustgate"]
+  common["log4j-common"]
+  configspi["config-spi"]
+  core["log4j-core"]
+  jakarta["log4j-jakarta-*"]
+  spring["log4j-spring-boot"]
+
+  api --> trustgate
+  common --> api
+  configspi --> common
+  configspi --> api
+  core --> api
+  core --> common
+  core --> configspi
+  core --> trustgate
+  jakarta --> api
+  jakarta --> core
+  spring --> api
+  spring --> core
+....
+
+[NOTE]
+====
+`log4j-jakarta-*` stands for the Jakarta integration family (`log4j-jakarta-web`, `log4j-jakarta-jms`, `log4j-jakarta-jpa`, `log4j-jakarta-smtp`).
+Each artifact depends on `log4j-api` and `log4j-core` and adds Jakarta EE API types for its integration point.
+====
+
+[#layers]
+== Layer responsibilities
+
+[cols="2h,4"]
+|===
+| Module | Role
+
+| `log4j-trustgate`
+| Fail-closed input validation SPI and built-in rules.
+See xref:trustgate.adoc[].
+
+| `log4j-common`
+| Shared value types used across API, configuration, and Core layers.
+
+| `config-spi`
+| Configuration SPI contracts without Core implementation classes.
+Integrators can depend on configuration interfaces without pulling in appenders and plugins.
+
+| `log4j-api`
+| Public logging API (`Logger`, `LogManager`, markers, levels).
+Re-exports TrustGate SPI types for JPMS consumers.
+
+| `log4j-core`
+| Reference implementation: configuration parsing, appenders, layouts, filters, and lookups.
+Wires TrustGate into substitution and URI resolution paths.
+
+| `log4j-jakarta-*`
+| Jakarta EE integrations (Servlet, JMS, JPA, Mail) for EE 9+ runtimes.
+See xref:manual/jakarta-migration.adoc[].
+
+| `log4j-spring-boot`
+| Spring Boot `Environment` lookup and lifecycle integration (Java 17+, Spring Boot 3.5.x).
+See xref:log4j-spring-boot.adoc[].
+|===
+
+[#core-wiring]
+== Core wiring
+
+`log4j-core` declares compile dependencies on `config-spi`, `log4j-common`, and `log4j-trustgate`.
+Configuration parsing and variable substitution invoke `InputSanitizer` before consuming untrusted input from configuration files, environment variables, and lookup expressions.
+
+The util and configuration packages use strangler facades during the migration: public API signatures remain stable while internal types move into the new modules.
+Binary compatibility is enforced for `log4j-core` via japicmp; new modules (`log4j-trustgate`, `config-spi`, `log4j-common`) are baseline-exempt until their first GA release.
+
+[#integration-modules]
+== Integration modules
+
+Integration artifacts sit above Core and depend only on the API surface they require:
+
+* **Jakarta** — replace legacy `javax` artifacts one integration point at a time; never deploy a Jakarta module alongside its legacy counterpart.
+* **Spring** — `log4j-spring-boot` and `log4j-spring-cloud-config-client` target Spring Boot 3.5.x / Spring Framework 6.2.x and require Java 17+.
+
+See xref:components.adoc[Components] for the full artifact list and JPMS module names.
+
+[#related]
+== Related documentation
+
+* xref:trustgate.adoc[TrustGate input validation]
+* xref:manual/jakarta-migration.adoc[Migrating to Jakarta integration modules]
+* xref:jakarta.adoc[Integrating with Jakarta EE]
+* xref:manual/architecture.adoc[Log4j Core architecture]

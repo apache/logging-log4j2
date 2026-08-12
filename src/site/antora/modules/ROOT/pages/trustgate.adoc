@@ -1,0 +1,219 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= TrustGate input validation
+
+TrustGate is a fail-closed input validation layer introduced in Log4j `2.27.0`.
+It validates untrusted input before Log4j components consume it — for example during variable substitution, URI resolution, and configuration property parsing in Log4j Core and the Log4j 1.x bridge.
+
+See xref:architecture-overview.adoc[Modernization architecture overview] for how `log4j-trustgate` fits into the module graph.
+
+[#artifact]
+== Artifact and JPMS module
+
+[cols="1h,5"]
+|===
+| Maven artifact
+| `org.apache.logging.log4j:log4j-trustgate`
+
+| JPMS module
+| `org.apache.logging.log4j.trustgate`
+|===
+
+TrustGate is pulled transitively by `log4j-api` and `log4j-core`.
+Applications do not need a separate dependency unless they implement custom validation rules.
+
+[#spi]
+== Service provider interface
+
+TrustGate exposes two SPI types under `org.apache.logging.log4j.trustgate.spi`:
+
+`InputSanitizer`::
+  Validates untrusted input in a given context and reports whether strict validation is enabled.
+
+`ValidationRule`::
+  Pluggable rule evaluated by the default sanitizer.
+Rules are discovered via `ServiceLoader` from `META-INF/services/org.apache.logging.log4j.trustgate.spi.ValidationRule`.
+
+The default implementation is `DefaultInputSanitizer`, loaded as a singleton through `DefaultInputSanitizer.getInstance()`.
+
+=== Input types
+
+Rules receive an `InputType` that categorizes the validation context:
+
+[cols="2,3"]
+|===
+| `InputType` | Used when validating
+
+| `JNDI_LOOKUP`
+| JNDI lookup names
+
+| `URI_SCHEME`
+| URI scheme strings
+
+| `LOOKUP_PATTERN`
+| Lookup expression syntax
+
+| `PROPERTY_KEY`
+| Configuration property keys
+
+| `CONFIGURATION_VALUE`
+| Configuration values that may embed URIs
+
+| `LOG_MESSAGE`
+| Log message content (reserved for future use)
+|===
+
+=== Custom rules
+
+To add a custom rule, implement `ValidationRule` and register the class in:
+
+[source]
+----
+META-INF/services/org.apache.logging.log4j.trustgate.spi.ValidationRule
+----
+
+Each line is a fully qualified class name.
+Rules are loaded once at sanitizer initialization.
+
+[#builtin-rules]
+== Built-in validation rules
+
+TrustGate ships five built-in rules:
+
+[cols="2,3"]
+|===
+| Rule | Purpose
+
+| `JndiSchemeValidationRule` (`jndi-scheme`)
+| Rejects JNDI lookup names whose URI scheme is present and not `java`.
+
+| `UriSchemeValidationRule` (`uri-scheme`)
+| Rejects URI schemes outside the configured allowlist for `URI_SCHEME` and `CONFIGURATION_VALUE` inputs.
+Default allowed schemes: `file`, `http`, `https`, `classpath`, `classloader`.
+
+| `LookupPatternValidationRule` (`lookup-pattern`)
+| Rejects log messages that contain `${...}` lookup substitution markers.
+
+| `RecursiveLookupValidationRule` (`recursive-lookup`)
+| Rejects lookup patterns whose nested `${...}` depth exceeds `log4j2.trustgate.maxLookupDepth` (default `1`).
+
+| `PropertyKeyValidationRule` (`property-key`)
+| Rejects property keys containing characters outside `[A-Za-z0-9._-]`.
+|===
+
+[#properties]
+== Configuration properties
+
+All TrustGate properties are JVM system properties (`-D` on the command line).
+
+[cols="2h,3"]
+|===
+| Property | Description
+
+| `log4j2.trustgate.strictness`
+| Primary strictness control: `STRICT` (default), `PERMISSIVE`, or `DISABLED`.
+
+| `log4j2.trustgate.strict`
+| Legacy boolean property used when `log4j2.trustgate.strictness` is unset.
+`true` maps to `STRICT`; `false` maps to `DISABLED`.
+
+| `log4j2.trustgate.allowedSchemes`
+| Comma-separated list of permitted URI schemes for `UriSchemeValidationRule`.
+
+| `log4j2.trustgate.maxLookupDepth`
+| Maximum nested lookup depth for `RecursiveLookupValidationRule`.
+|===
+
+.Example: strict mode (default)
+[source,shell]
+----
+java -Dlog4j2.trustgate.strictness=strict -jar myapp.jar
+----
+
+.Example: permissive mode (log violations, continue processing)
+[source,shell]
+----
+java -Dlog4j2.trustgate.strictness=permissive -jar myapp.jar
+----
+
+.Example: allow an additional URI scheme
+[source,shell]
+----
+java -Dlog4j2.trustgate.allowedSchemes=file,http,https,classpath,classloader,s3 -jar myapp.jar
+----
+
+[#strictness]
+== Strictness levels
+
+[cols="1,4"]
+|===
+| Level | Behavior
+
+| `STRICT`
+| Fail-closed: when a rule matches, validation throws `TrustGateException` and the input is rejected.
+This is the default when no property is set or when a property cannot be read.
+
+| `PERMISSIVE`
+| Matching rules are logged to `System.err` with a `[TrustGate PERMISSIVE]` prefix; processing continues.
+
+| `DISABLED`
+| All validation is bypassed (`InputSanitizer.isEnabled()` returns `false`).
+|===
+
+[IMPORTANT]
+====
+If the JVM security manager (or policy) denies reading a TrustGate system property, TrustGate defaults to `STRICT` and emits a diagnostic on `System.err`.
+This preserves fail-closed behavior when configuration cannot be inspected.
+====
+
+[#fail-closed]
+== Fail-closed behavior
+
+TrustGate is designed to reject suspicious input rather than silently process it:
+
+* **Default strictness is `STRICT`.** Unrecognized `log4j2.trustgate.strictness` values also fall back to `STRICT`.
+* **Empty or null input is rejected** in strict mode with rule name `empty-input`.
+* **Rule match throws `TrustGateException`** in strict mode, preventing the caller from using the rejected value.
+* **Initialization failure falls back to a no-op sanitizer** (`NoOpInputSanitizer`) only when `DefaultInputSanitizer` cannot be constructed (for example, a broken `ServiceLoader` configuration).
+A diagnostic is printed to `System.err` in that case.
+
+[WARNING]
+====
+`DISABLED` and `PERMISSIVE` modes reduce protection.
+Use them only for troubleshooting or in controlled environments.
+====
+
+[#integration-points]
+== Where TrustGate is invoked
+
+TrustGate validation is integrated into configuration parsing paths, including:
+
+* Variable substitution in `StrSubstitutor` (Log4j Core)
+* URI scheme checks during configuration loading
+* Property key validation in configuration sources
+* The Log4j 1.x configuration parser bridge
+
+When validation fails in strict mode, configuration loading or substitution aborts with a `TrustGateException` that includes the name of the matching rule.
+
+[#related]
+== Related documentation
+
+* xref:architecture-overview.adoc[Modernization architecture overview]
+* xref:manual/systemproperties.adoc[System properties]
+* xref:manual/lookups.adoc[Lookups]
+* xref:components.adoc[Components]
