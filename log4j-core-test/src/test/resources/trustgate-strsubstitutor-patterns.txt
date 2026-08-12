@@ -1,0 +1,9 @@
+# StrSubstitutor TrustGate test fixtures for WO-007.
+
+category=valid
+${sys:StrSubstitutorTrustGateTestKey}
+${env:PATH}
+
+category=attack
+${${env:USER}}
+${${lower:${env:USER}}}

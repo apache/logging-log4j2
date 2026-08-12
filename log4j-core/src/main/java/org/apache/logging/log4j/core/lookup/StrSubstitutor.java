@@ -28,6 +28,11 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.trustgate.DefaultInputSanitizer;
+import org.apache.logging.log4j.trustgate.TrustGateException;
+import org.apache.logging.log4j.trustgate.ValidationResult;
+import org.apache.logging.log4j.trustgate.spi.InputSanitizer;
+import org.apache.logging.log4j.trustgate.spi.InputType;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -167,6 +172,7 @@ public class StrSubstitutor implements ConfigurationAware {
     public static final StrMatcher DEFAULT_VALUE_ESCAPE_DELIMITER = StrMatcher.stringMatcher(ESCAPE_DELIMITER_STRING);
 
     private static final int BUF_SIZE = 256;
+    private static final InputSanitizer INPUT_SANITIZER = createInputSanitizer();
 
     /**
      * Stores the escape character.
@@ -483,6 +489,37 @@ public class StrSubstitutor implements ConfigurationAware {
         StatusLogger.getLogger().error("Replacement failed on {}", input, throwable);
         return input;
     }
+
+    private static InputSanitizer createInputSanitizer() {
+        try {
+            return DefaultInputSanitizer.getInstance();
+        } catch (final Throwable t) {
+            StatusLogger.getLogger().warn("Unable to initialize TrustGate input sanitizer", t);
+            return NO_OP_SANITIZER;
+        }
+    }
+
+    private static boolean containsLookupStart(final StringBuilder buf, final int offset, final int length) {
+        final int end = offset + length;
+        for (int i = offset; i < end - 1; i++) {
+            if (buf.charAt(i) == '$' && buf.charAt(i + 1) == '{') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static final InputSanitizer NO_OP_SANITIZER = new InputSanitizer() {
+        @Override
+        public ValidationResult validate(final String input, final InputType type) {
+            return ValidationResult.valid();
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
+    };
 
     // -----------------------------------------------------------------------
     /**
@@ -996,7 +1033,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * @return true if altered
      */
     protected boolean substitute(final LogEvent event, final StringBuilder buf, final int offset, final int length) {
-        return substitute(event, buf, offset, length, null) > 0;
+        return substitute(event, buf, offset, length, null, false) > 0;
     }
 
     /**
@@ -1017,7 +1054,8 @@ public class StrSubstitutor implements ConfigurationAware {
             final StringBuilder buf,
             final int offset,
             final int length,
-            List<String> priorVariables) {
+            List<String> priorVariables,
+            final boolean validateResolvedValues) {
         final StrMatcher prefixMatcher = getVariablePrefixMatcher();
         final StrMatcher suffixMatcher = getVariableSuffixMatcher();
         final char escape = getEscapeChar();
@@ -1025,6 +1063,8 @@ public class StrSubstitutor implements ConfigurationAware {
         final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
         final boolean top = priorVariables == null;
+        final boolean validateLookups = validateResolvedValues
+                || (top && INPUT_SANITIZER.isEnabled() && containsLookupStart(buf, offset, length));
         boolean altered = false;
         int lengthChange = 0;
         char[] chars = getChars(buf);
@@ -1071,11 +1111,15 @@ public class StrSubstitutor implements ConfigurationAware {
                                     priorVariables = new ArrayList<>();
                                 }
                                 final StringBuilder bufName = new StringBuilder(varNameExpr);
-                                substitute(event, bufName, 0, bufName.length(), priorVariables);
+                                substitute(event, bufName, 0, bufName.length(), priorVariables, true);
                                 varNameExpr = bufName.toString();
                             }
                             pos += endMatchLen;
                             final int endPos = pos;
+
+                            if (validateLookups && !validateLookupPattern(varNameExpr)) {
+                                break;
+                            }
 
                             String varName = varNameExpr;
                             String varDefaultValue = null;
@@ -1146,7 +1190,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                 buf.replace(startPos, endPos, varValue);
                                 altered = true;
                                 int change = resolvedResult != null && resolvedResult.isLookupEvaluationAllowedInValue()
-                                        ? substitute(event, buf, startPos, varLen, priorVariables)
+                                        ? substitute(event, buf, startPos, varLen, priorVariables, true)
                                         : 0;
                                 change = change + (varLen - (endPos - startPos));
                                 pos += change;
@@ -1171,6 +1215,16 @@ public class StrSubstitutor implements ConfigurationAware {
             return altered ? 1 : 0;
         }
         return lengthChange;
+    }
+
+    private static boolean validateLookupPattern(final String lookupPattern) {
+        try {
+            INPUT_SANITIZER.validate(lookupPattern, InputType.LOOKUP_PATTERN);
+            return true;
+        } catch (final TrustGateException ex) {
+            StatusLogger.getLogger().warn("TrustGate rejected lookup pattern: {}", lookupPattern, ex);
+            return false;
+        }
     }
 
     /**
