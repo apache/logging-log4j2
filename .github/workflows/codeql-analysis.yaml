@@ -45,7 +45,6 @@ jobs:
     uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@gha/v0
     with:
       java-version: |
-        8
         17
     # Permissions required to publish Security Alerts
     permissions:

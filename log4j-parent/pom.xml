@@ -1137,17 +1137,11 @@
 
   <profiles>
 
-    <!-- `java8-tests` profile to force using Java 8 while running tests -->
+    <!-- `java8-tests` profile to force using Java 8 while running tests.
+         Activate manually with `-Pjava8-tests` (see BUILDING.adoc). -->
     <profile>
 
       <id>java8-tests</id>
-
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
 
       <!-- There are certain Java 8 bugs[1] that cause Mockito failures[2].
            Adding necessary dependencies to workaround them.

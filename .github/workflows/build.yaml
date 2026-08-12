@@ -45,8 +45,9 @@ jobs:
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@gha/v0
     with:
       java-version: |
-        8
         17
+        21
+        25
       site-enabled: true
       reproducibility-check-enabled: false
 
@@ -60,7 +61,6 @@ jobs:
       NEXUS_PASSWORD: ${{ secrets.NEXUS_PW }}
     with:
       java-version: |
-        8
         17
 
   deploy-release:
@@ -79,7 +79,6 @@ jobs:
       contents: write
     with:
       java-version: |
-        8
         17
       project-id: log4j
 
