@@ -27,6 +27,8 @@
  * <h2>Measured baselines (2026-08-12, {@code feat/forge-modernization-swarm})</h2>
  *
  * <ul>
+ *   <li>{@link LayerBoundaryArchTest}: frozen baseline of 227 util/config layer violations via
+ *       {@code FreezingArchRule} (ratchets down as violations are remediated).
  *   <li>{@link LayerBoundaryTest}: 56 direct util-to-config dependency edges, 171 config-to-util
  *       edges, and 227 layeredArchitecture diagnostic entries scoped to util/config packages
  *       (ForgeScore estimated 1,214 total cross-layer couplings using broader static metrics; the
