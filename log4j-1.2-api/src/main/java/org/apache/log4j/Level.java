@@ -36,6 +36,18 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  * The <code>Level</code> class may be subclassed to define a larger
  * level set.
  * </p>
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Level} to {@link org.apache.logging.log4j.Level}.
+ * Each constant wraps a corresponding {@link org.apache.logging.log4j.Level} via the
+ * {@code Priority.level2} field.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Log4j 1 {@code Level} adds {@link #TRACE} (since 1.2.12) mapped to
+ *       {@link org.apache.logging.log4j.Level#TRACE}.</li>
+ *   <li>Custom {@code Level} subclasses create paired {@link org.apache.logging.log4j.Level} instances at
+ *       construction time.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.Level
  */
 public class Level extends Priority implements Serializable {
 
@@ -122,6 +134,9 @@ public class Level extends Priority implements Serializable {
     /**
      * Convert the string passed as argument to a level. If the
      * conversion fails, then this method returns {@link #DEBUG}.
+     *
+     * @apiNote Delegates to {@link org.apache.log4j.helpers.OptionConverter#toLevel(String, Level)}; custom level names
+     * create paired {@link org.apache.logging.log4j.Level} instances at construction time.
      *
      * @param sArg The level name.
      * @return The Level.

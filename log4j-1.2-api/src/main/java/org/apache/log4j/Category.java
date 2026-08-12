@@ -47,6 +47,17 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Implementation of the Category class for compatibility, despite it having been deprecated a long, long time ago.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Category} to {@link org.apache.logging.log4j.Logger}.
+ * Wraps an {@link org.apache.logging.log4j.Logger} instance and forwards log methods via
+ * {@code maybeLog()} while preserving Log4j 1 hierarchy and appender attachment semantics.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Category has been deprecated since Log4j 1.2; {@link Logger} is the supported Log4j 1 type.</li>
+ *   <li>Programmatic {@link #setLevel(Level)} and appender attachment require
+ *       {@code log4j1.compatibility=true} for full Log4j 1 backend behavior.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.Logger
  */
 public class Category implements AppenderAttachable {
 
@@ -234,6 +245,9 @@ public class Category implements AppenderAttachable {
      * not to log the particular log request.
      * </p>
      *
+     * @apiNote When Log4j Core is present, forwards the event through {@code CategoryUtil.log()} rather than walking the
+     * Log4j 1 parent chain.
+     *
      * @param event the event to log.
      */
     public void callAppenders(final LoggingEvent event) {
@@ -384,6 +398,10 @@ public class Category implements AppenderAttachable {
         return getEffectiveLevel();
     }
 
+    /**
+     * @apiNote Maps to {@code Logger.getLevel()} on the wrapped Log4j 2 logger rather than computing an inherited
+     * effective level in all cases.
+     */
     public Level getEffectiveLevel() {
         return OptionConverter.convertLevel(logger.getLevel());
     }
@@ -425,6 +443,10 @@ public class Category implements AppenderAttachable {
         return logger.getName();
     }
 
+    /**
+     * @apiNote Returns {@code null} when Log4j Core is not present; parent resolution uses
+     * {@code CategoryUtil.getParent()} on the wrapped Log4j 2 logger.
+     */
     public final Category getParent() {
         if (!LogManager.isLog4jCorePresent()) {
             return null;
@@ -634,6 +656,10 @@ public class Category implements AppenderAttachable {
         this.repository = repository;
     }
 
+    /**
+     * @apiNote Requires {@code log4j1.compatibility=true} and Log4j Core for programmatic level changes to take
+     * effect on the Log4j 2 backend.
+     */
     public void setLevel(final Level level) {
         setLevel(level != null ? level.getVersion2Level() : null);
     }

@@ -40,6 +40,16 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  * @author Anders Kristensen
  *
+ * @apiNote Parses Log4j 1.x pattern conversion strings for native {@link PatternLayout}. When configuration is loaded
+ * through the bridge, {@link org.apache.log4j.builders.layout.PatternLayoutBuilder} maps patterns to
+ * {@link org.apache.logging.log4j.core.layout.PatternLayout} instead.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Pattern converters {@code %p}, {@code %x}, and {@code %X} differ from Log4j 2; use {@code %v1Level},
+ *       {@code %ndc}, and {@code %properties} in bridge configuration for exact compatibility.</li>
+ *   <li>Log4j 2 {@code PatternLayout} supports additional converters not available in Log4j 1 {@code PatternParser}.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.layout.PatternLayout
  * @since 0.8.2
  */
 public class PatternParser {

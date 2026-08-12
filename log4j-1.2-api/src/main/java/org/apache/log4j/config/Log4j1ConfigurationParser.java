@@ -58,6 +58,18 @@ import org.apache.logging.log4j.util.Strings;
  * searched in the configuration file being parsed. The corresponding value replaces the ${variableName} sequence. For example, if java.home
  * system property is set to /home/xyz, then every occurrence of the sequence ${java.home} will be interpreted as /home/xyz.
  * </p>
+ *
+ * @apiNote Parses Log4j 1.x {@code log4j.properties} into a Log4j 2
+ * {@link org.apache.logging.log4j.core.config.Configuration} builder. Configuration input crosses a trust boundary
+ * from legacy 1.x property syntax into the Log4j 2 Core processing pipeline; validate untrusted sources before
+ * enabling {@code log4j1.compatibility}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Property interpolation uses {@code ${foo}} syntax rather than Log4j 2 {@code ${sys:foo}}.</li>
+ *   <li>Appender and layout types are mapped to Log4j 2 plugin equivalents; unsupported 1.x components are skipped or
+ *       logged as errors.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.ConfigurationFactory
  */
 public class Log4j1ConfigurationParser {
 

@@ -24,6 +24,18 @@ import org.apache.logging.log4j.ThreadContext;
 /**
  * This class behaves just like Log4j's MDC would - and so can cause issues with the redeployment of web
  * applications if the Objects stored in the threads Map cannot be garbage collected.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.MDC} to {@link org.apache.logging.log4j.ThreadContext}.
+ * Maintains a local {@link ThreadLocal} map and mirrors put/remove/clear operations to
+ * {@link org.apache.logging.log4j.ThreadContext}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link #put(String, Object)} stores the object locally but converts values to {@link String} when forwarding
+ *       to {@code ThreadContext}.</li>
+ *   <li>{@link #getContext()} returns a {@link java.util.Hashtable} copy rather than the live
+ *       {@code ThreadContext} map.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.ThreadContext
  */
 public final class MDC {
 

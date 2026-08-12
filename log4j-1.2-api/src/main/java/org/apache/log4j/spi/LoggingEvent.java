@@ -26,6 +26,21 @@ import org.apache.log4j.bridge.LogEventAdapter;
 /**
  *  No-op version of Log4j 1.2 LoggingEvent. This class is not directly used by Log4j 1.x clients but is used by
  *  the Log4j 2 LogEvent adapter to be compatible with Log4j 1.x components.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.spi.LoggingEvent} to
+ * {@link org.apache.logging.log4j.core.LogEvent}.
+ * Populated by {@link org.apache.log4j.bridge.LogEventAdapter} and
+ * {@link org.apache.log4j.bridge.LogEventWrapper} when Log4j 2 events cross into Log4j 1 appenders, layouts, and
+ * filters.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Not constructed directly by application code in the bridge; instances are synthesized from Log4j 2
+ *       {@code LogEvent} data.</li>
+ *   <li>Some Log4j 1 fields (for example location info and throwable representation) may differ from native Log4j 1
+ *       serialization.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.LogEvent
+ * @see org.apache.log4j.bridge.LogEventAdapter
  */
 public class LoggingEvent {
 

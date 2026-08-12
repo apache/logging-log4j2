@@ -51,6 +51,18 @@ import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Constructs a configuration based on Log4j 1 properties.
+ *
+ * @apiNote Bridges Log4j 1 {@code log4j.properties} to
+ * {@link org.apache.logging.log4j.core.config.Configuration}.
+ * Built from properties parsed by {@link Log4j1ConfigurationParser} and applied when
+ * {@code log4j1.compatibility=true}. XML configuration input crosses a trust boundary into Log4j 2 Core.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Uses Log4j 1 property keys ({@code log4j.rootCategory}, {@code log4j.appender.*}) rather than native
+ *       {@code log4j2.xml} structure.</li>
+ *   <li>Programmatic appender attachment uses {@link AppenderAdapter} rather than Log4j 1 native lifecycle.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.Configuration
  */
 public class PropertiesConfiguration extends Log4j1Configuration {
 

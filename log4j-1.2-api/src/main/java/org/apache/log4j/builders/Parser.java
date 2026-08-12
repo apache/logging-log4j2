@@ -21,9 +21,19 @@ import org.apache.log4j.xml.XmlConfiguration;
 import org.w3c.dom.Element;
 
 /**
- * Parses DOM and properties.
+ * Parses DOM and properties configuration fragments into bridge components.
  *
  * @param <T> The type to build.
+ *
+ * @apiNote Bridge parser interface used by {@link org.apache.log4j.builders.BuilderManager} to translate Log4j 1.x
+ * configuration (properties or XML DOM) into Log4j 2 plugin instances wrapped for 1.x API compatibility.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Implementations produce Log4j 2 types wrapped in {@code AppenderWrapper} or {@code LayoutWrapper} rather
+ *       than native Log4j 1 components.</li>
+ *   <li>Unsupported 1.x configuration attributes may be ignored rather than failing configuration load.</li>
+ * </ul>
+ * @see org.apache.log4j.builders.BuilderManager
  */
 public interface Parser<T> extends Builder<T> {
 

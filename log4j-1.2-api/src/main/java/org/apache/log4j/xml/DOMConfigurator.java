@@ -65,6 +65,18 @@ import org.w3c.dom.Element;
  * <p>
  * There are sample XML files included in the package.
  *
+ * @apiNote Bridges {@code org.apache.log4j.xml.DOMConfigurator} to
+ * {@link org.apache.logging.log4j.core.config.ConfigurationFactory}.
+ * When {@code log4j1.compatibility=true}, loads {@code log4j.xml} via
+ * {@link org.apache.log4j.config.XmlConfigurationFactory} and applies it through
+ * {@link org.apache.logging.log4j.core.config.Configurator#reconfigure()}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link #configure(Element)} and {@code parseElement()} are no-ops in the bridge implementation.</li>
+ *   <li>{@code configureAndWatch()} for XML requires {@code log4j1.compatibility=true} and uses
+ *       {@link org.apache.log4j.xml.XMLWatchdog} for file monitoring.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.ConfigurationFactory
  * @since 0.8.3
  */
 public class DOMConfigurator {

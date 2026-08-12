@@ -21,7 +21,21 @@ import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
+ * Log4j 1.x pattern-based layout.
  *
+ * @apiNote Bridges {@code org.apache.log4j.PatternLayout} to
+ * {@link org.apache.logging.log4j.core.layout.PatternLayout}.
+ * {@link org.apache.log4j.builders.layout.PatternLayoutBuilder} reads {@code ConversionPattern} from Log4j 1
+ * configuration and creates a Log4j 2 {@code PatternLayout} wrapped in
+ * {@link org.apache.log4j.bridge.LayoutWrapper}; native {@code PatternLayout} uses
+ * {@link org.apache.log4j.helpers.PatternParser}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Pattern converters {@code %p}, {@code %x}, and {@code %X} differ between Log4j 1 and Log4j 2; use
+ *       {@code %v1Level}, {@code %ndc}, and {@code %properties} in the bridge for exact compatibility.</li>
+ *   <li>{@code EnhancedPatternLayout} is aliased to the same builder as {@code PatternLayout}.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.layout.PatternLayout
  */
 public class PatternLayout extends Layout {
 

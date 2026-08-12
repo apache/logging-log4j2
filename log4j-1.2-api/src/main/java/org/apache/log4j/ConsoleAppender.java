@@ -21,6 +21,18 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Placeholder for Log4j 1.2 Console Appender.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.ConsoleAppender} to
+ * {@link org.apache.logging.log4j.core.appender.ConsoleAppender}.
+ * {@link org.apache.log4j.builders.appender.ConsoleAppenderBuilder} parses Log4j 1 properties/XML and constructs a
+ * Log4j 2 {@code ConsoleAppender} wrapped in {@link org.apache.log4j.bridge.AppenderWrapper}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link #SYSTEM_OUT}/{@link #SYSTEM_ERR} target values map to {@code ConsoleAppender.Target} enum values.</li>
+ *   <li>Follow and ImmediateFlush parameters are supported; behavior follows Log4j 2 {@code ConsoleAppender} defaults
+ *       when omitted.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.appender.ConsoleAppender
  */
 public class ConsoleAppender extends WriterAppender {
 

@@ -34,6 +34,17 @@ import org.apache.log4j.spi.ErrorCode;
  * Support for <code>java.io.Writer</code> and console appending has been deprecated and then removed. See the
  * replacement solutions: {@link WriterAppender} and {@link ConsoleAppender}.
  * </p>
+ *
+ * @apiNote Bridges {@code org.apache.log4j.FileAppender} to
+ * {@link org.apache.logging.log4j.core.appender.FileAppender}.
+ * {@link org.apache.log4j.builders.appender.FileAppenderBuilder} converts Log4j 1 {@code FileAppender} configuration
+ * into a Log4j 2 {@code FileAppender} with {@link org.apache.log4j.bridge.LayoutAdapter} for the layout.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Append parameter controls whether the file is opened in append mode.</li>
+ *   <li>BufferedIO and buffer size settings may differ from native Log4j 1 {@code FileAppender} buffering.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.appender.FileAppender
  */
 public class FileAppender extends WriterAppender {
 

@@ -23,6 +23,20 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
  * Implement this interface for your own strategies for outputting log
  * statements.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Appender} to {@link org.apache.logging.log4j.core.Appender}.
+ * {@link org.apache.log4j.bridge.AppenderAdapter#adapt(Appender)} wraps native Log4j 1 appenders in an
+ * {@link org.apache.logging.log4j.core.appender.AbstractAppender} that converts Log4j 2
+ * {@link org.apache.logging.log4j.core.LogEvent} to {@link LoggingEvent} via
+ * {@link org.apache.log4j.bridge.LogEventWrapper}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Log4j 1 appenders without a name receive a synthetic name based on their hash code.</li>
+ *   <li>{@link org.apache.log4j.bridge.AppenderWrapper} provides the reverse mapping when a Log4j 2 appender is
+ *       referenced from Log4j 1 configuration.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.Appender
+ * @see org.apache.log4j.bridge.AppenderAdapter
  */
 public interface Appender {
 

@@ -31,6 +31,16 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * The main entry point to Log4j 1.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.LogManager} to {@link org.apache.logging.log4j.LogManager}.
+ * Maintains a Log4j 1 {@link org.apache.log4j.spi.LoggerRepository} backed by
+ * {@link org.apache.logging.log4j.spi.LoggerContext} via {@link Hierarchy}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Default configuration file remains {@value #DEFAULT_CONFIGURATION_FILE} rather than {@code log4j2.xml}.</li>
+ *   <li>{@link #shutdown()} behavior depends on the logging backend; Log4j Core registers its own shutdown hook.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.LogManager
  */
 public final class LogManager {
 

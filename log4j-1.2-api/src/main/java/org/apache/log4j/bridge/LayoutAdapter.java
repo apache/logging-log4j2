@@ -23,7 +23,19 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 
 /**
- * Class Description goes here.
+ * Adapts a Log4j 1.x {@link Layout} to a Log4j 2 {@link org.apache.logging.log4j.core.Layout}.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Layout} to {@link org.apache.logging.log4j.core.Layout}.
+ * Implements {@code org.apache.logging.log4j.core.Layout} by converting Log4j 2
+ * {@link org.apache.logging.log4j.core.LogEvent} to {@link org.apache.log4j.spi.LoggingEvent} and calling
+ * {@link Layout#format(org.apache.log4j.spi.LoggingEvent)}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link LayoutWrapper} provides reverse adaptation when a Log4j 2 layout is exposed as a Log4j 1
+ *       {@code Layout}.</li>
+ *   <li>Binary layouts and byte-buffer destinations are not supported by the Log4j 1 {@code Layout} interface.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.Layout
  */
 public final class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
     private final Layout layout;

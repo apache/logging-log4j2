@@ -20,6 +20,17 @@ import java.util.Stack;
 
 /**
  * <em>This class does not use generics to provide better source compatibility.</em>
+ *
+ * @apiNote Bridges {@code org.apache.log4j.NDC} to {@link org.apache.logging.log4j.ThreadContext}.
+ * Delegates stack push/pop/peek operations to {@link org.apache.logging.log4j.ThreadContext} stack APIs,
+ * converting between {@link java.util.Stack} and the {@code ThreadContext} stack.
+ * Behavioral differences:
+ * <ul>
+ *   <li>NDC uses raw {@code Stack} types without generics for source compatibility.</li>
+ *   <li>Pattern converter {@code %x} in Log4j 2 uses a different default format; use {@code %ndc} in the bridge for
+ *       exact Log4j 1 NDC output.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.ThreadContext
  */
 public final class NDC {
 

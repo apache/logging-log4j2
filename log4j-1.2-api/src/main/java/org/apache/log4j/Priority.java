@@ -21,6 +21,18 @@ import org.apache.log4j.helpers.OptionConverter;
 /**
  * <em style="color:#A44">Refrain from using this class directly, use
  * the {@link Level} class instead.</em>
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Priority} to {@link org.apache.logging.log4j.Level}.
+ * Base class for {@link Level}; integer priority values are translated to
+ * {@link org.apache.logging.log4j.Level} through {@link org.apache.log4j.helpers.OptionConverter} and
+ * {@link Level#toLevel(String)}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@code Priority} is a legacy type; {@link Level} should be used instead.</li>
+ *   <li>Log4j 2 {@link org.apache.logging.log4j.Level} does not expose {@code syslogEquivalent} or the Log4j 1
+ *       integer level field directly.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.Level
  */
 public class Priority {
 

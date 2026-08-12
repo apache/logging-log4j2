@@ -60,7 +60,17 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Class Description goes here.
+ * Log4j 1.x XML configuration loaded into a Log4j 2 {@link org.apache.logging.log4j.core.config.Configuration}.
+ *
+ * @apiNote Bridges {@code log4j.xml} to {@link org.apache.logging.log4j.core.config.Configuration}.
+ * Parsed DOM elements are converted to Log4j 2 appenders, layouts, and loggers via builder classes. XML input
+ * crosses a trust boundary from legacy 1.x configuration into the Log4j 2 Core processing pipeline.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Uses Log4j 1 DTD element names and attributes rather than native {@code log4j2.xml} schema.</li>
+ *   <li>{@code configure(Element)}-style partial configuration is not supported in the bridge.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.Configuration
  */
 public class XmlConfiguration extends Log4j1Configuration {
 

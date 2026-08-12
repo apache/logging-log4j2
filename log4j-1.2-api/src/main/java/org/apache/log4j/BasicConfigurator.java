@@ -26,6 +26,17 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * {@link org.apache.log4j.xml.DOMConfigurator DOMConfigurator}.
  * </p>
  *
+ * @apiNote Bridges {@code org.apache.log4j.BasicConfigurator} to
+ * {@link org.apache.logging.log4j.core.config.Configurator}.
+ * {@link #configure()} calls {@link LogManager#reconfigure(ClassLoader)} to bootstrap Log4j 2 Core;
+ * {@link #configure(Appender)} attaches an appender to the root logger via the Log4j 1 hierarchy.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link #configure()} no longer hard-codes a {@code ConsoleAppender} with TTCC pattern; it triggers standard
+ *       Log4j 2 auto-configuration.</li>
+ *   <li>{@link #resetConfiguration()} delegates to {@link LogManager#resetConfiguration()} on the active hierarchy.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.Configurator
  * @since 0.8.1
  */
 public class BasicConfigurator {

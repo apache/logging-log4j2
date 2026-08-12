@@ -27,6 +27,19 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Binds a Log4j 1.x Appender to Log4j 2.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.Appender} to {@link org.apache.logging.log4j.core.Appender}.
+ * {@link #adapt(Appender)} wraps native Log4j 1 appenders in an
+ * {@link org.apache.logging.log4j.core.appender.AbstractAppender} that converts Log4j 2
+ * {@link org.apache.logging.log4j.core.LogEvent} to {@link org.apache.log4j.spi.LoggingEvent} via
+ * {@link LogEventWrapper}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>Log4j 1 appenders without a name receive a synthetic name based on their hash code.</li>
+ *   <li>{@link AppenderWrapper} provides the reverse mapping when a Log4j 2 appender is referenced from Log4j 1
+ *       configuration.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.Appender
  */
 public final class AppenderAdapter {
 

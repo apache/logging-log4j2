@@ -20,7 +20,20 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.util.Strings;
 
 /**
+ * Layout base class for Log4j 1.x pattern and text formatting.
  *
+ * @apiNote Bridges {@code org.apache.log4j.Layout} to {@link org.apache.logging.log4j.core.Layout}.
+ * {@link org.apache.log4j.bridge.LayoutAdapter} implements {@code org.apache.logging.log4j.core.Layout} by converting
+ * Log4j 2 {@link org.apache.logging.log4j.core.LogEvent} to {@link LoggingEvent} and calling
+ * {@link #format(LoggingEvent)}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link org.apache.log4j.bridge.LayoutWrapper} provides reverse adaptation when a Log4j 2 layout is exposed as
+ *       a Log4j 1 {@code Layout}.</li>
+ *   <li>Binary layouts and byte-buffer destinations are not supported by the Log4j 1 {@code Layout} interface.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.Layout
+ * @see org.apache.log4j.bridge.LayoutAdapter
  */
 public abstract class Layout {
 

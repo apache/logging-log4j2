@@ -21,7 +21,19 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
+ * Log4j 1.x logger type; extends {@link Category} and delegates to Log4j 2.
  *
+ * @apiNote Bridges {@code org.apache.log4j.Logger} to {@link org.apache.logging.log4j.Logger}.
+ * Extends {@link Category} and delegates logging calls to
+ * {@link org.apache.logging.log4j.spi.ExtendedLogger} obtained from the active
+ * {@link org.apache.logging.log4j.spi.LoggerContext}.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@link #getLogger(String, LoggerFactory)} is not supported; use Log4j 2 extension mechanisms instead.</li>
+ *   <li>{@link Category#getEffectiveLevel()} maps to {@code Logger.getLevel()} rather than computing an inherited
+ *       effective level in all cases.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.Logger
  */
 public class Logger extends Category {
 
@@ -40,6 +52,10 @@ public class Logger extends Category {
         return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2));
     }
 
+    /**
+     * @apiNote Not supported for Log4j 2 extension; retained for Log4j 1 API compatibility only. Prefer
+     * {@link org.apache.logging.log4j.LogManager#getLogger(String)} for new code.
+     */
     public static Logger getLogger(final String name, final LoggerFactory factory) {
         // Depth 2 gets the call site of this method.
         return LogManager.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2));

@@ -54,6 +54,20 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Configures Log4j from properties.
+ *
+ * @apiNote Bridges {@code org.apache.log4j.PropertyConfigurator} to
+ * {@link org.apache.logging.log4j.core.config.ConfigurationFactory}.
+ * Parses {@code log4j.properties} and builds a Log4j 2 {@link org.apache.logging.log4j.core.config.Configuration}
+ * via {@link org.apache.log4j.config.PropertiesConfiguration} and
+ * {@link org.apache.log4j.config.Log4j1ConfigurationParser} when {@code log4j1.compatibility} is enabled.
+ * Behavioral differences:
+ * <ul>
+ *   <li>{@code configureAndWatch()} requires {@code log4j1.compatibility=true}; otherwise a warning is logged and
+ *       watching is disabled.</li>
+ *   <li>Property interpolation uses {@code ${foo}} syntax; Log4j 2 requires {@code ${sys:foo}} in native
+ *       configuration files.</li>
+ * </ul>
+ * @see org.apache.logging.log4j.core.config.ConfigurationFactory
  */
 public class PropertyConfigurator implements Configurator {
 
