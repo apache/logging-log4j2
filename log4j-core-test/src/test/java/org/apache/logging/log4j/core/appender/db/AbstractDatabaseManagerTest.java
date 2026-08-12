@@ -82,34 +82,34 @@ class AbstractDatabaseManagerTest {
         final LogEvent event3 = mock(LogEvent.class);
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
         reset(manager);
 
         manager.write(event1, null);
+        then(manager).should().write(same(event1), isNull());
         then(manager).should().writeThrough(same(event1), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
         then(manager).should().writeInternal(same(event1), isNull());
         then(manager).should().commitAndClose();
-        then(manager).shouldHaveNoMoreInteractions();
         reset(manager);
 
         manager.write(event2, null);
+        then(manager).should().write(same(event2), isNull());
         then(manager).should().writeThrough(same(event2), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
         then(manager).should().writeInternal(same(event2), isNull());
         then(manager).should().commitAndClose();
-        then(manager).shouldHaveNoMoreInteractions();
         reset(manager);
 
         manager.write(event3, null);
+        then(manager).should().write(same(event3), isNull());
         then(manager).should().writeThrough(same(event3), isNull());
         then(manager).should().connectAndStart();
         then(manager).should().isBuffered();
         then(manager).should().writeInternal(same(event3), isNull());
         then(manager).should().commitAndClose();
-        then(manager).shouldHaveNoMoreInteractions();
         reset(manager);
     }
 
@@ -133,13 +133,17 @@ class AbstractDatabaseManagerTest {
         when(event4.toImmutable()).thenReturn(event4copy);
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
 
         manager.write(event1, null);
         manager.write(event2, null);
         manager.write(event3, null);
         manager.write(event4, null);
 
+        then(manager).should().write(same(event1), isNull());
+        then(manager).should().write(same(event2), isNull());
+        then(manager).should().write(same(event3), isNull());
+        then(manager).should().write(same(event4), isNull());
         then(manager).should().connectAndStart();
         verify(manager, times(5)).isBuffered(); // 4 + 1 in flush()
         then(manager).should().writeInternal(same(event1copy), isNull());
@@ -151,7 +155,6 @@ class AbstractDatabaseManagerTest {
         then(manager).should().writeInternal(same(event4copy), isNull());
         then(manager).should().buffer(event4);
         then(manager).should().commitAndClose();
-        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -171,13 +174,17 @@ class AbstractDatabaseManagerTest {
         when(event3.toImmutable()).thenReturn(event3copy);
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
 
         manager.write(event1, null);
         manager.write(event2, null);
         manager.write(event3, null);
         manager.flush();
 
+        then(manager).should().write(same(event1), isNull());
+        then(manager).should().write(same(event2), isNull());
+        then(manager).should().write(same(event3), isNull());
+        then(manager).should().flush();
         then(manager).should().connectAndStart();
         verify(manager, times(4)).isBuffered();
         then(manager).should().writeInternal(same(event1copy), isNull());
@@ -187,7 +194,6 @@ class AbstractDatabaseManagerTest {
         then(manager).should().writeInternal(same(event3copy), isNull());
         then(manager).should().buffer(event3);
         then(manager).should().commitAndClose();
-        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -207,13 +213,17 @@ class AbstractDatabaseManagerTest {
         when(event3.toImmutable()).thenReturn(event3copy);
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
 
         manager.write(event1, null);
         manager.write(event2, null);
         manager.write(event3, null);
         manager.shutdown();
 
+        then(manager).should().write(same(event1), isNull());
+        then(manager).should().write(same(event2), isNull());
+        then(manager).should().write(same(event3), isNull());
+        then(manager).should().shutdown();
         then(manager).should().connectAndStart();
         verify(manager, times(4)).isBuffered();
         then(manager).should().writeInternal(same(event1copy), isNull());
@@ -224,7 +234,6 @@ class AbstractDatabaseManagerTest {
         then(manager).should().buffer(event3);
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
-        then(manager).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -235,10 +244,11 @@ class AbstractDatabaseManagerTest {
         assertFalse(manager.isRunning(), "The manager should not have started.");
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
         assertTrue(manager.isRunning(), "The manager should be running now.");
 
         manager.shutdown();
+        then(manager).should().shutdown();
         then(manager).should().shutdownInternal();
         assertFalse(manager.isRunning(), "The manager should not be running anymore.");
     }
@@ -251,10 +261,11 @@ class AbstractDatabaseManagerTest {
         assertFalse(manager.isRunning(), "The manager should not have started.");
 
         manager.startup();
-        then(manager).should().startupInternal();
+        then(manager).should().startup();
         assertTrue(manager.isRunning(), "The manager should be running now.");
 
         manager.releaseSub(-1, null);
+        then(manager).should().shutdown();
         then(manager).should().shutdownInternal();
         assertFalse(manager.isRunning(), "The manager should not be running anymore.");
     }
