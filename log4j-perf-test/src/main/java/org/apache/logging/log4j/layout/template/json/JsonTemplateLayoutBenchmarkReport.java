@@ -37,18 +37,27 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
+import org.apache.logging.log4j.perf.jmh.BenchmarkBaselineComparator;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Utility class to summarize {@link JsonTemplateLayoutBenchmark} results in Asciidoctor.
  * <p>
- * Usage:
+ * Usage (single result report):
  * <pre>
  * java \
  *     -cp target/log4j-perf-test-*-uber.jar \
  *     org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutBenchmarkReport \
  *     log4j-perf/target/JsonTemplateLayoutBenchmarkResult.json \
  *     log4j-perf/target/JsonTemplateLayoutBenchmarkReport.adoc
+ * </pre>
+ *
+ * Baseline comparison mode:
+ * <pre>
+ * java \
+ *     -cp target/log4j-perf-test-*-uber.jar \
+ *     org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutBenchmarkReport \
+ *     baseline.json current.json output-comparison.adoc
  * </pre>
  * @see JsonTemplateLayoutBenchmark on how to generate JMH result JSON file
  */
@@ -58,6 +67,24 @@ public enum JsonTemplateLayoutBenchmarkReport {
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public static void main(final String[] args) throws Exception {
+        if (args.length == 3) {
+            final File baselineJsonFile = new File(args[0]);
+            final File currentJsonFile = new File(args[1]);
+            final File outputAdocFile = new File(args[2]);
+            CliArgs.touch(outputAdocFile);
+            final BenchmarkBaselineComparator.ComparisonResult result =
+                    BenchmarkBaselineComparator.compare(
+                            baselineJsonFile,
+                            currentJsonFile,
+                            BenchmarkBaselineComparator.DEFAULT_DEGRADATION_THRESHOLD_PERCENT);
+            BenchmarkBaselineComparator.writeComparisonReport(
+                    result, outputAdocFile, BenchmarkBaselineComparator.DEFAULT_DEGRADATION_THRESHOLD_PERCENT);
+            if (!result.allWithinThreshold()) {
+                System.exit(1);
+            }
+            return;
+        }
+
         final CliArgs cliArgs = CliArgs.parseArgs(args);
         final JmhSetup jmhSetup = JmhSetup.ofJmhResult(cliArgs.jmhResultJsonFile);
         final List<JmhSummary> jmhSummaries = JmhSummary.ofJmhResult(cliArgs.jmhResultJsonFile);

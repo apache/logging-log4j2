@@ -1,0 +1,114 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Modernization performance validation
+
+The Log4j modernization initiative adds TrustGate input validation and refactors core modules.
+Release validation compares JMH benchmark results against committed baseline fixtures and fails when
+throughput or latency regresses beyond the 2% NFR threshold.
+
+== Benchmark coverage
+
+[cols="2,4", options="header"]
+|===
+|Suite |Purpose
+
+|`TrustGateValidationBenchmark`
+|Microbenchmarks for `InputSanitizer.validate()` and validation rules on common and attack-path inputs
+
+|`AsyncLoggersBenchmark`
+|Asynchronous logger throughput with parameterized messages
+
+|`AsyncAppenderLog4j2Benchmark`
+|Async appender throughput via the LMAX Disruptor ring buffer
+
+|`JsonTemplateLayoutBenchmark`
+|JSON template layout encoding throughput (see xref:manual/json-template-layout.adoc#performance[])
+|===
+
+TrustGate common-path latency target is below 100 ns per invocation; async throughput must remain within
+2% of the stored baseline on the reference CI hardware profile.
+
+== Baseline comparison workflow
+
+Build the perf-test uber JAR and run benchmarks with JSON output:
+
+[source,bash]
+----
+mvn -pl log4j-perf-test -am package -DskipTests
+JAR=log4j-perf-test/target/log4j-perf-test-*-uber.jar
+
+java -jar $JAR TrustGateValidationBenchmark -wi 5 -i 10 -f 1 \
+  -rf json -rff target/trustgate-validation-current.json
+----
+
+Compare current results against committed fixtures:
+
+[source,bash]
+----
+java -cp $JAR org.apache.logging.log4j.perf.jmh.BenchmarkBaselineComparator \
+  log4j-perf-test/src/test/resources/baseline/trustgate-validation-baseline.json \
+  target/trustgate-validation-current.json \
+  target/trustgate-validation-comparison.adoc
+----
+
+The comparator exits with a non-zero status when any benchmark exceeds the 2% degradation threshold.
+An AsciiDoc comparison table can also be generated via
+`JsonTemplateLayoutBenchmarkReport` in three-argument baseline comparison mode.
+
+== Placeholder baseline fixtures
+
+Committed JSON under `log4j-perf-test/src/test/resources/baseline/` are illustrative placeholders until
+WO-061 publishes measurements from the reference runner.
+See the module README for regeneration steps before using these fixtures as a release gate.
+
+== Illustrative TrustGate comparison
+
+The table below shows the expected report shape using placeholder baseline values.
+Regenerate this page after capturing real measurements.
+
+[cols="4,>2,>2,>2,1", options="header"]
+|===
+|Benchmark |Baseline |Current |Change |Status
+
+|sanitizerCommonLogMessage
+|28.252 ns/op
+|28.252 ns/op
+|0.00%
+|PASS
+
+|sanitizerCommonJndiLookup
+|81.749 ns/op
+|81.749 ns/op
+|0.00%
+|PASS
+
+|strSubstitutorWithTrustGateLookup
+|2,600,794 ops/s
+|2,600,794 ops/s
+|0.00%
+|PASS
+
+|jndiRuleCommonPath
+|64.353 ns/op
+|64.353 ns/op
+|0.00%
+|PASS
+|===
+
+See also xref:manual/performance.adoc[] for tuning guidance and the TrustGate JMH notes in the
+modernization release notes.

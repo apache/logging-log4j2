@@ -1,0 +1,82 @@
+[
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 5,
+    "warmupTime": "1 s",
+    "measurementIterations": 10,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.TrustGateValidationBenchmark.sanitizerCommonLogMessage",
+    "mode": "avgt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 28.252,
+      "scoreError": 0.454,
+      "scoreUnit": "ns/op"
+    }
+  },
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 5,
+    "warmupTime": "1 s",
+    "measurementIterations": 10,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.TrustGateValidationBenchmark.sanitizerCommonJndiLookup",
+    "mode": "avgt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 81.749,
+      "scoreError": 0.538,
+      "scoreUnit": "ns/op"
+    }
+  },
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 5,
+    "warmupTime": "1 s",
+    "measurementIterations": 10,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.TrustGateValidationBenchmark.strSubstitutorWithTrustGateLookup",
+    "mode": "thrpt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 2600794.548,
+      "scoreError": 93489.487,
+      "scoreUnit": "ops/s"
+    }
+  },
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 5,
+    "warmupTime": "1 s",
+    "measurementIterations": 10,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.TrustGateValidationBenchmark.jndiRuleCommonPath",
+    "mode": "avgt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 64.353,
+      "scoreError": 1.529,
+      "scoreUnit": "ns/op"
+    }
+  }
+]

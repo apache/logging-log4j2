@@ -1,0 +1,42 @@
+[
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 10,
+    "warmupTime": "1 s",
+    "measurementIterations": 20,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.AsyncLoggersBenchmark.throughputSimple",
+    "mode": "thrpt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 4200000.0,
+      "scoreError": 120000.0,
+      "scoreUnit": "ops/s"
+    }
+  },
+  {
+    "jvm": "placeholder",
+    "jvmArgs": [],
+    "jdkVersion": "21",
+    "vmName": "Placeholder VM",
+    "vmVersion": "21",
+    "warmupIterations": 10,
+    "warmupTime": "1 s",
+    "measurementIterations": 20,
+    "measurementTime": "1 s",
+    "forks": 1,
+    "benchmark": "org.apache.logging.log4j.perf.jmh.AsyncLoggersBenchmark.throughput5Params",
+    "mode": "thrpt",
+    "threads": 1,
+    "primaryMetric": {
+      "score": 3100000.0,
+      "scoreError": 90000.0,
+      "scoreUnit": "ops/s"
+    }
+  }
+]

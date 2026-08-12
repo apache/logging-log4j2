@@ -1,0 +1,18 @@
+[
+  {
+    "benchmark": "org.example.SampleBenchmark.throughput",
+    "mode": "thrpt",
+    "primaryMetric": {
+      "score": 1000.0,
+      "scoreUnit": "ops/s"
+    }
+  },
+  {
+    "benchmark": "org.example.SampleBenchmark.latency",
+    "mode": "avgt",
+    "primaryMetric": {
+      "score": 50.0,
+      "scoreUnit": "ns/op"
+    }
+  }
+]

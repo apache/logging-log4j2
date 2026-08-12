@@ -55,3 +55,29 @@ java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main \
   -rf json -rff log4j-perf-test/target/JsonTemplateLayoutBenchmarkResult.json \
   ".*JsonTemplateLayoutBenchmark.*"
 ----
+
+== Baseline comparison (WO-059)
+
+Committed JMH JSON fixtures live under `src/test/resources/baseline/`.
+See that directory's README for regeneration steps.
+
+`BenchmarkBaselineComparator` compares baseline and current JSON result files and fails when any
+benchmark exceeds the default 2% degradation threshold:
+
+[source,bash]
+----
+java -cp target/log4j-perf-test-*-uber.jar org.apache.logging.log4j.perf.jmh.BenchmarkBaselineComparator \
+  src/test/resources/baseline/trustgate-validation-baseline.json \
+  target/trustgate-validation-current.json \
+  target/trustgate-validation-comparison.adoc
+----
+
+`TrustGateValidationBenchmark` (WO-011) measures TrustGate validation overhead:
+
+[source,bash]
+----
+java -cp target/log4j-perf-test-*-uber.jar org.openjdk.jmh.Main \
+  -f 1 -wi 5 -i 10 \
+  -rf json -rff target/trustgate-validation-current.json \
+  ".*TrustGateValidationBenchmark.*"
+----

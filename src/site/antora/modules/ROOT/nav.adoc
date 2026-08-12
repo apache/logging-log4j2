@@ -62,6 +62,7 @@
 ** xref:manual/extending.adoc[Extending]
 *** xref:manual/plugins.adoc[]
 ** xref:manual/performance.adoc[]
+*** xref:modernization-performance-validation.adoc[]
 *** xref:manual/async.adoc[]
 *** xref:manual/garbagefree.adoc[]
 

@@ -1,0 +1,70 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= JMH baseline fixtures (WO-059)
+
+Placeholder JMH JSON results committed for regression comparison tooling.
+Replace these files with measurements captured from a dedicated, stable CI runner
+or release-candidate hardware profile before using them as a release gate.
+
+== Regenerating baselines
+
+Build the perf-test uber JAR:
+
+[source,bash]
+----
+mvn -pl log4j-perf-test -am package -DskipTests
+----
+
+Run each benchmark suite with JSON output (`-rf json -rff <file>`):
+
+[source,bash]
+----
+JAR=log4j-perf-test/target/log4j-perf-test-*-uber.jar
+
+java -jar $JAR TrustGateValidationBenchmark -wi 5 -i 10 -f 1 \
+  -rf json -rff log4j-perf-test/target/trustgate-validation-current.json
+
+java -jar $JAR AsyncLoggersBenchmark -wi 10 -i 20 -f 1 \
+  -rf json -rff log4j-perf-test/target/async-loggers-current.json
+
+java -jar $JAR AsyncAppenderLog4j2Benchmark -wi 10 -i 20 -f 1 \
+  -rf json -rff log4j-perf-test/target/async-appender-log4j2-current.json
+----
+
+Copy the generated JSON into this directory as the new baseline fixtures, then compare
+post-change results:
+
+[source,bash]
+----
+java -cp $JAR org.apache.logging.log4j.perf.jmh.BenchmarkBaselineComparator \
+  log4j-perf-test/src/test/resources/baseline/trustgate-validation-baseline.json \
+  log4j-perf-test/target/trustgate-validation-current.json \
+  log4j-perf-test/target/trustgate-validation-comparison.adoc
+----
+
+The comparator exits with a non-zero status when any benchmark exceeds the default
+2% degradation threshold.
+
+== Fixture files
+
+* `trustgate-validation-baseline.json` — TrustGate validation microbenchmarks (WO-011)
+* `async-loggers-baseline.json` — async logger throughput subset
+* `async-appender-log4j2-baseline.json` — async appender throughput subset
+* `comparator-fixture-*.json` — minimal pair used by unit tests
+
+Numeric values in placeholder fixtures are illustrative; regenerate before release validation.
