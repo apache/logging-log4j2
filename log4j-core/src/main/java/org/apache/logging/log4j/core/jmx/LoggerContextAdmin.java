@@ -20,7 +20,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -135,7 +135,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         // monitorInterval) and always close the caller-owned stream via try-with-resources.
         if (configFile.exists()) {
             LOGGER.debug("Opening config file {}", configFile.getAbsolutePath());
-            try (final InputStream in = new FileInputStream(configFile)) {
+            try (final InputStream in = Files.newInputStream(configFile.toPath())) {
                 final ConfigurationSource configSource = new ConfigurationSource(in, configFile);
                 final Configuration config =
                         ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);

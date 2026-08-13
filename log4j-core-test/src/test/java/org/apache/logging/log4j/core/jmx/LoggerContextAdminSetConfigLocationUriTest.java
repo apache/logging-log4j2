@@ -17,17 +17,16 @@
 package org.apache.logging.log4j.core.jmx;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import com.sun.management.UnixOperatingSystemMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -42,10 +41,9 @@ import org.junit.jupiter.api.io.TempDir;
  * {@link LoggerContextAdmin#setConfigLocationUri(String)}.
  *
  * <p>{@code ConfigurationSource(InputStream, File/URL)} leaves stream ownership
- * with the caller. Built-in factories ({@code XmlConfiguration},
- * {@code JsonConfiguration}, {@code PropertiesConfigurationFactory}) close
- * {@code getInputStream()} when they consume it, but that is not a substitute
- * for caller-side try-with-resources when a factory path never reads the stream.
+ * with the caller. Built-in factories close {@code getInputStream()} when they
+ * consume it, but that is not a substitute for caller-side try-with-resources
+ * when a factory path never reads the stream.
  */
 class LoggerContextAdminSetConfigLocationUriTest {
 
@@ -91,19 +89,21 @@ class LoggerContextAdminSetConfigLocationUriTest {
     }
 
     /**
-     * Fails without the try-with-resources around {@code getConfiguration}/{@code start}:
-     * a factory that never consumes the stream leaves the {@code FileInputStream} open.
-     * With the fix, the caller always closes it.
+     * Portable red-green for caller try-with-resources: install a factory that
+     * returns without consuming the source stream, capture that stream, and
+     * assert it is closed after {@code setConfigLocationUri} returns.
      */
     @Test
     void setConfigLocationUri_closesCallerOwnedStreamWhenFactoryDoesNotConsumeIt() throws Exception {
         final Path config = tempDir.resolve("log4j2-unconsumed.xml");
         writeConfig(config, "Unconsumed");
 
+        final AtomicReference<InputStream> input = new AtomicReference<>();
         ConfigurationFactory.setConfigurationFactory(new ConfigurationFactory() {
             @Override
             public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-                // Intentionally leave source.getInputStream() unconsumed and unclosed.
+                // Capture the caller-owned stream without consuming or closing it.
+                input.set(source.getInputStream());
                 return new DefaultConfiguration();
             }
 
@@ -113,19 +113,14 @@ class LoggerContextAdminSetConfigLocationUriTest {
             }
         });
 
-        final long expectedFdCount = getOpenFileDescriptorCount();
         final LoggerContext ctx = new LoggerContext("jmx-admin-stream-close");
         final LoggerContextAdmin admin = new LoggerContextAdmin(ctx, Runnable::run);
         admin.setConfigLocationUri(config.toAbsolutePath().toString());
 
-        // UNIX: unclosed FileInputStream would leave an extra descriptor.
-        assertEquals(expectedFdCount, getOpenFileDescriptorCount());
-        // Windows: an open FileInputStream locks the file against delete.
-        try {
-            Files.delete(config);
-        } catch (final Exception e) {
-            fail(e);
-        }
+        final InputStream captured = input.get();
+        assertNotNull(captured);
+        // Closed streams throw on read; an unclosed stream would still read.
+        assertThrows(IOException.class, captured::read);
     }
 
     private static void writeConfig(final Path config, final String appenderName) throws Exception {
@@ -135,13 +130,5 @@ class LoggerContextAdminSetConfigLocationUriTest {
                 + "  <Loggers><Root level=\"error\"><AppenderRef ref=\"" + appenderName + "\"/></Root></Loggers>\n"
                 + "</Configuration>\n";
         Files.write(config, xml.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static long getOpenFileDescriptorCount() {
-        final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
-        if (os instanceof UnixOperatingSystemMXBean) {
-            return ((UnixOperatingSystemMXBean) os).getOpenFileDescriptorCount();
-        }
-        return 0;
     }
 }
