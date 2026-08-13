@@ -408,6 +408,9 @@
 <p>Fix properties configuration format to correctly parse and apply nested custom properties on loggers and root loggers (<a href="https://github.com/apache/logging-log4j2/issues/4024">4024</a>, <a href="https://github.com/apache/logging-log4j2/pull/4142">4142</a>)</p>
 </li>
 <li>
+<p>Fix <code>NPE</code> while injecting array elements of a plugin that has an unresolved child element. (<a href="https://github.com/apache/logging-log4j2/issues/4248">4248</a>, <a href="https://github.com/apache/logging-log4j2/pull/4250">4250</a>)</p>
+</li>
+<li>
 <p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
 </li>
 <li>
