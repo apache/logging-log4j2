@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Enumeration;
 import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,10 +42,29 @@ class LoggerDynamicMBeanTest {
 
     private static final String[] ADD_APPENDER_SIGNATURE = {String.class.getName(), String.class.getName()};
 
+    private MBeanServer server;
+
+    @BeforeEach
+    void createMBeanServer() {
+        server = MBeanServerFactory.newMBeanServer();
+    }
+
+    /**
+     * Register through an {@link MBeanServer} so the bean goes through
+     * {@code preRegister}, matching real JMX use (and {@code AppenderDynamicMBeanTest}).
+     */
+    private LoggerDynamicMBean registerLoggerMBean(final Logger logger) throws Exception {
+        final LoggerDynamicMBean mbean = new LoggerDynamicMBean(logger);
+        final String name = logger.getName().isEmpty() ? "root" : logger.getName();
+        // Same ObjectName shape as HierarchyDynamicMBean.addLoggerMBean.
+        server.registerMBean(mbean, new ObjectName("log4j", "logger", name));
+        return mbean;
+    }
+
     @Test
     void addAppenderFailsWhenClassCannotBeInstantiated() throws Exception {
         final Logger logger = Logger.getLogger("jmx.LoggerDynamicMBeanTest.invalid");
-        final LoggerDynamicMBean mbean = new LoggerDynamicMBean(logger);
+        final LoggerDynamicMBean mbean = registerLoggerMBean(logger);
 
         final MBeanException thrown = assertThrows(
                 MBeanException.class,
@@ -57,7 +80,7 @@ class LoggerDynamicMBeanTest {
     @Test
     void addAppenderStillAttachesValidAppender() throws Exception {
         final Logger logger = Logger.getLogger("jmx.LoggerDynamicMBeanTest.valid");
-        final LoggerDynamicMBean mbean = new LoggerDynamicMBean(logger);
+        final LoggerDynamicMBean mbean = registerLoggerMBean(logger);
 
         final Object result = mbean.invoke(
                 "addAppender", new Object[] {ConsoleAppender.class.getName(), "console-jmx"}, ADD_APPENDER_SIGNATURE);

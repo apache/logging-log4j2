@@ -17,7 +17,6 @@
 package org.apache.log4j.jmx;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -77,7 +76,6 @@ class AppenderDynamicMBeanTest {
         final AppenderDynamicMBean mbean = registerAppenderMBean(appender);
 
         mbean.invoke("setLayout", new Object[] {PatternLayout.class.getName()}, SET_LAYOUT_SIGNATURE);
-        assertNotNull(appender.getLayout());
         assertInstanceOf(PatternLayout.class, appender.getLayout());
         assertTrue(server.isRegistered(
                 new ObjectName("log4j:appender=" + appender.getName() + ",layout=" + PatternLayout.class.getName())));
