@@ -4,5 +4,8 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="3816" link="https://github.com/apache/logging-log4j2/issues/3816"/>
-  <description format="asciidoc">Fix precision detection in `InstantPatternLegacyFormatter` for legacy fractional-second patterns using `n`</description>
+  <issue id="4220" link="https://github.com/apache/logging-log4j2/pull/4220"/>
+  <description format="asciidoc">
+    Fix precision detection in legacy date &amp; time pattern formatting
+  </description>
 </entry>
