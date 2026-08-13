@@ -48,7 +48,7 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
             for (final Node child : node.getChildren()) {
                 final PluginType<?> childType = child.getType();
                 if (childType == null) {
-                    LOGGER.debug("Ignoring unresolved element {} in {}.", child.getName(), node.getName());
+                    LOGGER.error("Ignoring unresolved element {} in {}.", child.getName(), node.getName());
                     continue;
                 }
                 if (name.equalsIgnoreCase(childType.getElementName())
