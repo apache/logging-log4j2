@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Release notes :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/release-notes.html">
-    <meta name="generator" content="Antora 3.2.0-rc.2">
+    <meta name="generator" content="Antora 3.2.0-rc.3">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -397,6 +397,9 @@
 <ul>
 <li>
 <p>Fix <code>NullPointerException</code> in <code>ConfigurationScheduler</code> for a frequently executing cron schedule. (<a href="https://github.com/apache/logging-log4j2/issues/2073">2073</a>, <a href="https://github.com/apache/logging-log4j2/pull/4118">4118</a>)</p>
+</li>
+<li>
+<p>Fix precision detection in legacy date &amp; time pattern formatting (<a href="https://github.com/apache/logging-log4j2/issues/3816">3816</a>, <a href="https://github.com/apache/logging-log4j2/pull/4220">4220</a>)</p>
 </li>
 <li>
 <p>Fix properties configuration format to correctly parse and apply nested custom properties on loggers and root loggers (<a href="https://github.com/apache/logging-log4j2/issues/4024">4024</a>, <a href="https://github.com/apache/logging-log4j2/pull/4142">4142</a>)</p>
