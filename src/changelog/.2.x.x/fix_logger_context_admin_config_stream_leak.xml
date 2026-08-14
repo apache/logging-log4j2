@@ -4,5 +4,7 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4218" link="https://github.com/apache/logging-log4j2/pull/4218"/>
-  <description format="asciidoc">Close caller-owned configuration streams in JMX `LoggerContextAdmin.setConfigLocationUri` with try-with-resources (keep stream-backed `ConfigurationSource` for file watchers)</description>
+  <description format="asciidoc">
+    Fix file descriptor leak in the JMX integration
+  </description>
 </entry>
