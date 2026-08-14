@@ -99,7 +99,7 @@ public class PluginProcessorPublicSetterTest {
     void warnWhenPluginBuilderAttributeLacksPublicSetter() {
         assertThat(errorDiagnostics).anyMatch(errorMessage -> errorMessage
                 .getMessage(Locale.ROOT)
-                .contains("The field `attribute` does not have a public setter"));
+                .startsWith("[Log4j] The field `attribute` does not have a public setter"));
     }
 
     @Test
@@ -117,7 +117,8 @@ public class PluginProcessorPublicSetterTest {
         final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
                 .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
                 .collect(Collectors.toList());
-        assertThat(noteDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT).contains("writing plugin descriptor"));
+        assertThat(noteDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT)
+                .startsWith("[Log4j] PluginProcessor: writing plugin descriptor"));
     }
 
     @Test
@@ -161,6 +162,9 @@ public class PluginProcessorPublicSetterTest {
                         .filter(d -> d.getKind() == Diagnostic.Kind.WARNING)
                         .collect(Collectors.toList());
         assertThat(warningDiagnostics)
-                .anyMatch(d -> d.getMessage(Locale.ROOT).contains("unrecognized value `INVALID`"));
+                .anyMatch(d -> d.getMessage(Locale.ROOT)
+                                .startsWith(
+                                        "[Log4j] org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor:")
+                        && d.getMessage(Locale.ROOT).contains("unrecognized value `INVALID`"));
     }
 }
