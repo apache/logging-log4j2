@@ -68,6 +68,7 @@ public class PluginProcessor extends AbstractProcessor {
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
     private static final Element[] EMPTY_ELEMENT_ARRAY = {};
+
     private static final String MESSAGE_PREFIX = "[Log4j] ";
 
     private static final String SUPPRESS_WARNING_PUBLIC_SETTER_STRING = "log4j.public.setter";
