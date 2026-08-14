@@ -383,6 +383,9 @@
 <p>Revamp <code>ListAppender</code> for thread-safety and clarity. (<a href="https://github.com/apache/logging-log4j2/pull/3926">3926</a>, <a href="https://github.com/apache/logging-log4j2/pull/4111">4111</a>)</p>
 </li>
 <li>
+<p>Allow <code>log4j.plugin.processor.minAllowedMessageKind</code> to filter <code>GraalVmProcessor</code> diagnostics and prefix all plugin processor messages with <code>[Log4j]</code>. (<a href="https://github.com/apache/logging-log4j2/issues/4225">4225</a>, <a href="https://github.com/apache/logging-log4j2/pull/4228">4228</a>)</p>
+</li>
+<li>
 <p>Fix stack trace rendering for exceptions with identity malfunction (e.g., colliding <code>equals()</code> and/or <code>hashCode()</code> implementations) (<a href="https://github.com/apache/logging-log4j2/issues/3933">3933</a>, <a href="https://github.com/apache/logging-log4j2/pull/4133">4133</a>)</p>
 </li>
 <li>
