@@ -7,6 +7,6 @@
        type="fixed">
     <issue id="4185" link="https://github.com/apache/logging-log4j2/pull/4185"/>
     <description format="asciidoc">
-        Fix `NPE` in `LoggerDynamicMBean.addAppender()` and `AppenderDynamicMBean.setLayout()`; both now fail with an `MBeanException` when the class cannot be instantiated.
+        Fix exceptions in JMX integration
     </description>
 </entry>
