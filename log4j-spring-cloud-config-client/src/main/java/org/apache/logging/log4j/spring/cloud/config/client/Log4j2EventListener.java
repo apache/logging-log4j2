@@ -20,17 +20,48 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(value = "spring.cloud.config.watch.enabled")
-public class Log4j2EventListener implements ApplicationListener<EnvironmentChangeEvent> {
+public class Log4j2EventListener implements ApplicationListener<EnvironmentChangeEvent>, EnvironmentAware {
     private static Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
+    private Environment environment;
+
+    @Override
+    public void setEnvironment(final Environment environment) {
+        this.environment = environment;
+    }
 
     @Override
     public void onApplicationEvent(final EnvironmentChangeEvent environmentChangeEvent) {
+        if (!isWatchEnabled(environmentChangeEvent)) {
+            LOGGER.debug("Ignoring environment change event; spring.cloud.config.watch.enabled is false");
+            return;
+        }
         LOGGER.debug("Application change event triggered");
         WatchEventManager.publishEvent();
+    }
+
+    /**
+     * {@code spring.factories} constructs this listener outside the bean factory, so
+     * {@code @ConditionalOnProperty} never applies. Honor the same property here.
+     */
+    private boolean isWatchEnabled(final EnvironmentChangeEvent event) {
+        Environment env = this.environment;
+        if (env == null) {
+            final Object source = event.getSource();
+            if (source instanceof ApplicationContext) {
+                env = ((ApplicationContext) source).getEnvironment();
+            }
+        }
+        if (env == null) {
+            return true;
+        }
+        return !Boolean.FALSE.equals(env.getProperty("spring.cloud.config.watch.enabled", Boolean.class));
     }
 }
