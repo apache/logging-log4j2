@@ -373,6 +373,15 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         StringBuilders.escapeXml(sb, start);
         sb.append("</id>\n");
 
+        // Encode message as its own element (distinct from a map entry keyed "message")
+        if (message != null) {
+            sb.append("<message>");
+            start = sb.length();
+            sb.append(message);
+            StringBuilders.escapeXml(sb, start);
+            sb.append("</message>\n");
+        }
+
         // Encode the rest
         super.asXml(sb);
 

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.zip.Deflater;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -33,7 +34,7 @@ class ZipCompressActionTest {
         File source = new File(tempDir, "invalid-low.log");
         File dest = new File(tempDir, "invalid-low.log.zip");
 
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2, 0));
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2));
     }
 
     @Test
@@ -41,7 +42,7 @@ class ZipCompressActionTest {
         File source = new File(tempDir, "invalid-high.log");
         File dest = new File(tempDir, "invalid-high.log.zip");
 
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10, 0));
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10));
     }
 
     @Test
@@ -49,72 +50,27 @@ class ZipCompressActionTest {
         File source = new File(tempDir, "valid.log");
         File dest = new File(tempDir, "valid.log.zip");
 
-        new ZipCompressAction(source, dest, true, -1, 0);
-        new ZipCompressAction(source, dest, true, 0, 0);
-        new ZipCompressAction(source, dest, true, 9, 0);
+        new ZipCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION);
+        new ZipCompressAction(source, dest, true, Deflater.NO_COMPRESSION);
+        new ZipCompressAction(source, dest, true, Deflater.BEST_COMPRESSION);
     }
 
-    /** Issue #4012 — when maxDelaySeconds > 0, compression must be deferred by a random 0..max seconds. */
     @Test
-    void testRandomDelayBeforeCompression(@TempDir File tempDir) throws IOException {
+    void testCompression(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "test.log");
         File dest = new File(tempDir, "test.log.zip");
-        try (FileWriter writer = new FileWriter(source)) {
-            writer.write("test data");
-        }
-        int maxDelay = 2; // seconds
-        ZipCompressAction action = new ZipCompressAction(source, dest, true, 0, maxDelay);
-        long start = System.currentTimeMillis();
-        action.execute();
-        long elapsed = System.currentTimeMillis() - start;
+        writeContent(source, "test data");
 
-        // Must complete within maxDelay + small margin
-        assertTrue(
-                elapsed <= (maxDelay * 1000L) + 500,
-                "Compression should not exceed maxDelay=" + maxDelay + "s, but took " + elapsed + "ms");
-        // Destination must be created
-        assertTrue(dest.exists(), "Compressed file must exist after execute()");
-        // Source must be deleted (deleteSource=true)
-        assertFalse(source.exists(), "Source file must be deleted after compression");
-    }
+        ZipCompressAction action = new ZipCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION);
 
-    /**
-     * Issue #4012 — when maxDelaySeconds=0, no delay is applied (backward compatibility).
-     * Compression must complete well under 500ms.
-     */
-    @Test
-    void testNoDelayWhenMaxDelayIsZero(@TempDir File tempDir) throws IOException {
-        File source = new File(tempDir, "test-nodelay.log");
-        File dest = new File(tempDir, "test-nodelay.log.zip");
-        try (FileWriter writer = new FileWriter(source)) {
-            writer.write("test data no delay");
-        }
-        ZipCompressAction action = new ZipCompressAction(source, dest, true, 0, 0);
-        long start = System.currentTimeMillis();
-        action.execute();
-        long elapsed = System.currentTimeMillis() - start;
-
-        // No delay: must complete in well under 500ms
-        assertTrue(elapsed < 500, "Compression with maxDelay=0 should be instant, but took " + elapsed + "ms");
+        assertTrue(action.execute());
         assertTrue(dest.exists(), "Compressed file must exist after execute()");
         assertFalse(source.exists(), "Source file must be deleted after compression");
     }
 
-    /** Legacy 4-arg constructor must still work with no delay (backward compatibility). */
-    @Test
-    void testLegacyConstructorNoDelay(@TempDir File tempDir) throws IOException {
-        File source = new File(tempDir, "test-legacy.log");
-        File dest = new File(tempDir, "test-legacy.log.zip");
-        try (FileWriter writer = new FileWriter(source)) {
-            writer.write("legacy test data");
+    private static void writeContent(final File file, final String content) throws IOException {
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(content);
         }
-        ZipCompressAction action = new ZipCompressAction(source, dest, true, 0);
-        long start = System.currentTimeMillis();
-        action.execute();
-        long elapsed = System.currentTimeMillis() - start;
-
-        assertTrue(elapsed < 500, "Legacy constructor should have no delay, but took " + elapsed + "ms");
-        assertTrue(dest.exists(), "Compressed file must exist");
-        assertFalse(source.exists(), "Source file must be deleted");
     }
 }

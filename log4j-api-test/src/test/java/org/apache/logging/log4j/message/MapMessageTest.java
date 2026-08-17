@@ -32,6 +32,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -168,6 +170,30 @@ class MapMessageTest {
                         + "'objects':['foo','bar']"
                         + "}}")
                 .replace('\'', '"');
+        assertEquals(expectedJson, actualJson);
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY})
+    void testJsonFormatterDoubleNonFiniteSupport(final double number) {
+        final String expectedJson = String.format("{'number':'%s','numbers':['%s']}", number, number)
+                .replace('\'', '"');
+        final String actualJson = new ObjectMapMessage()
+                .with("number", number)
+                .with("numbers", new double[] {number})
+                .getFormattedMessage(new String[] {"JSON"});
+        assertEquals(expectedJson, actualJson);
+    }
+
+    @ParameterizedTest
+    @ValueSource(floats = {Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY})
+    void testJsonFormatterFloatNonFiniteSupport(final float number) {
+        final String expectedJson = String.format("{'number':'%s','numbers':['%s']}", number, number)
+                .replace('\'', '"');
+        final String actualJson = new ObjectMapMessage()
+                .with("number", number)
+                .with("numbers", new float[] {number})
+                .getFormattedMessage(new String[] {"JSON"});
         assertEquals(expectedJson, actualJson);
     }
 

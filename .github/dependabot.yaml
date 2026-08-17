@@ -52,9 +52,13 @@ updates:
       - "log4j-slf4j-impl/**"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
-        patterns: [ "*" ]
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
       - maven-central
@@ -140,15 +144,26 @@ updates:
         versions: [ "[6,)" ]
       - dependency-name: "org.junit.vintage:*"
         versions: [ "[6,)" ]
+      # WireMock 3.x requires Java 11 and Jakarta EE (Jetty 11)
+      - dependency-name: "org.wiremock:*"
+        versions: [ "[3,)" ]
+      # WireMock changed its Group ID from com.github.tomakehurst to org.wiremock in v3.
+      # We must also ignore the old Group ID so Dependabot doesn't try to auto-migrate it.
+      - dependency-name: "com.github.tomakehurst:wiremock*"
+        versions: [ "[3,)" ]
 
   - package-ecosystem: maven
     directories:
       - "/log4j-mongodb4"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
-        patterns: [ "*" ]
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
       - maven-central
@@ -166,13 +181,38 @@ updates:
         patterns: [ "*" ]
     target-branch: "2.x"
 
+  # The `2.26.x` maintenance branch only receives patch-level Maven updates.
   - package-ecosystem: maven
     directory: "/"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
     groups:
-      dependencies:
+      # "Bump the Maven patch updates group across N directories with M updates"
+      Maven patch updates:
         patterns: [ "*" ]
+    target-branch: "2.26.x"
+    registries:
+      - maven-central
+    ignore:
+      # Only allow patch-level upgrades on this maintenance branch
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      # Groups all non-major updates in a single PR.
+      # No group matches major updates, so each one gets a separate PR.
+      maven-minor-updates:
+        update-types: [ "minor", "patch" ]
     target-branch: "main"
     registries:
       - maven-central
@@ -197,22 +237,13 @@ updates:
       # see https://github.com/apache/logging-log4j2/issues/1736
       - dependency-name: "org.fusesource.jansi:jansi"
         update-types: [ "version-update:semver-major" ]
-
-  - package-ecosystem: maven
-    directories:
-      - "/log4j-slf4j-impl"
-    schedule:
-      interval: "monthly"
-    groups:
-      dependencies:
-        patterns: [ "*" ]
-    target-branch: "main"
-    registries:
-      - maven-central
-    ignore:
-      # SLF4J 1.7.x should only upgrade to 1.7.x and
-      - dependency-name: "org.slf4j:slf4j-api"
-        versions: [ "[1,)" ]
+      # WireMock 3.x requires Java 11 and Jakarta EE (Jetty 11)
+      - dependency-name: "org.wiremock:*"
+        versions: [ "[3,)" ]
+      # WireMock changed its Group ID from com.github.tomakehurst to org.wiremock in v3.
+      # We must also ignore the old Group ID so Dependabot doesn't try to auto-migrate it.
+      - dependency-name: "com.github.tomakehurst:wiremock*"
+        versions: [ "[3,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"

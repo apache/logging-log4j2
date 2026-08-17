@@ -55,11 +55,6 @@ public final class GzCompressAction extends AbstractAction {
      */
     private final int compressionLevel;
 
-    /**
-     * Maximum delay in seconds before compression.
-     */
-    private final int maxDelaySeconds;
-
     private static int checkCompressionLevel(final int compressionLevel) {
         final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
         final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
@@ -76,35 +71,6 @@ public final class GzCompressAction extends AbstractAction {
     }
 
     /**
-     * Create new instance of GzCompressAction.
-     *
-     * @param source       file to compress, may not be null.
-     * @param destination  compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
-     *                     does not cause an exception to be thrown or affect return value.
-     * @param compressionLevel
-     *                     Gzip deflater compression level.
-     * @since 2.27.0
-     * @param maxDelaySeconds
-     *                     Maximum delay in seconds before compression.
-     */
-    public GzCompressAction(
-            final File source,
-            final File destination,
-            final boolean deleteSource,
-            final int compressionLevel,
-            final int maxDelaySeconds) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
-        this.compressionLevel = checkCompressionLevel(compressionLevel);
-        this.maxDelaySeconds = maxDelaySeconds;
-    }
-
-    /**
      * Creates a new instance.
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
@@ -113,17 +79,23 @@ public final class GzCompressAction extends AbstractAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        this(source, destination, deleteSource, compressionLevel, 0);
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
+
+        this.source = source;
+        this.destination = destination;
+        this.deleteSource = deleteSource;
+        this.compressionLevel = checkCompressionLevel(compressionLevel);
     }
 
     /**
      * Prefer the constructor with compression level.
      *
-     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int, int)}.
+     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int)}.
      */
     @Deprecated
     public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
-        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION, 0);
+        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
     }
 
     /**
@@ -134,7 +106,6 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        blockThread(maxDelaySeconds);
         return execute(source, destination, deleteSource, compressionLevel);
     }
 
