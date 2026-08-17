@@ -166,7 +166,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param name The context name.
      * @param externalContext The external context.
      * @param configLocn The location of the configuration as a URI.
-     * @deprecated Use {@link #LoggerContext(String)} and {@link #putObject(String, Object)} instead.
+     * @deprecated Use {@link #LoggerContext(String)} to create a new context, and then use {@link #putObject(String, Object)} to attach the {@code externalContext}.
      * @since 2.27.0
      */
     @Deprecated
