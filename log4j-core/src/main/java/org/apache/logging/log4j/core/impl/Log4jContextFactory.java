@@ -148,7 +148,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
-     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
      * @since 2.27.0
      */
     @Override
@@ -174,7 +174,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param source The configuration source.
      * @return The LoggerContext.
-     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
      * @since 2.27.0
      */
     @Deprecated
@@ -211,7 +211,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param configuration The Configuration.
      * @return The LoggerContext.
-     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
      * @since 2.27.0
      */
     @Deprecated
@@ -245,7 +245,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param configLocation The location of the configuration for the LoggerContext (or null).
      * @return The LoggerContext.
-     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
      * @since 2.27.0
      */
     @Override
@@ -314,7 +314,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * for the caller if a more appropriate Context can be determined.
      * @param configLocations The locations of the configuration for the LoggerContext (or null).
      * @return The LoggerContext.
-     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#putObject(String, Object)} instead.
+     * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
      * @since 2.27.0
      */
     @Deprecated
