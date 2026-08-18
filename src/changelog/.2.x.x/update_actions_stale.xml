@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="4137" link="https://github.com/apache/logging-log4j2/pull/4137"/>
-  <description format="asciidoc">Update `actions/stale` to version `10.3.0`</description>
+  <issue id="4193" link="https://github.com/apache/logging-log4j2/pull/4193"/>
+  <description format="asciidoc">Update `actions/stale` to version `10.4.0`</description>
 </entry>
