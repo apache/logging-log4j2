@@ -41,6 +41,7 @@ import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -489,6 +490,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
@@ -524,6 +528,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
+                                if (!factory.isActive()) {
+                                    continue;
+                                }
                                 final Configuration config =
                                         factory.getConfiguration(loggerContext, name, configLocation);
                                 if (config != null) {
@@ -584,6 +591,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
+                                if (!factory.isActive()) {
+                                    continue;
+                                }
                                 final Configuration config = factory.getConfiguration(loggerContext, source);
                                 if (config != null) {
                                     return config;
@@ -621,8 +631,14 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                                     "Found configuration file `{}` for the inactive `{}`. This `ConfigurationFactory` implementation might be inactive due to a missing dependency.",
                                     configName,
                                     factory.getClass().getName());
+                            Closer.closeSilently(source.getInputStream());
+                            continue;
                         }
-                        return factory.getConfiguration(loggerContext, source);
+                        final Configuration configuration = factory.getConfiguration(loggerContext, source);
+                        if (configuration != null) {
+                            return configuration;
+                        }
+                        Closer.closeSilently(source.getInputStream());
                     }
                 }
             }
@@ -643,6 +659,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || config != null && config.endsWith(type)) {
+                                if (!factory.isActive()) {
+                                    continue;
+                                }
                                 final Configuration c = factory.getConfiguration(loggerContext, source);
                                 if (c != null) {
                                     LOGGER.debug("Loaded configuration from {}", source);
@@ -654,6 +673,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         }
                     }
                 }
+                LOGGER.error("Cannot determine the ConfigurationFactory to use for {}", config);
+                return null;
             }
             LOGGER.error("Cannot process configuration, input source is null");
             return null;
