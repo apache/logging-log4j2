@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 class CronTriggeringPolicyTest {
 
@@ -70,6 +72,29 @@ class CronTriggeringPolicyTest {
     @Test
     void testBuilderOnce() {
         testBuilder();
+    }
+
+    /**
+     * An appender configured without a {@code fileName} writes directly to the file the pattern
+     * resolves to, so {@code RollingFileManager#getFileTime()} reports 0 until that file exists.
+     * Looking up the previous fire time relative to the epoch yields nothing useful and used to
+     * cost roughly three seconds per appender, delaying startup.
+     */
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    void testBuilderWithoutFileNameInitializesPromptly() {
+        // @formatter:off
+        final RollingFileAppender raf = RollingFileAppender.newBuilder()
+                .setName("test4")
+                .setFilePattern("target/testcmd4.log.%d{yyyy-MM-dd}")
+                // A weekly schedule is the worst case for the backward search.
+                .setPolicy(CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), "0 0 0 ? * SUN"))
+                // No strategy: without a file name the builder selects DirectWriteRolloverStrategy,
+                // which is what a configuration that omits `fileName` ends up using.
+                .setConfiguration(configuration)
+                .build();
+        // @formatter:on
+        assertNotNull(raf);
     }
 
     /**
