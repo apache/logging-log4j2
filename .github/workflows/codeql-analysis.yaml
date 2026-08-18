@@ -19,16 +19,12 @@ name: codeql-analysis
 
 on:
   push:
-    branches: [ "2.x", "main" ]
+    # These filters apply only to the current branch (`2.25.x`) and new branches cut from it:
+    # only `release/2.25.*` branches automatically inherit this workflow.
+    branches:
+      - "2.25.x"
+      - "release/2.25.*"
   pull_request:
-    branches: [ "2.x", "main" ]
-    types:
-      # Standard types
-      - opened
-      - synchronize
-      - reopened
-      # Used in Dependabot PRs to retrigger required workflows
-      - ready_for_review
   schedule:
     - cron: '32 12 * * 5'
 
