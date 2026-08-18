@@ -14,11 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Export
-@Open("org.apache.logging.log4j.core")
-@Version("2.22.0")
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import aQute.bnd.annotation.jpms.Open;
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+
+/**
+ * Resolves the W3C standard trace flags.
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the trace flags:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "traceFlags"
+ * }
+ * </pre>
+ */
+public final class TraceFlagsResolver implements EventResolver {
+
+    private static final TraceFlagsResolver INSTANCE = new TraceFlagsResolver();
+
+    TraceFlagsResolver() {}
+
+    static TraceFlagsResolver getInstance() {
+        return INSTANCE;
+    }
+
+    static String getName() {
+        return "traceFlags";
+    }
+
+    @Override
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
+        jsonWriter.writeString(logEvent.getTraceFlags());
+    }
+}
