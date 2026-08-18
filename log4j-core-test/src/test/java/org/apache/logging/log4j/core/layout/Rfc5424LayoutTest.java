@@ -973,13 +973,67 @@ class Rfc5424LayoutTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    private static LogEvent createLogEventWithStructuredData(final String id, final String type) {
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(1L, 0);
+
+        return Log4jLogEvent.newBuilder()
+                .setInstant(instant)
+                .setMessage(new StructuredDataMessage(id, "MSG", type))
+                .build();
+    }
+
+    private static Stream<Arguments> testSdIdSanitization() {
+        return Stream.of(
+                Arguments.of("validId", "[validId@32473]"),
+                Arguments.of("event id", "[event?id@32473]"),
+                Arguments.of("event=id", "[event?id@32473]"),
+                Arguments.of("event]id", "[event?id@32473]"),
+                Arguments.of("event\"id", "[event?id@32473]"),
+                Arguments.of("a] [forged x=\"y", "[a??[forged?x??y@32473]"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSdIdSanitization(final String id, final String expectedStructuredData) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+
+        final String actual = layout.toSerializable(createLogEventWithStructuredData(id, "Audit"));
+
+        assertThat(actual).isEqualTo(formatExpectedMessage(layout, "Audit", expectedStructuredData));
+    }
+
+    private static Stream<Arguments> testMessageIdSanitization() {
+        return Stream.of(
+                Arguments.of("Audit", "Audit"),
+                Arguments.of("Au dit", "Au?dit"),
+                Arguments.of("Audit\r", "Audit?"),
+                Arguments.of("Audit\n<13>1 - - - - -", "Audit?<13>1?-?-?-?-?-"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testMessageIdSanitization(final String type, final String expectedMessageId) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+
+        final String actual = layout.toSerializable(createLogEventWithStructuredData("Audit", type));
+
+        assertThat(actual).isEqualTo(formatExpectedMessage(layout, expectedMessageId, "[Audit@32473]"));
+    }
+
     private static String formatExpectedMessage(final Rfc5424Layout layout, final String expectedStructuredData) {
+        return formatExpectedMessage(layout, "-", expectedStructuredData);
+    }
+
+    private static String formatExpectedMessage(
+            final Rfc5424Layout layout, final String expectedMessageId, final String expectedStructuredData) {
 
         final String timestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
                 .withZone(ZoneId.systemDefault())
                 .format(Instant.ofEpochMilli(1L));
 
         return String.format(
-                "<128>1 %s %s - %s - %s MSG", timestamp, layout.getLocalHostName(), PROCESSID, expectedStructuredData);
+                "<128>1 %s %s - %s %s %s MSG",
+                timestamp, layout.getLocalHostName(), PROCESSID, expectedMessageId, expectedStructuredData);
     }
 }
