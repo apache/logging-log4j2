@@ -34,7 +34,10 @@ public interface LoggerContext {
     /**
      * Gets the anchor for some other context, such as a ClassLoader or ServletContext.
      * @return The external context.
+     * @deprecated Use {@link #getObject(String)} instead.
+     * @since 2.27.0
      */
+    @Deprecated
     Object getExternalContext();
 
     /**
