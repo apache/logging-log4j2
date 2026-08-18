@@ -16,13 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,6 +74,30 @@ class CronTriggeringPolicyTest {
     @Test
     void testBuilderOnce() {
         testBuilder();
+    }
+
+    /**
+     * Without a {@code fileName} the appender writes directly to the file its pattern resolves to.
+     * That file covers the whole rollover period, so it must be named after the period's start
+     * rather than after the moment the appender happened to start. Otherwise a restart later in
+     * the period opens a second file for a period that is supposed to have only one.
+     */
+    @Test
+    void testDirectWriteFileNameUsesPeriodStart() throws Exception {
+        final String schedule = "0 0 0 ? * SUN";
+        // @formatter:off
+        final RollingFileAppender raf = RollingFileAppender.newBuilder()
+                .setName("test5")
+                .setFilePattern("target/testcmd5.log-%d{yyyyMMdd}")
+                .setPolicy(CronTriggeringPolicy.createPolicy(configuration, Boolean.FALSE.toString(), schedule))
+                .setConfiguration(configuration)
+                .build();
+        // @formatter:on
+        assertNotNull(raf);
+
+        final Date periodStart = new CronExpression(schedule).getPrevFireTime(new Date());
+        final String expected = "target/testcmd5.log-" + new SimpleDateFormat("yyyyMMdd").format(periodStart);
+        assertEquals(expected, raf.getManager().getFileName());
     }
 
     /**
