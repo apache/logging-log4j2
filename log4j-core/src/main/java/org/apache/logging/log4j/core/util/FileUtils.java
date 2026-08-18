@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFileAttributeView;
@@ -146,6 +147,10 @@ public final class FileUtils {
 
     /**
      * Define file POSIX attribute view on a path/file.
+     * <p>
+     * Symbolic links are never followed: if {@code path} is a link, the attributes of the link itself are
+     * modified and its target is left untouched.
+     * </p>
      *
      * @param path Target path
      * @param filePermissions Permissions to apply
@@ -159,7 +164,8 @@ public final class FileUtils {
             final String fileOwner,
             final String fileGroup)
             throws IOException {
-        final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
+        final PosixFileAttributeView view =
+                Files.getFileAttributeView(path, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS);
         if (view != null) {
             final UserPrincipalLookupService lookupService =
                     FileSystems.getDefault().getUserPrincipalLookupService();
