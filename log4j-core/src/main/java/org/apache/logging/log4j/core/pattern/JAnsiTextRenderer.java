@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -104,7 +105,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     @SafeVarargs
     private static <V> Map<String, V> ofEntries(final Map.Entry<String, V>... entries) {
-        final Map<String, V> map = new HashMap<>(entries.length);
+        final Map<String, V> map = Maps.newHashMap(entries.length);
         for (final Map.Entry<String, V> entry : entries) {
             map.put(entry.getKey(), entry.getValue());
         }
@@ -209,7 +210,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
             final String predefinedStyle = map.remove("Style");
 
             // Create style map
-            final Map<String, String> styleMap = new HashMap<>(map.size() + defaultStyleMap.size());
+            final Map<String, String> styleMap = Maps.newHashMap(map.size() + defaultStyleMap.size());
             defaultStyleMap.forEach((k, v) -> styleMap.put(toRootUpperCase(k), v));
             if (predefinedStyle != null) {
                 final Map<String, String> predefinedMap = PREFEDINED_STYLE_MAPS.get(predefinedStyle);
