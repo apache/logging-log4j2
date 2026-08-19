@@ -100,6 +100,7 @@ public class PluginProcessorPublicSetterTest {
 
     @Test
     void warnWhenPluginBuilderAttributeLacksPublicSetter() {
+        assertThat(errorDiagnostics).hasSize(1);
         assertThat(errorDiagnostics).anyMatch(errorMessage -> errorMessage
                 .getMessage(Locale.ROOT)
                 .contains("The field `attributeWithoutPublicSetter` does not have a public setter"));
@@ -107,6 +108,7 @@ public class PluginProcessorPublicSetterTest {
 
     @Test
     void ignoreWarningWhenSuppressWarningsIsPresent() {
+        assertThat(errorDiagnostics).hasSize(1);
         assertThat(errorDiagnostics).allMatch(errorMessage -> !errorMessage
                 .getMessage(Locale.ROOT)
                 .contains("The field `attributeWithoutPublicSetterButWithSuppressAnnotation`"
@@ -115,6 +117,7 @@ public class PluginProcessorPublicSetterTest {
 
     @Test
     void noWarningWhenPublicSetterExists() {
+        assertThat(errorDiagnostics).hasSize(1);
         assertThat(errorDiagnostics).allMatch(errorMessage -> !errorMessage
                 .getMessage(Locale.ROOT)
                 .contains("The field `attribute` does not have a public setter"));

@@ -634,7 +634,6 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
 
         @PluginBuilderAttribute
-        @SuppressWarnings("log4j.public.setter")
         private Integer enterpriseNumber;
 
         @PluginBuilderAttribute
@@ -700,6 +699,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         public Rfc5424LayoutBuilder setEin(final String ein) {
             this.ein = ein;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setEnterpriseNumber(final Integer enterpriseNumber) {
+            this.enterpriseNumber = enterpriseNumber;
             return this;
         }
 
