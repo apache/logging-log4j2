@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -35,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -67,6 +70,26 @@ public class Log4j2EventListenerTest {
                 .watch(source, new TestWatcher(count));
         publisher.publishEvent(new EnvironmentChangeEvent(new HashSet<>()));
         assertTrue(count.get() > 0);
+    }
+
+    @Test
+    public void doesNotReloadWhenWatchDisabled() {
+        final MockEnvironment environment = new MockEnvironment();
+        environment.setProperty("spring.cloud.config.watch.enabled", "false");
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.setEnvironment(environment);
+            context.refresh();
+            final AtomicInteger count = new AtomicInteger(0);
+            final Source source = new Source(new File("test.java"));
+            loggerContextRule
+                    .getLoggerContext()
+                    .getConfiguration()
+                    .getWatchManager()
+                    .watch(source, new TestWatcher(count));
+            new Log4j2EventListener()
+                    .onApplicationEvent(new EnvironmentChangeEvent(context, new HashSet<>()));
+            assertEquals(0, count.get());
+        }
     }
 
     private static class TestWatcher implements Watcher {
