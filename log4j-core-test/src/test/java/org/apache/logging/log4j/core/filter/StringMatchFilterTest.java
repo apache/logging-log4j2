@@ -16,20 +16,25 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link StringMatchFilter}.
  */
+@UsingStatusListener
 class StringMatchFilterTest {
 
     /**
@@ -75,6 +80,18 @@ class StringMatchFilterTest {
     }
 
     /**
+     * Test the deprecated {@link StringMatchFilter.Builder#setMatchString(String)} alias still works as expected.
+     */
+    @Test
+    void testFilterBuilderWithDeprecatedSetMatchString() {
+        StringMatchFilter.Builder stringMatchFilterBuilder = StringMatchFilter.newBuilder();
+        stringMatchFilterBuilder.setMatchString("foo");
+        StringMatchFilter stringMatchFilter = stringMatchFilterBuilder.build();
+        assertNotNull(stringMatchFilter, "The filter should not be null.");
+        assertEquals("foo", stringMatchFilter.getText());
+    }
+
+    /**
      * Test that if a {@link StringMatchFilter} is specified with a 'text' attribute it is correctly instantiated.
      *
      * @param configuration the configuration
@@ -90,15 +107,20 @@ class StringMatchFilterTest {
     }
 
     /**
-     * Test that if a {@link StringMatchFilter} is specified without a 'text' attribute it is not instantiated.
-     *
+     * Test that if a {@link StringMatchFilter} is specified without a 'text' attribute it is not instantiated and the
+     * {@code @Required} constraint validation reports an error.
      *
      * @param configuration the configuration
+     * @param listener the status listener capturing the validation errors
      */
     @Test
     @LoggerContextSource("log4j2-stringmatchfilter-3153-nok.xml")
-    void testConfigurationWithTextNEG(final Configuration configuration) {
+    void testConfigurationWithTextNEG(final Configuration configuration, final ListStatusListener listener) {
         final Filter filter = configuration.getFilter();
         assertNull(filter, "The filter should be null.");
+        assertThat(listener.findStatusData(Level.ERROR)).anyMatch(statusData -> statusData
+                .getMessage()
+                .getFormattedMessage()
+                .contains("No text provided for StringMatchFilter"));
     }
 }
