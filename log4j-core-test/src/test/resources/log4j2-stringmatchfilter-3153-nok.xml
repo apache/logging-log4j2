@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <Configuration status="warn">
-   <StringMatchFilter/> <!-- no 'text' attribute: the @Required constraint must skip this plugin -->
+   <StringMatchFilter/> <!-- no 'text' attribute: an unconfigurable filter must not be created -->
    <Loggers>
       <Root/> <!-- one logger to avoid test warning about no defined loggers -->
    </Loggers>
