@@ -16,16 +16,21 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     private PrintStream print;
+
+    LoggerPrintStreamTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected ByteArrayOutputStream createOutputStream() {

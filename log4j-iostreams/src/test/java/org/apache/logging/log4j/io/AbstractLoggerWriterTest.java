@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
@@ -24,14 +24,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractLoggerWriterTest extends AbstractStreamTest {
     protected StringWriter wrapped;
     protected Writer writer;
 
-    @Before
+    AbstractLoggerWriterTest(LoggerContext context) {
+        super(context);
+    }
+
+    @BeforeEach
     public void createStream() {
         this.wrapped = createWriter();
         this.writer = createWriterWrapper();
