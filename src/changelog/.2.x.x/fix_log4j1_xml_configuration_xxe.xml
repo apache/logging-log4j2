@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="4198" link="https://github.com/apache/logging-log4j2/pull/4198"/>
   <description format="asciidoc">
-    Constrain external entity resolution in the Log4j 1.x `XmlConfiguration` reader to the bundled `log4j.dtd`
+    Resolve external entities in the Log4j 1.x `XmlConfiguration` reader through `ConfigurationSource`, so they are subject to the `log4j2.Configuration.allowedProtocols` restrictions
   </description>
 </entry>

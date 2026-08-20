@@ -18,6 +18,7 @@ package org.apache.log4j.config;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,30 +27,61 @@ import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Checks that the Log4j 1.x XML configuration reader does not resolve external entities.
+ * Checks that the Log4j 1.x XML configuration reader resolves external entities through
+ * {@link ConfigurationSource}, so they are subject to the {@code log4j2.Configuration.allowedProtocols} restrictions.
  */
-class XmlConfigurationXxeTest {
+class XmlConfigurationExternalEntityTest {
 
+    private static final String INJECTED_LOGGER = "external-entity-injected";
+
+    /**
+     * A {@code file} entity is allowed by default and is still resolved.
+     */
     @Test
-    void doesNotResolveExternalEntities(@TempDir final Path tempDir) throws Exception {
-        // If the external entity is resolved, its replacement text injects this logger into the configuration.
+    void resolvesAllowedExternalEntities(@TempDir final Path tempDir) throws Exception {
         final Path injected = tempDir.resolve("injected.xml");
-        Files.write(injected, "<logger name=\"xxe-injected\"></logger>".getBytes(StandardCharsets.UTF_8));
+        Files.write(injected, ("<logger name=\"" + INJECTED_LOGGER + "\"></logger>").getBytes(StandardCharsets.UTF_8));
 
-        final Path configFile = tempDir.resolve("log4j1-xxe.xml");
+        final Configuration configuration = configure(tempDir, injected.toUri().toString());
+
+        assertTrue(
+                configuration.getLoggers().containsKey(INJECTED_LOGGER),
+                "External entity was not resolved; allowed protocols must still be resolved");
+    }
+
+    /**
+     * An entity fetched over a protocol that is not allowed is replaced by an empty source. The {@code @Timeout}
+     * guards against the resolver reaching the network instead of rejecting the protocol.
+     */
+    @Test
+    @Timeout(5)
+    @SetTestProperty(key = "log4j2.configurationAllowedProtocols", value = "file")
+    void ignoresDisallowedExternalEntities(@TempDir final Path tempDir) throws Exception {
+        final Configuration configuration = configure(tempDir, "http://localhost:1/injected.xml");
+
+        assertFalse(
+                configuration.getLoggers().containsKey(INJECTED_LOGGER),
+                "External entity was resolved; disallowed protocols must not be resolved");
+    }
+
+    private static Configuration configure(final Path tempDir, final String entitySystemId) throws Exception {
+        // If the external entity is resolved, its replacement text injects a logger into the configuration.
+        final Path configFile = tempDir.resolve("log4j1-external-entity.xml");
         final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<!DOCTYPE log4j:configuration SYSTEM \"log4j.dtd\" [\n"
-                + "  <!ENTITY xxe SYSTEM \"" + injected.toUri() + "\">\n"
+                + "  <!ENTITY injected SYSTEM \"" + entitySystemId + "\">\n"
                 + "]>\n"
                 + "<log4j:configuration xmlns:log4j=\"http://jakarta.apache.org/log4j/\">\n"
                 + "  <appender name=\"console\" class=\"org.apache.log4j.ConsoleAppender\">\n"
                 + "    <layout class=\"org.apache.log4j.SimpleLayout\"/>\n"
                 + "  </appender>\n"
-                + "  &xxe;\n"
+                + "  &injected;\n"
                 + "  <root>\n"
                 + "    <priority value=\"debug\"/>\n"
                 + "    <appender-ref ref=\"console\"/>\n"
@@ -62,9 +94,6 @@ class XmlConfigurationXxeTest {
         final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
         assertNotNull(configuration, "No configuration created");
         configuration.initialize();
-
-        assertFalse(
-                configuration.getLoggers().containsKey("xxe-injected"),
-                "External entity was resolved; the parser must not process external entities");
+        return configuration;
     }
 }
