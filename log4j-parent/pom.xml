@@ -126,7 +126,7 @@
     <junit-jupiter.version>5.13.4</junit-jupiter.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
-    <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
+    <log4j2-logstash-layout.version>1.0.5</log4j2-logstash-layout.version>
     <maven.version>3.9.10</maven.version>
     <mockito.version>5.18.0</mockito.version>
     <nashorn.version>15.6</nashorn.version>
