@@ -52,6 +52,7 @@ import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.awaitility.Awaitility;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Tag;
@@ -121,7 +122,7 @@ public class LoggerTest {
 
     @Test
     public void builder() {
-        final int currentLine = 124;
+        final int currentLine = 125;
         logger.atDebug().withLocation().log("Hello");
         final Marker marker = MarkerManager.getMarker("test");
         logger.atError().withMarker(marker).log("Hello {}", "John");
@@ -417,6 +418,17 @@ public class LoggerTest {
         assertEquals(
                 String.format("%,d", Integer.MAX_VALUE),
                 events.get(0).getMessage().getFormattedMessage());
+    }
+
+    @Test
+    public void getLogger_String_MessageFactoryMismatchProducesNoWarning(final TestInfo testInfo) {
+        final String name = testInfo.getTestMethod().map(Method::getName).orElseThrow(AssertionError::new);
+        testMessageFactoryMismatch(name, StringFormatterMessageFactory.INSTANCE, new ReusableMessageFactory());
+        testMessageFactoryMismatch(name + "Null", StringFormatterMessageFactory.INSTANCE, null);
+        final boolean mismatchWarning = StatusLogger.getLogger().getStatusData().stream()
+                .map(data -> data.getMessage().getFormattedMessage())
+                .anyMatch(message -> message.contains("created with the message factory"));
+        assertFalse(mismatchWarning, "The message factory mismatch warning should not be emitted");
     }
 
     @Test
