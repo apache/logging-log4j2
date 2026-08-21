@@ -135,7 +135,6 @@ public class PluginProcessor extends AbstractProcessor {
         if (!annotations.isEmpty()) {
             processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(Plugin.class)));
         }
-        // Validate @PluginBuilderAttribute fields in builder classes
         processBuilderAttributeFields(roundEnv);
         // Write the generated code
         if (roundEnv.processingOver() && !pluginIndex.isEmpty()) {
