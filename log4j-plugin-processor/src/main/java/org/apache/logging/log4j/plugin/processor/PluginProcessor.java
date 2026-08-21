@@ -198,10 +198,8 @@ public class PluginProcessor extends AbstractProcessor {
             return;
         }
         final Element enclosingElement = element.getEnclosingElement();
-        // element is a field, its enclosing element is a type
         if (enclosingElement instanceof TypeElement) {
             final TypeElement typeElement = (TypeElement) enclosingElement;
-            // Check the siblings of the field for a matching setter
             for (final Element enclosedElement : typeElement.getEnclosedElements()) {
                 if (enclosedElement instanceof ExecutableElement) {
                     final ExecutableElement methodElement = (ExecutableElement) enclosedElement;
@@ -225,7 +223,6 @@ public class PluginProcessor extends AbstractProcessor {
                     }
                 }
             }
-            // No setter found: emit a compilation error
             processingEnv
                     .getMessager()
                     .printMessage(
