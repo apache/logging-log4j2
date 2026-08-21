@@ -20,21 +20,19 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.plugins.AliasesProvider;
+import org.apache.logging.log4j.plugins.NameProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.internal.util.AnnotatedAnnotation;
 import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
-import org.apache.logging.log4j.plugins.name.AliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.util.ReflectionUtil;
-import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
 public final class Keys {
@@ -66,9 +64,9 @@ public final class Keys {
     }
 
     /**
-     * Gets the name of the annotated field using the corresponding {@link AnnotatedElementNameProvider}
+     * Gets the name of the annotated field using the corresponding {@link NameProvider}
      * strategy for the named annotation on the field. If no named annotations are present, then an empty string
-     * is returned. If no {@linkplain AnnotatedElementNameProvider#getSpecifiedName(Annotation) specified name} is given
+     * is returned. If no specified name is given
      * by the name provider, the {@linkplain Field#getName() field name} is returned.
      *
      * @param field annotated field to find name for
@@ -79,9 +77,9 @@ public final class Keys {
     }
 
     /**
-     * Gets the name of the given annotated parameter using the corresponding {@link AnnotatedElementNameProvider}
+     * Gets the name of the given annotated parameter using the corresponding {@link NameProvider}
      * strategy for the named annotation on the parameter. If no named annotations are present, then an empty string
-     * is returned. If no {@linkplain AnnotatedElementNameProvider#getSpecifiedName(Annotation) specified name} is given
+     * is returned. If no specified name is given
      * by the name provider, the {@linkplain Parameter#getName() parameter name} is returned.
      *
      * @param parameter annotated parameter to find name for
@@ -92,9 +90,9 @@ public final class Keys {
     }
 
     /**
-     * Gets the name of the given annotated method using the corresponding {@link AnnotatedElementNameProvider}
+     * Gets the name of the given annotated method using the corresponding {@link NameProvider}
      * strategy for the named annotation on the method. If no named annotations are present, then an empty string
-     * is returned. If no {@linkplain AnnotatedElementNameProvider#getSpecifiedName(Annotation) specified name} is given by
+     * is returned. If no specified name is given by
      * the name provider, the {@linkplain Method#getName() method name} is used with {@code is}, {@code set}, {@code get},
      * and {@code with} prefixes removed and the result being de-capitalized.
      *
@@ -120,9 +118,9 @@ public final class Keys {
     }
 
     /**
-     * Gets the name of the given annotated type using the corresponding {@link AnnotatedElementNameProvider}
+     * Gets the name of the given annotated type using the corresponding {@link NameProvider}
      * strategy for the named annotation on the type. If no named annotations are present or if no
-     * {@linkplain AnnotatedElementNameProvider#getSpecifiedName(Annotation) specified name} is given by the name provider,
+     * specified name is given by the name provider,
      * then an empty string is returned.
      *
      * @param annotatedType annotated type to find name for
@@ -133,9 +131,9 @@ public final class Keys {
     }
 
     /**
-     * Gets the name of the given annotated class using the corresponding {@link AnnotatedElementNameProvider}
+     * Gets the name of the given annotated class using the corresponding {@link NameProvider}
      * strategy for the named annotation on the class. If no named annotations are present, then an empty
-     * string is returned. If no {@linkplain AnnotatedElementNameProvider#getSpecifiedName(Annotation) specified name} is given
+     * string is returned. If no specified name is given
      * by the name provider, then the {@linkplain Class#getSimpleName() simple name} of the annotated class is returned.
      *
      * @param type annotated class to find name for
@@ -145,19 +143,24 @@ public final class Keys {
         return hasName(type) ? getSpecifiedName(type).orElseGet(type::getSimpleName) : Strings.EMPTY;
     }
 
-    // TODO(ms): these name and alias providers should work via DI
     private static Optional<String> getSpecifiedName(final AnnotatedElement element) {
-        return AnnotationUtil.findAnnotatedAnnotations(element, NameProvider.class)
-                .findFirst()
-                .flatMap(Keys::getSpecifiedName);
+        var annotation = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(element, NameProvider.class);
+        return Optional.ofNullable(annotation).flatMap(Keys::getSpecifiedName);
     }
 
-    private static <A extends Annotation> Optional<String> getSpecifiedName(
-            final AnnotatedAnnotation<A, NameProvider> annotatedAnnotation) {
-        final Class<? extends AnnotatedElementNameProvider<A>> providerType =
-                Cast.cast(annotatedAnnotation.metaAnnotation().value());
-        final AnnotatedElementNameProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getSpecifiedName(annotatedAnnotation.annotation());
+    private static Optional<String> getSpecifiedName(final Annotation annotation) {
+        try {
+            final Method nameProvidingElement = annotation.annotationType().getDeclaredMethod("value");
+            final Object value = nameProvidingElement.invoke(annotation);
+            if (value instanceof final String string) {
+                return Optional.ofNullable(Strings.trimToNull(string));
+            }
+            if (value instanceof final String[] array && array.length > 0) {
+                return Optional.ofNullable(Strings.trimToNull(array[0]));
+            }
+        } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+        }
+        return Optional.empty();
     }
 
     public static Collection<String> getAliases(final AnnotatedElement element) {
@@ -169,9 +172,18 @@ public final class Keys {
 
     private static <A extends Annotation> Collection<String> getAliases(
             final AnnotatedAnnotation<A, AliasesProvider> annotatedAnnotation) {
-        final Class<? extends AnnotatedElementAliasesProvider<A>> providerType =
-                Cast.cast(annotatedAnnotation.metaAnnotation().value());
-        final AnnotatedElementAliasesProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getAliases(annotatedAnnotation.annotation());
+        final A annotation = annotatedAnnotation.annotation();
+        try {
+            final Method valueMethod = annotation.annotationType().getDeclaredMethod("value");
+            final String[] value = (String[]) valueMethod.invoke(annotation);
+            final List<String> list = Arrays.asList(value);
+            if (!list.isEmpty()) {
+                final AliasesProvider aliasesProvider = annotatedAnnotation.metaAnnotation();
+                final int offset = aliasesProvider.offset();
+                return offset > 0 ? list.subList(offset, list.size()) : list;
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+        }
+        return List.of();
     }
 }
