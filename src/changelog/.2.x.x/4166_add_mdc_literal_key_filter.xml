@@ -8,6 +8,6 @@
     <issue id="4166" link="https://github.com/apache/logging-log4j2/issues/4166"/>
     <issue id="4186" link="https://github.com/apache/logging-log4j2/pull/4186"/>
     <description format="asciidoc">
-        Add `keyExcludes` to MDC resolvers to prevent user-controlled variables from overwriting structural log fields.
+        Add `literal` key filtering to MDC and Map resolvers, and harden `EcsLayout.json` with it.
     </description>
 </entry>

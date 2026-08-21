@@ -389,12 +389,96 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_keyExcludes() {
+    void test_literal_disallowed() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
-                + "  \"keyExcludes\": [\"@timestamp\", \"message\", \"log.logger\"]\n"
+                + "  \"literal\": {\n"
+                + "    \"disallowed\": [\"@timestamp\", \"message\", \"log.logger\"]\n"
+                + "  }\n"
                 + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).contains("\"allowedKey2\":\"value2\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+        assertThat(serializedJson).doesNotContain("\"@timestamp\"");
+        assertThat(serializedJson).doesNotContain("this should be hidden");
+    }
+
+    @Test
+    void test_literal_allowed() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"literal\": {\n"
+                + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).contains("\"allowedKey2\":\"value2\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+        assertThat(serializedJson).doesNotContain("\"@timestamp\"");
+        assertThat(serializedJson).doesNotContain("this should be hidden");
+    }
+
+    @Test
+    void test_literal_allowed_and_disallowed() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"literal\": {\n"
+                + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"],\n"
+                + "    \"disallowed\": [\"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("\"allowedKey2\"");
+    }
+
+    @Test
+    void test_literal_combined_with_pattern() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"pattern\": \"allowedKey(1|2)\",\n"
+                + "  \"replacement\": \"key$1\",\n"
+                + "  \"literal\": {\n"
+                + "    \"disallowed\": [\"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"key1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("key2");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+    }
+
+    @Test
+    void test_literal_and_key_cannot_be_combined() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"key\": \"message\",\n"
+                + "  \"literal\": {\n"
+                + "    \"disallowed\": [\"message\"]\n"
+                + "  }\n"
+                + "}";
+
+        Assertions.assertThatThrownBy(() -> serializeContextData(eventTemplate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("literal and key options cannot be combined");
+    }
+
+    private static String serializeContextData(final String eventTemplate) {
 
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("allowedKey1", "value1");
@@ -410,12 +494,6 @@ class ReadOnlyStringMapResolverTest {
                 .setEventTemplate(eventTemplate)
                 .build();
 
-        final String serializedJson = layout.toSerializable(logEvent);
-
-        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
-        assertThat(serializedJson).contains("\"allowedKey2\":\"value2\"");
-        assertThat(serializedJson).doesNotContain("\"message\"");
-        assertThat(serializedJson).doesNotContain("\"@timestamp\"");
-        assertThat(serializedJson).doesNotContain("this should be hidden");
+        return layout.toSerializable(logEvent);
     }
 }

@@ -42,7 +42,7 @@ import org.openjdk.jmh.annotations.Warmup;
 public class MdcKeyFilterBenchmark {
 
     private JsonTemplateLayout patternLayout;
-    private JsonTemplateLayout keyExcludesLayout;
+    private JsonTemplateLayout literalLayout;
     private LogEvent logEvent;
 
     @Setup
@@ -68,14 +68,14 @@ public class MdcKeyFilterBenchmark {
                 .setEventTemplate(patternTemplate)
                 .build();
 
-        // Layout using keyExcludes HashSet
-        String keyExcludesTemplate = "{" + "\"$resolver\": \"mdc\", "
-                + "\"keyExcludes\": [\"@timestamp\", \"message\", \"log.logger\", \"log.level\", \"event.dataset\", \"process.thread.name\", \"process.thread.id\", \"ecs.version\"]"
+        // Layout using literal disallowed HashSet
+        String literalTemplate = "{" + "\"$resolver\": \"mdc\", "
+                + "\"literal\": {\"disallowed\": [\"@timestamp\", \"message\", \"log.logger\", \"log.level\", \"event.dataset\", \"process.thread.name\", \"process.thread.id\", \"ecs.version\"]}"
                 + "}";
 
-        keyExcludesLayout = JsonTemplateLayout.newBuilder()
+        literalLayout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setEventTemplate(keyExcludesTemplate)
+                .setEventTemplate(literalTemplate)
                 .build();
     }
 
@@ -85,7 +85,7 @@ public class MdcKeyFilterBenchmark {
     }
 
     @Benchmark
-    public String testKeyExcludesResolver() {
-        return keyExcludesLayout.toSerializable(logEvent);
+    public String testLiteralResolver() {
+        return literalLayout.toSerializable(logEvent);
     }
 }

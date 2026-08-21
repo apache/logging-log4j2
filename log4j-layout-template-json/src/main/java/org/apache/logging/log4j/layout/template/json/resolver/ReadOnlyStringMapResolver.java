@@ -209,18 +209,32 @@ class ReadOnlyStringMapResolver implements EventResolver {
         if (pattern == null && replacement != null) {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
         }
-        final List<String> keyExcludesList = config.getList("keyExcludes", String.class);
-        final Set<String> keyExcludes = keyExcludesList == null || keyExcludesList.isEmpty()
-                ? Collections.emptySet()
-                : new HashSet<>(keyExcludesList);
+        final Set<String> literalAllowed = readLiteralKeys(config, "allowed");
+        final Set<String> literalDisallowed = readLiteralKeys(config, "disallowed");
+        if (key != null && !(literalAllowed.isEmpty() && literalDisallowed.isEmpty())) {
+            throw new IllegalArgumentException("literal and key options cannot be combined: " + config);
+        }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
             return createResolver(
-                    recyclerFactory, flatten, prefix, pattern, replacement, keyExcludes, stringified, mapAccessor);
+                    recyclerFactory,
+                    flatten,
+                    prefix,
+                    pattern,
+                    replacement,
+                    literalAllowed,
+                    literalDisallowed,
+                    stringified,
+                    mapAccessor);
         }
+    }
+
+    private static Set<String> readLiteralKeys(final TemplateResolverConfig config, final String key) {
+        final List<String> keys = config.getList(new String[] {"literal", key}, String.class);
+        return keys == null || keys.isEmpty() ? Collections.emptySet() : new HashSet<>(keys);
     }
 
     private static EventResolver createKeyResolver(
@@ -253,7 +267,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
-            final Set<String> keyExcludes,
+            final Set<String> literalAllowed,
+            final Set<String> literalDisallowed,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -269,7 +284,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
             loopContext.pattern = compiledPattern;
             loopContext.replacement = replacement;
-            loopContext.keyExcludes = keyExcludes;
+            loopContext.literalAllowed = literalAllowed;
+            loopContext.literalDisallowed = literalDisallowed;
             loopContext.stringified = stringified;
             return loopContext;
         });
@@ -344,7 +360,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
         private String replacement;
 
         @NonNull
-        private Set<String> keyExcludes;
+        private Set<String> literalAllowed;
+
+        @NonNull
+        private Set<String> literalDisallowed;
 
         private boolean stringified;
 
@@ -360,7 +379,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
-            if (loopContext.keyExcludes.contains(key)) {
+            if (!loopContext.literalAllowed.isEmpty() && !loopContext.literalAllowed.contains(key)) {
+                return;
+            }
+            if (loopContext.literalDisallowed.contains(key)) {
                 return;
             }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;
