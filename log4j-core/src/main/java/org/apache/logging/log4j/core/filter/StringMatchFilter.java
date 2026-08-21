@@ -269,9 +269,9 @@ public final class StringMatchFilter extends AbstractFilter {
         }
 
         /**
-         * @deprecated since 2.25.0, use {@link #setText(String)} instead.
+         * @deprecated since 3.0.0, use {@link #setText(String)} instead.
          */
-        @Deprecated(since = "2.25.0")
+        @Deprecated(since = "3.0.0")
         public Builder setMatchString(final String text) {
             return setText(text);
         }
