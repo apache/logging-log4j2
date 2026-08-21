@@ -58,7 +58,6 @@ class PluginProcessorPublicSetterTest {
             final StandardJavaFileManager fileManager =
                     compiler.getStandardFileManager(diagnosticCollector, Locale.ROOT, UTF_8);
             try {
-                // Route generated files (Log4jPlugins.java, META-INF/services/...) to a temp directory
                 fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Set.of(outputDir.toFile()));
                 fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Set.of(outputDir.toFile()));
                 final JavaCompiler.CompilationTask task = compiler.getTask(
