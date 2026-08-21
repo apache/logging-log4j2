@@ -41,12 +41,5 @@ public class FakePluginPublicSetter {
             this.attribute = attribute;
             return this;
         }
-
-        public Builder setAttributeWithoutPublicSetterButWithSuppressAnnotation(
-                final int attributeWithoutPublicSetterButWithSuppressAnnotation) {
-            this.attributeWithoutPublicSetterButWithSuppressAnnotation =
-                    attributeWithoutPublicSetterButWithSuppressAnnotation;
-            return this;
-        }
     }
 }
