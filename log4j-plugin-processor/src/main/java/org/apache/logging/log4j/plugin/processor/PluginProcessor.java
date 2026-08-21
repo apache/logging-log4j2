@@ -132,10 +132,8 @@ public class PluginProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         // Process the elements for this round
-        for (TypeElement annotation : annotations) {
-            if (annotation.getQualifiedName().contentEquals("org.apache.logging.log4j.plugins.Plugin")) {
-                processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(annotation)));
-            }
+        if (!annotations.isEmpty()) {
+            processPluginAnnotatedClasses(ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(Plugin.class)));
         }
         // Validate @PluginBuilderAttribute fields in builder classes
         processBuilderAttributeFields(roundEnv);

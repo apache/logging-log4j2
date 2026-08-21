@@ -18,13 +18,10 @@ package org.apache.logging.log4j.plugin.processor;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -36,66 +33,51 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class PluginProcessorPublicSetterTest {
+class PluginProcessorPublicSetterTest {
 
-    private static final String FAKE_PLUGIN_CLASS_PATH =
-            "src/test/resources/setter-test/FakePluginPublicSetter.java.source";
+    private static final String FAKE_PLUGIN_SOURCE = "/setter-test/FakePluginPublicSetter.java";
 
-    @TempDir
-    Path outputDir;
-
-    private File createdFile;
     private DiagnosticCollector<JavaFileObject> diagnosticCollector;
     private List<Diagnostic<? extends JavaFileObject>> errorDiagnostics;
 
+    @TempDir
+    private Path outputDir;
+
     @BeforeEach
-    void setup() {
-        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    void setup() throws Exception {
+        final URL fakePluginUrl = PluginProcessorTest.class.getResource(FAKE_PLUGIN_SOURCE);
+        assertThat(fakePluginUrl).isNotNull();
+        final Path fakePluginPath = Paths.get(fakePluginUrl.toURI());
         diagnosticCollector = new DiagnosticCollector<>();
-        final StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.ROOT, UTF_8);
-
-        final Path sourceFile = Paths.get(FAKE_PLUGIN_CLASS_PATH);
-
-        assertThat(sourceFile).exists();
-
-        final File orig = sourceFile.toFile();
-        createdFile = new File(orig.getParentFile(), "FakePluginPublicSetter.java");
-        assertDoesNotThrow(() -> FileUtils.copyFile(orig, createdFile));
-
-        final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(createdFile);
-
-        // Route generated files (Log4jPlugins.java, META-INF/services/...) to the temp directory
-        final File outputDirFile = outputDir.toFile();
         try {
-            fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Set.of(outputDirFile));
-            fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Set.of(outputDirFile));
-        } catch (final IOException e) {
-            throw new RuntimeException("Failed to set output location", e);
+            final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            final StandardJavaFileManager fileManager =
+                    compiler.getStandardFileManager(diagnosticCollector, Locale.ROOT, UTF_8);
+            try {
+                // Route generated files (Log4jPlugins.java, META-INF/services/...) to a temp directory
+                fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Set.of(outputDir.toFile()));
+                fileManager.setLocation(StandardLocation.SOURCE_OUTPUT, Set.of(outputDir.toFile()));
+                final JavaCompiler.CompilationTask task = compiler.getTask(
+                        null,
+                        fileManager,
+                        diagnosticCollector,
+                        List.of("-proc:only", "-processor", PluginProcessor.class.getName()),
+                        null,
+                        fileManager.getJavaFileObjects(fakePluginPath));
+                task.call();
+            } finally {
+                fileManager.close();
+            }
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
-
-        final JavaCompiler.CompilationTask task = compiler.getTask(
-                null,
-                fileManager,
-                diagnosticCollector,
-                Arrays.asList("-proc:only", "-processor", PluginProcessor.class.getName()),
-                null,
-                compilationUnits);
-        task.call();
-
         errorDiagnostics = diagnosticCollector.getDiagnostics().stream()
                 .filter(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.ERROR)
                 .collect(Collectors.toList());
-    }
-
-    @AfterEach
-    void tearDown() {
-        assertDoesNotThrow(() -> FileUtils.delete(createdFile));
     }
 
     @Test
