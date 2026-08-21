@@ -193,7 +193,6 @@ public class PluginProcessor extends AbstractProcessor {
 
     private void processBuilderAttributeField(final VariableElement element) {
         final String fieldName = element.getSimpleName().toString();
-        // Check for @SuppressWarnings("log4j.public.setter")
         final SuppressWarnings suppress = element.getAnnotation(SuppressWarnings.class);
         if (suppress != null && Arrays.asList(suppress.value()).contains(SUPPRESS_WARNING_PUBLIC_SETTER)) {
             return;
