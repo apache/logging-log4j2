@@ -237,7 +237,6 @@ public final class StringMatchFilter extends AbstractFilter {
     public static class Builder extends AbstractFilterBuilder<StringMatchFilter.Builder>
             implements org.apache.logging.log4j.core.util.Builder<StringMatchFilter> {
         @PluginBuilderAttribute
-        // Remove once #4153 renames the setter to match the field name
         @SuppressWarnings("log4j.public.setter")
         private String text = "";
 
