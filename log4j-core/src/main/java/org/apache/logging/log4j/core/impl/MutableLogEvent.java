@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.ReusableLogEvent;
+import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -80,6 +81,12 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         this.parameters = replacementParameters;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     *   If {@link #isIncludeLocation()} is true, caller information for this instance will also be computed.
+     * </p>
+     */
     @Override
     public LogEvent toImmutable() {
         return toMemento();
@@ -211,6 +218,26 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
         return message;
     }
 
+    /**
+     * Sets the log message of the event.
+     *
+     * <p>
+     *   <strong>Warning:</strong> This method <strong>mutates</strong> the state of the {@code message}
+     *   parameter:
+     * </p>
+     * <ol>
+     *   <li>
+     *     If the message is a {@link ReusableMessage}, this method will remove its
+     *     parameter references, which prevents it from being used again.
+     *   </li>
+     *   <li>
+     *     Otherwise the lazy {@link Message#getFormattedMessage()} message might be called.
+     *     See <a href="https://logging.apache.org/log4j/3.x/manual/systemproperties.html#log4j.async.formatMessagesInBackground">{@code log4j.async.formatMessagesInBackground}</a>
+     *     for details.
+     *   </li>
+     * </ol>
+     * @param message The log message. The object passed will be <strong>modified</strong> by this method and should not be reused.
+     */
     @Override
     public void setMessage(final Message message) {
         if (message instanceof final ReusableMessage reusable) {
@@ -219,7 +246,7 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
             parameters = reusable.swapParameters(parameters == null ? new Object[10] : parameters);
             parameterCount = reusable.getParameterCount();
         } else {
-            this.message = message;
+            this.message = InternalAsyncUtil.makeMessageImmutable(message);
         }
     }
 
@@ -450,26 +477,5 @@ public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, Param
     @Override
     public void setNanoTime(final long nanoTime) {
         this.nanoTime = nanoTime;
-    }
-
-    @Override
-    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextData(contextData) //
-                .setContextStack(contextStack) //
-                .setEndOfBatch(endOfBatch) //
-                .setIncludeLocation(includeLocation) //
-                .setLevel(getLevel()) // ensure non-null
-                .setLoggerFqcn(loggerFqcn) //
-                .setLoggerName(loggerName) //
-                .setMarker(marker) //
-                .setMessage(memento()) // ensure non-null & immutable
-                .setNanoTime(nanoTime) //
-                .setSource(source) //
-                .setThreadId(threadId) //
-                .setThreadName(threadName) //
-                .setThreadPriority(threadPriority) //
-                .setThrown(getThrown()) //
-                .setInstant(instant) //
-        ;
     }
 }
