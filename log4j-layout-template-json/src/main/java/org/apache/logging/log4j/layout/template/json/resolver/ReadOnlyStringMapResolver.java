@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +30,7 @@ import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.NonNull;
 
 /**
  * {@link ReadOnlyStringMap} resolver.
@@ -204,13 +209,32 @@ class ReadOnlyStringMapResolver implements EventResolver {
         if (pattern == null && replacement != null) {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
         }
+        final Set<String> literalAllowed = readLiteralKeys(config, "allowed");
+        final Set<String> literalDisallowed = readLiteralKeys(config, "disallowed");
+        if (key != null && !(literalAllowed.isEmpty() && literalDisallowed.isEmpty())) {
+            throw new IllegalArgumentException("literal and key options cannot be combined: " + config);
+        }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
-            return createResolver(recyclerFactory, flatten, prefix, pattern, replacement, stringified, mapAccessor);
+            return createResolver(
+                    recyclerFactory,
+                    flatten,
+                    prefix,
+                    pattern,
+                    replacement,
+                    literalAllowed,
+                    literalDisallowed,
+                    stringified,
+                    mapAccessor);
         }
+    }
+
+    private static Set<String> readLiteralKeys(final TemplateResolverConfig config, final String key) {
+        final List<String> keys = config.getList(new String[] {"literal", key}, String.class);
+        return keys == null || keys.isEmpty() ? Collections.emptySet() : new HashSet<>(keys);
     }
 
     private static EventResolver createKeyResolver(
@@ -243,6 +267,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
+            final Set<String> literalAllowed,
+            final Set<String> literalDisallowed,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -258,6 +284,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
             loopContext.pattern = compiledPattern;
             loopContext.replacement = replacement;
+            loopContext.literalAllowed = literalAllowed;
+            loopContext.literalDisallowed = literalDisallowed;
             loopContext.stringified = stringified;
             return loopContext;
         });
@@ -331,6 +359,12 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private String replacement;
 
+        @NonNull
+        private Set<String> literalAllowed;
+
+        @NonNull
+        private Set<String> literalDisallowed;
+
         private boolean stringified;
 
         private JsonWriter jsonWriter;
@@ -345,6 +379,12 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
+            if (!loopContext.literalAllowed.isEmpty() && !loopContext.literalAllowed.contains(key)) {
+                return;
+            }
+            if (loopContext.literalDisallowed.contains(key)) {
+                return;
+            }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;
             final boolean keyMatched = matcher == null || matcher.matches();
             if (keyMatched) {

@@ -1435,9 +1435,13 @@ singleAccess  = key , [ stringified ]
 key           = "key" -> string
 stringified   = "stringified" -> boolean
 
-multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+multiAccess   = [ pattern ] , [ replacement ] , [ literal ] , [ flatten ] , [ stringified ]
 pattern       = "pattern" -> string
 replacement   = "replacement" -> string
+literal       = "literal" -> literalConfig
+literalConfig = [ literalAllowed ] , [ literalDisallowed ]
+literalAllowed    = "allowed" -> array of strings
+literalDisallowed = "disallowed" -> array of strings
 flatten       = "flatten" -> ( boolean | flattenConfig )
 flattenConfig = [ flattenPrefix ]
 flattenPrefix = "prefix" -> string
@@ -1451,6 +1455,11 @@ Enabling `stringified` flag converts each value to its string representation.
 Regex provided in the `pattern` is used to match against the keys.
 If provided, `replacement` will be used to replace the matched keys.
 These two are analogous to `Pattern.compile(pattern).matcher(key).matches()` and `Pattern.compile(pattern).matcher(key).replaceAll(replacement)` calls.
+
+`literal` filters keys against literal names rather than a regex.
+If `allowed` is provided, only the listed keys are resolved.
+Keys listed in `disallowed` are silently dropped.
+Both are matched against the key as found in the map, that is, before `replacement` is applied, and both can be combined with `pattern`.
 
 [WARNING]
 ====
@@ -1524,6 +1533,29 @@ Resolve all fields whose keys match with the `user:(role|rank)` regex into an ob
   "$resolver": "…",
   "pattern": "user:(role|rank)",
   "replacement": "$1"
+}
+----
+Resolve all fields into an object, but silently drop `message` and `log.level`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "literal": {
+    "disallowed": ["message", "log.level"]
+  }
+}
+----
+
+Resolve only the `userId` and `userRole` fields into an object:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "literal": {
+    "allowed": ["userId", "userRole"]
+  }
 }
 ----
 
