@@ -872,7 +872,7 @@ The appender can be:
 --
 * A previously declared appender, from the xref:manual/configuration.adoc#main-configuration-elements[`Appenders` section] of the configuration file.
 * A new appender that is instantiated based on a nested appender definition, when the route becomes active.
-See also <<PurgePolicy>> to learn more about the lifecycle of such an appender.
+See also <<PurgePolicy>> to learn more about the lifecycle of such an appender, and <<RoutingAppender-security,Security considerations>> before deriving the key from request data.
 --
 +
 [#Route-attributes]
@@ -977,10 +977,13 @@ Attributes such as `fileName` therefore inherit whatever the lookup returns.
 For example, with `fileName="logs/${ctx:userId}.log"`, a Thread Context value of `../../../../tmp/x` (as a whole path segment) can open `/tmp/x.log` without an error.
 Embedding the lookup inside a longer fixed segment, such as `logs/user-${ctx:userId}.log`, usually fails to open the file instead of escaping the directory, so the exact `fileName` pattern matters.
 That failure is a side effect of how paths are resolved, not a mitigation: it is loud rather than safe, and it does not hold for every value a lookup can return.
+The appender is also re-attempted, and the event lost, on every subsequent event with that key.
 
 This matches the project's {logging-services-url}/security.html#threat-common-sources-configuration[threat model for configuration sources]: operators are responsible for ensuring that appender configuration attributes come from trusted data.
 Only the application developer knows which Thread Context keys carry validated values and which are entirely attacker-controlled.
 See also {logging-services-url}/security/faq.html#path-traversal[path traversal in the security FAQ].
+
+The same substitution reaches non-file sinks: a `Route` that builds an xref:manual/appenders/network.adoc#HttpAppender[HTTP Appender] interpolates the key into its `url`, turning an untrusted routing key into a server-side request forgery (SSRF) vector.
 
 [#RoutingAppender-security-mitigations]
 ==== Mitigations
