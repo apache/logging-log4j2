@@ -954,7 +954,11 @@ Lookups used in the route (for example `${ctx:userId}`) can therefore still carr
 
 Review two aspects of any dynamic routing configuration:
 
+[#RoutingAppender-security-resources]
 ==== Resource allocation
+
+The `Routing` Appender is intentionally powerful: a separate log file per tenant or per long-running job, or round-robin routing between a fixed set of appenders, are all supported designs.
+The responsibility that comes with that power is provisioning: the system must be able to allocate the resources required by every appender that can be created.
 
 If the key is derived from untrusted or high-cardinality data (for example `${ctx:userId}`, a client IP, or a free-form request header), an attacker or a busy system can force creation of an unbounded number of appenders.
 
@@ -964,24 +968,30 @@ That growth commonly leads to:
 * elevated memory use for appender state, buffers, and managers
 * difficulty shutting down or reconfiguring the application cleanly
 
+[#RoutingAppender-security-threat-model]
 ==== Threat model
 
 An untrusted key is not only a resource problem: it is also substituted into the subordinate appender's configuration.
 Attributes such as `fileName` therefore inherit whatever the lookup returns.
 
 For example, with `fileName="logs/${ctx:userId}.log"`, a Thread Context value of `../../../../tmp/x` (as a whole path segment) can open `/tmp/x.log` without an error.
-Embedding the lookup inside a longer fixed segment, such as `logs/user-${ctx:userId}.log`, typically fails to open the file instead of escaping the directory, so the exact `fileName` pattern matters.
+Embedding the lookup inside a longer fixed segment, such as `logs/user-${ctx:userId}.log`, usually fails to open the file instead of escaping the directory, so the exact `fileName` pattern matters.
+That failure is a side effect of how paths are resolved, not a mitigation: it is loud rather than safe, and it does not hold for every value a lookup can return.
 
 This matches the project's {logging-services-url}/security.html#threat-common-sources-configuration[threat model for configuration sources]: operators are responsible for ensuring that appender configuration attributes come from trusted data.
 Only the application developer knows which Thread Context keys carry validated values and which are entirely attacker-controlled.
 See also {logging-services-url}/security/faq.html#path-traversal[path traversal in the security FAQ].
 
+[#RoutingAppender-security-mitigations]
 ==== Mitigations
 
-* Prefer <<Route-element-AppenderRef,appender references>> to a fixed, predeclared set of appenders when the set of destinations is known.
+* Prefer the <<Route-attr-ref,`ref` attribute>> of a `Route`, pointing at a fixed, predeclared set of appenders, when the set of destinations is known.
 * When dynamic routes are required, always configure a <<PurgePolicy,`PurgePolicy`>> (typically <<IdlePurgePolicy,`IdlePurgePolicy`>>) so idle route appenders are stopped and released.
++
+Note that a purge policy bounds how long an unused appender survives, not the rate at which new ones are created.
 * Constrain routing keys to a low-cardinality, validated domain (allow-lists, enums, hashed buckets) instead of raw user input.
 * Avoid routing on pure user-controlled identifiers when each value would create a new file-backed appender, or when the key is interpolated into paths, URLs, or other sink configuration.
+* Do not create an appender per web request. xref:manual/api.adoc#fish-tagging[Fish tagging] the events and filtering on the tag is a far better use of resources.
 
 [#PurgePolicy]
 === Purge Policy
