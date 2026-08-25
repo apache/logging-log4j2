@@ -198,6 +198,27 @@ class CronExpressionTest {
         assertThat(parser.getPrevFireTime(new Date(0))).isNull();
     }
 
+    /*
+     * The bound that keeps the search above from running away must not swallow fire times that do
+     * exist just after the epoch. Bounding on `MIN_DATE` would: it carries the JVM's start time of
+     * day, because `MIN_CAL.set(1970, 0, 1)` leaves the time fields alone, so a candidate earlier
+     * in the day than that would end the search and lose the fire time below. The bound is the
+     * epoch itself, which is a fixed instant. A fixed zone keeps this independent of the CI host.
+     */
+    @Test
+    void testPrevFireTimeJustAfterEpochIsUnaffectedByBound() throws Exception {
+        final TimeZone utc = TimeZone.getTimeZone("UTC");
+        final CronExpression parser = new CronExpression("0 0 0 * * ?");
+        parser.setTimeZone(utc);
+        final Calendar target = Calendar.getInstance(utc);
+        target.clear();
+        target.set(1970, Calendar.JANUARY, 2, 6, 0, 0);
+        final Calendar expected = Calendar.getInstance(utc);
+        expected.clear();
+        expected.set(1970, Calendar.JANUARY, 2, 0, 0, 0);
+        assertThat(parser.getPrevFireTime(target.getTime())).isEqualTo(expected.getTime());
+    }
+
     /**
      * Test that the next valid time after a fallback at 2:00 am from Daylight Saving Time
      */
