@@ -20,14 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -88,28 +85,6 @@ class FileUtilsTest {
         final File file = FileUtils.fileFromUri(uri);
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
         assertTrue(file.exists(), "file exists");
-    }
-
-    @Test
-    void testDefineFilePosixAttributeViewDoesNotFollowSymbolicLinks(@TempDir final Path tempDir) throws Exception {
-        assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
-
-        final Path target = tempDir.resolve("target.txt");
-        Files.createFile(target);
-        Files.setPosixFilePermissions(target, PosixFilePermissions.fromString("rw-------"));
-        final Path link = tempDir.resolve("link.txt");
-        Files.createSymbolicLink(link, target);
-
-        try {
-            FileUtils.defineFilePosixAttributeView(link, PosixFilePermissions.fromString("rw-rw-rw-"), null, null);
-        } catch (final IOException expected) {
-            // POSIX has no way to change the permissions of the link itself
-        }
-
-        assertEquals(
-                "rw-------",
-                PosixFilePermissions.toString(Files.getPosixFilePermissions(target)),
-                "link target should have been left alone");
     }
 
     @Nested

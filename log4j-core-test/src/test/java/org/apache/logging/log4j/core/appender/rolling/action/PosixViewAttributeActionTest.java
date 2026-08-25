@@ -74,4 +74,31 @@ class PosixViewAttributeActionTest {
                 PosixFilePermissions.toString(Files.getPosixFilePermissions(outsider)),
                 "symbolic link target should have been left alone");
     }
+
+    @Test
+    void testSymbolicLinksAreFollowedWhenConfigured(@TempDir final Path tempDir) throws Exception {
+        final Path outsider = tempDir.resolve("outsider.txt");
+        Files.write(outsider, "secret".getBytes(StandardCharsets.UTF_8));
+        Files.setPosixFilePermissions(outsider, PosixFilePermissions.fromString("rw-------"));
+
+        final Path baseDir = Files.createDirectory(tempDir.resolve("logs"));
+        Files.createSymbolicLink(baseDir.resolve("app-2.log"), outsider);
+
+        final Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
+        final PosixViewAttributeAction action = PosixViewAttributeAction.newBuilder()
+                .setBasePath(baseDir.toString())
+                .setFollowLinks(true)
+                .setMaxDepth(1)
+                .setPathConditions(PathCondition.EMPTY_ARRAY)
+                .setConfiguration(config)
+                .setFilePermissionsString("rw-rw-rw-")
+                .build();
+
+        action.execute();
+
+        assertEquals(
+                "rw-rw-rw-",
+                PosixFilePermissions.toString(Files.getPosixFilePermissions(outsider)),
+                "followLinks=\"true\" should still follow the link");
+    }
 }

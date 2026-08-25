@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4229" link="https://github.com/apache/logging-log4j2/pull/4229"/>
-  <description format="asciidoc">Stop `PosixViewAttribute` from applying permissions and ownership through symbolic links</description>
+  <description format="asciidoc">Stop `PosixViewAttribute` from applying permissions and ownership through symbolic links found in `basePath` unless `followLinks` is set to `true`.</description>
 </entry>
