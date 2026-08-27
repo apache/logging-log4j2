@@ -49,14 +49,19 @@ import org.apache.logging.log4j.util.Chars;
 public final class Log4j1SyslogLayout extends AbstractStringLayout {
 
     /**
-     * Builds a SyslogLayout.
+     * Builds a {@link Log4j1SyslogLayout}.
      * <p>The main arguments are</p>
      * <ul>
      * <li>facility: The Facility is used to try to classify the message.</li>
-     * <li>includeNewLine: If true a newline will be appended to the result.</li>
-     * <li>escapeNL: Pattern to use for replacing newlines.</li>
+     * <li>facilityPrinting: If true the facility name is included in the message.</li>
+     * <li>header: If true a header with local host name and timestamp is included.</li>
+     * <li>messageLayout: Optional layout used to render the message body.</li>
      * <li>charset: The character set.</li>
      * </ul>
+     * <p>
+     * Unlike {@link org.apache.logging.log4j.core.layout.SyslogLayout}, this layout does not support
+     * {@code includeNewLine} or {@code escapeNL} options.
+     * </p>
      * @param <B> the builder type
      */
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
