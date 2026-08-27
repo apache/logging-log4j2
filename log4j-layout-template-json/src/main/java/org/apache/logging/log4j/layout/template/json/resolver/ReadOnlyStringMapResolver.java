@@ -44,9 +44,13 @@ import org.jspecify.annotations.NonNull;
  * key           = "key" -> string
  * stringified   = "stringified" -> boolean
  *
- * multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+ * multiAccess   = [ pattern ] , [ replacement ] , [ literal ] , [ flatten ] , [ stringified ]
  * pattern       = "pattern" -> string
  * replacement   = "replacement" -> string
+ * literal       = "literal" -> literalConfig
+ * literalConfig = [ literalAllowed ] , [ literalDisallowed ]
+ * literalAllowed    = "allowed" -> array of strings
+ * literalDisallowed = "disallowed" -> array of strings
  * flatten       = "flatten" -> ( boolean | flattenConfig )
  * flattenConfig = [ flattenPrefix ]
  * flattenPrefix = "prefix" -> string
@@ -65,6 +69,13 @@ import org.jspecify.annotations.NonNull;
  * These two are effectively equivalent to
  * <tt>Pattern.compile(pattern).matcher(key).matches()</tt> and
  * <tt>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</tt> calls.
+ * <p>
+ * <tt>literal</tt> filters keys against literal names rather than a regex.
+ * If <tt>allowed</tt> is provided, only the listed keys are resolved.
+ * Keys listed in <tt>disallowed</tt> are silently dropped, and take precedence
+ * over <tt>allowed</tt>. Both are matched against the key as found in the map,
+ * that is, before <tt>replacement</tt> is applied, and both can be combined
+ * with <tt>pattern</tt>, which a key must then satisfy as well.
  *
  * <h3>Garbage Footprint</h3>
  *
@@ -208,6 +219,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
         final String replacement = config.getString("replacement");
         if (pattern == null && replacement != null) {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
+        }
+        final Object literalObject = config.getObject("literal");
+        if (literalObject != null && !(literalObject instanceof Map)) {
+            throw new IllegalArgumentException("invalid literal option: " + config);
         }
         final Set<String> literalAllowed = readLiteralKeys(config, "allowed");
         final Set<String> literalDisallowed = readLiteralKeys(config, "disallowed");

@@ -1458,8 +1458,8 @@ These two are analogous to `Pattern.compile(pattern).matcher(key).matches()` and
 
 `literal` filters keys against literal names rather than a regex.
 If `allowed` is provided, only the listed keys are resolved.
-Keys listed in `disallowed` are silently dropped.
-Both are matched against the key as found in the map, that is, before `replacement` is applied, and both can be combined with `pattern`.
+Keys listed in `disallowed` are silently dropped, and take precedence over `allowed`.
+Both are matched against the key as found in the map, that is, before `replacement` is applied, and both can be combined with `pattern`, which a key must then satisfy as well.
 
 [WARNING]
 ====

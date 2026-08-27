@@ -478,6 +478,17 @@ class ReadOnlyStringMapResolverTest {
                 .hasMessageContaining("literal and key options cannot be combined");
     }
 
+    @Test
+    void test_literal_invalid() {
+
+        final String eventTemplate =
+                "" + "{\n" + "  \"$resolver\": \"mdc\",\n" + "  \"literal\": \"disallowed\"\n" + "}";
+
+        Assertions.assertThatThrownBy(() -> serializeContextData(eventTemplate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("invalid literal option");
+    }
+
     private static String serializeContextData(final String eventTemplate) {
 
         final StringMap contextData = new SortedArrayStringMap();
