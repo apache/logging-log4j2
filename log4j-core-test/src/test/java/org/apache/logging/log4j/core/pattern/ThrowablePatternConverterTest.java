@@ -416,7 +416,6 @@ public class ThrowablePatternConverterTest {
                             "	... 3 more",
                             "Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]"));
         }
-
     }
 
     abstract static class AbstractStackTraceTest {
