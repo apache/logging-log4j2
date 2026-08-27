@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4241" link="https://github.com/apache/logging-log4j2/issues/4241"/>
+  <issue id="4242" link="https://github.com/apache/logging-log4j2/issues/4242"/>
   <issue id="4246" link="https://github.com/apache/logging-log4j2/pull/4246"/>
   <description format="asciidoc">
     Fix `AbstractDatabaseManager` so a manager whose startup failed no longer accepts writes (which could NPE per event) and still runs `shutdownInternal()` to release resources acquired during startup.
