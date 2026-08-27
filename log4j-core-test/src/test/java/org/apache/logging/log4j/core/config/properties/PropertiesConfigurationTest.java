@@ -201,7 +201,7 @@ class PropertiesConfigurationTest {
                 messages.stream().noneMatch(message -> message.contains("invalid element or attribute")),
                 () -> "Unexpected status logger messages: " + messages);
     }
-  
+
     @LoggerContextSource("log4j2-unresolved-layout.properties")
     void testUnresolvedLayoutDoesNotFailConfiguration(final Configuration config, final ListStatusListener listener) {
         assertEquals(LifeCycle.State.STARTED, config.getState());
