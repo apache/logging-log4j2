@@ -524,13 +524,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 // configLocation != null
                 final String configLocationStr = configLocation.toString();
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
-                                if (!factory.isActive()) {
-                                    continue;
-                                }
                                 final Configuration config =
                                         factory.getConfiguration(loggerContext, name, configLocation);
                                 if (config != null) {
@@ -587,13 +587,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                         continue;
                     }
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || configLocationStr.endsWith(type)) {
-                                if (!factory.isActive()) {
-                                    continue;
-                                }
                                 final Configuration config = factory.getConfiguration(loggerContext, source);
                                 if (config != null) {
                                     return config;
@@ -628,7 +628,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     if (source != null) {
                         if (!factory.isActive()) {
                             LOGGER.error(
-                                    "Found configuration file `{}` for the inactive `{}`. This `ConfigurationFactory` implementation might be inactive due to a missing dependency.",
+                                    "Found configuration file `{}` for the inactive `{}`. This `ConfigurationFactory` implementation might be inactive due to a missing dependency or a disabled feature.",
                                     configName,
                                     factory.getClass().getName());
                             Closer.closeSilently(source.getInputStream());
@@ -655,13 +655,13 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             if (source != null) {
                 final String config = source.getLocation();
                 for (final ConfigurationFactory factory : getFactories()) {
+                    if (!factory.isActive()) {
+                        continue;
+                    }
                     final String[] types = factory.getSupportedTypes();
                     if (types != null) {
                         for (final String type : types) {
                             if (type.equals(ALL_TYPES) || config != null && config.endsWith(type)) {
-                                if (!factory.isActive()) {
-                                    continue;
-                                }
                                 final Configuration c = factory.getConfiguration(loggerContext, source);
                                 if (c != null) {
                                     LOGGER.debug("Loaded configuration from {}", source);
