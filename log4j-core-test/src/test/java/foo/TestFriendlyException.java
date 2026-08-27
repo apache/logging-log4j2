@@ -105,7 +105,7 @@ public final class TestFriendlyException extends RuntimeException {
     /**
      * Ensure we have identity malfunctioning exceptions that have different stack trace lengths.
      *
-     *  <a href="https://github.com/apache/logging-log4j2/issues/3933">#3933</a>
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/3933">#3933</a>
      */
     private static void ensureIdentityMalfunctionAtDifferentDepths() {
         final Set<Throwable> visitedExceptions = Collections.newSetFromMap(new IdentityHashMap<>());
