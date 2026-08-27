@@ -605,6 +605,20 @@ Dynamically choose a different appender for each log event
 
 See xref:manual/appenders/delegating.adoc[] for details.
 
+[#third-party]
+== Third-party appenders
+
+[WARNING]
+====
+These appenders are provided by **third-party** vendors and are not maintained by the link:{logging-services-url}[Apache Logging Services] project.
+====
+
+[#more-log4j2-AsyncHttpAppender]
+=== Async HTTP appender (`more-log4j2`)
+
+`AsyncHttpAppender` by https://github.com/mlangc/more-log4j2[more-log4j2] batches and optionally compresses log events, before sending them to backends.
+This way it is able to deliver high log volumes with little overhead.
+
 [#extending]
 == Extending
 

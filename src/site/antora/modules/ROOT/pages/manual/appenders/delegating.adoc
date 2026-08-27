@@ -521,12 +521,12 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 Log4j Core provides three rewrite policies out-of-the-box:
 
 [#MapRewritePolicy]
-`MapRewritePolicy`::
-+
+==== `MapRewritePolicy`
+
 The `MapRewritePolicy` only modifies events that contain a
 xref:manual/messages.adoc#MapMessage[`MapMessage`].
 It allows adding or updating the keys of the `MapMessage`.
-+
+
 [#MapRewritePolicy-attributes]
 .`MapRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -546,7 +546,7 @@ Update::
 The rewrite policy will add to the `MapMessage` only entries corresponding to existing keys.
 
 |===
-+
+
 [#MapRewritePolicy-elements]
 .`MapRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -561,20 +561,20 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 A list of map entries to add to the `MapMessage`.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{plugin-reference-marker} Plugin reference for `MapRewritePolicy`]
 
 [#PropertiesRewritePolicy]
-`PropertiesRewritePolicy`::
-+
+==== `PropertiesRewritePolicy`
+
 The `PropertiesRewritePolicy` will add properties to the context data of the log event.
-+
+
 [NOTE]
 ====
 Only the context data of the log event will be modified.
 The contents of the xref:manual/thread-context.adoc[] will remain unchanged.
 ====
-+
+
 [#PropertiesRewritePolicy-elements]
 .`PropertiesRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -591,22 +591,22 @@ xref:manual/configuration.adoc#lazy-property-substitution[runtime property subst
 in the
 xref:manual/lookups.adoc#global-context[_global context_].
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{plugin-reference-marker} Plugin reference for `PropertiesRewritePolicy`]
 
 [#LoggerNameLevelRewritePolicy]
-LoggerNameLevelRewritePolicy::
-+
+==== LoggerNameLevelRewritePolicy
+
 You can use this policy to change the log level of loggers from third-party libraries.
 The `LoggerNameLevelRewritePolicy` will rewrite the level of log event for a given logger name prefix.
-+
+
 [WARNING]
 ====
 The new log levels will only be used by the filter attached to the `Rewrite` appender and those downstream of the appender.
 Filters configured on loggers will use the previous levels.
 See xref:manual/filters.adoc[] for more details on filtering
 ====
-+
+
 [#LoggerNameLevelRewritePolicy-attributes]
 .`LoggerNameLevelRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -620,7 +620,7 @@ See xref:manual/filters.adoc[] for more details on filtering
 The rewrite policy will only be applied to loggers with this logger name and their children.
 
 |===
-+
+
 [#LoggerNameLevelRewritePolicy-elements]
 .`LoggerNameLevelRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -633,8 +633,22 @@ The rewrite policy will only be applied to loggers with this logger name and the
 Provides a mapping between old level names and new level names.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{plugin-reference-marker} Plugin reference for `LoggerNameLevelRewritePolicy`]
+
+[#ThirdPartyRewritePolicies]
+=== Third Party Rewrite Policies
+
+[WARNING]
+====
+These `Rewrite Policies` are provided by **third-party** vendors and are not maintained by the https://logging.apache.org/[Apache Logging Services] project.
+====
+
+[#MessageRewritePolicy]
+==== `MessageRewritePolicy`
+
+The `MessageRewritePolicy` provided by https://github.com/Neel1210/log4j-utils[log4j-utils] allows you to manipulate the text of a log message before it is processed by a downstream appender.
+This is particularly useful for defining multiple regex-based replacement rules to mask sensitive information (PII) within the log message as a defensive-in-depth strategy.
 
 [#RewriteAppender-examples]
 === Configuration example

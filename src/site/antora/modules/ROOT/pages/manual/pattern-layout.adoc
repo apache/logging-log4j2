@@ -389,8 +389,12 @@ Outputs the instant of the log event
 .link:../javadoc/log4j-core/org/apache/logging/log4j/core/pattern/DatePatternConverter.html[`DatePatternConverter`] specifier grammar
 [source,text]
 ----
-d{pattern}[{timezone}]
-date{pattern}[{timezone}]
+d{pattern}
+d{pattern}{timezone}
+d{pattern}{timezone}{locale}
+date{pattern}
+date{pattern}{timezone}
+date{pattern}{timezone}{locale}
 ----
 
 The date conversion specifier may be followed by a set of braces containing a date and time formatting pattern per https://docs.oracle.com/javase/{java-target-version}/docs/api/java/time/format/DateTimeFormatter.html[`DateTimeFormatter`].
@@ -462,6 +466,9 @@ You can also define custom date formats, see following examples:
 
 |%d{yyyy-mm-dd'T'HH:mm:ss.SSS'Z'}\{UTC}
 |2012-11-02T14:34:02.123Z
+
+|%d\{dd-MMMM-yyyy}\{UTC}\{de-DE}
+|02 November 2012 (UTC timezone, German locale)
 |===
 
 `%d\{UNIX}` outputs the epoch time in seconds, i.e., the difference in seconds between the current time and 1970-01-01 00:00:00 (UTC).

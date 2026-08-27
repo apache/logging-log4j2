@@ -66,7 +66,7 @@
       org.apache.commons.compress.*;resolution:=optional,
       org.apache.commons.csv;resolution:=optional,
       org.apache.kafka.*;resolution:=optional,
-      org.codehaus.stax2;resolution:=optional,
+      org.codehaus.stax2.*;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
@@ -215,6 +215,11 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
       <optional>true</optional>
     </dependency>
   </dependencies>

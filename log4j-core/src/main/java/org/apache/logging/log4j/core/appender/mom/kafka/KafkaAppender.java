@@ -94,13 +94,7 @@ public final class KafkaAppender extends AbstractAppender {
         }
 
         public Integer getRetryCount() {
-            Integer intRetryCount = null;
-            try {
-                intRetryCount = Integer.valueOf(retryCount);
-            } catch (NumberFormatException e) {
-
-            }
-            return intRetryCount;
+            return retryCount;
         }
 
         public String getTopic() {
@@ -216,16 +210,20 @@ public final class KafkaAppender extends AbstractAppender {
             try {
                 tryAppend(event);
             } catch (final Exception e) {
-
                 if (this.retryCount != null) {
                     int currentRetryAttempt = 0;
                     while (currentRetryAttempt < this.retryCount) {
                         currentRetryAttempt++;
                         try {
                             tryAppend(event);
-                            break;
-                        } catch (Exception e1) {
-
+                            return;
+                        } catch (final Exception retryException) {
+                            LOGGER.debug(
+                                    "Unable to write to Kafka in appender [{}], retry attempt [{}/{}].",
+                                    getName(),
+                                    currentRetryAttempt,
+                                    this.retryCount,
+                                    retryException);
                         }
                     }
                 }

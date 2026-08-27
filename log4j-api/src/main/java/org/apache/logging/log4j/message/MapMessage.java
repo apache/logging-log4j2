@@ -358,10 +358,14 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">");
-            final int size = sb.length();
+            sb.append("  <Entry key=\"");
+            int start = sb.length();
+            sb.append(data.getKeyAt(i));
+            StringBuilders.escapeXml(sb, start);
+            sb.append("\">");
+            start = sb.length();
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
-            StringBuilders.escapeXml(sb, size);
+            StringBuilders.escapeXml(sb, start);
             sb.append("</Entry>\n");
         }
         sb.append("</Map>");

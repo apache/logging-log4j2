@@ -160,6 +160,41 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String fileOwner,
             final String fileGroup,
             final Configuration configuration) {
+        return getRollingRandomAccessFileManager(
+                fileName,
+                filePattern,
+                append,
+                immediateFlush,
+                bufferSize,
+                policy,
+                strategy,
+                advertiseURI,
+                layout,
+                filePermissions,
+                fileOwner,
+                fileGroup,
+                0,
+                configuration);
+    }
+
+    /**
+     * @since 2.27.0
+     */
+    public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(
+            final String fileName,
+            final String filePattern,
+            final boolean append,
+            final boolean immediateFlush,
+            final int bufferSize,
+            final TriggeringPolicy policy,
+            final RolloverStrategy strategy,
+            final String advertiseURI,
+            final Layout<? extends Serializable> layout,
+            final String filePermissions,
+            final String fileOwner,
+            final String fileGroup,
+            final int maxRandomDelay,
+            final Configuration configuration) {
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
             return null;
@@ -230,12 +265,13 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                     fileOwner,
                                     fileGroup,
                                     writeHeader);
+                            rrm.setMaxRandomDelay(data.getMaxRandomDelay());
                             if (rrm.isAttributeViewEnabled()) {
                                 rrm.defineAttributeView(file.toPath());
                             }
                             return rrm;
                         },
-                        new FactoryData(filePattern, policy, strategy, configuration)));
+                        new FactoryData(filePattern, policy, strategy, maxRandomDelay, configuration)));
     }
 
     /**

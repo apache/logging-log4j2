@@ -380,10 +380,14 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @return A DefaultRolloverStrategy.
      * @deprecated Since 2.9 Usage of Builder API is preferable
      */
+
+    /**
+     * Legacy factory method for backward compatibility (no delay parameter).
+     * @deprecated Since 2.9 Usage of Builder API is preferable
+     */
     @PluginFactory
     @Deprecated
     public static DefaultRolloverStrategy createStrategy(
-            // @formatter:off
             @PluginAttribute("max") final String max,
             @PluginAttribute("min") final String min,
             @PluginAttribute("fileIndex") final String fileIndex,
@@ -401,7 +405,6 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 .setStopCustomActionsOnError(stopCustomActionsOnError)
                 .setConfig(config)
                 .build();
-        // @formatter:on
     }
 
     /**

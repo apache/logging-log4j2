@@ -131,6 +131,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 final String name = filterName.trim();
                 builder.add(createFilter(name, PropertiesUtil.extractSubset(rootProperties, "filter." + name)));
             }
+            removeDefinedButUnusedProperties("filter");
         } else {
 
             final Map<String, Properties> filters =
@@ -148,6 +149,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 builder.add(createAppender(
                         appenderName.trim(), PropertiesUtil.extractSubset(rootProperties, "appender." + name)));
             }
+            removeDefinedButUnusedProperties(Appender.ELEMENT_TYPE);
         } else {
             final Map<String, Properties> appenders = PropertiesUtil.partitionOnCommonPrefixes(
                     PropertiesUtil.extractSubset(rootProperties, Appender.ELEMENT_TYPE));
@@ -165,6 +167,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                     builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." + name)));
                 }
             }
+            removeDefinedButUnusedProperties("logger");
         } else {
 
             final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(
@@ -192,6 +195,10 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         builder.setLoggerContext(loggerContext);
 
         return builder.build(false);
+    }
+
+    private void removeDefinedButUnusedProperties(final String prefix) {
+        PropertiesUtil.extractSubset(rootProperties, prefix);
     }
 
     private void processRemainingProperties(
@@ -305,8 +312,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         }
         if (levelAndRefs != null) {
             loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+            properties.remove("");
         }
-        return loggerBuilder;
+        return processRemainingProperties(loggerBuilder, properties);
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
@@ -336,8 +344,10 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         addLoggersToComponent(loggerBuilder, properties);
         if (levelAndRefs != null) {
             loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+            properties.remove("");
         }
-        return addFiltersToComponent(loggerBuilder, properties);
+        addFiltersToComponent(loggerBuilder, properties);
+        return processRemainingProperties(loggerBuilder, properties);
     }
 
     private LayoutComponentBuilder createLayout(final String appenderName, final Properties properties) {

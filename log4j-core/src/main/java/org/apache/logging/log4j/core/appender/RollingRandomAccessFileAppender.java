@@ -93,6 +93,9 @@ public final class RollingRandomAccessFileAppender
         @PluginBuilderAttribute
         private String fileGroup;
 
+        @PluginBuilderAttribute
+        private int maxRandomDelay;
+
         @Override
         public RollingRandomAccessFileAppender build() {
             final String name = getName();
@@ -147,6 +150,7 @@ public final class RollingRandomAccessFileAppender
                             filePermissions,
                             fileOwner,
                             fileGroup,
+                            maxRandomDelay,
                             getConfiguration());
             if (manager == null) {
                 return null;
@@ -245,6 +249,14 @@ public final class RollingRandomAccessFileAppender
          */
         public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public B setMaxRandomDelay(final int maxRandomDelay) {
+            this.maxRandomDelay = maxRandomDelay;
             return asBuilder();
         }
 

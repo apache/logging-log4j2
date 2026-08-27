@@ -55,13 +55,17 @@ final class DisruptorUtil {
     // TODO: replace with LoaderUtil.isClassAvailable() when TCCL is removed
     // See: https://github.com/apache/logging-log4j2/issues/3706
     private static int detectDisruptorMajorVersion() {
+        int version = 4;
         try {
             Class.forName(
-                    "com.lmax.disruptor.SequenceReportingEventHandler", true, DisruptorUtil.class.getClassLoader());
+                    "com.lmax.disruptor.SequenceReportingEventHandler", false, DisruptorUtil.class.getClassLoader());
+            version = 3;
             return 3;
-        } catch (final ClassNotFoundException e) {
-            return 4;
+        } catch (final ClassNotFoundException ignored) {
+            // Do nothing
         }
+        LOGGER.debug("LMAX Disruptor version detected: {}", version);
+        return version;
     }
 
     private DisruptorUtil() {}
