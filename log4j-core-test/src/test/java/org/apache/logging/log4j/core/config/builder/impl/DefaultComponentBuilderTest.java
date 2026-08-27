@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LifeCycle.State;
+import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -249,6 +250,29 @@ class DefaultComponentBuilderTest {
         assertFalse(
                 builder.getAttributes().containsKey(key),
                 "addAttribute(String, Enum) should remove the attribute with a null value");
+    }
+
+    /**
+     * Verifies that a component never carries a {@code null}-valued attribute, which is the defect behind the
+     * duplicate {@code onMismatch} attribute reported for the properties configuration format.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/2791">#2791</a>
+     */
+    @Test
+    void testUnsetFilterAttributeIsNotStored() {
+
+        final ConfigurationBuilder<BuiltConfiguration> configurationBuilder =
+                ConfigurationBuilderFactory.newConfigurationBuilder();
+
+        final Component filter = configurationBuilder
+                .newFilter("MarkerFilter", "DENY", (String) null)
+                .setAttribute("marker", "FULL_PLAN")
+                .build();
+
+        assertEquals("DENY", filter.getAttributes().get("onMatch"), "Incorrect 'onMatch' attribute value.");
+        assertFalse(
+                filter.getAttributes().containsKey("onMismatch"),
+                "An unset 'onMismatch' should not be stored as a null-valued attribute.");
     }
 
     @Test
