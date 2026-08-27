@@ -234,20 +234,6 @@
         <scope>import</scope>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api-java9</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core-java9</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-      </dependency>
-
       <!-- Dummy dependency to trick `dependabot` into updating the `log4j-transform.version` property: -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

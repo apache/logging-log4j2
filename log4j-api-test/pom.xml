@@ -177,6 +177,29 @@
         </configuration>
       </plugin>
 
+      <!-- Runs the tests for the Java 9 variants of `log4j-api` classes.
+           These need to run against the packaged multi-release JAR, hence the `integration-test` phase. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>java9-variant-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <!-- Restricted to the `java9` package: `StackLocatorTestIT` predates this binding,
+                   installs a `SecurityManager` and is not runnable on the build JDK as-is. -->
+              <includes>
+                <include>org/apache/logging/log4j/util/java9/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>

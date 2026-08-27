@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+    <issue id="4260" link="https://github.com/apache/logging-log4j2/pull/4260"/>
+    <description format="asciidoc">
+        Merge the auxiliary `log4j-api-java9` and `log4j-core-java9` modules into `log4j-api` and `log4j-core` by compiling the Java-9-specific sources directly into `META-INF/versions/9` of each JAR.
+        The published artifacts are unchanged.
+    </description>
+</entry>
