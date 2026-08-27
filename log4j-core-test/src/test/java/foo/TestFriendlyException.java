@@ -33,6 +33,7 @@ import org.apache.logging.log4j.util.Constants;
  * <li>Suppressed exceptions</li>
  * <li>Clutter-free stack trace (i.e., elements from JUnit, JDK, etc.)</li>
  * <li>Stack trace elements from named modules<sup>3</sup></li>
+ * <li>Stack trace elements of non-existent classes<sup>4</sup></li>
  * </ul>
  * <p>
  * <sup>1</sup> Helps with observing stack trace manipulation effects of Log4j.
@@ -42,6 +43,10 @@ import org.apache.logging.log4j.util.Constants;
  * </p>
  * <p>
  * <sup>3</sup> Helps with testing module name serialization.
+ * </p>
+ * <p>
+ * <sup>4</sup> Helps with testing non-{@link Exception} types, e.g., {@link LinkageError} and {@link NoClassDefFoundError}.
+ * See <a href="https://github.com/apache/logging-log4j2/issues/4028">#4028</a> for details.
  * </p>
  */
 public final class TestFriendlyException extends RuntimeException {
@@ -76,24 +81,31 @@ public final class TestFriendlyException extends RuntimeException {
         throw new IllegalStateException("should not have reached here");
     }
 
+    public static final StackTraceElement NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT =
+            new StackTraceElement("com.nonexistent.deliberately.missing.ClassName", "someMethod", "ClassName.java", 42);
+
     private static final String[] EXCLUDED_CLASS_NAME_PREFIXES = {
         "java.lang", "jdk.internal", "org.junit", "sun.reflect"
     };
 
-    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false}, new boolean[] {true});
+    public static final TestFriendlyException INSTANCE =
+            create("r", 0, 2, new boolean[] {false}, new boolean[] {true}, new boolean[] {true});
 
     private static TestFriendlyException create(
             final String name,
             final int depth,
             final int maxDepth,
             final boolean[] circular,
-            final boolean[] namedModuleAllowed) {
-        final TestFriendlyException error = new TestFriendlyException(name, namedModuleAllowed);
+            final boolean[] namedModuleAllowed,
+            final boolean[] nonExistentClassAllowed) {
+        final TestFriendlyException error =
+                new TestFriendlyException(name, namedModuleAllowed, nonExistentClassAllowed);
         if (depth < maxDepth) {
-            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed);
+            final TestFriendlyException cause =
+                    create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed, nonExistentClassAllowed);
             error.initCause(cause);
             final TestFriendlyException suppressed =
-                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed);
+                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed, nonExistentClassAllowed);
             error.addSuppressed(suppressed);
             final boolean circularAllowed = depth + 1 == maxDepth && !circular[0];
             if (circularAllowed) {
@@ -105,17 +117,19 @@ public final class TestFriendlyException extends RuntimeException {
         return error;
     }
 
-    private TestFriendlyException(final String message, final boolean[] namedModuleAllowed) {
+    private TestFriendlyException(
+            final String message, final boolean[] namedModuleAllowed, final boolean[] nonExistentClassAllowed) {
         super(message);
-        removeExcludedStackTraceElements(namedModuleAllowed);
+        removeExcludedStackTraceElements(namedModuleAllowed, nonExistentClassAllowed);
     }
 
-    private void removeExcludedStackTraceElements(final boolean[] namedModuleAllowed) {
+    private void removeExcludedStackTraceElements(
+            final boolean[] namedModuleAllowed, final boolean[] nonExistentClassAllowed) {
         final StackTraceElement[] oldStackTrace = getStackTrace();
         final boolean[] seenExcludedStackTraceElement = {false};
         final StackTraceElement[] newStackTrace = Arrays.stream(oldStackTrace)
-                .flatMap(stackTraceElement ->
-                        mapStackTraceElement(stackTraceElement, namedModuleAllowed, seenExcludedStackTraceElement))
+                .flatMap(stackTraceElement -> mapStackTraceElement(
+                        stackTraceElement, namedModuleAllowed, nonExistentClassAllowed, seenExcludedStackTraceElement))
                 .toArray(StackTraceElement[]::new);
         setStackTrace(newStackTrace);
     }
@@ -123,12 +137,14 @@ public final class TestFriendlyException extends RuntimeException {
     private static Stream<StackTraceElement> mapStackTraceElement(
             final StackTraceElement stackTraceElement,
             final boolean[] namedModuleAllowed,
+            final boolean[] nonExistentClassAllowed,
             final boolean[] seenExcludedStackTraceElement) {
-        final Stream<StackTraceElement> filteredStackTraceElement =
+        final Stream<StackTraceElement> filteredStackTraceElements =
                 filterStackTraceElement(stackTraceElement, seenExcludedStackTraceElement);
-        final Stream<StackTraceElement> javaBaseIncludedStackTraceElement =
-                namedModuleIncludedStackTraceElement(namedModuleAllowed);
-        return Stream.concat(javaBaseIncludedStackTraceElement, filteredStackTraceElement);
+        final Stream<StackTraceElement> optionalStackTraceElements = Stream.concat(
+                namedModuleIncludedStackTraceElement(namedModuleAllowed),
+                nonExistentClassIncludedStackTraceElement(nonExistentClassAllowed));
+        return Stream.concat(optionalStackTraceElements, filteredStackTraceElements);
     }
 
     private static Stream<StackTraceElement> filterStackTraceElement(
@@ -165,6 +181,15 @@ public final class TestFriendlyException extends RuntimeException {
         }
         namedModuleAllowed[0] = false;
         return Stream.of(NAMED_MODULE_STACK_TRACE_ELEMENT);
+    }
+
+    private static Stream<StackTraceElement> nonExistentClassIncludedStackTraceElement(
+            final boolean[] nonExistentClassAllowed) {
+        if (!nonExistentClassAllowed[0]) {
+            return Stream.of();
+        }
+        nonExistentClassAllowed[0] = false;
+        return Stream.of(NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT);
     }
 
     @Override
