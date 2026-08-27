@@ -56,6 +56,7 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      *
      * @param includeLocation {@code true} to include location information; otherwise, {@code false}
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default T setIncludeLocation(boolean includeLocation) {
         return setAttribute("includeLocation", includeLocation);
@@ -69,6 +70,7 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      *
      * @param level the level
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default T setLevel(@Nullable String level) {
         return setAttribute("level", level);
@@ -82,6 +84,7 @@ public interface LoggableComponentBuilder<T extends ComponentBuilder<T>> extends
      *
      * @param level the level
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default T setLevel(@Nullable Level level) {
         return setAttribute("level", level);

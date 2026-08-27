@@ -61,6 +61,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param value The value of the attribute.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     T setAttribute(String key, @Nullable String value);
 
@@ -74,6 +75,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param level The logging Level.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     default T setAttribute(String key, @Nullable Level level) {
         return setAttribute(key, (level != null) ? level.toString() : null);
@@ -89,6 +91,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param value The enumeration.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     T setAttribute(String key, @Nullable Enum<?> value);
 
@@ -98,6 +101,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param value The integer value.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     T setAttribute(String key, int value);
 
@@ -107,6 +111,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param value The boolean value.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     T setAttribute(String key, boolean value);
 
@@ -120,6 +125,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
      * @param value The object value.
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code key} is {@code null}
+     * @since 2.27.0
      */
     T setAttribute(String key, @Nullable Object value);
 

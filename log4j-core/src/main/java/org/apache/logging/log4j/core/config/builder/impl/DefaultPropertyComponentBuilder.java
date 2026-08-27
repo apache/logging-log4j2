@@ -41,7 +41,7 @@ class DefaultPropertyComponentBuilder extends DefaultComponentAndConfigurationBu
      * @param builder the configuration builder
      * @param name the property name
      * @param value the property value
-     * @throws NullPointerException if the given {@code builder} is {@code}
+     * @throws NullPointerException if the given {@code builder} is {@code null}
      */
     public DefaultPropertyComponentBuilder(
             final DefaultConfigurationBuilder<? extends Configuration> builder,

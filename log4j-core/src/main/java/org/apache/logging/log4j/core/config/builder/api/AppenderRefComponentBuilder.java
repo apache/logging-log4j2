@@ -40,6 +40,7 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
      *
      * @param level the level
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default AppenderRefComponentBuilder setLevel(@Nullable String level) {
         return setAttribute("level", level);
@@ -53,6 +54,7 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
      *
      * @param level the level
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default AppenderRefComponentBuilder setLevel(@Nullable Level level) {
         return setAttribute("level", level);
@@ -66,6 +68,7 @@ public interface AppenderRefComponentBuilder extends FilterableComponentBuilder<
      *
      * @param refAppenderName the name of the appender being referenced
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default AppenderRefComponentBuilder setRef(@Nullable String refAppenderName) {
         return setAttribute("ref", refAppenderName);

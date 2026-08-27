@@ -163,6 +163,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param builder the {@code PropertyComponentBuilder} to add
      * @return this builder (for chaining)
      * @throws NullPointerException if the given {@code builder} is {@code null}
+     * @since 2.27.0
      */
     ConfigurationBuilder<T> add(PropertyComponentBuilder builder);
 
@@ -365,6 +366,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Returns a new {@link FilterComponentBuilder} for creating a {@link Filter} component.
      * @param pluginType the plugin type of the filter
      * @return the new component builder instance
+     * @since 2.27.0
      */
     FilterComponentBuilder newFilter(String pluginType);
 
@@ -531,6 +533,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * </p>
      * @param intervalSeconds the number of seconds that should pass between checks of the configuration source
      * @return this builder instance
+     * @since 2.27.0
      */
     ConfigurationBuilder<T> setMonitorInterval(int intervalSeconds);
 
@@ -542,7 +545,6 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param intervalSeconds the number of seconds that should pass between checks of the configuration source
      * @return this builder instance
      * @throws NumberFormatException if the {@code intervalSeconds} argument is not a valid integer representation
-     * @since 2.27.0
      */
     ConfigurationBuilder<T> setMonitorInterval(String intervalSeconds);
 
@@ -585,6 +587,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @return this builder (for chaining)
      * @throws IllegalArgumentException if the {@code shutdownTimeoutMillis} argument is less than 0
      * @see LoggerContext#stop(long, TimeUnit)
+     * @since 2.27.0
      */
     ConfigurationBuilder<T> setShutdownTimeout(long shutdownTimeoutMillis);
 
@@ -628,6 +631,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param value the property value
      * @return this builder (for chaining)
      * @throws NullPointerException if the {@code key} argument is {@code null}
+     * @since 2.27.0
      */
     ConfigurationBuilder<T> setRootProperty(String key, @Nullable String value);
 

@@ -38,6 +38,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param language the language
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default ScriptFileComponentBuilder setLanguage(@Nullable String language) {
         return setAttribute("language", language);
@@ -47,6 +48,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * Sets the '{@code isWatched}' attribute for the script-file component.
      * @param isWatched {@code true} to watch the script file; otherwise, {@code false}
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default ScriptFileComponentBuilder setIsWatched(boolean isWatched) {
         return setAttribute("isWatched", isWatched);
@@ -59,6 +61,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param isWatched the string value of the flag
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default ScriptFileComponentBuilder setIsWatched(@Nullable String isWatched) {
         return setAttribute("isWatched", isWatched);
@@ -71,6 +74,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param charset the charset
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default ScriptFileComponentBuilder setCharset(@Nullable String charset) {
         return setAttribute("charset", charset);
@@ -83,6 +87,7 @@ public interface ScriptFileComponentBuilder extends ComponentBuilder<ScriptFileC
      * </p>
      * @param path the script file path
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default ScriptFileComponentBuilder setPath(@Nullable String path) {
         return setAttribute("path", path);

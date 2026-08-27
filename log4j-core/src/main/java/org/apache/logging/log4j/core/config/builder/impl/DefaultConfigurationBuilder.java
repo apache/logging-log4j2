@@ -589,6 +589,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the advertiser.
      * @return the advertiser or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable String getAdvertiser() {
         return this.advertiser;
@@ -597,6 +598,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration name.
      * @return the configuration name or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable String getConfigurationName() {
         return this.configurationName;
@@ -606,6 +608,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * Returns the configuration source.
      *
      * @return the configuration source or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable ConfigurationSource getConfigurationSource() {
         return this.configurationSource;
@@ -614,6 +617,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration's destination.
      * @return the destination or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable String getDestination() {
         return this.destination;
@@ -622,6 +626,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration's logger-context.
      * @return the logger-context or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable LoggerContext getLoggerContext() {
         return this.loggerContext;
@@ -630,6 +635,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration's monitor interval in seconds.
      * @return the monitor interval (in seconds)
+     * @since 2.27.0
      */
     protected int getMonitorInterval() {
         return this.monitorInterval;
@@ -638,6 +644,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the comma-separated of package-names to search for plugins.
      * @return the packages or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable String getPackages() {
         return this.packages;
@@ -648,6 +655,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
      * @param key the key
      * @return the property value or {@code null} if undefined
      * @throws NullPointerException if the given {@code key} argument is {@code null}
+     * @since 2.27.0
      */
     protected @Nullable String getRootProperty(String key) {
 
@@ -659,6 +667,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration's shutdown timeout in milliseconds.
      * @return the shutdown timeout (in millis)
+     * @since 2.27.0
      */
     protected long getShutdownTimeout() {
         return this.shutdownTimeoutMillis;
@@ -667,6 +676,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     /**
      * Returns the configuration's status logger level.
      * @return the status logger level or {@code null} if undefined
+     * @since 2.27.0
      */
     protected @Nullable Level getStatusLevel() {
         return this.statusLevel;

@@ -35,11 +35,12 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
     /**
      * Sets the 'onMatch' attribute on the filter component.
      * <p>
-     *   If the given {@code onMatch} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code onMatch} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param onMatch the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default FilterComponentBuilder setOnMatch(@Nullable String onMatch) {
         return setAttribute("onMatch", onMatch);
@@ -48,11 +49,12 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
     /**
      * Sets the 'onMatch' attribute on the filter component.
      * <p>
-     *   If the given {@code onMatch} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code onMatch} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param onMatch the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default FilterComponentBuilder setOnMatch(@Nullable Result onMatch) {
         return setAttribute("onMatch", onMatch);
@@ -61,11 +63,12 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
     /**
      * Sets the 'onMismatch' attribute on the filter component.
      * <p>
-     *   If the given {@code onMismatch} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code onMismatch} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param onMismatch the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default FilterComponentBuilder setOnMismatch(@Nullable String onMismatch) {
         return setAttribute("onMismatch", onMismatch);
@@ -74,11 +77,12 @@ public interface FilterComponentBuilder extends ComponentBuilder<FilterComponent
     /**
      * Sets the 'onMismatch' attribute on the filter component.
      * <p>
-     *   If the given {@code onMismatch} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code onMismatch} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param onMismatch the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default FilterComponentBuilder setOnMismatch(@Nullable Result onMismatch) {
         return setAttribute("onMismatch", onMismatch);

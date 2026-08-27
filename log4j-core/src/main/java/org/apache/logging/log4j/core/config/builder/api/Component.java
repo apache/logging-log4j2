@@ -39,7 +39,7 @@ public class Component {
     /**
      * Default constructor.
      *
-     * @deprecated - use {@link Component(String)} - a non-{@code null} '{@code pluginType}' must be specified
+     * @deprecated - use {@link #Component(String)} - a non-{@code null} '{@code pluginType}' must be specified
      */
     @Deprecated
     public Component() {
@@ -110,6 +110,7 @@ public class Component {
      * @param key the key
      * @param newValue the new value
      * @return the previous value or {@code null} if none was set
+     * @since 2.27.0
      */
     public @Nullable String putAttribute(final String key, final @Nullable String newValue) {
 

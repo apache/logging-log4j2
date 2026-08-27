@@ -34,11 +34,12 @@ public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValueP
     /**
      * Sets the 'key' attribute to the key-value pair component.
      * <p>
-     *   If the given {@code key} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code key} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param key the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default KeyValuePairComponentBuilder setKey(final @Nullable String key) {
         return setAttribute("key", key);
@@ -47,11 +48,12 @@ public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValueP
     /**
      * Sets the 'value' attribute to the key-value pair component.
      * <p>
-     *   If the given {@code value} argument is {@code} the attribute will be removed (if present).
+     *   If the given {@code value} argument is {@code null} the attribute will be removed (if present).
      * </p>
      *
      * @param value the attribute value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default KeyValuePairComponentBuilder setValue(final @Nullable String value) {
         return setAttribute("value", value);

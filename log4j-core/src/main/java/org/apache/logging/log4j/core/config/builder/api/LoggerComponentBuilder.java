@@ -35,6 +35,7 @@ public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerC
      *
      * @param additivity {@code true} if additive; otherwise, {@code false}
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default LoggerComponentBuilder setAdditivity(boolean additivity) {
         return setAttribute("additivity", additivity);
@@ -48,6 +49,7 @@ public interface LoggerComponentBuilder extends LoggableComponentBuilder<LoggerC
      *
      * @param additivity "{@code true}" if additive; otherwise, {@code false}
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default LoggerComponentBuilder setAdditivity(String additivity) {
         return setAttribute("additivity", additivity);

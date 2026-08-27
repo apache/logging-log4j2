@@ -35,6 +35,7 @@ public interface CustomLevelComponentBuilder extends ComponentBuilder<CustomLeve
      *
      * @param intLevel the integer level value
      * @return this builder (for chaining)
+     * @since 2.27.0
      */
     default CustomLevelComponentBuilder setIntLevel(int intLevel) {
         return setAttribute("intLevel", intLevel);
