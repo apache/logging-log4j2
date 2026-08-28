@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.json.JsonConfigurationFactory;
+import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.test.ListStatusListener;
@@ -89,10 +91,17 @@ class ConfigurationFactoryActivationTest {
     @Test
     @UsingStatusListener
     void reportsMatchingResourceWithoutInvokingInactiveFactory(final ListStatusListener listener) {
+        final ConfigurationFactory fallbackFactory = new XmlConfigurationFactory() {
+            @Override
+            protected String getTestPrefix() {
+                return "log4j-test";
+            }
+        };
+        ReflectionUtil.setStaticFieldValue(factoriesField, Arrays.asList(inactiveFactory, fallbackFactory));
         try (final LoggerContext context = new LoggerContext("test")) {
-            assertInstanceOf(
-                    DefaultConfiguration.class,
-                    ConfigurationFactory.getInstance().getConfiguration(context, "1", (URI) null));
+            final Configuration configuration =
+                    ConfigurationFactory.getInstance().getConfiguration(context, "1", (URI) null);
+            assertEquals("XMLConfigTest", configuration.getName());
         }
         assertFactoryWasChecked();
         assertTrue(inactiveFactory.supportedTypeChecks > 0);
