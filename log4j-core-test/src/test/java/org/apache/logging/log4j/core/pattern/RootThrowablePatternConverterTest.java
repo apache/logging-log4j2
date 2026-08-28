@@ -91,11 +91,11 @@ class RootThrowablePatternConverterTest {
 
         @Test
         @Override
-        void output_should_be_newline_prefixed() {
+        void output_should_not_be_newline_prefixed() {
             final String pattern = "%p" + patternPrefix;
             final String stackTrace = convert(pattern);
             final String expectedStart = String.format(
-                    "%s%n[CIRCULAR REFERENCE: %s", LEVEL, EXCEPTION.getClass().getCanonicalName());
+                    "%s[CIRCULAR REFERENCE: %s", LEVEL, EXCEPTION.getClass().getCanonicalName());
             assertThat(stackTrace).as("pattern=`%s`", pattern).startsWith(expectedStart);
         }
 

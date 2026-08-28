@@ -33,7 +33,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -59,7 +58,6 @@ public class ThreadContextDataInjectorTest {
     public String threadContextMapClassName;
 
     private static void resetThreadContextMap() {
-        PropertiesUtil.getProperties().reload();
         final Log4jProvider provider = (Log4jProvider) ProviderUtil.getProvider();
         provider.resetThreadContextMap();
         ThreadContext.init();

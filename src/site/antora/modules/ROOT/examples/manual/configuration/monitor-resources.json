@@ -1,0 +1,15 @@
+{
+  "Configuration": {
+    "monitorInterval": "30",
+    "MonitorResources": {
+      "MonitorResource": [
+        {
+          "uri": "file://path/to/external-file-1.txt"
+        },
+        {
+          "uri": "file://path/to/external-file-2.txt"
+        }
+      ]
+    }
+  }
+}

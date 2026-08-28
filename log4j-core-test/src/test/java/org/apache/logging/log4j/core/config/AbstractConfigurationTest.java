@@ -24,14 +24,19 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.filter.ScriptFilter;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorTest;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.Issue;
 
+@SetTestProperty(key = "log4j2.scriptEnableLanguages", value = "groovy")
 class AbstractConfigurationTest {
 
     @Test
@@ -58,6 +63,26 @@ class AbstractConfigurationTest {
             assertThat(InterpolatorTest.getConfiguration(interpolator)).isEqualTo(config);
             assertThat(InterpolatorTest.getLoggerContext(interpolator)).isEqualTo(context);
         }
+    }
+
+    @Test
+    @LoggerContextSource("log4j2-script-order-test.xml")
+    void scriptRefShouldBeResolvedWhenScriptsElementIsLast(final Configuration config) {
+        assertThat(config.getFilter())
+                .as("Top-level filter should be a CompositeFilter")
+                .isInstanceOf(CompositeFilter.class);
+        final CompositeFilter compositeFilter = (CompositeFilter) config.getFilter();
+
+        assertThat(compositeFilter.getFilters())
+                .as("CompositeFilter should contain one filter")
+                .hasSize(1);
+        final ScriptFilter scriptFilter =
+                (ScriptFilter) compositeFilter.getFilters().get(0);
+
+        assertThat(scriptFilter).isNotNull();
+        assertThat(scriptFilter.toString())
+                .as("Script name should match the one in the config")
+                .isEqualTo("GLOBAL_FILTER");
     }
 
     private static class TestConfiguration extends AbstractConfiguration {

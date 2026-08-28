@@ -85,7 +85,11 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
 
     @Override
     public Message memento() {
-        return new SimpleMessage(charSequence);
+        SimpleMessage message = new SimpleMessage(charSequence);
+        // Since `toString()` methods are not always pure functions and might depend on the thread and other context
+        // values, we format the message and cache the result.
+        message.getFormattedMessage();
+        return message;
     }
 
     // CharSequence impl
@@ -105,6 +109,9 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
         return charSequence.subSequence(start, end);
     }
 
+    /**
+     * @since 2.11.1
+     */
     @Override
     public void clear() {
         charSequence = null;

@@ -29,6 +29,35 @@ final class PrivateSecurityManagerStackTraceUtil {
     private static final PrivateSecurityManager SECURITY_MANAGER;
 
     static {
+        PrivateSecurityManager candidate = createPrivateSecurityManager();
+        if (isCapable(candidate)) {
+            SECURITY_MANAGER = candidate;
+        } else {
+            SECURITY_MANAGER = null;
+        }
+    }
+
+    private static boolean isCapable(PrivateSecurityManager candidate) {
+        if (candidate == null) {
+            return false;
+        }
+
+        try {
+            final Class<?>[] result = candidate.getClassContext();
+            if (result == null || result.length == 0) {
+                // This happens e.g. on Android which has real implementation of SecurityManager replaced with merely
+                // stubs. So the PrivateSecurityManager, though can be instantiated, will not produce meaningful
+                // results
+                return false;
+            }
+            // Add more checks here as needed
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private static PrivateSecurityManager createPrivateSecurityManager() {
         PrivateSecurityManager psm;
         try {
             final SecurityManager sm = System.getSecurityManager();
@@ -40,7 +69,7 @@ final class PrivateSecurityManagerStackTraceUtil {
             psm = null;
         }
 
-        SECURITY_MANAGER = psm;
+        return psm;
     }
 
     private PrivateSecurityManagerStackTraceUtil() {

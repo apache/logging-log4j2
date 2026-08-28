@@ -137,7 +137,7 @@ class MutableLogEventTest {
         assertEquals("msg in a bottle", memento.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, memento.getParameters(), "parameters");
 
-        final Message eventMementoMessage = mutable.createMemento().getMessage();
+        final Message eventMementoMessage = mutable.toImmutable().getMessage();
         assertEquals("msg in a {}", eventMementoMessage.getFormat(), "format");
         assertEquals("msg in a bottle", eventMementoMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, eventMementoMessage.getParameters(), "parameters");
@@ -365,5 +365,34 @@ class MutableLogEventTest {
         mutable.setIncludeLocation(false);
         final Log4jLogEvent immutable = mutable.toImmutable();
         assertThat(immutable.getSource()).isEqualTo(source);
+    }
+
+    @Test
+    void testMutableLogEventTracingFieldsPropagationAndClear() {
+        final Log4jLogEvent sourceEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("SourceLogger")
+                .setTraceId("trace-xyz-123")
+                .setSpanId("span-abc-456")
+                .setTraceFlags("01")
+                .build();
+
+        final MutableLogEvent mutableEvent = new MutableLogEvent();
+
+        // Initially empty
+        assertThat(mutableEvent.getTraceId()).isNull();
+        assertThat(mutableEvent.getSpanId()).isNull();
+        assertThat(mutableEvent.getTraceFlags()).isNull();
+
+        // Verify propagation via initFrom
+        mutableEvent.initFrom(sourceEvent);
+        assertThat(mutableEvent.getTraceId()).isEqualTo("trace-xyz-123");
+        assertThat(mutableEvent.getSpanId()).isEqualTo("span-abc-456");
+        assertThat(mutableEvent.getTraceFlags()).isEqualTo("01");
+
+        // Verify clearing removes tracking state to prevent leakage on pool reuse
+        mutableEvent.clear();
+        assertThat(mutableEvent.getTraceId()).isNull();
+        assertThat(mutableEvent.getSpanId()).isNull();
+        assertThat(mutableEvent.getTraceFlags()).isNull();
     }
 }

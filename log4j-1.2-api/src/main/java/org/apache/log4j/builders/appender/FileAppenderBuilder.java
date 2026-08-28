@@ -158,9 +158,9 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
-                .withFileName(fileName)
+                .setFileName(fileName)
                 .setImmediateFlush(immediateFlush)
-                .withAppend(append)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferSize)
                 .build());

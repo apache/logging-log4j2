@@ -24,6 +24,8 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Utility class to register Log4j2 providers in an OSGI environment.
+ *
+ * @since 2.19.0
  */
 public abstract class ProviderActivator implements BundleActivator {
 

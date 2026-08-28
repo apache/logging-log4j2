@@ -162,7 +162,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         return newBuilder()
                 .setLayout(layout)
                 .setFilter(filter)
-                .setTarget(target)
+                .setTarget(target == null ? DEFAULT_TARGET : target)
                 .setName(name)
                 .setFollow(follow)
                 .setDirect(direct)

@@ -26,7 +26,7 @@ package org.apache.logging.log4j.message;
  *
  * @param <S> state data
  * @see ReusableMessage
- * @since 2.11
+ * @since 2.11.0
  */
 public interface ParameterConsumer<S> {
 

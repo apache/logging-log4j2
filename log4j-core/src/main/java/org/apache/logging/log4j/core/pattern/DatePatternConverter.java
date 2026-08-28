@@ -49,8 +49,6 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
     private static final String CLASS_NAME = DatePatternConverter.class.getSimpleName();
 
-    private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
-
     private final InstantFormatter formatter;
 
     private DatePatternConverter(@Nullable final String[] options) {
@@ -64,7 +62,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         } catch (final Exception error) {
             logOptionReadFailure(options, error, "failed for options: {}, falling back to the default instance");
         }
-        return InstantPatternFormatter.newBuilder().setPattern(DEFAULT_PATTERN).build();
+        return InstantPatternFormatter.newBuilder()
+                .setPattern(NamedInstantPattern.DEFAULT.getPattern())
+                .build();
     }
 
     private static InstantFormatter createFormatterUnsafely(@Nullable final String[] options) {
@@ -94,7 +94,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private static String readPattern(@Nullable final String[] options) {
         return options != null && options.length > 0 && options[0] != null
                 ? decodeNamedPattern(options[0])
-                : DEFAULT_PATTERN;
+                : NamedInstantPattern.DEFAULT.getPattern();
     }
 
     /**
@@ -109,84 +109,16 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
      * @since 2.25.0
      */
     static String decodeNamedPattern(final String pattern) {
-
-        // If legacy formatters are enabled, we need to produce output aimed for `FixedDateFormat` and `FastDateFormat`.
-        // Otherwise, we need to produce output aimed for `DateTimeFormatter`.
-        // In conclusion, we need to check if legacy formatters enabled and apply following transformations.
-        //
-        //                               | Microseconds | Nanoseconds | Time-zone
-        // ------------------------------+--------------+-------------+-----------
-        // Legacy formatter directive    | nnnnnn       | nnnnnnnnn   | X, XX, XXX
-        // `DateTimeFormatter` directive | SSSSSS       | SSSSSSSSS   | x, xx, xxx
-        //
-        // Enabling legacy formatters mean that user requests the pattern to be formatted using deprecated
-        // `FixedDateFormat` and `FastDateFormat`.
-        // These two have, let's not say _bogus_, but an _interesting_ way of handling certain pattern directives:
-        //
-        // - They say they adhere to `SimpleDateFormat` specification, but use `n` directive.
-        //   `n` is neither defined by `SimpleDateFormat`, nor `SimpleDateFormat` supports sub-millisecond precisions.
-        //   `n` is probably manually introduced by Log4j to support sub-millisecond precisions.
-        //
-        // - `n` denotes nano-of-second for `DateTimeFormatter`.
-        //   In Java 17, `n` and `N` (nano-of-day) always output nanosecond precision.
-        //   This is independent of how many times they occur consequently.
-        //   Yet legacy formatters use repeated `n` to denote sub-milliseconds precision of certain length.
-        //   This doesn't work for `DateTimeFormatter`, which needs
-        //
-        //   - `SSSSSS` for 6-digit microsecond precision
-        //   - `SSSSSSSSS` for 9-digit nanosecond precision
-        //
-        // - Legacy formatters use `X`, `XX,` and `XXX` to choose between `+00`, `+0000`, or `+00:00`.
-        //   This is the correct behaviour for `SimpleDateFormat`.
-        //   Though `X` in `DateTimeFormatter` produces `Z` for zero-offset.
-        //   To avoid the `Z` output, one needs to use `x` with `DateTimeFormatter`.
-        final boolean compat = InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED;
-
-        switch (pattern) {
-            case "ABSOLUTE":
-                return "HH:mm:ss,SSS";
-            case "ABSOLUTE_MICROS":
-                return "HH:mm:ss," + (compat ? "nnnnnn" : "SSSSSS");
-            case "ABSOLUTE_NANOS":
-                return "HH:mm:ss," + (compat ? "nnnnnnnnn" : "SSSSSSSSS");
-            case "ABSOLUTE_PERIOD":
-                return "HH:mm:ss.SSS";
-            case "COMPACT":
-                return "yyyyMMddHHmmssSSS";
-            case "DATE":
-                return "dd MMM yyyy HH:mm:ss,SSS";
-            case "DATE_PERIOD":
-                return "dd MMM yyyy HH:mm:ss.SSS";
-            case "DEFAULT":
-                return "yyyy-MM-dd HH:mm:ss,SSS";
-            case "DEFAULT_MICROS":
-                return "yyyy-MM-dd HH:mm:ss," + (compat ? "nnnnnn" : "SSSSSS");
-            case "DEFAULT_NANOS":
-                return "yyyy-MM-dd HH:mm:ss," + (compat ? "nnnnnnnnn" : "SSSSSSSSS");
-            case "DEFAULT_PERIOD":
-                return "yyyy-MM-dd HH:mm:ss.SSS";
-            case "ISO8601_BASIC":
-                return "yyyyMMdd'T'HHmmss,SSS";
-            case "ISO8601_BASIC_PERIOD":
-                return "yyyyMMdd'T'HHmmss.SSS";
-            case "ISO8601":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS";
-            case "ISO8601_OFFSET_DATE_TIME_HH":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "X" : "x");
-            case "ISO8601_OFFSET_DATE_TIME_HHMM":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "XX" : "xx");
-            case "ISO8601_OFFSET_DATE_TIME_HHCMM":
-                return "yyyy-MM-dd'T'HH:mm:ss,SSS" + (compat ? "XXX" : "xxx");
-            case "ISO8601_PERIOD":
-                return "yyyy-MM-dd'T'HH:mm:ss.SSS";
-            case "ISO8601_PERIOD_MICROS":
-                return "yyyy-MM-dd'T'HH:mm:ss." + (compat ? "nnnnnn" : "SSSSSS");
-            case "US_MONTH_DAY_YEAR2_TIME":
-                return "dd/MM/yy HH:mm:ss.SSS";
-            case "US_MONTH_DAY_YEAR4_TIME":
-                return "dd/MM/yyyy HH:mm:ss.SSS";
+        // See `NamedInstantPattern.getLegacyPattern()`
+        // for the difference between legacy and `DateTimeFormatter` patterns.
+        try {
+            NamedInstantPattern namedInstantPattern = NamedInstantPattern.valueOf(pattern);
+            return InstantPatternFormatter.LEGACY_FORMATTERS_ENABLED
+                    ? namedInstantPattern.getLegacyPattern()
+                    : namedInstantPattern.getPattern();
+        } catch (IllegalArgumentException ignored) {
+            return pattern;
         }
-        return pattern;
     }
 
     private static TimeZone readTimeZone(@Nullable final String[] options) {

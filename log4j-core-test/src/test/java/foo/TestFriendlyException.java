@@ -20,6 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.Constants;
 
@@ -33,6 +39,7 @@ import org.apache.logging.log4j.util.Constants;
  * <li>Suppressed exceptions</li>
  * <li>Clutter-free stack trace (i.e., elements from JUnit, JDK, etc.)</li>
  * <li>Stack trace elements from named modules<sup>3</sup></li>
+ * <li>Exceptions with malfunctioning (e.g., colliding) {@link Object#equals(Object) equals()} and {@link Object#hashCode() hashCode()} implementations in the causal chain</li>
  * </ul>
  * <p>
  * <sup>1</sup> Helps with observing stack trace manipulation effects of Log4j.
@@ -80,20 +87,63 @@ public final class TestFriendlyException extends RuntimeException {
         "java.lang", "jdk.internal", "org.junit", "sun.reflect"
     };
 
-    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false}, new boolean[] {true});
+    public static final TestFriendlyException INSTANCE =
+            create("r", 0, 2, new boolean[] {false}, new boolean[] {true}, new int[] {5});
+
+    static {
+        ensureIdentityMalfunctionAtDifferentDepths();
+    }
+
+    /**
+     * Ensure we have identity malfunctioning exceptions that have different stack trace lengths.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/3933">#3933</a>
+     */
+    private static void ensureIdentityMalfunctionAtDifferentDepths() {
+        final Set<Throwable> visitedExceptions = Collections.newSetFromMap(new IdentityHashMap<>());
+        final Set<Integer> identityMalfunctioningExceptionStackTraceDepths = new HashSet<>();
+        final Queue<TestFriendlyException> exceptions = new LinkedList<>();
+        exceptions.add(INSTANCE);
+        while (!exceptions.isEmpty()) {
+
+            // Process the exception
+            final TestFriendlyException exception = exceptions.remove();
+            if (!visitedExceptions.add(exception) || !exception.identityMalfunctioning) {
+                continue;
+            }
+            identityMalfunctioningExceptionStackTraceDepths.add(exception.getStackTrace().length);
+
+            // Enqueue the cause
+            final TestFriendlyException cause = (TestFriendlyException) exception.getCause();
+            if (cause != null) {
+                exceptions.add(cause);
+            }
+
+            // Enqueue the suppressed
+            for (final Throwable suppressed : exception.getSuppressed()) {
+                exceptions.add((TestFriendlyException) suppressed);
+            }
+        }
+        assertThat(identityMalfunctioningExceptionStackTraceDepths)
+                .describedAs("# of visited exceptions = %s", visitedExceptions.size())
+                .hasSizeGreaterThan(1);
+    }
 
     private static TestFriendlyException create(
             final String name,
             final int depth,
             final int maxDepth,
             final boolean[] circular,
-            final boolean[] namedModuleAllowed) {
-        final TestFriendlyException error = new TestFriendlyException(name, namedModuleAllowed);
+            final boolean[] namedModuleAllowed,
+            final int[] maxIdentityMalfunctionCount) {
+        final TestFriendlyException error =
+                new TestFriendlyException(name, namedModuleAllowed, maxIdentityMalfunctionCount);
         if (depth < maxDepth) {
-            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed);
+            final TestFriendlyException cause =
+                    create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed, maxIdentityMalfunctionCount);
             error.initCause(cause);
             final TestFriendlyException suppressed =
-                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed);
+                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed, maxIdentityMalfunctionCount);
             error.addSuppressed(suppressed);
             final boolean circularAllowed = depth + 1 == maxDepth && !circular[0];
             if (circularAllowed) {
@@ -105,8 +155,12 @@ public final class TestFriendlyException extends RuntimeException {
         return error;
     }
 
-    private TestFriendlyException(final String message, final boolean[] namedModuleAllowed) {
+    private final boolean identityMalfunctioning;
+
+    private TestFriendlyException(
+            final String message, final boolean[] namedModuleAllowed, final int[] maxIdentityMalfunctionCount) {
         super(message);
+        this.identityMalfunctioning = --maxIdentityMalfunctionCount[0] > 0;
         removeExcludedStackTraceElements(namedModuleAllowed);
     }
 
@@ -170,5 +224,15 @@ public final class TestFriendlyException extends RuntimeException {
     @Override
     public String getLocalizedMessage() {
         return getMessage() + " [localized]";
+    }
+
+    @Override
+    public int hashCode() {
+        return identityMalfunctioning ? 0 : super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return identityMalfunctioning || super.equals(obj);
     }
 }

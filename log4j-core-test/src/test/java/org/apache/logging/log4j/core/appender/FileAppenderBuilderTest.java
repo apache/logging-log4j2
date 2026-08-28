@@ -67,7 +67,7 @@ class FileAppenderBuilderTest {
             assertNull(appender);
             assertTrue(counter.getAndSet(0) > 0);
             appender = FileAppender.newBuilder()
-                    .withFileName("target/FileAppenderBuilderTest.log")
+                    .setFileName("target/FileAppenderBuilderTest.log")
                     .build();
             assertNull(appender);
             assertTrue(counter.getAndSet(0) > 0);
@@ -76,7 +76,7 @@ class FileAppenderBuilderTest {
             assertTrue(counter.getAndSet(0) > 0);
             appender = FileAppender.newBuilder()
                     .setName("FILE")
-                    .withFileName("target/FileAppenderBuilderTest.log")
+                    .setFileName("target/FileAppenderBuilderTest.log")
                     .build();
             assertNotNull(appender);
             assertEquals(0, counter.get());

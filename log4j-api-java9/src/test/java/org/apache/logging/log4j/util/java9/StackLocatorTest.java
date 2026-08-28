@@ -73,7 +73,7 @@ class StackLocatorTest {
         private static void assertCallerClassViaName() {
             final Class<?> expected = StackLocatorTest.class;
             final StackLocator stackLocator = StackLocator.getInstance();
-            final Class<?> actual = stackLocator.getCallerClass(Inner.class.getName());
+            final Class<?> actual = stackLocator.getCallerClass(Inner.class.getName(), "");
             assertSame(expected, actual);
         }
 

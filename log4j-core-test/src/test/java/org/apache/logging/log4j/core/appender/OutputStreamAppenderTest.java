@@ -108,12 +108,12 @@ class OutputStreamAppenderTest {
         final Configuration config = ctx.getConfiguration();
         // @formatter:off
         final Appender appender = FileAppender.newBuilder()
-                .withFileName("target/" + getClass().getName() + ".log")
-                .withAppend(false)
+                .setFileName("target/" + getClass().getName() + ".log")
+                .setAppend(false)
                 .setName("File")
                 .setIgnoreExceptions(false)
-                .withBufferedIo(false)
-                .withBufferSize(4000)
+                .setBufferedIo(false)
+                .setBufferSize(4000)
                 .setConfiguration(config)
                 .build();
         // @formatter:on

@@ -73,7 +73,7 @@ public class ScriptCondition {
         bindings.put("configuration", configuration);
         bindings.put("substitutor", configuration.getStrSubstitutor());
         bindings.put("statusLogger", LOGGER);
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return (List<PathWithAttributes>) object;
     }
 
@@ -110,8 +110,8 @@ public class ScriptCondition {
             return null;
         }
         if (script instanceof ScriptRef) {
-            if (configuration.getScriptManager().getScript(script.getName()) == null) {
-                LOGGER.error("ScriptCondition: No script with name {} has been declared.", script.getName());
+            if (configuration.getScriptManager().getScript(script.getId()) == null) {
+                LOGGER.error("ScriptCondition: No script with name {} has been declared.", script.getId());
                 return null;
             }
         } else {

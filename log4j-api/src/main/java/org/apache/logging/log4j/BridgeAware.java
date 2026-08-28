@@ -20,6 +20,7 @@ package org.apache.logging.log4j;
  * Extended interface to allow bridges between logging systems to convey the
  * correct location information.
  *
+ * @since 2.19.0
  */
 public interface BridgeAware {
 

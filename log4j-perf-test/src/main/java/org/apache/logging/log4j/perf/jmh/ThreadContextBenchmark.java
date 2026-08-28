@@ -167,6 +167,11 @@ public class ThreadContextBenchmark {
         return createMap(propertyList);
     }
 
+    @Benchmark
+    public Map<String, String> getCopy() {
+        return ThreadContext.getContext();
+    }
+
     // from Log4jLogEvent::createMap
     static Map<String, String> createMap(final List<Property> properties) {
         final Map<String, String> contextMap = ThreadContext.getImmutableContext();

@@ -115,8 +115,8 @@ class PatternLayoutTest {
     void testEqualsEmptyMarker() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("[%logger]%equals{[%marker]}{[]}{} %msg")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("[%logger]%equals{[%marker]}{[]}{} %msg")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -146,9 +146,9 @@ class PatternLayoutTest {
         // % does not work here.
         final String pattern = "%d{UNIX} MyApp%n${java:version}%n${java:runtime}%n${java:vm}%n${java:os}%n${java:hw}";
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withConfiguration(ctx.getConfiguration())
-                .withHeader("Header: " + pattern)
-                .withFooter("Footer: " + pattern)
+                .setConfiguration(ctx.getConfiguration())
+                .setHeader("Header: " + pattern)
+                .setFooter("Footer: " + pattern)
                 .build();
         final byte[] header = layout.getHeader();
         assertNotNull(header, "No header");
@@ -178,9 +178,9 @@ class PatternLayoutTest {
     void testHeaderFooterMainLookup() {
         MainMapLookup.setMainArguments("value0", "value1", "value2");
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withConfiguration(ctx.getConfiguration())
-                .withHeader("${main:0}")
-                .withFooter("${main:2}")
+                .setConfiguration(ctx.getConfiguration())
+                .setHeader("${main:0}")
+                .setFooter("${main:2}")
                 .build();
         final byte[] header = layout.getHeader();
         assertNotNull(header, "No header");
@@ -196,10 +196,10 @@ class PatternLayoutTest {
     @Test
     void testHeaderFooterThreadContext() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%d{UNIX} %m")
-                .withConfiguration(ctx.getConfiguration())
-                .withHeader("${ctx:header}")
-                .withFooter("${ctx:footer}")
+                .setPattern("%d{UNIX} %m")
+                .setConfiguration(ctx.getConfiguration())
+                .setHeader("${ctx:header}")
+                .setFooter("${ctx:footer}")
                 .build();
         ThreadContext.put("header", "Hello world Header");
         ThreadContext.put("footer", "Hello world Footer");
@@ -213,8 +213,8 @@ class PatternLayoutTest {
 
     private void testMdcPattern(final String patternStr, final String expectedStr, final boolean useThreadContext) {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern(patternStr)
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern(patternStr)
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         if (useThreadContext) {
             ThreadContext.put("key1", "value1");
@@ -267,8 +267,8 @@ class PatternLayoutTest {
         final PatternSelector selector = MarkerPatternSelector.createSelector(
                 patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPatternSelector(selector)
-                .withConfiguration(ctx.getConfiguration())
+                .setPatternSelector(selector)
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -296,8 +296,8 @@ class PatternLayoutTest {
     @Test
     void testRegex() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern(regexPattern)
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern(regexPattern)
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -313,8 +313,8 @@ class PatternLayoutTest {
     void testRegexEmptyMarker() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("[%logger]%replace{[%marker]}{\\[\\]}{} %msg")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("[%logger]%replace{[%marker]}{\\[\\]}{} %msg")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -344,8 +344,8 @@ class PatternLayoutTest {
     void testEqualsMarkerWithMessageSubstitution() {
         // replace "[]" with the empty string
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("[%logger]%equals{[%marker]}{[]}{[%msg]}")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         // Not empty marker
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
@@ -371,8 +371,8 @@ class PatternLayoutTest {
     @Test
     void testSpecialChars() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("\\\\%level\\t%msg\\n\\t%logger\\r\\n\\f")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -393,8 +393,8 @@ class PatternLayoutTest {
     @Test
     void testUnixTime() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%d{UNIX} %m")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("%d{UNIX} %m")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -419,8 +419,8 @@ class PatternLayoutTest {
     @SuppressWarnings("unused")
     private void testUnixTime(final String pattern) {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern(pattern + " %m")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern(pattern + " %m")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -445,8 +445,8 @@ class PatternLayoutTest {
     @Test
     void testUnixTimeMillis() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%d{UNIX_MILLIS} %m")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("%d{UNIX_MILLIS} %m")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -471,8 +471,8 @@ class PatternLayoutTest {
     @Test
     void testUsePlatformDefaultIfNoCharset() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%m")
-                .withConfiguration(ctx.getConfiguration())
+                .setPattern("%m")
+                .setConfiguration(ctx.getConfiguration())
                 .build();
         assertEquals(Charset.defaultCharset(), layout.getCharset());
     }
@@ -480,9 +480,9 @@ class PatternLayoutTest {
     @Test
     void testUseSpecifiedCharsetIfExists() {
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%m")
-                .withConfiguration(ctx.getConfiguration())
-                .withCharset(StandardCharsets.UTF_8)
+                .setPattern("%m")
+                .setConfiguration(ctx.getConfiguration())
+                .setCharset(StandardCharsets.UTF_8)
                 .build();
         assertEquals(StandardCharsets.UTF_8, layout.getCharset());
     }
@@ -491,8 +491,8 @@ class PatternLayoutTest {
     void testLoggerNameTruncationByRetainingPartsFromEnd() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{1} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{1} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -509,8 +509,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{2} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{2} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -528,8 +528,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{20} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{20} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -546,8 +546,8 @@ class PatternLayoutTest {
     void testCallersFqcnTruncationByRetainingPartsFromEnd() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{1} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{1} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -569,8 +569,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{2} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{2} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -593,8 +593,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{20} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{20} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -612,8 +612,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%class{1} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%class{1} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -639,8 +639,8 @@ class PatternLayoutTest {
     void testLoggerNameTruncationByDroppingPartsFromFront() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{-1} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{-1} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -656,8 +656,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{-3} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{-3} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -675,8 +675,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%logger{-3} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%logger{-3} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -694,8 +694,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%c{-20} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%c{-20} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -712,8 +712,8 @@ class PatternLayoutTest {
     void testCallersFqcnTruncationByDroppingPartsFromFront() {
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{-1} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{-1} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -734,8 +734,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{-3} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{-3} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -758,8 +758,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%class{-3} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%class{-3} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())
@@ -782,8 +782,8 @@ class PatternLayoutTest {
         }
         {
             final PatternLayout layout = PatternLayout.newBuilder()
-                    .withPattern("%C{-20} %m")
-                    .withConfiguration(ctx.getConfiguration())
+                    .setPattern("%C{-20} %m")
+                    .setConfiguration(ctx.getConfiguration())
                     .build();
             final LogEvent event1 = Log4jLogEvent.newBuilder()
                     .setLoggerName(this.getClass().getName())

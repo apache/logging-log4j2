@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,6 +36,7 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -285,10 +285,17 @@ public final class TypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
+     * Converts a {@link String} into a Log4j {@link Level}.
      */
     @Plugin(name = "Level", category = CATEGORY)
     public static class LevelConverter implements TypeConverter<Level> {
+        /**
+         * {@inheritDoc}
+         * @param s the string to convert
+         * @return the resolved level
+         * @throws NullPointerException if the given value is {@code null}.
+         * @throws IllegalArgumentException if the given argument is not resolvable to a level
+         */
         @Override
         public Level convert(final String s) {
             return Level.valueOf(s);

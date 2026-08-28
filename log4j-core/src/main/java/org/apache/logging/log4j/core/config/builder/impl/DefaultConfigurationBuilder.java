@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -24,6 +23,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -59,6 +59,7 @@ import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
 
@@ -134,6 +135,17 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     @Override
     public ConfigurationBuilder<T> add(final AppenderComponentBuilder builder) {
         return add(appenders, builder);
+    }
+
+    @Override
+    public ConfigurationBuilder<T> addComponent(ComponentBuilder<?> builder) {
+        return add(root, builder);
+    }
+
+    private Optional<Component> getTopLevelComponent(final String pluginType) {
+        return root.getComponents().stream()
+                .filter(component -> component.getPluginType().equals(pluginType))
+                .findAny();
     }
 
     @Override
@@ -291,6 +303,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         writeXmlSection(xmlWriter, properties);
         writeXmlSection(xmlWriter, scripts);
         writeXmlSection(xmlWriter, customLevels);
+        Optional<Component> monitorResourcesComponent = getTopLevelComponent("MonitorResources");
+        if (monitorResourcesComponent.isPresent()
+                && !monitorResourcesComponent.get().getComponents().isEmpty()) {
+            writeXmlComponent(xmlWriter, monitorResourcesComponent.get());
+        }
+        Optional<Component> asyncWaitStrategyFactoryComponent = getTopLevelComponent("AsyncWaitStrategyFactory");
+        if (asyncWaitStrategyFactoryComponent.isPresent()) {
+            writeXmlComponent(xmlWriter, asyncWaitStrategyFactoryComponent.get());
+        }
         if (filters.getComponents().size() == 1) {
             writeXmlComponent(xmlWriter, filters.getComponents().get(0));
         } else if (filters.getComponents().size() > 1) {
@@ -337,7 +358,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
     }
 
-    @Override
     public ScriptComponentBuilder newScript(final String name, final String language, final String text) {
         return new DefaultScriptComponentBuilder(this, name, language, text);
     }

@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.EventFactory;
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
@@ -43,6 +45,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -83,12 +86,14 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private StringBuilder messageText;
     private Object[] parameters;
     private transient Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
     private ContextStack contextStack;
+    private String traceId;
+    private String spanId;
+    private String traceFlags;
 
     private transient AsyncLogger asyncLogger;
 
@@ -107,7 +112,10 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             final int threadPriority,
             final StackTraceElement aLocation,
             final Clock clock,
-            final NanoClock nanoClock) {
+            final NanoClock nanoClock,
+            final String traceId,
+            final String spanId,
+            final String traceFlags) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -117,14 +125,54 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         initTime(clock);
         this.nanoTime = nanoClock.nanoTime();
         this.thrown = aThrowable;
-        this.thrownProxy = null;
         this.marker = aMarker;
         this.fqcn = theFqcn;
         this.location = aLocation;
         this.contextData = mutableContextData;
         this.contextStack = aContextStack;
         this.asyncLogger = anAsyncLogger;
+        this.traceId = traceId;
+        this.spanId = spanId;
+        this.traceFlags = traceFlags;
         this.populated = true;
+    }
+
+    public void setValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final StringMap mutableContextData,
+            final ContextStack aContextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement aLocation,
+            final Clock clock,
+            final NanoClock nanoClock) {
+        setValues(
+                anAsyncLogger,
+                aLoggerName,
+                aMarker,
+                theFqcn,
+                aLevel,
+                msg,
+                aThrowable,
+                mutableContextData,
+                aContextStack,
+                threadId,
+                threadName,
+                threadPriority,
+                aLocation,
+                clock,
+                nanoClock,
+                null, // traceId
+                null, // spanId
+                null // traceFlags
+                );
     }
 
     private void initTime(final Clock clock) {
@@ -137,7 +185,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public LogEvent toImmutable() {
-        return createMemento();
+        return Log4jLogEvent.createMemento(this);
     }
 
     private void setMessage(final Message msg) {
@@ -334,24 +382,12 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public Throwable getThrown() {
-        // after deserialization, thrown is null but thrownProxy may be non-null
-        if (thrown == null) {
-            if (thrownProxy != null) {
-                thrown = thrownProxy.getThrowable();
-            }
-        }
         return thrown;
     }
 
     @Override
     public ThrowableProxy getThrownProxy() {
-        // lazily instantiate the (expensive) ThrowableProxy
-        if (thrownProxy == null) {
-            if (thrown != null) {
-                thrownProxy = new ThrowableProxy(thrown);
-            }
-        }
-        return this.thrownProxy;
+        return thrown != null ? new ThrowableProxy(thrown) : null;
     }
 
     @Override
@@ -410,6 +446,21 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return nanoTime;
     }
 
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    @Override
+    public String getSpanId() {
+        return spanId;
+    }
+
+    @Override
+    public String getTraceFlags() {
+        return traceFlags;
+    }
+
     /**
      * Release references held by ring buffer to allow objects to be garbage-collected.
      */
@@ -420,13 +471,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.loggerName = null;
         clearMessage();
         this.thrown = null;
-        this.thrownProxy = null;
         clearContextData();
         this.marker = null;
         this.fqcn = null;
         this.location = null;
         this.contextStack = null;
         this.asyncLogger = null;
+        this.traceId = null;
+        this.spanId = null;
+        this.traceFlags = null;
     }
 
     private void clearMessage() {
@@ -458,26 +511,33 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
     }
 
-    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-        getThrownProxy(); // initialize the ThrowableProxy before serializing
-        out.defaultWriteObject();
+    private Object writeReplace() throws IOException {
+        return Log4jLogEvent.serialize(this, this.includeLocation);
+    }
+
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
+        SerializationUtil.assertFiltered(stream);
+        throw new InvalidObjectException("Proxy required");
     }
 
     /**
      * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
      *
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
+     * @deprecated since 2.25.0. Use {@link LogEvent#toImmutable()} instead.
      */
+    @Deprecated
     public LogEvent createMemento() {
-        final Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
-        initializeBuilder(builder);
-        return builder.build();
+        return toImmutable();
     }
 
     /**
      * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code RingBufferLogEvent}.
      * @param builder the builder whose fields to populate
+     *
+     * @deprecated since 2.25.0. Use {@link Log4jLogEvent.Builder#Builder(LogEvent)} instead.
      */
+    @Deprecated
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
         // If the data is not frozen, make a copy of it.
         final StringMap oldContextData = this.contextData;
@@ -503,8 +563,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setThreadName(threadName) //
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
-                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
-        ;
+                .setTraceId(traceId)
+                .setSpanId(spanId)
+                .setTraceFlags(traceFlags);
     }
 }

@@ -35,7 +35,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class VariablesNotEmptyReplacementConverter extends LogEventPatternConverter {
 
-    private final List<PatternFormatter> formatters;
+    // package private for testing
+    final List<PatternFormatter> formatters;
 
     /**
      * Constructs the converter.
@@ -117,5 +118,12 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 }

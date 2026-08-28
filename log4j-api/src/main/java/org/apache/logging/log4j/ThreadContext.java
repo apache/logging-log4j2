@@ -214,6 +214,8 @@ public final class ThreadContext {
 
     /**
      * <em>Consider private, used for testing.</em>
+     *
+     * @since 2.20.0
      */
     public static void init() {
         final PropertiesUtil properties = PropertiesUtil.getProperties();

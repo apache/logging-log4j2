@@ -73,8 +73,8 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
 
     private Layout createLayout(final String title, final boolean locationInfo) {
         return LayoutWrapper.adapt(HtmlLayout.newBuilder()
-                .withTitle(title)
-                .withLocationInfo(locationInfo)
+                .setTitle(title)
+                .setLocationInfo(locationInfo)
                 .build());
     }
 }

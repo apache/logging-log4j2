@@ -21,3 +21,9 @@ https://github.com/apache/logging-log4j2/security/code-scanning[image:https://gi
 
 Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
 For further information (support, download, etc.) see https://logging.apache.org/log4j[the project website].
+
+[#development]
+== Development
+
+Looking for *build instructions*, branching scheme, and other developer resources?
+See https://logging.apache.org/log4j/2.x/development.html[the Development page] at the website.

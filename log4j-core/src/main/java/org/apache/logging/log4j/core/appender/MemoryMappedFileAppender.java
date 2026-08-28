@@ -239,7 +239,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                 .setFileName(fileName)
                 .setFilter(filter)
                 .setIgnoreExceptions(ignoreExceptions)
-                .withImmediateFlush(isImmediateFlush)
+                .setImmediateFlush(isImmediateFlush)
                 .setLayout(layout)
                 .setName(name)
                 .setRegionLength(regionLength)

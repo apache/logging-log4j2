@@ -18,6 +18,8 @@ package org.apache.logging.log4j.message;
 
 /**
  * Interface used to print basic or extended thread information.
+ *
+ * @since 2.9.0
  */
 public interface ThreadInformation {
 

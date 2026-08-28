@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.TraceContextProviderService;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Mutable implementation of the {@code LogEvent} interface.
@@ -64,13 +66,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private StringBuilder messageText;
     private Object[] parameters;
     private Throwable thrown;
-    private ThrowableProxy thrownProxy;
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String loggerFqcn;
     StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
     transient boolean reserved = false;
+    private String traceId;
+    private String spanId;
+    private String traceFlags;
 
     public MutableLogEvent() {
         // messageText and the parameter array are lazily initialized
@@ -82,9 +86,15 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.parameters = replacementParameters;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     *   If {@link #isIncludeLocation()} is true, caller information for this instance will also be computed.
+     * </p>
+     */
     @Override
     public Log4jLogEvent toImmutable() {
-        return createMemento();
+        return (Log4jLogEvent) Log4jLogEvent.createMemento(this);
     }
 
     /**
@@ -94,6 +104,14 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      * <p>
      * This method is used on async logger ringbuffer slots holding MutableLogEvent objects in each slot.
      * </p>
+     * <p>
+     *   <strong>Warning:</strong> If {@code event.getMessage()} is an instance of {@link ReusableMessage}, this method
+     *   remove the parameter references from the original message. Callers should:
+     * </p>
+     * <ol>
+     *   <li>Either make sure that the {@code event} will not be used again.</li>
+     *   <li>Or call {@link LogEvent#toImmutable()} before calling this method.</li>
+     * </ol>
      *
      * @param event the event to copy data from
      */
@@ -103,7 +121,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.level = event.getLevel();
         this.loggerName = event.getLoggerName();
         this.thrown = event.getThrown();
-        this.thrownProxy = event.getThrownProxy();
 
         this.instant.initFrom(event.getInstant());
 
@@ -120,6 +137,10 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.endOfBatch = event.isEndOfBatch();
         this.includeLocation = event.isIncludeLocation();
         this.nanoTime = event.getNanoTime();
+
+        this.traceId = event.getTraceId();
+        this.spanId = event.getSpanId();
+        this.traceFlags = event.getTraceFlags();
         setMessage(event.getMessage());
     }
 
@@ -134,7 +155,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         message = null;
         messageFormat = null;
         thrown = null;
-        thrownProxy = null;
         source = null;
         if (contextData != null) {
             if (contextData.isFrozen()) { // came from CopyOnWrite thread context
@@ -145,6 +165,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         }
         contextStack = null;
 
+        traceId = null;
+        spanId = null;
+        traceFlags = null;
         // ThreadName should not be cleared: this field is set in the ReusableLogEventFactory
         // where this instance is kept in a ThreadLocal, so it usually does not change.
         // threadName = null; // no need to clear threadName
@@ -212,6 +235,26 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return message;
     }
 
+    /**
+     * Sets the log message of the event.
+     *
+     * <p>
+     *   <strong>Warning:</strong> This method <strong>mutates</strong> the state of the {@code message}
+     *   parameter:
+     * </p>
+     * <ol>
+     *   <li>
+     *     If the message is a {@link org.apache.logging.log4j.message.ReusableMessage}, this method will remove its
+     *     parameter references, which prevents it from being used again.
+     *   </li>
+     *   <li>
+     *     Otherwise the lazy {@link Message#getFormattedMessage()} message might be called.
+     *     See <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.formatMsgAsync">{@code log4j2.formatMsgAsync}</a>
+     *     for details.
+     *   </li>
+     * </ol>
+     * @param msg The log message. The object passed will be <strong>modified</strong> by this method and should not be reused.
+     */
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
@@ -327,6 +370,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
             instant.initFrom(clock);
         }
         nanoTime = nanoClock.nanoTime();
+        this.traceId = TraceContextProviderService.getTraceId();
+        this.spanId = TraceContextProviderService.getSpanId();
+        this.traceFlags = TraceContextProviderService.getTraceFlags();
     }
 
     @Override
@@ -349,10 +395,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      */
     @Override
     public ThrowableProxy getThrownProxy() {
-        if (thrownProxy == null && thrown != null) {
-            thrownProxy = new ThrowableProxy(thrown);
-        }
-        return thrownProxy;
+        return thrown != null ? new ThrowableProxy(thrown) : null;
     }
 
     public void setSource(StackTraceElement source) {
@@ -456,15 +499,43 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.nanoTime = nanoTime;
     }
 
+    @Override
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public void setTraceId(final String traceId) {
+        this.traceId = traceId;
+    }
+
+    @Override
+    public String getSpanId() {
+        return spanId;
+    }
+
+    public void setSpanId(final String spanId) {
+        this.spanId = spanId;
+    }
+
+    @Override
+    public String getTraceFlags() {
+        return traceFlags;
+    }
+
+    public void setTraceFlags(final String traceFlags) {
+        this.traceFlags = traceFlags;
+    }
+
     /**
      * Creates a LogEventProxy that can be serialized.
      * @return a LogEventProxy.
      */
     protected Object writeReplace() {
-        return new Log4jLogEvent.LogEventProxy(this, this.includeLocation);
+        return Log4jLogEvent.serialize(this, this.includeLocation);
     }
 
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
+        SerializationUtil.assertFiltered(stream);
         throw new InvalidObjectException("Proxy required");
     }
 
@@ -473,15 +544,20 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
      * If {@link #isIncludeLocation()} is true, this will obtain caller location information.
      *
      * @return a new immutable copy of the data in this {@code MutableLogEvent}
+     * @deprecated since 2.25.0. Use {@link LogEvent#toImmutable()} instead.
      */
+    @Deprecated
     public Log4jLogEvent createMemento() {
-        return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
+        return toImmutable();
     }
 
     /**
      * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code MutableLogEvent}.
      * @param builder the builder whose fields to populate
+     *
+     * @deprecated since 2.25.0. Use {@link Log4jLogEvent.Builder#Builder(LogEvent)} instead.
      */
+    @Deprecated
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
         builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
@@ -498,8 +574,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
                 .setThreadName(threadName) //
                 .setThreadPriority(threadPriority) //
                 .setThrown(getThrown()) // may deserialize from thrownProxy
-                .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
                 .setInstant(instant) //
-        ;
+                .setTraceId(traceId)
+                .setSpanId(spanId)
+                .setTraceFlags(traceFlags);
     }
 }

@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.helpers;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
+import org.apache.log4j.internal.annotation.SuppressFBWarnings;
 
 /**
  * Checks every now and then that a certain file has not changed. If it has, then call the {@link #doOnChange} method.
@@ -60,7 +60,7 @@ public abstract class FileWatchdog extends Thread {
         try {
             fileExists = file.exists();
         } catch (final SecurityException e) {
-            LogLog.warn("Was not allowed to read check file existance, file:[" + filename + "].");
+            LogLog.warn("Was not allowed to read check file existence, file:[" + filename + "].");
             interrupted = true; // there is no point in continuing
             return;
         }

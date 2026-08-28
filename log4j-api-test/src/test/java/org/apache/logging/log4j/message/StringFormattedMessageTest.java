@@ -20,13 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Locale;
 import org.apache.logging.log4j.test.junit.Mutable;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -115,15 +111,9 @@ class StringFormattedMessageTest {
     }
 
     @Test
-    void testSerialization() throws IOException, ClassNotFoundException {
+    void testSerialization() {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
-            out.writeObject(expected);
-        }
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream in = new ObjectInputStream(bais);
-        final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
+        final StringFormattedMessage actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
         assertEquals(expected, actual);
         assertEquals(expected.getFormat(), actual.getFormat());
         assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());

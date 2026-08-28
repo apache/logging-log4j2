@@ -65,7 +65,7 @@ public final class RegexReplacement {
      * Create a RegexReplacement.
      * @param regex The regular expression to locate.
      * @param replacement The replacement value.
-     * @return A RegexReplacement.
+     * @return the new RegexReplacement instance or {@code null} if an input parameter was invalid
      */
     @PluginFactory
     public static RegexReplacement createRegexReplacement(
@@ -76,6 +76,7 @@ public final class RegexReplacement {
         }
         if (replacement == null) {
             LOGGER.error("A replacement string is required to perform replacement");
+            return null;
         }
         // FIXME: should we use Matcher.quoteReplacement() here?
         return new RegexReplacement(regex, replacement);

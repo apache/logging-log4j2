@@ -20,7 +20,7 @@
  * attributes in plugin factory methods.
  */
 @Export
-@Version("2.24.0")
+@Version("2.25.3")
 package org.apache.logging.log4j.core.config.plugins.convert;
 
 import org.osgi.annotation.bundle.Export;

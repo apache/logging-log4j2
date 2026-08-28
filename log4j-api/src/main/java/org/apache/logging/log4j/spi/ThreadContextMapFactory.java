@@ -46,6 +46,8 @@ public final class ThreadContextMapFactory {
     /**
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
      * and when Log4j is reconfigured.
+     *
+     * @since 2.11.0
      */
     public static void init() {
         ProviderUtil.getProvider().getThreadContextMapInstance();

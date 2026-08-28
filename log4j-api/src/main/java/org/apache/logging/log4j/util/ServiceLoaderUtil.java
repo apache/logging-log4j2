@@ -47,6 +47,8 @@ import org.apache.logging.log4j.Logger;
  *     <li>skip faulty services, allowing for a partial retrieval of the good ones,</li>
  *     <li>allow to integrate other sources of services like OSGi services.</li>
  * </ol>
+ *
+ * @since 2.18.0
  */
 @InternalApi
 public final class ServiceLoaderUtil {

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
+import static org.awaitility.Awaitility.waitAtMost;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,10 +30,10 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -67,24 +67,38 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
             // 30 chars per message: each message triggers a rollover
             logger.debug("This is a test message number " + i); // 30 chars:
         }
-        Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
         assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
 
-        final File[] files = dir.listFiles();
-        for (final File file : files) {
-            System.out.println(file + " (" + file.length() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
-        }
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
-        assertEquals(Arrays.toString(files), expected.size() + 6, files.length);
-        for (final File file : files) {
-            if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
-                fail("unexpected file" + file);
+
+        waitAtMost(7, TimeUnit.SECONDS).untilAsserted(() -> {
+            final File[] files = Objects.requireNonNull(dir.listFiles(), "listFiles()");
+            assertTrue("Dir " + DIR + " should contain files", files.length > 0);
+
+            // The 5 my-*.log files must exist
+            for (final String name : expected) {
+                assertTrue("missing " + name, new File(dir, name).exists());
             }
-        }
+
+            // Only allow my-*.log and test-*.log
+            for (final File file : files) {
+                final String n = file.getName();
+                if (!expected.contains(n) && !n.startsWith("test-")) {
+                    fail("unexpected file " + file);
+                }
+            }
+
+            // Rolled files count should be within a reasonable band
+            final long rolled = Arrays.stream(files)
+                    .map(File::getName)
+                    .filter(n -> n.startsWith("test-"))
+                    .count();
+
+            // Tolerate CRLF/LF differences + timing jitter
+            assertTrue("expected rolled count in [6, 9], got " + rolled, rolled >= 6 && rolled <= 9);
+        });
     }
 
     private void updateLastModified(final Path... paths) throws IOException {

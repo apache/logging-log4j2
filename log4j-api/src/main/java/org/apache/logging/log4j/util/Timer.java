@@ -23,12 +23,17 @@ import java.text.DecimalFormat;
  * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation
  * so long as all the timer methods are called on the same thread in which it was started. Calling start on
  * multiple threads will cause the times to be aggregated.
+ *
+ * @since 2.12.0
  */
 public class Timer implements Serializable, StringBuilderFormattable {
     private static final long serialVersionUID = 9175191792439630013L;
 
     private final String name; // The timer's name
 
+    /**
+     * @since 2.12.0
+     */
     public enum Status {
         Started,
         Stopped,

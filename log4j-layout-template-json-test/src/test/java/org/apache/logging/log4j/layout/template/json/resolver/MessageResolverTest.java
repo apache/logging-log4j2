@@ -228,6 +228,8 @@ class MessageResolverTest {
 
     private static final class TestMultiformatMessage implements MultiformatMessage {
 
+        private static final long serialVersionUID = 1L;
+
         @Override
         public String getFormattedMessage() {
             return "{\"foo\": \"bar\"}";

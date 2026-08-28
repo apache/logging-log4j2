@@ -521,12 +521,12 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 Log4j Core provides three rewrite policies out-of-the-box:
 
 [#MapRewritePolicy]
-`MapRewritePolicy`::
-+
+==== `MapRewritePolicy`
+
 The `MapRewritePolicy` only modifies events that contain a
 xref:manual/messages.adoc#MapMessage[`MapMessage`].
 It allows adding or updating the keys of the `MapMessage`.
-+
+
 [#MapRewritePolicy-attributes]
 .`MapRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -546,7 +546,7 @@ Update::
 The rewrite policy will add to the `MapMessage` only entries corresponding to existing keys.
 
 |===
-+
+
 [#MapRewritePolicy-elements]
 .`MapRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -561,20 +561,20 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 A list of map entries to add to the `MapMessage`.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-MapRewritePolicy[{plugin-reference-marker} Plugin reference for `MapRewritePolicy`]
 
 [#PropertiesRewritePolicy]
-`PropertiesRewritePolicy`::
-+
+==== `PropertiesRewritePolicy`
+
 The `PropertiesRewritePolicy` will add properties to the context data of the log event.
-+
+
 [NOTE]
 ====
 Only the context data of the log event will be modified.
 The contents of the xref:manual/thread-context.adoc[] will remain unchanged.
 ====
-+
+
 [#PropertiesRewritePolicy-elements]
 .`PropertiesRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -591,22 +591,22 @@ xref:manual/configuration.adoc#lazy-property-substitution[runtime property subst
 in the
 xref:manual/lookups.adoc#global-context[_global context_].
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-PropertiesRewritePolicy[{plugin-reference-marker} Plugin reference for `PropertiesRewritePolicy`]
 
 [#LoggerNameLevelRewritePolicy]
-LoggerNameLevelRewritePolicy::
-+
+==== LoggerNameLevelRewritePolicy
+
 You can use this policy to change the log level of loggers from third-party libraries.
 The `LoggerNameLevelRewritePolicy` will rewrite the level of log event for a given logger name prefix.
-+
+
 [WARNING]
 ====
 The new log levels will only be used by the filter attached to the `Rewrite` appender and those downstream of the appender.
 Filters configured on loggers will use the previous levels.
 See xref:manual/filters.adoc[] for more details on filtering
 ====
-+
+
 [#LoggerNameLevelRewritePolicy-attributes]
 .`LoggerNameLevelRewritePolicy` configuration attributes
 [cols="1m,1,1,5"]
@@ -620,7 +620,7 @@ See xref:manual/filters.adoc[] for more details on filtering
 The rewrite policy will only be applied to loggers with this logger name and their children.
 
 |===
-+
+
 [#LoggerNameLevelRewritePolicy-elements]
 .`LoggerNameLevelRewritePolicy` nested elements
 [cols="1m,1,4"]
@@ -633,8 +633,22 @@ The rewrite policy will only be applied to loggers with this logger name and the
 Provides a mapping between old level names and new level names.
 
 |===
-+
+
 xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rewrite-LoggerNameLevelRewritePolicy[{plugin-reference-marker} Plugin reference for `LoggerNameLevelRewritePolicy`]
+
+[#ThirdPartyRewritePolicies]
+=== Third Party Rewrite Policies
+
+[WARNING]
+====
+These `Rewrite Policies` are provided by **third-party** vendors and are not maintained by the https://logging.apache.org/[Apache Logging Services] project.
+====
+
+[#MessageRewritePolicy]
+==== `MessageRewritePolicy`
+
+The `MessageRewritePolicy` provided by https://github.com/Neel1210/log4j-utils[log4j-utils] allows you to manipulate the text of a log message before it is processed by a downstream appender.
+This is particularly useful for defining multiple regex-based replacement rules to mask sensitive information (PII) within the log message as a defensive-in-depth strategy.
 
 [#RewriteAppender-examples]
 === Configuration example
@@ -858,7 +872,7 @@ The appender can be:
 --
 * A previously declared appender, from the xref:manual/configuration.adoc#main-configuration-elements[`Appenders` section] of the configuration file.
 * A new appender that is instantiated based on a nested appender definition, when the route becomes active.
-See also <<PurgePolicy>> to learn more about the lifecycle of such an appender.
+See also <<PurgePolicy>> to learn more about the lifecycle of such an appender, and <<RoutingAppender-security,Security considerations>> before deriving the key from request data.
 --
 +
 [#Route-attributes]
@@ -930,6 +944,57 @@ If the `Route` element contains an appender definition, the appender will be ins
 * once if the `Route` has a non-default key.
 * once for each value of the key, if the `Route` has the default key.
 ====
+
+[#RoutingAppender-security]
+=== Security considerations
+
+When a default <<Route,`Route`>> embeds an appender definition, the `Routing` Appender creates **one subordinate appender per distinct routing key value**.
+Unlike most appenders, which are fully built when the configuration is loaded, those subordinate appenders are created **at runtime** when a new key appears.
+Lookups used in the route (for example `${ctx:userId}`) can therefore still carry attacker-controlled data when appender attributes are resolved.
+
+Review two aspects of any dynamic routing configuration:
+
+[#RoutingAppender-security-resources]
+==== Resource allocation
+
+The `Routing` Appender is intentionally powerful: a separate log file per tenant or per long-running job, or round-robin routing between a fixed set of appenders, are all supported designs.
+The responsibility that comes with that power is provisioning: the system must be able to allocate the resources required by every appender that can be created.
+
+If the key is derived from untrusted or high-cardinality data (for example `${ctx:userId}`, a client IP, or a free-form request header), an attacker or a busy system can force creation of an unbounded number of appenders.
+
+That growth commonly leads to:
+
+* exhaustion of file descriptors (when each route opens a `File` or rolling file appender)
+* elevated memory use for appender state, buffers, and managers
+* difficulty shutting down or reconfiguring the application cleanly
+
+[#RoutingAppender-security-threat-model]
+==== Threat model
+
+An untrusted key is not only a resource problem: it is also substituted into the subordinate appender's configuration.
+Attributes such as `fileName` therefore inherit whatever the lookup returns.
+
+For example, with `fileName="logs/${ctx:userId}.log"`, a Thread Context value of `../../../../tmp/x` (as a whole path segment) can open `/tmp/x.log` without an error.
+Embedding the lookup inside a longer fixed segment, such as `logs/user-${ctx:userId}.log`, usually fails to open the file instead of escaping the directory, so the exact `fileName` pattern matters.
+That failure is a side effect of how paths are resolved, not a mitigation: it is loud rather than safe, and it does not hold for every value a lookup can return.
+The appender is also re-attempted, and the event lost, on every subsequent event with that key.
+
+This matches the project's {logging-services-url}/security.html#threat-common-sources-configuration[threat model for configuration sources]: operators are responsible for ensuring that appender configuration attributes come from trusted data.
+Only the application developer knows which Thread Context keys carry validated values and which are entirely attacker-controlled.
+See also {logging-services-url}/security/faq.html#path-traversal[path traversal in the security FAQ].
+
+The same substitution reaches non-file sinks: a `Route` that builds an xref:manual/appenders/network.adoc#HttpAppender[HTTP Appender] interpolates the key into its `url`, turning an untrusted routing key into a server-side request forgery (SSRF) vector.
+
+[#RoutingAppender-security-mitigations]
+==== Mitigations
+
+* Prefer the <<Route-attr-ref,`ref` attribute>> of a `Route`, pointing at a fixed, predeclared set of appenders, when the set of destinations is known.
+* When dynamic routes are required, always configure a <<PurgePolicy,`PurgePolicy`>> (typically <<IdlePurgePolicy,`IdlePurgePolicy`>>) so idle route appenders are stopped and released.
++
+Note that a purge policy bounds how long an unused appender survives, not the rate at which new ones are created.
+* Constrain routing keys to a low-cardinality, validated domain (allow-lists, enums, hashed buckets) instead of raw user input.
+* Avoid routing on pure user-controlled identifiers when each value would create a new file-backed appender, or when the key is interpolated into paths, URLs, or other sink configuration.
+* Do not create an appender per web request. xref:manual/api.adoc#fish-tagging[Fish tagging] the events and filtering on the tag is a far better use of resources.
 
 [#PurgePolicy]
 === Purge Policy

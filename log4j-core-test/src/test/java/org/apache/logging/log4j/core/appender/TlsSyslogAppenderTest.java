@@ -83,7 +83,9 @@ class TlsSyslogAppenderTest extends SyslogAppenderTest {
         final TrustStoreConfiguration tsc = new TrustStoreConfiguration(
                 SslKeyStoreConstants.TRUSTSTORE_LOCATION, SslKeyStoreConstants::TRUSTSTORE_PWD, null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-        serverSocketFactory = sslConfiguration.getSslContext().getServerSocketFactory();
+        serverSocketFactory = sslConfiguration.getSslContext() != null
+                ? sslConfiguration.getSslContext().getServerSocketFactory()
+                : (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
     }
 
     private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat)

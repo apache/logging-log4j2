@@ -17,14 +17,31 @@
 package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
+import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junitpioneer.jupiter.Issue;
 
 class LoggerContextTest {
+
+    private static final int LOGGER_COUNT = 1024;
+    private static final int CONCURRENCY_LEVEL = 16;
 
     @Test
     void newInstance_should_honor_name_and_message_factory(final TestInfo testInfo) {
@@ -35,6 +52,53 @@ class LoggerContextTest {
             final Logger logger = loggerContext.newInstance(loggerContext, loggerName, messageFactory);
             assertThat(logger.getName()).isEqualTo(loggerName);
             assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(messageFactory);
+        }
+    }
+
+    @Test
+    void getLoggers_can_be_updated_concurrently(final TestInfo testInfo) {
+        final String testName = testInfo.getDisplayName();
+        final ExecutorService executorService = Executors.newFixedThreadPool(CONCURRENCY_LEVEL);
+        try (LoggerContext loggerContext = new LoggerContext(testName)) {
+            // Create a logger
+            Collection<Future<?>> tasks = IntStream.range(0, CONCURRENCY_LEVEL)
+                    .mapToObj(i -> executorService.submit(() -> {
+                        // Iterates over loggers
+                        loggerContext.updateLoggers();
+                        // Create some loggers
+                        for (int j = 0; j < LOGGER_COUNT; j++) {
+                            loggerContext.getLogger(testName + "-" + i + "-" + j);
+                        }
+                        // Iterate over loggers again
+                        loggerContext.updateLoggers();
+                    }))
+                    .collect(Collectors.toList());
+            Assertions.assertDoesNotThrow(() -> {
+                for (Future<?> task : tasks) {
+                    task.get();
+                }
+            });
+        } finally {
+            executorService.shutdown();
+        }
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3770")
+    void start_should_fallback_on_reconfigure_if_context_already_started(final TestInfo testInfo) {
+        final String testName = testInfo.getDisplayName();
+        try (final LoggerContext loggerContext = new LoggerContext(testName)) {
+            loggerContext.start();
+            assertThat(loggerContext.isStarted()).isTrue();
+            assertThat(loggerContext.getConfiguration()).isInstanceOf(DefaultConfiguration.class);
+            // Start
+            Configuration configuration = mock(
+                    AbstractConfiguration.class,
+                    withSettings()
+                            .useConstructor(null, ConfigurationSource.NULL_SOURCE)
+                            .defaultAnswer(CALLS_REAL_METHODS));
+            loggerContext.start(configuration);
+            assertThat(loggerContext.getConfiguration()).isSameAs(configuration);
         }
     }
 }

@@ -26,6 +26,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
@@ -329,29 +330,8 @@ abstract class DatePatternConverterTestBase {
         DatePatternConverter.newInstance(null); // no errors
     }
 
-    private static final String[] PATTERN_NAMES = {
-        "ABSOLUTE",
-        "ABSOLUTE_MICROS",
-        "ABSOLUTE_NANOS",
-        "ABSOLUTE_PERIOD",
-        "COMPACT",
-        "DATE",
-        "DATE_PERIOD",
-        "DEFAULT",
-        "DEFAULT_MICROS",
-        "DEFAULT_NANOS",
-        "DEFAULT_PERIOD",
-        "ISO8601_BASIC",
-        "ISO8601_BASIC_PERIOD",
-        "ISO8601",
-        "ISO8601_OFFSET_DATE_TIME_HH",
-        "ISO8601_OFFSET_DATE_TIME_HHMM",
-        "ISO8601_OFFSET_DATE_TIME_HHCMM",
-        "ISO8601_PERIOD",
-        "ISO8601_PERIOD_MICROS",
-        "US_MONTH_DAY_YEAR2_TIME",
-        "US_MONTH_DAY_YEAR4_TIME"
-    };
+    private static final String[] PATTERN_NAMES =
+            Stream.of(NamedInstantPattern.values()).map(Enum::name).toArray(String[]::new);
 
     @Test
     void testPredefinedFormatWithoutTimezone() {

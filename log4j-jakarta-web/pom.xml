@@ -39,6 +39,9 @@
       -->
     <bnd-module-name>org.apache.logging.log4j.web</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+    <jakarta.support.range>[5.0,7)</jakarta.support.range>
+    <bnd-extra-package-options>jakarta.servlet;version="${jakarta.support.range}",
+      jakarta.servlet.http;version="${jakarta.support.range}"</bnd-extra-package-options>
   </properties>
 
   <dependencies>

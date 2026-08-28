@@ -20,10 +20,12 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
@@ -37,6 +39,17 @@ class AsyncWaitStrategyFactoryConfigTest {
     @Test
     @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
     void testConfigWaitStrategyFactory(final LoggerContext context) {
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
+                context.getConfiguration().getAsyncWaitStrategyFactory();
+        assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
+        assertThat(
+                "factory is YieldingWaitStrategyFactory",
+                asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
+    }
+
+    @Test
+    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.properties")
+    void testConfigWaitStrategyFactoryFromProperties(final LoggerContext context) {
         final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
                 context.getConfiguration().getAsyncWaitStrategyFactory();
         assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
@@ -67,6 +80,37 @@ class AsyncWaitStrategyFactoryConfigTest {
         final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
                 context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
+    }
+
+    /**
+     * Test that when XML element {@code AsyncWaitFactory} has no 'class' attribute.
+     *
+     * @param configuration the configuration
+     */
+    @Test
+    @LoggerContextSource("log4j2-asyncwaitfactoryconfig-3159-nok.xml")
+    void testInvalidBuilderConfiguration3159(final Configuration configuration) {
+        assertNull(configuration.getAsyncWaitStrategyFactory(), "The AsyncWaitStrategyFactory should be null.");
+    }
+
+    /**
+     * Test that when programmatically building a {@link AsyncWaitStrategyFactoryConfig} a {@code null}
+     * factory class-name throws an exception.
+     */
+    @Test
+    void testInvalidProgrammaticConfiguration3159WithNullFactoryClassName() {
+        assertThrows(IllegalArgumentException.class, () -> AsyncWaitStrategyFactoryConfig.newBuilder()
+                .setFactoryClassName(null));
+    }
+
+    /**
+     * Test that when programmatically building a {@link AsyncWaitStrategyFactoryConfig} a blank ({@code ""})
+     * factory class-name throws an exception.
+     */
+    @Test
+    void testInvalidProgrammaticConfiguration3159WithEmptyFactoryClassName() {
+        assertThrows(IllegalArgumentException.class, () -> AsyncWaitStrategyFactoryConfig.newBuilder()
+                .setFactoryClassName(""));
     }
 
     @Test

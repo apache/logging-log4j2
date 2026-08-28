@@ -188,23 +188,23 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         final SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
         final CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
-                .withConfig(config)
-                .withMax(maxBackups)
-                .withFileIndex("min")
+                .setConfig(config)
+                .setMax(maxBackups)
+                .setFileIndex("min")
                 .build();
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(config)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
-                .withAppend(append)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferSize)
                 .setImmediateFlush(immediateFlush)
-                .withFileName(fileName)
-                .withFilePattern(filePattern)
-                .withPolicy(policy)
-                .withStrategy(strategy)
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
+                .setPolicy(policy)
+                .setStrategy(strategy)
                 .build());
     }
 }

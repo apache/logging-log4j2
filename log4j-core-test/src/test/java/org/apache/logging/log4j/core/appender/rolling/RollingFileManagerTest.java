@@ -82,11 +82,11 @@ class RollingFileManagerTest {
             file.deleteOnExit();
 
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-                    .withFilePattern("FilePattern")
+                    .setFilePattern("FilePattern")
                     .setName("RollingFileAppender")
                     .setConfiguration(config)
-                    .withStrategy(new CustomDirectFileRolloverStrategy(file, config.getConfigurationStrSubstitutor()))
-                    .withPolicy(new SizeBasedTriggeringPolicy(100))
+                    .setStrategy(new CustomDirectFileRolloverStrategy(file, config.getConfigurationStrSubstitutor()))
+                    .setPolicy(new SizeBasedTriggeringPolicy(100))
                     .build();
 
             assertNotNull(appender);
@@ -167,7 +167,7 @@ class RollingFileManagerTest {
                 false,
                 NoOpTriggeringPolicy.INSTANCE,
                 DirectWriteRolloverStrategy.newBuilder()
-                        .withConfig(configuration)
+                        .setConfig(configuration)
                         .build(),
                 null,
                 PatternLayout.createDefaultLayout(configuration),
@@ -223,5 +223,21 @@ class RollingFileManagerTest {
             manager.writeBytes(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
         }
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3068")
+    void testInitialTimeRounded() throws IOException {
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147000L));
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147123L));
+        assertEquals(1755031147000L, RollingFileManager.alignMillisToSecond(1755031147499L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031147500L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031147999L));
+        assertEquals(1755031148000L, RollingFileManager.alignMillisToSecond(1755031148000L));
+
+        final File file = File.createTempFile("testFile", "log");
+        file.deleteOnExit();
+
+        assertEquals(0, RollingFileManager.initialFileTime(file) % 1000);
     }
 }

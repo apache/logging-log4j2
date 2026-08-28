@@ -69,7 +69,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", null);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
@@ -85,7 +85,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
@@ -101,7 +101,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("throwable", t);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
@@ -111,13 +111,13 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.put("logEvent", event);
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
-        final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
+        final Object object = configuration.getScriptManager().execute(script.getId(), bindings);
         return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override
     public String toString() {
-        return script.getName();
+        return script.getId();
     }
 
     /**
@@ -146,8 +146,8 @@ public final class ScriptFilter extends AbstractFilter {
             return null;
         }
         if (script instanceof ScriptRef) {
-            if (configuration.getScriptManager().getScript(script.getName()) == null) {
-                logger.error("No script with name {} has been declared.", script.getName());
+            if (configuration.getScriptManager().getScript(script.getId()) == null) {
+                logger.error("No script with name {} has been declared.", script.getId());
                 return null;
             }
         } else {

@@ -42,12 +42,13 @@ final class DefaultLayout implements StringLayout {
     @Override
     public String toSerializable(LogEvent event) {
         return new StatusData(
-                        event.getSource(),
-                        event.getLevel(),
-                        event.getMessage(),
-                        event.getThrown(),
-                        event.getThreadName())
-                .getFormattedStatus();
+                                event.getSource(),
+                                event.getLevel(),
+                                event.getMessage(),
+                                event.getThrown(),
+                                event.getThreadName())
+                        .getFormattedStatus()
+                + System.lineSeparator();
     }
 
     @Override

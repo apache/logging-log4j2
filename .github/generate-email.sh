@@ -28,12 +28,12 @@ stderr() {
 
 fail_for_invalid_args() {
     stderr "Invalid arguments!"
-    stderr "Expected arguments: <vote|announce> <version> <commitId>"
+    stderr "Expected arguments: <vote|announce> <version> <commitId> <nexusUrl>"
     exit 1
 }
 
 # Check arguments
-[ $# -ne 3 ] && fail_for_invalid_args
+[ $# -ne 4 ] && fail_for_invalid_args
 
 # Constants
 PROJECT_NAME="Apache Log4j"
@@ -43,6 +43,7 @@ PROJECT_SITE="https://logging.apache.org/$PROJECT_ID"
 PROJECT_STAGING_SITE="${PROJECT_SITE/apache.org/staged.apache.org}"
 PROJECT_REPO="https://github.com/apache/logging-log4j2"
 COMMIT_ID="$3"
+NEXUS_URL="$4"
 PROJECT_DIST_URL="https://dist.apache.org/repos/dist/dev/logging/$PROJECT_ID/$PROJECT_VERSION"
 
 # Check release notes file
@@ -71,7 +72,7 @@ Website: $PROJECT_STAGING_SITE/$PROJECT_VERSION/index.html
 GitHub: $PROJECT_REPO
 Commit: $COMMIT_ID
 Distribution: $PROJECT_DIST_URL
-Nexus: https://repository.apache.org/content/repositories/orgapachelogging-<FIXME>
+Nexus: $NEXUS_URL
 Signing key: 0x077e8893a6dcc33dd4a4d5b256e73ba9a0b592d0
 Review kit: https://logging.apache.org/logging-parent/release-review-instructions.html
 

@@ -43,11 +43,13 @@ import org.jspecify.annotations.Nullable;
 public class Provider {
     /**
      * Constant inlined by the compiler
+     * @since 2.24.0
      */
     protected static final String CURRENT_VERSION = "2.6.0";
 
     /**
      * Property name to set for a Log4j 2 provider to specify the priority of this implementation.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -55,6 +57,7 @@ public class Provider {
 
     /**
      * Property name to set to the implementation of {@link ThreadContextMap}.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -62,6 +65,7 @@ public class Provider {
 
     /**
      * Property name to set to the implementation of {@link LoggerContextFactory}.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -100,6 +104,7 @@ public class Provider {
 
     /**
      * Constructor used by the deprecated {@code META-INF/log4j-provider.properties} format.
+     * @since 2.0.1
      * @deprecated since 2.24.0
      */
     @Deprecated
@@ -129,6 +134,7 @@ public class Provider {
      * @param versions Minimal API version required, should be set to {@link #CURRENT_VERSION},
      * @param loggerContextFactoryClass A public exported implementation of {@link LoggerContextFactory} or {@code
      * null} if {@link #getLoggerContextFactory()} is also implemented.
+     * @since 2.9.0
      */
     public Provider(
             final @Nullable Integer priority,
@@ -144,6 +150,7 @@ public class Provider {
      * null} if {@link #getLoggerContextFactory()} is also implemented,
      * @param threadContextMapClass A public exported implementation of {@link ThreadContextMap} or {@code null} if
      * {@link #getThreadContextMapInstance()} is implemented.
+     * @since 2.9.0
      */
     public Provider(
             final @Nullable Integer priority,
@@ -164,6 +171,8 @@ public class Provider {
     /**
      * Returns the Log4j API versions supported by the implementation.
      * @return A String containing the Log4j versions supported.
+     *
+     * @since 2.9.0
      */
     public String getVersions() {
         return versions != null ? versions : "";
@@ -194,6 +203,7 @@ public class Provider {
      * Loads the {@link LoggerContextFactory} class specified by this Provider.
      *
      * @return the LoggerContextFactory implementation class or {@code null} if unspecified or a loader error occurred.
+     * @since 2.0.1
      */
     public @Nullable Class<? extends LoggerContextFactory> loadLoggerContextFactory() {
         if (loggerContextFactoryClass != null) {
@@ -254,6 +264,7 @@ public class Provider {
      *
      * @return the {@code ThreadContextMap} implementation class or {@code null} if unspecified or a loading error
      * occurred.
+     * @since 2.0.1
      */
     public @Nullable Class<? extends ThreadContextMap> loadThreadContextMap() {
         if (threadContextMapClass != null) {
@@ -307,7 +318,7 @@ public class Provider {
      *
      * @return the URL corresponding to the Provider {@code META-INF/log4j-provider.properties} file or {@code null}
      * for a provider class.
-     * @deprecated since 2.24.0, without replacement.
+     * @deprecated since 2.24.0, without a replacement.
      */
     @Deprecated
     public @Nullable URL getUrl() {

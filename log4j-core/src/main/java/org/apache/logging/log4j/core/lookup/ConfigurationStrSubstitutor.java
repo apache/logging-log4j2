@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * {@link RuntimeStrSubstitutor} is a {@link StrSubstitutor} which only supports recursive evaluation of lookups.
+ * {@link ConfigurationStrSubstitutor} is a {@link StrSubstitutor} which only supports recursive evaluation of lookups.
  * This can be dangerous when combined with user-provided inputs, and should only be used on data directly from
  * a configuration.
  */

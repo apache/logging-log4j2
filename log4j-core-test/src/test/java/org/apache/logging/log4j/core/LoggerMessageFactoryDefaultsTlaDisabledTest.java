@@ -23,19 +23,20 @@ import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 class LoggerMessageFactoryDefaultsTlaDisabledTest {
 
     @Test
     @SetSystemProperty(key = "log4j2.enableThreadLocals", value = "false")
-    void defaults_should_match_when_thread_locals_disabled() {
+    void defaults_should_match_when_thread_locals_disabled(TestInfo testInfo) {
         assertThat(Constants.ENABLE_THREADLOCALS).isFalse();
-        final LoggerContext loggerContext =
-                new LoggerContext(LoggerMessageFactoryDefaultsTlaDisabledTest.class.getSimpleName());
-        final Logger logger =
-                new Logger(loggerContext, "defaults_should_match_when_thread_locals_disabled", null, null);
-        assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(ParameterizedMessageFactory.INSTANCE);
-        assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
+        try (LoggerContext loggerContext =
+                new LoggerContext(LoggerMessageFactoryDefaultsTlaDisabledTest.class.getSimpleName())) {
+            final Logger logger = loggerContext.getLogger(testInfo.getDisplayName());
+            assertThat((MessageFactory) logger.getMessageFactory()).isSameAs(ParameterizedMessageFactory.INSTANCE);
+            assertThat(logger.getFlowMessageFactory()).isSameAs(DefaultFlowMessageFactory.INSTANCE);
+        }
     }
 }

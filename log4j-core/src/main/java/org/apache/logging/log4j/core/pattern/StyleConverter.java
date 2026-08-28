@@ -129,12 +129,9 @@ public final class StyleConverter extends LogEventPatternConverter implements An
 
     @Override
     public boolean handlesThrowable() {
-        for (final PatternFormatter formatter : patternFormatters) {
-            if (formatter.handlesThrowable()) {
-                return true;
-            }
-        }
-        return false;
+        return patternFormatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
     }
 
     /**

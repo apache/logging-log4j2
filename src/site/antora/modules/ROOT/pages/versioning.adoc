@@ -1,0 +1,144 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Versioning and maintenance policy
+
+This page answers the following questions:
+
+- xref:#versioning-policy[How are Log4j releases versioned?]
+- xref:#version-alignment[How shall users align the Log4j API and Log4j Core versions?]
+- xref:#maintenance-policy[How does Log4j classify maintenance status of released versions?]
+
+[#versioning-policy]
+== Versioning policy
+
+Since version `2.0`, Log4j follows
+https://semver.org/spec/v2.0.0.html[semantic versioning],
+with release numbers of the form:
+
+[source]
+----
+<major>.<minor>.<patch>[-<pre-release>]
+----
+
+where:
+
+<major>::
++
+The major version number is incremented when **breaking changes** are introduced.
++
+Upgrading to a new major version typically requires code changes in your application.
+For each major release, a migration guide is provided.
++
+See xref:migrate-from-log4j1.adoc[] for instructions on migrating from Log4j 1 to Log4j 2.
+
+<minor>::
++
+The minor version number is incremented when new features are added in a backward-compatible manner, such as:
++
+--
+* New Java methods or classes added to the public API of one of the
+xref:components.adoc[Log4j artifacts].
+* New configuration attributes added to
+xref:manual/plugins.adoc[Log4j Plugins] (appenders, layouts, filters, etc.).
+* Functionality or Java methods/classes being deprecated.
+* Behavioral changes introduced without breaking the public API.
+--
++
+Upgrading to a new minor version usually does not require code changes, unless you rely on undocumented behavior that has changed.
+To avoid accumulating such changes, we recommend upgrading minor versions regularly.
++
+When upgrading to a new minor version, review the corresponding xref:release-notes.adoc[], where behavioral changes are highlighted.
+
+<patch>::
++
+The patch version number is incremented when only backward-compatible bug fixes are introduced.
++
+Upgrading to a new patch release is the simplest upgrade path.
+
+[%collapsible]
+.Click to see the OSGi package versioning policy
+====
+Since release `2.21.0`, Log4j follows OSGi best practices by versioning each Java package individually (see
+https://bnd.bndtools.org/chapters/170-versioning.html#versioning-packages[Versioning Packages]
+for details).
+Package versions are available in the manifest of each artifact and in the package Javadoc.
+For example, the version of the `org.apache.logging.log4j.core.appender` package appears in the
+link:javadoc/log4j-core/org/apache/logging/log4j/core/appender/package-summary.html[package summary page].
+
+Package versions have the form `X.Y.Z`, where the `X.Y` portion corresponds to the Log4j version that last introduced changes to the package’s public API.
+For example, if a package has version `2.34.5`, then **all** functionality in that package has been available since Log4j `2.34.0`.
+====
+
+[#version-alignment]
+=== Version alignment
+
+Because
+xref:manual/api.adoc[Log4j API]
+and
+xref:manual/implementation.adoc[Log4j Core implementation]
+are separate artifacts, their versions at **runtime** must be aligned:
+
+* Log4j Core version `X` depends on Log4j API version `X`, so you must have **at least** version `X` of Log4j API at runtime.
+* Conversely, to use all methods provided by Log4j API version `X`, you need a Log4j Core version that implements them, i.e., Log4j Core version `X` or later.
+
+The easiest way to ensure version alignment in your project is to use the
+xref:components.adoc#log4j-bom[`log4j-bom` artifact]
+in your build tool.
+Using `log4j-bom` guarantees that compatible versions are selected, regardless of your tool’s dependency resolution strategy.
+
+[#maintenance-policy]
+== Version lifecycle and maintenance policy
+
+Minor releases of Log4j follow a defined lifecycle consisting of four phases:
+
+[development]#Active development (AD)#::
++
+The version is under active development and may introduce new features.
+Pre-release builds (alpha, beta, etc.) may be published during this phase; vulnerability reports are accepted and will be addressed.
++
+Versions in this phase are **not recommended** for production use.
+
+[active]#Active maintenance (AM)#::
++
+The version is considered stable and suitable for production.
+In this phase, no new features are accepted: only bug fixes and security fixes.
+Vulnerability reports are accepted and will be addressed.
++
+Due to the limited resources of the Log4j project, **only the latest minor release of the latest major version** remains in Active Maintenance.
+
+[eom]#End-of-maintenance (EOM)#::
++
+The version is no longer actively maintained. New releases, including security fixes, are **very unlikely**.
+Vulnerability reports may still be submitted, but fixes will be produced only in exceptional circumstances.
++
+Because the project is volunteer-driven, any PMC member may choose to create a release for an EOM version, but such releases should be considered exceptional.
+
+[eol]#End-of-life (EOL)#::
++
+The version is no longer maintained, and **vulnerability reports are not accepted**.
++
+This final phase is entered after an official PMC vote and public announcement.
+
+[NOTE]
+====
+We avoid using the term *support* to describe the maintenance phases, because support remains available in **all** phases:
+
+* See {logging-services-url}/support.html#discussions-user[Community support] for the community-run discussion channels that are offered on a best-effort basis.
+* Although the ASF does not endorse any third-party commercial providers, some companies may offer paid support for EOM or EOL versions.
+See {logging-services-url}/support.html#commercial[Commercial support] for a publicly maintained list of such providers.
+====

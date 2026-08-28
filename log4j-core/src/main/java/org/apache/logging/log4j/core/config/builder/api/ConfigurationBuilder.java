@@ -62,6 +62,16 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ConfigurationBuilder<T> add(CustomLevelComponentBuilder builder);
 
     /**
+     * Adds a top level component.
+     * @param builder The ComponentBuilder with all of its attributes and sub components set.
+     * @return this builder instance.
+     * @since 2.25.0
+     */
+    default ConfigurationBuilder<T> addComponent(ComponentBuilder<?> builder) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Adds a Filter component.
      * @param builder the FilterComponentBuilder with all of its attributes and sub components set.
      * @return this builder instance.

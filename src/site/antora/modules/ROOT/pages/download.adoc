@@ -100,12 +100,297 @@ https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org
 Each Log4j artifact is accompanied by a Software Bill of Materials (SBOM).
 See {logging-services-url}/download.html#sbom[the Download page of Logging Services page] for details.
 
-[#older]
-== Older releases
+[#versions]
+== Available versions
 
-Are you looking for old versions of Log4j?
-While we recommend always using the latest version, you can find the older versions here:
+Below you can find the list of available Log4j versions and their associated maintenance status; Active Development, Active Maintenance, End-of-Maintenance, and End-of-Life.
+Refer to xref:versioning.adoc[] for details.
 
-* {logging-services-url}/log4j/1.x/index.html[Log4j 1.x (End of Life, Java 1.4)]
-* {logging-services-url}/log4j/2.3.x/index.html[Log4j 2.3.x (Java 6)]
-* {logging-services-url}/log4j/2.12.x/index.html[Log4j 2.12.x (Java 7)]
+.Maintenance status of selected Log4j versions
+[%header,cols="1h,1,1m,2,2,2,2"]
+|===
+| Version
+| Status
+| Latest release
+| First stable release
+| EOM
+| EOL
+| Notes
+
+| 3.0.x
+| [development]#AD#
+| 3.0.0-beta3
+|
+|
+|
+|
+
+| 2.26.x
+| [development]#AD#
+|
+|
+|
+|
+|
+
+| 2.25.x
+| [active]#AM#
+| 2.25.3
+| 2025-12-15
+|
+|
+|
+
+| 2.24.x
+| [eom]#EOM#
+| 2.24.3
+| 2024-09-03
+| 2025-06-13
+|
+|
+
+| 2.12.x
+| [eom]#EOM#
+| 2.12.4
+| 2019-06-23
+| 2021-12-29
+|
+| Last release supporting Java 7
+
+| 2.3.x
+| [eom]#EOM#
+| 2.3.2
+| 2015-05-09
+| 2021-12-29
+|
+| Last release supporting Java 6
+
+| 1.x
+| [eol]#EOL#
+| 1.2.17
+| 2000-01-08
+| 2014-07-12
+| 2015-08-05
+| Last release supporting Java 1.4
+
+|===
+
+[%collapsible]
+.Click to see all past versions
+====
+
+.Maintenance status of all Log4j versions
+[%header,cols="1h,1,1m,2,2,2"]
+|===
+| Version
+| Status
+| Latest release
+| First release
+| EOM
+| EOL
+
+| 3.0.x
+| [development]#AD#
+| 3.0.0-beta3
+|
+|
+|
+
+| 2.26.x
+| [development]#AD#
+|
+|
+|
+|
+
+| 2.25.x
+| [active]#AM#
+| 2.25.2
+| 2025-06-13
+|
+|
+
+| 2.24.x
+| [eom]#EOM#
+| 2.24.3
+| 2024-09-03
+| 2025-06-13
+|
+
+| 2.23.x
+| [eom]#EOM#
+| 2.23.1
+| 2024-02-17
+| 2024-09-03
+|
+
+| 2.22.x
+| [eom]#EOM#
+| 2.22.1
+| 2023-11-17
+| 2024-02-17
+|
+
+| 2.21.x
+| [eom]#EOM#
+| 2.21.1
+| 2023-10-12
+| 2023-11-17
+|
+
+| 2.20.x
+| [eom]#EOM#
+| 2.20.0
+| 2023-02-17
+| 2023-10-12
+|
+
+| 2.19.x
+| [eom]#EOM#
+| 2.19.0
+| 2022-09-09
+| 2023-02-17
+|
+
+| 2.18.x
+| [eom]#EOM#
+| 2.18.0
+| 2022-06-28
+| 2022-09-09
+|
+
+| 2.17.x
+| [eom]#EOM#
+| 2.17.2
+| 2021-12-17
+| 2022-06-28
+|
+
+| 2.16.x
+| [eom]#EOM#
+| 2.16.0
+| 2021-12-13
+| 2021-12-17
+|
+
+| 2.15.x
+| [eom]#EOM#
+| 2.15.0
+| 2021-12-06
+| 2021-12-13
+|
+
+| 2.14.x
+| [eom]#EOM#
+| 2.14.1
+| 2020-11-06
+| 2021-12-06
+|
+
+| 2.13.x
+| [eom]#EOM#
+| 2.13.3
+| 2019-12-11
+| 2020-11-06
+|
+
+| 2.12.x
+| [eom]#EOM#
+| 2.12.4
+| 2019-06-23
+| 2021-12-29
+|
+
+| 2.11.x
+| [eom]#EOM#
+| 2.11.2
+| 2018-03-11
+| 2019-06-23
+|
+
+| 2.10.x
+| [eom]#EOM#
+| 2.10.0
+| 2017-11-18
+| 2018-03-11
+|
+
+| 2.9.x
+| [eom]#EOM#
+| 2.9.1
+| 2017-08-26
+| 2017-11-18
+|
+
+| 2.8.x
+| [eom]#EOM#
+| 2.8.2
+| 2017-01-21
+| 2017-08-26
+|
+
+| 2.7.x
+| [eom]#EOM#
+| 2.7
+| 2016-10-02
+| 2017-01-21
+|
+
+| 2.6.x
+| [eom]#EOM#
+| 2.6.2
+| 2016-05-25
+| 2016-10-02
+|
+
+| 2.5.x
+| [eom]#EOM#
+| 2.5
+| 2015-12-06
+| 2016-05-25
+|
+
+| 2.4.x
+| [eom]#EOM#
+| 2.4.1
+| 2015-09-20
+| 2015-12-06
+|
+
+| 2.3.x
+| [eom]#EOM#
+| 2.3.2
+| 2015-05-09
+| 2021-12-29
+|
+
+| 2.2.x
+| [eom]#EOM#
+| 2.2
+| 2015-02-22
+| 2015-05-09
+|
+
+| 2.1.x
+| [eom]#EOM#
+| 2.1
+| 2014-10-19
+| 2015-02-22
+|
+
+| 2.0.x
+| [eom]#EOM#
+| 2.0.2
+| 2014-07-12
+| 2014-10-19
+|
+
+| 1.x
+| [eol]#EOL#
+| 1.2.17
+| 2000-01-08
+| 2014-07-12
+| 2015-08-05
+
+|===
+====

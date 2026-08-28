@@ -99,6 +99,9 @@ public class CloseableThreadContext {
         return new CloseableThreadContext.Instance().putAll(values);
     }
 
+    /**
+     * @since 2.6
+     */
     public static class Instance implements AutoCloseable {
 
         private int pushCount = 0;

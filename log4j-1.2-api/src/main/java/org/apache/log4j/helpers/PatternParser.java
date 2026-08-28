@@ -188,7 +188,7 @@ public class PatternParser {
                         formattingInfo.max = c - '0';
                         state = MAX_STATE;
                     } else {
-                        LogLog.error("Error occured in position " + i + ".\n Was expecting digit, instead got char \""
+                        LogLog.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \""
                                 + c + "\".");
                         state = LITERAL_STATE;
                     }
@@ -299,12 +299,12 @@ public class PatternParser {
                 // formattingInfo.dump();
                 currentLiteral.setLength(0);
                 break;
-                /*
-                 * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
-                 * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
-                 * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
-                 * +cNext+" at position "+i); } break;
-                 */
+            /*
+             * case 'u': if(i < patternLength) { char cNext = pattern.charAt(i); if(cNext >= '0' && cNext <= '9') { pc = new
+             * UserFieldPatternConverter(formattingInfo, cNext - '0'); LogLog.debug("USER converter ["+cNext+"].");
+             * formattingInfo.dump(); currentLiteral.setLength(0); i++; } else LogLog.error("Unexpected char"
+             * +cNext+" at position "+i); } break;
+             */
             case 'x':
                 pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
                 // LogLog.debug("NDC converter.");
@@ -316,7 +316,7 @@ public class PatternParser {
                 currentLiteral.setLength(0);
                 break;
             default:
-                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion patterrn.");
+                LogLog.error("Unexpected char [" + c + "] at position " + i + " in conversion pattern.");
                 pc = new LiteralPatternConverter(currentLiteral.toString());
                 currentLiteral.setLength(0);
         }
@@ -397,7 +397,7 @@ public class PatternParser {
             try {
                 converted = df.format(date);
             } catch (Exception ex) {
-                LogLog.error("Error occured while converting date.", ex);
+                LogLog.error("Error occurred while converting date.", ex);
             }
             return converted;
         }

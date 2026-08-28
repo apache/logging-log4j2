@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="3792" link="https://github.com/apache/logging-log4j2/issues/3792"/>
+  <description format="asciidoc">
+    Fix timestamp formatting concurrency issue, when `log4j2.enabledThreadlocals` is `true`.
+  </description>
+</entry>

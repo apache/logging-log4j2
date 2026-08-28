@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core;
 import static org.apache.logging.log4j.core.jmx.internal.JmxUtil.isJmxDisabled;
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -33,7 +32,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -43,18 +41,25 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.internal.InternalLoggerRegistry;
+import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -75,14 +80,46 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public static final String PROPERTY_CONFIG = "config";
 
+    private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
+
+    private static final String MESSAGE_FACTORY_PROPERTY_NAME = "log4j2.messageFactory";
+    /**
+     * The default message factory to use while creating loggers if the user provides none.
+     * <p>
+     *     To mitigate initialization problems as the one described in
+     *     <a href="https://github.com/apache/logging-log4j2/issues/3252>#3252</a>,
+     *     this field should be initialized as soon as possible.
+     * </p>
+     */
+    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = createInstanceFromFactoryProperty(
+            MessageFactory.class,
+            MESSAGE_FACTORY_PROPERTY_NAME,
+            Constants.ENABLE_THREADLOCALS ? ReusableMessageFactory.INSTANCE : ParameterizedMessageFactory.INSTANCE);
+
+    private static final String FLOW_MESSAGE_FACTORY_PROPERTY_NAME = "log4j2.flowMessageFactory";
+    /**
+     * The default flow message factory to use while creating loggers.
+     * <p>
+     *     To mitigate initialization problems as the one described in
+     *     <a href="https://github.com/apache/logging-log4j2/issues/3252>#3252</a>,
+     *     this field should be initialized as soon as possible.
+     * </p>
+     */
+    static final FlowMessageFactory DEFAULT_FLOW_MESSAGE_FACTORY = createInstanceFromFactoryProperty(
+            FlowMessageFactory.class, FLOW_MESSAGE_FACTORY_PROPERTY_NAME, DefaultFlowMessageFactory.INSTANCE);
+
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
-    /**
-     * The default message factory to use while creating loggers, if none is provided.
-     *
-     * @see <a href="https://github.com/apache/logging-log4j2/pull/2936">#2936</a> for the discussion on why we leak the message factory of the default logger and hardcode it here.
-     */
-    private static final MessageFactory DEFAULT_MESSAGE_FACTORY = Logger.getEffectiveMessageFactory(null);
+    private static <V> V createInstanceFromFactoryProperty(
+            final Class<V> instanceType, final String propertyName, final V fallbackInstance) {
+        try {
+            return LoaderUtil.newCheckedInstanceOfProperty(propertyName, instanceType, () -> fallbackInstance);
+        } catch (final Exception error) {
+            final String message =
+                    String.format("failed instantiating the class pointed by the `%s` property", propertyName);
+            throw new RuntimeException(message, error);
+        }
+    }
 
     private final InternalLoggerRegistry loggerRegistry = new InternalLoggerRegistry();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
@@ -94,7 +131,6 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private volatile Configuration configuration = new DefaultConfiguration();
 
-    private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
     private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
     private volatile URI configLocation;
@@ -250,6 +286,16 @@ public class LoggerContext extends AbstractLifeCycle
         return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
     }
 
+    /**
+     * Starts the context using the configuration specified by {@link #getConfigLocation()}.
+     * <p>
+     *   If the configuration location is {@code null}, Log4j will search for a configuration file
+     *   using the default classpath resources. For details on the search order and supported formats,
+     *   see the
+     *   <a href="https://logging.apache.org/log4j/2.x/manual/configuration.html#automatic-configuration">
+     *   Log4j 2 Configuration File Location documentation</a>.
+     * </p>
+     */
     @Override
     public void start() {
         LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
@@ -276,25 +322,36 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
-     * Starts with a specific configuration.
-     *
-     * @param config The new Configuration.
+     * Starts the context using a specific configuration.
+     * <p>
+     *   <strong>Warning:</strong> For backward compatibility, especially with Spring Boot,
+     *   if the context is already started, this method will fall back to {@link #reconfigure(Configuration)}.
+     *   This behavior is maintained for legacy integrations and may change in future major versions.
+     *   New code should not rely on this fallback.
+     * </p>
+     * @param config The new {@link Configuration} to use for this context
      */
     public void start(final Configuration config) {
         LOGGER.info("Starting {}[name={}] with configuration {}...", getClass().getSimpleName(), getName(), config);
         if (configLock.tryLock()) {
             try {
-                if (this.isInitialized() || this.isStopped()) {
+                if (isInitialized() || isStopped()) {
+                    setStarting();
+                    reconfigure(config);
                     if (this.configuration.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
-                    this.setStarted();
+                    setStarted();
+                } else {
+                    // Required for Spring Boot integration:
+                    // Both `Log4jSpringBootLoggingSystem` and its Spring Boot 3.x equivalent
+                    // invoke `start()` even during context reconfiguration.
+                    reconfigure(config);
                 }
             } finally {
                 configLock.unlock();
             }
         }
-        setConfiguration(config);
         LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 
@@ -514,7 +571,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return a collection of the current loggers.
      */
     public Collection<Logger> getLoggers() {
-        return loggerRegistry.getLoggers().collect(Collectors.toList());
+        return loggerRegistry.getLoggers();
     }
 
     /**
@@ -816,8 +873,15 @@ public class LoggerContext extends AbstractLifeCycle
         return newInstance(this, name, messageFactory);
     }
 
-    // LOG4J2-151: changed visibility from private to protected
-    protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
-        return new Logger(ctx, name, messageFactory);
+    /**
+     * Callback to create a new logger.
+     *
+     * @param context The {@link LoggerContext} this logger is associated with, never {@code null}.
+     * @param messageFactory The message factory to be used, never {@code null}.
+     * @param name The logger name, never {@code null}.
+     * @return A new logger instance.
+     */
+    protected Logger newInstance(LoggerContext context, String name, MessageFactory messageFactory) {
+        return new Logger(context, name, messageFactory);
     }
 }

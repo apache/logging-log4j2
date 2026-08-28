@@ -88,9 +88,9 @@ public class ColumnMapping {
         public ColumnMapping build() {
             if (pattern != null) {
                 layout = PatternLayout.newBuilder()
-                        .withPattern(pattern)
-                        .withConfiguration(configuration)
-                        .withAlwaysWriteExceptions(false)
+                        .setPattern(pattern)
+                        .setConfiguration(configuration)
+                        .setAlwaysWriteExceptions(false)
                         .build();
             }
             final Class<?> columnType = type != null ? type : this.columnType;

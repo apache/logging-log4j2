@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -37,6 +37,9 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         this(fileName, true);
     }
 
+    /**
+     * @since 2.18.0
+     */
     public PropertyFilePropertySource(final String fileName, final boolean useTccl) {
         super(loadPropertiesFile(fileName, useTccl));
     }

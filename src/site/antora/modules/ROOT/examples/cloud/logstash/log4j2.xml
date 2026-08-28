@@ -24,7 +24,7 @@
   <Appenders>
     <!-- tag::socketAppender[] -->
     <Socket name="SOCKET" host="localhost" port="12345">
-      <JsonTemplateLayout nullEventDelimiterEnabled="true"/>
+      <JsonTemplateLayout/>
     </Socket>
     <!-- end::socketAppender[] -->
   </Appenders>

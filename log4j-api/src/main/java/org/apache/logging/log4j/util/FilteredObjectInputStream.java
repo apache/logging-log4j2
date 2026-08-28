@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  * Extends {@link ObjectInputStream} to only allow some built-in Log4j classes and caller-specified classes to be
  * deserialized.
  *
- * @since 2.8.2
+ * @since 2.11.0
  */
 public class FilteredObjectInputStream extends ObjectInputStream {
 

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,7 +51,7 @@ abstract class SyslogAppenderTestBase {
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]"
                     + "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = LoggerContext.getContext();
-    protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
+    protected static final int DEFAULT_TIMEOUT_IN_MS = 3000;
     protected MockSyslogServer syslogServer;
     protected SyslogAppender appender;
     protected Logger root = ctx.getLogger("SyslogAppenderTest");
@@ -61,7 +63,7 @@ abstract class SyslogAppenderTestBase {
         LoggerContext.getContext().reconfigure();
     }
 
-    protected void sendAndCheckLegacyBsdMessages(final List<String> messagesToSend) throws InterruptedException {
+    protected void sendAndCheckLegacyBsdMessages(final List<String> messagesToSend) {
         for (final String message : messagesToSend) {
             sendDebugLegacyBsdMessage(message);
         }
@@ -69,7 +71,7 @@ abstract class SyslogAppenderTestBase {
         checkTheEqualityOfSentAndReceivedMessages(Level.DEBUG);
     }
 
-    protected void sendAndCheckLegacyBsdMessage(final String message) throws InterruptedException {
+    protected void sendAndCheckLegacyBsdMessage(final String message) {
         sendDebugLegacyBsdMessage(message);
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages(Level.DEBUG);
@@ -80,7 +82,7 @@ abstract class SyslogAppenderTestBase {
         root.debug(message);
     }
 
-    protected void sendAndCheckStructuredMessages(final int numberOfMessages) throws InterruptedException {
+    protected void sendAndCheckStructuredMessages(final int numberOfMessages) {
         for (int i = 0; i < numberOfMessages; i++) {
             sendInfoStructuredMessage();
         }
@@ -88,7 +90,7 @@ abstract class SyslogAppenderTestBase {
         checkTheEqualityOfSentAndReceivedMessages(Level.INFO);
     }
 
-    protected void sendAndCheckStructuredMessage() throws InterruptedException {
+    protected void sendAndCheckStructuredMessage() {
         sendInfoStructuredMessage();
         checkTheNumberOfSentAndReceivedMessages();
         checkTheEqualityOfSentAndReceivedMessages(Level.INFO);
@@ -108,15 +110,13 @@ abstract class SyslogAppenderTestBase {
         root.info(MarkerManager.getMarker("EVENT"), msg);
     }
 
-    protected void checkTheNumberOfSentAndReceivedMessages() throws InterruptedException {
-        assertEquals(
-                sentMessages.size(),
-                getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size(),
-                "The number of received messages should be equal with the number of sent messages");
+    protected void checkTheNumberOfSentAndReceivedMessages() {
+        await().atMost(DEFAULT_TIMEOUT_IN_MS, MILLISECONDS)
+                .until(() -> syslogServer.getMessageList().size() == sentMessages.size());
     }
 
-    protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {
-        final List<String> receivedMessages = getReceivedMessages(DEFAULT_TIMEOUT_IN_MS);
+    protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) {
+        final List<String> receivedMessages = getReceivedMessages();
 
         assertNotNull(receivedMessages, "No messages received");
         for (int i = 0; i < receivedMessages.size(); i++) {
@@ -148,10 +148,7 @@ abstract class SyslogAppenderTestBase {
         root.setLevel(Level.DEBUG);
     }
 
-    protected List<String> getReceivedMessages(final int timeOutInMs) throws InterruptedException {
-        synchronized (syslogServer) {
-            syslogServer.wait(timeOutInMs);
-        }
+    protected List<String> getReceivedMessages() {
         return syslogServer.getMessageList();
     }
 

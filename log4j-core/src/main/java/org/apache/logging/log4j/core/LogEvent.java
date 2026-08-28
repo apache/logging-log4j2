@@ -51,6 +51,7 @@ public interface LogEvent extends Serializable {
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
      *
      * @return an immutable version of this log event
+     * @since 2.8.1
      */
     LogEvent toImmutable();
 
@@ -187,7 +188,9 @@ public interface LogEvent extends Serializable {
      * Gets throwable proxy associated with logging request.
      *
      * @return throwable, may be null.
+     * @deprecated since 2.25.0. This method should be replaced with {@link #getThrown()}.
      */
+    @Deprecated
     ThrowableProxy getThrownProxy();
 
     /**
@@ -238,4 +241,45 @@ public interface LogEvent extends Serializable {
      * @since Log4J 2.4
      */
     long getNanoTime();
+    /**
+     * Returns the distributed tracing Trace ID from the active context (e.g., W3C Trace Context).
+     * <p>
+     * A Trace ID is typically a 32-character lowercase hexadecimal string representing the
+     * entire trace forest. The default implementation returns {@code null}.
+     * </p>
+     *
+     * @return the Trace ID, or {@code null} if no tracing context is active or supported.
+     * @since 2.27.0
+     */
+    default String getTraceId() {
+        return null;
+    }
+
+    /**
+     * Returns the distributed tracing Span ID from the active context (e.g., W3C Trace Context).
+     * <p>
+     * A Span ID is typically a 16-character lowercase hexadecimal string representing a
+     * single operation within a trace. The default implementation returns {@code null}.
+     * </p>
+     *
+     * @return the Span ID, or {@code null} if no tracing context is active or supported.
+     * @since 2.27.0
+     */
+    default String getSpanId() {
+        return null;
+    }
+
+    /**
+     * Returns the distributed tracing Trace Flags from the active context (e.g., W3C Trace Context).
+     * <p>
+     * Trace Flags are typically a 2-character lowercase hexadecimal string representing
+     * tracing options (such as whether the trace is sampled). The default implementation returns {@code null}.
+     * </p>
+     *
+     * @return the Trace Flags, or {@code null} if no tracing context is active or supported.
+     * @since 2.27.0
+     */
+    default String getTraceFlags() {
+        return null;
+    }
 }

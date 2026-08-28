@@ -50,8 +50,23 @@ final class DisruptorUtil {
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
 
-    static final int DISRUPTOR_MAJOR_VERSION =
-            LoaderUtil.isClassAvailable("com.lmax.disruptor.SequenceReportingEventHandler") ? 3 : 4;
+    static final int DISRUPTOR_MAJOR_VERSION = detectDisruptorMajorVersion();
+
+    // TODO: replace with LoaderUtil.isClassAvailable() when TCCL is removed
+    // See: https://github.com/apache/logging-log4j2/issues/3706
+    private static int detectDisruptorMajorVersion() {
+        int version = 4;
+        try {
+            Class.forName(
+                    "com.lmax.disruptor.SequenceReportingEventHandler", false, DisruptorUtil.class.getClassLoader());
+            version = 3;
+            return 3;
+        } catch (final ClassNotFoundException ignored) {
+            // Do nothing
+        }
+        LOGGER.debug("LMAX Disruptor version detected: {}", version);
+        return version;
+    }
 
     private DisruptorUtil() {}
 

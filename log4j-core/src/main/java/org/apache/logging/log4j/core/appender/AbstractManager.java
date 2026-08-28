@@ -133,6 +133,7 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param <M> The Type of the Manager to be created.
      * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
+     * @throws IllegalStateException if the factory is unable to create the manager
      */
     // @SuppressWarnings("resource"): this is a factory method, the resource is allocated and released elsewhere.
     @SuppressWarnings("resource")

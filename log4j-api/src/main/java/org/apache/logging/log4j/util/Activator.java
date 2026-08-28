@@ -44,6 +44,7 @@ import org.osgi.framework.wiring.BundleWiring;
  * {@link org.apache.logging.log4j.spi.LoggerContextFactory} et al. that have corresponding
  * {@code META-INF/log4j-provider.properties} files. As with all OSGi BundleActivator classes, this class is not for
  * public use and is only useful in an OSGi framework environment.
+ * @since 2.0.1
  */
 @Header(name = Constants.BUNDLE_ACTIVATOR, value = "${@class}")
 @Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)

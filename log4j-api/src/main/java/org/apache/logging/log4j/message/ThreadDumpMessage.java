@@ -33,6 +33,7 @@ import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Captures information about all running Threads.
@@ -131,6 +132,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     }
 
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
+        SerializationUtil.assertFiltered(stream);
         throw new InvalidObjectException("Proxy required");
     }
 
@@ -162,8 +164,10 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      * <p>
      * Implementations of this class are loaded via the standard java Service Provider interface.
      * </p>
+     *
+     * @since 2.9.0
      */
-    public static interface ThreadInfoFactory {
+    public interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
     }
 

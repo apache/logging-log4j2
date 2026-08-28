@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.apache.logging.log4j.core.util.ClockFactory.getClock;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -28,8 +30,10 @@ import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.core.util.Clock;
@@ -201,7 +205,7 @@ class RingBufferLogEventTest {
         final Level level = Level.TRACE;
         final Message data = new SimpleMessage("message");
         final Throwable t = new InternalError("not a real error");
-        final ContextStack contextStack = null;
+        final ContextStack contextStack = ThreadContext.getImmutableStack();
         final String threadName = "main";
         final StackTraceElement location = null;
         evt.setValues(
@@ -222,25 +226,31 @@ class RingBufferLogEventTest {
                 new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
-        final RingBufferLogEvent other = SerialUtil.deserialize(SerialUtil.serialize(evt));
-        assertThat(other.getLoggerName()).isEqualTo(loggerName);
-        assertThat(other.getMarker()).isEqualTo(marker);
-        assertThat(other.getLoggerFqcn()).isEqualTo(fqcn);
-        assertThat(other.getLevel()).isEqualTo(level);
-        assertThat(other.getMessage()).isEqualTo(data);
-        assertThat(other.getThrown()).isNull();
-        assertThat(other.getThrownProxy()).isEqualTo(new ThrowableProxy(t));
-        assertThat(other.getContextData()).isEqualTo(evt.getContextData());
-        assertThat(other.getContextStack()).isEqualTo(contextStack);
-        assertThat(other.getThreadName()).isEqualTo(threadName);
-        assertThat(other.getSource()).isEqualTo(location);
-        assertThat(other.getTimeMillis()).isEqualTo(12345);
-        assertThat(other.getInstant().getNanoOfMillisecond()).isEqualTo(678);
+        final LogEvent other = SerialUtil.deserialize(SerialUtil.serialize(evt));
+        assertThat(other.getLoggerName()).as("Logger name").isEqualTo(loggerName);
+        assertThat(other.getMarker()).as("Marker").isEqualTo(marker);
+        assertThat(other.getLoggerFqcn())
+                .as("Fully qualified class name of logger implementation")
+                .isEqualTo(fqcn);
+        assertThat(other.getLevel()).as("Log event level").isEqualTo(level);
+        assertThat(other.getMessage()).as("Log event message").isEqualTo(data);
+        assertThat(other.getThrown()).as("Thrown exception").isNull();
+        assertThat(other.getThrownProxy())
+                .as("Serialization proxy for thrown exception")
+                .isEqualTo(new ThrowableProxy(t));
+        assertThat(other.getContextData()).as("Context data map").isEqualTo(evt.getContextData());
+        assertThat(other.getContextStack()).as("Context data stack").isEqualTo(contextStack);
+        assertThat(other.getThreadName()).as("Thread name").isEqualTo(threadName);
+        assertThat(other.getSource()).as("Log event location").isEqualTo(location);
+        assertThat(other.getTimeMillis()).as("Log event timestamp in millis").isEqualTo(12345);
+        assertThat(other.getInstant().getNanoOfMillisecond())
+                .as("Log event timestamp in nanos of millis")
+                .isEqualTo(678);
     }
 
     @SuppressWarnings("deprecation")
     @Test
-    void testCreateMementoReturnsCopy() {
+    void testToImmutableReturnsCopy() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         final String loggerName = "logger.name";
         final Marker marker = MarkerManager.getMarker("marked man");
@@ -269,7 +279,7 @@ class RingBufferLogEventTest {
                 new DummyNanoClock(1));
         ((StringMap) evt.getContextData()).putValue("key", "value");
 
-        final LogEvent actual = evt.createMemento();
+        final LogEvent actual = evt.toImmutable();
         assertThat(actual.getLoggerName()).isEqualTo(evt.getLoggerName());
         assertThat(actual.getMarker()).isEqualTo(evt.getMarker());
         assertThat(actual.getLoggerFqcn()).isEqualTo(evt.getLoggerFqcn());
@@ -288,7 +298,7 @@ class RingBufferLogEventTest {
     }
 
     @Test
-    void testCreateMementoRetainsParametersAndFormat() {
+    void testToImmutableRetainsParametersAndFormat() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         // Initialize the event with parameters
         evt.swapParameters(new Object[10]);
@@ -321,7 +331,7 @@ class RingBufferLogEventTest {
                     new DummyNanoClock(1));
             ((StringMap) evt.getContextData()).putValue("key", "value");
 
-            final Message actual = evt.createMemento().getMessage();
+            final Message actual = evt.toImmutable().getMessage();
             assertThat(actual.getFormat()).isEqualTo("Hello {}!");
             assertThat(actual.getParameters()).isEqualTo(new String[] {"World"});
             assertThat(actual.getFormattedMessage()).isEqualTo("Hello World!");
@@ -460,5 +470,47 @@ class RingBufferLogEventTest {
 
         // Verify interaction exhaustion
         verifyNoMoreInteractions(asyncLogger, message, throwable, contextData, contextStack);
+    }
+
+    @Test
+    void testRingBufferLogEventTracingFieldsAndClear() {
+        final RingBufferLogEvent event = new RingBufferLogEvent();
+
+        // Check initial state
+        assertThat(event.getTraceId()).isNull();
+        assertThat(event.getSpanId()).isNull();
+        assertThat(event.getTraceFlags()).isNull();
+
+        // Initialize with trace fields inside 18-parameter setValues
+        event.setValues(
+                null,
+                "TestLogger",
+                null,
+                "FQCN",
+                Level.INFO,
+                new SimpleMessage("msg"),
+                null,
+                ContextDataFactory.createContextData(),
+                ThreadContext.EMPTY_STACK,
+                123L,
+                "thread-name",
+                5,
+                null,
+                getClock(),
+                new DummyNanoClock(),
+                "trace-id-ringbuffer",
+                "span-id-ringbuffer",
+                "01");
+
+        // Assert values are retrievable
+        assertThat(event.getTraceId()).isEqualTo("trace-id-ringbuffer");
+        assertThat(event.getSpanId()).isEqualTo("span-id-ringbuffer");
+        assertThat(event.getTraceFlags()).isEqualTo("01");
+
+        // Verify clearing wipes tracing state to avoid leakage on slot reuse
+        event.clear();
+        assertNull(event.getTraceId());
+        assertNull(event.getSpanId());
+        assertNull(event.getTraceFlags());
     }
 }

@@ -83,13 +83,13 @@ class OnStartupTriggeringPolicyTest {
         assumeTrue(creationTime.equals(fileTime) || creationTime.toMillis() == 0L);
 
         final PatternLayout layout = PatternLayout.newBuilder()
-                .withPattern("%msg")
-                .withConfiguration(configuration)
+                .setPattern("%msg")
+                .setConfiguration(configuration)
                 .build();
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
-                .withCompressionLevelStr("0")
-                .withStopCustomActionsOnError(true)
-                .withConfig(configuration)
+                .setCompressionLevelStr("0")
+                .setStopCustomActionsOnError(true)
+                .setConfig(configuration)
                 .build();
         final OnStartupTriggeringPolicy policy = OnStartupTriggeringPolicy.createPolicy(1);
 

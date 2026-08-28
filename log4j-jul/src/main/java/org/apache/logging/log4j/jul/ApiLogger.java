@@ -125,7 +125,7 @@ public class ApiLogger extends Logger {
 
     @Override
     public void setUseParentHandlers(boolean useParentHandlers) {
-        LOGGER.warn(MUTATOR_DISABLED, "setLevel", useParentHandlers);
+        LOGGER.warn(MUTATOR_DISABLED, "setUseParentHandlers", useParentHandlers);
         super.setUseParentHandlers(useParentHandlers);
     }
 

@@ -25,8 +25,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -331,6 +333,85 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             }
         }
         return getConfiguration(loggerContext, name, configLocation);
+    }
+
+    /**
+     * {@return a {@link Configuration} created using provided configuration location {@link URI}s}
+     * <p>
+     * Configurations will be loaded and merged in the given order using the effective {@linkplain org.apache.logging.log4j.core.config.composite.MergeStrategy merge strategy}.
+     * The default can be changed using the {@value org.apache.logging.log4j.core.config.composite.CompositeConfiguration#MERGE_STRATEGY_PROPERTY} system property.
+     * <p>
+     * If the provided list of {@code URI}s is empty, the configuration factory attempts to load an implementation-dependent set of default locations.
+     * If no configuration can be found, a {@link ConfigurationException} is thrown.
+     *
+     * @param loggerContext a logger context, may be null
+     * @param name a configuration name, may be null
+     * @param configLocations configuration location {@code URI}s, may not contain or be null
+     * @throws ConfigurationException if configuration could not be created
+     * @throws NullPointerException if {@code configLocations} contains or is null
+     *
+     * @since 2.26.0
+     */
+    public Configuration getConfiguration(
+            final LoggerContext loggerContext, final String name, final List<URI> configLocations) {
+
+        // Sanitize URIs
+        final int[] configLocationIndex = {0};
+        final List<URI> distinctConfigLocations = Objects.requireNonNull(configLocations, "configLocations").stream()
+                .peek(uri -> {
+                    if (uri == null) {
+                        final String message = String.format("configLocations[%d]", configLocationIndex[0]);
+                        throw new NullPointerException(message);
+                    }
+                    configLocationIndex[0]++;
+                })
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Short-circuit if provided URIs are null or empty
+        if (distinctConfigLocations.isEmpty()) {
+            final Configuration config = getConfiguration(loggerContext, name, (URI) null);
+            if (config == null) {
+                throw new ConfigurationException("Configuration could not be created");
+            }
+            return config;
+        }
+
+        // Short-circuit if there is only a single URI
+        if (distinctConfigLocations.size() == 1) {
+            final URI configLocation = distinctConfigLocations.get(0);
+            final Configuration config = getConfiguration(loggerContext, name, configLocation);
+            if (config == null) {
+                final String message =
+                        String.format("Configuration could not be created from location: `%s`", configLocation);
+                throw new ConfigurationException(message);
+            }
+            return config;
+        }
+
+        // Create individual configurations
+        final List<AbstractConfiguration> configs = distinctConfigLocations.stream()
+                .map(configLocation -> {
+                    final Configuration config = getConfiguration(loggerContext, name, configLocation);
+                    if (config == null) {
+                        final String message =
+                                String.format("Configuration could not be created from location: `%s`", configLocation);
+                        throw new ConfigurationException(message);
+                    }
+                    if (!(config instanceof AbstractConfiguration)) {
+                        final String message = String.format(
+                                "Configuration created from location `%s` was expected to be of type `%s`, found: `%s`",
+                                configLocation,
+                                AbstractConfiguration.class.getCanonicalName(),
+                                config.getClass().getCanonicalName());
+                        throw new ConfigurationException(message);
+                    }
+                    return (AbstractConfiguration) config;
+                })
+                .collect(Collectors.toList());
+
+        // Combine created configurations
+        return new CompositeConfiguration(configs);
     }
 
     static boolean isClassLoaderUri(final URI uri) {

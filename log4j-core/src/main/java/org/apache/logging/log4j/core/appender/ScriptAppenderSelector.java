@@ -94,9 +94,9 @@ public class ScriptAppenderSelector extends AbstractAppender {
                     "ScriptAppenderSelector '{}' executing {} '{}': {}",
                     name,
                     script.getLanguage(),
-                    script.getName(),
+                    script.getId(),
                     script.getScriptText());
-            final Object object = scriptManager.execute(script.getName(), bindings);
+            final Object object = scriptManager.execute(script.getId(), bindings);
             final String actualAppenderName = Objects.toString(object, null);
             LOGGER.debug("ScriptAppenderSelector '{}' selected '{}'", name, actualAppenderName);
             return appenderSet.createAppender(actualAppenderName, name);
@@ -118,22 +118,70 @@ public class ScriptAppenderSelector extends AbstractAppender {
             return script;
         }
 
-        public Builder withAppenderNodeSet(@SuppressWarnings("hiding") final AppenderSet appenderSet) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setAppenderNodeSet(final AppenderSet appenderSet) {
             this.appenderSet = appenderSet;
             return this;
         }
 
-        public Builder withConfiguration(@SuppressWarnings("hiding") final Configuration configuration) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder withName(@SuppressWarnings("hiding") final String name) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setName(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withScript(@SuppressWarnings("hiding") final AbstractScript script) {
+        /**
+         * @since 2.26.0
+         */
+        public Builder setScript(final AbstractScript script) {
+            this.script = script;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setAppenderNodeSet(AppenderSet)}.
+         */
+        @Deprecated
+        public Builder withAppenderNodeSet(final AppenderSet appenderSet) {
+            this.appenderSet = appenderSet;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setConfiguration(Configuration)}.
+         */
+        @Deprecated
+        public Builder withConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setName(String)}.
+         */
+        @Deprecated
+        public Builder withName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * @deprecated since 2.26.0 use {@link #setScript(AbstractScript)}.
+         */
+        @Deprecated
+        public Builder withScript(final AbstractScript script) {
             this.script = script;
             return this;
         }

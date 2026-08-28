@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.waitAtMost;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,10 +50,10 @@ class RollingAppenderDirectCronTest {
     @LoggerContextSource("classpath:appender/rolling/RollingAppenderDirectCronTest.xml")
     void testAppender(final LoggerContext ctx, @Named("RollingFile") final RollingFileAppender app) throws Exception {
         final Logger logger = ctx.getLogger(RollingAppenderDirectCronTest.class);
+        final RolloverDelay delay = new RolloverDelay(app.getManager());
         int msgNumber = 1;
         logger.debug("This is test message number {}.", msgNumber++);
         assertThat(loggingPath).isNotEmptyDirectory();
-        final RolloverDelay delay = new RolloverDelay(app.getManager());
         delay.waitForRollover();
 
         delay.reset(3);
@@ -70,7 +68,7 @@ class RollingAppenderDirectCronTest {
     private static class RolloverDelay implements RolloverListener {
         private final Logger logger = StatusLogger.getLogger();
         private volatile CountDownLatch latch;
-        private volatile AssertionError assertion;
+        private volatile Exception verificationFailure;
 
         public RolloverDelay(final RollingFileManager manager) {
             latch = new CountDownLatch(1);
@@ -80,9 +78,9 @@ class RollingAppenderDirectCronTest {
         public void waitForRollover() {
             waitAtMost(5, TimeUnit.SECONDS)
                     .alias("Rollover timeout")
-                    .until(() -> latch.getCount() == 0 || assertion != null);
-            if (assertion != null) {
-                throw assertion;
+                    .until(() -> latch.getCount() == 0 || verificationFailure != null);
+            if (verificationFailure != null) {
+                throw new RuntimeException(verificationFailure);
             }
         }
 
@@ -102,16 +100,15 @@ class RollingAppenderDirectCronTest {
                 final Path path = Paths.get(fileName);
                 final Matcher matcher = FILE_PATTERN.matcher(path.getFileName().toString());
                 assertThat(matcher).as("Rolled file").matches();
-                try {
-                    final List<String> lines = Files.readAllLines(path);
-                    assertThat(lines).isNotEmpty();
-                    assertThat(lines.get(0)).startsWith(matcher.group(1));
-                } catch (final IOException ex) {
-                    fail("Unable to read file " + fileName + ": " + ex.getMessage());
+                final List<String> lines = Files.readAllLines(path);
+                if (lines.isEmpty()) {
+                    return;
                 }
+                assertThat(lines.get(0)).startsWith(matcher.group(1));
                 latch.countDown();
-            } catch (final AssertionError ex) {
-                assertion = ex;
+            } catch (final Exception ex) {
+                verificationFailure =
+                        new RuntimeException("Rollover completion verification failure for file: " + fileName, ex);
             }
         }
     }

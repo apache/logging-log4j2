@@ -22,9 +22,12 @@ import java.util.Map.Entry;
 
 /**
  * <em>Consider this class private.</em>
+ * @since 2.3
  */
 @InternalApi
 public final class StringBuilders {
+
+    private static final char REPLACEMENT_CHAR = '\uFFFD';
 
     private static final Class<?> timeClass;
     private static final Class<?> dateClass;
@@ -92,6 +95,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to append the value to
      * @param obj the object whose text representation to append to the StringBuilder
+     * @since 2.7
      */
     public static void appendValue(final StringBuilder stringBuilder, final Object obj) {
         if (!appendSpecificTypes(stringBuilder, obj)) {
@@ -99,6 +103,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static boolean appendSpecificTypes(final StringBuilder stringBuilder, final Object obj) {
         if (obj == null || obj instanceof String) {
             stringBuilder.append((String) obj);
@@ -155,6 +162,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal, false otherwise
+     * @since 2.8
      */
     public static boolean equals(
             final CharSequence left,
@@ -185,6 +193,7 @@ public final class StringBuilders {
      * @param rightOffset start index in the right CharSequence
      * @param rightLength length of the section in the right CharSequence
      * @return true if equal ignoring case, false otherwise
+     * @since 2.8
      */
     public static boolean equalsIgnoreCase(
             final CharSequence left,
@@ -210,7 +219,7 @@ public final class StringBuilders {
      *
      * @param stringBuilder the StringBuilder to check
      * @param maxSize the maximum number of characters the StringBuilder is allowed to have
-     * @since 2.9
+     * @since 2.9.0
      */
     public static void trimToMaxSize(final StringBuilder stringBuilder, final int maxSize) {
         if (stringBuilder != null && stringBuilder.capacity() > maxSize) {
@@ -219,6 +228,9 @@ public final class StringBuilders {
         }
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeJson(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
         for (int i = start; i < toAppendTo.length(); i++) {
@@ -295,10 +307,13 @@ public final class StringBuilders {
         return lastPos;
     }
 
+    /**
+     * @since 2.10.0
+     */
     public static void escapeXml(final StringBuilder toAppendTo, final int start) {
         int escapeCount = 0;
-        for (int i = start; i < toAppendTo.length(); i++) {
-            final char c = toAppendTo.charAt(i);
+        for (int i = start; i < toAppendTo.length(); ) {
+            final int c = toAppendTo.codePointAt(i);
             switch (c) {
                 case '&':
                     escapeCount += 4;
@@ -310,15 +325,36 @@ public final class StringBuilders {
                 case '"':
                 case '\'':
                     escapeCount += 5;
+                    break;
+                default:
+                    // All invalid XML 1.0 characters have the same length as the replacement character
+                    // Therefore no additional adjustment is needed
             }
+            i += Character.charCount(c);
         }
 
         final int lastChar = toAppendTo.length() - 1;
+        if (lastChar < 0) {
+            return;
+        }
         toAppendTo.setLength(toAppendTo.length() + escapeCount);
         int lastPos = toAppendTo.length() - 1;
 
-        for (int i = lastChar; lastPos > i; i--) {
+        for (int i = lastChar; lastPos >= start; i--) {
             final char c = toAppendTo.charAt(i);
+            // Handle surrogate pairs and invalid low surrogates
+            if (i > 0 && Character.isLowSurrogate(c)) {
+                final char previous = toAppendTo.charAt(i - 1);
+                // Invalid low surrogate
+                if (!Character.isHighSurrogate(previous)) {
+                    toAppendTo.setCharAt(lastPos--, REPLACEMENT_CHAR);
+                } else {
+                    toAppendTo.setCharAt(lastPos--, c);
+                    toAppendTo.setCharAt(lastPos--, previous);
+                    i--;
+                }
+                continue;
+            }
             switch (c) {
                 case '&':
                     toAppendTo.setCharAt(lastPos--, ';');
@@ -356,8 +392,32 @@ public final class StringBuilders {
                     toAppendTo.setCharAt(lastPos--, '&');
                     break;
                 default:
-                    toAppendTo.setCharAt(lastPos--, c);
+                    toAppendTo.setCharAt(lastPos--, isValidXml10(c) ? c : REPLACEMENT_CHAR);
             }
         }
+    }
+
+    /**
+     * Checks if a BMP {@code char} is a valid XML 1.0 character.
+     *
+     * <p>This method is restricted to characters in the BMP, i.e. represented by one UTF-16 code unit.</p>
+     *
+     * @param ch a BMP {@code char} to validate
+     * @return {@code true} if it is a valid XML 1.0 character
+     */
+    private static boolean isValidXml10(final char ch) {
+        // XML 1.0 valid characters (Fifth Edition):
+        //   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+
+        // [#x20–#xD7FF] (placed early as a fast path for the most common case)
+        return (ch >= ' ' && ch < Character.MIN_SURROGATE)
+                // #x9
+                || ch == '\t'
+                // #xA
+                || ch == '\n'
+                // #xD
+                || ch == '\r'
+                // [#xE000-#xFFFD]
+                || (ch > Character.MAX_SURROGATE && ch <= 0xFFFD);
     }
 }

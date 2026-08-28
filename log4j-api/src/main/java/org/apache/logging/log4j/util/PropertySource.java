@@ -56,6 +56,7 @@ public interface PropertySource {
      * Returns the list of all property names.
      *
      * @return list of property names
+     * @since 2.18.0
      */
     default Collection<String> getPropertyNames() {
         return Collections.emptySet();

@@ -99,4 +99,11 @@ public abstract class EqualsBaseReplacementConverter extends LogEventPatternConv
             substitutionBuffer.append(substitution);
         }
     }
+
+    @Override
+    public boolean handlesThrowable() {
+        return formatters.stream()
+                .map(PatternFormatter::getConverter)
+                .anyMatch(LogEventPatternConverter::handlesThrowable);
+    }
 }

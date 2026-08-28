@@ -24,6 +24,7 @@ import java.net.URL;
 import org.apache.juli.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.appserver.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
@@ -163,6 +164,7 @@ public class TomcatLogger implements Log {
      */
     private static class PrivateManager extends LogManager {
 
+        @SuppressFBWarnings("HSM_HIDING_METHOD")
         public static LoggerContext getContext() {
             final ClassLoader cl = TomcatLogger.class.getClassLoader();
             URI uri = null;

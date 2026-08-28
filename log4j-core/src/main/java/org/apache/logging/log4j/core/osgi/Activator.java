@@ -123,7 +123,7 @@ public final class Activator extends ProviderActivator implements SynchronousBun
     @Override
     public void bundleChanged(final BundleEvent event) {
         switch (event.getType()) {
-                // FIXME: STARTING instead of STARTED?
+            // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:
                 scanBundleForPlugins(event.getBundle());
                 break;

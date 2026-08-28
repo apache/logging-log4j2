@@ -31,7 +31,6 @@
         <include>org/apache/logging/log4j/core/jackson/Log4jStackTraceElementDeserializer.class</include>
         <include>org/apache/logging/log4j/core/jackson/StackTraceElementMixIn.class</include>
         <include>org/apache/logging/log4j/core/util/internal/UnsafeUtil*.class</include>
-        <include>org/apache/logging/log4j/core/util/SystemClock.class</include>
       </includes>
     </fileSet>
   </fileSets>

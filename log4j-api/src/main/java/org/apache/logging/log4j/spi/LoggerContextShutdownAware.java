@@ -19,6 +19,8 @@ package org.apache.logging.log4j.spi;
 /**
  * Interface allowing interested classes to know when a LoggerContext has shutdown - if the LoggerContext
  * implementation provides a way to register listeners.
+ *
+ * @since 2.12.1
  */
 public interface LoggerContextShutdownAware {
 

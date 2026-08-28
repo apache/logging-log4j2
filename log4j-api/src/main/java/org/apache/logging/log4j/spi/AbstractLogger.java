@@ -89,6 +89,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     /**
      * The default FlowMessageFactory class.
+     * @since 2.6
      */
     public static final Class<? extends FlowMessageFactory> DEFAULT_FLOW_MESSAGE_FACTORY_CLASS =
             DefaultFlowMessageFactory.class;
@@ -137,6 +138,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param name the logger name (if null, will be derived from this class)
      * @param messageFactory the {@link Message} factory (if null, {@link ParameterizedMessageFactory} will be used)
      * @param flowMessageFactory the {@link org.apache.logging.log4j.message.FlowMessage} factory (if null, {@link DefaultFlowMessageFactory} will be used)
+     * @since 2.24.0
      */
     protected AbstractLogger(
             final String name, final MessageFactory messageFactory, final FlowMessageFactory flowMessageFactory) {
@@ -584,6 +586,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format Format String for the parameters.
      * @param paramSuppliers The Suppliers of the parameters.
+     * @since 2.6
      */
     @SuppressWarnings("deprecation")
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
@@ -605,6 +608,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format The format String for the parameters.
      * @param paramSuppliers The parameters to the method.
+     * @since 2.6
      */
     @Deprecated
     protected EntryMessage enter(final String fqcn, final String format, final MessageSupplier... paramSuppliers) {
@@ -621,6 +625,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
+     * @since 2.6
      */
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
@@ -640,6 +645,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param messageSupplier The Supplier of the Message.
+     * @since 2.6
      */
     @Deprecated
     protected EntryMessage enter(final String fqcn, final MessageSupplier messageSupplier) {
@@ -702,10 +708,16 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
+    /**
+     * @since 2.6
+     */
     protected EntryMessage entryMsg(final String format, final Object... params) {
         return flowMessageFactory.newEntryMessage(format, params);
     }
 
+    /**
+     * @since 2.6
+     */
     protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
         final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
         final Object[] params = new Object[count];
@@ -715,7 +727,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return entryMsg(format, params);
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * @since 2.6
+     */
     protected EntryMessage entryMsg(final String format, final Supplier<?>... paramSuppliers) {
         return entryMsg(format, LambdaUtil.getAll(paramSuppliers));
     }
@@ -1109,6 +1123,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the return value passed to this method.
+     * @since 2.6
      */
     protected <R> R exit(final String fqcn, final String format, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (CharSequence) null, null)) {
@@ -1117,6 +1132,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return result;
     }
 
+    /**
+     * @since 2.6
+     */
     protected Message exitMsg(final String format, final Object result) {
         return flowMessageFactory.newExitMessage(format, result);
     }
@@ -2570,6 +2588,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2588,6 +2609,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), throwable);
     }
 
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2600,7 +2624,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, message, effectiveThrowable);
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2633,12 +2659,18 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn, final Level level, final Marker marker, final String message, final Object p0) {
         final Message msg = messageFactory.newMessage(message, p0);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2650,6 +2682,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2662,6 +2697,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2675,6 +2713,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2689,6 +2730,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2704,6 +2748,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2720,6 +2767,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2737,6 +2787,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2755,6 +2808,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    /**
+     * @since 2.6
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2774,7 +2830,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * @since 2.4
+     */
     protected void logMessage(
             final String fqcn,
             final Level level,
@@ -2804,6 +2862,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
+    /**
+     * @since 2.12.1
+     */
     protected void log(
             final Level level,
             final Marker marker,
@@ -2889,6 +2950,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * one if a single logging call without nested logging calls has been made, or more depending on the level of
      * nesting.
      * @return the depth of the nested logging calls in the current Thread
+     * @since 2.10.0
      */
     public static int getRecursionDepth() {
         return getRecursionDepthHolder()[0];
@@ -3746,6 +3808,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
+    /**
+     * @since 2.12.1
+     */
     protected boolean requiresLocation() {
         return false;
     }

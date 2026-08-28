@@ -22,7 +22,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 /**
  * Convenience to log {@link StructuredDataMessage}s.
  *
- * @deprecated {@link Logger} accepts {@link StructuredDataMessage}s, users should use to that instead.
+ * @deprecated Deprecated since 2.24.0.
+ * {@link Logger} accepts {@link StructuredDataMessage}s, users should use to that instead.
  */
 @Deprecated
 public final class EventLogger {

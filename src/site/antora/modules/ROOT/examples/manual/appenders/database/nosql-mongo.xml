@@ -27,7 +27,9 @@
     </File>
     <!-- tag::appender[] -->
     <NoSql name="MONGO">
-      <MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/logging.logs"/>
+      <MongoDb connection="mongodb://${env:DB_USER}:${env:DB_PASS}@localhost:27017/"
+               databaseName="logging"
+               collectionName="logs"/>
     </NoSql>
     <!-- end::appender[] -->
   </Appenders>
