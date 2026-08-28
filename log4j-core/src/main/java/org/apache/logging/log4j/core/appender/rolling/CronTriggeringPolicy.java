@@ -64,9 +64,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
         final Date now = new Date();
-        // `RollingFileManager` reports a file time of 0 when there is no current file yet, which
-        // happens on every startup of an appender configured without a `fileName`. There is no
-        // previous roll to look up in that case, so skip the lookup entirely.
         final long fileTime = this.manager.getFileTime();
         final Date lastRollForFile = fileTime > 0 ? cronExpression.getPrevFireTime(new Date(fileTime)) : null;
         final Date lastRegularRoll = cronExpression.getPrevFireTime(new Date());
@@ -154,8 +151,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private void rollover() {
         // If possible, use the time rollover was supposed to occur, not the actual time.
         final Date rollTime = future != null ? future.getFireTime() : new Date();
-        // The file being rolled covers the period that ends at `rollTime`, so it is named after
-        // that period's start. The file replacing it opens the period beginning at `rollTime`.
         manager.rollover(cronExpression.getPrevFireTime(rollTime), rollTime);
         if (future != null) {
             lastRollDate = future.getFireTime();
