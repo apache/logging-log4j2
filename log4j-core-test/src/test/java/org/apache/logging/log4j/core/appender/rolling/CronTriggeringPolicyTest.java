@@ -78,12 +78,6 @@ class CronTriggeringPolicyTest {
         testBuilder();
     }
 
-    /**
-     * An appender configured without a {@code fileName} writes directly to the file the pattern
-     * resolves to, so {@code RollingFileManager#getFileTime()} reports 0 until that file exists.
-     * Looking up the previous fire time relative to the epoch yields nothing useful and used to
-     * cost roughly three seconds per appender, delaying startup.
-     */
     @Test
     @Timeout(value = 2, unit = TimeUnit.SECONDS)
     void testBuilderWithoutFileNameInitializesPromptly() {
@@ -91,22 +85,13 @@ class CronTriggeringPolicyTest {
         final RollingFileAppender raf = RollingFileAppender.newBuilder()
                 .setName("test4")
                 .setFilePattern("target/testcmd4.log.%d{yyyy-MM-dd}")
-                // A weekly schedule is the worst case for the backward search.
                 .setPolicy(CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), "0 0 0 ? * SUN"))
-                // No strategy: without a file name the builder selects DirectWriteRolloverStrategy,
-                // which is what a configuration that omits `fileName` ends up using.
                 .setConfiguration(configuration)
                 .build();
         // @formatter:on
         assertNotNull(raf);
     }
 
-    /**
-     * Without a {@code fileName} the appender writes directly to the file its pattern resolves to.
-     * That file covers the whole rollover period, so it must be named after the period's start
-     * rather than after the moment the appender happened to start. Otherwise a restart later in
-     * the period opens a second file for a period that is supposed to have only one.
-     */
     @Test
     void testDirectWriteFileNameUsesPeriodStart() throws Exception {
         final String schedule = "0 0 0 ? * SUN";

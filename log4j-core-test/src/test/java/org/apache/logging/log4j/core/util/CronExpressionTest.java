@@ -183,28 +183,13 @@ class CronExpressionTest {
         assertEquals(expected, fireDate, "Dates not equal.");
     }
 
-    /*
-     * There is no fire time before 1970, so `getPrevFireTime()` must return `null` for a target at
-     * the epoch. It must also return promptly: `getTimeAfter()` clamps its result to 1970, so a
-     * backward search that is not bounded below never satisfies its exit condition and instead
-     * grinds through several millennia of candidate dates, taking ~3 seconds per call. The timeout
-     * is deliberately well under that; the bounded search answers in well under a millisecond.
-     */
     @Test
     @Timeout(value = 1, unit = TimeUnit.SECONDS)
     void testPrevFireTimeAtEpochReturnsNullPromptly() throws Exception {
-        // A weekly schedule is the worst case: `findMinIncrement()` returns a day-sized step.
         final CronExpression parser = new CronExpression("0 0 0 ? * SUN");
         assertThat(parser.getPrevFireTime(new Date(0))).isNull();
     }
 
-    /*
-     * The bound that keeps the search above from running away must not swallow fire times that do
-     * exist just after the epoch. Bounding on `MIN_DATE` would: it carries the JVM's start time of
-     * day, because `MIN_CAL.set(1970, 0, 1)` leaves the time fields alone, so a candidate earlier
-     * in the day than that would end the search and lose the fire time below. The bound is the
-     * epoch itself, which is a fixed instant. A fixed zone keeps this independent of the CI host.
-     */
     @Test
     void testPrevFireTimeJustAfterEpochIsUnaffectedByBound() throws Exception {
         final TimeZone utc = TimeZone.getTimeZone("UTC");
