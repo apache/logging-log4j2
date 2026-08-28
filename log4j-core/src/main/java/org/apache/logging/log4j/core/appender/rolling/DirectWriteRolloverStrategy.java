@@ -390,10 +390,6 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex : eligibleFiles.lastKey()) : 1;
             final StringBuilder buf = new StringBuilder(255);
-            // Name the file after the start of the rollover period it belongs to, which the
-            // triggering policy records as the pattern processor's current file time. Policies
-            // that do not track a period leave that value at 0, and `formatFileName()` then
-            // falls back to the current time on its own.
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
             final int suffixLength = suffixLength(buf.toString());
             final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
