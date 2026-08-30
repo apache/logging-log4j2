@@ -337,6 +337,29 @@ Log4j 2 extended this mechanism, by introducing pluggable xref:manual/lookups.ad
 
 In order to convert a Log4j 1 configuration file that uses interpolation to a Log4j 2 configuration file, replace all occurrences of `$\{foo}` with `${sys:foo}`.
 
+[#configuration-xml-entities]
+==== External entities and validation
+
+Log4j 1 parses XML configuration files with support for **external XML entities**, and the Log4j 1 to Log4j 2 bridge keeps this behavior for backward compatibility.
+This is safe as long as configuration files come from trusted sources, which is a requirement of the
+https://logging.apache.org/security.html#threat-common-sources-configuration[Log4j threat model]:
+a configuration file can already instantiate arbitrary classes, so its entity declarations are as trusted as the rest of the file.
+
+Log4j 2 XML configuration files, on the other hand, are parsed **without** resolving external DTDs or external entities.
+If your Log4j 1 configuration file uses external entities to include other files, you need to inline their contents during the migration or convert them to
+xref:manual/configuration.adoc#xinclude[XInclude]s.
+
+Validation also differs between the two formats:
+
+* Log4j 1 XML configuration files are validated against the bundled `log4j.dtd` (**DTD validation**).
+The bridge keeps validation enabled and prints validation errors as warnings to the
+xref:manual/status-logger.adoc[status logger].
+* Log4j 2 XML configuration files use optional **XML Schema** validation instead: see the
+xref:manual/configuration.adoc#configuration-attribute-strict[`strict`]
+and
+xref:manual/configuration.adoc#configuration-attribute-schema[`schema`]
+attributes of the XML configuration format.
+
 [#configuration-appenders]
 ==== Appenders
 
