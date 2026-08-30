@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 
@@ -28,6 +29,8 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
  *
  */
 public abstract class MailManager extends AbstractManager {
+
+    private static final Serializer[] EMPTY_SERIALIZERS = {};
 
     /**
      * Creates a unique-per-configuration name for an smtp manager using the
@@ -49,6 +52,44 @@ public abstract class MailManager extends AbstractManager {
             final String smtpUsername,
             final boolean smtpDebug,
             final String filterName) {
+        return createManagerName(
+                to,
+                cc,
+                bcc,
+                from,
+                replyTo,
+                subject,
+                smtpProtocol,
+                smtpHost,
+                smtpPort,
+                smtpUsername,
+                smtpDebug,
+                filterName,
+                Property.EMPTY_ARRAY);
+    }
+
+    /**
+     * Creates a unique-per-configuration name for an smtp manager using the
+     * specified the parameters.<br>
+     * Using such a name allows us to maintain singletons per unique configurations.
+     *
+     * @return smtp manager name
+     * @since 2.27.0
+     */
+    static String createManagerName(
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String smtpProtocol,
+            final String smtpHost,
+            final int smtpPort,
+            final String smtpUsername,
+            final boolean smtpDebug,
+            final String filterName,
+            final Property[] headers) {
 
         final StringBuilder sb = new StringBuilder();
 
@@ -87,6 +128,11 @@ public abstract class MailManager extends AbstractManager {
         }
         sb.append(smtpDebug ? ":debug:" : "::");
         sb.append(filterName);
+        if (headers != null) {
+            for (final Property header : headers) {
+                sb.append(':').append(header.getName()).append('=').append(header.getValue());
+            }
+        }
 
         return "SMTP:" + sb.toString();
     }
@@ -107,6 +153,8 @@ public abstract class MailManager extends AbstractManager {
         private final boolean smtpDebug;
         private final int bufferSize;
         private final SslConfiguration sslConfiguration;
+        private final Property[] headers;
+        private final Serializer[] headerSerializers;
         private final String filterName;
         private final String managerName;
 
@@ -127,6 +175,49 @@ public abstract class MailManager extends AbstractManager {
                 final int bufferSize,
                 final SslConfiguration sslConfiguration,
                 final String filterName) {
+            this(
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    subjectSerializer,
+                    smtpProtocol,
+                    smtpHost,
+                    smtpPort,
+                    smtpUsername,
+                    smtpPassword,
+                    smtpDebug,
+                    bufferSize,
+                    sslConfiguration,
+                    filterName,
+                    Property.EMPTY_ARRAY,
+                    EMPTY_SERIALIZERS);
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public FactoryData(
+                final String to,
+                final String cc,
+                final String bcc,
+                final String from,
+                final String replyTo,
+                final String subject,
+                final Serializer subjectSerializer,
+                final String smtpProtocol,
+                final String smtpHost,
+                final int smtpPort,
+                final String smtpUsername,
+                final String smtpPassword,
+                final boolean smtpDebug,
+                final int bufferSize,
+                final SslConfiguration sslConfiguration,
+                final String filterName,
+                final Property[] headers,
+                final Serializer[] headerSerializers) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
@@ -142,6 +233,8 @@ public abstract class MailManager extends AbstractManager {
             this.smtpDebug = smtpDebug;
             this.bufferSize = bufferSize;
             this.sslConfiguration = sslConfiguration;
+            this.headers = headers != null ? headers : Property.EMPTY_ARRAY;
+            this.headerSerializers = headerSerializers != null ? headerSerializers : EMPTY_SERIALIZERS;
             this.filterName = filterName;
             this.managerName = createManagerName(
                     to,
@@ -155,7 +248,8 @@ public abstract class MailManager extends AbstractManager {
                     smtpPort,
                     smtpUsername,
                     smtpDebug,
-                    filterName);
+                    filterName,
+                    this.headers);
         }
 
         public String getTo() {
@@ -216,6 +310,25 @@ public abstract class MailManager extends AbstractManager {
 
         public SslConfiguration getSslConfiguration() {
             return sslConfiguration;
+        }
+
+        /**
+         * Returns the custom message headers, in configuration order.
+         *
+         * @since 2.27.0
+         */
+        public Property[] getHeaders() {
+            return headers;
+        }
+
+        /**
+         * Returns the {@link org.apache.logging.log4j.core.layout.PatternLayout} serializers rendering the
+         * {@linkplain #getHeaders() header} values, in the same order.
+         *
+         * @since 2.27.0
+         */
+        public Serializer[] getHeaderSerializers() {
+            return headerSerializers;
         }
 
         public String getFilterName() {

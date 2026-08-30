@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.smtp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import jakarta.mail.MessagingException;
+import java.util.Arrays;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SmtpAppender;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
@@ -104,5 +107,38 @@ class SmtpManagerTest {
         final ReusableSimpleMessage message = new ReusableSimpleMessage();
         message.set(text);
         return message;
+    }
+
+    @Test
+    void testEncodeHeaderValueLeavesPlainAsciiAlone() throws MessagingException {
+        assertEquals("plain value", SmtpManager.encodeHeaderValue("X-Test", "plain value"));
+    }
+
+    @Test
+    void testEncodeHeaderValueNeutralizesControlCharacters() throws MessagingException {
+        assertEquals("safe  X-Evil: injected", SmtpManager.encodeHeaderValue("X-Test", "safe\r\nX-Evil: injected"));
+    }
+
+    @Test
+    void testEncodeHeaderValueIsAsciiOnly() throws MessagingException {
+        final String encoded = SmtpManager.encodeHeaderValue("X-Test", "Jos\u00e9 \u20b9500");
+        assertThat(encoded.chars().allMatch(c -> c < 128)).isTrue();
+    }
+
+    @Test
+    void testEncodeHeaderValueRespectsLineLengthLimit() throws MessagingException {
+        final char[] chars = new char[5_000];
+        Arrays.fill(chars, 'x');
+        assertLineLengthLimit(SmtpManager.encodeHeaderValue("X-Test", new String(chars)));
+        Arrays.fill(chars, '\u00e9');
+        assertLineLengthLimit(SmtpManager.encodeHeaderValue("X-Test", new String(chars)));
+    }
+
+    private static void assertLineLengthLimit(final String encoded) {
+        int used = "X-Test".length() + 2;
+        for (final String line : encoded.split("\r\n", -1)) {
+            assertThat(used + line.length()).isLessThanOrEqualTo(998);
+            used = 0;
+        }
     }
 }
