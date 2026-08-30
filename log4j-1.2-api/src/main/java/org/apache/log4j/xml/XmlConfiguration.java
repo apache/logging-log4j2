@@ -147,7 +147,8 @@ public class XmlConfiguration extends Log4j1Configuration {
             @Override
             @SuppressFBWarnings(
                     value = "XXE_DOCUMENT",
-                    "External entities are resolved by `Log4jEntityResolver` through `ConfigurationSource`, the same way the configuration file itself is resolved. Configuration files must come from trusted sources.")
+                    justification =
+                            "External entities are resolved by `Log4jEntityResolver` through `ConfigurationSource`, the same way the configuration file itself is resolved. Configuration files must come from trusted sources.")
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
                 @SuppressWarnings("resource")
                 final // The ConfigurationSource and its caller manages the InputStream.
