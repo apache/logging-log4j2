@@ -450,6 +450,9 @@
 <p>Fix <code>KafkaAppender</code> reporting error to error handler even after a successful retry (<a href="https://github.com/apache/logging-log4j2/pull/4125">4125</a>)</p>
 </li>
 <li>
+<p>Resolve external entities in the Log4j 1.x <code>XmlConfiguration</code> reader through <code>ConfigurationSource</code>, so they are subject to the <code>log4j2.Configuration.allowedProtocols</code> restrictions (<a href="https://github.com/apache/logging-log4j2/pull/4198">4198</a>)</p>
+</li>
+<li>
 <p>Fix file descriptor leak in the JMX integration (<a href="https://github.com/apache/logging-log4j2/pull/4218">4218</a>)</p>
 </li>
 <li>
