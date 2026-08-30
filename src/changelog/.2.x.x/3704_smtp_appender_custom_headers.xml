@@ -6,7 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="added">
   <issue id="3704" link="https://github.com/apache/logging-log4j2/issues/3704"/>
-  <issue id="4266" link="https://github.com/apache/logging-log4j2/pull/4266"/>
+  <issue id="4267" link="https://github.com/apache/logging-log4j2/pull/4267"/>
   <description format="asciidoc">
     Added support for custom `SmtpAppender` message headers, configured with nested `Property` elements.
   </description>
