@@ -29,11 +29,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ObjectArrayMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -168,6 +171,19 @@ public class CsvParameterLayoutTest {
     public void testLayoutTab() throws Exception {
         final Logger root = this.init.getRootLogger();
         testLayoutNormalApi(root, CsvParameterLayout.createLayout(CSVFormat.TDF), true);
+    }
+
+    @Test
+    public void testNullParametersProduceEmptyRecord() {
+        // SimpleMessage#getParameters() returns null; must not NPE (GH-4243)
+        final AbstractCsvLayout layout = CsvParameterLayout.createDefaultLayout();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("test")
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("plain text without parameters"))
+                .build();
+        final String result = layout.toSerializable(event);
+        Assert.assertEquals(layout.getFormat().getRecordSeparator(), result);
     }
 
     @Test
