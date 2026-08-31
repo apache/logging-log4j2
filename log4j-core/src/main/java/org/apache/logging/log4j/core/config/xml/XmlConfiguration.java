@@ -354,7 +354,14 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 final String name, final String publicId, final String baseURI, final String systemId)
                 throws SAXException {
             try {
-                final InputSource inputSource = toInputSource(toConfigurationSource(systemId, baseURI));
+                final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
+                final InputSource inputSource;
+                if (source != null) {
+                    inputSource = toInputSource(source);
+                } else {
+                    inputSource = new InputSource(emptyReader());
+                    inputSource.setSystemId(systemId);
+                }
                 inputSource.setPublicId(publicId);
                 return inputSource;
             } catch (final URISyntaxException e) {
@@ -413,9 +420,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         }
 
         static InputSource toInputSource(final ConfigurationSource configurationSource) {
-            if (configurationSource == null) {
-                return new InputSource(emptyReader());
-            }
             final InputSource inputSource = new InputSource(configurationSource.getInputStream());
             inputSource.setSystemId(configurationSource.getLocation());
             return inputSource;
