@@ -46,7 +46,7 @@ public class CoreOsgiTest {
     public Option[] config() {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
-                linkBundle("eu.copernik.xml.factory"),
+                linkBundle("org.apache.commons.xml.secure"),
                 linkBundle("org.apache.logging.log4j.core"),
                 linkBundle("org.apache.logging.log4j.1.2.api").start(false),
                 // required by Pax Exam's logging

@@ -159,8 +159,8 @@
     </dependency>
     <!-- Hardened JAXP factories for XML configuration parsing -->
     <dependency>
-      <groupId>eu.copernik</groupId>
-      <artifactId>copernik-xml-factory</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-secure-xml</artifactId>
     </dependency>
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>

@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="4162" link="https://github.com/apache/logging-log4j2/pull/4162"/>
   <description format="asciidoc">
-    Harden XML configuration parsing using the Commons XML hardened JAXP factories.
+    Harden XML configuration parsing using the hardened JAXP factories of Apache Commons Secure XML.
   </description>
 </entry>

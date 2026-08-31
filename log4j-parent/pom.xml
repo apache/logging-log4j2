@@ -76,9 +76,9 @@
     <commons-io.version>2.22.0</commons-io.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
     <commons-logging.version>1.4.0</commons-logging.version>
+    <commons-secure-xml.version>1.0.0-SNAPSHOT</commons-secure-xml.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
-    <copernik-xml-factory.version>0.1.2</copernik-xml-factory.version>
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <error-prone-annotations.version>2.50.0</error-prone-annotations.version>
@@ -394,6 +394,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-secure-xml</artifactId>
+        <version>${commons-secure-xml.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.conversantmedia</groupId>
         <artifactId>disruptor</artifactId>
         <version>${conversant.disruptor.version}</version>
@@ -403,12 +409,6 @@
         <groupId>com.lmax</groupId>
         <artifactId>disruptor</artifactId>
         <version>${disruptor.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>eu.copernik</groupId>
-        <artifactId>copernik-xml-factory</artifactId>
-        <version>${copernik-xml-factory.version}</version>
       </dependency>
 
       <dependency>
