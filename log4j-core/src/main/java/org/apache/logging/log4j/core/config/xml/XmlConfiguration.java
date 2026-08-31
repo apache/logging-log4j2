@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -50,17 +51,21 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.ext.EntityResolver2;
 
 /**
@@ -324,9 +329,21 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * <p>This adds support for the Log4j URI conventions (such as the {@code classpath:} scheme) and subjects every
      * referenced resource to the {@code ALLOWED_PROTOCOLS} restrictions.</p>
      */
-    private static final class ConfigurationSourceResolver implements EntityResolver2, LSResourceResolver {
+    private static final class ConfigurationSourceResolver extends DefaultHandler2 implements LSResourceResolver {
 
         private static final ConfigurationSourceResolver INSTANCE = new ConfigurationSourceResolver();
+
+        /** DOM Level 3 Load/Save implementation used to build the {@link LSInput} for resolved resources. */
+        private final DOMImplementationLS domLs;
+
+        private ConfigurationSourceResolver() {
+            try {
+                domLs = (DOMImplementationLS)
+                        DOMImplementationRegistry.newInstance().getDOMImplementation("LS");
+            } catch (final ReflectiveOperationException e) {
+                throw new IllegalStateException("No DOM Load/Save implementation available", e);
+            }
+        }
 
         /**
          * Resolves an external entity, used while expanding {@code xi:include} elements.
@@ -337,25 +354,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         public InputSource resolveEntity(
                 final String name, final String publicId, final String baseURI, final String systemId)
                 throws SAXException {
-            final InputSource inputSource = toInputSource(toConfigurationSource(systemId, baseURI));
-            inputSource.setPublicId(publicId);
-            return inputSource;
-        }
-
-        @Override
-        public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException {
-            return resolveEntity(null, publicId, null, systemId);
-        }
-
-        @Override
-        public InputSource getExternalSubset(final String name, final String baseURI) {
-            return null;
+            try {
+                final InputSource inputSource = toInputSource(toConfigurationSource(systemId, baseURI));
+                inputSource.setPublicId(publicId);
+                return inputSource;
+            } catch (final URISyntaxException e) {
+                throw new SAXException(e);
+            }
         }
 
         /**
          * Resolves a resource imported by an XML Schema ({@code xsd:import}/{@code xsd:include}).
          *
-         * <p>Throws an {@link LSException} when the resource cannot be resolved, instead of returning {@code null}: a
+         * <p>Returns an empty input when the resource cannot be resolved, instead of returning {@code null}: a
          * {@code null} return would let the parser fall back to its own URL resolution, bypassing the
          * {@code ALLOWED_PROTOCOLS} restrictions.</p>
          */
@@ -367,108 +378,48 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 final String systemId,
                 final String baseURI) {
             try {
-                return new ConfigurationSourceLSInput(toConfigurationSource(systemId, baseURI));
-            } catch (final SAXException e) {
-                throw new LSException(LSException.PARSE_ERR, e.getMessage());
+                final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
+                final LSInput input = domLs.createLSInput();
+                if (source != null) {
+                    input.setByteStream(source.getInputStream());
+                    input.setSystemId(source.getLocation());
+                } else {
+                    input.setCharacterStream(emptyReader());
+                }
+                input.setPublicId(publicId);
+                return input;
+            } catch (final URISyntaxException e) {
+                final LSException lsException = new LSException(LSException.PARSE_ERR, e.getMessage());
+                lsException.initCause(e);
+                throw lsException;
             }
+        }
+
+        private static Reader emptyReader() {
+            return new StringReader("");
         }
 
         private static ConfigurationSource toConfigurationSource(final String systemId, final String baseURI)
-                throws SAXException {
+                throws URISyntaxException {
             if (systemId == null) {
-                throw new SAXException("System id missing.");
+                LOGGER.warn("Unable to resolve XML resource without a system id; substituting an empty document.");
+                return null;
             }
-            try {
-                final URI uri = baseURI != null ? new URI(baseURI).resolve(systemId) : new URI(systemId);
-                final ConfigurationSource configurationSource = ConfigurationSource.fromUri(uri);
-                if (configurationSource == null) {
-                    throw new SAXException("Unable to resolve system id " + systemId);
-                }
-                return configurationSource;
-            } catch (final URISyntaxException e) {
-                throw new SAXException("System id is not a valid URI: " + systemId, e);
+            final URI uri = baseURI != null ? new URI(baseURI).resolve(systemId) : new URI(systemId);
+            final ConfigurationSource configurationSource = ConfigurationSource.fromUri(uri);
+            if (configurationSource == null) {
+                LOGGER.warn("Unable to resolve system id {}; substituting an empty document.", systemId);
             }
+            return configurationSource;
         }
 
         static InputSource toInputSource(final ConfigurationSource configurationSource) {
+            if (configurationSource == null) {
+                return new InputSource(emptyReader());
+            }
             final InputSource inputSource = new InputSource(configurationSource.getInputStream());
             inputSource.setSystemId(configurationSource.getLocation());
             return inputSource;
         }
-    }
-
-    /**
-     * Minimal {@link LSInput} backed by a {@link ConfigurationSource}.
-     */
-    private static final class ConfigurationSourceLSInput implements LSInput {
-        private final ConfigurationSource configurationSource;
-
-        ConfigurationSourceLSInput(final ConfigurationSource configurationSource) {
-            this.configurationSource = configurationSource;
-        }
-
-        @Override
-        public InputStream getByteStream() {
-            return configurationSource.getInputStream();
-        }
-
-        @Override
-        public String getSystemId() {
-            return configurationSource.getLocation();
-        }
-
-        @Override
-        public String getPublicId() {
-            return null;
-        }
-
-        @Override
-        public String getBaseURI() {
-            return null;
-        }
-
-        @Override
-        public Reader getCharacterStream() {
-            return null;
-        }
-
-        @Override
-        public String getStringData() {
-            return null;
-        }
-
-        @Override
-        public String getEncoding() {
-            return null;
-        }
-
-        @Override
-        public boolean getCertifiedText() {
-            return false;
-        }
-
-        @Override
-        public void setByteStream(final InputStream byteStream) {}
-
-        @Override
-        public void setCharacterStream(final Reader characterStream) {}
-
-        @Override
-        public void setStringData(final String stringData) {}
-
-        @Override
-        public void setSystemId(final String systemId) {}
-
-        @Override
-        public void setPublicId(final String publicId) {}
-
-        @Override
-        public void setBaseURI(final String baseURI) {}
-
-        @Override
-        public void setEncoding(final String encoding) {}
-
-        @Override
-        public void setCertifiedText(final boolean certifiedText) {}
     }
 }
