@@ -44,9 +44,8 @@ jobs:
       site-enabled: true
       reproducibility-check-enabled: false
       # Resolve the `commons-secure-xml` SNAPSHOT from the Apache snapshots repository
-      # (activates the `use-apache-snapshots` profile of the ASF parent POM).
       # Remove once `commons-secure-xml` 1.0.0 is released.
-      maven-args: -Dapache.snapshots
+      maven-args: -Puse-apache-snapshots
 
   deploy-snapshot:
     needs: build

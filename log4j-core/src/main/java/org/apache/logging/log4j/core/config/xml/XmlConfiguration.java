@@ -150,8 +150,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
      */
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
-        // Hardened factory: by the `commons-secure-xml` contract it and what it produces never fetch external
-        // resources.
+        // Hardened factory, which never fetches external resources.
         final DocumentBuilderFactory factory = SecureDocumentBuilderFactory.newDefaultNSInstance();
         if (xIncludeAware) {
             factory.setXIncludeAware(true);
@@ -175,8 +174,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 // a schema has its own modularity features (`xsd:include`/`xsd:import`).
                 final Document schemaDocument =
                         newDocumentBuilder(false).parse(ConfigurationSourceResolver.toInputSource(schemaSource));
-                // Hardened factory: by the `commons-secure-xml` contract it and what it produces never fetch external
-                // resources.
+                // Hardened factory, which never fetches external resources.
                 final SchemaFactory factory = SecureSchemaFactory.newDefaultInstance();
                 factory.setResourceResolver(ConfigurationSourceResolver.INSTANCE);
                 // The system id is the base URI against which the schema's `xsd:include`/`xsd:import` resources
@@ -337,15 +335,16 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 throws SAXException {
             try {
                 final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
-                if (source == null) {
-                    return null;
+                if (source != null) {
+                    final InputSource inputSource = toInputSource(source);
+                    inputSource.setPublicId(publicId);
+                    return inputSource;
                 }
-                final InputSource inputSource = toInputSource(source);
-                inputSource.setPublicId(publicId);
-                return inputSource;
             } catch (final URISyntaxException e) {
                 throw new SAXException(e);
             }
+            // Fallback to Commons XML ignore-all floor.
+            return null;
         }
 
         /**
@@ -360,19 +359,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 final String baseURI) {
             try {
                 final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
-                if (source == null) {
-                    return null;
+                if (source != null) {
+                    final LSInput input = domLs.createLSInput();
+                    input.setByteStream(source.getInputStream());
+                    input.setSystemId(source.getLocation());
+                    input.setPublicId(publicId);
                 }
-                final LSInput input = domLs.createLSInput();
-                input.setByteStream(source.getInputStream());
-                input.setSystemId(source.getLocation());
-                input.setPublicId(publicId);
-                return input;
             } catch (final URISyntaxException e) {
                 final LSException lsException = new LSException(LSException.PARSE_ERR, e.getMessage());
                 lsException.initCause(e);
                 throw lsException;
             }
+            // Fallback to Commons XML ignore-all floor.
+            return null;
         }
 
         private static ConfigurationSource toConfigurationSource(final String systemId, final String baseURI)
