@@ -29,9 +29,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Class Description goes here.
@@ -179,6 +181,27 @@ class CronExpressionTest {
         System.err.println(sdf.format(fireDate));
         final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
         assertEquals(expected, fireDate, "Dates not equal.");
+    }
+
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.SECONDS)
+    void testPrevFireTimeAtEpochReturnsNullPromptly() throws Exception {
+        final CronExpression parser = new CronExpression("0 0 0 ? * SUN");
+        assertThat(parser.getPrevFireTime(new Date(0))).isNull();
+    }
+
+    @Test
+    void testPrevFireTimeJustAfterEpochIsUnaffectedByBound() throws Exception {
+        final TimeZone utc = TimeZone.getTimeZone("UTC");
+        final CronExpression parser = new CronExpression("0 0 0 * * ?");
+        parser.setTimeZone(utc);
+        final Calendar target = Calendar.getInstance(utc);
+        target.clear();
+        target.set(1970, Calendar.JANUARY, 2, 6, 0, 0);
+        final Calendar expected = Calendar.getInstance(utc);
+        expected.clear();
+        expected.set(1970, Calendar.JANUARY, 2, 0, 0, 0);
+        assertThat(parser.getPrevFireTime(target.getTime())).isEqualTo(expected.getTime());
     }
 
     /**
