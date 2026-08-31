@@ -304,6 +304,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
@@ -347,6 +348,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
@@ -383,6 +385,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	...",

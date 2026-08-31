@@ -44,6 +44,7 @@ class ExtendedThrowablePatternConverterTest {
     private static final List<String> EXPECTED_FULL_STACK_TRACE_LINES = asList(
             "foo.TestFriendlyException: r [localized]",
             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT + " ~[?:?]",
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT + " ~[?:0]",
@@ -109,6 +110,7 @@ class ExtendedThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT + " ~[?:?]",
                             "	... suppressed 2 lines",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT + " ~[?:0]",
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
@@ -145,6 +147,7 @@ class ExtendedThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT + " ~[?:?]",
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT + " ~[?:?]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0) ~[test-classes/:?]",
                             "	...",
