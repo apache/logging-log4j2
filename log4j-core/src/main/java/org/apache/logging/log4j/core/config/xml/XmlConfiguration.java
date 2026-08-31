@@ -391,6 +391,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     input.setSystemId(source.getLocation());
                 } else {
                     input.setCharacterStream(emptyReader());
+                    input.setSystemId(systemId);
                 }
                 input.setPublicId(publicId);
                 return input;
