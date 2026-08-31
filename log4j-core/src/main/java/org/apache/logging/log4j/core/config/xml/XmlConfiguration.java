@@ -51,7 +51,6 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
