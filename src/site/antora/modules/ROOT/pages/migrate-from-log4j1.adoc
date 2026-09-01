@@ -362,7 +362,7 @@ attributes of the XML configuration format.
 
 [NOTE]
 ====
-Since version `2.27.0`, the external subset and other external entities can only be retrieved from locations allowed by the
+Since version `2.27.0`, the external subset and other external entities can only be retrieved from local files or over the protocols allowed by the
 xref:manual/systemproperties.adoc#log4j2.configurationAllowedProtocols[`log4j2.configurationAllowedProtocols`]
 property.
 ====
