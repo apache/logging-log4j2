@@ -80,7 +80,7 @@ import org.xml.sax.SAXParseException;
  * </p>
  * <p>
  *     Since version <strong>2.27.0</strong>, external entities are resolved through
- *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from locations allowed by the
+ *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from local files or over the protocols allowed by the
  *     <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.configurationAllowedProtocols">{@code log4j2.configurationAllowedProtocols}</a>
  *     configuration property.
  * </p>
