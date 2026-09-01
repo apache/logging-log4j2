@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="4206" link="https://github.com/apache/logging-log4j2/pull/4206"/>
-  <description format="asciidoc">Update `org.mongodb:mongodb-driver-core` to version `5.9.0`</description>
+  <issue id="4276" link="https://github.com/apache/logging-log4j2/pull/4276"/>
+  <description format="asciidoc">Update `org.mongodb:mongodb-driver-core` to version `5.10.0`</description>
 </entry>
