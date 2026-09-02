@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
-import com.google.errorprone.annotations.InlineMe;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,8 +74,7 @@ public class Component {
      * @deprecated use {@link #putAttribute(String, String)}
      */
     @Deprecated
-    @InlineMe(replacement = "this.putAttribute(key, newValue)")
-    public final @Nullable String addAttribute(final String key, final @Nullable String newValue) {
+    public @Nullable String addAttribute(final String key, final @Nullable String newValue) {
         return putAttribute(key, newValue);
     }
 
