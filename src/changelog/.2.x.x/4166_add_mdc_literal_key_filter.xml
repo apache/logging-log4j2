@@ -8,6 +8,7 @@
     <issue id="4166" link="https://github.com/apache/logging-log4j2/issues/4166"/>
     <issue id="4186" link="https://github.com/apache/logging-log4j2/pull/4186"/>
     <description format="asciidoc">
-        Add `literal` key filtering to MDC and Map resolvers, and harden `EcsLayout.json` with it.
+        Add `literal` key filtering to JSON Template Layout's Context Data (MDC) and Map resolvers.
+        Harden `EcsLayout.json` using that.
     </description>
 </entry>
