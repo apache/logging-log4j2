@@ -16,23 +16,34 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
-import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link FilterComponentBuilder} interface for building
+ * a {@link Filter} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 class DefaultFilterComponentBuilder extends DefaultComponentAndConfigurationBuilder<FilterComponentBuilder>
         implements FilterComponentBuilder {
 
+    /**
+     * Create a new filter component builder instance with the given plugin-type.
+     * @param builder the configuration builder.
+     * @param pluginType the plugin-type of the filter component to build
+     * @throws NullPointerException if either the {@code builder} or {@code pluginType} argument is {@code null}
+     */
     public DefaultFilterComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String type,
-            final String onMatch,
-            final String onMismatch) {
-        super(builder, type);
-        addAttribute(AbstractFilterBuilder.ATTR_ON_MATCH, onMatch);
-        addAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH, onMismatch);
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String pluginType) {
+
+        super(builder, pluginType);
     }
 }
