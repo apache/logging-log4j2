@@ -111,7 +111,6 @@ public final class WebLoggerContextUtils {
 
     /**
      * @deprecated Use {@link #setServletContext(LoggerContext, ServletContext)} instead.
-     * @since 2.27.0
      */
     @Deprecated
     public static Map.Entry<String, Object> createExternalEntry(final ServletContext servletContext) {

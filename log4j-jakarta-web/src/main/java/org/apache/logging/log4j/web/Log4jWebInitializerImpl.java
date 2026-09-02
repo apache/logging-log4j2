@@ -181,8 +181,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             final LoggerContextFactory factory = LogManager.getFactory();
             if (factory instanceof Log4jContextFactory) {
                 final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
-                loggerContext = selector.getContext(
-                        Log4jWebInitializerImpl.class.getName(), getClassLoader(), false, null);
+                loggerContext =
+                        selector.getContext(Log4jWebInitializerImpl.class.getName(), getClassLoader(), false, null);
                 if (loggerContext != null) {
                     loggerContext.putObject(SERVLET_CONTEXT_KEY, servletContext);
                     if (name != null) {
@@ -212,8 +212,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                     }
                 }
             } else {
-                loggerContext =
-                        Configurator.initialize(name, getClassLoader(), uris, servletContext);
+                loggerContext = Configurator.initialize(name, getClassLoader(), uris, servletContext);
                 if (loggerContext != null) {
                     loggerContext.putObject(SERVLET_CONTEXT_KEY, servletContext);
                 }

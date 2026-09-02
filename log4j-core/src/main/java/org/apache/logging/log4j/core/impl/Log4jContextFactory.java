@@ -149,7 +149,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
      * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
-     * @since 2.27.0
      */
     @Override
     @Deprecated
@@ -175,7 +174,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param source The configuration source.
      * @return The LoggerContext.
      * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
-     * @since 2.27.0
      */
     @Deprecated
     public LoggerContext getContext(
@@ -212,7 +210,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param configuration The Configuration.
      * @return The LoggerContext.
      * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
-     * @since 2.27.0
      */
     @Deprecated
     public LoggerContext getContext(
@@ -246,7 +243,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param configLocation The location of the configuration for the LoggerContext (or null).
      * @return The LoggerContext.
      * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
-     * @since 2.27.0
      */
     @Override
     @Deprecated
@@ -315,7 +311,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param configLocations The locations of the configuration for the LoggerContext (or null).
      * @return The LoggerContext.
      * @deprecated Use {@link org.apache.logging.log4j.spi.LoggerContext#getObject(String)} instead.
-     * @since 2.27.0
      */
     @Deprecated
     public LoggerContext getContext(
@@ -325,11 +320,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             final boolean currentContext,
             final List<URI> configLocations,
             final String name) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        final LoggerContext ctx =
+                selector.getContext(fqcn, loader, currentContext, null /*this probably needs to change*/);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
-
         if (name != null) {
             ctx.setName(name);
         }

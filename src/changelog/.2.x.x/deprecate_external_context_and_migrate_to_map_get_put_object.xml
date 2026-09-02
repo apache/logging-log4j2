@@ -4,10 +4,11 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
+       type="fixed">
     <issue id="2351" link="https://github.com/apache/logging-log4j2/pull/2351"/>
     <issue id="4070" link="https://github.com/apache/logging-log4j2/pull/4070"/>
     <description format="asciidoc">
-        Deprecate `externalContext` and migrate to Map-backed `getObject/putObject`. This work resolves the servlet context resolution issue in composite configurations.
+        Deprecate `externalContext` and migrate to Map-backed `getObject/putObject`.
+        This work fixes the servlet context resolution issue in composite configurations.
     </description>
 </entry>
