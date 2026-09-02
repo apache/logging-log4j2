@@ -72,9 +72,6 @@ github:
     merge:   false
     rebase:  false
 
-  # Clear Protected Branches configuration: it is replaced by GitHub Rulesets
-  protected_branches: { }
-
   rulesets:
     # Enforce Review-then-Commit
     - name: "Branch protection"
@@ -82,6 +79,8 @@ github:
       branches:
         includes:
           - "2.x"
+          - "2.25.x"
+          - "2.26.x"
           - "main"
       # All reviews must be addressed before merging
       required_conversation_resolution: true
