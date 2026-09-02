@@ -19,13 +19,21 @@ name: build
 
 on:
   push:
+    # These filters apply only to the current branch (`2.26.x`) and new branches cut from it:
+    # only `release/2.26.*` branches automatically inherit this workflow.
     branches:
-      - "2.x"
-      - "2.25.x"
-      - "release/2*"
+      - "2.26.x"
+      - "release/2.26.*"
   pull_request:
 
-permissions: read-all
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
 
 jobs:
 
@@ -40,7 +48,7 @@ jobs:
 
   deploy-snapshot:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.26.x'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@gha/v0
     # Secrets for deployments
     secrets:

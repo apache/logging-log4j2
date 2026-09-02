@@ -19,13 +19,23 @@ name: codeql-analysis
 
 on:
   push:
-    branches: [ "2.x", "main" ]
+    # These filters apply only to the current branch (`2.26.x`) and new branches cut from it:
+    # only `release/2.26.*` branches automatically inherit this workflow.
+    branches:
+      - "2.26.x"
+      - "release/2.26.*"
   pull_request:
-    branches: [ "2.x", "main" ]
   schedule:
     - cron: '32 12 * * 5'
 
-permissions: read-all
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
 
 jobs:
 
