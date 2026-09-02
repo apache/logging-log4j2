@@ -1581,6 +1581,9 @@ public final class CronExpression {
         Date prevFireTime;
         do {
             final Date prevCheckDate = new Date(start.getTime() - minIncrement);
+            if (prevCheckDate.getTime() < 0) {
+                return null;
+            }
             prevFireTime = getTimeAfter(prevCheckDate);
             if (prevFireTime == null || prevFireTime.before(MIN_DATE)) {
                 return null;
