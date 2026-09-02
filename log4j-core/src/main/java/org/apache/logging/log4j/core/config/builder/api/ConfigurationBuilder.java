@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
-import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
@@ -523,8 +522,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * Sets the logger context.
      * @param loggerContext the logger context.
      */
-    @BaselineIgnore("2.25.0")
-    ConfigurationBuilder<T> setLoggerContext(@Nullable LoggerContext loggerContext);
+    void setLoggerContext(LoggerContext loggerContext);
 
     /**
      * Sets the configuration's "monitorInterval" attribute.
