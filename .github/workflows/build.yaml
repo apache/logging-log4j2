@@ -31,7 +31,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-permissions: read-all
+# Default permissions for each job.
+# Additional permissions should be assigned on a per-job basis.
+permissions: { }
 
 jobs:
 
@@ -46,7 +48,7 @@ jobs:
 
   deploy-snapshot:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.25.x'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@gha/v0
     # Secrets for deployments
     secrets:
