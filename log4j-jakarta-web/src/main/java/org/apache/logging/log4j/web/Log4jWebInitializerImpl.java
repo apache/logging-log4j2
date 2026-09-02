@@ -30,9 +30,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
@@ -52,6 +57,8 @@ import org.apache.logging.log4j.util.Strings;
 final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWebLifeCycle {
 
     private static final String WEB_INF = "/WEB-INF/";
+
+    private static final String SERVLET_CONTEXT_KEY = "org.apache.logging.log4j.web.servletContext";
 
     static {
         if (Loader.isClassAvailable("org.apache.logging.log4j.core.web.JNDIContextFilter")) {
@@ -133,8 +140,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.namedContextSelector = (NamedContextSelector) selector;
-                context = this.namedContextSelector.locateContext(
-                        this.name, WebLoggerContextUtils.createExternalEntry(this.servletContext), configLocation);
+                context = namedContextSelector.locateContext(name, null, configLocation);
+                context.putObject(SERVLET_CONTEXT_KEY, servletContext);
                 ContextAnchor.THREAD_CONTEXT.set(context);
                 if (context.isInitialized()) {
                     context.start();
@@ -168,13 +175,49 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             LOGGER.error("No Log4j context configuration provided. This is very unusual.");
             this.name = new SimpleDateFormat("yyyyMMdd_HHmmss.SSS").format(new Date());
         }
+
         if (location != null && location.contains(",")) {
             final List<URI> uris = getConfigURIs(location);
-            this.loggerContext = Configurator.initialize(
-                    this.name,
-                    this.getClassLoader(),
-                    uris,
-                    WebLoggerContextUtils.createExternalEntry(this.servletContext));
+            final LoggerContextFactory factory = LogManager.getFactory();
+            if (factory instanceof Log4jContextFactory) {
+                final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
+                loggerContext = selector.getContext(
+                        Log4jWebInitializerImpl.class.getName(), getClassLoader(), false, null);
+                if (loggerContext != null) {
+                    loggerContext.putObject(SERVLET_CONTEXT_KEY, servletContext);
+                    if (name != null) {
+                        loggerContext.setName(name);
+                    }
+                    if (loggerContext.getState() == LifeCycle.State.INITIALIZED) {
+                        ContextAnchor.THREAD_CONTEXT.set(loggerContext);
+                        try {
+                            final List<AbstractConfiguration> configurations = new ArrayList<>(uris.size());
+                            for (final URI configLocation : uris) {
+                                final Configuration config = ConfigurationFactory.getInstance()
+                                        .getConfiguration(loggerContext, name, configLocation);
+                                if (config instanceof AbstractConfiguration) {
+                                    configurations.add((AbstractConfiguration) config);
+                                }
+                            }
+                            if (configurations.size() == 1) {
+                                loggerContext.start(configurations.get(0));
+                            } else if (configurations.size() > 1) {
+                                loggerContext.start(new CompositeConfiguration(configurations));
+                            } else {
+                                loggerContext.start();
+                            }
+                        } finally {
+                            ContextAnchor.THREAD_CONTEXT.remove();
+                        }
+                    }
+                }
+            } else {
+                loggerContext =
+                        Configurator.initialize(name, getClassLoader(), uris, servletContext);
+                if (loggerContext != null) {
+                    loggerContext.putObject(SERVLET_CONTEXT_KEY, servletContext);
+                }
+            }
             return;
         }
 
@@ -275,7 +318,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
                     this.namedContextSelector.removeContext(this.name);
                 }
                 this.loggerContext.stop(timeout, timeUnit);
-                this.loggerContext.setExternalContext(null);
+                loggerContext.removeObject(SERVLET_CONTEXT_KEY);
                 this.loggerContext = null;
             }
             this.setStopped();
