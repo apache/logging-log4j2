@@ -143,11 +143,11 @@
     <xmlunit.version>2.10.3</xmlunit.version>
 
     <!-- =====================================================
-         Pinned transitive dependency version properties
+         Pinned transitive dependency version properties (in alphabetical order)
 
-         Log4j is a library: managed versions never reach users, so we
-         pin transitive dependencies only when `requireUpperBoundDeps`
-         fails without the pin.
+         These are not directly used in the code, but ensure
+         the independence of transitive dependencies from the order
+         of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <!-- AssertJ and Mockito request different versions -->
     <byte-buddy.version>1.17.6</byte-buddy.version>
