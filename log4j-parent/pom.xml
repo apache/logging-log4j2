@@ -147,12 +147,6 @@
          the independence of transitive dependencies from the order
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
-    <asm.version>9.6</asm.version>
-    <byte-buddy.version>1.14.9</byte-buddy.version>
-    <commons-pool2.version>2.13.1</commons-pool2.version>
-    <httpclient.version>4.5.14</httpclient.version>
-    <httpcore.version>4.4.16</httpcore.version>
-    <jna.version>5.19.1</jna.version>
 
     <!-- Add 'requires static' for annotation library dependencies (defined as <scope>provided</scope> in this file)
          to allow them to be visible at compile time to make the '-Xlint:classfile' check of javac pass.
@@ -385,12 +379,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-pool2</artifactId>
-        <version>${commons-pool2.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.conversantmedia</groupId>
         <artifactId>disruptor</artifactId>
         <version>${conversant.disruptor.version}</version>
@@ -406,13 +394,6 @@
         <groupId>org.zapodot</groupId>
         <artifactId>embedded-ldap-junit</artifactId>
         <version>${embedded-ldap.version}</version>
-      </dependency>
-
-      <!-- Transitive dependency: setting upper bound of declared versions -->
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guava.version}</version>
       </dependency>
 
       <dependency>
@@ -457,18 +438,6 @@
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
         <classifier>jdk8</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${httpcore.version}</version>
       </dependency>
 
       <dependency>
@@ -579,12 +548,6 @@
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-generator-annprocess</artifactId>
         <version>${jmh.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>${jna.version}</version>
       </dependency>
 
       <dependency>
