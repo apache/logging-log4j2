@@ -32,8 +32,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Default permissions for each job.
-# Additional permissions should be assigned on a per-job basis.
-permissions: { }
+permissions: read-all
 
 jobs:
 
