@@ -31,6 +31,7 @@ loadScripts(document, 'script');</script>
 <li>Class</li>
 <li>Use</li>
 <li><a href="org/apache/logging/log4j/web/package-tree.html">Tree</a></li>
+<li><a href="deprecated-list.html">Deprecated</a></li>
 <li class="nav-bar-cell1-rev">Index</li>
 <li><a href="help-doc.html#index">Help</a></li>
 </ul>
@@ -70,7 +71,11 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/web/Log4jShutdownOnContextDestroyedListener.html#contextInitialized(jakarta.servlet.ServletContextEvent)" class="member-name-link">contextInitialized(ServletContextEvent)</a> - Method in class org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/Log4jShutdownOnContextDestroyedListener.html" title="class in org.apache.logging.log4j.web">Log4jShutdownOnContextDestroyedListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html#createExternalEntry(jakarta.servlet.ServletContext)" class="member-name-link">createExternalEntry(ServletContext)</a> - Static method in class org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html" title="class in org.apache.logging.log4j.web">WebLoggerContextUtils</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html#setServletContext(org.apache.logging.log4j.core.LoggerContext,jakarta.servlet.ServletContext)"><code>WebLoggerContextUtils.setServletContext(LoggerContext, ServletContext)</code></a> instead.</div>
+</div>
+</dd>
 </dl>
 <h2 class="title" id="I:D">D</h2>
 <dl class="index">
@@ -87,7 +92,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html#getServletContext()" class="member-name-link">getServletContext()</a> - Static method in class org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html" title="class in org.apache.logging.log4j.web">WebLoggerContextUtils</a></dt>
 <dd>
-<div class="block">Gets the current <code>ServletContext</code> if it has already been assigned to a LoggerContext's external context.</div>
+<div class="block">Gets the current <code>ServletContext</code> if it has already been assigned to a LoggerContext.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html#getWebLifeCycle(jakarta.servlet.ServletContext)" class="member-name-link">getWebLifeCycle(ServletContext)</a> - Static method in class org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html" title="class in org.apache.logging.log4j.web">WebLoggerContextUtils</a></dt>
 <dd>
@@ -199,7 +204,9 @@ loadScripts(document, 'script');</script>
  <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger()" title="class or interface in org.apache.logging.log4j" class="external-link"><code>LogManager.getLogger()</code></a>.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html#setServletContext(org.apache.logging.log4j.core.LoggerContext,jakarta.servlet.ServletContext)" class="member-name-link">setServletContext(LoggerContext, ServletContext)</a> - Static method in class org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/WebLoggerContextUtils.html" title="class in org.apache.logging.log4j.web">WebLoggerContextUtils</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Sets the ServletContext for the given LoggerContext.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/web/Log4jWebSupport.html#SUPPORT_ATTRIBUTE" class="member-name-link">SUPPORT_ATTRIBUTE</a> - Static variable in interface org.apache.logging.log4j.web.<a href="org/apache/logging/log4j/web/Log4jWebSupport.html" title="interface in org.apache.logging.log4j.web">Log4jWebSupport</a></dt>
 <dd>
 <div class="block">The attribute key for the <code>ServletContext</code> attribute that the singleton support instance

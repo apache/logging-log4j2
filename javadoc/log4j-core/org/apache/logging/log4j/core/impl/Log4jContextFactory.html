@@ -131,7 +131,7 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -142,49 +142,61 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Adds a Runnable shutdown callback to this class.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads the LoggerContext using the ContextSelector.</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.net.URI,java.lang.String)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.net.URI,java.lang.String)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;configLocation,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads the LoggerContext using the ContextSelector.</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.util.List,java.lang.String)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.util.List,java.lang.String)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&gt;&nbsp;configLocations,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads the LoggerContext using the ContextSelector using the provided Configuration</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="../config/ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads the LoggerContext using the ContextSelector.</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContext(java.lang.String,java.lang.ClassLoader,java.util.Map.Entry,boolean,java.net.URI,java.lang.String)" class="member-name-link">getContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
@@ -303,10 +315,14 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean)">
 <h3>getContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
 <div class="block">Loads the LoggerContext using the ContextSelector.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -325,11 +341,15 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.ConfigurationSource)">
 <h3>getContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="../config/ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
 <div class="block">Loads the LoggerContext using the ContextSelector.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -347,11 +367,15 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,org.apache.logging.log4j.core.config.Configuration)">
 <h3>getContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
 <div class="block">Loads the LoggerContext using the ContextSelector using the provided Configuration</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -369,12 +393,16 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.net.URI,java.lang.String)">
 <h3>getContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;configLocation,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
 <div class="block">Loads the LoggerContext using the ContextSelector.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
@@ -405,12 +433,28 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getContext(java.lang.String,java.lang.ClassLoader,java.lang.Object,boolean,java.util.List,java.lang.String)">
 <h3>getContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a></span>&nbsp;<span class="element-name">getContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fqcn,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link">ClassLoader</a>&nbsp;loader,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  boolean&nbsp;currentContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&gt;&nbsp;configLocations,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html#getObject(java.lang.String)" title="class or interface in org.apache.logging.log4j.spi" class="external-link"><code>LoggerContext.getObject(String)</code></a> instead.</div>
+</div>
+<div class="block">Loads the LoggerContext using the ContextSelector.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fqcn</code> - The fully qualified class name of the caller.</dd>
+<dd><code>loader</code> - The ClassLoader to use or null.</dd>
+<dd><code>externalContext</code> - An external context (such as a ServletContext) to be associated with the LoggerContext.</dd>
+<dd><code>currentContext</code> - If true returns the current Context, if false returns the Context appropriate
+ for the caller if a more appropriate Context can be determined.</dd>
+<dd><code>configLocations</code> - The locations of the configuration for the LoggerContext (or null).</dd>
+<dt>Returns:</dt>
+<dd>The LoggerContext.</dd>
+</dl>
 </section>
 </li>
 <li>

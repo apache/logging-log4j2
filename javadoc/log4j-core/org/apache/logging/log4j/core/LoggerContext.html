@@ -143,7 +143,9 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.Object)" class="member-name-link">LoggerContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Constructor taking a name and a reference to an external context.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String)"><code>LoggerContext(String)</code></a> and <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> instead.</div>
+</div>
 </div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.Object,java.lang.String)" class="member-name-link">LoggerContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
@@ -155,7 +157,9 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;configLocn)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Constructor taking a name, external context and a configuration URI.</div>
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String)"><code>LoggerContext(String)</code></a> to create a new context, and then use <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> to attach the <code>externalContext</code>.</div>
+</div>
 </div>
 </div>
 </section>
@@ -212,10 +216,12 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns a LoggerContext.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExternalContext()" class="member-name-link">getExternalContext</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the external context.</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getExternalContext()" class="member-name-link">getExternalContext</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#getObject(java.lang.String)"><code>getObject(String)</code></a> instead.</div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContextShutdownAware.html" title="class or interface in org.apache.logging.log4j.spi" class="external-link">LoggerContextShutdownAware</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getListeners()" class="member-name-link">getListeners</a>()</code></div>
@@ -326,10 +332,12 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the Configuration to be used.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setExternalContext(java.lang.Object)" class="member-name-link">setExternalContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;context)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the external context.</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setExternalContext(java.lang.Object)" class="member-name-link">setExternalContext</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;context)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> instead.</div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
@@ -426,8 +434,12 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.Object)">
 <h3>LoggerContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">LoggerContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">LoggerContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String)"><code>LoggerContext(String)</code></a> and <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> instead.</div>
+</div>
 <div class="block">Constructor taking a name and a reference to an external context.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -439,9 +451,13 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.Object,java.net.URI)">
 <h3>LoggerContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">LoggerContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">LoggerContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;externalContext,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;configLocn)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(java.lang.String)"><code>LoggerContext(String)</code></a> to create a new context, and then use <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> to attach the <code>externalContext</code>.</div>
+</div>
 <div class="block">Constructor taking a name, external context and a configuration URI.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -766,7 +782,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="setExternalContext(java.lang.Object)">
 <h3>setExternalContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setExternalContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;context)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setExternalContext</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;context)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#putObject(java.lang.String,java.lang.Object)"><code>putObject(String, Object)</code></a> instead.</div>
+</div>
 <div class="block">Sets the external context.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -777,7 +797,11 @@ implements <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/a
 <li>
 <section class="detail" id="getExternalContext()">
 <h3>getExternalContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">getExternalContext</span>()</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">getExternalContext</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="#getObject(java.lang.String)"><code>getObject(String)</code></a> instead.</div>
+</div>
 <div class="block">Returns the external context.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
