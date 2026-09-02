@@ -101,4 +101,30 @@ class PosixViewAttributeActionTest {
                 PosixFilePermissions.toString(Files.getPosixFilePermissions(outsider)),
                 "followLinks=\"true\" should still follow the link");
     }
+
+    @Test
+    void testBrokenSymbolicLinkDoesNotAbortTheScan(@TempDir final Path tempDir) throws Exception {
+        final Path baseDir = Files.createDirectory(tempDir.resolve("logs"));
+        final Path regularFile = baseDir.resolve("app-1.log");
+        Files.write(regularFile, "log".getBytes(StandardCharsets.UTF_8));
+        Files.setPosixFilePermissions(regularFile, PosixFilePermissions.fromString("rw-------"));
+        Files.createSymbolicLink(baseDir.resolve("app-0-broken.log"), tempDir.resolve("gone.txt"));
+
+        final Configuration config = new BasicConfigurationFactory().new BasicConfiguration();
+        final PosixViewAttributeAction action = PosixViewAttributeAction.newBuilder()
+                .setBasePath(baseDir.toString())
+                .setFollowLinks(true)
+                .setMaxDepth(1)
+                .setPathConditions(PathCondition.EMPTY_ARRAY)
+                .setConfiguration(config)
+                .setFilePermissionsString("rw-rw-rw-")
+                .build();
+
+        action.execute();
+
+        assertEquals(
+                "rw-rw-rw-",
+                PosixFilePermissions.toString(Files.getPosixFilePermissions(regularFile)),
+                "a dangling link must not stop the scan");
+    }
 }
