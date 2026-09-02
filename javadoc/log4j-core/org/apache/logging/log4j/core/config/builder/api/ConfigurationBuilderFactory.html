@@ -83,7 +83,8 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">ConfigurationBuilderFactory</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Provides methods to create ConfigurationBuilders.</div>
+<div class="block">A <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> factory which generates configuration-builders that build
+ a <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a> or a derivative thereof.</div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.4</dd>
@@ -118,11 +119,15 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl">BuiltConfiguration</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newConfigurationBuilder()" class="member-name-link">newConfigurationBuilder</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns a new default ConfigurationBuilder to construct Log4j configurations.</div>
+<div class="block">Returns a new default <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> of type <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a>
+ to construct Log4j configurations.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T extends <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl">BuiltConfiguration</a>&gt;<br><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;T&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#newConfigurationBuilder(java.lang.Class)" class="member-name-link">newConfigurationBuilder</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;clazz)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns a new default <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> which builds a specific implementation of
+ <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a>.</div>
+</div>
 </div>
 </div>
 </div>
@@ -158,10 +163,11 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="newConfigurationBuilder()">
 <h3>newConfigurationBuilder</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl">BuiltConfiguration</a>&gt;</span>&nbsp;<span class="element-name">newConfigurationBuilder</span>()</div>
-<div class="block">Returns a new default ConfigurationBuilder to construct Log4j configurations.</div>
+<div class="block">Returns a new default <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> of type <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a>
+ to construct Log4j configurations.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>A new ConfigurationBuilder.</dd>
+<dd>the new configuration builder instance</dd>
 </dl>
 </section>
 </li>
@@ -170,6 +176,16 @@ loadScripts(document, 'script');</script>
 <h3>newConfigurationBuilder</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl">BuiltConfiguration</a>&gt;</span>
 <span class="return-type"><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;T&gt;</span>&nbsp;<span class="element-name">newConfigurationBuilder</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;clazz)</span></div>
+<div class="block">Returns a new default <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> which builds a specific implementation of
+ <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a>.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - the <code>BuiltConfiguration</code> implementation type</dd>
+<dt>Parameters:</dt>
+<dd><code>clazz</code> - the class of the built-configuration implementation which should be built</dd>
+<dt>Returns:</dt>
+<dd>the new configuration builder instance</dd>
+</dl>
 </section>
 </li>
 </ul>

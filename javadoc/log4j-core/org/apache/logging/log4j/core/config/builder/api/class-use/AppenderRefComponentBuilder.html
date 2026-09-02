@@ -75,9 +75,24 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newAppenderRef(java.lang.String)" class="member-name-link">newAppenderRef</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ref)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newAppenderRef(java.lang.String)" class="member-name-link">newAppenderRef</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ref)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating AppenderRefs.</div>
+<div class="block">Returns a <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderRefComponentBuilder</code></a> for creating an <a href="../../../AppenderRef.html" title="class in org.apache.logging.log4j.core.config"><code>AppenderRef</code></a> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AppenderRefComponentBuilder.</span><code><a href="../AppenderRefComponentBuilder.html#setLevel(java.lang.String)" class="member-name-link">setLevel</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the "<code>level</code>" attribute on the appender-reference component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppenderRefComponentBuilder.</span><code><a href="../AppenderRefComponentBuilder.html#setLevel(org.apache.logging.log4j.Level)" class="member-name-link">setLevel</a><wbr>(@Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the "<code>level</code>" attribute on the appender reference component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AppenderRefComponentBuilder.</span><code><a href="../AppenderRefComponentBuilder.html#setRef(java.lang.String)" class="member-name-link">setRef</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;refAppenderName)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the "<code>ref</code>" attribute on the appender reference component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></span></div>
@@ -86,9 +101,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggableComponentBuilder.</span><code><a href="../LoggableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;assembler)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggableComponentBuilder.</span><code><a href="../LoggableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Add an Appender reference to the Logger component.</div>
+<div class="block">Add an <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderRefComponentBuilder</code></a> to this logger component builder.</div>
 </div>
 </div>
 </section>
@@ -102,8 +117,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newAppenderRef(java.lang.String)" class="member-name-link">newAppenderRef</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ref)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newAppenderRef(java.lang.String)" class="member-name-link">newAppenderRef</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;ref)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a <a href="../AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderRefComponentBuilder</code></a> for creating an <a href="../../../AppenderRef.html" title="class in org.apache.logging.log4j.core.config"><code>AppenderRef</code></a> component.</div>
+</div>
 </div>
 </section>
 </li>

@@ -75,10 +75,20 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating KeyValuePair:s</div>
+<div class="block">Returns a new <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">KeyValuePairComponentBuilder.</span><code><a href="../KeyValuePairComponentBuilder.html#setKey(java.lang.String)" class="member-name-link">setKey</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'key' attribute to the key-value pair component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">KeyValuePairComponentBuilder.</span><code><a href="../KeyValuePairComponentBuilder.html#setValue(java.lang.String)" class="member-name-link">setValue</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the 'value' attribute to the key-value pair component.</div>
 </div>
 </div>
 </section>
@@ -92,9 +102,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> component.</div>
+</div>
 </div>
 </section>
 </li>

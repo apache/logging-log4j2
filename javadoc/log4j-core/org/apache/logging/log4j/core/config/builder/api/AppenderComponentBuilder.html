@@ -78,9 +78,15 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="../../../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;<a href="Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&gt;</code>, <code><a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;<a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&gt;</code>, <code><a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;<a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&gt;</code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">AppenderComponentBuilder</span><span class="extends-implements">
+<div class="type-signature"><span class="annotations">@ProviderType
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">AppenderComponentBuilder</span><span class="extends-implements">
 extends <a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;<a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&gt;</span></div>
-<div class="block">Builder for constructing Appender Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> components in a Log4j configuration.
+
+ <p>
+   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+   should avoid sharing instances between threads.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.4</dd>
@@ -102,12 +108,7 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#add(org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds a Layout to the Appender component.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getName()" class="member-name-link">getName</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Returns the name of the Appender.</div>
+<div class="block">Adds a <a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> to this Appender component builder.</div>
 </div>
 </div>
 </div>
@@ -117,7 +118,7 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <code><a href="../../../util/Builder.html#build()">build</a>, <a href="../../../util/Builder.html#getErrorPrefix()">getErrorPrefix</a>, <a href="../../../util/Builder.html#isValid()">isValid</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.builder.api.ComponentBuilder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.config.builder.api.<a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></h3>
-<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a></code></div>
+<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a>, <a href="ComponentBuilder.html#getName()">getName</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,boolean)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,int)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Enum)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Object)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.String)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,org.apache.logging.log4j.Level)">setAttribute</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.builder.api.FilterableComponentBuilder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.config.builder.api.<a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a></h3>
 <code><a href="FilterableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)">add</a></code></div>
@@ -136,25 +137,19 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <section class="detail" id="add(org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder)">
 <h3>add</h3>
 <div class="member-signature"><span class="return-type"><a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></span>&nbsp;<span class="element-name">add</span><wbr><span class="parameters">(<a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a>&nbsp;builder)</span></div>
-<div class="block">Adds a Layout to the Appender component.</div>
+<div class="block">Adds a <a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> to this Appender component builder.
+ <p>
+   Note: the provided <code>builder</code> will be built by this method; therefore, it must be fully configured
+   <i>before</i> calling this method.  Changes to the builder after calling this method will not have
+   any effect.
+ </p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>builder</code> - The LayoutComponentBuilder with all of its attributes set.</dd>
+<dd><code>builder</code> - The <code>LayoutComponentBuilder</code> with all of its attributes set.</dd>
 <dt>Returns:</dt>
-<dd>this builder.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getName()">
-<h3>getName</h3>
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getName</span>()</div>
-<div class="block">Returns the name of the Appender.</div>
-<dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="ComponentBuilder.html#getName()">getName</a></code>&nbsp;in interface&nbsp;<code><a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;<a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&gt;</code></dd>
-<dt>Returns:</dt>
-<dd>the name of the Appender.</dd>
+<dd>this component builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>builder</code> argument is <code>null</code></dd>
 </dl>
 </section>
 </li>

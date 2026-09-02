@@ -75,9 +75,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newLayout(java.lang.String)" class="member-name-link">newLayout</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newLayout(java.lang.String)" class="member-name-link">newLayout</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating Layouts.</div>
+<div class="block">Returns a new <a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> for creating a <a href="../../../../Layout.html" title="interface in org.apache.logging.log4j.core"><code>Layout</code></a> component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></span></div>
@@ -88,7 +88,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AppenderComponentBuilder.</span><code><a href="../AppenderComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds a Layout to the Appender component.</div>
+<div class="block">Adds a <a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> to this Appender component builder.</div>
 </div>
 </div>
 </section>
@@ -102,8 +102,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newLayout(java.lang.String)" class="member-name-link">newLayout</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newLayout(java.lang.String)" class="member-name-link">newLayout</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> for creating a <a href="../../../../Layout.html" title="interface in org.apache.logging.log4j.core"><code>Layout</code></a> component.</div>
+</div>
 </div>
 </section>
 </li>

@@ -65,7 +65,8 @@ loadScripts(document, 'script');</script>
 </div>
 <hr>
 <div class="package-signature"><span class="annotations">@Export
-@Version("2.25.0")
+@NullMarked
+@Version("2.27.0")
 </span>package <span class="element-name">org.apache.logging.log4j.core.config.builder.api</span></div>
 <section class="package-description" id="package-description">
 <div class="block">Configuration Builder API for programmatically configuring Log4j.</div>
@@ -85,15 +86,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Builder for constructing Appender Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing AppenderRef Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../AppenderRef.html" title="class in org.apache.logging.log4j.core.config"><code>AppenderRef</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Container for building Configurations.</div>
+<div class="block">Container for building configurations.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
@@ -109,11 +110,12 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="ConfigurationBuilderFactory.html" title="class in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilderFactory</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Provides methods to create ConfigurationBuilders.</div>
+<div class="block">A <a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> factory which generates configuration-builders that build
+ a <a href="../impl/BuiltConfiguration.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>BuiltConfiguration</code></a> or a derivative thereof.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing CustomLevel Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../CustomLevels.html" title="class in org.apache.logging.log4j.core.config"><code>CustomLevels</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;T extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
@@ -121,39 +123,41 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing Filter Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing KeyValuePair Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing Layout Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Layout.html" title="interface in org.apache.logging.log4j.core"><code>Layout</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="LoggableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggableComponentBuilder</a>&lt;T extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Common component builder for Logger and RootLogger elements.</div>
+<div class="block">A common builder interface for constructing and configuring <a href="../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> and <a href="../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a>
+ components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="LoggerComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggerComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing Logger Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing Property Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="RootLoggerComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">RootLoggerComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing the root Logger Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a> components in a Log4j
+ configuration.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing Layout Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ScriptFileComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptFileComponentBuilder</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Assembler for constructing ScriptFile Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../script/ScriptFile.html" title="class in org.apache.logging.log4j.core.script"><code>ScriptFile</code></a> components in a Log4j configuration.</div>
 </div>
 </div>
 </div>

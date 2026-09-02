@@ -206,9 +206,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../builder/api/ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../builder/api/ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../builder/api/ConfigurationBuilder.html#setConfigurationSource(org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">setConfigurationSource</a><wbr>(<a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../builder/api/ConfigurationBuilder.html#setConfigurationSource(org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">setConfigurationSource</a><wbr>(@Nullable <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Sets the configuration source, if one exists.</div>
+<div class="block">Sets the configuration source.</div>
 </div>
 </div>
 </section>
@@ -216,19 +216,32 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="org.apache.logging.log4j.core.config.builder.impl">
 <h2>Uses of <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a> in <a href="../builder/impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a></h2>
+<div class="caption"><span>Methods in <a href="../builder/impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> that return <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>protected @Nullable <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../builder/impl/DefaultConfigurationBuilder.html#getConfigurationSource()" class="member-name-link">getConfigurationSource</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns the configuration source.</div>
+</div>
+</div>
 <div class="caption"><span>Methods in <a href="../builder/impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">BuiltConfiguration.</span><code><a href="../builder/impl/BuiltConfiguration.html#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">createAdvertiser</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
- <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">BuiltConfiguration.</span><code><a href="../builder/impl/BuiltConfiguration.html#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">createAdvertiser</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
+ @Nullable <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Creates an advertiser node.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="../builder/api/ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../builder/impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../builder/impl/DefaultConfigurationBuilder.html#setConfigurationSource(org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">setConfigurationSource</a><wbr>(<a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../builder/impl/DefaultConfigurationBuilder.html#setConfigurationSource(org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">setConfigurationSource</a><wbr>(@Nullable <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configurationSource)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Set the ConfigurationSource.</div>
+<div class="block">Sets the configuration source.</div>
 </div>
 </div>
 <div class="caption"><span>Constructors in <a href="../builder/impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a></span></div>
@@ -237,10 +250,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../builder/impl/BuiltConfiguration.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(<a href="../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
- <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
+<div class="col-second even-row-color"><code><a href="../builder/impl/BuiltConfiguration.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(@Nullable <a href="../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ @Nullable <a href="../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
  <a href="../builder/api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;rootComponent)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Constructs a new built-configuration instance.</div>
+</div>
 </div>
 </section>
 </li>

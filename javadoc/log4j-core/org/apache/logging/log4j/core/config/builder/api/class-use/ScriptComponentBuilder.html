@@ -75,11 +75,21 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newScript(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newScript</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;language,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newScript(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newScript</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;language,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating Async Loggers.</div>
+<div class="block">Returns a <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ScriptComponentBuilder</code></a> for creating a <a href="../../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ScriptComponentBuilder.</span><code><a href="../ScriptComponentBuilder.html#setLanguage(java.lang.String)" class="member-name-link">setLanguage</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;language)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'language' attribute on the script component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ScriptComponentBuilder.</span><code><a href="../ScriptComponentBuilder.html#setText(java.lang.String)" class="member-name-link">setText</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the 'text' attribute on the script component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></span></div>
@@ -90,7 +100,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds a ScriptComponent.</div>
+<div class="block">Adds the <a href="../../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> component built by the given <code>ScriptComponentBuilder</code> to this builder.</div>
 </div>
 </div>
 </section>
@@ -104,10 +114,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newScript(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newScript</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;language,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newScript(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newScript</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;language,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ScriptComponentBuilder</code></a> for creating a <a href="../../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> component.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">
@@ -116,7 +128,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a>&nbsp;builder)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <a href="../../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> component built by the given <code>ScriptComponentBuilder</code> to this builder.</div>
+</div>
 </div>
 </section>
 </li>

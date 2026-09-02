@@ -15,7 +15,11 @@
 <script type="text/javascript" src="../../../../../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -50,7 +54,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
 <div class="nav-list-search"><label for="search-input">SEARCH:</label>
@@ -76,7 +80,12 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">KeyValuePairComponentBuilder</span><span class="extends-implements">
 extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;<a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a>&gt;</span></div>
-<div class="block">Assembler for constructing KeyValuePair Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> components in a Log4j configuration.
+
+ <p>
+   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+   should avoid sharing instances between threads.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.9</dd>
@@ -88,12 +97,80 @@ extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.l
 <li>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setKey(java.lang.String)" class="member-name-link">setKey</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets the 'key' attribute to the key-value pair component.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setValue(java.lang.String)" class="member-name-link">setValue</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets the 'value' attribute to the key-value pair component.</div>
+</div>
+</div>
+</div>
+</div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.util.Builder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.util.<a href="../../../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a></h3>
 <code><a href="../../../util/Builder.html#build()">build</a>, <a href="../../../util/Builder.html#getErrorPrefix()">getErrorPrefix</a>, <a href="../../../util/Builder.html#isValid()">isValid</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.builder.api.ComponentBuilder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.config.builder.api.<a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></h3>
-<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a>, <a href="ComponentBuilder.html#getName()">getName</a></code></div>
+<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a>, <a href="ComponentBuilder.html#getName()">getName</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,boolean)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,int)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Enum)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Object)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.String)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,org.apache.logging.log4j.Level)">setAttribute</a></code></div>
+</section>
+</li>
+</ul>
+</section>
+<section class="details">
+<ul class="details-list">
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="setKey(java.lang.String)">
+<h3>setKey</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></span>&nbsp;<span class="element-name">setKey</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="block">Sets the 'key' attribute to the key-value pair component.
+ <p>
+   If the given <code>key</code> argument is <code>null</code> the attribute will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - the attribute value</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setValue(java.lang.String)">
+<h3>setValue</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></span>&nbsp;<span class="element-name">setValue</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="block">Sets the 'value' attribute to the key-value pair component.
+ <p>
+   If the given <code>value</code> argument is <code>null</code> the attribute will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>value</code> - the attribute value</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+</ul>
 </section>
 </li>
 </ul>

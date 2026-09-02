@@ -313,11 +313,21 @@ the order they are declared.</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../config/builder/api/ConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../config/builder/api/ConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating Filters.</div>
+<div class="block">Returns a new <a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <code>Filter</code> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../config/builder/api/FilterComponentBuilder.html#setOnMatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMatch</a><wbr>(@Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'onMatch' attribute on the filter component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../config/builder/api/FilterComponentBuilder.html#setOnMismatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMismatch</a><wbr>(@Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the 'onMismatch' attribute on the filter component.</div>
 </div>
 </div>
 </section>
@@ -331,10 +341,12 @@ the order they are declared.</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../config/builder/impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
- <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../config/builder/impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
+ @Nullable <a href="../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../config/builder/api/FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <code>Filter</code> component.</div>
+</div>
 </div>
 </section>
 </li>

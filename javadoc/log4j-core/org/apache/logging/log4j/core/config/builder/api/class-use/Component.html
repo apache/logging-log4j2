@@ -113,11 +113,15 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected <a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.Component,org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;parent,
  <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;?&gt;&nbsp;builder)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <code>Component</code> built by the given <code>builder</code> as a child of the given <code>parent</code> component.</div>
+</div>
 <div class="col-first odd-row-color"><code>protected <a href="../../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">BuiltConfiguration.</span><code><a href="../../impl/BuiltConfiguration.html#convertToNode(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">convertToNode</a><wbr>(<a href="../../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;parent,
  <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;component)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Converts the given <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a> into a <a href="../../../Node.html" title="class in org.apache.logging.log4j.core.config"><code>Node</code></a> with the given <code>parent</code>.</div>
+</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a></span></div>
 <div class="summary-table three-column-summary">
@@ -125,10 +129,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../impl/BuiltConfiguration.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(<a href="../../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
- <a href="../../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
+<div class="col-second even-row-color"><code><a href="../../impl/BuiltConfiguration.html#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(@Nullable <a href="../../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ @Nullable <a href="../../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
  <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;rootComponent)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Constructs a new built-configuration instance.</div>
+</div>
 </div>
 </section>
 </li>

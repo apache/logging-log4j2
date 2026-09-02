@@ -87,7 +87,8 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../LoggableComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggableComponentBuilder</a>&lt;T extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</code></div>
 <div class="col-last even-row-color">
-<div class="block">Common component builder for Logger and RootLogger elements.</div>
+<div class="block">A common builder interface for constructing and configuring <a href="../../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> and <a href="../../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a>
+ components in a Log4j configuration.</div>
 </div>
 </div>
 <div class="caption"><span>Subinterfaces of <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a> in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a></span></div>
@@ -98,12 +99,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../AppenderComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Builder for constructing Appender Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../AppenderRefComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing AppenderRef Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../AppenderRef.html" title="class in org.apache.logging.log4j.core.config"><code>AppenderRef</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../CompositeFilterComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">CompositeFilterComponentBuilder</a></code></div>
@@ -113,7 +114,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../CustomLevelComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing CustomLevel Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../CustomLevels.html" title="class in org.apache.logging.log4j.core.config"><code>CustomLevels</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../FilterableComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;T extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</code></div>
@@ -123,47 +124,49 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../FilterComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing Filter Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../KeyValuePairComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Assembler for constructing KeyValuePair Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../LayoutComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing Layout Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../Layout.html" title="interface in org.apache.logging.log4j.core"><code>Layout</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../LoggableComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggableComponentBuilder</a>&lt;T extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</code></div>
 <div class="col-last even-row-color">
-<div class="block">Common component builder for Logger and RootLogger elements.</div>
+<div class="block">A common builder interface for constructing and configuring <a href="../../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> and <a href="../../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a>
+ components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../LoggerComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggerComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing Logger Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../PropertyComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Assembler for constructing Property Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../RootLoggerComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">RootLoggerComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing the root Logger Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a> components in a Log4j
+ configuration.</div>
 </div>
 <div class="col-first even-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../ScriptComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Assembler for constructing Layout Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../script/Script.html" title="class in org.apache.logging.log4j.core.script"><code>Script</code></a> components in a Log4j configuration.</div>
 </div>
 <div class="col-first odd-row-color"><code>interface&nbsp;</code></div>
 <div class="col-second odd-row-color"><code><a href="../ScriptFileComponentBuilder.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptFileComponentBuilder</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Assembler for constructing ScriptFile Components.</div>
+<div class="block">A builder interface for constructing and configuring <a href="../../../../script/ScriptFile.html" title="class in org.apache.logging.log4j.core.script"><code>ScriptFile</code></a> components in a Log4j configuration.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with type parameters of type <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></span></div>
@@ -172,22 +175,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 <div class="col-first odd-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> that return <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></span></div>
@@ -196,22 +199,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 <div class="col-first odd-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating generic components.</div>
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></span></div>
@@ -241,17 +244,23 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 <div class="col-first odd-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> that return <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">
@@ -259,17 +268,23 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 <div class="col-first odd-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 <div class="col-first even-row-color"><code>&lt;B extends <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;&gt;<br><a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;B&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newComponent(java.lang.String)" class="member-name-link">newComponent</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ComponentBuilder</code></a> for creating a generic <a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a>.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">
@@ -279,10 +294,14 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected <a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.Component,org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;parent,
  <a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;?&gt;&nbsp;builder)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <code>Component</code> built by the given <code>builder</code> as a child of the given <code>parent</code> component.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)" class="member-name-link">addComponent</a><wbr>(<a href="../ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;?&gt;&nbsp;builder)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Adds a top level component.</div>
+</div>
 </div>
 </section>
 </li>

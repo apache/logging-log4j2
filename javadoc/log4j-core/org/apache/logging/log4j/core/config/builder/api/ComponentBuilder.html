@@ -86,7 +86,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code>, <code><a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a></code>, <code><a href="CompositeFilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CompositeFilterComponentBuilder</a></code>, <code><a href="CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></code>, <code><a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;T&gt;</code>, <code><a href="FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code>, <code><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code>, <code><a href="LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a></code>, <code><a href="LoggableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggableComponentBuilder</a>&lt;T&gt;</code>, <code><a href="LoggerComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LoggerComponentBuilder</a></code>, <code><a href="PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></code>, <code><a href="RootLoggerComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">RootLoggerComponentBuilder</a></code>, <code><a href="ScriptComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptComponentBuilder</a></code>, <code><a href="ScriptFileComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ScriptFileComponentBuilder</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">ComponentBuilder&lt;T extends ComponentBuilder&lt;T&gt;&gt;</span><span class="extends-implements">
+<div class="type-signature"><span class="annotations">@ProviderType
+</span><span class="modifiers">public interface </span><span class="element-name type-name-label">ComponentBuilder&lt;T extends ComponentBuilder&lt;T&gt;&gt;</span><span class="extends-implements">
 extends <a href="../../../util/Builder.html" title="interface in org.apache.logging.log4j.core.util">Builder</a>&lt;<a href="Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&gt;</span></div>
 <div class="block">Builds arbitrary components and is the base type for the provided components.</div>
 <dl class="notes">
@@ -101,47 +102,59 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,boolean)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,boolean)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  boolean&nbsp;value)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds a boolean attribute.</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,boolean)"><code>setAttribute(String, boolean)</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,int)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,int)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  int&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds an integer attribute.</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,int)"><code>setAttribute(String, int)</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,java.lang.Enum)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds an enumeration attribute.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,java.lang.Object)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds an Object attribute.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,java.lang.Enum)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Enum)</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,java.lang.String)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds a String attribute.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addAttribute(java.lang.String,org.apache.logging.log4j.Level)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Adds a logging Level attribute.</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,java.lang.Object)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Object)</code></a></div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,java.lang.String)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,int)"><code>setAttribute(String, int)</code></a></div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#addAttribute(java.lang.String,org.apache.logging.log4j.Level)" class="member-name-link">addAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Level)</code></a></div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)" class="member-name-link">addComponent</a><wbr>(<a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;?&gt;&nbsp;builder)</code></div>
@@ -151,12 +164,48 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;? extends <a href="../../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getBuilder()" class="member-name-link">getBuilder</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Retrieves the ConfigurationBuilder.</div>
+<div class="block">Retrieves the <code>ConfigurationBuilder</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getName()" class="member-name-link">getName</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Returns the name of the component, if any.</div>
+<div class="block">Returns the name of the component.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAttribute(java.lang.String,boolean)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ boolean&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets a boolean attribute.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAttribute(java.lang.String,int)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ int&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets an integer attribute.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAttribute(java.lang.String,java.lang.Enum)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets an enumeration attribute.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAttribute(java.lang.String,java.lang.Object)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets an Object attribute.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setAttribute(java.lang.String,java.lang.String)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sets a String attribute.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setAttribute(java.lang.String,org.apache.logging.log4j.Level)" class="member-name-link">setAttribute</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets a logging Level attribute.</div>
 </div>
 </div>
 </div>
@@ -176,92 +225,24 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="addAttribute(java.lang.String,java.lang.String)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
-<div class="block">Adds a String attribute.</div>
+<section class="detail" id="getName()">
+<h3>getName</h3>
+<div class="member-signature"><span class="return-type">@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getName</span>()</div>
+<div class="block">Returns the name of the component.</div>
 <dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>value</code> - The value of the attribute.</dd>
 <dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
+<dd>The component's name or <code>null</code> if it doesn't have one.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="addAttribute(java.lang.String,org.apache.logging.log4j.Level)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
-<div class="block">Adds a logging Level attribute.</div>
+<section class="detail" id="getBuilder()">
+<h3>getBuilder</h3>
+<div class="member-signature"><span class="return-type"><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;? extends <a href="../../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&gt;</span>&nbsp;<span class="element-name">getBuilder</span>()</div>
+<div class="block">Retrieves the <code>ConfigurationBuilder</code>.</div>
 <dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>level</code> - The logging Level.</dd>
 <dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addAttribute(java.lang.String,java.lang.Enum)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</span></div>
-<div class="block">Adds an enumeration attribute.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>value</code> - The enumeration.</dd>
-<dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addAttribute(java.lang.String,int)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- int&nbsp;value)</span></div>
-<div class="block">Adds an integer attribute.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>value</code> - The integer value.</dd>
-<dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addAttribute(java.lang.String,boolean)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- boolean&nbsp;value)</span></div>
-<div class="block">Adds a boolean attribute.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>value</code> - The boolean value.</dd>
-<dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="addAttribute(java.lang.String,java.lang.Object)">
-<h3>addAttribute</h3>
-<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
-<div class="block">Adds an Object attribute.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>key</code> - The attribute key.</dd>
-<dd><code>value</code> - The object value.</dd>
-<dt>Returns:</dt>
-<dd>This ComponentBuilder.</dd>
+<dd>The ConfigurationBuilder.</dd>
 </dl>
 </section>
 </li>
@@ -274,29 +255,281 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <dt>Parameters:</dt>
 <dd><code>builder</code> - The Assembler for the subcomponent with all of its attributes and sub-components set.</dd>
 <dt>Returns:</dt>
-<dd>This ComponentBuilder (<em>not</em> the argument).</dd>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>builder</code> is <code>null</code></dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="getName()">
-<h3>getName</h3>
-<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getName</span>()</div>
-<div class="block">Returns the name of the component, if any.</div>
+<section class="detail" id="setAttribute(java.lang.String,java.lang.String)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="block">Sets a String attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The value of the attribute.</dd>
 <dt>Returns:</dt>
-<dd>The component's name or null if it doesn't have one.</dd>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="getBuilder()">
-<h3>getBuilder</h3>
-<div class="member-signature"><span class="return-type"><a href="ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;? extends <a href="../../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&gt;</span>&nbsp;<span class="element-name">getBuilder</span>()</div>
-<div class="block">Retrieves the ConfigurationBuilder.</div>
+<section class="detail" id="setAttribute(java.lang.String,org.apache.logging.log4j.Level)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
+<div class="block">Sets a logging Level attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>level</code> - The logging Level.</dd>
 <dt>Returns:</dt>
-<dd>The ConfigurationBuilder.</dd>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAttribute(java.lang.String,java.lang.Enum)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</span></div>
+<div class="block">Sets an enumeration attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The enumeration.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAttribute(java.lang.String,int)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ int&nbsp;value)</span></div>
+<div class="block">Sets an integer attribute.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The integer value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAttribute(java.lang.String,boolean)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ boolean&nbsp;value)</span></div>
+<div class="block">Sets a boolean attribute.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The boolean value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setAttribute(java.lang.String,java.lang.Object)">
+<h3>setAttribute</h3>
+<div class="member-signature"><span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">setAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
+<div class="block">Sets an Object attribute.
+ <p>
+   If the given <code>value</code> is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The object value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,java.lang.String)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,int)"><code>setAttribute(String, int)</code></a></div>
+</div>
+<div class="block">Adds a String attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The value of the attribute.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,org.apache.logging.log4j.Level)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Level)</code></a></div>
+</div>
+<div class="block">Adds a logging Level attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>level</code> - The logging Level.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,java.lang.Enum)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;?&gt;&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Enum)</code></a></div>
+</div>
+<div class="block">Adds an enumeration attribute.
+ <p>
+   If the given <code>level</code> value is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The enumeration.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,int)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ int&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,int)"><code>setAttribute(String, int)</code></a></div>
+</div>
+<div class="block">Adds an integer attribute.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The integer value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,boolean)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ boolean&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,boolean)"><code>setAttribute(String, boolean)</code></a></div>
+</div>
+<div class="block">Adds a boolean attribute.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The boolean value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addAttribute(java.lang.String,java.lang.Object)">
+<h3>addAttribute</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ComponentBuilder.html" title="type parameter in ComponentBuilder">T</a></span>&nbsp;<span class="element-name">addAttribute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="#setAttribute(java.lang.String,java.lang.Object)"><code>setAttribute(String, Object)</code></a></div>
+</div>
+<div class="block">Adds an Object attribute.
+ <p>
+   If the given <code>value</code> is <code>null</code>, the component attribute with the given key
+   will be removed (if present).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The attribute key.</dd>
+<dd><code>value</code> - The object value.</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>key</code> is <code>null</code></dd>
 </dl>
 </section>
 </li>

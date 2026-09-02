@@ -75,10 +75,21 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newProperty(java.lang.String,java.lang.String)" class="member-name-link">newProperty</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newProperty(java.lang.String,java.lang.String)" class="member-name-link">newProperty</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating Property:s</div>
+<div class="block">Returns a new <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> component.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a>&nbsp;builder)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <a href="../../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> component built by the given <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a>.</div>
 </div>
 </div>
 </section>
@@ -92,9 +103,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newProperty(java.lang.String,java.lang.String)" class="member-name-link">newProperty</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newProperty(java.lang.String,java.lang.String)" class="member-name-link">newProperty</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> component.</div>
+</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">PropertyComponentBuilder</a>&nbsp;builder)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <a href="../../../Property.html" title="class in org.apache.logging.log4j.core.config"><code>Property</code></a> component built by the given <a href="../PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a>.</div>
+</div>
 </div>
 </section>
 </li>

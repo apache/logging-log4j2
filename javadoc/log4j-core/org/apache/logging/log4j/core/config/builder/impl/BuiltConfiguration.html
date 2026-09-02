@@ -93,8 +93,10 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">BuiltConfiguration</span>
 <span class="extends-implements">extends <a href="../../AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></span></div>
-<div class="block">This is the general version of the Configuration created by the Builder. It may be extended to
- enhance its functionality.</div>
+<div class="block">A <a href="../../Configuration.html" title="interface in org.apache.logging.log4j.core.config"><code>Configuration</code></a> implementation that is built using a <a href="../api/ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>ConfigurationBuilder</code></a> implementaion.
+ <p>
+   This class may be extended to enhance its functionality.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.4</dd>
@@ -146,10 +148,12 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(<a href="../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
- <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">BuiltConfiguration</a><wbr>(@Nullable <a href="../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ @Nullable <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
  <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;rootComponent)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Constructs a new built-configuration instance.</div>
+</div>
 </div>
 </section>
 </li>
@@ -167,44 +171,59 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#convertToNode(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.builder.api.Component)" class="member-name-link">convertToNode</a><wbr>(<a href="../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;parent,
  <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;component)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Converts the given <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a> into a <a href="../../Node.html" title="class in org.apache.logging.log4j.core.config"><code>Node</code></a> with the given <code>parent</code>.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">createAdvertiser</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
- <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)" class="member-name-link">createAdvertiser</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
+ @Nullable <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates an advertiser node.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getContentType()" class="member-name-link">getContentType</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../plugins/util/PluginManager.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginManager</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPluginManager()" class="member-name-link">getPluginManager</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatusConfiguration()" class="member-name-link">getStatusConfiguration</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setContentType(java.lang.String)" class="member-name-link">setContentType</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;contentType)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the content type.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatusConfiguration()" class="member-name-link">getStatusConfiguration</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the status configuration of the <code>StatusLogger</code> fallback listener.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setMonitorInterval(int)" class="member-name-link">setMonitorInterval</a><wbr>(int&nbsp;intervalSeconds)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setContentType(java.lang.String)" class="member-name-link">setContentType</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;contentType)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the content-type.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPluginPackages(java.lang.String)" class="member-name-link">setPluginPackages</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;packages)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setMonitorInterval(int)" class="member-name-link">setMonitorInterval</a><wbr>(int&nbsp;intervalSeconds)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the configuration's "monitorInterval" attribute.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setShutdownHook(java.lang.String)" class="member-name-link">setShutdownHook</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;flag)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPluginPackages(java.lang.String)" class="member-name-link">setPluginPackages</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;packages)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the plugin-packages to scan for Log4j plugins.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setShutdownTimeoutMillis(long)" class="member-name-link">setShutdownTimeoutMillis</a><wbr>(long&nbsp;shutdownTimeoutMillis)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setShutdownHook(java.lang.String)" class="member-name-link">setShutdownHook</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;flag)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the shutdown-hook flag.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setup()" class="member-name-link">setup</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setShutdownTimeoutMillis(long)" class="member-name-link">setShutdownTimeoutMillis</a><wbr>(long&nbsp;shutdownTimeoutMillis)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the shutdown time in milliseconds.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setup()" class="member-name-link">setup</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"></div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.AbstractConfiguration">Methods inherited from class&nbsp;org.apache.logging.log4j.core.config.<a href="../../AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></h3>
-<code><a href="../../AbstractConfiguration.html#addAppender(org.apache.logging.log4j.core.Appender)">addAppender</a>, <a href="../../AbstractConfiguration.html#addComponent(java.lang.String,java.lang.Object)">addComponent</a>, <a href="../../AbstractConfiguration.html#addListener(org.apache.logging.log4j.core.config.ConfigurationListener)">addListener</a>, <a href="../../AbstractConfiguration.html#addLogger(java.lang.String,org.apache.logging.log4j.core.config.LoggerConfig)">addLogger</a>, <a href="../../AbstractConfiguration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>, <a href="../../AbstractConfiguration.html#addLoggerFilter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.core.Filter)">addLoggerFilter</a>, <a href="../../AbstractConfiguration.html#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource,byte%5B%5D,java.lang.String)">createAdvertiser</a>, <a href="../../AbstractConfiguration.html#createConfiguration(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.LogEvent)">createConfiguration</a>, <a href="../../AbstractConfiguration.html#createPluginObject(org.apache.logging.log4j.core.config.plugins.util.PluginType,org.apache.logging.log4j.core.config.Node)">createPluginObject</a>, <a href="../../AbstractConfiguration.html#doConfigure()">doConfigure</a>, <a href="../../AbstractConfiguration.html#getAdvertiser()">getAdvertiser</a>, <a href="../../AbstractConfiguration.html#getAppender(java.lang.String)">getAppender</a>, <a href="../../AbstractConfiguration.html#getAppenders()">getAppenders</a>, <a href="../../AbstractConfiguration.html#getAsyncLoggerConfigDelegate()">getAsyncLoggerConfigDelegate</a>, <a href="../../AbstractConfiguration.html#getAsyncWaitStrategyFactory()">getAsyncWaitStrategyFactory</a>, <a href="../../AbstractConfiguration.html#getComponent(java.lang.String)">getComponent</a>, <a href="../../AbstractConfiguration.html#getConfigurationSource()">getConfigurationSource</a>, <a href="../../AbstractConfiguration.html#getConfigurationStrSubstitutor()">getConfigurationStrSubstitutor</a>, <a href="../../AbstractConfiguration.html#getCustomLevels()">getCustomLevels</a>, <a href="../../AbstractConfiguration.html#getDefaultLevel()">getDefaultLevel</a>, <a href="../../AbstractConfiguration.html#getDefaultStatus()">getDefaultStatus</a>, <a href="../../AbstractConfiguration.html#getLogger(java.lang.String)">getLogger</a>, <a href="../../AbstractConfiguration.html#getLoggerConfig(java.lang.String)">getLoggerConfig</a>, <a href="../../AbstractConfiguration.html#getLoggerContext()">getLoggerContext</a>, <a href="../../AbstractConfiguration.html#getLoggers()">getLoggers</a>, <a href="../../AbstractConfiguration.html#getName()">getName</a>, <a href="../../AbstractConfiguration.html#getNanoClock()">getNanoClock</a>, <a href="../../AbstractConfiguration.html#getPluginPackages()">getPluginPackages</a>, <a href="../../AbstractConfiguration.html#getProperties()">getProperties</a>, <a href="../../AbstractConfiguration.html#getReliabilityStrategy(org.apache.logging.log4j.core.config.LoggerConfig)">getReliabilityStrategy</a>, <a href="../../AbstractConfiguration.html#getRootLogger()">getRootLogger</a>, <a href="../../AbstractConfiguration.html#getRootNode()">getRootNode</a>, <a href="../../AbstractConfiguration.html#getScheduler()">getScheduler</a>, <a href="../../AbstractConfiguration.html#getScriptManager()">getScriptManager</a>, <a href="../../AbstractConfiguration.html#getShutdownTimeoutMillis()">getShutdownTimeoutMillis</a>, <a href="../../AbstractConfiguration.html#getStrSubstitutor()">getStrSubstitutor</a>, <a href="../../AbstractConfiguration.html#getWatchManager()">getWatchManager</a>, <a href="../../AbstractConfiguration.html#initialize()">initialize</a>, <a href="../../AbstractConfiguration.html#initializeWatchers(org.apache.logging.log4j.core.config.Reconfigurable,org.apache.logging.log4j.core.config.ConfigurationSource,int)">initializeWatchers</a>, <a href="../../AbstractConfiguration.html#isShutdownHookEnabled()">isShutdownHookEnabled</a>, <a href="../../AbstractConfiguration.html#preConfigure(org.apache.logging.log4j.core.config.Node)">preConfigure</a>, <a href="../../AbstractConfiguration.html#processConditionals(org.apache.logging.log4j.core.config.Node)">processConditionals</a>, <a href="../../AbstractConfiguration.html#processSelect(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.plugins.util.PluginType)">processSelect</a>, <a href="../../AbstractConfiguration.html#removeAppender(java.lang.String)">removeAppender</a>, <a href="../../AbstractConfiguration.html#removeListener(org.apache.logging.log4j.core.config.ConfigurationListener)">removeListener</a>, <a href="../../AbstractConfiguration.html#removeLogger(java.lang.String)">removeLogger</a>, <a href="../../AbstractConfiguration.html#setAdvertiser(org.apache.logging.log4j.core.net.Advertiser)">setAdvertiser</a>, <a href="../../AbstractConfiguration.html#setLoggerAdditive(org.apache.logging.log4j.core.Logger,boolean)">setLoggerAdditive</a>, <a href="../../AbstractConfiguration.html#setName(java.lang.String)">setName</a>, <a href="../../AbstractConfiguration.html#setNanoClock(org.apache.logging.log4j.core.util.NanoClock)">setNanoClock</a>, <a href="../../AbstractConfiguration.html#setPluginManager(org.apache.logging.log4j.core.config.plugins.util.PluginManager)">setPluginManager</a>, <a href="../../AbstractConfiguration.html#setScriptManager(org.apache.logging.log4j.core.script.ScriptManager)">setScriptManager</a>, <a href="../../AbstractConfiguration.html#setToDefault()">setToDefault</a>, <a href="../../AbstractConfiguration.html#start()">start</a>, <a href="../../AbstractConfiguration.html#stop(long,java.util.concurrent.TimeUnit)">stop</a>, <a href="../../AbstractConfiguration.html#toByteArray(java.io.InputStream)">toByteArray</a></code></div>
+<code><a href="../../AbstractConfiguration.html#addAppender(org.apache.logging.log4j.core.Appender)">addAppender</a>, <a href="../../AbstractConfiguration.html#addComponent(java.lang.String,java.lang.Object)">addComponent</a>, <a href="../../AbstractConfiguration.html#addListener(org.apache.logging.log4j.core.config.ConfigurationListener)">addListener</a>, <a href="../../AbstractConfiguration.html#addLogger(java.lang.String,org.apache.logging.log4j.core.config.LoggerConfig)">addLogger</a>, <a href="../../AbstractConfiguration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.core.Appender)">addLoggerAppender</a>, <a href="../../AbstractConfiguration.html#addLoggerFilter(org.apache.logging.log4j.core.Logger,org.apache.logging.log4j.core.Filter)">addLoggerFilter</a>, <a href="../../AbstractConfiguration.html#createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource,byte%5B%5D,java.lang.String)">createAdvertiser</a>, <a href="../../AbstractConfiguration.html#createConfiguration(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.LogEvent)">createConfiguration</a>, <a href="../../AbstractConfiguration.html#createPluginObject(org.apache.logging.log4j.core.config.plugins.util.PluginType,org.apache.logging.log4j.core.config.Node)">createPluginObject</a>, <a href="../../AbstractConfiguration.html#doConfigure()">doConfigure</a>, <a href="../../AbstractConfiguration.html#getAdvertiser()">getAdvertiser</a>, <a href="../../AbstractConfiguration.html#getAppender(java.lang.String)">getAppender</a>, <a href="../../AbstractConfiguration.html#getAppenders()">getAppenders</a>, <a href="../../AbstractConfiguration.html#getAsyncLoggerConfigDelegate()">getAsyncLoggerConfigDelegate</a>, <a href="../../AbstractConfiguration.html#getAsyncWaitStrategyFactory()">getAsyncWaitStrategyFactory</a>, <a href="../../AbstractConfiguration.html#getComponent(java.lang.String)">getComponent</a>, <a href="../../AbstractConfiguration.html#getConfigurationSource()">getConfigurationSource</a>, <a href="../../AbstractConfiguration.html#getConfigurationStrSubstitutor()">getConfigurationStrSubstitutor</a>, <a href="../../AbstractConfiguration.html#getCustomLevels()">getCustomLevels</a>, <a href="../../AbstractConfiguration.html#getDefaultLevel()">getDefaultLevel</a>, <a href="../../AbstractConfiguration.html#getDefaultStatus()">getDefaultStatus</a>, <a href="../../AbstractConfiguration.html#getLogger(java.lang.String)">getLogger</a>, <a href="../../AbstractConfiguration.html#getLoggerConfig(java.lang.String)">getLoggerConfig</a>, <a href="../../AbstractConfiguration.html#getLoggerContext()">getLoggerContext</a>, <a href="../../AbstractConfiguration.html#getLoggers()">getLoggers</a>, <a href="../../AbstractConfiguration.html#getName()">getName</a>, <a href="../../AbstractConfiguration.html#getNanoClock()">getNanoClock</a>, <a href="../../AbstractConfiguration.html#getPluginManager()">getPluginManager</a>, <a href="../../AbstractConfiguration.html#getPluginPackages()">getPluginPackages</a>, <a href="../../AbstractConfiguration.html#getProperties()">getProperties</a>, <a href="../../AbstractConfiguration.html#getReliabilityStrategy(org.apache.logging.log4j.core.config.LoggerConfig)">getReliabilityStrategy</a>, <a href="../../AbstractConfiguration.html#getRootLogger()">getRootLogger</a>, <a href="../../AbstractConfiguration.html#getRootNode()">getRootNode</a>, <a href="../../AbstractConfiguration.html#getScheduler()">getScheduler</a>, <a href="../../AbstractConfiguration.html#getScriptManager()">getScriptManager</a>, <a href="../../AbstractConfiguration.html#getShutdownTimeoutMillis()">getShutdownTimeoutMillis</a>, <a href="../../AbstractConfiguration.html#getStrSubstitutor()">getStrSubstitutor</a>, <a href="../../AbstractConfiguration.html#getWatchManager()">getWatchManager</a>, <a href="../../AbstractConfiguration.html#initialize()">initialize</a>, <a href="../../AbstractConfiguration.html#initializeWatchers(org.apache.logging.log4j.core.config.Reconfigurable,org.apache.logging.log4j.core.config.ConfigurationSource,int)">initializeWatchers</a>, <a href="../../AbstractConfiguration.html#isShutdownHookEnabled()">isShutdownHookEnabled</a>, <a href="../../AbstractConfiguration.html#preConfigure(org.apache.logging.log4j.core.config.Node)">preConfigure</a>, <a href="../../AbstractConfiguration.html#processConditionals(org.apache.logging.log4j.core.config.Node)">processConditionals</a>, <a href="../../AbstractConfiguration.html#processSelect(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.plugins.util.PluginType)">processSelect</a>, <a href="../../AbstractConfiguration.html#removeAppender(java.lang.String)">removeAppender</a>, <a href="../../AbstractConfiguration.html#removeListener(org.apache.logging.log4j.core.config.ConfigurationListener)">removeListener</a>, <a href="../../AbstractConfiguration.html#removeLogger(java.lang.String)">removeLogger</a>, <a href="../../AbstractConfiguration.html#setAdvertiser(org.apache.logging.log4j.core.net.Advertiser)">setAdvertiser</a>, <a href="../../AbstractConfiguration.html#setLoggerAdditive(org.apache.logging.log4j.core.Logger,boolean)">setLoggerAdditive</a>, <a href="../../AbstractConfiguration.html#setName(java.lang.String)">setName</a>, <a href="../../AbstractConfiguration.html#setNanoClock(org.apache.logging.log4j.core.util.NanoClock)">setNanoClock</a>, <a href="../../AbstractConfiguration.html#setPluginManager(org.apache.logging.log4j.core.config.plugins.util.PluginManager)">setPluginManager</a>, <a href="../../AbstractConfiguration.html#setScriptManager(org.apache.logging.log4j.core.script.ScriptManager)">setScriptManager</a>, <a href="../../AbstractConfiguration.html#setToDefault()">setToDefault</a>, <a href="../../AbstractConfiguration.html#start()">start</a>, <a href="../../AbstractConfiguration.html#stop(long,java.util.concurrent.TimeUnit)">stop</a>, <a href="../../AbstractConfiguration.html#toByteArray(java.io.InputStream)">toByteArray</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.filter.AbstractFilterable">Methods inherited from class&nbsp;org.apache.logging.log4j.core.filter.<a href="../../../filter/AbstractFilterable.html" title="class in org.apache.logging.log4j.core.filter">AbstractFilterable</a></h3>
 <code><a href="../../../filter/AbstractFilterable.html#addFilter(org.apache.logging.log4j.core.Filter)">addFilter</a>, <a href="../../../filter/AbstractFilterable.html#getFilter()">getFilter</a>, <a href="../../../filter/AbstractFilterable.html#getPropertyArray()">getPropertyArray</a>, <a href="../../../filter/AbstractFilterable.html#hasFilter()">hasFilter</a>, <a href="../../../filter/AbstractFilterable.html#isFiltered(org.apache.logging.log4j.core.LogEvent)">isFiltered</a>, <a href="../../../filter/AbstractFilterable.html#removeFilter(org.apache.logging.log4j.core.Filter)">removeFilter</a>, <a href="../../../filter/AbstractFilterable.html#stop(long,java.util.concurrent.TimeUnit,boolean)">stop</a></code></div>
@@ -248,9 +267,20 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(org.apache.logging.log4j.core.LoggerContext,org.apache.logging.log4j.core.config.ConfigurationSource,org.apache.logging.log4j.core.config.builder.api.Component)">
 <h3>BuiltConfiguration</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">BuiltConfiguration</span><wbr><span class="parameters">(<a href="../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
- <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">BuiltConfiguration</span><wbr><span class="parameters">(@Nullable <a href="../../../LoggerContext.html" title="class in org.apache.logging.log4j.core">LoggerContext</a>&nbsp;loggerContext,
+ @Nullable <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;source,
  <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;rootComponent)</span></div>
+<div class="block">Constructs a new built-configuration instance.
+ <p>
+   <strong>Important:</strong> this constructor is invoked via reflection in <a href="DefaultConfigurationBuilder.html" title="class in org.apache.logging.log4j.core.config.builder.impl"><code>DefaultConfigurationBuilder</code></a>.
+   Do not change its signature!
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>loggerContext</code> - the logger-context</dd>
+<dd><code>source</code> - the configuration-source</dd>
+<dd><code>rootComponent</code> - the root component to build the configuration's node tree from</dd>
+</dl>
 </section>
 </li>
 </ul>
@@ -272,61 +302,114 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)">
+<h3>createAdvertiser</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createAdvertiser</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
+ @Nullable <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</span></div>
+<div class="block">Creates an advertiser node.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>advertiserString</code> - the advertiser string</dd>
+<dd><code>configSource</code> - the configuration source</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="getContentType()">
 <h3>getContentType</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getContentType</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="setContentType(java.lang.String)">
-<h3>setContentType</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setContentType</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;contentType)</span></div>
-</section>
-</li>
-<li>
-<section class="detail" id="createAdvertiser(java.lang.String,org.apache.logging.log4j.core.config.ConfigurationSource)">
-<h3>createAdvertiser</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createAdvertiser</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiserString,
- <a href="../../ConfigurationSource.html" title="class in org.apache.logging.log4j.core.config">ConfigurationSource</a>&nbsp;configSource)</span></div>
+<div class="block">Gets the content type.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>returns the content-type</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getStatusConfiguration()">
 <h3>getStatusConfiguration</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../status/StatusConfiguration.html" title="class in org.apache.logging.log4j.core.config.status">StatusConfiguration</a></span>&nbsp;<span class="element-name">getStatusConfiguration</span>()</div>
+<div class="block">Returns the status configuration of the <code>StatusLogger</code> fallback listener.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the status configurations</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setContentType(java.lang.String)">
+<h3>setContentType</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setContentType</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;contentType)</span></div>
+<div class="block">Sets the content-type.
+ <p>
+   If the given <code>contentType</code> is <code>null</code>, the default content-type "<code>text</code>" will be assigned.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>contentType</code> - the content-type</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setPluginPackages(java.lang.String)">
 <h3>setPluginPackages</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPluginPackages</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;packages)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPluginPackages</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;packages)</span></div>
+<div class="block">Sets the plugin-packages to scan for Log4j plugins.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>packages</code> - a comma-separated list of package names</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setShutdownHook(java.lang.String)">
 <h3>setShutdownHook</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setShutdownHook</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;flag)</span></div>
+<div class="block">Sets the shutdown-hook flag.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>flag</code> - "<code>disable</code>" to disable the shutdown-hook; otherwise, enabled</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setShutdownTimeoutMillis(long)">
 <h3>setShutdownTimeoutMillis</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setShutdownTimeoutMillis</span><wbr><span class="parameters">(long&nbsp;shutdownTimeoutMillis)</span></div>
+<div class="block">Sets the shutdown time in milliseconds.
+ <p>
+   The shutdown-timeout specifies how long appenders and background tasks will get to shut down when the
+   JVM is shutting down.
+ </p>
+ <p>
+   The default is zero which means that each appender uses its default timeout, and doesn't wait for background
+   tasks. Not all appenders will honor this, it is a hint and not an absolute guarantee that the shutdown
+   procedure will not take longer.
+ </p>
+ <p>
+   Setting the shutdown-timeout too low increase the risk of losing outstanding log events that have not yet
+   been written to the final destination.
+ </p>
+ <p>
+   This setting is ignored if <a href="#setShutdownHook(java.lang.String)"><code>setShutdownHook(String)</code></a> has been set to "disable".
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>shutdownTimeoutMillis</code> - the shutdown timeout (in milliseconds)</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setMonitorInterval(int)">
 <h3>setMonitorInterval</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setMonitorInterval</span><wbr><span class="parameters">(int&nbsp;intervalSeconds)</span></div>
-</section>
-</li>
-<li>
-<section class="detail" id="getPluginManager()">
-<h3>getPluginManager</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../plugins/util/PluginManager.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginManager</a></span>&nbsp;<span class="element-name">getPluginManager</span>()</div>
+<div class="block">Sets the configuration's "monitorInterval" attribute.
+ <p>
+   The monitor interval specifies the number of seconds between checks for changes to the configuration source.
+ </p></div>
 <dl class="notes">
-<dt>Overrides:</dt>
-<dd><code><a href="../../AbstractConfiguration.html#getPluginManager()">getPluginManager</a></code>&nbsp;in class&nbsp;<code><a href="../../AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>intervalSeconds</code> - the monitor interval (in seconds)</dd>
 </dl>
 </section>
 </li>
@@ -335,6 +418,22 @@ loadScripts(document, 'script');</script>
 <h3>convertToNode</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a></span>&nbsp;<span class="element-name">convertToNode</span><wbr><span class="parameters">(<a href="../../Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;parent,
  <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a>&nbsp;component)</span></div>
+<div class="block">Converts the given <a href="../api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api"><code>Component</code></a> into a <a href="../../Node.html" title="class in org.apache.logging.log4j.core.config"><code>Node</code></a> with the given <code>parent</code>.
+ <p>
+   This method will recurse through the children of the given component building a node tree.
+ </p>
+ <p>
+   Note: This method assigns the specified parent within the new child node; however, it does not
+   <i>add</i> the new node to the parent.  That is performed by the caller (which in most cases this
+   method due to recursion).
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>parent</code> - the parent node</dd>
+<dd><code>component</code> - the component to convert</dd>
+<dt>Returns:</dt>
+<dd>the converted node</dd>
+</dl>
 </section>
 </li>
 </ul>

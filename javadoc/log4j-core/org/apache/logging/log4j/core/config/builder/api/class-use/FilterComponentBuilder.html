@@ -75,18 +75,43 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newFilter(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMatch,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMismatch)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newFilter(java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating Filters.</div>
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName,
- <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
- <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newFilter(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMatch,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMismatch)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Returns a builder for creating Filters.</div>
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
+ @Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <code>Filter</code> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../FilterComponentBuilder.html#setOnMatch(java.lang.String)" class="member-name-link">setOnMatch</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMatch)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'onMatch' attribute on the filter component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../FilterComponentBuilder.html#setOnMatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMatch</a><wbr>(@Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the 'onMatch' attribute on the filter component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../FilterComponentBuilder.html#setOnMismatch(java.lang.String)" class="member-name-link">setOnMismatch</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMismatch)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'onMismatch' attribute on the filter component.</div>
+</div>
+<div class="col-first even-row-color"><code>default <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">FilterComponentBuilder.</span><code><a href="../FilterComponentBuilder.html#setOnMismatch(org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">setOnMismatch</a><wbr>(@Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Sets the 'onMismatch' attribute on the filter component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></span></div>
@@ -97,10 +122,10 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds a Filter component.</div>
+<div class="block">Adds the <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component built by the given <code>FilterComponentBuilder</code> to this builder.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../FilterableComponentBuilder.html" title="type parameter in FilterableComponentBuilder">T</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">FilterableComponentBuilder.</span><code><a href="../FilterableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a>&nbsp;assembler)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">FilterableComponentBuilder.</span><code><a href="../FilterableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Adds a Filter to the component.</div>
 </div>
@@ -116,15 +141,24 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMatch,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMismatch)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
- <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
- <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-second odd-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMatch,
+ @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;onMismatch)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newFilter(java.lang.String,org.apache.logging.log4j.core.Filter.Result,org.apache.logging.log4j.core.Filter.Result)" class="member-name-link">newFilter</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginType,
+ @Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMatch,
+ @Nullable <a href="../../../../Filter.Result.html" title="enum in org.apache.logging.log4j.core">Filter.Result</a>&nbsp;onMismatch)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <code>Filter</code> component.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">
@@ -133,7 +167,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterComponentBuilder</a>&nbsp;builder)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <a href="../../../../Filter.html" title="interface in org.apache.logging.log4j.core"><code>Filter</code></a> component built by the given <code>FilterComponentBuilder</code> to this builder.</div>
+</div>
 </div>
 </section>
 </li>

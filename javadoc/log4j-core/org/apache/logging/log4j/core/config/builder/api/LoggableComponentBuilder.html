@@ -84,7 +84,13 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">LoggableComponentBuilder&lt;T extends <a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a>&lt;T&gt;&gt;</span><span class="extends-implements">
 extends <a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a>&lt;T&gt;</span></div>
-<div class="block">Common component builder for Logger and RootLogger elements.</div>
+<div class="block">A common builder interface for constructing and configuring <a href="../../../Logger.html" title="class in org.apache.logging.log4j.core"><code>Logger</code></a> and <a href="../../LoggerConfig.RootLogger.html" title="class in org.apache.logging.log4j.core.config"><code>LoggerConfig.RootLogger</code></a>
+ components in a Log4j configuration.
+
+ <p>
+   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+   should avoid sharing instances between threads.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.6</dd>
@@ -97,16 +103,31 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#add(org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;assembler)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#add(org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Add an Appender reference to the Logger component.</div>
+<div class="block">Add an <a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderRefComponentBuilder</code></a> to this logger component builder.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setIncludeLocation(boolean)" class="member-name-link">setIncludeLocation</a><wbr>(boolean&nbsp;includeLocation)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets the "<code>includeLocation</code>" attribute on the loggable component.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setLevel(java.lang.String)" class="member-name-link">setLevel</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets the "<code>level</code>" attribute on the loggable component.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#setLevel(org.apache.logging.log4j.Level)" class="member-name-link">setLevel</a><wbr>(@Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Sets the "<code>level</code>" attribute on the loggable component.</div>
 </div>
 </div>
 </div>
@@ -116,7 +137,7 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <code><a href="../../../util/Builder.html#build()">build</a>, <a href="../../../util/Builder.html#getErrorPrefix()">getErrorPrefix</a>, <a href="../../../util/Builder.html#isValid()">isValid</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.builder.api.ComponentBuilder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.config.builder.api.<a href="ComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ComponentBuilder</a></h3>
-<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a>, <a href="ComponentBuilder.html#getName()">getName</a></code></div>
+<code><a href="ComponentBuilder.html#addAttribute(java.lang.String,boolean)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,int)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Enum)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.Object)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,java.lang.String)">addAttribute</a>, <a href="ComponentBuilder.html#addAttribute(java.lang.String,org.apache.logging.log4j.Level)">addAttribute</a>, <a href="ComponentBuilder.html#addComponent(org.apache.logging.log4j.core.config.builder.api.ComponentBuilder)">addComponent</a>, <a href="ComponentBuilder.html#getBuilder()">getBuilder</a>, <a href="ComponentBuilder.html#getName()">getName</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,boolean)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,int)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Enum)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.Object)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,java.lang.String)">setAttribute</a>, <a href="ComponentBuilder.html#setAttribute(java.lang.String,org.apache.logging.log4j.Level)">setAttribute</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.apache.logging.log4j.core.config.builder.api.FilterableComponentBuilder">Methods inherited from interface&nbsp;org.apache.logging.log4j.core.config.builder.api.<a href="FilterableComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">FilterableComponentBuilder</a></h3>
 <code><a href="FilterableComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder)">add</a></code></div>
@@ -134,13 +155,74 @@ extends <a href="FilterableComponentBuilder.html" title="interface in org.apache
 <li>
 <section class="detail" id="add(org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder)">
 <h3>add</h3>
-<div class="member-signature"><span class="return-type"><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></span>&nbsp;<span class="element-name">add</span><wbr><span class="parameters">(<a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;assembler)</span></div>
-<div class="block">Add an Appender reference to the Logger component.</div>
+<div class="member-signature"><span class="return-type"><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></span>&nbsp;<span class="element-name">add</span><wbr><span class="parameters">(<a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderRefComponentBuilder</a>&nbsp;builder)</span></div>
+<div class="block">Add an <a href="AppenderRefComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderRefComponentBuilder</code></a> to this logger component builder.
+ <p>
+   Note: the provided <code>builder</code> will be built by this method; therefore, it must be fully configured
+   <i>before</i> calling this method.  Changes to the builder after calling this method will not have
+   any effect.
+ </p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>assembler</code> - The AppenderRefComponentBuilder with all of its attributes and sub-components set.</dd>
+<dd><code>builder</code> - The <code>AppenderRefComponentBuilder</code> with all of its attributes and subcomponents set.</dd>
 <dt>Returns:</dt>
-<dd>this Assembler.</dd>
+<dd>this component builder (for chaining)</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the given <code>builder</code> argument is <code>null</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setIncludeLocation(boolean)">
+<h3>setIncludeLocation</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></span>&nbsp;<span class="element-name">setIncludeLocation</span><wbr><span class="parameters">(boolean&nbsp;includeLocation)</span></div>
+<div class="block">Sets the "<code>includeLocation</code>" attribute on the loggable component.
+ <p>
+   If the given <code>includeLocation</code> is <code>null</code>, the attribute will be removed from the component.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>includeLocation</code> - <code>true</code> to include location information; otherwise, <code>false</code></dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setLevel(java.lang.String)">
+<h3>setLevel</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></span>&nbsp;<span class="element-name">setLevel</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</span></div>
+<div class="block">Sets the "<code>level</code>" attribute on the loggable component.
+ <p>
+   If the given <code>level</code> is <code>null</code>, the attribute will be removed from the component.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>level</code> - the level</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setLevel(org.apache.logging.log4j.Level)">
+<h3>setLevel</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="LoggableComponentBuilder.html" title="type parameter in LoggableComponentBuilder">T</a></span>&nbsp;<span class="element-name">setLevel</span><wbr><span class="parameters">(@Nullable <a href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/Level.html" title="class or interface in org.apache.logging.log4j" class="external-link">Level</a>&nbsp;level)</span></div>
+<div class="block">Sets the "<code>level</code>" attribute on the loggable component.
+ <p>
+   If the given <code>level</code> is <code>null</code>, the attribute will be removed from the component.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>level</code> - the level</dd>
+<dt>Returns:</dt>
+<dd>this builder (for chaining)</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
 </dl>
 </section>
 </li>

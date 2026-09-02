@@ -75,10 +75,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newCustomLevel(java.lang.String,int)" class="member-name-link">newCustomLevel</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- int&nbsp;level)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newCustomLevel(java.lang.String,int)" class="member-name-link">newCustomLevel</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ int&nbsp;intLevel)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Returns a builder for creating CustomLevels</div>
+<div class="block">Returns a new <a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>CustomLevelComponentBuilder</code></a> for creating a <a href="../../../CustomLevels.html" title="class in org.apache.logging.log4j.core.config"><code>CustomLevels</code></a> component.</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">CustomLevelComponentBuilder.</span><code><a href="../CustomLevelComponentBuilder.html#setIntLevel(int)" class="member-name-link">setIntLevel</a><wbr>(int&nbsp;intLevel)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Sets the 'intLevel' attribute on the custom-level component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></span></div>
@@ -89,7 +94,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.CustomLevelComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds a CustomLevel component.</div>
+<div class="block">Adds the <a href="../../../CustomLevels.html" title="class in org.apache.logging.log4j.core.config"><code>CustomLevels</code></a> component built by the given <code>CustomLevelComponentBuilder</code> to this builder.</div>
 </div>
 </div>
 </section>
@@ -103,9 +108,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newCustomLevel(java.lang.String,int)" class="member-name-link">newCustomLevel</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
- int&nbsp;level)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newCustomLevel(java.lang.String,int)" class="member-name-link">newCustomLevel</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ int&nbsp;intLevel)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns a new <a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>CustomLevelComponentBuilder</code></a> for creating a <a href="../../../CustomLevels.html" title="class in org.apache.logging.log4j.core.config"><code>CustomLevels</code></a> component.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../CustomLevelComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">CustomLevelComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">

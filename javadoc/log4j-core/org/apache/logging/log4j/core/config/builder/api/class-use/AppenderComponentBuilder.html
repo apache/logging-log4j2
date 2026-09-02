@@ -77,13 +77,13 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">AppenderComponentBuilder.</span><code><a href="../AppenderComponentBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">LayoutComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds a Layout to the Appender component.</div>
+<div class="block">Adds a <a href="../LayoutComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>LayoutComponentBuilder</code></a> to this Appender component builder.</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newAppender(java.lang.String,java.lang.String)" class="member-name-link">newAppender</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#newAppender(java.lang.String,java.lang.String)" class="member-name-link">newAppender</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pluginName)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Returns a builder for creating Appenders.</div>
+<div class="block">Returns a <a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderComponentBuilder</code></a> for creating an <a href="../../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> component.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.apache.logging.log4j.core.config.builder.api</a> with parameters of type <a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></span></div>
@@ -94,7 +94,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../ConfigurationBuilder.html" title="type parameter in ConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ConfigurationBuilder.</span><code><a href="../ConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&nbsp;builder)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Adds an AppenderComponent.</div>
+<div class="block">Adds the <a href="../../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> component built by the given <code>AppenderComponentBuilder</code> to this builder.</div>
 </div>
 </div>
 </section>
@@ -108,9 +108,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newAppender(java.lang.String,java.lang.String)" class="member-name-link">newAppender</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+<div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#newAppender(java.lang.String,java.lang.String)" class="member-name-link">newAppender</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Returns a <a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>AppenderComponentBuilder</code></a> for creating an <a href="../../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> component.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../impl/package-summary.html">org.apache.logging.log4j.core.config.builder.impl</a> with parameters of type <a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a></span></div>
 <div class="summary-table three-column-summary">
@@ -119,7 +121,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../ConfigurationBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">ConfigurationBuilder</a>&lt;<a href="../../impl/DefaultConfigurationBuilder.html" title="type parameter in DefaultConfigurationBuilder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">DefaultConfigurationBuilder.</span><code><a href="../../impl/DefaultConfigurationBuilder.html#add(org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder)" class="member-name-link">add</a><wbr>(<a href="../AppenderComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">AppenderComponentBuilder</a>&nbsp;builder)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Adds the <a href="../../../../Appender.html" title="interface in org.apache.logging.log4j.core"><code>Appender</code></a> component built by the given <code>AppenderComponentBuilder</code> to this builder.</div>
+</div>
 </div>
 </section>
 </li>
