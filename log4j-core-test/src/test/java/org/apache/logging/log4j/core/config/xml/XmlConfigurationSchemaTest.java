@@ -18,13 +18,17 @@ package org.apache.logging.log4j.core.config.xml;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.net.URI;
 import java.util.Objects;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -34,6 +38,19 @@ import org.junit.jupiter.api.Timeout;
  * and that a validation failure breaks the configuration by throwing a {@link ConfigurationException}.
  */
 class XmlConfigurationSchemaTest {
+
+    /**
+     * These tests exercise schema validation whose {@code xsd:include}/{@code import} resources are resolved through an
+     * {@link org.w3c.dom.ls.LSResourceResolver}. On JDK 8 Xerces enforces the {@code accessExternalSchema} restriction
+     * on the resources the resolver returns (the {@code isCreatedByResolver} exemption that lets resolver-supplied
+     * resources bypass that check was only added in JDK 9), so this resolution path cannot run there.
+     */
+    @BeforeEach
+    void assumeResolverBasedSchemaValidationSupported() {
+        assumeTrue(
+                SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_9),
+                "Resolver-based schema include resolution requires JDK 9 or later.");
+    }
 
     private static void load(final String name) {
         final URI uri;

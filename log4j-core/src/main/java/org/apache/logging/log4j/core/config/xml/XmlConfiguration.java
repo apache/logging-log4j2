@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.config.xml;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -35,6 +33,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import org.apache.commons.xml.secure.SecureDocumentBuilderFactory;
+import org.apache.commons.xml.secure.SecureSchemaFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -83,7 +83,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @SuppressFBWarnings(
             value = "XXE_DOCUMENT",
-            justification = "The `newDocumentBuilder` method disables DTD processing.")
+            justification = "The parsers are hardened by `commons-secure-xml`; SpotBugs cannot see into the library.")
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
         byte[] buffer = null;
@@ -150,11 +150,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      * @throws ParserConfigurationException if a DocumentBuilder cannot be created, which satisfies the configuration requested.
      */
     static DocumentBuilder newDocumentBuilder(final boolean xIncludeAware) throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-
-        disableDtdProcessing(factory);
-
+        // Hardened factory, which never fetches external resources.
+        final DocumentBuilderFactory factory = SecureDocumentBuilderFactory.newDefaultNSInstance();
         if (xIncludeAware) {
             factory.setXIncludeAware(true);
         }
@@ -167,27 +164,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         return builder;
     }
 
-    private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
-        factory.setValidating(false);
-        factory.setExpandEntityReferences(false);
-        setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
-        setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
-        setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-    }
-
-    private static void setFeature(
-            final DocumentBuilderFactory factory, final String featureName, final boolean value) {
-        try {
-            factory.setFeature(featureName, value);
-        } catch (final ParserConfigurationException e) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory, featureName, e);
-        } catch (final AbstractMethodError err) {
-            LOGGER.warn(
-                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
-        }
-    }
-
     private static void validateDocument(final Document document, final String schemaLocation)
             throws ConfigurationException {
         try {
@@ -198,7 +174,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 // a schema has its own modularity features (`xsd:include`/`xsd:import`).
                 final Document schemaDocument =
                         newDocumentBuilder(false).parse(ConfigurationSourceResolver.toInputSource(schemaSource));
-                final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                // Hardened factory, which never fetches external resources.
+                final SchemaFactory factory = SecureSchemaFactory.newDefaultInstance();
                 factory.setResourceResolver(ConfigurationSourceResolver.INSTANCE);
                 // The system id is the base URI against which the schema's `xsd:include`/`xsd:import` resources
                 // are resolved by the resource resolver above.
@@ -327,6 +304,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
      *
      * <p>This adds support for the Log4j URI conventions (such as the {@code classpath:} scheme) and subjects every
      * referenced resource to the {@code ALLOWED_PROTOCOLS} restrictions.</p>
+     *
+     * <p>Returning {@code null} for an unresolved resource is safe: the {@code commons-secure-xml} fallback resolver
+     * substitutes empty content instead of letting the parser fetch the resource itself.</p>
      */
     private static final class ConfigurationSourceResolver extends DefaultHandler2 implements LSResourceResolver {
 
@@ -355,26 +335,20 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 throws SAXException {
             try {
                 final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
-                final InputSource inputSource;
                 if (source != null) {
-                    inputSource = toInputSource(source);
-                } else {
-                    inputSource = new InputSource(emptyReader());
-                    inputSource.setSystemId(systemId);
+                    final InputSource inputSource = toInputSource(source);
+                    inputSource.setPublicId(publicId);
+                    return inputSource;
                 }
-                inputSource.setPublicId(publicId);
-                return inputSource;
             } catch (final URISyntaxException e) {
                 throw new SAXException(e);
             }
+            // Fallback to Commons XML ignore-all floor.
+            return null;
         }
 
         /**
          * Resolves a resource imported by an XML Schema ({@code xsd:import}/{@code xsd:include}).
-         *
-         * <p>Returns an empty input when the resource cannot be resolved, instead of returning {@code null}: a
-         * {@code null} return would let the parser fall back to its own URL resolution, bypassing the
-         * {@code ALLOWED_PROTOCOLS} restrictions.</p>
          */
         @Override
         public LSInput resolveResource(
@@ -385,25 +359,19 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 final String baseURI) {
             try {
                 final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
-                final LSInput input = domLs.createLSInput();
                 if (source != null) {
+                    final LSInput input = domLs.createLSInput();
                     input.setByteStream(source.getInputStream());
                     input.setSystemId(source.getLocation());
-                } else {
-                    input.setCharacterStream(emptyReader());
-                    input.setSystemId(systemId);
+                    input.setPublicId(publicId);
                 }
-                input.setPublicId(publicId);
-                return input;
             } catch (final URISyntaxException e) {
                 final LSException lsException = new LSException(LSException.PARSE_ERR, e.getMessage());
                 lsException.initCause(e);
                 throw lsException;
             }
-        }
-
-        private static Reader emptyReader() {
-            return new StringReader("");
+            // Fallback to Commons XML ignore-all floor.
+            return null;
         }
 
         private static ConfigurationSource toConfigurationSource(final String systemId, final String baseURI)

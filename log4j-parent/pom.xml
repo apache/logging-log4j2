@@ -76,6 +76,7 @@
     <commons-io.version>2.22.0</commons-io.version>
     <commons-lang3.version>3.20.0</commons-lang3.version>
     <commons-logging.version>1.4.0</commons-logging.version>
+    <commons-secure-xml.version>1.0.0</commons-secure-xml.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
@@ -390,6 +391,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-secure-xml</artifactId>
+        <version>${commons-secure-xml.version}</version>
       </dependency>
 
       <dependency>
