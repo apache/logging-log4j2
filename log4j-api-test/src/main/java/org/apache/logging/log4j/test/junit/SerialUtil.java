@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
@@ -34,6 +35,34 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
  * Utility class to facilitate serializing and deserializing objects.
  */
 public class SerialUtil {
+
+    // On Java 9+ streams are filtered with `DefaultObjectInputFilter`, which must be accessed reflectively.
+    private static final Method createFilter;
+    private static final Method newDefaultObjectInputFilter;
+    private static final Method setObjectInputFilter;
+
+    static {
+        Method createFilterMethod = null;
+        Method newInstanceMethod = null;
+        Method setFilterMethod = null;
+        if (Constants.JAVA_MAJOR_VERSION != 8) {
+            try {
+                final Class<?> filterClass = Class.forName("java.io.ObjectInputFilter");
+                createFilterMethod =
+                        Class.forName("java.io.ObjectInputFilter$Config").getMethod("createFilter", String.class);
+                newInstanceMethod = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter")
+                        .getMethod("newInstance", filterClass);
+                setFilterMethod = ObjectInputStream.class.getMethod("setObjectInputFilter", filterClass);
+            } catch (final ReflectiveOperationException e) {
+                createFilterMethod = null;
+                newInstanceMethod = null;
+                // setFilterMethod is already null
+            }
+        }
+        createFilter = createFilterMethod;
+        newDefaultObjectInputFilter = newInstanceMethod;
+        setObjectInputFilter = setFilterMethod;
+    }
 
     private SerialUtil() {}
 
@@ -76,12 +105,10 @@ public class SerialUtil {
     }
 
     /**
-     * Deserialize an object from the specified byte array using a {@link FilteredObjectInputStream}
-     * extended with the supplied allow-list (Java 8 only — Java 9+ uses the JVM's serialization
-     * filter, so the allow-list is ignored).
+     * Deserialize an object from the specified byte array using a stream that applies Log4j's
+     * deserialization allow-list, extended with the supplied extra classes.
      * @param data byte array representing the serialized object
-     * @param allowedExtraClasses fully-qualified class names to add to {@link
-     *     FilteredObjectInputStream}'s default allow-list on Java 8
+     * @param allowedExtraClasses fully-qualified class names to add to the default allow-list
      * @return the deserialized object
      */
     @SuppressWarnings("unchecked")
@@ -106,8 +133,8 @@ public class SerialUtil {
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version, extended with the
-     * supplied allow-list on Java 8.
+     * Creates an {@link ObjectInputStream} adapted to the current Java version, applying Log4j's
+     * deserialization allow-list extended with the supplied extra classes.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(
@@ -127,14 +154,24 @@ public class SerialUtil {
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version, extended with the
-     * supplied allow-list on Java 8.
+     * Creates an {@link ObjectInputStream} adapted to the current Java version, applying Log4j's
+     * deserialization allowlist extended with the supplied extra classes.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(
             final InputStream stream, final Collection<String> allowedExtraClasses) throws IOException {
-        return Constants.JAVA_MAJOR_VERSION == 8
-                ? new FilteredObjectInputStream(stream, allowedExtraClasses)
-                : new ObjectInputStream(stream);
+        if (Constants.JAVA_MAJOR_VERSION == 8 || newDefaultObjectInputFilter == null) {
+            return new FilteredObjectInputStream(stream, allowedExtraClasses);
+        }
+        final ObjectInputStream ois = new ObjectInputStream(stream);
+        try {
+            final Object extraClassesFilter = allowedExtraClasses.isEmpty()
+                    ? null
+                    : createFilter.invoke(null, String.join(";", allowedExtraClasses));
+            setObjectInputFilter.invoke(ois, newDefaultObjectInputFilter.invoke(null, extraClassesFilter));
+        } catch (final ReflectiveOperationException e) {
+            throw new IllegalStateException("Unable to install the deserialization filter", e);
+        }
+        return ois;
     }
 }
