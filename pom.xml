@@ -572,6 +572,27 @@
     </dependencies>
   </dependencyManagement>
 
+  <repositories>
+    <!-- Repeat the super POM's Central so it is queried before the staging repository. -->
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <!-- TODO: remove once Commons Secure XML 1.0.0 is released. -->
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>apache.commons.staging</id>
+      <name>Apache Commons Secure XML 1.0.0 release candidate</name>
+      <url>https://repository.apache.org/content/repositories/orgapachecommons-1962/</url>
+    </repository>
+  </repositories>
+
   <build>
 
     <plugins>
