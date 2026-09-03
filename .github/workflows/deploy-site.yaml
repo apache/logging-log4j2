@@ -19,55 +19,17 @@ name: deploy-site
 
 on:
   push:
+    # A minor version branch only stages the website for its own release branches.
+    # The staging site for `2.x` and the production site (from `2.x-site-pro`) are deployed by the workflow on `2.x`.
     branches:
-      - "2.x"
-      - "2.x-site-pro"
-      - "release/2*"
-    paths-ignore:
-      - "**.md"
-      - "**.txt"
+      - "release/2.26.*"
 
 permissions: read-all
 
 jobs:
 
-  deploy-site-stg:
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
-    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@gha/v0
-    # Secrets for committing the generated site
-    secrets:
-      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
-    # Write permissions for committing the generated site
-    permissions:
-      contents: write
-    with:
-      asf-yaml-content: |
-        staging:
-          profile: ~
-          whoami: ${{ github.ref_name }}-site-stg-out
-          subdir: content/log4j/2.x
-      install-required: true
-      target-branch: ${{ github.ref_name }}-site-stg-out
-
-  deploy-site-pro:
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x-site-pro'
-    uses: apache/logging-parent/.github/workflows/deploy-site-reusable.yaml@gha/v0
-    # Secrets for committing the generated site
-    secrets:
-      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
-    # Write permissions for committing the generated site
-    permissions:
-      contents: write
-    with:
-      asf-yaml-content: |
-        publish:
-          whoami: ${{ github.ref_name }}-out
-          subdir: content/log4j/2.x
-      install-required: true
-      target-branch: ${{ github.ref_name }}-out
-
   export-version:
-    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
+    if: github.repository == 'apache/logging-log4j2'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.export-version.outputs.version }}
