@@ -57,7 +57,8 @@ updates:
     groups:
       # Groups all non-major updates in a single PR.
       # No group matches major updates, so each one gets a separate PR.
-      maven-minor-updates:
+      # "Bump the maven-minor-2.x group across N directories with M updates"
+      maven-minor-2.x:
         update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
@@ -162,7 +163,8 @@ updates:
     groups:
       # Groups all non-major updates in a single PR.
       # No group matches major updates, so each one gets a separate PR.
-      maven-minor-updates:
+      # "Bump the maven-minor-2.x group in /log4j-mongodb4 with M updates"
+      maven-minor-2.x:
         update-types: [ "minor", "patch" ]
     target-branch: "2.x"
     registries:
@@ -177,9 +179,33 @@ updates:
     schedule:
       interval: "monthly"
     groups:
-      dependencies:
+      # "Bump the actions-all-2.x group with M updates"
+      actions-all-2.x:
         patterns: [ "*" ]
     target-branch: "2.x"
+
+  # The `2.25.x` LTS branch only receives patch-level Maven updates.
+  # Dependabot is not expected to run on its own here: the `yearly` schedule is a placeholder
+  # and updates are triggered manually from the "Dependabot" tab of the "Insights" page.
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "yearly"
+    cooldown:
+      default-days: 7
+    groups:
+      # "Bump the maven-patch-2.25.x group across N directories with M updates"
+      maven-patch-2.25.x:
+        patterns: [ "*" ]
+    target-branch: "2.25.x"
+    registries:
+      - maven-central
+    ignore:
+      # Only allow patch-level upgrades on this maintenance branch
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   # The `2.26.x` maintenance branch only receives patch-level Maven updates.
   - package-ecosystem: maven
@@ -189,8 +215,8 @@ updates:
     cooldown:
       default-days: 7
     groups:
-      # "Bump the Maven patch updates group across N directories with M updates"
-      Maven patch updates:
+      # "Bump the maven-patch-2.26.x group across N directories with M updates"
+      maven-patch-2.26.x:
         patterns: [ "*" ]
     target-branch: "2.26.x"
     registries:
@@ -211,7 +237,8 @@ updates:
     groups:
       # Groups all non-major updates in a single PR.
       # No group matches major updates, so each one gets a separate PR.
-      maven-minor-updates:
+      # "Bump the maven-minor-main group across N directories with M updates"
+      maven-minor-main:
         update-types: [ "minor", "patch" ]
     target-branch: "main"
     registries:
@@ -250,7 +277,8 @@ updates:
     schedule:
       interval: "monthly"
     groups:
-      dependencies:
+      # "Bump the actions-all-main group with M updates"
+      actions-all-main:
         patterns: [ "*" ]
     target-branch: "main"
 
@@ -259,6 +287,7 @@ updates:
     schedule:
       interval: "monthly"
     groups:
-      dependencies:
+      # "Bump the npm-all-main group with M updates"
+      npm-all-main:
         patterns: [ "*" ]
     target-branch: "main"
