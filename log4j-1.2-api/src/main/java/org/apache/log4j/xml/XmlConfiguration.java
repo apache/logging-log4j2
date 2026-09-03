@@ -18,6 +18,7 @@ package org.apache.log4j.xml;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -76,6 +77,12 @@ import org.xml.sax.SAXParseException;
  * <p>
  *     Parsing and validation errors do not stop the configuration process; they are printed as warnings to the status
  *     logger.
+ * </p>
+ * <p>
+ *     Since version <strong>2.27.0</strong>, external entities are resolved through
+ *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from local files or over the protocols allowed by the
+ *     <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.configurationAllowedProtocols">{@code log4j2.configurationAllowedProtocols}</a>
+ *     configuration property.
  * </p>
  */
 public class XmlConfiguration extends Log4j1Configuration {
