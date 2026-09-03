@@ -18,6 +18,9 @@
 name: "Dependabot Analyze PR"
 
 on:
+  # `pull_request` runs the workflow file from the PR merge commit, so this copy applies to PRs against this branch.
+  # The follow-up "Dependabot Process PR" workflow is triggered by `workflow_run`, which GitHub only evaluates
+  # on the default branch, so it does not need a copy here.
   pull_request:
 
 # Default permissions for each job.
