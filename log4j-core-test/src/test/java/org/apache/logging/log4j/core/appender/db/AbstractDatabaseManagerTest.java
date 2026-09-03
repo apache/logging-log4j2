@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -57,13 +58,26 @@ class AbstractDatabaseManagerTest {
         }
 
         @Override
-        protected void startupInternal() {
+        protected void startupInternal() throws Exception {
             // noop
         }
 
         @Override
         protected void writeInternal(final LogEvent event, final Serializable serializable) {
             // noop
+        }
+    }
+
+    /** Stub whose {@link #startupInternal()} fails after (simulated) partial resource acquisition. */
+    private static class FailingStartupDatabaseManager extends StubDatabaseManager {
+
+        private FailingStartupDatabaseManager(final String name, final int bufferSize) {
+            super(name, bufferSize);
+        }
+
+        @Override
+        protected void startupInternal() throws Exception {
+            throw new Exception("simulated startup failure");
         }
     }
 
@@ -271,5 +285,60 @@ class AbstractDatabaseManagerTest {
         setUp("bufferSize=12, anotherKey02=coolValue02", 12);
 
         assertEquals("bufferSize=12, anotherKey02=coolValue02", manager.toString(), "The string is not correct.");
+    }
+
+    /**
+     * After startupInternal fails, the manager must not accept writes (avoids per-event NPEs on unassigned state).
+     */
+    @Test
+    void testFailedStartupSkipsWrite() throws Exception {
+        manager = spy(new FailingStartupDatabaseManager("failedStartupWrite", 0));
+
+        manager.startup();
+        assertFalse(manager.isRunning(), "Manager must not be running after startupInternal fails.");
+        then(manager).should().startupInternal();
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        then(manager).should(never()).writeThrough(same(event1), isNull());
+        then(manager).should(never()).writeThrough(same(event2), isNull());
+        then(manager).should(never()).writeInternal(same(event1), isNull());
+        then(manager).should(never()).writeInternal(same(event2), isNull());
+        then(manager).should(never()).connectAndStart();
+    }
+
+    /**
+     * After startupInternal fails, shutdown must still invoke shutdownInternal so partial resources are released.
+     */
+    @Test
+    void testFailedStartupStillShutsDown() throws Exception {
+        manager = spy(new FailingStartupDatabaseManager("failedStartupShutdown", 0));
+
+        manager.startup();
+        assertFalse(manager.isRunning(), "Manager must not be running after startupInternal fails.");
+
+        assertTrue(manager.shutdown(), "shutdown should complete after a failed startup.");
+        then(manager).should().shutdownInternal();
+        assertFalse(manager.isRunning(), "Manager must remain not running after shutdown.");
+
+        // second shutdown must not call shutdownInternal again
+        reset(manager);
+        assertTrue(manager.shutdown());
+        then(manager).should(never()).shutdownInternal();
+    }
+
+    /**
+     * Shutdown without a prior successful startup still runs shutdownInternal once (factory-time resources).
+     */
+    @Test
+    void testShutdownWithoutStartupStillRunsShutdownInternal() throws Exception {
+        setUp("neverStarted", 0);
+
+        assertFalse(manager.isRunning());
+        assertTrue(manager.shutdown());
+        then(manager).should().shutdownInternal();
     }
 }
