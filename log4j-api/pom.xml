@@ -78,49 +78,25 @@
     <plugins>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/log4j-api-java9</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
+          <!-- Compiles the Java 9 variants of some classes to `META-INF/versions/9`.
+               Bound to `prepare-package` so that `bnd-maven-plugin` (running at `process-classes`)
+               does not see the versioned classes.
+               The `Multi-Release: true` manifest entry is provided by the `bnd-multi-release` property above. -->
           <execution>
-            <id>unpack-classes</id>
+            <id>compile-java9</id>
             <goals>
-              <goal>unpack</goal>
+              <goal>compile</goal>
             </goals>
             <phase>prepare-package</phase>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-api-java9</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <release>9</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+              <multiReleaseOutput>true</multiReleaseOutput>
             </configuration>
           </execution>
         </executions>
