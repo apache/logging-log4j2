@@ -25,10 +25,8 @@ on:
       - "2.25.x"
       - "release/2.25.*"
   pull_request:
-  schedule:
-    - cron: '32 12 * * 5'
 
-# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.25.x run to completion.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
