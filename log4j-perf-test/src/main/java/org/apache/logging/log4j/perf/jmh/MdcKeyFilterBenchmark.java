@@ -42,7 +42,7 @@ import org.openjdk.jmh.annotations.Warmup;
 public class MdcKeyFilterBenchmark {
 
     private JsonTemplateLayout patternLayout;
-    private JsonTemplateLayout literalLayout;
+    private JsonTemplateLayout keyFilterLayout;
     private LogEvent logEvent;
 
     @Setup
@@ -68,14 +68,13 @@ public class MdcKeyFilterBenchmark {
                 .setEventTemplate(patternTemplate)
                 .build();
 
-        // Layout using literal disallowed HashSet
-        String literalTemplate = "{" + "\"$resolver\": \"mdc\", "
-                + "\"literal\": {\"disallowed\": [\"@timestamp\", \"message\", \"log.logger\", \"log.level\", \"event.dataset\", \"process.thread.name\", \"process.thread.id\", \"ecs.version\"]}"
+        String keyFilterTemplate = "{" + "\"$resolver\": \"mdc\", "
+                + "\"key\": {\"disallowed\": [\"@timestamp\", \"message\", \"log.logger\", \"log.level\", \"event.dataset\", \"process.thread.name\", \"process.thread.id\", \"ecs.version\"]}"
                 + "}";
 
-        literalLayout = JsonTemplateLayout.newBuilder()
+        keyFilterLayout = JsonTemplateLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
-                .setEventTemplate(literalTemplate)
+                .setEventTemplate(keyFilterTemplate)
                 .build();
     }
 
@@ -85,7 +84,7 @@ public class MdcKeyFilterBenchmark {
     }
 
     @Benchmark
-    public String testLiteralResolver() {
-        return literalLayout.toSerializable(logEvent);
+    public String testKeyFilterResolver() {
+        return keyFilterLayout.toSerializable(logEvent);
     }
 }

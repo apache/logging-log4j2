@@ -44,13 +44,13 @@ import org.jspecify.annotations.NonNull;
  * key           = "key" -> string
  * stringified   = "stringified" -> boolean
  *
- * multiAccess   = [ pattern ] , [ replacement ] , [ literal ] , [ flatten ] , [ stringified ]
+ * multiAccess   = [ keyFilter ] , [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+ * keyFilter     = "key" -> keyConfig
+ * keyConfig     = [ allowed ] , [ disallowed ]
+ * allowed       = "allowed" -> array of strings
+ * disallowed    = "disallowed" -> array of strings
  * pattern       = "pattern" -> string
  * replacement   = "replacement" -> string
- * literal       = "literal" -> literalConfig
- * literalConfig = [ literalAllowed ] , [ literalDisallowed ]
- * literalAllowed    = "allowed" -> array of strings
- * literalDisallowed = "disallowed" -> array of strings
  * flatten       = "flatten" -> ( boolean | flattenConfig )
  * flattenConfig = [ flattenPrefix ]
  * flattenPrefix = "prefix" -> string
@@ -70,12 +70,12 @@ import org.jspecify.annotations.NonNull;
  * <tt>Pattern.compile(pattern).matcher(key).matches()</tt> and
  * <tt>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</tt> calls.
  * <p>
- * <tt>literal</tt> filters keys against literal names rather than a regex.
- * If <tt>allowed</tt> is provided, only the listed keys are resolved.
- * Keys listed in <tt>disallowed</tt> are silently dropped, and take precedence
- * over <tt>allowed</tt>. Both are matched against the key as found in the map,
- * that is, before <tt>replacement</tt> is applied, and both can be combined
- * with <tt>pattern</tt>, which a key must then satisfy as well.
+ * <tt>key</tt> given as an object filters keys against literal names rather
+ * than a regex. If <tt>allowed</tt> is provided, only the listed keys are
+ * resolved. Keys listed in <tt>disallowed</tt> are silently dropped, and take
+ * precedence over <tt>allowed</tt>. Both are matched against the key as found
+ * in the map, that is, before <tt>replacement</tt> is applied, and both can be
+ * combined with <tt>pattern</tt>, which a key must then satisfy as well.
  *
  * <h3>Garbage Footprint</h3>
  *
@@ -208,7 +208,21 @@ class ReadOnlyStringMapResolver implements EventResolver {
             throw new IllegalArgumentException("invalid flatten option: " + config);
         }
         final String prefix = config.getString(new String[] {"flatten", "prefix"});
-        final String key = config.getString("key");
+        final Object keyObject = config.getObject("key");
+        final String key;
+        final Set<String> allowedKeys;
+        final Set<String> disallowedKeys;
+        if (keyObject == null || keyObject instanceof Map) {
+            key = null;
+            allowedKeys = readKeyFilter(config, "allowed");
+            disallowedKeys = readKeyFilter(config, "disallowed");
+        } else if (keyObject instanceof String) {
+            key = (String) keyObject;
+            allowedKeys = Collections.emptySet();
+            disallowedKeys = Collections.emptySet();
+        } else {
+            throw new IllegalArgumentException("invalid key option: " + config);
+        }
         if (key != null && flatten) {
             throw new IllegalArgumentException("key and flatten options cannot be combined: " + config);
         }
@@ -219,15 +233,6 @@ class ReadOnlyStringMapResolver implements EventResolver {
         final String replacement = config.getString("replacement");
         if (pattern == null && replacement != null) {
             throw new IllegalArgumentException("replacement cannot be provided without a pattern: " + config);
-        }
-        final Object literalObject = config.getObject("literal");
-        if (literalObject != null && !(literalObject instanceof Map)) {
-            throw new IllegalArgumentException("invalid literal option: " + config);
-        }
-        final Set<String> literalAllowed = readLiteralKeys(config, "allowed");
-        final Set<String> literalDisallowed = readLiteralKeys(config, "disallowed");
-        if (key != null && !(literalAllowed.isEmpty() && literalDisallowed.isEmpty())) {
-            throw new IllegalArgumentException("literal and key options cannot be combined: " + config);
         }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
@@ -240,15 +245,15 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     prefix,
                     pattern,
                     replacement,
-                    literalAllowed,
-                    literalDisallowed,
+                    allowedKeys,
+                    disallowedKeys,
                     stringified,
                     mapAccessor);
         }
     }
 
-    private static Set<String> readLiteralKeys(final TemplateResolverConfig config, final String key) {
-        final List<String> keys = config.getList(new String[] {"literal", key}, String.class);
+    private static Set<String> readKeyFilter(final TemplateResolverConfig config, final String filterName) {
+        final List<String> keys = config.getList(new String[] {"key", filterName}, String.class);
         return keys == null || keys.isEmpty() ? Collections.emptySet() : new HashSet<>(keys);
     }
 
@@ -282,8 +287,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
-            final Set<String> literalAllowed,
-            final Set<String> literalDisallowed,
+            final Set<String> allowedKeys,
+            final Set<String> disallowedKeys,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -299,8 +304,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
             loopContext.pattern = compiledPattern;
             loopContext.replacement = replacement;
-            loopContext.literalAllowed = literalAllowed;
-            loopContext.literalDisallowed = literalDisallowed;
+            loopContext.allowedKeys = allowedKeys;
+            loopContext.disallowedKeys = disallowedKeys;
             loopContext.stringified = stringified;
             return loopContext;
         });
@@ -375,10 +380,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
         private String replacement;
 
         @NonNull
-        private Set<String> literalAllowed;
+        private Set<String> allowedKeys;
 
         @NonNull
-        private Set<String> literalDisallowed;
+        private Set<String> disallowedKeys;
 
         private boolean stringified;
 
@@ -394,10 +399,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
-            if (!loopContext.literalAllowed.isEmpty() && !loopContext.literalAllowed.contains(key)) {
+            if (!loopContext.allowedKeys.isEmpty() && !loopContext.allowedKeys.contains(key)) {
                 return;
             }
-            if (loopContext.literalDisallowed.contains(key)) {
+            if (loopContext.disallowedKeys.contains(key)) {
                 return;
             }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;

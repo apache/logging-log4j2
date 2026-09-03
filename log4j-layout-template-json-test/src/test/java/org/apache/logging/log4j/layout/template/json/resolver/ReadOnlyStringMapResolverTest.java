@@ -389,11 +389,11 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_literal_disallowed() {
+    void test_key_filter_disallowed() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
-                + "  \"literal\": {\n"
+                + "  \"key\": {\n"
                 + "    \"disallowed\": [\"@timestamp\", \"message\", \"log.logger\"]\n"
                 + "  }\n"
                 + "}";
@@ -408,11 +408,11 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_literal_allowed() {
+    void test_key_filter_allowed() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
-                + "  \"literal\": {\n"
+                + "  \"key\": {\n"
                 + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"]\n"
                 + "  }\n"
                 + "}";
@@ -427,11 +427,11 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_literal_allowed_and_disallowed() {
+    void test_key_filter_allowed_and_disallowed() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
-                + "  \"literal\": {\n"
+                + "  \"key\": {\n"
                 + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"],\n"
                 + "    \"disallowed\": [\"allowedKey2\"]\n"
                 + "  }\n"
@@ -444,13 +444,13 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_literal_combined_with_pattern() {
+    void test_key_filter_combined_with_pattern() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
                 + "  \"pattern\": \"allowedKey(1|2)\",\n"
                 + "  \"replacement\": \"key$1\",\n"
-                + "  \"literal\": {\n"
+                + "  \"key\": {\n"
                 + "    \"disallowed\": [\"allowedKey2\"]\n"
                 + "  }\n"
                 + "}";
@@ -463,30 +463,30 @@ class ReadOnlyStringMapResolverTest {
     }
 
     @Test
-    void test_literal_and_key_cannot_be_combined() {
+    void test_key_filter_combined_with_flatten() {
 
         final String eventTemplate = "" + "{\n"
                 + "  \"$resolver\": \"mdc\",\n"
-                + "  \"key\": \"message\",\n"
-                + "  \"literal\": {\n"
+                + "  \"flatten\": true,\n"
+                + "  \"key\": {\n"
                 + "    \"disallowed\": [\"message\"]\n"
                 + "  }\n"
                 + "}";
 
-        Assertions.assertThatThrownBy(() -> serializeContextData(eventTemplate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("literal and key options cannot be combined");
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
     }
 
     @Test
-    void test_literal_invalid() {
+    void test_key_filter_invalid() {
 
-        final String eventTemplate =
-                "" + "{\n" + "  \"$resolver\": \"mdc\",\n" + "  \"literal\": \"disallowed\"\n" + "}";
+        final String eventTemplate = "" + "{\n" + "  \"$resolver\": \"mdc\",\n" + "  \"key\": [\"message\"]\n" + "}";
 
         Assertions.assertThatThrownBy(() -> serializeContextData(eventTemplate))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("invalid literal option");
+                .hasMessageContaining("invalid key option");
     }
 
     private static String serializeContextData(final String eventTemplate) {

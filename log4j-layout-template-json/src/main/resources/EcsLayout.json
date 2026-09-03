@@ -27,7 +27,7 @@
     "$resolver": "mdc",
     "flatten": true,
     "stringified": true,
-    "literal": {
+    "key": {
       "disallowed": [
         "@timestamp",
         "message",
