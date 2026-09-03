@@ -113,7 +113,8 @@ public class PluginProcessorPublicSetterTest {
     }
 
     @Test
-    void noteEmittedByDefault() {
+    void noteEmittedWhenConfigured() {
+        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=NOTE");
         final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
                 .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
                 .collect(Collectors.toList());
@@ -141,7 +142,7 @@ public class PluginProcessorPublicSetterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"NOTE", "note"})
-    void explicitNoteKindBehavesLikeDefault(final String kindValue) {
+    void explicitNoteKindEmitsNotes(final String kindValue) {
         setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=" + kindValue);
 
         assertThat(errorDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT)
@@ -154,17 +155,13 @@ public class PluginProcessorPublicSetterTest {
     }
 
     @Test
-    void invalidKindValueEmitsWarning() {
+    void invalidKindValueDoesNotEmitWarningByDefault() {
         setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=INVALID");
 
         final List<Diagnostic<? extends JavaFileObject>> warningDiagnostics =
                 diagnosticCollector.getDiagnostics().stream()
                         .filter(d -> d.getKind() == Diagnostic.Kind.WARNING)
                         .collect(Collectors.toList());
-        assertThat(warningDiagnostics)
-                .anyMatch(d -> d.getMessage(Locale.ROOT)
-                                .startsWith(
-                                        "[Log4j] org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor:")
-                        && d.getMessage(Locale.ROOT).contains("unrecognized value `INVALID`"));
+        assertThat(warningDiagnostics).isEmpty();
     }
 }
