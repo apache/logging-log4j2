@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.config.xml;
+package com.example;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -24,36 +24,25 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 
-/**
- * Factory to construct an XmlConfiguration.
- */
+// tag::class[]
+@Ordered(100)
 @Namespace(ConfigurationFactory.NAMESPACE)
-@Plugin("XmlConfigurationFactory")
-@Ordered(5)
-public class XmlConfigurationFactory extends ConfigurationFactory {
+@Plugin(name = "ExampleConfigurationFactory")
+public class ExampleConfigurationFactory extends ConfigurationFactory {
 
-    /**
-     * Valid file extensions for XML files.
-     */
-    public static final String[] SUFFIXES = new String[] {".xml", "*"};
-
-    /**
-     * Returns the Configuration.
-     * @param loggerContext The logger context.
-     * @param source The InputSource.
-     * @return The Configuration.
-     */
     @Override
-    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        return new XmlConfiguration(loggerContext, source);
+    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) { // <1>
+        // Return a `Configuration`...
     }
 
-    /**
-     * Returns the file suffixes for XML files.
-     * @return An array of File extensions.
-     */
     @Override
-    protected String[] getSupportedTypes() {
-        return SUFFIXES;
+    public Configuration getConfiguration(LoggerContext loggerContext, String name, URI configLocation) {
+        // Return a `Configuration`...
+    }
+
+    @Override
+    public String[] getSupportedTypes() {
+        return new String[] {"*"};
     }
 }
+// end::class[]
