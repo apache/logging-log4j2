@@ -1,0 +1,94 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Source Provenance Workflow
+# ==========================
+#
+# This workflow implements the requirements of SLSA Source Level 4
+# (https://slsa.dev/spec/v1.2/source-requirements#source-l4) for our protected branches and tags.
+#
+# ## Background: SLSA Source Level 4
+#
+# SLSA Source Level 4 requires that each commit on a protected branch carry a signed provenance attestation that proves:
+#
+#   1. **Authenticity**: the commit was processed by a trusted, auditable CI system (GitHub Actions), whose identity is
+#      cryptographically bound to the attestation via a short-lived OIDC token issued by GitHub.
+#   2. **Integrity**: the attestation covers the exact commit SHA, so any rewrite of branch history would invalidate
+#      existing attestations and be immediately detectable.
+#   3. **Non-repudiation**: the attestation is signed by Sigstore/Fulcio using the OIDC token, creating a transparent,
+#      append-only record in the Sigstore public ledger (Rekor) that cannot be silently deleted or altered.
+#
+# Together, these properties let downstream consumers (build pipelines, auditors, dependency scanners) verify that a
+# given commit really came from our repository, was not tampered with after the fact, and was merged under our normal
+# review process.
+#
+# ## How provenance is stored
+#
+# The signed attestation (a JSON Lines document) is attached to each commit as a Git Note in the default
+# `refs/notes/commits` namespace, so it travels with the repository without modifying commit history.
+#
+# To fetch and inspect attestations locally:
+#
+#   git fetch origin '+refs/notes/*:refs/notes/*'
+#   git notes show          # for HEAD
+#   git notes show <sha>    # for a specific commit
+#
+# To verify a commit using the SLSA source-tool:
+#
+#   sourcetool verifycommit --owner apache --repo logging-log4j2 -c <sha>
+#
+# See https://github.com/slsa-framework/source-tool for full documentation.
+
+name: generate-source-provenance
+
+on:
+  push:
+    # Only protected branches receive attestations.
+    branches:
+      - "2.x"
+      - "main"
+      - "release/*"
+
+# No default permissions: individual jobs declare exactly what they need.
+permissions: {  }
+
+jobs:
+
+  # Generates and stores a signed SLSA Source provenance attestation for each commit pushed to a protected branch.
+  # The action `slsa_with_provenance`:
+  #
+  #   1. Runs `source-tool` to collect the commit metadata and verify that the branch satisfies the SLSA Source policy.
+  #   2. Signs the resulting attestation using the GitHub Actions OIDC token via Sigstore, which also publishes the
+  #      signing event to the public Rekor transparency log.
+  #   3. Attaches the signed attestation to the commit via `git notes`.
+  generate-source-provenance:
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to push the attestation to refs/notes/commits.
+      contents: write
+      # Needed to obtain the GitHub OIDC token used for Sigstore signing.
+      id-token: write
+    steps:
+      - uses: slsa-framework/source-actions/slsa_with_provenance@dea965cdca5e0cb422bf7b2653c9d15f678ad01c   # 0.1.0
+        with:
+          version: v0.6.3
+          # Allow merge commits so that `release/*` branches can be integrated back
+          # into `main` via a merge commit after a release.
+          allow-merge-commits: true
+          # Use the pre-compiled `slsa-source-tool` binary rather than building it
+          # from source.
+          build-from-source: false
