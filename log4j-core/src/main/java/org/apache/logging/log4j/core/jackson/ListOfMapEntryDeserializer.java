@@ -21,6 +21,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.apache.logging.log4j.core.util.internal.Maps;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +48,7 @@ public class ListOfMapEntryDeserializer extends StdDeserializer<Map<String, Stri
                 new TypeReference<List<MapEntry>>() {
                     // empty
                 });
-        final HashMap<String, String> map = new HashMap<>(list.size());
+        final HashMap<String, String> map = Maps.newHashMap(list.size());
         for (final MapEntry mapEntry : list) {
             map.put(mapEntry.getKey(), mapEntry.getValue());
         }
