@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Used for internal unit testing the Logger class.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class LoggerTest {
 
     Appender a1;
