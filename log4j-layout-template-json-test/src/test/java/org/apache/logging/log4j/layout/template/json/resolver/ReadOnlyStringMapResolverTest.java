@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.message.Message;
@@ -385,5 +386,125 @@ class ReadOnlyStringMapResolverTest {
             assertThat(accessor.getObject("typedValue")).isEqualTo(value);
             assertThat(accessor.getString("stringifiedValue")).isEqualTo(String.valueOf(value));
         });
+    }
+
+    @Test
+    void test_key_filter_disallowed() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"key\": {\n"
+                + "    \"disallowed\": [\"@timestamp\", \"message\", \"log.logger\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).contains("\"allowedKey2\":\"value2\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+        assertThat(serializedJson).doesNotContain("\"@timestamp\"");
+        assertThat(serializedJson).doesNotContain("this should be hidden");
+    }
+
+    @Test
+    void test_key_filter_allowed() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"key\": {\n"
+                + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).contains("\"allowedKey2\":\"value2\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+        assertThat(serializedJson).doesNotContain("\"@timestamp\"");
+        assertThat(serializedJson).doesNotContain("this should be hidden");
+    }
+
+    @Test
+    void test_key_filter_allowed_and_disallowed() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"key\": {\n"
+                + "    \"allowed\": [\"allowedKey1\", \"allowedKey2\"],\n"
+                + "    \"disallowed\": [\"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("\"allowedKey2\"");
+    }
+
+    @Test
+    void test_key_filter_combined_with_pattern() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"pattern\": \"allowedKey(1|2)\",\n"
+                + "  \"replacement\": \"key$1\",\n"
+                + "  \"key\": {\n"
+                + "    \"disallowed\": [\"allowedKey2\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"key1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("key2");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+    }
+
+    @Test
+    void test_key_filter_combined_with_flatten() {
+
+        final String eventTemplate = "" + "{\n"
+                + "  \"$resolver\": \"mdc\",\n"
+                + "  \"flatten\": true,\n"
+                + "  \"key\": {\n"
+                + "    \"disallowed\": [\"message\"]\n"
+                + "  }\n"
+                + "}";
+
+        final String serializedJson = serializeContextData(eventTemplate);
+
+        assertThat(serializedJson).contains("\"allowedKey1\":\"value1\"");
+        assertThat(serializedJson).doesNotContain("\"message\"");
+    }
+
+    @Test
+    void test_key_filter_invalid() {
+
+        final String eventTemplate = "" + "{\n" + "  \"$resolver\": \"mdc\",\n" + "  \"key\": [\"message\"]\n" + "}";
+
+        Assertions.assertThatThrownBy(() -> serializeContextData(eventTemplate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("invalid key option");
+    }
+
+    private static String serializeContextData(final String eventTemplate) {
+
+        final StringMap contextData = new SortedArrayStringMap();
+        contextData.putValue("allowedKey1", "value1");
+        contextData.putValue("message", "this should be hidden");
+        contextData.putValue("@timestamp", "this should also be hidden");
+        contextData.putValue("allowedKey2", "value2");
+
+        final LogEvent logEvent =
+                Log4jLogEvent.newBuilder().setContextData(contextData).build();
+
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        return layout.toSerializable(logEvent);
     }
 }

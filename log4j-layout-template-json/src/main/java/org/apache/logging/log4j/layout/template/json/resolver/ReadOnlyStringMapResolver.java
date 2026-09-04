@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +30,7 @@ import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jspecify.annotations.NonNull;
 
 /**
  * {@link ReadOnlyStringMap} resolver.
@@ -39,7 +44,11 @@ import org.apache.logging.log4j.util.TriConsumer;
  * key           = "key" -> string
  * stringified   = "stringified" -> boolean
  *
- * multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+ * multiAccess   = [ keyFilter ] , [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+ * keyFilter     = "key" -> keyConfig
+ * keyConfig     = [ allowed ] , [ disallowed ]
+ * allowed       = "allowed" -> array of strings
+ * disallowed    = "disallowed" -> array of strings
  * pattern       = "pattern" -> string
  * replacement   = "replacement" -> string
  * flatten       = "flatten" -> ( boolean | flattenConfig )
@@ -60,6 +69,13 @@ import org.apache.logging.log4j.util.TriConsumer;
  * These two are effectively equivalent to
  * <tt>Pattern.compile(pattern).matcher(key).matches()</tt> and
  * <tt>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</tt> calls.
+ * <p>
+ * <tt>key</tt> given as an object filters keys against literal names rather
+ * than a regex. If <tt>allowed</tt> is provided, only the listed keys are
+ * resolved. Keys listed in <tt>disallowed</tt> are silently dropped, and take
+ * precedence over <tt>allowed</tt>. Both are matched against the key as found
+ * in the map, that is, before <tt>replacement</tt> is applied, and both can be
+ * combined with <tt>pattern</tt>, which a key must then satisfy as well.
  *
  * <h3>Garbage Footprint</h3>
  *
@@ -192,7 +208,21 @@ class ReadOnlyStringMapResolver implements EventResolver {
             throw new IllegalArgumentException("invalid flatten option: " + config);
         }
         final String prefix = config.getString(new String[] {"flatten", "prefix"});
-        final String key = config.getString("key");
+        final Object keyObject = config.getObject("key");
+        final String key;
+        final Set<String> allowedKeys;
+        final Set<String> disallowedKeys;
+        if (keyObject == null || keyObject instanceof Map) {
+            key = null;
+            allowedKeys = readKeyFilter(config, "allowed");
+            disallowedKeys = readKeyFilter(config, "disallowed");
+        } else if (keyObject instanceof String) {
+            key = (String) keyObject;
+            allowedKeys = Collections.emptySet();
+            disallowedKeys = Collections.emptySet();
+        } else {
+            throw new IllegalArgumentException("invalid key option: " + config);
+        }
         if (key != null && flatten) {
             throw new IllegalArgumentException("key and flatten options cannot be combined: " + config);
         }
@@ -209,8 +239,22 @@ class ReadOnlyStringMapResolver implements EventResolver {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
-            return createResolver(recyclerFactory, flatten, prefix, pattern, replacement, stringified, mapAccessor);
+            return createResolver(
+                    recyclerFactory,
+                    flatten,
+                    prefix,
+                    pattern,
+                    replacement,
+                    allowedKeys,
+                    disallowedKeys,
+                    stringified,
+                    mapAccessor);
         }
+    }
+
+    private static Set<String> readKeyFilter(final TemplateResolverConfig config, final String filterName) {
+        final List<String> keys = config.getList(new String[] {"key", filterName}, String.class);
+        return keys == null || keys.isEmpty() ? Collections.emptySet() : new HashSet<>(keys);
     }
 
     private static EventResolver createKeyResolver(
@@ -243,6 +287,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
+            final Set<String> allowedKeys,
+            final Set<String> disallowedKeys,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -258,6 +304,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
             }
             loopContext.pattern = compiledPattern;
             loopContext.replacement = replacement;
+            loopContext.allowedKeys = allowedKeys;
+            loopContext.disallowedKeys = disallowedKeys;
             loopContext.stringified = stringified;
             return loopContext;
         });
@@ -331,6 +379,12 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private String replacement;
 
+        @NonNull
+        private Set<String> allowedKeys;
+
+        @NonNull
+        private Set<String> disallowedKeys;
+
         private boolean stringified;
 
         private JsonWriter jsonWriter;
@@ -345,6 +399,12 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         @Override
         public void accept(final String key, final Object value, final LoopContext loopContext) {
+            if (!loopContext.allowedKeys.isEmpty() && !loopContext.allowedKeys.contains(key)) {
+                return;
+            }
+            if (loopContext.disallowedKeys.contains(key)) {
+                return;
+            }
             final Matcher matcher = loopContext.pattern != null ? loopContext.pattern.matcher(key) : null;
             final boolean keyMatched = matcher == null || matcher.matches();
             if (keyMatched) {
