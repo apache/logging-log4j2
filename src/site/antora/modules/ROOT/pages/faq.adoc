@@ -153,7 +153,7 @@ There are several advantages to using Log4j API:
 * SLF4J forces your application to log ``String``s.
 Log4j API supports logging any `CharSequence` if you want to log text, but also supports logging any `Object` as is.
 It is the responsibility of the logging _implementation_ to handle this object, and we consider it a design mistake to limit applications to logging ``String``s.
-* Log4j API offers support for logging {log4j2-url}/manual/messages.adoc[`Message` objects].
+* Log4j API offers support for logging {log4j2-url}/manual/messages.html[`Message` objects].
 Messages allow support for interesting and complex constructs to be passed through the logging system and be efficiently manipulated.
 Users are free to create their own message types and write custom layouts, filters and lookups to manipulate them.
 * Log4j API supports {log4j2-url}/manual/api.adoc#fluent-api[lambda expressions] both in its plain and fluent API.
