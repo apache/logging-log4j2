@@ -58,7 +58,7 @@ public class ThrowablePatternConverterTest {
 
     static final StackTraceElement THROWING_METHOD = EXCEPTION.getStackTrace()[0];
 
-    private static final PatternParser PATTERN_PARSER = PatternLayout.createPatternParser(null);
+    static final PatternParser PATTERN_PARSER = PatternLayout.createPatternParser(null);
 
     static final Level LEVEL = Level.FATAL;
 
