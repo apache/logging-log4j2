@@ -19,18 +19,12 @@ name: build
 
 on:
   push:
+    # These filters apply only to the current branch (`2.x`) and new branches cut from it:
+    # only `release/2*` branches automatically inherit this workflow.
     branches:
       - "2.x"
-      - "2.25.x"
       - "release/2*"
   pull_request:
-    types:
-      # Standard types
-      - opened
-      - synchronize
-      - reopened
-      # Used in Dependabot PRs to retrigger required workflows
-      - ready_for_review
 
 # Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
 concurrency:

@@ -20,7 +20,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -128,17 +128,29 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure using location " + configLocation);
         final File configFile = new File(configLocation);
-        ConfigurationSource configSource = null;
+        // ConfigurationSource(InputStream, File/URL) documents that the caller owns the stream.
+        // XmlConfiguration, JsonConfiguration, and PropertiesConfigurationFactory close
+        // getInputStream() when they consume it, but that is factory-side cleanup. Keep a
+        // stream-backed source (so resetInputStream/reconfigure still re-reads the file for
+        // monitorInterval) and always close the caller-owned stream via try-with-resources.
         if (configFile.exists()) {
             LOGGER.debug("Opening config file {}", configFile.getAbsolutePath());
-            configSource = new ConfigurationSource(new FileInputStream(configFile), configFile);
+            try (final InputStream in = Files.newInputStream(configFile.toPath())) {
+                final ConfigurationSource configSource = new ConfigurationSource(in, configFile);
+                final Configuration config =
+                        ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
+                loggerContext.start(config);
+            }
         } else {
             final URL configURL = new URL(configLocation);
             LOGGER.debug("Opening config URL {}", configURL);
-            configSource = new ConfigurationSource(configURL.openStream(), configURL);
+            try (final InputStream in = configURL.openStream()) {
+                final ConfigurationSource configSource = new ConfigurationSource(in, configURL);
+                final Configuration config =
+                        ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
+                loggerContext.start(config);
+            }
         }
-        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(loggerContext, configSource);
-        loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
     }
 

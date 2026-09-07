@@ -18,17 +18,29 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.KeyValuePairComponentBuilder;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link KeyValuePairComponentBuilder} interface for building
+ * a {@link KeyValuePair} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.9
  */
+@ProviderType
 class DefaultKeyValuePairComponentBuilder extends DefaultComponentAndConfigurationBuilder<KeyValuePairComponentBuilder>
         implements KeyValuePairComponentBuilder {
 
-    public DefaultKeyValuePairComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String key, final String value) {
+    /**
+     * Create a new key-value pair component builder instance with the default plugin-type "{@code KeyValuePair}".
+     * @param builder the configuration builder
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
+    public DefaultKeyValuePairComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder) {
         super(builder, "KeyValuePair");
-        addAttribute("key", key);
-        addAttribute("value", value);
     }
 }

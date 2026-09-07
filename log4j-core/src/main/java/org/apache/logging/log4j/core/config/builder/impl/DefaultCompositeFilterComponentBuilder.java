@@ -19,24 +19,38 @@ package org.apache.logging.log4j.core.config.builder.impl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.CompositeFilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
-import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link CompositeFilterComponentBuilder} interface for building
+ * a {@link CompositeFilter} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 class DefaultCompositeFilterComponentBuilder
         extends DefaultComponentAndConfigurationBuilder<CompositeFilterComponentBuilder>
         implements CompositeFilterComponentBuilder {
 
-    public DefaultCompositeFilterComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String onMatch,
-            final String onMismatch) {
+    /**
+     * Constructs a new instance with the given configurration builder and default plugin-type "{@code Filters}".
+     * @param builder the configuration builder
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
+    public DefaultCompositeFilterComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder) {
         super(builder, "Filters");
-        addAttribute(AbstractFilterBuilder.ATTR_ON_MATCH, onMatch);
-        addAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH, onMismatch);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the {@code builder} argument is {@code null}
+     */
     @Override
     public CompositeFilterComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
