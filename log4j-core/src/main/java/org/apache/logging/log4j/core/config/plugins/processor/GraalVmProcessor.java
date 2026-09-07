@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -71,23 +71,41 @@ import org.jspecify.annotations.Nullable;
     "org.apache.logging.log4j.core.config.plugins.PluginValue",
     "org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy"
 })
-@SupportedOptions({"log4j.graalvm.groupId", "log4j.graalvm.artifactId"})
+@SupportedOptions({"log4j.graalvm.groupId", "log4j.graalvm.artifactId", "log4j.plugin.processor.minAllowedMessageKind"})
 public class GraalVmProcessor extends AbstractProcessor {
 
     static final String GROUP_ID = "log4j.graalvm.groupId";
     static final String ARTIFACT_ID = "log4j.graalvm.artifactId";
     private static final String LOCATION_PREFIX = "META-INF/native-image/log4j-generated/";
     private static final String LOCATION_SUFFIX = "/reflect-config.json";
+    private static final String MESSAGE_PREFIX = "[Log4j] ";
     private static final String PROCESSOR_NAME = GraalVmProcessor.class.getSimpleName();
 
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
     private final List<Element> processedElements = new ArrayList<>();
     private Annotations annotationUtil;
+    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.annotationUtil = new Annotations(processingEnv.getElementUtils());
+        final String kindValue = processingEnv.getOptions().get(PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION);
+        if (kindValue != null) {
+            try {
+                minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
+            } catch (final IllegalArgumentException e) {
+                printMessage(
+                        Diagnostic.Kind.WARNING,
+                        String.format(
+                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                GraalVmProcessor.class.getName(),
+                                kindValue,
+                                PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                Diagnostic.Kind.NOTE,
+                                Arrays.toString(Diagnostic.Kind.values())));
+            }
+        }
     }
 
     @Override
@@ -97,7 +115,6 @@ public class GraalVmProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Messager messager = processingEnv.getMessager();
         for (TypeElement annotation : annotations) {
             Annotations.Type annotationType = annotationUtil.classifyAnnotation(annotation);
             for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
@@ -115,7 +132,7 @@ public class GraalVmProcessor extends AbstractProcessor {
                         processFactory(element);
                         break;
                     case UNKNOWN:
-                        messager.printMessage(
+                        printMessage(
                                 Diagnostic.Kind.WARNING,
                                 String.format(
                                         "The annotation type `%s` is not handled by %s", annotation, PROCESSOR_NAME),
@@ -174,7 +191,7 @@ public class GraalVmProcessor extends AbstractProcessor {
                 break;
             default:
                 String msg = String.format("Invalid Log4j parameter element `%s`.", element);
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, msg, element);
+                printMessage(Diagnostic.Kind.ERROR, msg, element);
                 throw new IllegalStateException(msg);
         }
     }
@@ -192,7 +209,7 @@ public class GraalVmProcessor extends AbstractProcessor {
         } catch (IOException e) {
             String message = String.format(
                     "%s: an error occurred while generating reachability metadata: %s", PROCESSOR_NAME, e.getMessage());
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
+            printMessage(Diagnostic.Kind.ERROR, message);
             return;
         }
         byte[] data = arrayOutputStream.toByteArray();
@@ -200,8 +217,7 @@ public class GraalVmProcessor extends AbstractProcessor {
         Map<String, String> options = processingEnv.getOptions();
         String reachabilityMetadataPath = getReachabilityMetadataPath(
                 options.get(GROUP_ID), options.get(ARTIFACT_ID), Integer.toHexString(Arrays.hashCode(data)));
-        Messager messager = processingEnv.getMessager();
-        messager.printMessage(
+        printMessage(
                 Diagnostic.Kind.NOTE,
                 String.format(
                         "%s: writing GraalVM metadata for %d Java classes to `%s`.",
@@ -218,7 +234,7 @@ public class GraalVmProcessor extends AbstractProcessor {
         } catch (IOException e) {
             String message = String.format(
                     "%s: unable to write reachability metadata to file `%s`", PROCESSOR_NAME, reachabilityMetadataPath);
-            messager.printMessage(Diagnostic.Kind.ERROR, message);
+            printMessage(Diagnostic.Kind.ERROR, message);
             throw new IllegalArgumentException(message, e);
         }
     }
@@ -243,7 +259,7 @@ public class GraalVmProcessor extends AbstractProcessor {
                             + "  -A%2$s=<groupId>%n"
                             + "  -A%3$s=<artifactId>%n",
                     PROCESSOR_NAME, GROUP_ID, ARTIFACT_ID);
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, message);
+            printMessage(Diagnostic.Kind.WARNING, message);
             return LOCATION_PREFIX + fallbackFolderName + LOCATION_SUFFIX;
         }
         return LOCATION_PREFIX + groupId + '/' + artifactId + LOCATION_SUFFIX;
@@ -273,8 +289,20 @@ public class GraalVmProcessor extends AbstractProcessor {
         String msg = String.format(
                 "Unexpected type of element `%s`: expecting `%s` but found `%s`",
                 element, type.getName(), element.getClass().getName());
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, msg, element);
+        printMessage(Diagnostic.Kind.ERROR, msg, element);
         throw new IllegalStateException(msg);
+    }
+
+    private void printMessage(final Diagnostic.Kind kind, final String message) {
+        if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message);
+        }
+    }
+
+    private void printMessage(final Diagnostic.Kind kind, final String message, final Element element) {
+        if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message, element);
+        }
     }
 
     /**

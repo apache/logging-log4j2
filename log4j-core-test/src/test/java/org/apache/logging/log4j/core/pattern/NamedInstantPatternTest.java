@@ -55,5 +55,6 @@ class NamedInstantPatternTest {
         String legacy = legacyFormatter.format(instant);
         String modern = formatter.format(instant);
         assertThat(legacy).isEqualTo(modern);
+        assertThat(legacyFormatter.getPrecision()).isEqualTo(formatter.getPrecision());
     }
 }

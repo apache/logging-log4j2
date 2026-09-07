@@ -1,0 +1,111 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[id=xml-features]
+= XML format
+
+[id=xml-global-configuration-attributes]
+== Global configuration attributes
+
+The XML format supports the following additional attributes on the `Configuration` element.
+
+[id=configuration-attribute-schema]
+=== `schema`
+
+[cols="1h,5"]
+|===
+| Type          | classpath resource
+| Default value | `null`
+|===
+
+Specifies the path to a classpath resource containing an XML schema.
+
+[id=configuration-attribute-strict]
+=== `strict`
+
+[cols="1h,5"]
+|===
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If set to `true,` all configuration files will be checked against the XML schema provided by the
+<<configuration-attribute-schema>>.
+
+This setting also enables "XML strict mode" and allows one to specify an element's **plugin type** through a `type` attribute instead of the tag name.
+
+[id=xinclude]
+== [[XInlcude]] XInclude
+
+XML configuration files can include other files with
+https://www.w3.org/TR/xinclude/[XInclude].
+
+NOTE: The list of `XInclude` and `XPath` features supported depends upon your
+https://docs.oracle.com/javase/{java-target-version}/docs/technotes/guides/xml/jaxp/index.html[JAXP implementation].
+
+Here is an example `log4j2.xml` file that includes two other files:
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-main.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-main.xml[lines=1;18..-1]
+----
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-appenders.xml[`xinclude-appenders.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-appenders.xml[lines=1;18..-1]
+----
+
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-loggers.xml[`xinclude-loggers.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-loggers.xml[lines=1;18..-1]
+----
+
+Instead of a whole file, you can include a single element by appending an
+https://www.w3.org/TR/xptr-framework/[XPointer] to the `href`.
+The JDK's XInclude engine only implements the `element()` scheme and *shorthand* pointers, so two forms are available:
+
+* A *positional* pointer addresses an element by its position in the document.
+For example `xpointer="element(/1/2)"` selects the second child element of the document root:
++
+[source,xml]
+----
+<xi:include href="xinclude-appenders.xml" xpointer="element(/1/2)"/>
+----
+
+* A *shorthand* pointer addresses an element by an attribute of type `ID`.
+The appender `name` is a natural identifier:
++
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-xpointer-appenders.xml[`xinclude-xpointer-appenders.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-xpointer-appenders.xml[lines=1;18..-1]
+----
++
+.Snippet from an example {antora-examples-url}/manual/configuration/xinclude-xpointer-main.xml[`log4j2.xml`]
+[source,xml]
+----
+include::example$manual/configuration/xinclude-xpointer-main.xml[tag=inclusion,indent=0]
+----
+
+[NOTE]
+====
+The JDK's XInclude engine does **not** recognize the `xml:id` attribute as an `ID`, and it does **not** implement the full `xpointer()` scheme.
+Only an attribute typed `ID` through a DTD (in practice, the included file's internal subset) can be addressed by a shorthand pointer.
+====

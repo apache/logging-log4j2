@@ -17,7 +17,10 @@
 package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -223,8 +226,11 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             exceptionEntity.set("type", thrown.getClass().getName());
             exceptionEntity.set("message", thrown.getMessage());
             exceptionEntity.set("stackTrace", this.convertStackTrace(thrown.getStackTrace()));
-            while (thrown.getCause() != null) {
-                thrown = thrown.getCause();
+            final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+            visitedThrowables.add(thrown);
+            Throwable cause;
+            while ((cause = thrown.getCause()) != null && visitedThrowables.add(cause)) {
+                thrown = cause;
                 final NoSqlObject<W> causingExceptionEntity = this.connection.createObject();
                 causingExceptionEntity.set("type", thrown.getClass().getName());
                 causingExceptionEntity.set("message", thrown.getMessage());

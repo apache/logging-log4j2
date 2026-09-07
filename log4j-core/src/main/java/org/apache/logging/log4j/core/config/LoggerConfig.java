@@ -1136,6 +1136,14 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return setFilter(filter);
             }
 
+            /**
+             * @deprecated since 2.25.0. Use {@link #setFilter(Filter)} instead.
+             */
+            @Deprecated
+            public B withFilter(final Filter filter) {
+                return setFilter(filter);
+            }
+
             @Override
             public LoggerConfig build() {
                 final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
