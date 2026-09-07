@@ -160,6 +160,9 @@ updates:
       # Groovy 5 breaks the JSR-223 script filters on 2.x
       - dependency-name: "org.apache.groovy:*"
         versions: [ "[5,)" ]
+      # spring-cloud 5.x is the Spring Boot 4 / Framework 7 generation
+      - dependency-name: "org.springframework.cloud:spring-cloud-context"
+        versions: [ "[5,)" ]
 
   - package-ecosystem: maven
     directories:
@@ -283,6 +286,9 @@ updates:
         versions: [ "[3,)" ]
       # 0.18 is a 2.x-era plugin jar kept as a test fixture, not a dependency
       - dependency-name: "com.vlkan.log4j2:*"
+      # spring-cloud 5.x is the Spring Boot 4 / Framework 7 generation
+      - dependency-name: "org.springframework.cloud:spring-cloud-context"
+        versions: [ "[5,)" ]
 
   - package-ecosystem: github-actions
     directory: "/"
