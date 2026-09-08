@@ -217,7 +217,9 @@ updates:
         update-types:
           - "version-update:semver-major"
           - "version-update:semver-minor"
-      # elastic.version doubles as the Docker image tag; elasticsearch:8.17.11 does not exist
+      # `co.elastic.clients:elasticsearch-java` shares the `elastic.version` property of
+      # `log4j-layout-template-json-test` with the `elasticsearch` and `logstash` Docker image tags.
+      # The Java client gets patch releases the Docker images don't have, e.g. `8.17.11`.
       - dependency-name: "co.elastic.clients:*"
 
   # The `2.26.x` maintenance branch only receives patch-level Maven updates.
@@ -284,7 +286,8 @@ updates:
       # We must also ignore the old Group ID so Dependabot doesn't try to auto-migrate it.
       - dependency-name: "com.github.tomakehurst:wiremock*"
         versions: [ "[3,)" ]
-      # 0.18 is a 2.x-era plugin jar kept as a test fixture, not a dependency
+      # `com.vlkan.log4j2:log4j2-logstash-layout:0.18` is pinned on the `log4j-core-test` classpath
+      # as a legacy Log4j 2.x plugin JAR; the version is part of the fixture, not something to bump.
       - dependency-name: "com.vlkan.log4j2:*"
       # spring-cloud 5.x is the Spring Boot 4 / Framework 7 generation
       - dependency-name: "org.springframework.cloud:spring-cloud-context"
