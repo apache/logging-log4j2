@@ -315,4 +315,4 @@ updates:
     ignore:
       # kroki 1.0 is incompatible with the pinned Antora 3.2 alpha
       - dependency-name: "asciidoctor-kroki"
-        versions: [ "[1,)" ]
+        versions: [ ">=1.0.0" ]
