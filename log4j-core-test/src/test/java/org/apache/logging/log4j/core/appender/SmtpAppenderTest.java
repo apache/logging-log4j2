@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
@@ -176,5 +177,57 @@ class SmtpAppenderTest {
         assertFalse(body2.contains("Debug message #4"));
         assertFalse(body2.contains("Error with exception"));
         assertTrue(body2.contains("Error message #2"));
+    }
+
+    @Test
+    void testCustomHeaders() {
+        final String traceKey = getClass().getName() + ".traceId";
+        final String traceValue = "TraceValue1";
+        ThreadContext.put(traceKey, traceValue);
+        final int smtpPort = AvailablePortFinder.getNextAvailable();
+        final SmtpAppender appender = SmtpAppender.newBuilder()
+                .setName("TestHeaders")
+                .setTo("headers-to@example.com")
+                .setFrom("headers-from@example.com")
+                .setSubject("Headers Subject")
+                .setSmtpHost(HOST)
+                .setSmtpPort(smtpPort)
+                .setBufferSize(3)
+                .addHeader(Property.createProperty("X-Static", "fixed-value"))
+                .addHeader(Property.createProperty("X-Trace-Id", "%X{" + traceKey + "}"))
+                .addHeader(Property.createProperty("X-Tag", "first"))
+                .addHeader(Property.createProperty("X-Tag", "second"))
+                .addHeader(Property.createProperty("X-Message", "%m"))
+                .addHeader(Property.createProperty("X:Invalid", "ignored"))
+                .build();
+        assertNotNull(appender);
+        assertInstanceOf(SmtpManager.class, appender.getManager());
+        appender.start();
+
+        final LoggerContext context = LoggerContext.getContext();
+        final Logger root = context.getLogger("SMTPAppenderHeadersTest");
+        root.addAppender(appender);
+        root.setAdditive(false);
+        root.setLevel(Level.DEBUG);
+
+        final SimpleSmtpServer server = SimpleSmtpServer.start(smtpPort);
+        try {
+            root.error("safe\r\nX-Evil: injected");
+        } finally {
+            server.stop();
+            root.removeAppender(appender);
+            appender.stop();
+            ThreadContext.remove(traceKey);
+        }
+
+        assertEquals(1, server.getReceivedEmailSize());
+        final SmtpMessage email = server.getReceivedEmail().next();
+
+        assertEquals("fixed-value", email.getHeaderValue("X-Static"));
+        assertEquals(traceValue, email.getHeaderValue("X-Trace-Id"));
+        assertArrayEquals(new String[] {"first", "second"}, email.getHeaderValues("X-Tag"));
+        assertEquals("safe  X-Evil: injected", email.getHeaderValue("X-Message"));
+        assertEquals(0, email.getHeaderValues("X-Evil").length);
+        assertEquals(0, email.getHeaderValues("X").length);
     }
 }

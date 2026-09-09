@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ServiceLoader;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -138,6 +141,9 @@ public final class SmtpAppender extends AbstractAppender {
         @PluginElement("SSL")
         private SslConfiguration sslConfiguration;
 
+        @PluginElement("Headers")
+        private Property[] headers;
+
         /**
          * Comma-separated list of recipient email addresses.
          */
@@ -252,6 +258,33 @@ public final class SmtpAppender extends AbstractAppender {
         }
 
         /**
+         * Specifies custom headers to add to every message. Header values are {@link PatternLayout} patterns,
+         * evaluated against the event that triggers the message.
+         *
+         * @since 2.27.0
+         */
+        public Builder setHeaders(final Property[] headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        /**
+         * Adds a single custom header. The header value is a {@link PatternLayout} pattern, evaluated against the
+         * event that triggers the message.
+         *
+         * @since 2.27.0
+         */
+        public Builder addHeader(final Property header) {
+            if (header != null) {
+                final Property[] oldHeaders = headers != null ? headers : Property.EMPTY_ARRAY;
+                final Property[] newHeaders = Arrays.copyOf(oldHeaders, oldHeaders.length + 1);
+                newHeaders[oldHeaders.length] = header;
+                headers = newHeaders;
+            }
+            return this;
+        }
+
+        /**
          * Specifies the layout used for the email message body. By default, this uses the
          * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
          */
@@ -284,6 +317,14 @@ public final class SmtpAppender extends AbstractAppender {
                     .setConfiguration(getConfiguration())
                     .setPattern(subject)
                     .build();
+            final Property[] headerArray = filterValidHeaders(headers);
+            final Serializer[] headerSerializers = new Serializer[headerArray.length];
+            for (int i = 0; i < headerArray.length; i++) {
+                headerSerializers[i] = PatternLayout.newSerializerBuilder()
+                        .setConfiguration(getConfiguration())
+                        .setPattern(headerArray[i].getValue())
+                        .build();
+            }
             final FactoryData data = new FactoryData(
                     to,
                     cc,
@@ -300,7 +341,9 @@ public final class SmtpAppender extends AbstractAppender {
                     smtpDebug,
                     bufferSize,
                     sslConfiguration,
-                    getFilter().toString());
+                    getFilter().toString(),
+                    headerArray,
+                    headerSerializers);
             final MailManagerFactory factory = ServiceLoaderUtil.safeStream(
                             MailManagerFactory.class,
                             ServiceLoader.load(
@@ -316,6 +359,37 @@ public final class SmtpAppender extends AbstractAppender {
 
             return new SmtpAppender(
                     getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
+        }
+
+        private Property[] filterValidHeaders(final Property[] headers) {
+            if (headers == null || headers.length == 0) {
+                return Property.EMPTY_ARRAY;
+            }
+            final List<Property> validHeaders = new ArrayList<>(headers.length);
+            for (final Property header : headers) {
+                if (isValidHeaderName(header.getName())) {
+                    validHeaders.add(header);
+                } else {
+                    LOGGER.error(
+                            "SmtpAppender '{}' ignores the header with the invalid name '{}'.",
+                            getName(),
+                            header.getName());
+                }
+            }
+            return validHeaders.toArray(Property.EMPTY_ARRAY);
+        }
+
+        private static boolean isValidHeaderName(final String name) {
+            if (Strings.isEmpty(name)) {
+                return false;
+            }
+            for (int i = 0; i < name.length(); i++) {
+                final char c = name.charAt(i);
+                if (c < '!' || c > '~' || c == ':') {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
