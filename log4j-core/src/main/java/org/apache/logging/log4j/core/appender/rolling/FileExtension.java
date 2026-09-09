@@ -18,10 +18,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 import java.util.Objects;
+import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.ZstdCompressAction;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 
 /**
@@ -99,8 +101,15 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("zstd", source(renameTo), target(compressedName), deleteSource);
+            // -1 (Deflater.DEFAULT_COMPRESSION) is the framework-wide sentinel for 'unspecified compression level'.
+            // Unlike GZ/ZIP, where -1 has no meaning other than 'use Deflater's default' (java.util.zip.Deflater
+            // natively treats -1 as its own default-compression sentinel), Zstd defines -1 as a real, distinct
+            // fast-compression level. So the sentinel has to be mapped explicitly here to Zstd's own default level.
+            // Negative Zstd fast-compression levels are intentionally out of scope for now; see the
+            // discussion on generalizing compressionLevel at
+            // https://github.com/apache/logging-log4j2/discussions/2950.
+            final int level = compressionLevel == -1 ? ZstdConstants.ZSTD_CLEVEL_DEFAULT : compressionLevel;
+            return new ZstdCompressAction(source(renameTo), target(compressedName), deleteSource, level);
         }
     };
 
