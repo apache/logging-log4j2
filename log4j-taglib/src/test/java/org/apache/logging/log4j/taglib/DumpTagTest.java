@@ -89,6 +89,23 @@ class DumpTagTest {
     }
 
     @Test
+    void testDoEndTagEscapesHtml() throws Exception {
+        this.context.setAttribute("<name>", "<script>alert('xss')</script>", PageContext.PAGE_SCOPE);
+
+        final int returnValue = this.tag.doEndTag();
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
+
+        this.writer.flush();
+        final String output = new String(this.output.toByteArray(), UTF8);
+        assertEquals(
+                "<dl>" + "<dt><code>&lt;name&gt;</code></dt>"
+                        + "<dd><code>&lt;script&gt;alert(&apos;xss&apos;)&lt;/script&gt;</code></dd>"
+                        + "</dl>",
+                output,
+                "Attribute names and values must be HTML-escaped.");
+    }
+
+    @Test
     void testDoEndTagSessionScopeNoAttributes() throws Exception {
         this.context.setAttribute("badAttribute01", "skippedValue01", PageContext.PAGE_SCOPE);
 
