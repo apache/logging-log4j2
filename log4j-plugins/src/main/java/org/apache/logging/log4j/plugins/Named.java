@@ -21,9 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.plugins.name.AliasesProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
 
 /**
  * General naming qualifier for injectable objects. The first value given is the primary name while subsequent values are
@@ -32,8 +29,8 @@ import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Documented
-@NameProvider(NamedQualifierNameProvider.class)
-@AliasesProvider(NamedQualifierNameProvider.class)
+@NameProvider
+@AliasesProvider(offset = 1)
 @QualifierType
 public @interface Named {
     /**
