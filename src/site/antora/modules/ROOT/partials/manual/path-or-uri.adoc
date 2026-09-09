@@ -1,0 +1,31 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+Such a location is given as either a file system
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/file/Path.html[path]
+or a
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/URI.html[`URI`],
+and is resolved as follows:
+
+* An **absolute URI**, that is one carrying a scheme such as `file:`, `https:` or `classpath:`, is used as provided.
+Absolute URIs whose scheme is not `classpath:` are subject to the
+xref:manual/systemproperties.adoc#properties-transport-security[transport security] restrictions.
+
+* An **absolute file path** for the current operating system (for example `/var/log4j2.xml` on UNIX, or
+`C:\log4j2.xml` and `C:/log4j2.xml` on Windows) is resolved to a local file.
+
+* A **relative path** is resolved to a local file if that file exists, or to a class path resource otherwise.

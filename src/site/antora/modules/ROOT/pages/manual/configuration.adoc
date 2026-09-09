@@ -28,12 +28,14 @@ If you are looking for a quick start on using Log4j in your application or libra
 [id=automatic-configuration]
 == [[AutomaticConfiguration]] Configuration file location
 
-Upon initialization of a new xref:manual/architecture.adoc#LoggerContext[logger context, the anchor of the logging implementation], Log4j Core assigns it a context name and scans the following **classpath** locations for a configuration file in following order:
+Upon initialization of a new xref:manual/architecture.adoc#LoggerContext[logger context, the anchor of the logging implementation], Log4j Core assigns it a context name and scans the **classpath** for a configuration file at the following locations, in order:
 
-. Files named `log4j2-test<contextName>.<extension>`
-. Files named `log4j2-test.<extension>`
-. Files named `log4j2<contextName>.<extension>`
-. Files named `log4j2.<extension>`
+. `classpath:log4j2-test<contextName>.<extension>`
+. `classpath:log4j2-test.<extension>`
+. `classpath:log4j2<contextName>.<extension>`
+. `classpath:log4j2.<extension>`
+
+These locations are class path resources: a configuration file of the same name placed in the working directory is **not** loaded automatically.
 
 The `<contextName>` and `<extension>` placeholders above have the following meaning
 
