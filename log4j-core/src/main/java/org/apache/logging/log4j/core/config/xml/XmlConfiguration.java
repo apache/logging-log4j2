@@ -56,7 +56,18 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Creates a Node hierarchy from an XML file.
+ * A {@link Configuration} implementation that creates a {@code Node} hierarchy from an XML configuration file.
+ * <p>
+ *     The XML parser is namespace-aware and is configured with the following features:
+ * </p>
+ * <ul>
+ *     <li>DTD validation and the retrieval of external DTDs and external entities are disabled. Optional validation
+ *     against an XML Schema can be enabled with the {@code strict} and {@code schema} configuration attributes.</li>
+ *     <li>XInclude is enabled whenever the JAXP implementation supports it, so a configuration file can include other
+ *     files. Configuration files, including the files they reference, must come from trusted sources: see the
+ *     <a href="https://logging.apache.org/security.html#threat-common-sources-configuration">Log4j threat model</a>
+ *     for details.</li>
+ * </ul>
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
@@ -66,7 +77,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
 
     @SuppressFBWarnings(
             value = "XXE_DOCUMENT",
-            justification = "The `newDocumentBuilder` method disables DTD processing.")
+            justification =
+                    "The `newDocumentBuilder` method disables DTD validation and the retrieval of external DTDs and external entities.")
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
         byte[] buffer = null;

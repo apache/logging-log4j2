@@ -76,7 +76,7 @@ public class DOMConfigurator {
     private static void warnFullCompatibilityDisabled() {
         LogLog.warn(
                 "Ignoring `DOMConfigurator` call, since `log4j1.compatibility` is not enabled.\n"
-                        + "See https://logging.staged.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
+                        + "See https://logging.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
     }
 
     public static void configure(final Element element) {}
