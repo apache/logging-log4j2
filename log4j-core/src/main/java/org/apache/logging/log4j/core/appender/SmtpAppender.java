@@ -357,6 +357,17 @@ public final class SmtpAppender extends AbstractAppender {
             return null;
         }
         return SmtpAppender.newBuilder()
+                .setName(name)
+                .setTo(to)
+                .setCc(cc)
+                .setBcc(bcc)
+                .setFrom(from)
+                .setReplyTo(replyTo)
+                .setSubject(subject)
+                .setSmtpProtocol(smtpProtocol)
+                .setSmtpHost(smtpHost)
+                .setSmtpUsername(smtpUsername)
+                .setSmtpPassword(smtpPassword)
                 .setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
                 .setSmtpPort(AbstractAppender.parseInt(smtpPortStr, 0))
                 .setSmtpDebug(Boolean.parseBoolean(smtpDebug))
