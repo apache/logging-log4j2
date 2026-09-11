@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <issue id="4318" link="https://github.com/apache/logging-log4j2/issues/4318"/>
+    <description format="asciidoc">
+        Clear the buffer of a buffered database appender when committing a transaction fails.
+        Previously the events were kept, so the next flush sent them again and the buffer grew
+        without bound while the database failure persisted.
+    </description>
+</entry>

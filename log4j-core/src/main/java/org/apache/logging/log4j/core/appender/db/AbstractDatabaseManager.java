@@ -192,9 +192,14 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                     this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
                 }
             } finally {
-                this.commitAndClose();
-                // not sure if this should be done when writing the events failed
-                this.buffer.clear();
+                try {
+                    this.commitAndClose();
+                } finally {
+                    // The events were already handed to the database layer, so they must not be kept
+                    // when committing fails: the next flush would send them again and the buffer
+                    // would grow without bound while the failure persists.
+                    this.buffer.clear();
+                }
             }
         }
     }

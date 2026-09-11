@@ -18,10 +18,13 @@ package org.apache.logging.log4j.core.appender.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -225,6 +228,34 @@ class AbstractDatabaseManagerTest {
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    void testBufferedEventsAreDiscardedWhenCommitFails() throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        manager.startup();
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        // The first flush fails while committing the transaction, the next one succeeds.
+        doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .when(manager)
+                .commitAndClose();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.flush();
+
+        // Events of a transaction that failed to commit must not be sent again.
+        verify(manager, times(2)).writeInternal(any(LogEvent.class), isNull());
     }
 
     @Test
