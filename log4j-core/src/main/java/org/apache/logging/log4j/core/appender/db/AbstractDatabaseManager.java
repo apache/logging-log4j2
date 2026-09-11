@@ -107,6 +107,19 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     private boolean running;
 
     /**
+     * Whether {@link #shutdownInternal()} has already been invoked for this manager instance.
+     * Tracks completed shutdown independently of {@link #running} so resources acquired during a
+     * failed {@link #startupInternal()} can still be released.
+     */
+    private boolean shutDown;
+
+    /**
+     * Whether we already logged that writes are being skipped while the manager is not running.
+     * Avoids flooding the status logger with one message per event after a failed startup.
+     */
+    private boolean writeWhileNotRunningLogged;
+
+    /**
      * Constructs the base manager.
      *
      * @param name The manager name, which should include any configuration details that one might want to be able to
@@ -222,12 +235,17 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * This method is called from the {@link #close()} method when the appender is stopped or the appender's manager
      * is replaced. If it has not already been called, it calls {@link #shutdownInternal()} and catches any exceptions
      * it might throw.
+     * <p>
+     * {@link #shutdownInternal()} is invoked even when {@link #isRunning()} is {@code false}, so implementations can
+     * release resources acquired during a failed {@link #startupInternal()} (or before startup).
+     * </p>
      * @return true if all resources were closed normally, false otherwise.
      */
     public final synchronized boolean shutdown() {
         boolean closed = true;
         this.flush();
-        if (this.isRunning()) {
+        if (!this.shutDown) {
+            this.shutDown = true;
             try {
                 closed &= this.shutdownInternal();
             } catch (final Exception e) {
@@ -242,8 +260,9 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
     /**
      * Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
-     * method will never be called twice on the same instance, and it will only be called <em>after</em>
-     * {@link #startupInternal()}. It is safe to throw any exceptions from this method. This method does not
+     * method will never be called twice on the same instance between successful startups. It may be called after a
+     * failed {@link #startupInternal()} (or even if startup was never attempted), so implementations must tolerate
+     * partially initialized state. It is safe to throw any exceptions from this method. This method does not
      * necessarily disconnect from the database for the same reasons outlined in {@link #startupInternal()}.
      * @return true if all resources were closed normally, false otherwise.
      */
@@ -258,6 +277,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             try {
                 this.startupInternal();
                 this.running = true;
+                this.shutDown = false;
+                this.writeWhileNotRunningLogged = false;
             } catch (final Exception e) {
                 logError("Could not perform database startup operations", e);
             }
@@ -290,11 +311,25 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
     /**
      * This method manages buffering and writing of events.
+     * <p>
+     * If the manager is not running (for example because {@link #startupInternal()} failed), the event is dropped and
+     * a single status warning is logged rather than attempting a write that would likely fail with an NPE per event.
+     * </p>
      *
      * @param event The event to write to the database.
      * @param serializable Serializable event
      */
     public final synchronized void write(final LogEvent event, final Serializable serializable) {
+        if (!this.isRunning()) {
+            if (!this.writeWhileNotRunningLogged) {
+                this.writeWhileNotRunningLogged = true;
+                LOGGER.warn(
+                        "{} {} is not running; skipping database write until startup succeeds",
+                        getClass().getSimpleName(),
+                        getName());
+            }
+            return;
+        }
         if (isBuffered()) {
             buffer(event);
         } else {
