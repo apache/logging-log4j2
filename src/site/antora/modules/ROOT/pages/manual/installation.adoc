@@ -186,6 +186,8 @@ xref:manual/status-logger.adoc[Status Logger] to avoid its unintentional usages:
 
 ----
 2024-10-03T11:53:34.281462230Z main ERROR Log4j API could not find a logging provider.
+Log4j API will use Simple Logger by default.
+See https://logging.apache.org/log4j/2.x/manual/installation.html for instructions on how to configure Log4j API.
 ----
 
 To remove the warning and confirm that you want to use Simple Logger, add a
