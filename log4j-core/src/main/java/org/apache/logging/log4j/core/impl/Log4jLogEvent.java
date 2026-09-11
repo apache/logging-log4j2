@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.rmi.MarshalledObject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1240,9 +1239,7 @@ public class Log4jLogEvent implements LogEvent {
         private final Level level;
         private final String loggerName;
         // transient since 2.8
-        private final transient Message message;
-        /** @since 2.8 */
-        private MarshalledObject<Message> marshalledMessage;
+        private transient Message message;
         /** @since 2.8 */
         private String messageString;
 
@@ -1341,18 +1338,17 @@ public class Log4jLogEvent implements LogEvent {
             return result;
         }
 
-        private static MarshalledObject<Message> marshall(final Message msg) {
-            try {
-                return new MarshalledObject<>(msg);
-            } catch (final Exception ex) {
-                return null;
-            }
-        }
-
         private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
             this.messageString = message.getFormattedMessage();
-            this.marshalledMessage = marshall(message);
             s.defaultWriteObject();
+            SerializationUtil.writeWrappedObject(message, s);
+        }
+
+        private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+            SerializationUtil.assertFiltered(in);
+            in.defaultReadObject();
+            final Object wrapped = SerializationUtil.readWrappedObject(in);
+            message = wrapped instanceof Message ? (Message) wrapped : null;
         }
 
         /**
@@ -1387,14 +1383,7 @@ public class Log4jLogEvent implements LogEvent {
         }
 
         private Message message() {
-            if (marshalledMessage != null) {
-                try {
-                    return marshalledMessage.get();
-                } catch (final Exception ex) {
-                    // ignore me
-                }
-            }
-            return new SimpleMessage(messageString);
+            return message != null ? message : new SimpleMessage(messageString);
         }
     }
 }
