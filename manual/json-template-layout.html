@@ -2470,7 +2470,11 @@ singleAccess  = key , [ stringified ]
 key           = "key" -&gt; string
 stringified   = "stringified" -&gt; boolean
 
-multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+multiAccess   = [ keyFilter ] , [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+keyFilter     = "key" -&gt; keyConfig
+keyConfig     = [ allowed ] , [ disallowed ]
+allowed       = "allowed" -&gt; array of strings
+disallowed    = "disallowed" -&gt; array of strings
 pattern       = "pattern" -&gt; string
 replacement   = "replacement" -&gt; string
 flatten       = "flatten" -&gt; ( boolean | flattenConfig )
@@ -2489,6 +2493,12 @@ If <code>flatten</code> is provided, <code>multiAccess</code> merges the fields 
 <p>Regex provided in the <code>pattern</code> is used to match against the keys.
 If provided, <code>replacement</code> will be used to replace the matched keys.
 These two are analogous to <code>Pattern.compile(pattern).matcher(key).matches()</code> and <code>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</code> calls.</p>
+</div>
+<div class="paragraph">
+<p><code>key</code> given as an object filters keys against literal names rather than a regex.
+If <code>allowed</code> is provided, only the listed keys are resolved.
+Keys listed in <code>disallowed</code> are silently dropped, and take precedence over <code>allowed</code>.
+Both are matched against the key as found in the map, that is, before <code>replacement</code> is applied, and both can be combined with <code>pattern</code>, which a key must then satisfy as well.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -2580,6 +2590,32 @@ These two are analogous to <code>Pattern.compile(pattern).matcher(key).matches()
   "$resolver": "…",
   "pattern": "user:(role|rank)",
   "replacement": "$1"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve all fields into an object, but silently drop <code>message</code> and <code>log.level</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "key": {
+    "disallowed": ["message", "log.level"]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resolve only the <code>userId</code> and <code>userRole</code> fields into an object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$resolver": "…",
+  "key": {
+    "allowed": ["userId", "userRole"]
+  }
 }</code></pre>
 </div>
 </div>

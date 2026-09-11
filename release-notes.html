@@ -375,6 +375,9 @@
 <li>
 <p>Add <code>log4j-api-kotlin</code> to the Log4j Bill of Materials (<code>log4j-bom</code>). (<a href="https://github.com/apache/logging-log4j2/issues/4145">4145</a>, <a href="https://github.com/apache/logging-log4j2/pull/4222">4222</a>)</p>
 </li>
+<li>
+<p>Add <code>key</code> based literal filtering to JSON Template Layout&#8217;s Context Data (MDC) and Map resolvers. Harden <code>EcsLayout.json</code> using that. (<a href="https://github.com/apache/logging-log4j2/issues/4166">4166</a>, <a href="https://github.com/apache/logging-log4j2/pull/4186">4186</a>)</p>
+</li>
 </ul>
 </div>
 </div>
@@ -506,7 +509,13 @@
 <p>Update <code>biz.aQute.bnd:biz.aQute.bnd.annotation</code> to version <code>7.4.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
 </li>
 <li>
-<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>9.5.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>ch.qos.logback:logback-classic</code> to version <code>1.3.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
+</li>
+<li>
+<p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
+</li>
+<li>
+<p>Update <code>co.elastic.clients:elasticsearch-java</code> to version <code>9.5.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>co.elastic.logging:log4j2-ecs-layout</code> to version <code>1.8.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
@@ -560,7 +569,7 @@
 <p>Update <code>net.java.dev.jna:jna</code> to version <code>5.19.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
 </li>
 <li>
-<p>Update <code>org.apache.activemq:activemq-broker</code> to version <code>6.3.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>org.apache.activemq:activemq-broker</code> to version <code>6.3.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-compress</code> to version <code>1.28.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
@@ -576,6 +585,9 @@
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-pool2</code> to version <code>2.13.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
+</li>
+<li>
+<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.33</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.9.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4188">4188</a>)</p>
@@ -608,7 +620,7 @@
 <p>Update <code>org.eclipse.platform:org.eclipse.osgi</code> to version <code>3.24.200</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
 </li>
 <li>
-<p>Update <code>org.elasticsearch.client:elasticsearch-rest-client</code> to version <code>9.5.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>org.elasticsearch.client:elasticsearch-rest-client</code> to version <code>9.5.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>org.gradlex:gradle-module-metadata-maven-plugin</code> to version <code>1.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
@@ -620,6 +632,9 @@
 <p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
 </li>
 <li>
+<p>Update <code>org.json:json</code> to version <code>20260814</code> (<a href="https://github.com/apache/logging-log4j2/pull/4312">4312</a>)</p>
+</li>
+<li>
 <p>Update <code>org.jspecify:jspecify</code> to version <code>1.0.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
 </li>
 <li>
@@ -629,13 +644,13 @@
 <p>Update <code>org.junit:junit-bom</code> to version <code>5.14.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
 </li>
 <li>
-<p>Update <code>org.mongodb:bson</code> to version <code>5.10.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>org.mongodb:bson</code> to version <code>5.11.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
-<p>Update <code>org.mongodb:mongodb-driver-core</code> to version <code>5.10.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>org.mongodb:mongodb-driver-core</code> to version <code>5.11.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
-<p>Update <code>org.mongodb:mongodb-driver-sync</code> to version <code>5.10.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
+<p>Update <code>org.mongodb:mongodb-driver-sync</code> to version <code>5.11.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>org.openjdk.nashorn:nashorn-core</code> to version <code>15.7</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
@@ -645,6 +660,9 @@
 </li>
 <li>
 <p>Update <code>org.slf4j:slf4j-nop</code> to version <code>2.0.18</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
+</li>
+<li>
+<p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.3.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4311">4311</a>)</p>
 </li>
 <li>
 <p>Update <code>org.tukaani:xz</code> to version <code>1.12</code> (<a href="https://github.com/apache/logging-log4j2/pull/4206">4206</a>)</p>
