@@ -452,6 +452,13 @@ If set to a value greater than 0, after an error, the `JdbcDatabaseManager` will
 If the reconnecting fails then an exception will be thrown and can be caught by the application if
 <<JdbcAppender-attr-ignoreExceptions,`ignoreExceptions`>>
 is set to `false`.
+
+| [[JdbcAppender-attr-truncateStrings]]truncateStrings
+| `boolean`
+| `true`
+|
+If `true`, values written to columns of a string type are truncated to the size reported by the database metadata.
+This avoids errors caused by values that are longer than the target column.
 |===
 
 [#JdbcAppender-elements]
