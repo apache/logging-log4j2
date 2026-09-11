@@ -16,40 +16,45 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
 
+@LoggerContextSource("log4j2-streams-calling-info.xml")
 public class IoBuilderCallerInfoTesting {
 
-    protected static Logger getExtendedLogger() {
-        return ctx.getLogger("ClassAndMethodLogger");
+    private LoggerContext context = null;
+
+    IoBuilderCallerInfoTesting(LoggerContext context) {
+        this.context = context;
     }
 
-    protected static Logger getLogger() {
+    protected Logger getExtendedLogger() {
+        return context.getLogger("ClassAndMethodLogger");
+    }
+
+    protected Logger getLogger() {
         return getExtendedLogger();
     }
 
     protected static final Level LEVEL = Level.WARN;
 
-    @ClassRule
-    public static LoggerContextRule ctx = new LoggerContextRule("log4j2-streams-calling-info.xml");
-
     public void assertMessages(final String msg, final int size, final String methodName) {
-        final ListAppender appender = ctx.getListAppender("ClassAndMethod");
-        assertEquals(msg + ".size", size, appender.getMessages().size());
+        final ListAppender appender = context.getConfiguration().getAppender("ClassAndMethod");
+        assertEquals(size, appender.getMessages().size(), msg + ".size");
         for (final String message : appender.getMessages()) {
-            assertEquals(msg + " has incorrect caller info", this.getClass().getName() + '.' + methodName, message);
+            assertEquals(this.getClass().getName() + '.' + methodName, message, msg + " has incorrect caller info");
         }
     }
 
-    @Before
+    @BeforeEach
     public void clearAppender() {
-        ctx.getListAppender("ClassAndMethod").clear();
+        ListAppender listApp = context.getConfiguration().getAppender("ClassAndMethod");
+        listApp.clear();
     }
 }
