@@ -32,14 +32,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -117,6 +121,78 @@ class SortedArrayStringMapTest {
         expected.putValue("B", "Bvalue");
         expected.putValue("unserializable", null);
         assertEquals(expected, copy);
+    }
+
+    /**
+     * Returns a copy of the serialized form with the declared capacity replaced.
+     * <p>
+     *     The capacity and mappings count follow the default field data as a block-data record
+     *     ({@code 0x77}, length {@code 0x08}), so the pair can be located by its original values.
+     * </p>
+     */
+    private static byte[] patchCapacity(
+            final byte[] binary, final int capacity, final int mappings, final int newCapacity) {
+        final ByteBuffer buffer = ByteBuffer.wrap(binary.clone());
+        for (int i = 0; i + 10 <= binary.length; i++) {
+            if (buffer.get(i) == 0x77
+                    && buffer.get(i + 1) == 0x08
+                    && buffer.getInt(i + 2) == capacity
+                    && buffer.getInt(i + 6) == mappings) {
+                buffer.putInt(i + 2, newCapacity);
+                return buffer.array();
+            }
+        }
+        throw new AssertionError("Unable to locate the capacity field in the serialized form");
+    }
+
+    @Test
+    void testDeserializationDoesNotPreallocateDeclaredCapacity() {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "avalue");
+        original.putValue("B", null);
+        original.putValue("3", "3value");
+
+        // A forged stream declaring a huge capacity must not force a huge allocation.
+        final byte[] forged = patchCapacity(serialize(original), 4, 3, Integer.MAX_VALUE);
+        final SortedArrayStringMap copy = deserialize(forged);
+        assertEquals(original, copy);
+    }
+
+    @Test
+    void testDeserializationDoesNotKeepDeclaredCapacityOfEmptyMap() {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+
+        // A forged threshold must not force a huge allocation on the first `putValue` call.
+        final byte[] forged = patchCapacity(serialize(original), 4, 0, Integer.MAX_VALUE);
+        final SortedArrayStringMap copy = deserialize(forged);
+        assertEquals(original, copy);
+        copy.putValue("a", "avalue");
+        assertEquals("avalue", copy.getValue("a"));
+    }
+
+    @Test
+    void testDeserializationRejectsMoreMappingsThanCapacity() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "avalue");
+        original.putValue("B", null);
+        original.putValue("3", "3value");
+
+        final byte[] forged = patchCapacity(serialize(original), 4, 3, 2);
+        final ObjectInputStream ois = SerialUtil.getObjectInputStream(forged);
+        assertThrows(InvalidObjectException.class, ois::readObject);
+    }
+
+    @Test
+    void testDeserializationResizesBeyondInitialAllocation() {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        // One entry more than the bounded initial allocation of the deserialized arrays
+        final int count = (1 << 17) + 1;
+        for (int i = 0; i < count; i++) {
+            original.putValue(String.format("%08x", i), null);
+        }
+
+        final SortedArrayStringMap copy = deserialize(serialize(original));
+        assertEquals(original, copy);
     }
 
     @Test

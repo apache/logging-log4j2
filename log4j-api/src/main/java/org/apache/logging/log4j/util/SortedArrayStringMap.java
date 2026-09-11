@@ -57,6 +57,14 @@ public class SortedArrayStringMap implements IndexedStringMap {
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
 
+    /**
+     * The maximum number of entries pre-allocated during deserialization: each array of this size occupies
+     * 1 MiB on a typical 64-bit JVM.
+     * Streams declaring a larger capacity grow the arrays on demand as entries are actually read, so a forged
+     * capacity cannot force a large allocation.
+     */
+    private static final int MAX_DESERIALIZATION_CAPACITY = 1 << 17;
+
     private static final long serialVersionUID = -5748905872274478116L;
     private static final int HASHVAL = 31;
 
@@ -513,18 +521,30 @@ public class SortedArrayStringMap implements IndexedStringMap {
         if (mappings < 0) {
             throw new InvalidObjectException("Illegal mappings count: " + mappings);
         }
-
-        // allocate the bucket array;
-        if (mappings > 0) {
-            inflateTable(capacity);
-        } else {
-            threshold = capacity;
+        if (mappings > capacity) {
+            throw new InvalidObjectException("Illegal mappings count: " + mappings + " for capacity: " + capacity);
         }
 
-        // Read the keys and values, and put the mappings in the arrays
-        for (int i = 0; i < mappings; i++) {
-            keys[i] = (String) s.readObject();
-            values[i] = SerializationUtil.readWrappedObject(s);
+        if (mappings > 0) {
+            // Do not trust the declared capacity: allocate a bounded amount up front
+            // and resize as entries are actually read.
+            int allocated = Math.min(capacity, MAX_DESERIALIZATION_CAPACITY);
+            String[] newKeys = new String[allocated];
+            Object[] newValues = new Object[allocated];
+            for (int i = 0; i < mappings; i++) {
+                if (i == allocated) {
+                    allocated = (int) Math.min(capacity, 2L * allocated);
+                    newKeys = Arrays.copyOf(newKeys, allocated);
+                    newValues = Arrays.copyOf(newValues, allocated);
+                }
+                newKeys[i] = (String) s.readObject();
+                newValues[i] = SerializationUtil.readWrappedObject(s);
+            }
+            keys = newKeys;
+            values = newValues;
+            threshold = allocated;
+        } else {
+            threshold = Math.min(capacity, MAX_DESERIALIZATION_CAPACITY);
         }
         size = mappings;
     }
