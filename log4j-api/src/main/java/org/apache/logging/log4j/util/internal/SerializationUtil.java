@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -90,6 +91,11 @@ public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_PACKAGES =
             Arrays.asList("java.lang.", "java.time.", "java.util.", "org.apache.logging.log4j.");
 
+    /**
+     * The maximum number of array elements pre-allocated by {@link #readWrappedObjects(ObjectInputStream)}.
+     */
+    private static final int MAX_DESERIALIZATION_LENGTH = 1 << 8;
+
     public static void writeWrappedObject(final Serializable obj, final ObjectOutputStream out) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
@@ -128,6 +134,46 @@ public final class SerializationUtil {
         } finally {
             ois.close();
         }
+    }
+
+    /**
+     * Writes the length of {@code array} followed by its elements, each wrapped with
+     * {@link #writeWrappedObject}.
+     * <p>
+     *     Elements that are not {@link Serializable} are replaced by their {@link String#valueOf(Object)}
+     *     representation.
+     * </p>
+     */
+    public static void writeWrappedObjects(final Object[] array, final ObjectOutputStream out) throws IOException {
+        out.writeInt(array.length);
+        for (final Object item : array) {
+            writeWrappedObject(item instanceof Serializable ? (Serializable) item : String.valueOf(item), out);
+        }
+    }
+
+    /**
+     * Reads an array written by {@link #writeWrappedObjects(Object[], ObjectOutputStream)}.
+     * <p>
+     *     The declared length is not trusted: at most {@value #MAX_DESERIALIZATION_LENGTH} elements are
+     *     pre-allocated and the array grows as elements are actually read, so a forged length cannot force a
+     *     large allocation.
+     * </p>
+     */
+    public static Object[] readWrappedObjects(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        final int length = in.readInt();
+        if (length < 0) {
+            throw new InvalidObjectException("Illegal array length: " + length);
+        }
+        int allocated = Math.min(length, MAX_DESERIALIZATION_LENGTH);
+        Object[] array = new Object[allocated];
+        for (int i = 0; i < length; i++) {
+            if (i == allocated) {
+                allocated = (int) Math.min(length, 2L * allocated);
+                array = Arrays.copyOf(array, allocated);
+            }
+            array[i] = readWrappedObject(in);
+        }
+        return array;
     }
 
     public static void assertFiltered(final java.io.ObjectInputStream stream) {

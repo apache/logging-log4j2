@@ -185,6 +185,18 @@ class ParameterizedMessageTest {
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 
+    @Test
+    void testSerializableResizesBeyondInitialAllocation() {
+        // One argument more than the bounded initial allocation of the deserialized array
+        final Object[] args = new Object[(1 << 8) + 1];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = String.format("%08x", i);
+        }
+        final Message expected = new ParameterizedMessage("Hello!", args);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual.getParameters()).isEqualTo(args);
+    }
+
     /**
      * In this test cases, constructed the following scenarios: <br>
      * <p>
