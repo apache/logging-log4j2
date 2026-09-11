@@ -427,6 +427,9 @@ public enum AnsiEscape {
     static Map<String, String> createMap(
             final String[] values, final String[] dontEscapeKeys, final String separatorRegex) {
         final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : Strings.EMPTY_ARRAY;
+        for (int i = 0; i < sortedIgnoreKeys.length; i++) {
+            sortedIgnoreKeys[i] = toRootUpperCase(sortedIgnoreKeys[i]);
+        }
         Arrays.sort(sortedIgnoreKeys);
         final Map<String, String> map = new HashMap<>();
         for (final String string : values) {
