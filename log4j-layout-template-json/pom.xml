@@ -44,7 +44,9 @@
     <bnd-extra-package-options>
       <!-- JCTools is optional (#1895) -->
       org.jctools.*;resolution:=optional,
+      org.jspecify.*;resolution:=optional
     </bnd-extra-package-options>
+    <bnd-extra-module-options>org.jspecify;transitive=false</bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
   </properties>
@@ -60,6 +62,12 @@
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
