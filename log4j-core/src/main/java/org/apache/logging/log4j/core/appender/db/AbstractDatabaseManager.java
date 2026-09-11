@@ -186,14 +186,18 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     @Override
     public final synchronized void flush() {
         if (this.isRunning() && isBuffered()) {
-            this.connectAndStart();
             try {
-                for (final LogEvent event : this.buffer) {
-                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                this.connectAndStart();
+                try {
+                    for (final LogEvent event : this.buffer) {
+                        this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                    }
+                } finally {
+                    this.commitAndClose();
                 }
             } finally {
-                this.commitAndClose();
-                // not sure if this should be done when writing the events failed
+                // The events must not be kept when connecting, writing or committing fails: the next flush would
+                // send them again and the buffer would grow without bound while the failure persists.
                 this.buffer.clear();
             }
         }
