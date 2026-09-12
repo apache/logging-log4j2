@@ -27,12 +27,14 @@ import org.apache.log4j.config.TestConfigurator;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests Jira3410.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class LoggerJira3410Test {
 
     @Test

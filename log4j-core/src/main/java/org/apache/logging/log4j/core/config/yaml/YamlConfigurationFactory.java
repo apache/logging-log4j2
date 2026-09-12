@@ -62,7 +62,7 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        if (!isActive) {
+        if (!isActive()) {
             return null;
         }
         return new YamlConfiguration(loggerContext, source);
