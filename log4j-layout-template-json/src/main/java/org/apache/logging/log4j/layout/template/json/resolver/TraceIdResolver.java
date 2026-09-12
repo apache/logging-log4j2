@@ -14,11 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Export
-@Open("org.apache.logging.log4j.core")
-@Version("2.22.0")
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import aQute.bnd.annotation.jpms.Open;
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+
+/**
+ * Resolves the W3C standard trace ID.
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve the trace ID:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "traceId"
+ * }
+ * </pre>
+ */
+public final class TraceIdResolver implements EventResolver {
+
+    private static final TraceIdResolver INSTANCE = new TraceIdResolver();
+
+    TraceIdResolver() {}
+
+    static TraceIdResolver getInstance() {
+        return INSTANCE;
+    }
+
+    static String getName() {
+        return "traceId";
+    }
+
+    @Override
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
+        jsonWriter.writeString(logEvent.getTraceId());
+    }
+}
