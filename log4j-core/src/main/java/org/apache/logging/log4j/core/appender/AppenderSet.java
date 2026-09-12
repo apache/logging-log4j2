@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.core.Appender;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -60,7 +60,7 @@ public class AppenderSet {
                 LOGGER.error("No children node in AppenderSet {}", this);
                 return null;
             }
-            final Map<String, Node> map = new HashMap<>(children.size());
+            final Map<String, Node> map = Maps.newHashMap(children.size());
             for (final Node childNode : children) {
                 final String key = childNode.getAttributes().get("name");
                 if (key == null) {

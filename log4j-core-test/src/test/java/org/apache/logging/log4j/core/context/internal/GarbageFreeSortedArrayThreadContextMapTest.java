@@ -20,9 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.test.spi.ThreadContextMapSuite;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -52,7 +53,7 @@ class GarbageFreeSortedArrayThreadContextMapTest extends ThreadContextMapSuite {
         assertTrue(map.isEmpty());
         assertFalse(map.containsKey("key"));
         final int mapSize = 10;
-        final Map<String, String> newMap = new HashMap<>(mapSize);
+        final Map<String, String> newMap = Maps.newHashMap(mapSize);
         for (int i = 1; i <= mapSize; i++) {
             newMap.put("key" + i, "value" + i);
         }
