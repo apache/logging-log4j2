@@ -26,24 +26,6 @@ permissions: { }
 
 jobs:
 
-  # Dependency updates never need to be ported: Dependabot maintains every branch on its own.
-  label-dependabot:
-    if: ${{
-      github.repository == 'apache/logging-log4j2'
-      && github.actor == 'dependabot[bot]'
-      && github.event.pull_request.user.login == 'dependabot[bot]'
-      }}
-    runs-on: ubuntu-slim
-    permissions:
-      # Add the `port-done` label
-      pull-requests: write
-    steps:
-      - name: Add `port-done` label
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.html_url }}
-        run: gh pr edit "$PR" --add-label port-done
-
   analyze-dependabot:
     # `github.actor` prevents recursive calls when `github-actions[bot]` pushes to the PR;
     # `github.event.pull_request.user.login` skips PRs not opened by Dependabot.

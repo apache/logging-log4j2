@@ -25,6 +25,8 @@ name: "Check port label"
 #
 # - `port-to-*` (e.g. `port-to-main`, `port-to-2.x`, `port-to-2.26.x`): a port is still needed.
 # - `port-done`: nothing more to port, either because every port is merged or because none was needed.
+#
+# Dependabot PRs are exempt: dependency updates never need to be ported.
 on:
   pull_request:
     types:
@@ -47,9 +49,12 @@ jobs:
       - name: Require a `port-to-*` or `port-done` label
         env:
           LABELS: ${{ join(github.event.pull_request.labels.*.name, '\n') }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
         shell: bash
         run: |
-          if printf '%b\n' "$LABELS" | grep -qE '^(port-to-.+|port-done)$'; then
+          if [ "$AUTHOR" = 'dependabot[bot]' ]; then
+            echo "Dependabot PR, no port label required."
+          elif printf '%b\n' "$LABELS" | grep -qE '^(port-to-.+|port-done)$'; then
             echo "Port label found."
           else
             echo "::error::Add a \`port-to-<branch>\` label if this change must be ported to another branch, or \`port-done\` if no port is needed. See https://github.com/apache/logging-log4j2/issues/3161"
