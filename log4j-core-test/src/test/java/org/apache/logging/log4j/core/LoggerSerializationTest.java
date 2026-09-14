@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.test.AbstractSerializationTest;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class LoggerSerializationTest extends AbstractSerializationTest {
 
-    @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {new LoggerContext("").getLogger("", null)},
@@ -35,7 +35,19 @@ public class LoggerSerializationTest extends AbstractSerializationTest {
         });
     }
 
-    public LoggerSerializationTest(final Serializable serializable) {
-        super(serializable);
+    public LoggerSerializationTest() {
+        super();
+    }
+
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripEquals(Serializable serializable) {
+        super.testSerializationRoundtripEquals(serializable);
+    }
+
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripNoException(Serializable serializable) {
+        super.testSerializationRoundtripNoException(serializable);
     }
 }
