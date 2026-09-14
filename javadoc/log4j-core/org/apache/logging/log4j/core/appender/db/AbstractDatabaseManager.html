@@ -460,7 +460,11 @@ T extends <a href="AbstractDatabaseManager.AbstractFactoryData.html" title="clas
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shutdown</span>()</div>
 <div class="block">This method is called from the <a href="../AbstractManager.html#close()"><code>AbstractManager.close()</code></a> method when the appender is stopped or the appender's manager
  is replaced. If it has not already been called, it calls <a href="#shutdownInternal()"><code>shutdownInternal()</code></a> and catches any exceptions
- it might throw.</div>
+ it might throw.
+ <p>
+ <a href="#shutdownInternal()"><code>shutdownInternal()</code></a> is invoked even when <a href="#isRunning()"><code>isRunning()</code></a> is <code>false</code>, so implementations can
+ release resources acquired during a failed <a href="#startupInternal()"><code>startupInternal()</code></a> (or before startup).
+ </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>true if all resources were closed normally, false otherwise.</dd>
@@ -473,8 +477,9 @@ T extends <a href="AbstractDatabaseManager.AbstractFactoryData.html" title="clas
 <div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shutdownInternal</span>()
                                      throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
 <div class="block">Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
- method will never be called twice on the same instance, and it will only be called <em>after</em>
- <a href="#startupInternal()"><code>startupInternal()</code></a>. It is safe to throw any exceptions from this method. This method does not
+ method will never be called twice on the same instance between successful startups. It may be called after a
+ failed <a href="#startupInternal()"><code>startupInternal()</code></a> (or even if startup was never attempted), so implementations must tolerate
+ partially initialized state. It is safe to throw any exceptions from this method. This method does not
  necessarily disconnect from the database for the same reasons outlined in <a href="#startupInternal()"><code>startupInternal()</code></a>.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -537,7 +542,11 @@ T extends <a href="AbstractDatabaseManager.AbstractFactoryData.html" title="clas
 <h3>write</h3>
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">write</span><wbr><span class="parameters">(<a href="../../LogEvent.html" title="interface in org.apache.logging.log4j.core">LogEvent</a>&nbsp;event,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;serializable)</span></div>
-<div class="block">This method manages buffering and writing of events.</div>
+<div class="block">This method manages buffering and writing of events.
+ <p>
+ If the manager is not running (for example because <a href="#startupInternal()"><code>startupInternal()</code></a> failed), the event is dropped and
+ a single status warning is logged rather than attempting a write that would likely fail with an NPE per event.
+ </p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>event</code> - The event to write to the database.</dd>

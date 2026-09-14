@@ -420,8 +420,9 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shutdownInternal</span>()</div>
 <div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="../AbstractDatabaseManager.html#shutdownInternal()">AbstractDatabaseManager</a></code></span></div>
 <div class="block">Implementations should implement this method to perform any proprietary disconnection / shutdown operations. This
- method will never be called twice on the same instance, and it will only be called <em>after</em>
- <a href="../AbstractDatabaseManager.html#startupInternal()"><code>AbstractDatabaseManager.startupInternal()</code></a>. It is safe to throw any exceptions from this method. This method does not
+ method will never be called twice on the same instance between successful startups. It may be called after a
+ failed <a href="../AbstractDatabaseManager.html#startupInternal()"><code>AbstractDatabaseManager.startupInternal()</code></a> (or even if startup was never attempted), so implementations must tolerate
+ partially initialized state. It is safe to throw any exceptions from this method. This method does not
  necessarily disconnect from the database for the same reasons outlined in <a href="../AbstractDatabaseManager.html#startupInternal()"><code>AbstractDatabaseManager.startupInternal()</code></a>.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
