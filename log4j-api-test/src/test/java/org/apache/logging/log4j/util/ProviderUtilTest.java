@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.TestProvider;
+import org.apache.logging.log4j.simple.internal.SimpleProvider;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.test.TestLoggerContextFactory;
@@ -56,13 +57,16 @@ class ProviderUtilTest {
     }
 
     @Test
-    void should_have_a_fallback_provider() {
+    void should_log_diagnostic_and_use_simple_provider_when_no_provider_is_available() {
         final PropertiesUtil properties = new PropertiesUtil(new Properties());
         assertThat(ProviderUtil.selectProvider(properties, NO_PROVIDERS, statusLogger))
                 .as("check selected provider")
-                .isNotNull();
-        // An error for the absence of providers
-        assertHasErrorOrWarning(statusLogger);
+                .isInstanceOf(SimpleProvider.class);
+        assertThat(statusLogger.getEntries())
+                .contains(" ERROR Log4j API could not find a logging provider.\n"
+                        + "Log4j API will use Simple Logger by default.\n"
+                        + "See https://logging.apache.org/log4j/2.x/manual/installation.html "
+                        + "for instructions on how to configure Log4j API.");
     }
 
     @Test
