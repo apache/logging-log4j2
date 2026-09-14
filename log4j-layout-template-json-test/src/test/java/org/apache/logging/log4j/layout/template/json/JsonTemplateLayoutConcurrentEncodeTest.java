@@ -113,15 +113,15 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         final Configuration config = configBuilder
                 .add(configBuilder
                         .newAppender(appenderName, "File")
-                        .addAttribute(
+                        .setAttribute(
                                 "fileName", appenderFilepath.toAbsolutePath().toString())
-                        .addAttribute("append", false)
-                        .addAttribute("immediateFlush", false)
-                        .addAttribute("ignoreExceptions", false)
+                        .setAttribute("append", false)
+                        .setAttribute("immediateFlush", false)
+                        .setAttribute("ignoreExceptions", false)
                         .add(configBuilder
                                 .newLayout("JsonTemplateLayout")
-                                .addAttribute("eventTemplate", eventTemplateJson)
-                                .addAttribute("recyclerFactory", recyclerFactory)))
+                                .setAttribute("eventTemplate", eventTemplateJson)
+                                .setAttribute("recyclerFactory", recyclerFactory)))
                 .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName)))
                 .build(false);
 

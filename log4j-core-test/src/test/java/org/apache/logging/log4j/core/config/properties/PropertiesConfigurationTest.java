@@ -21,9 +21,13 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,13 +36,18 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.filter.MarkerFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
@@ -167,5 +176,48 @@ class PropertiesConfigurationTest {
         assertEquals(2, firstEvents.size());
         final List<LogEvent> thirdEvents = third.getEvents();
         assertEquals(1, thirdEvents.size());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testFilterAttributeSpelledWithDifferentCase(final ListStatusListener listener) throws URISyntaxException {
+        final URL configLocation = getClass().getResource("/log4j2-properties-filter-attribute-case.properties");
+        assertNotNull(configLocation);
+        final Configuration config =
+                PropertiesConfigurationFactory.getInstance().getConfiguration(null, null, configLocation.toURI());
+        assertNotNull(config);
+        config.initialize();
+
+        final LoggerConfig loggerConfig = config.getLoggers().get("com.example.rules");
+        assertNotNull(loggerConfig, "No LoggerConfig for `com.example.rules`");
+        final MarkerFilter filter = assertInstanceOf(MarkerFilter.class, loggerConfig.getFilter());
+        assertEquals(Filter.Result.DENY, filter.getOnMatch(), "Incorrect `onMatch`");
+        assertEquals(Filter.Result.ACCEPT, filter.getOnMismatch(), "Incorrect `onMismatch`");
+
+        final List<String> messages = listener.findStatusData(Level.WARN)
+                .map(statusData -> statusData.getMessage().getFormattedMessage())
+                .collect(Collectors.toList());
+        assertTrue(
+                messages.stream().noneMatch(message -> message.contains("invalid element or attribute")),
+                () -> "Unexpected status logger messages: " + messages);
+    }
+
+    @LoggerContextSource("log4j2-unresolved-layout.properties")
+    void testUnresolvedLayoutDoesNotFailConfiguration(final Configuration config, final ListStatusListener listener) {
+        assertEquals(LifeCycle.State.STARTED, config.getState());
+        assertTrue(
+                listener.findStatusData(Level.ERROR).anyMatch(data -> data.getMessage()
+                        .getFormattedMessage()
+                        .contains("Unable to locate plugin for ThisLayoutDoesNotExist")),
+                "Unresolved layout was not reported");
+        assertTrue(
+                listener.getStatusData()
+                        .map(StatusData::getThrowable)
+                        .noneMatch(NullPointerException.class::isInstance),
+                "Unresolved layout caused a NullPointerException");
+        final Appender appender = config.getAppender("StdOut");
+        assertNotNull(appender, "Appender was not created");
+        assertInstanceOf(ConsoleAppender.class, appender);
+        assertNotNull(appender.getLayout(), "No default layout");
     }
 }
