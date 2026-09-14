@@ -16,468 +16,848 @@
 ////
 = Architecture
 
-== Main Components
+Log4j Core is the reference implementation of xref:manual/api.adoc[] and composed of several components.
+In this section we will try to explain major pillars its architecture stands on.
+An overview these major classes can be depicted as follows:
 
-Log4j uses the classes shown in the diagram below.
+[#architecture-diagram]
+.An overview of major classes and their relation
+[plantuml]
+....
+@startuml
 
-image:Log4jClasses.jpg[Log4j 2 Class Relationships,title="Log4j 2 Class Relationships"]
+class LoggerContext {
+  Configuration config
+  Logger[] loggers
+  Logger getLogger(String name)
+}
 
-Applications using the Log4j 2 API will request a Logger with a specific
-name from the LogManager. The LogManager will locate the appropriate
-LoggerContext and then obtain the Logger from it. If the Logger must be
-created it will be associated with the LoggerConfig that contains either
-a) the same name as the Logger, b) the name of a parent package, or c)
-the root LoggerConfig. LoggerConfig objects are created from Logger
-declarations in the configuration. The LoggerConfig is associated with
-the Appenders that deliver the LogEvents.
+note left of LoggerContext {
+  Anchor for the logging system
+}
 
-[id=logger-hierarchy]
-=== Logger Hierarchy
+LoggerContext --> "0..*" Logger
 
-The first and foremost advantage of any logging API over plain
-`System.out.println()` resides in its ability to disable certain log
-statements while allowing others to print unhindered. This capability
-assumes that the logging space, that is, the space of all possible
-logging statements, is categorized according to some developer-chosen
-criteria.
+package "Configuration" as c {
 
-In Log4j 1.x the Logger Hierarchy was maintained through a relationship
-between Loggers. In Log4j 2 this relationship no longer exists. Instead,
-the hierarchy is maintained in the relationship between LoggerConfig
-objects.
+    class Configuration {
+      Appender[] appenders
+      Filter[] filters
+      LoggerConfig[] loggerConfigs
+      LoggerConfig getLoggerConfig(String name)
+      StrSubstitutor substitutor
+    }
 
-Loggers and LoggerConfigs are named entities. Logger names are
-case-sensitive and they follow the hierarchical naming rule:
+    note left of Configuration
+      Encapsulates components compiled
+      from a user-provided configuration
+      file (e.g., `log4j2.xml`)
+    end note
 
-Named Hierarchy::
-A LoggerConfig is said to be an _ancestor_ of another LoggerConfig if
-its name followed by a dot is a prefix of the _descendant_ logger
-name. A LoggerConfig is said to be a _parent_ of a _child_
-LoggerConfig if there are no ancestors between itself and the
-descendant LoggerConfig.
+    Configuration --> Filter
 
-For example, the LoggerConfig named `"com.foo"` is a parent of the
-LoggerConfig named `"com.foo.Bar"`. Similarly, `"java"` is a parent of
-`"java.util"` and an ancestor of `"java.util.Vector"`. This naming
-scheme should be familiar to most developers.
+    Configuration --> "0..*" Appender
 
-The root LoggerConfig resides at the top of the LoggerConfig hierarchy.
-It is exceptional in that it always exists and it is part of every
-hierarchy. A Logger that is directly linked to the root LoggerConfig can
-be obtained as follows:
+    Configuration --> "0..*" LoggerConfig
 
-[source,java]
-----
-Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
-----
+    Configuration --> StrSubstitutor
 
-Alternatively, and more simply:
+    class Appender {
+      AbstractManager manager
+      Layout layout
+      Filter filter
+      void append(LogEvent)
+    }
 
-[source,java]
-----
-Logger logger = LogManager.getRootLogger();
-----
+    Appender --> Layout
 
-All other Loggers can be retrieved using the
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)[`LogManager.getLogger`]
-static method by passing the name of the desired Logger. Further
-information on the Logging API can be found in the
-xref:manual/api.adoc[Log4j API].
+    Appender --> Filter
 
-=== LoggerContext
+    class Layout {
+      byte[] encode(LogEvent)
+    }
 
-The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/LoggerContext.html[`LoggerContext`]
-acts as the anchor point for the Logging system. However, it is possible
-to have multiple active LoggerContexts in an application depending on
-the circumstances. More details on the LoggerContext are in the
-xref:manual/logsep.adoc[Log Separation] section.
+    class Filter {
+      Result filter(LogEvent)
+    }
 
-=== Configuration
+    note right of Filter
+      Note that a `Filter` can
+      be provided at 4 levels:
+      1. `Configuration`
+      2. `LoggerConfig`
+      3. `AppenderControl`
+      4. `Appender`
+    end note
 
-Every LoggerContext has an active
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`].
-The Configuration contains all the Appenders, context-wide Filters,
-LoggerConfigs and contains the reference to the StrSubstitutor.
-During reconfiguration, two Configuration objects will exist. Once all Loggers
-have been redirected to the new Configuration, the old Configuration
-will be stopped and discarded.
+    class LoggerConfig {
+      AppenderControl[] appenderControls
+      Level level
+      Filter filter
+      void log(LogEvent)
+    }
 
-=== Logger
+    LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
 
-As stated previously, Loggers are created by calling
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html#getLogger(java.lang.String)[`LogManager.getLogger`].
-The Logger itself performs no direct actions. It simply has a name and
-is associated with a LoggerConfig. It extends
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/AbstractLogger.html[`AbstractLogger`]
-and implements the required methods. As the configuration is modified
-Loggers may become associated with a different LoggerConfig, thus
-causing their behavior to be modified.
+    LoggerConfig --> Filter
 
-Retrieving Loggers
+    class AppenderControl {
+      Appender appender
+      Filter filter
+      void append(LogEvent)
+    }
 
-Calling the `LogManager.getLogger` method with the same name will always
-return a reference to the same Logger object.
+    note right of AppenderControl
+      Decorates an `Appender`
+      with a `Filter`
+    end note
 
-For example, in
+    AppenderControl -[#green,thickness=6]-> Appender
 
-[source,java]
-----
-Logger x = LogManager.getLogger("wombat");
-Logger y = LogManager.getLogger("wombat");
-----
+    AppenderControl --> Filter
 
-`x` and `y` refer to _exactly_ the same Logger object.
+    class StrSubstitutor {
+      Interpolator interpolator
+      String replace(String input)
+    }
 
-Configuration of the log4j environment is typically done at application
-initialization. The preferred way is by reading a configuration file.
-This is discussed in xref:manual/configuration.adoc[Configuration].
+    note right of StrSubstitutor
+      Responsible for
+      property substitution
+      (e.g., `${env:USER}`)
+    end note
 
-Log4j makes it easy to name Loggers by _software component_. This can be
-accomplished by instantiating a Logger in each class, with the logger
-name equal to the fully qualified name of the class. This is a useful
-and straightforward method of defining loggers. As the log output bears
-the name of the generating Logger, this naming strategy makes it easy to
-identify the origin of a log message. However, this is only one
-possible, albeit common, strategy for naming loggers. Log4j does not
-restrict the possible set of loggers. The developer is free to name the
-loggers as desired.
+    StrSubstitutor --> Interpolator
 
-Since naming Loggers after their owning class is such a common idiom,
-the convenience method `LogManager.getLogger()` is provided to
-automatically use the calling class's fully qualified class name as the
-Logger name.
+    class Interpolator {
+      StrLookup[] lookups
+      String lookup(String input)
+    }
 
-Nevertheless, naming loggers after the class where they are located
-seems to be the best strategy known so far.
+    Interpolator --> "0..*" StrLookup
 
-[#loggerconfig]
-=== LoggerConfig
+    class StrLookup {
+      String lookup(String input)
+    }
+}
 
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`]
-objects are created when Loggers are declared in the logging
-configuration. The LoggerConfig contains a set of Filters that must
-allow the LogEvent to pass before it will be passed to any Appenders. It
-contains references to the set of Appenders that should be used to
-process the event.
+LoggerContext --> Configuration
 
-==== Log Levels
+class Logger {
+  void log(Level level, Message message)
+}
 
-LoggerConfigs will be assigned a Log
-{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Level.html[`Level`].
-The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
-FATAL, and OFF. Log4j 2 also supports {log4j2-url}/manual/customloglevels.adoc[custom log
-levels]. Another mechanism for getting more granularity is to use
-{log4j2-url}/manual/markers.adoc[markers] instead. The OFF and ALL
-levels are not intended to be used on calls to the logging API.
-Specifying OFF in the configuration implies no logging events should
-match while specifying ALL would mean all events match, including custom
-events. However, OFF can be used on logging API calls in special cases
-where the event should always be logged regardless of the configuration.
-However, it is generally recommended that a Marker with a corresponding
-global Marker Filter be used instead.
+note right of Logger
+  The main API entry point
+  users interact with
+end note
 
-{logging-services-url}/log4j/1.x/manual.html[Log4j 1] and
-{logback-url}/manual/architecture.html#effectiveLevel[Logback]
-both have the concept of "Level Inheritance". In Log4j 2, Loggers and
-LoggerConfigs are two different objects so this concept is implemented
-differently. Each Logger references the appropriate LoggerConfig which
-in turn can reference its parent, thus achieving the same effect.
+Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
 
-Below are five tables with various assigned level values and the
-resulting levels that will be associated with each Logger. Note that in
-all these cases if the root LoggerConfig is not configured a default
-Level will be assigned to it.
+class AbstractManager {
+}
 
-.Example 1
-[cols=",,,",options="header",]
-|====================================================================
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |Logger Level
+Appender -[#green,thickness=6]-> AbstractManager
+
+@enduml
+....
+
+At a really high level,
+
+* A <<LoggerContext>>, the composition anchor, gets created in combination with a <<Configuration>>.
+Both can be created either directly (i.e., programmatically) or indirectly at first interaction with Log4j.
+* `LoggerContext` creates <<Logger>>s that users interact with for logging purposes.
+* <<Appender>> delivers a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] to a target (file, socket, database, etc.) and typically uses a <<Layout>> to encode log events and an <<AbstractManager>> to handle the lifecycle of the target resource.
+* <<LoggerConfig>> encapsulates configuration for a `Logger`, as `AppenderControl` and `AppenderRef` for ``Appender``s.
+* <<Configuration>> is equipped with <<StrSubstitutor>> to allow property substitution in `String`-typed values.
+* A typical `log()` call triggers a chain of invocations through classes `Logger`, `LoggerConfig`, `AppenderControl`, `Appender`, and `AbstractManager` in order – this is depicted using green arrows in xref:architecture-diagram[xrefstyle=short].
+
+Following sections examine this interplay in detail.
+
+[#LoggerContext]
+== `LoggerContext`
+
+The {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/spi/LoggerContext.html[`LoggerContext`] acts as the anchor point for the logging system.
+It is associated with an active <<Configuration>> and is primarily responsible for instantiating <<Logger>>s.
+
+[#LoggerContext-diagram]
+.`LoggerContext` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class LoggerContext #line.bold {
+  Configuration config
+  Logger[] loggers
+  Logger getLogger(String name)
+}
+
+LoggerContext --> Configuration
+
+LoggerContext --> "0..*" Logger
+
+class Configuration {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+class Logger {
+  void log(Level level, Message message)
+}
+
+@enduml
+....
+
+In most cases, applications have a single global `LoggerContext`.
+Though in certain cases (e.g., Java EE applications), Log4j can be configured to accommodate multiple ``LoggerContext``s.
+Refer to xref:manual/logsep.adoc[] for details.
+
+[#Configuration]
+== `Configuration`
+
+Every <<LoggerContext>> is associated with an active link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`].
+It models the configuration of all appenders, layouts, filters, loggers, and contains the reference to <<StrSubstitutor>>.
+
+[#Configuration-diagram]
+.`Configuration` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class LoggerContext {
+  Configuration config
+  Logger[] loggers
+  Logger getLogger(String name)
+}
+
+LoggerContext --> Configuration
+
+class Configuration #line.bold {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+Configuration --> "0..*" Filter
+
+Configuration --> "0..*" Appender
+
+Configuration --> "0..*" LoggerConfig
+
+Configuration --> StrSubstitutor
+
+class Appender {
+  Layout layout
+  void append(LogEvent)
+}
+
+class Filter {
+  Result filter(LogEvent)
+}
+
+class LoggerConfig {
+  AppenderRef[] appenderRefs
+  AppenderControl[] appenderControls
+  Level level
+  Filter filter
+  void log(LogEvent)
+}
+
+class StrSubstitutor {
+  Interpolator interpolator
+  String replace(String input)
+}
+@enduml
+....
+
+Configuration of Log4j Core is typically done at application initialization.
+The preferred way is by reading a xref:manual/configuration.adoc[configuration file], but it can also be done xref:manual/customconfig.adoc[programmatically].
+This is further discussed in xref:manual/config-intro.adoc[].
+
+[#reconfiguration]
+=== Reconfiguration reliability
+
+The main motivation for the existing architecture is the reliability to configuration changes.
+When a reconfiguration event occurs, two `Configuration` instances are active at the same time.
+Threads that already started processing a log event will either:
+
+* continue logging to the old configuration, if execution already reached the `LoggerConfig` class,
+* or switch to the new configuration.
+
+The service that manages the reconfiguration process is called link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/ReliabilityStrategy.html[`ReliabilityStrategy`] and it decides:
+
+* when should ``Logger``s switch to the new configuration,
+* when should the old configuration be stopped.
+
+.Overview of the reconfiguration process
+[plantuml]
+....
+@startuml
+left to right direction
+
+package LoggerContext {
+    object Logger
+
+    package "New Configuration" as c2 {
+        object "LoggerConfig" as lc2
+        object "AppenderControl" as ac2
+        object "Appender" as app2
+    }
+
+    package "Old Configuration" as c1 {
+        object "LoggerConfig" as lc1
+        object "AppenderControl" as ac1
+        object "Appender" as app1
+    }
+}
+
+object AbstractManager
+
+Logger ..> lc1
+lc1 --> ac1
+ac1 --> app1
+app1 --> AbstractManager
+
+Logger --> lc2
+lc2 --> ac2
+ac2 --> app2
+app2 --> AbstractManager
+@enduml
+....
+
+[#Logger]
+== `Logger`
+
+{log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/Logger.html[`Logger`]s are the primary user entry point for logging.
+They are created by calling one of the `getLogger()` methods of {log4j2-url}/javadoc/log4j-api/org/apache/logging/log4j/LogManager.html[`LogManager`] – this is further documented in xref:manual/api.adoc[].
+The `Logger` itself performs no direct actions.
+It simply has a name and is associated with a <<LoggerConfig>>.
+
+[#Logger-diagram]
+.`Logger` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class LoggerContext {
+  Configuration config
+  Logger[] loggers
+  Logger getLogger(String name)
+}
+
+LoggerContext --> "0..*" Logger
+
+class LoggerConfig {
+  AppenderRef[] appenderRefs
+  AppenderControl[] appenderControls
+  Level level
+  Filter filter
+  void log(LogEvent)
+}
+
+class Logger #line.bold {
+  void log(Level level, Message message)
+}
+
+Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
+
+@enduml
+....
+
+The hierarchy between <<LoggerConfig>>s, implies the very same hierarchy between ``Logger``s too.
+You can use `LogManager.getRootLogger()` to get the root logger.
+Note that Log4j API has no assumptions on a `Logger` hierarchy – this is a feature implemented by Log4j Core.
+
+When the <<Configuration>> is modified, ``Logger``s may become associated with a different `LoggerConfig`, thus causing their behavior to be modified.
+Refer to xref:manual/configuration.adoc#configuring-loggers[configuring ``Logger``s] for further information.
+
+[#LoggerConfig]
+== `LoggerConfig`
+
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/LoggerConfig.html[`LoggerConfig`] binds <<Logger>> definitions to their associated components (appenders, filters, etc.) as declared in the active <<Configuration>>.
+The details of mapping a `Configuration` to ``LoggerConfig``s is explained xref:manual/configuration.adoc#configuring-loggers[here].
+``Logger``s effectively interact with appenders, filters, etc. through corresponding ``LoggerConfig``s.
+A `LoggerConfig` essentially contains
+
+* A reference to its parent (except if it is the root logger)
+* A {log4j2-url}/manual/customloglevels.html[level] denoting the severity of messages that are accepted (defaults to `ERROR`)
+* <<Filter>>s that must allow the `LogEvent` to pass before it will be passed to any <<Appender>>s
+* References to <<Appender>>s that should be used to process the event
+
+[#LoggerConfig-diagram]
+.`LoggerConfig` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class Configuration {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+Configuration --> "0..*" LoggerConfig
+
+class Filter {
+  Result filter(LogEvent)
+}
+
+class LoggerConfig #line.bold {
+  AppenderRef[] appenderRefs
+  AppenderControl[] appenderControls
+  Level level
+  Filter filter
+  void log(LogEvent)
+}
+
+LoggerConfig --> "0..*" AppenderRef
+
+LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
+
+LoggerConfig --> Filter
+
+class AppenderRef {
+  String appenderName
+  Level level
+  Filter filter
+}
+
+class AppenderControl {
+  Appender appender
+  Filter filter
+  void append(LogEvent)
+}
+
+class Logger {
+  void log(Level level, Message message)
+}
+
+Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
+
+@enduml
+....
+
+[#logger-hiearchy]
+=== Logger hierarchy
+
+Log4j Core has a *hierarchical* model of ``LoggerConfig``s, and hence ``Logger``s.
+A `LoggerConfig` called `child` is said to be parented by `parent`, if `parent` has the _longest prefix match_ on name.
+This match is case-sensitive and performed after tokenizing the name by splitting it from `.` (dot) characters.
+For a positive name match, tokens must match exhaustively.
+See xref:#logger-hiearchy-diagram[xrefstyle=short] for an example.
+
+[#logger-hiearchy-diagram]
+.Example hierarchy of loggers named `X`, `X.Y`, `X.Y.Z`, and `X.YZ`
+[plantuml]
+....
+@startmindmap
+* root
+** X
+*** X.Y
+**** X.Y.Z
+*** X.YZ
+@endmindmap
+....
+
+If a `LoggerConfig` is not provided an explicit level, it will be inherited from its parent.
+Similarly, if a user programmatically requests a `Logger` with a name that doesn't have a directly corresponding `LoggerConfig` configuration entry with its name, the `LoggerConfig` of the parent will be used.
+
+.Click for examples on `LoggerConfig` hierarchy
+[%collapsible]
+====
+Below we demonstrate the `LoggerConfig` hierarchy by means of _level inheritance_.
+That is, we will examine the effective level of a `Logger` in various `LoggerConfig` settings.
+
+.Only the root logger is configured with a level, and it is `DEBUG`
+[%header,cols="1m,1m,1m,1m"]
+|===
+|Logger name |Assigned `LoggerConfig` name |Configured level |Effective level
 |root |root |DEBUG |DEBUG
-|X |root |DEBUG |DEBUG
-|X.Y |root |DEBUG |DEBUG
-|X.Y.Z |root |DEBUG |DEBUG
-|====================================================================
+|X |root | |DEBUG
+|X.Y |root | |DEBUG
+|X.Y.Z |root | |DEBUG
+|===
 
-In example 1 above, only the root logger is configured and has a Log
-Level. All the other Loggers reference the root LoggerConfig and use its
-Level.
-
-.Example 2
-[cols=",,,",options="header",]
-|=============================================================
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |Level
+.All loggers are configured with a level
+[%header,cols="1m,1m,1m,1m"]
+|===
+|Logger name |Assigned `LoggerConfig` |Configured level |Effective level
 |root |root |DEBUG |DEBUG
 |X |X |ERROR |ERROR
 |X.Y |X.Y |INFO |INFO
 |X.Y.Z |X.Y.Z |WARN |WARN
-|=============================================================
+|===
 
-In example 2, all loggers have a configured LoggerConfig and obtain
-their Level from it.
-
-.Example 3
-[cols=",,,",options="header",]
-|=============================================================
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |Level
+.All loggers are configured with a level, except the logger `X.Y`
+[%header,cols="1m,1m,1m,1m"]
+|===
+|Logger name |Assigned `LoggerConfig` |Configured level |Effective level
 |root |root |DEBUG |DEBUG
 |X |X |ERROR |ERROR
-|X.Y |X |ERROR |ERROR
+|X.Y |X | |ERROR
 |X.Y.Z |X.Y.Z |WARN |WARN
-|=============================================================
+|===
 
-In example 3, the loggers`root`, `X` and `X.Y.Z` each have a configured
-LoggerConfig with the same name. The Logger `X.Y` does not have a
-configured LoggerConfig with a matching name so uses the configuration
-of LoggerConfig `X` since that is the LoggerConfig whose name has the
-the longest match to the start of the Logger's name.
-
-.Example 4
-[cols=",,,",options="header",]
-|=============================================================
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |level
+.All loggers are configured with a level, except loggers `X.Y` and `X.Y.Z`
+[%header,cols="1m,1m,1m,1m"]
+|===
+|Logger name |Assigned `LoggerConfig` |Configured level |Effective level
 |root |root |DEBUG |DEBUG
 |X |X |ERROR |ERROR
-|X.Y |X |ERROR |ERROR
-|X.Y.Z |X |ERROR |ERROR
-|=============================================================
+|X.Y |X | |ERROR
+|X.Y.Z |X | |ERROR
+|===
 
-In example 4, the loggers `root` and `X` each have a Configured
-LoggerConfig with the same name. The loggers `X.Y` and `X.Y.Z` do not
-have configured LoggerConfigs and so get their Level from the
-LoggerConfig assigned to them, `X`, since it is the LoggerConfig whose
-name has the longest match to the start of the Logger's name.
-
-.Example 5
-[cols=",,,",options="header",]
-|=============================================================
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |level
+.All loggers are configured with a level, except the logger `X.YZ`
+[%header,cols="1m,1m,1m,1m"]
+|===
+|Logger name |Assigned `LoggerConfig` |Configured level |Effective level
 |root |root |DEBUG |DEBUG
 |X |X |ERROR |ERROR
 |X.Y |X.Y |INFO |INFO
-|X.YZ |X |ERROR |ERROR
-|=============================================================
-
-In example 5, the loggers `root`.`X`, and `X.Y` each has a configured
-LoggerConfig with the same name. The logger `X.YZ` does not have
-configured LoggerConfig and so gets its Level from the LoggerConfig
-assigned to it, `X`, since it is the LoggerConfig whose name has the
-longest match to the start of the Logger's name. It is not associated
-with LoggerConfig `X.Y` since tokens after periods must match exactly.
-
-.Example 6
-[cols=4*,options="header"]
+|X.YZ |X | |ERROR
 |===
-|Logger Name |Assigned LoggerConfig |LoggerConfig Level |Level
-|root |root |DEBUG |DEBUG
-|X |X |ERROR |ERROR
-|X.Y |X.Y | |ERROR
-|X.Y.Z |X.Y | |ERROR
-|===
+====
 
-In example 6, LoggerConfig X.Y has no configured level so it inherits
-its level from LoggerConfig X. Logger X.Y.Z uses LoggerConfig X.Y since
-it doesn't have a LoggerConfig with a name that exactly matches. It too
-inherits its logging level from LoggerConfig X.
+For further information on log levels and using them for filtering purposes in a configuration, see {log4j2-url}/manual/customloglevels.html[Levels].
 
-The table below illustrates how Level filtering works. In the table,
-the vertical header shows the Level of the LogEvent, while the horizontal
-header shows the Level associated with the appropriate LoggerConfig. The
-intersection identifies whether the LogEvent would be allowed to pass
-for further processing (Yes) or discarded (No).
+[#Filter]
+== `Filter`
 
-[cols=8*,options="header"]
-|===
-|Event Level
-7+|LoggerConfig Level
+In addition to <<LoggerConfig,the level-based filtering facilitated by `LoggerConfig`>>, Log4j provides link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[`Filter`]s to evaluate the parameters of a logging call (i.e., context-wide filter) or a log event, and decide if it should be processed further in the pipeline.
 
-|  |`TRACE` |`DEBUG` |`INFO` |`WARN` |`ERROR` |`FATAL` |`OFF`
-
-|`ALL` |❌ |❌ |❌ |❌ |❌ |❌ |❌
-
-|`TRACE` |✅ |❌ |❌ |❌ |❌ |❌ |❌
-
-|`DEBUG` |✅ |✅ |❌ |❌ |❌ |❌ |❌
-
-|`INFO` |✅ |✅ |✅ |❌ |❌ |❌ |❌
-
-|`WARN` |✅ |✅ |✅ |✅ |❌ |❌ |❌
-
-|`ERROR` |✅ |✅ |✅ |✅ |✅ |❌ |❌
-
-|`FATAL` |✅ |✅ |✅ |✅ |✅ |✅ |❌
-
-|`OFF` |✅ |✅ |✅ |✅ |✅ |✅ |✅
-|===
-
-=== Filter
-
-In addition to the automatic log Level filtering that takes place as
-described in the previous section, Log4j provides
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/Filter.html[`Filter`]s
-that can be applied before control is passed to any LoggerConfig, after
-control is passed to a LoggerConfig but before calling any Appenders,
-after control is passed to a LoggerConfig but before calling a specific
-Appender, and on each Appender. In a manner very similar to firewall
-filters, each Filter can return one of three results, `Accept`, `Deny`
-or `Neutral`. A response of `Accept` means that no other Filters should
-be called and the event should progress. A response of `Deny` means the
-event should be immediately ignored and control should be returned to
-the caller. A response of `Neutral` indicates the event should be passed
-to other Filters. If there are no other Filters the event will be
-processed.
-
-Although an event may be accepted by a Filter the event still might not
-be logged. This can happen when the event is accepted by the
-pre-LoggerConfig Filter but is then denied by a LoggerConfig filter or
-is denied by all Appenders.
-
-=== Appender
-
-The ability to selectively enable or disable logging requests based on
-their logger is only part of the picture. Log4j allows logging requests
-to print to multiple destinations. In log4j speak, an output destination
-is called an
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`].
-Currently, appenders exist for the console, files, remote socket
-servers, Apache Flume, remote UNIX Syslog daemons, and various
-database APIs. See the section on xref:manual/appenders.adoc[Appenders] for
-more details on the various types available. More than one Appender can
-be attached to a Logger.
-
-An Appender can be added to a Logger by calling the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)[`addLoggerAppender`]
-method of the current Configuration. If a LoggerConfig matching the name
-of the Logger does not exist, one will be created, and the Appender will be
-attached to it and then all Loggers will be notified to update their
-LoggerConfig references.
-
-*Each enabled logging request for a given logger will be forwarded to
-all the appenders in that Logger's LoggerConfig as well as the Appenders
-of the LoggerConfig's parents.* In other words, Appenders are inherited
-additively from the LoggerConfig hierarchy. For example, if a console
-appender is added to the root logger, then all enabled logging requests
-will at least print on the console. If in addition a file appender is
-added to a LoggerConfig, say _C_, then enabled logging requests for _C_
-and _C_'s children will print in a file _and_ on the console. It is
-possible to override this default behavior so that Appender accumulation
-is no longer additive by setting `additivity="false"` on the Logger
-declaration in the configuration file.
-
-The rules governing appender additivity are summarized below.
-
-Appender Additivity::
-The output of a log statement of Logger _L_ will go to all the
-Appenders in the LoggerConfig associated with _L_ and the ancestors of
-that LoggerConfig. This is the meaning of the term "appender
-additivity".
-+
-However, if an ancestor of the LoggerConfig associated with Logger
-_L_, say _P_, has the additivity flag set to `false`, then _L_'s
-output will be directed to all the appenders in _L_'s LoggerConfig and
-it's ancestors up to and including _P_ but not the Appenders in any of
-the ancestors of _P_.
-+
-Loggers have their additivity flag set to `true` by default.
-
-The table below shows an example:
-
-|===
-|Logger Name |Added Appenders |Additivity Flag |Output Targets |Comment
-
-|root
-|A1
-|not applicable
-|A1
-|The root logger has no parent so additivity does not apply to it.
-
-|x
-|A-x1, A-x2
-|true
-|A1, A-x1, A-x2
-|Appenders of "x" and root.
-
-|x.y
-|none
-|true
-|A1, A-x1, A-x2
-|Appenders of "x" and root. It would not be typical to configure a Logger with no Appenders.
-
-|x.y.z
-|A-xyz1
-|true
-|A1, A-x1, A-x2, A-xyz1
-|Appenders in "x.y.z", "x" and root.
-
-|security
-|A-sec
-|false
-|A-sec
-|No appender accumulation since the additivity flag is set to `false`.
-
-|security.access
-|none
-|true
-|A-sec
-|Only appenders of "security" because the additivity flag in "security" is set to `false`.
-|===
-
-=== Layout
-
-More often than not, users wish to customize not only the output
-destination but also the output format. This is accomplished by
-associating a
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[`Layout`]
-with an Appender. The Layout is responsible for formatting the LogEvent
-according to the user's wishes, whereas an appender takes care of
-sending the formatted output to its destination. The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/PatternLayout.html[`PatternLayout`],
-part of the standard log4j distribution, lets the user specify the
-output format according to conversion patterns similar to the C language
-`printf()` function.
-
-For example, the PatternLayout with the conversion pattern "%r [%t] %-5p
-%c - %m%n" will output something akin to:
-
+[#Filter-diagram]
+.`Filter` and other directly related classes
+[plantuml]
 ....
-176 [main] INFO  org.foo.Bar - Located nearest gas station.
+@startuml
+
+class Configuration {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+Configuration --> "0..*" Filter
+
+Configuration --> "0..*" LoggerConfig
+
+class Filter #line.bold {
+  Result filter(LogEvent)
+}
+
+class LoggerConfig {
+  AppenderRef[] appenderRefs
+  AppenderControl[] appenderControls
+  Level level
+  Filter filter
+  void log(LogEvent)
+}
+
+LoggerConfig --> "0..*" AppenderRef
+
+LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
+
+LoggerConfig --> Filter
+
+class AppenderRef {
+  String appenderName
+  Level level
+  Filter filter
+}
+
+AppenderRef --> Filter
+
+AppenderControl --> Filter
+
+@enduml
 ....
 
-The first field is the number of milliseconds elapsed since the start of
-the program. The second field is the thread making the log request. The
-third field is the level of the log statement. The fourth field is the
-name of the logger associated with the log request. The text after the
-'-' is the message of the statement.
+Refer to xref:manual/filters.adoc[] for further information.
 
-Log4j comes with many different xref:manual/layouts.adoc[Layouts] for various
-use cases such as JSON, XML, HTML, and Syslog (including the new RFC
-5424 version). Other appenders such as the database connectors fill in
-specified fields instead of a particular textual layout.
+[#Appender]
+== `Appender`
 
-Just as importantly, log4j will render the content of the log message
-according to user-specified criteria. For example, if you frequently
-need to log `Oranges`, an object type used in your current project, then
-you can create an OrangeMessage that accepts an Orange instance and pass
-that to Log4j so that the Orange object can be formatted into an
-appropriate byte array when required.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html[`Appender`]s are responsible for delivering a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] to a certain target; console, file, database, etc.
+While doing so, they typically use <<Layout>>s to encode the log event.
+See xref:manual/appenders.adoc[] for the complete guide.
+
+[#Appender-diagram]
+.`Appender` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class Configuration {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+Configuration --> "0..*" Filter
+
+Configuration --> "0..*" Appender
+
+Configuration --> "0..*" LoggerConfig
+
+class Appender #line.bold {
+  Layout layout
+  void append(LogEvent)
+}
+
+Appender -[#green,thickness=6]-> Layout
+
+class Layout {
+  byte[] encode(LogEvent)
+}
+
+class Filter {
+  Result filter(LogEvent)
+}
+
+class LoggerConfig {
+  AppenderRef[] appenderRefs
+  AppenderControl[] appenderControls
+  Level level
+  Filter filter
+  void log(LogEvent)
+}
+
+LoggerConfig --> "0..*" AppenderRef
+
+LoggerConfig -[#green,thickness=6]-> "0..*" AppenderControl
+
+LoggerConfig --> Filter
+
+class AppenderRef {
+  String appenderName
+  Level level
+  Filter filter
+}
+
+AppenderRef --> Filter
+
+class AppenderControl {
+  Appender appender
+  Filter filter
+  void append(LogEvent)
+}
+
+AppenderControl -[#green,thickness=6]-> Appender
+
+AppenderControl --> Filter
+
+@enduml
+....
+
+An `Appender` can be added to a <<Logger>> by calling the link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/Configuration.html#addLoggerAppender(org.apache.logging.log4j.core.Logger,%20org.apache.logging.log4j.core.Appender)[`addLoggerAppender()`] method of the current <<Configuration>>.
+If a <<LoggerConfig>> matching the name of the `Logger` does not exist, one will be created, and the `Appender` will be  attached to it, and then all ``Logger``s will be notified to update their `LoggerConfig` references.
+
+[#appender-additivity]
+=== Appender additivity
+
+Each enabled logging request for a given logger will be forwarded to all the appenders in the corresponding ``Logger``'s `LoggerConfig`, as well as to the ``Appender``s of the ``LoggerConfig``'s parents.
+In other words, ``Appender``s are inherited *additively* from the `LoggerConfig` hierarchy.
+For example, if a console appender is added to the root logger, then all enabled logging requests will at least print on the console.
+If in addition a file appender is added to a `LoggerConfig`, say `LC`, then enabled logging requests for `LC` and ``LC``'s children will print in a file _and_ on the console.
+It is possible to override this default behavior so that appender accumulation is no longer additive by setting `additivity` attribute to `false` on xref:manual/configuration.adoc#configuring-loggers[the `Logger` declaration in the configuration file].
+
+The output of a log statement of `Logger` `L` will go to all the appenders in the `LoggerConfig` associated with `L` and the ancestors of that `LoggerConfig`.
+However, if an ancestor of the `LoggerConfig` associated with `Logger`
+`L`, say `P`, has the additivity flag set to `false`, then ``L``'s output will be directed to all the appenders in ``L``'s `LoggerConfig` and it's ancestors up to and including `P` but not the appenders in any of the ancestors of `P`.
+
+.Click for an example on appender additivity
+[%collapsible]
+====
+[#appender-additivity-diagram]
+.Example hierarchy of logger configurations to demonstrate appender additivity
+[plantuml]
+....
+@startmindmap
+* root
+** A
+*** A.B1 (additivity=false)
+**** A.B1.C
+***** A.B1.C.D
+*** A.B2.C
+**** A.B2.C.D (additivity=false)
+@endmindmap
+....
+
+In xref:#appender-additivity-diagram[xrefstyle=short], the effective appenders for each logger configuration are as follows:
+
+.Effective appenders of logger configurations in xref:#appender-additivity-diagram[xrefstyle=short]
+[cols="1c,1c,1c,1c,1c,1c,1c"]
+|===
+.2+^.^h| Appender
+6+^.h|Logger configuration
+
+| `A`
+| `A.B1`
+| `A.B1.C`
+| `A.B1.C.D`
+| `A.B2.C`
+| `A.B2.C.D`
+
+| `root`
+| ✅
+| ✅
+| ✅
+| ✅
+| ✅
+| ❌
+
+| `A`
+| ✅
+| ❌
+| ❌
+| ❌
+| ✅
+| ❌
+
+| `A.B1`
+| -
+| ✅
+| ✅
+| ✅
+| -
+| -
+
+| `A.B1.C`
+| -
+| -
+| ✅
+| ✅
+| -
+| -
+
+| `A.B1.C.D`
+| -
+| -
+| -
+| ✅
+| -
+| -
+
+| `A.B2.C`
+| -
+| -
+| -
+| -
+| ✅
+| ❌
+
+| `A.B2.C.D`
+| -
+| -
+| -
+| -
+| -
+| ✅
+|===
+====
+
+[#AbstractManager]
+=== `AbstractManager`
+
+To multiplex the access to external resources (files, network connections, etc.), most appenders are split into an
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/AbstractManager.html[`AbstractManager`]
+that handles the low-level access to the external resource and an `Appender` that transforms log events into a format that the manager can handle.
+
+Managers that share the same resource are shared between appenders regardless of the `Configuration` or `LoggerContext` of the appenders.
+For example
+xref:manual/appenders.adoc#FileAppender[`FileAppender`]s
+with the same `fileName` attribute all share the same
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html[`FileManager`].
+
+[IMPORTANT]
+====
+Due to the manager-sharing feature of many Log4j appenders, it is not possible to configure multiple appenders for the same resource that only differ in the way the underlying resource is configured.
+
+For example, it is not possible to have two file appenders (even in different logger contexts) that use the same file, but a different value of the `append` option.
+Since during a <<reconfiguration,reconfiguration event>> multiple instances of the same appender exists, it is also not possible to toggle the value of the `append` option through reconfiguration.
+====
+
+[#Layout]
+== `Layout`
+
+An <<Appender>> uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
+
+[#Layout-diagram]
+.`Layout` and other directly related classes
+[plantuml]
+....
+@startuml
+
+class Appender {
+  Layout layout
+  void append(LogEvent)
+}
+
+Appender -[#green,thickness=6]-> Layout
+
+class Layout #line.bold {
+  byte[] encode(LogEvent)
+}
+
+@enduml
+....
+
+Refer to xref:manual/layouts.adoc[] for details.
 
 [#StrSubstitutor]
-=== StrSubstitutor and StrLookup
+== `StrSubstitutor` et al.
 
-The
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`]
-class and
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`]
-interface was borrowed from
-https://commons.apache.org/proper/commons-lang/[Apache Commons Lang] and
-then modified to support evaluating LogEvents. In addition the
-link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html[`Interpolator`]
-class was borrowed from Apache Commons Configuration to allow the
-StrSubstitutor to evaluate variables from multiple StrLookups. It
-too was modified to support evaluating LogEvents. Together these provide
-a mechanism to allow the configuration to reference variables coming
-from System Properties, the configuration file, the ThreadContext Map,
-StructuredData in the LogEvent. The variables can either be resolved
-when the configuration is processed or as each event is processed if
-the component is capable of handling it. See xref:manual/lookups.adoc[Lookups]
-for more information.
+link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrSubstitutor.html[`StrSubstitutor`] is a `String` interpolation tool that can be used in both configurations and components (e.g., appenders, layouts).
+It accepts an link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/Interpolator.html[`Interpolator`] to determine if a key maps to a certain value.
+`Interpolator` is essentially a facade delegating to multiple link:../javadoc/log4j-core/org/apache/logging/log4j/core/lookup/StrLookup.html[`StrLookup`] (aka. _lookup_) implementations.
+
+[#StrSubstitutor-diagram]
+.`StrSubstitutor` et al. and other directly related classes
+[plantuml]
+....
+@startuml
+
+class Configuration {
+  Appender[] appenders
+  Filter[] filters
+  LoggerConfig[] loggerConfigs
+  LoggerConfig getLoggerConfig(String name)
+  StrSubstitutor substitutor
+}
+
+Configuration --> StrSubstitutor
+
+class StrSubstitutor #line.bold {
+  Interpolator interpolator
+  String replace(String input)
+}
+
+StrSubstitutor --> Interpolator
+
+class Interpolator {
+  StrLookup[] lookups
+  String lookup(String input)
+}
+
+Interpolator --> "0..*" StrLookup
+
+class StrLookup {
+  String lookup(String input)
+}
+
+@enduml
+....
+
+See xref:manual/configuration.adoc#property-substitution[how property substitution works] and xref:manual/lookups.adoc[the predefined lookups] for further information.
