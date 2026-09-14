@@ -974,10 +974,13 @@ algorithm
 | https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/xz/package-summary.html[XZ] algorithm
 
 | [[RolloverStrategy-compress-zst]]`.zst` <<commons-compress-dep,^dep^>>
-| {x-mark}
+| {check-mark}
 | https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html[ZStandard] algorithm
 
 |===
+
+For Zstd (`.zst`), `compressionLevel` accepts the standard positive range up to the zstd library's own maximum, currently `[1, 22]` (enforced at runtime via `ZstdConstants.ZSTD_CLEVEL_MAX`, which may change with the underlying zstd-jni version). If unset, or if explicitly set to `-1`, the Zstd default level (currently `3`) is used.
+This mapping for the value `-1` specifically is provisional: if negative (fast-compression) Zstd levels are supported in a future release, an explicitly configured `compressionLevel=-1` will then be interpreted as a literal fast compression level rather than as the default, changing the resulting compression behavior.
 
 If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePattern`>> attribute is set, the current log file:
 
