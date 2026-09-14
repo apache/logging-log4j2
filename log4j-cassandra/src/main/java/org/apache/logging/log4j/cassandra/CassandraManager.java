@@ -81,8 +81,14 @@ public class CassandraManager extends AbstractDatabaseManager {
 
     @Override
     protected boolean shutdownInternal() throws Exception {
-        session.close();
-        cluster.close();
+        // session may be null if startupInternal failed (or was never called); cluster is created in the factory
+        try {
+            if (session != null) {
+                session.close();
+            }
+        } finally {
+            cluster.close();
+        }
         return true;
     }
 
