@@ -238,6 +238,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, level, marker, message, thrown);
+        initTranslatorThreadValues(translator);
         publish(translator);
     }
 
@@ -265,6 +266,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, location, level, marker, message, thrown);
+        initTranslatorThreadValues(translator);
         publish(translator);
     }
 
@@ -354,6 +356,13 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 CLOCK, //
                 nanoClock //
                 );
+    }
+
+    private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
+        // constant check should be optimized out when using default (CACHED)
+        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
+            translator.updateThreadValues();
+        }
     }
 
     /**
