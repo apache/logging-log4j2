@@ -36,6 +36,11 @@ on:
       - labeled
       - unlabeled
 
+# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Default permissions for each job.
 # Additional permissions should be assigned on a per-job basis.
 permissions: { }
