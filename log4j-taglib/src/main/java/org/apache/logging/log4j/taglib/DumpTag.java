@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * This class implements the {@code <log:dump>} tag.
@@ -60,8 +61,8 @@ public class DumpTag extends TagSupport {
                 final String name = names.nextElement();
                 final Object value = this.pageContext.getAttribute(name, this.scope);
 
-                this.pageContext.getOut().write("<dt><code>" + name + "</code></dt>");
-                this.pageContext.getOut().write("<dd><code>" + value + "</code></dd>");
+                this.pageContext.getOut().write("<dt><code>" + escapeHtml(name) + "</code></dt>");
+                this.pageContext.getOut().write("<dd><code>" + escapeHtml(String.valueOf(value)) + "</code></dd>");
             }
             this.pageContext.getOut().write("</dl>");
         } catch (final IOException e) {
@@ -69,5 +70,11 @@ public class DumpTag extends TagSupport {
         }
 
         return Tag.EVAL_PAGE;
+    }
+
+    private static String escapeHtml(final String value) {
+        final StringBuilder builder = new StringBuilder(value);
+        StringBuilders.escapeXml(builder, 0);
+        return builder.toString();
     }
 }
