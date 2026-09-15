@@ -18,8 +18,13 @@ package org.apache.logging.log4j.io;
 
 import java.io.InputStream;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 
 public class LoggerBufferedInputStreamTest extends LoggerInputStreamTest {
+
+    LoggerBufferedInputStreamTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected InputStream createInputStream() {
