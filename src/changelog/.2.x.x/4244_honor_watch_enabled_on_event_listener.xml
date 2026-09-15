@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="4244" link="https://github.com/apache/logging-log4j2/issues/4244"/>
+  <description format="asciidoc">
+    Honor `spring.cloud.config.watch.enabled` in `Log4j2EventListener` when it is created from `spring.factories`.
+  </description>
+</entry>
