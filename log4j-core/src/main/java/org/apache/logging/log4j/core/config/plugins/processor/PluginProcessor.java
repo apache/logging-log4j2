@@ -83,7 +83,7 @@ public class PluginProcessor extends AbstractProcessor {
      * </p>
      * <p>
      *     Accepted values (case-insensitive): {@code NOTE}, {@code WARNING}, {@code MANDATORY_WARNING},
-     *     {@code ERROR}, {@code OTHER}. Defaults to {@code NOTE}.
+     *     {@code ERROR}, {@code OTHER}. Defaults to {@code ERROR}.
      * </p>
      */
     static final String MIN_ALLOWED_MESSAGE_KIND_OPTION = "log4j.plugin.processor.minAllowedMessageKind";
@@ -97,7 +97,8 @@ public class PluginProcessor extends AbstractProcessor {
 
     private final List<Element> processedElements = new ArrayList<>();
     private final PluginCache pluginCache = new PluginCache();
-    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+    private static final Diagnostic.Kind DEFAULT_MIN_ALLOWED_MESSAGE_KIND = Diagnostic.Kind.ERROR;
+    private Diagnostic.Kind minAllowedMessageKind = DEFAULT_MIN_ALLOWED_MESSAGE_KIND;
 
     @Override
     public void init(final ProcessingEnvironment processingEnv) {
@@ -114,7 +115,7 @@ public class PluginProcessor extends AbstractProcessor {
                                 PluginProcessor.class.getName(),
                                 kindValue,
                                 MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                Diagnostic.Kind.NOTE,
+                                DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
                                 Arrays.toString(Diagnostic.Kind.values())));
             }
         }

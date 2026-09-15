@@ -84,7 +84,8 @@ public class GraalVmProcessor extends AbstractProcessor {
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
     private final List<Element> processedElements = new ArrayList<>();
     private Annotations annotationUtil;
-    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+    private static final Diagnostic.Kind DEFAULT_MIN_ALLOWED_MESSAGE_KIND = Diagnostic.Kind.ERROR;
+    private Diagnostic.Kind minAllowedMessageKind = DEFAULT_MIN_ALLOWED_MESSAGE_KIND;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -102,7 +103,7 @@ public class GraalVmProcessor extends AbstractProcessor {
                                 GraalVmProcessor.class.getName(),
                                 kindValue,
                                 PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                Diagnostic.Kind.NOTE,
+                                DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
                                 Arrays.toString(Diagnostic.Kind.values())));
             }
         }
