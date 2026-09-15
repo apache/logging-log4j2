@@ -19,6 +19,10 @@ package org.apache.logging.log4j.core.config.xml;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -27,13 +31,14 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
@@ -43,7 +48,7 @@ import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.w3c.dom.Attr;
@@ -52,8 +57,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSException;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
+import org.xml.sax.ext.EntityResolver2;
 
 /**
  * Creates a Node hierarchy from an XML file.
@@ -86,8 +98,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             final InputSource source = new InputSource(new ByteArrayInputStream(buffer));
             source.setSystemId(configSource.getLocation());
             final boolean xIncludeAware = PropertiesUtil.getProperties().getBooleanProperty(ENABLE_XINCLUDE_PROP);
-            final DocumentBuilder documentBuilder = newDocumentBuilder(xIncludeAware);
-            final Document document = documentBuilder.parse(source);
+            final Document document = newDocumentBuilder(xIncludeAware).parse(source);
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
             final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(getDefaultStatus());
@@ -119,35 +130,11 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             initializeWatchers(this, configSource, monitorIntervalSeconds);
             statusConfig.initialize();
-        } catch (final SAXException | IOException | ParserConfigurationException e) {
-            LOGGER.error("Error parsing " + configSource.getLocation(), e);
-        }
-        if (strict && schemaResource != null && buffer != null) {
-            try (final InputStream is =
-                    Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
-                if (is != null) {
-                    final javax.xml.transform.Source src = new StreamSource(is, schemaResource);
-                    final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                    Schema schema = null;
-                    try {
-                        schema = factory.newSchema(src);
-                    } catch (final SAXException ex) {
-                        LOGGER.error("Error parsing Log4j schema", ex);
-                    }
-                    if (schema != null) {
-                        final Validator validator = schema.newValidator();
-                        try {
-                            validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
-                        } catch (final IOException ioe) {
-                            LOGGER.error("Error reading configuration for validation", ioe);
-                        } catch (final SAXException ex) {
-                            LOGGER.error("Error validating configuration", ex);
-                        }
-                    }
-                }
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to access schema {}", this.schemaResource, ex);
+            if (strict && schemaResource != null) {
+                validateDocument(document, "classpath:" + schemaResource);
             }
+        } catch (final SAXException | LSException | ParserConfigurationException | IOException e) {
+            LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
 
         if (getName() == null) {
@@ -171,7 +158,13 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         if (xIncludeAware) {
             factory.setXIncludeAware(true);
         }
-        return factory.newDocumentBuilder();
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        if (xIncludeAware) {
+            // Resolve the resources referenced by `xi:include` through `ConfigurationSource`, so they honor the Log4j
+            // URI conventions (e.g. the `classpath:` scheme) and the `ALLOWED_PROTOCOLS` restrictions.
+            builder.setEntityResolver(ConfigurationSourceResolver.INSTANCE);
+        }
+        return builder;
     }
 
     private static void disableDtdProcessing(final DocumentBuilderFactory factory) {
@@ -192,6 +185,33 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final AbstractMethodError err) {
             LOGGER.warn(
                     "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
+        }
+    }
+
+    private static void validateDocument(final Document document, final String schemaLocation)
+            throws ConfigurationException {
+        try {
+            // Resolve the schema, and the resources it imports, through the same resolver as the configuration file.
+            final ConfigurationSource schemaSource = ConfigurationSource.fromUri(NetUtils.toURI(schemaLocation));
+            if (schemaSource != null) {
+                // Parse the schema with XInclude disabled:
+                // a schema has its own modularity features (`xsd:include`/`xsd:import`).
+                final Document schemaDocument =
+                        newDocumentBuilder(false).parse(ConfigurationSourceResolver.toInputSource(schemaSource));
+                final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                factory.setResourceResolver(ConfigurationSourceResolver.INSTANCE);
+                // The system id is the base URI against which the schema's `xsd:include`/`xsd:import` resources
+                // are resolved by the resource resolver above.
+                final Schema schema = factory.newSchema(new DOMSource(schemaDocument, schemaSource.getLocation()));
+                final Validator validator = schema.newValidator();
+                validator.setResourceResolver(ConfigurationSourceResolver.INSTANCE);
+                validator.validate(new DOMSource(document));
+            } else {
+                throw new ConfigurationException("Failed to load XML schema from " + schemaLocation);
+            }
+        } catch (LSException | SAXException | ParserConfigurationException | IOException e) {
+            throw new ConfigurationException(
+                    "Error validating " + document.getBaseURI() + " using schema " + schemaLocation, e);
         }
     }
 
@@ -298,5 +318,112 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     public String toString() {
         return getClass().getSimpleName() + "[location=" + getConfigurationSource() + ", lastModified="
                 + Instant.ofEpochMilli(getConfigurationSource().getLastModified()) + "]";
+    }
+
+    /**
+     * Resolves the resources referenced by an XML configuration through {@link ConfigurationSource}, the same way the
+     * configuration file itself is resolved: the targets of {@code xi:include} (as an {@link EntityResolver2}) and the
+     * resources imported by an XML Schema (as an {@link LSResourceResolver}).
+     *
+     * <p>This adds support for the Log4j URI conventions (such as the {@code classpath:} scheme) and subjects every
+     * referenced resource to the {@code ALLOWED_PROTOCOLS} restrictions.</p>
+     */
+    private static final class ConfigurationSourceResolver extends DefaultHandler2 implements LSResourceResolver {
+
+        private static final ConfigurationSourceResolver INSTANCE = new ConfigurationSourceResolver();
+
+        /** DOM Level 3 Load/Save implementation used to build the {@link LSInput} for resolved resources. */
+        private final DOMImplementationLS domLs;
+
+        private ConfigurationSourceResolver() {
+            try {
+                domLs = (DOMImplementationLS)
+                        DOMImplementationRegistry.newInstance().getDOMImplementation("LS");
+            } catch (final ReflectiveOperationException e) {
+                throw new IllegalStateException("No DOM Load/Save implementation available", e);
+            }
+        }
+
+        /**
+         * Resolves an external entity, used while expanding {@code xi:include} elements.
+         *
+         * <p>{@link EntityResolver2} receives both the system id and base URI to interpret it.</p>
+         */
+        @Override
+        public InputSource resolveEntity(
+                final String name, final String publicId, final String baseURI, final String systemId)
+                throws SAXException {
+            try {
+                final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
+                final InputSource inputSource;
+                if (source != null) {
+                    inputSource = toInputSource(source);
+                } else {
+                    inputSource = new InputSource(emptyReader());
+                    inputSource.setSystemId(systemId);
+                }
+                inputSource.setPublicId(publicId);
+                return inputSource;
+            } catch (final URISyntaxException e) {
+                throw new SAXException(e);
+            }
+        }
+
+        /**
+         * Resolves a resource imported by an XML Schema ({@code xsd:import}/{@code xsd:include}).
+         *
+         * <p>Returns an empty input when the resource cannot be resolved, instead of returning {@code null}: a
+         * {@code null} return would let the parser fall back to its own URL resolution, bypassing the
+         * {@code ALLOWED_PROTOCOLS} restrictions.</p>
+         */
+        @Override
+        public LSInput resolveResource(
+                final String type,
+                final String namespaceURI,
+                final String publicId,
+                final String systemId,
+                final String baseURI) {
+            try {
+                final ConfigurationSource source = toConfigurationSource(systemId, baseURI);
+                final LSInput input = domLs.createLSInput();
+                if (source != null) {
+                    input.setByteStream(source.getInputStream());
+                    input.setSystemId(source.getLocation());
+                } else {
+                    input.setCharacterStream(emptyReader());
+                    input.setSystemId(systemId);
+                }
+                input.setPublicId(publicId);
+                return input;
+            } catch (final URISyntaxException e) {
+                final LSException lsException = new LSException(LSException.PARSE_ERR, e.getMessage());
+                lsException.initCause(e);
+                throw lsException;
+            }
+        }
+
+        private static Reader emptyReader() {
+            return new StringReader("");
+        }
+
+        private static ConfigurationSource toConfigurationSource(final String systemId, final String baseURI)
+                throws URISyntaxException {
+            if (systemId == null) {
+                LOGGER.warn("Unable to resolve XML resource without a system id; substituting an empty document.");
+                return null;
+            }
+            final URI uri = baseURI != null ? new URI(baseURI).resolve(systemId) : new URI(systemId);
+            final ConfigurationSource configurationSource = ConfigurationSource.fromUri(uri);
+            if (configurationSource == null) {
+                LOGGER.warn("Unable to resolve system id {}; substituting an empty document.", systemId);
+            }
+            return configurationSource;
+        }
+
+        static InputSource toInputSource(final ConfigurationSource configurationSource) {
+            final InputSource inputSource = new InputSource(configurationSource.getInputStream());
+            inputSource.setSystemId(configurationSource.getLocation());
+            return inputSource;
+        }
     }
 }
