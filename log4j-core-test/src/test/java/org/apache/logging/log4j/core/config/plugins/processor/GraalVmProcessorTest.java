@@ -216,14 +216,10 @@ class GraalVmProcessorTest {
     }
 
     @Test
-    void whenNoGroupIdAndArtifactId_thenWarningIsEmittedWhenConfigured(@TempDir(cleanup = CleanupMode.NEVER) Path outputDir)
-            throws Exception {
+    void whenNoGroupIdAndArtifactId_thenWarningIsEmittedWhenConfigured(
+            @TempDir(cleanup = CleanupMode.NEVER) Path outputDir) throws Exception {
         List<String> diagnostics = generateDescriptor(
-                sourceDir,
-                null,
-                null,
-                outputDir,
-                "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=WARNING");
+                sourceDir, null, null, outputDir, "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=WARNING");
         assertThat(diagnostics).hasSize(1);
         // The warning message should contain the information about the missing groupId and artifactId arguments
         assertThat(diagnostics.get(0))
@@ -247,13 +243,12 @@ class GraalVmProcessorTest {
 
     @Test
     void noteEmittedWhenConfiguredWithLog4jPrefix(@TempDir Path outputDir) throws Exception {
-        List<Diagnostic<? extends JavaFileObject>> diagnostics =
-                generateDiagnostics(
-                        sourceDir,
-                        GROUP_ID,
-                        ARTIFACT_ID,
-                        outputDir,
-                        "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=NOTE");
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = generateDiagnostics(
+                sourceDir,
+                GROUP_ID,
+                ARTIFACT_ID,
+                outputDir,
+                "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=NOTE");
 
         assertThat(diagnostics)
                 .anyMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
@@ -264,11 +259,8 @@ class GraalVmProcessorTest {
 
     @Test
     void notesSuppressedByDefaultWithoutAffectingMetadataGeneration(@TempDir Path outputDir) throws Exception {
-        List<Diagnostic<? extends JavaFileObject>> diagnostics = generateDiagnostics(
-                sourceDir,
-                GROUP_ID,
-                ARTIFACT_ID,
-                outputDir);
+        List<Diagnostic<? extends JavaFileObject>> diagnostics =
+                generateDiagnostics(sourceDir, GROUP_ID, ARTIFACT_ID, outputDir);
 
         assertThat(diagnostics)
                 .noneMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
