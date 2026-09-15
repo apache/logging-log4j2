@@ -457,6 +457,9 @@ All the log events received by the appender are added to a cyclic log event buff
 If the filter accepts a message, an e-mail is sent.
 ====
 
+Custom e-mail headers can be configured using the nested
+<<SmtpAppender-element-Property,`Property` elements>>.
+
 [#SmtpAppender-attributes]
 .SMTP Appender configuration attributes
 [cols="1m,1,2,5"]
@@ -632,6 +635,21 @@ Formats log events.
 The choice of the layout is also responsible for the `Content-Type` header of e-mail message.
 
 See xref:manual/layouts.adoc[] for more information.
+
+| [[SmtpAppender-element-Property]]xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-config-Property[`Property`]
+| zero or more
+a|
+Additional e-mail headers to add to every message.
+
+Unlike the <<HttpAppender-element-Property,`Property` elements of the HTTP Appender>>, the values can contain
+xref:manual/pattern-layout.adoc#converters[pattern converters]
+and are evaluated against the log event that triggers the e-mail.
+
+Values are stripped of control characters, MIME-encoded and folded to comply with
+https://datatracker.ietf.org/doc/html/rfc5322[RFC 5322], and headers with a name that is not a valid
+https://datatracker.ietf.org/doc/html/rfc5322#section-3.6.8[field name] are ignored.
+
+Repeating the same header name adds the header more than once.
 
 | [[SmtpAppender-element-SslConfiguration]]<<SslConfiguration,`SSL`>>
 | zero or one
