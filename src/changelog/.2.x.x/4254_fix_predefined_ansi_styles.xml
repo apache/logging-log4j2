@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4254" link="https://github.com/apache/logging-log4j2/issues/4254"/>
+  <issue id="4259" link="https://github.com/apache/logging-log4j2/pull/4259"/>
   <description format="asciidoc">
     Apply predefined ANSI styles (`Style=Spock`, `Style=Kirk`) in `JAnsiTextRenderer` and emit valid SGR sequences for those styles.
   </description>
