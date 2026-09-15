@@ -39,6 +39,14 @@ class JAnsiTextRendererTest {
                         "",
                         "@|white key|@ = @|cyan,bold some value|@",
                         "\u001b[37mkey\u001b[m = \u001b[36;1msome value\u001b[m"),
+                Arguments.of(
+                        "",
+                        "@|italic italic text|@ and @|underline underlined text|@",
+                        "\u001b[3mitalic text\u001b[m and \u001b[4munderlined text\u001b[m"),
+                Arguments.of(
+                        "",
+                        "@|faint faint text|@ and @|blink_slow blinking text|@",
+                        "\u001b[2mfaint text\u001b[m and \u001b[5mblinking text\u001b[m"),
                 // Return broken escapes as is
                 Arguments.of("", "Hello @|crazy|@ world!", "Hello @|crazy|@ world!"),
                 Arguments.of("", "Hello @|world!", "Hello @|world!"));
