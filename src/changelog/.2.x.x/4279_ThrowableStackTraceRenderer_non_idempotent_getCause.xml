@@ -5,8 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-    <issue id="4279" link="https://github.com/apache/logging-log4j2/issues/4279"/>
+  <issue id="4279" link="https://github.com/apache/logging-log4j2/issues/4279"/>
+  <issue id="4303" link="https://github.com/apache/logging-log4j2/pull/4303"/>
     <description format="asciidoc">
-      Fix `NullPointerException` in `ThrowableStackTraceRenderer` (and the inverted variant) thrown when a `Throwable`'s `getCause()` returns a different instance on each invocation.
+      Fix Pattern Layout's stack trace rendering for non-idempotent `Throwable::getCause`
     </description>
 </entry>

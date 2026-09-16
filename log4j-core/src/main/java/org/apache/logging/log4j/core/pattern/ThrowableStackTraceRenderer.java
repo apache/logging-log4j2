@@ -284,9 +284,11 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             final Throwable[] suppressed;
 
             /**
-             * The cause of this {@link Throwable}, captured once.
-             * This needs to be captured separately since {@link Throwable#getCause()} is not
-             * guaranteed to return the same instance on every invocation.
+             * The cause of this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getCause()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3929">#4279</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3934">#4303</a>
              */
             @Nullable
             final Throwable cause;
