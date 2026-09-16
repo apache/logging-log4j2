@@ -18,42 +18,32 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.script.ScriptFile;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Creates a ScriptFile ComponentBuilder.
+ * A default implementation of the {@link ScriptFileComponentBuilder} interface for building
+ * an {@link ScriptFile} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
  *
  * @since 2.5
  */
+@ProviderType
 class DefaultScriptFileComponentBuilder extends DefaultComponentAndConfigurationBuilder<ScriptFileComponentBuilder>
         implements ScriptFileComponentBuilder {
 
+    /**
+     * Create a new filter component builder instance with the given plugin-type.
+     * @param builder the configuration builder.
+     * @param name the script component name
+     * @throws NullPointerException if either the {@code builder} or {@code pluginType} argument is {@code null}
+     */
     public DefaultScriptFileComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final String path) {
-        super(builder, name != null ? name : path, "ScriptFile");
-        addAttribute("path", path);
-    }
-
-    @Override
-    public DefaultScriptFileComponentBuilder addLanguage(final String language) {
-        addAttribute("language", language);
-        return this;
-    }
-
-    @Override
-    public DefaultScriptFileComponentBuilder addIsWatched(final boolean isWatched) {
-        addAttribute("isWatched", Boolean.toString(isWatched));
-        return this;
-    }
-
-    @Override
-    public DefaultScriptFileComponentBuilder addIsWatched(final String isWatched) {
-        addAttribute("isWatched", isWatched);
-        return this;
-    }
-
-    @Override
-    public DefaultScriptFileComponentBuilder addCharset(final String charset) {
-        addAttribute("charset", charset);
-        return this;
+            final DefaultConfigurationBuilder<? extends Configuration> builder, @Nullable final String name) {
+        super(builder, "ScriptFile", name);
     }
 }
