@@ -32,7 +32,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.config.builder.impl.DefaultConfigurationBuilder;
 import org.apache.logging.log4j.core.tools.BasicCommandLineArguments;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine;
@@ -160,8 +159,7 @@ public final class Log4j1ConfigurationConverter {
     }
 
     protected void convert(final InputStream input, final OutputStream output) throws IOException {
-        final ConfigurationBuilder<BuiltConfiguration> builder =
-                new Log4j1ConfigurationParser().buildConfigurationBuilder(input);
+        final ConfigurationBuilder<?> builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(input);
         builder.writeXmlConfiguration(output);
     }
 
