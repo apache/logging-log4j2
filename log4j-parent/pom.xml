@@ -60,7 +60,7 @@
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>6.3.1</activemq.version>
+    <activemq.version>6.3.2</activemq.version>
     <angus-activation.version>2.0.3</angus-activation.version>
     <angus-mail.version>2.0.5</angus-mail.version>
     <assertj.version>3.27.7</assertj.version>
@@ -82,7 +82,7 @@
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <error-prone-annotations.version>2.50.0</error-prone-annotations.version>
     <felix.version>7.0.5</felix.version>
-    <groovy.version>4.0.27</groovy.version>
+    <groovy.version>4.0.33</groovy.version>
     <guava.version>33.7.1-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
@@ -119,7 +119,7 @@
     <log4j-transform.version>0.2.0</log4j-transform.version>
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
     <log4j2-ecs-layout.version>1.8.0</log4j2-ecs-layout.version>
-    <logback.version>1.3.15</logback.version>
+    <logback.version>1.3.16</logback.version>
     <mockito.version>4.11.0</mockito.version>
     <nashorn.version>15.7</nashorn.version>
     <org.eclipse.osgi.version>3.24.200</org.eclipse.osgi.version>

@@ -19,8 +19,13 @@ package org.apache.logging.log4j.io;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 
 public class LoggerFilterOutputStreamTest extends AbstractLoggerOutputStreamTest {
+
+    LoggerFilterOutputStreamTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected ByteArrayOutputStream createOutputStream() {

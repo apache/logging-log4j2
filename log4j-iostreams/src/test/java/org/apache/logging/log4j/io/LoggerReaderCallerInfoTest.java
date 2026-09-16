@@ -19,12 +19,17 @@ package org.apache.logging.log4j.io;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     Reader logReader;
+
+    LoggerReaderCallerInfoTest(LoggerContext context) {
+        super(context);
+    }
 
     @Test
     public void read() throws Exception {
@@ -48,7 +53,7 @@ public class LoggerReaderCallerInfoTest extends IoBuilderCallerInfoTesting {
         assertMessages("after close size", 5, "read");
     }
 
-    @Before
+    @BeforeEach
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd\ne");
         this.logReader = IoBuilder.forLogger(getLogger())
