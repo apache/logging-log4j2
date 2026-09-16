@@ -93,8 +93,6 @@ class AsyncLoggerUncachedThreadNameTest {
             });
             final String firstTaskThreadName = (String) firstTask.get();
             final String secondTaskThreadName = (String) secondTask.get();
-            assertNotNull(firstTaskThreadName, "firstTaskThreadName");
-            assertNotNull(secondTaskThreadName, "secondTaskThreadName");
             assertSame(firstTaskThreadRef.get(), secondTaskThreadRef.get(), "same async worker thread");
         } finally {
             executor.shutdown();

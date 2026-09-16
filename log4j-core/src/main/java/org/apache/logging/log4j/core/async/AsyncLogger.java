@@ -359,7 +359,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
-        // constant check should be optimized out when using default (CACHED)
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
             translator.updateThreadValues();
         }
