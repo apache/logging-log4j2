@@ -17,8 +17,10 @@
 package org.apache.logging.log4j.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import foo.TestFriendlyException;
 import org.junit.jupiter.api.Test;
 
 class ThrowablesTest {
@@ -51,6 +53,13 @@ class ThrowablesTest {
         final Throwable cause3 = new RuntimeException(cause2);
         cause1.initCause(cause3);
         assertEquals(cause1, Throwables.getRootCause(cause3));
+    }
+
+    @Test
+    void testGetRootCauseWithCollidingExceptions() {
+        final Throwable throwable = TestFriendlyException.INSTANCE;
+        final Throwable rootCause = throwable.getCause().getCause();
+        assertSame(rootCause, Throwables.getRootCause(throwable));
     }
 
     @Test

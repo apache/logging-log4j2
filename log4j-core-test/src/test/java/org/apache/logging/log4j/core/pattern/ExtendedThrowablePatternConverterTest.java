@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import static java.util.Arrays.asList;
 import static org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.THROWING_METHOD;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import foo.TestFriendlyException;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.Abstr
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.AbstractStackTraceTest;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverterTest.DepthTestCase;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -32,6 +34,52 @@ import org.junit.jupiter.params.provider.MethodSource;
  * {@link ExtendedThrowablePatternConverter} tests.
  */
 class ExtendedThrowablePatternConverterTest {
+
+    /**
+     * Minimal equality-colliding exception for exercising causal-chain traversal.
+     *
+     * <p>{@link TestFriendlyException} is unsuitable here because its shared
+     * instance has a larger graph with suppressed exceptions and circular
+     * references, which prevents this test from controlling the two cause
+     * stack traces independently.
+     */
+    private static final class CollidingException extends RuntimeException {
+
+        private CollidingException(final String message) {
+            super(message);
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return obj instanceof CollidingException;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+    }
+
+    @Test
+    void colliding_causes_should_resolve_extended_stack_trace_classes() {
+        final Throwable root = new CollidingException("root");
+        final Throwable cause = new CollidingException("cause");
+        root.initCause(cause);
+        root.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement(
+                    ExtendedThrowablePatternConverterTest.class.getName(),
+                    "test",
+                    "ExtendedThrowablePatternConverterTest.java",
+                    1)
+        });
+        final String causeClassName = TestFriendlyException.class.getName();
+        cause.setStackTrace(new StackTraceElement[] {
+            new StackTraceElement(causeClassName, "create", "TestFriendlyException.java", 1)
+        });
+
+        assertThat(ThrowablePatternConverterTest.convert("%xEx", root))
+                .contains("\tat " + causeClassName + ".create(TestFriendlyException.java:1) ~[test-classes/:?]");
+    }
 
     @Nested
     class PropertyTest extends AbstractPropertyTest {
