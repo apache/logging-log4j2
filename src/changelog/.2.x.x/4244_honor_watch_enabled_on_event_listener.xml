@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4244" link="https://github.com/apache/logging-log4j2/issues/4244"/>
+  <issue id="4252" link="https://github.com/apache/logging-log4j2/pull/4252"/>
   <description format="asciidoc">
     Honor `spring.cloud.config.watch.enabled` in `Log4j2EventListener` when it is created from `spring.factories`.
   </description>
