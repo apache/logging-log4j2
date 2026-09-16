@@ -42,7 +42,6 @@ class PosixViewAttributeActionTest {
 
     @Test
     void testSymbolicLinksAreNotFollowed(@TempDir final Path tempDir) throws Exception {
-        // A file outside the scanned directory, that the action must not touch.
         final Path outsider = tempDir.resolve("outsider.txt");
         Files.write(outsider, "secret".getBytes(StandardCharsets.UTF_8));
         Files.setPosixFilePermissions(outsider, PosixFilePermissions.fromString("rw-------"));
