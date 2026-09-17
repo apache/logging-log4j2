@@ -75,8 +75,7 @@ public class Log4j2EventListenerTest {
             final AtomicInteger count = new AtomicInteger(0);
             final Source source = new Source(new File("test.java"));
             watchManager().watch(source, new TestWatcher(count));
-            new Log4j2EventListener()
-                    .onApplicationEvent(new EnvironmentChangeEvent(context, new HashSet<>()));
+            new Log4j2EventListener().onApplicationEvent(new EnvironmentChangeEvent(context, new HashSet<>()));
             assertEquals(0, count.get());
         }
     }
