@@ -50,11 +50,13 @@ import org.apache.logging.log4j.core.filter.DenyAllFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test configuration from Properties.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String TEST_KEY = "log4j.test.tmpdir";

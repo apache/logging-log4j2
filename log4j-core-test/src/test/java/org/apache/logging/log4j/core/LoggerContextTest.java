@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
@@ -100,5 +101,24 @@ class LoggerContextTest {
             loggerContext.start(configuration);
             assertThat(loggerContext.getConfiguration()).isSameAs(configuration);
         }
+    }
+
+    @Test
+    public void testLegacyExternalContextCompatibility() {
+        LoggerContext ctx = new LoggerContext("TestContext");
+        String legacyValue = "Spring-Boot-Flag";
+        ctx.setExternalContext(legacyValue);
+        assertEquals(legacyValue, ctx.getExternalContext());
+        assertEquals(legacyValue, ctx.getObject("__EXTERNAL_CONTEXT_KEY__"));
+    }
+
+    @Test
+    public void testCollisionPrevention() {
+        LoggerContext ctx = new LoggerContext("CollisionTest");
+        ctx.setExternalContext("Spring-Flag");
+        String mockServletContext = "MockServletContext";
+        ctx.putObject("org.apache.logging.log4j.web.servletContext", mockServletContext);
+        assertEquals("Spring-Flag", ctx.getExternalContext());
+        assertEquals(mockServletContext, ctx.getObject("org.apache.logging.log4j.web.servletContext"));
     }
 }
