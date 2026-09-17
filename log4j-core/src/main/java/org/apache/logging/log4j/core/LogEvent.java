@@ -19,9 +19,10 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.MementoLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.jspecify.annotations.Nullable;
 
@@ -40,6 +41,7 @@ public interface LogEvent {
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
      *
      * @return an immutable version of this log event
+     * @since 2.8.1
      */
     LogEvent toImmutable();
 
@@ -48,9 +50,18 @@ public interface LogEvent {
      * <p>
      *     Location information for both events might be computed by this method.
      * </p>
+     * <p>
+     *   <strong>Warning:</strong> If {@code event.getMessage()} is an instance of {@link ReusableMessage}, this method
+     *   remove the parameter references from the original message. Callers should:
+     * </p>
+     * <ol>
+     *   <li>Either make sure that the {@code event} will not be used again.</li>
+     *   <li>Or call {@link LogEvent#toImmutable()} before calling this method.</li>
+     * </ol>
+     * @since 3.0.0
      */
     default LogEvent toMemento() {
-        return new MementoLogEvent(this);
+        return new Log4jLogEvent.Builder(this).build();
     }
 
     /**

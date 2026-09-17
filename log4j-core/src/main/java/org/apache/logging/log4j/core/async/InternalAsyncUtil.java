@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -31,13 +32,14 @@ import org.jspecify.annotations.Nullable;
  *     Consider this class private.
  * </p>
  */
+@InternalApi
 public final class InternalAsyncUtil {
 
     private InternalAsyncUtil() {}
 
     /**
      * Returns the specified message, with its content frozen unless system property
-     * {@code log4j.format.msg.async} is true or the message class is annotated with
+     * {@code log4j.async.formatMessagesInBackground} is true or the message class is annotated with
      * {@link AsynchronouslyFormattable}.
      *
      * @param msg the message object to inspect, modify and return
