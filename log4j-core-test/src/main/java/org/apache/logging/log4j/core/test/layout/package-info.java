@@ -15,8 +15,8 @@
  * limitations under the license.
  */
 @Export
-@Version("2.24.1")
-@BaselineIgnore("2.24.1")
+@Version("2.27.0")
+@BaselineIgnore("2.27.0")
 package org.apache.logging.log4j.core.test.layout;
 
 import aQute.bnd.annotation.baseline.BaselineIgnore;

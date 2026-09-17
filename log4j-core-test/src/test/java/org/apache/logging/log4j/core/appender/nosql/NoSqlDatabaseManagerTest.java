@@ -445,7 +445,7 @@ public class NoSqlDatabaseManagerTest {
             assertEquals(exception.getMessage(), thrown.get("message"));
             assertEquals(exception.getCause().getMessage(), cause.get("message"));
             assertEquals(exception.getCause().getCause().getMessage(), nestedCause.get("message"));
-            assertNull("The cycle should not be serialized.", nestedCause.get("cause"));
+            assertNull(nestedCause.get("cause"), "The cycle should not be serialized.");
         }
     }
 }

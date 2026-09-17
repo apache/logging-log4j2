@@ -21,9 +21,9 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class RollingAppenderCronAndSizeTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         Arrays.sort(files);
         assertNotNull(files);
@@ -88,9 +88,9 @@ public class RollingAppenderCronAndSizeTest {
             fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
             previous = fileParts[1];
             assertEquals(
-                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
                     Integer.toString(fileCounter),
-                    fileParts[2]);
+                    fileParts[2],
+                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
         }
     }
 }

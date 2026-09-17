@@ -17,6 +17,7 @@
 package foo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
@@ -140,9 +141,10 @@ public final class TestFriendlyException extends RuntimeException {
                 exceptions.add(suppressed);
             }
         }
-        assertThat(identityMalfunctioningExceptionStackTraceDepths)
-                .describedAs("# of visited exceptions = %s", visitedExceptions.size())
-                .hasSizeGreaterThan(1);
+        assertThat(
+                "# of visited exceptions = " + visitedExceptions.size(),
+                identityMalfunctioningExceptionStackTraceDepths.size(),
+                greaterThan(1));
     }
 
     private static TestFriendlyException create(
