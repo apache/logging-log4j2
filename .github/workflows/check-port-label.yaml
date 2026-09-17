@@ -36,11 +36,6 @@ on:
       - labeled
       - unlabeled
 
-# Cancel in-progress runs when a newer commit lands on the same PR; pushes to 2.x run to completion.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 # Default permissions for each job.
 # Additional permissions should be assigned on a per-job basis.
 permissions: { }
@@ -50,16 +45,26 @@ jobs:
   check-port-label:
     name: "Check port label"
     runs-on: ubuntu-slim
+    permissions:
+      pull-requests: read
     steps:
+      # Every run leaves its own check on the commit, and a cancelled or failed one keeps blocking the merge.
+      # Hence, no `concurrency` cancellation, and labels are read live rather than from the event payload,
+      # so that re-running any earlier run evaluates the labels the PR carries now.
       - name: Require a `port-to-*` or `port-done` label
         env:
-          LABELS: ${{ join(github.event.pull_request.labels.*.name, '\n') }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
         shell: bash
         run: |
           if [ "$AUTHOR" = 'dependabot[bot]' ]; then
             echo "Dependabot PR, no port label required."
-          elif printf '%b\n' "$LABELS" | grep -qE '^(port-to-.+|port-done)$'; then
+            exit 0
+          fi
+          labels=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+          if grep -qE '^(port-to-.+|port-done)$' <<< "$labels"; then
             echo "Port label found."
           else
             echo "::error::Add a \`port-to-<branch>\` label if this change must be ported to another branch, or \`port-done\` if no port is needed. See https://github.com/apache/logging-log4j2/issues/3161"
