@@ -108,15 +108,21 @@ public class PluginProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
-                printMessage(
-                        Diagnostic.Kind.WARNING,
-                        String.format(
-                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                PluginProcessor.class.getName(),
-                                kindValue,
-                                MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
-                                Arrays.toString(Diagnostic.Kind.values())));
+                // We should not use `PluginProcessor::printMessage`, since we
+                // report a failure on the user-provided `Diagnostic.Kind` that
+                // `PluginProcessor::printMessage` depends on.
+                processingEnv
+                        .getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "%s%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        MESSAGE_PREFIX,
+                                        PluginProcessor.class.getName(),
+                                        kindValue,
+                                        MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                        DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
+                                        Arrays.toString(Diagnostic.Kind.values())));
             }
         }
     }

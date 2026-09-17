@@ -155,13 +155,17 @@ public class PluginProcessorPublicSetterTest {
     }
 
     @Test
-    void invalidKindValueDoesNotEmitWarningByDefault() {
+    void invalidKindValueEmitsWarning() {
         setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=INVALID");
 
         final List<Diagnostic<? extends JavaFileObject>> warningDiagnostics =
                 diagnosticCollector.getDiagnostics().stream()
                         .filter(d -> d.getKind() == Diagnostic.Kind.WARNING)
                         .collect(Collectors.toList());
-        assertThat(warningDiagnostics).isEmpty();
+        assertThat(warningDiagnostics)
+                .anyMatch(d -> d.getMessage(Locale.ROOT)
+                                .startsWith(
+                                        "[Log4j] org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor:")
+                        && d.getMessage(Locale.ROOT).contains("unrecognized value `INVALID`"));
     }
 }

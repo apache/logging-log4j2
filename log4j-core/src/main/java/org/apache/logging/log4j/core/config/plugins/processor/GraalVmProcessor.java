@@ -96,15 +96,21 @@ public class GraalVmProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
-                printMessage(
-                        Diagnostic.Kind.WARNING,
-                        String.format(
-                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                GraalVmProcessor.class.getName(),
-                                kindValue,
-                                PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
-                                Arrays.toString(Diagnostic.Kind.values())));
+                // We should not use `GraalVmProcessor::printMessage`, since we
+                // report a failure on the user-provided `Diagnostic.Kind` that
+                // `GraalVmProcessor::printMessage` depends on.
+                processingEnv
+                        .getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "%s%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        MESSAGE_PREFIX,
+                                        GraalVmProcessor.class.getName(),
+                                        kindValue,
+                                        PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                        DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
+                                        Arrays.toString(Diagnostic.Kind.values())));
             }
         }
     }
