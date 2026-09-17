@@ -25,7 +25,8 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
@@ -46,7 +47,7 @@ public final class Throwables {
      */
     public static Throwable getRootCause(final Throwable throwable) {
         requireNonNull(throwable, "throwable");
-        final Set<Throwable> visitedThrowables = new HashSet<>();
+        final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
         Throwable prevCause = throwable;
         visitedThrowables.add(prevCause);
         Throwable nextCause;

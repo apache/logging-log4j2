@@ -24,6 +24,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
@@ -68,11 +70,25 @@ public class SerialUtil {
      * @param data byte array representing the serialized object
      * @return the deserialized object
      */
-    @SuppressWarnings("unchecked")
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static <T> T deserialize(final byte[] data) {
+        return deserialize(data, Collections.emptySet());
+    }
+
+    /**
+     * Deserialize an object from the specified byte array using a {@link FilteredObjectInputStream}
+     * extended with the supplied allow-list (Java 8 only — Java 9+ uses the JVM's serialization
+     * filter, so the allow-list is ignored).
+     * @param data byte array representing the serialized object
+     * @param allowedExtraClasses fully-qualified class names to add to {@link
+     *     FilteredObjectInputStream}'s default allow-list on Java 8
+     * @return the deserialized object
+     */
+    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    public static <T> T deserialize(final byte[] data, final Collection<String> allowedExtraClasses) {
         try {
-            final ObjectInputStream ois = getObjectInputStream(data);
+            final ObjectInputStream ois = getObjectInputStream(data, allowedExtraClasses);
             return (T) ois.readObject();
         } catch (final Exception ex) {
             throw new IllegalStateException("Could not deserialize", ex);
@@ -86,8 +102,18 @@ public class SerialUtil {
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(final byte[] data) throws IOException {
+        return getObjectInputStream(data, Collections.emptySet());
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} adapted to the current Java version, extended with the
+     * supplied allow-list on Java 8.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    public static ObjectInputStream getObjectInputStream(
+            final byte[] data, final Collection<String> allowedExtraClasses) throws IOException {
         final ByteArrayInputStream bas = new ByteArrayInputStream(data);
-        return getObjectInputStream(bas);
+        return getObjectInputStream(bas, allowedExtraClasses);
     }
 
     /**
@@ -97,8 +123,18 @@ public class SerialUtil {
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(final InputStream stream) throws IOException {
+        return getObjectInputStream(stream, Collections.emptySet());
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} adapted to the current Java version, extended with the
+     * supplied allow-list on Java 8.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    public static ObjectInputStream getObjectInputStream(
+            final InputStream stream, final Collection<String> allowedExtraClasses) throws IOException {
         return Constants.JAVA_MAJOR_VERSION == 8
-                ? new FilteredObjectInputStream(stream)
+                ? new FilteredObjectInputStream(stream, allowedExtraClasses)
                 : new ObjectInputStream(stream);
     }
 }

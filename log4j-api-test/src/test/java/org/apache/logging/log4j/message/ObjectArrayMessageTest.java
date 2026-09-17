@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,5 +38,17 @@ class ObjectArrayMessageTest {
     @Test
     void testGetThrowable() {
         assertNull(OBJECT_ARRAY_MESSAGE.getThrowable());
+    }
+
+    /**
+     * Round-trips through a filtered stream (see {@link SerialUtil#getObjectInputStream})
+     * to verify that {@code readObject}'s new {@code SerializationUtil.assertFiltered}
+     * check accepts streams that carry a filter.
+     */
+    @Test
+    void testSerializableRoundTripThroughFilteredStream() {
+        final ObjectArrayMessage original = new ObjectArrayMessage("A", "B", "C");
+        final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
+        assertArrayEquals(original.getParameters(), restored.getParameters());
     }
 }

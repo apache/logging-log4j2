@@ -52,13 +52,27 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     /**
-     * Creates new instance of GzCompressAction.
+     * Validates that the compression level is in the valid range [-1, 9].
+     *
+     * @param level the compression level to validate
+     * @return the level if valid
+     * @throws IllegalArgumentException if level is not in the range [-1, 9]
+     */
+    private static int checkLevel(final int level) {
+        if (level < java.util.zip.Deflater.DEFAULT_COMPRESSION || level > 9) {
+            throw new IllegalArgumentException("Compression level must be in the range [-1, 9], got: " + level);
+        }
+        return level;
+    }
+
+    /**
+     * Creates new instance.
      *
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
      *            to be thrown or affect return value.
-     * @param level TODO
+     * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
         Objects.requireNonNull(source, "source");
@@ -67,7 +81,7 @@ public final class ZipCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.level = level;
+        this.level = checkLevel(level);
     }
 
     /**

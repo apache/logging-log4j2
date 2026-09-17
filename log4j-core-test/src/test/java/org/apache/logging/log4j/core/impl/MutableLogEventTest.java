@@ -366,4 +366,33 @@ class MutableLogEventTest {
         final Log4jLogEvent immutable = mutable.toImmutable();
         assertThat(immutable.getSource()).isEqualTo(source);
     }
+
+    @Test
+    void testMutableLogEventTracingFieldsPropagationAndClear() {
+        final Log4jLogEvent sourceEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("SourceLogger")
+                .setTraceId("trace-xyz-123")
+                .setSpanId("span-abc-456")
+                .setTraceFlags("01")
+                .build();
+
+        final MutableLogEvent mutableEvent = new MutableLogEvent();
+
+        // Initially empty
+        assertThat(mutableEvent.getTraceId()).isNull();
+        assertThat(mutableEvent.getSpanId()).isNull();
+        assertThat(mutableEvent.getTraceFlags()).isNull();
+
+        // Verify propagation via initFrom
+        mutableEvent.initFrom(sourceEvent);
+        assertThat(mutableEvent.getTraceId()).isEqualTo("trace-xyz-123");
+        assertThat(mutableEvent.getSpanId()).isEqualTo("span-abc-456");
+        assertThat(mutableEvent.getTraceFlags()).isEqualTo("01");
+
+        // Verify clearing removes tracking state to prevent leakage on pool reuse
+        mutableEvent.clear();
+        assertThat(mutableEvent.getTraceId()).isNull();
+        assertThat(mutableEvent.getSpanId()).isNull();
+        assertThat(mutableEvent.getTraceFlags()).isNull();
+    }
 }

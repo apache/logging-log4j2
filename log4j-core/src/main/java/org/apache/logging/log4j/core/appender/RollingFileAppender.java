@@ -103,6 +103,9 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         @PluginBuilderAttribute
         private String fileGroup;
 
+        @PluginBuilderAttribute
+        private int maxRandomDelay;
+
         @Override
         public RollingFileAppender build() {
             if (!isValid()) {
@@ -151,11 +154,11 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                     advertiseUri,
                     layout,
                     bufferSize,
-                    isImmediateFlush(),
                     createOnDemand,
                     filePermissions,
                     fileOwner,
                     fileGroup,
+                    maxRandomDelay,
                     getConfiguration());
             if (manager == null) {
                 return null;
@@ -210,6 +213,10 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
         public String getFileGroup() {
             return fileGroup;
+        }
+
+        public int getMaxRandomDelay() {
+            return maxRandomDelay;
         }
 
         /**
@@ -371,6 +378,14 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
          */
         public B setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public B setMaxRandomDelay(final int maxRandomDelay) {
+            this.maxRandomDelay = maxRandomDelay;
             return asBuilder();
         }
 

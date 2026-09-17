@@ -21,15 +21,18 @@ import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
- * Represents a Message that conforms to an RFC 5424 StructuredData element
- * along with the syslog message.
+ * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
  * <p>
- * Thread-safety note: the contents of this message can be modified after
- * construction.
- * When using asynchronous loggers and appenders it is not recommended to modify
- * this message after the message is
- * logged, because it is undefined whether the logged message string will
- * contain the old values or the modified
+ * The SD-ID, the MSGID and every key are checked against the syntax of
+ * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">RFC 5424</a>, and an invalid value throws an
+ * {@link IllegalArgumentException}.
+ * Prefer the constructors that take a {@link StructuredDataId}: when it declares required or optional keys, this
+ * message accepts only those keys.
+ * </p>
+ * <p>
+ * Thread-safety note: the contents of this message can be modified after construction.
+ * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
+ * logged, because it is undefined whether the logged message string will contain the old values or the modified
  * values.
  * </p>
  *
@@ -61,124 +64,38 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message,
-     * and
-     * MSGID (max 32 characters).
-     * <p>
-     * The {@code sdId} parameter represents the syslog {@code SD-ID} and is
-     * expected
-     * to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * It is recommended to use {@link StructuredDataId} instead of a raw
-     * {@link String} where possible,
-     * as it allows specifying a set of allowed keys for structured data elements.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId  The String SD-ID.
-     * @param msg   The message.
-     * @param msgId The identifier MSGID.
+     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message, and MSGID (max 32 characters).
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @throws IllegalArgumentException if {@code sdId} or {@code msgId} is not valid.
      */
     public StructuredDataMessage(final String sdId, final String msg, final String msgId) {
-        this(sdId, msg, msgId, MAX_LENGTH);
+        this(sdId, msg, msgId, null, MAX_LENGTH);
     }
 
     /**
-     * Creates a StructuredDataMessage using an SD-ID (user specified max
-     * characters),
-     * message, and MSGID (user specified
-     * maximum number of characters).
-     * <p>
-     * The {@code sdId} parameter represents the syslog {@code SD-ID} and is
-     * expected
-     * to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * It is recommended to use {@link StructuredDataId} instead of a raw
-     * {@link String} where possible,
-     * as it allows specifying a set of allowed keys for structured data elements.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId      The String SD-ID.
-     * @param msg       The message.
-     * @param msgId     The message identifier MSGID.
-     * @param maxLength The maximum length of keys;
+     * Creates a StructuredDataMessage using an SD-ID (user specified max characters), message, and MSGID (max 32
+     * characters).
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param maxLength The maximum length of the SD-ID and of keys;
+     * @throws IllegalArgumentException if {@code sdId} or {@code msgId} is not valid.
      * @since 2.9.0
      */
     public StructuredDataMessage(final String sdId, final String msg, final String msgId, final int maxLength) {
-        validateSdId(sdId);
-        validateMsgId(msgId);
-
-        this.sdId = new StructuredDataId(sdId, null, null, maxLength);
-        this.message = msg;
-        this.msgId = msgId;
-        this.maxLength = maxLength;
+        this(sdId, msg, msgId, null, maxLength);
     }
 
     /**
-     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message,
-     * MSGID (max 32 characters), and an
+     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message, MSGID (max 32 characters), and an
      * initial map of structured data to include.
-     * <p>
-     * The {@code sdId} parameter represents the syslog {@code SD-ID} and is
-     * expected
-     * to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * It is recommended to use {@link StructuredDataId} instead of a raw
-     * {@link String} where possible,
-     * as it allows specifying a set of allowed keys for structured data elements.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId  The String SD-ID.
-     * @param msg   The message.
-     * @param msgId The message identifier MSGID.
-     * @param data  The StructuredData map.
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param data The StructuredData map.
+     * @throws IllegalArgumentException if {@code sdId}, {@code msgId} or a key of {@code data} is not valid.
      */
     public StructuredDataMessage(
             final String sdId, final String msg, final String msgId, final Map<String, String> data) {
@@ -186,41 +103,14 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Creates a StructuredDataMessage using an (user specified max characters),
-     * message, and MSGID (user specified
-     * maximum number of characters, and an initial map of structured data to
-     * include.
-     * <p>
-     * The {@code sdId} parameter represents the syslog {@code SD-ID} and is
-     * expected
-     * to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * It is recommended to use {@link StructuredDataId} instead of a raw
-     * {@link String} where possible,
-     * as it allows specifying a set of allowed keys for structured data elements.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId      The String SD-ID.
-     * @param msg       The message.
-     * @param msgId     The message identifier.
-     * @param data      The StructuredData map.
-     * @param maxLength The maximum length of keys;
+     * Creates a StructuredDataMessage using an SD-ID (user specified max characters), message, MSGID (max 32
+     * characters), and an initial map of structured data to include.
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param data The StructuredData map.
+     * @param maxLength The maximum length of the SD-ID and of keys;
+     * @throws IllegalArgumentException if {@code sdId}, {@code msgId} or a key of {@code data} is not valid.
      * @since 2.9.0
      */
     public StructuredDataMessage(
@@ -229,125 +119,42 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
             final String msgId,
             final Map<String, String> data,
             final int maxLength) {
-        super(data);
-
-        validateSdId(sdId);
-        validateMsgId(msgId);
-
-        this.sdId = new StructuredDataId(sdId, null, null, maxLength);
-        this.message = msg;
-        this.msgId = msgId;
-        this.maxLength = maxLength;
+        this(toStructuredDataId(sdId, maxLength), msg, msgId, data, maxLength);
     }
 
     /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID
-     * (max 32 characters).
-     * <p>
-     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID}
-     * and is expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId  The StructuredDataId.
-     * @param msg   The message.
-     * @param msgId The message identifier MSGID.
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID (max 32 characters).
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @throws IllegalArgumentException if {@code sdId} is null or {@code msgId} is not valid.
      */
     public StructuredDataMessage(final StructuredDataId sdId, final String msg, final String msgId) {
-        this(sdId, msg, msgId, MAX_LENGTH);
+        this(sdId, msg, msgId, null, MAX_LENGTH);
     }
 
     /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID
-     * (max 32 characters).
-     * <p>
-     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID}
-     * and is expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId      The StructuredDataId.
-     * @param msg       The message.
-     * @param msgId     The message identifier MSGID.
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID (max 32 characters).
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
      * @param maxLength The maximum length of keys;
+     * @throws IllegalArgumentException if {@code sdId} is null or {@code msgId} is not valid.
      * @since 2.9.0
      */
     public StructuredDataMessage(
             final StructuredDataId sdId, final String msg, final String msgId, final int maxLength) {
-
-        if (sdId == null) {
-            throw new IllegalArgumentException("SD-ID cannot be null");
-        }
-        validateMsgId(msgId);
-
-        this.sdId = sdId;
-        this.message = msg;
-        this.msgId = msgId;
-        this.maxLength = maxLength;
+        this(sdId, msg, msgId, null, maxLength);
     }
 
     /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max
-     * 32 characters), and an initial map
+     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max 32 characters), and an initial map
      * of structured data to include.
-     * <p>
-     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID}
-     * and is expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
-     * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId  The StructuredDataId.
-     * @param msg   The message.
-     * @param msgId The message identifier MSGID.
-     * @param data  The StructuredData map.
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param data The StructuredData map.
+     * @throws IllegalArgumentException if {@code sdId} is null, or {@code msgId} or a key of {@code data} is not valid.
      */
     public StructuredDataMessage(
             final StructuredDataId sdId, final String msg, final String msgId, final Map<String, String> data) {
@@ -355,36 +162,20 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max
-     * 32 characters), and an initial map
+     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max 32 characters), and an initial map
      * of structured data to include.
      * <p>
-     * The {@link StructuredDataId} parameter represents the syslog {@code SD-ID}
-     * and is expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC
-     * 5424 Section 6.3.2</a>.
+     * All other public constructors delegate to this one.
+     * The MSGID must be 1 to 32 printable US-ASCII characters, as described in
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 section 6.2.7</a>.
+     * Each key must be a valid PARAM-NAME and, if {@code sdId} declares required or optional keys, one of those keys.
      * </p>
-     * <p>
-     * The {@code msgId} parameter represents the syslog {@code MSGID} and is
-     * expected to conform to
-     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC
-     * 5424 Section 6.2.7</a>.
-     * </p>
-     * <p>
-     * Both {@code sdId} and {@code msgId} are considered trusted inputs (typically
-     * compile-time constants).
-     * If these values are derived from external or untrusted sources, it is the
-     * caller's responsibility
-     * to validate and sanitize them to ensure RFC-compliant output, especially when
-     * used with
-     * {@code Rfc5424Layout}.
-     * </p>
-     *
-     * @param sdId      The StructuredDataId.
-     * @param msg       The message.
-     * @param msgId     The message identifier MSGID.
-     * @param data      The StructuredData map.
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID.
+     * @param data The StructuredData map, may be null.
      * @param maxLength The maximum length of keys;
+     * @throws IllegalArgumentException if {@code sdId} is null, or {@code msgId} or a key of {@code data} is not valid.
      * @since 2.9.0
      */
     public StructuredDataMessage(
@@ -393,32 +184,30 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
             final String msgId,
             final Map<String, String> data,
             final int maxLength) {
-        super(data);
-
         if (sdId == null) {
-            throw new IllegalArgumentException("SD-ID cannot be null");
+            throw new IllegalArgumentException("No SD-ID was supplied");
         }
-
         validateMsgId(msgId);
-
         this.sdId = sdId;
         this.message = msg;
         this.msgId = msgId;
         this.maxLength = maxLength;
+        if (data != null) {
+            putAll(data);
+        }
     }
 
     /**
      * Constructor based on a StructuredDataMessage.
-     *
      * @param msg The StructuredDataMessage.
      * @param map The StructuredData map.
      */
     private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map) {
-        super(map);
         this.sdId = msg.sdId;
         this.message = msg.message;
         this.msgId = msg.msgId;
-        this.maxLength = MAX_LENGTH;
+        this.maxLength = msg.maxLength;
+        putAll(map);
     }
 
     /**
@@ -430,7 +219,6 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Returns the supported formats.
-     *
      * @return An array of the supported format names.
      */
     @Override
@@ -444,8 +232,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Returns the Structured Data ID (SD-ID) of this message.
-     *
+     * Returns the SD-ID of this message.
      * @return the StructuredDataId.
      */
     public StructuredDataId getId() {
@@ -453,31 +240,32 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Sets the sdId from a String. This sdId can be at most 32 characters long.
-     *
-     * @param sdId The String sdId.
+     * Sets the SD-ID from a String. This SD-ID can be at most 32 characters long.
+     * @param sdId The SD-ID.
+     * @throws IllegalArgumentException if {@code sdId} is not valid.
      */
     protected void setId(final String sdId) {
-        validateSdId(sdId);
-        this.sdId = new StructuredDataId(sdId, null, null);
+        setId(toStructuredDataId(sdId, MAX_LENGTH));
     }
 
     /**
-     * Sets the sdId.
-     *
+     * Sets the SD-ID.
      * @param sdId The StructuredDataId.
+     * @throws IllegalArgumentException if {@code sdId} is null or does not declare a key of this message.
      */
     protected void setId(final StructuredDataId sdId) {
         if (sdId == null) {
-            throw new IllegalArgumentException("SD-ID cannot be null");
+            throw new IllegalArgumentException("No SD-ID was supplied");
+        }
+        for (final String key : getData().keySet()) {
+            validateDeclaredKey(sdId, key);
         }
         this.sdId = sdId;
     }
 
     /**
-     * Returns the message identifier (MSGID).
-     *
-     * @return the msgId.
+     * Returns the MSGID of this message.
+     * @return the MSGID.
      */
     public String getType() {
         return msgId;
@@ -500,7 +288,6 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Returns the message.
-     *
      * @return the message.
      */
     @Override
@@ -540,11 +327,9 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Formats the structured data as described in RFC 5424.
      *
-     * @param format           "full" will include the type and message. null will
-     *                         return only the STRUCTURED-DATA as
+     * @param format           "full" will include the type and message. null will return only the STRUCTURED-DATA as
      *                         described in RFC 5424
-     * @param structuredDataId The SD-ID as described in RFC 5424. If null the value
-     *                         in the StructuredData
+     * @param structuredDataId The SD-ID as described in RFC 5424. If null the value in the StructuredData
      *                         will be used.
      * @return The formatted String.
      */
@@ -557,13 +342,11 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     /**
      * Formats the structured data as described in RFC 5424.
      *
-     * @param format           "full" will include the type and message. null will
-     *                         return only the STRUCTURED-DATA as
+     * @param format           "full" will include the type and message. null will return only the STRUCTURED-DATA as
      *                         described in RFC 5424
-     * @param structuredDataId The SD-ID as described in RFC 5424. If null the value
-     *                         in the StructuredData
+     * @param structuredDataId The SD-ID as described in RFC 5424. If null the value in the StructuredData
      *                         will be used.
-     * @param sb               The StringBuilder to append the formatted message to.
+     * @param sb The StringBuilder to append the formatted message to.
      * @since 2.8
      */
     public final void asString(final Format format, final StructuredDataId structuredDataId, final StringBuilder sb) {
@@ -602,16 +385,40 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     private void asXml(final StructuredDataId structuredDataId, final StringBuilder sb) {
+
         sb.append("<StructuredData>\n");
-        sb.append("<type>").append(msgId).append("</type>\n");
-        sb.append("<id>").append(structuredDataId).append("</id>\n");
+
+        // Encode type
+        sb.append("<type>");
+        int start = sb.length();
+        sb.append(msgId);
+        StringBuilders.escapeXml(sb, start);
+        sb.append("</type>\n");
+
+        // Encode ID
+        sb.append("<id>");
+        start = sb.length();
+        structuredDataId.formatTo(sb);
+        StringBuilders.escapeXml(sb, start);
+        sb.append("</id>\n");
+
+        // Encode message as its own element (distinct from a map entry keyed "message")
+        if (message != null) {
+            sb.append("<message>");
+            start = sb.length();
+            sb.append(message);
+            StringBuilders.escapeXml(sb, start);
+            sb.append("</message>\n");
+        }
+
+        // Encode the rest
         super.asXml(sb);
+
         sb.append("\n</StructuredData>\n");
     }
 
     /**
      * Formats the message and return it.
-     *
      * @return the formatted message.
      */
     @Override
@@ -621,14 +428,10 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     /**
      * Formats the message according to the specified format.
-     *
-     * @param formats An array of Strings that provide extra information about how
-     *                to format the message.
-     *                StructuredDataMessage accepts only a format of "FULL" which
-     *                will cause the event type to be
-     *                prepended and the event message to be appended. Specifying any
-     *                other value will cause only the
-     *                StructuredData to be included. The default is "FULL".
+     * @param formats An array of Strings that provide extra information about how to format the message.
+     * StructuredDataMessage accepts only a format of "FULL" which will cause the event type to be
+     * prepended and the event message to be appended. Specifying any other value will cause only the
+     * StructuredData to be included. The default is "FULL".
      *
      * @return the formatted message.
      */
@@ -776,6 +579,9 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9.0
      */
     protected void validateKey(final String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Structured data keys cannot be null");
+        }
         if (maxLength > 0 && key.length() > maxLength) {
             throw new IllegalArgumentException(
                     "Structured data keys are limited to " + maxLength + " characters. key: " + key);
@@ -787,26 +593,52 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
                         + "and may not contain a space, =, ], or \"");
             }
         }
-    }
-
-    private void validateSdId(final String sdId) {
-        if (sdId == null) {
-            throw new IllegalArgumentException("SD-ID cannot be null");
+        if (sdId != null) {
+            validateDeclaredKey(sdId, key);
         }
-        validateKey(sdId);
     }
 
-    private void validateMsgId(final String msgId) {
-        if (msgId == null) {
-            throw new IllegalArgumentException("MSGID cannot be null");
+    private static StructuredDataId toStructuredDataId(final String sdId, final int maxLength) {
+        if (sdId == null) {
+            throw new IllegalArgumentException("No SD-ID was supplied");
+        }
+        return new StructuredDataId(sdId, null, null, maxLength);
+    }
+
+    private static void validateDeclaredKey(final StructuredDataId sdId, final String key) {
+        final String[] required = sdId.getRequired();
+        final String[] optional = sdId.getOptional();
+        if ((required == null && optional == null) || contains(required, key) || contains(optional, key)) {
+            return;
+        }
+        throw new IllegalArgumentException(
+                "Structured data key " + key + " is not declared by SD-ID " + sdId.getName());
+    }
+
+    private static boolean contains(final String[] keys, final String key) {
+        if (keys != null) {
+            for (final String candidate : keys) {
+                if (key.equals(candidate)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void validateMsgId(final String msgId) {
+        if (msgId == null || msgId.isEmpty()) {
+            throw new IllegalArgumentException("No MSGID was supplied");
         }
         if (msgId.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("MSGID exceeds maximum length of 32 characters: " + msgId);
+            throw new IllegalArgumentException(
+                    "MSGID exceeds maximum length of " + MAX_LENGTH + " characters: " + msgId);
         }
         for (int i = 0; i < msgId.length(); i++) {
             final char c = msgId.charAt(i);
             if (c < '!' || c > '~') {
-                throw new IllegalArgumentException("MSGID must contain printable US ASCII characters: " + msgId);
+                throw new IllegalArgumentException(
+                        "MSGID must contain printable US ASCII characters and may not contain a space: " + msgId);
             }
         }
     }

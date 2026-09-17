@@ -18,9 +18,10 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -113,11 +114,16 @@ public class ThrowableProxy implements Serializable {
         this.extendedStackTrace =
                 ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
-        final Set<Throwable> causeVisited = new HashSet<>(1);
+        // `IdentityHashMap` is needed for exceptions with identity malfunction.
+        // Consider `equals()` and `hashCode()` implementations causing collisions.
+        final Set<Throwable> causeVisited = Collections.newSetFromMap(new IdentityHashMap<>(1));
+        final Set<Throwable> suppressedVisited =
+                visited == null ? Collections.newSetFromMap(new IdentityHashMap<>()) : visited;
+
         this.causeProxy = throwableCause == null
                 ? null
-                : new ThrowableProxy(throwable, stack, map, throwableCause, visited, causeVisited);
-        this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(throwable, visited);
+                : new ThrowableProxy(throwable, stack, map, throwableCause, suppressedVisited, causeVisited);
+        this.suppressedProxies = ThrowableProxyHelper.toSuppressedProxies(throwable, suppressedVisited);
     }
 
     /**

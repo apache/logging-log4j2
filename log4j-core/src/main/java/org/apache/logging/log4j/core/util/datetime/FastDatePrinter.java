@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * <p>FastDatePrinter is a fast and thread-safe version of
@@ -639,6 +640,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      * @throws ClassNotFoundException if a class cannot be found.
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         init();
     }

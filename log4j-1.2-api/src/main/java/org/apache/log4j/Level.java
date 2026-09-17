@@ -25,6 +25,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Defines the minimum set of levels recognized by the system, that is
@@ -214,6 +215,7 @@ public class Level extends Priority implements Serializable {
      * @throws ClassNotFoundException if class not found.
      */
     private void readObject(final ObjectInputStream s) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(s);
         s.defaultReadObject();
         level = s.readInt();
         syslogEquivalent = s.readInt();

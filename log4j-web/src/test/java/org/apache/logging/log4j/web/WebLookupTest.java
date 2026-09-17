@@ -18,7 +18,10 @@ package org.apache.logging.log4j.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import javax.servlet.ServletContext;
@@ -26,6 +29,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.junit.jupiter.api.Test;
@@ -106,5 +110,53 @@ class WebLookupTest {
         assertNotNull(value, "No value for context name");
         initializer.stop();
         ContextAnchor.THREAD_CONTEXT.remove();
+    }
+
+    @Test
+    void testCompositeConfigurationServletContextName() throws Exception {
+        ContextAnchor.THREAD_CONTEXT.remove();
+
+        final String expectedServletContextName = "CompositeTest";
+
+        final ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getServletContextName()).thenReturn(expectedServletContextName);
+        when(servletContext.getContextPath()).thenReturn("/composite-test");
+        when(servletContext.getInitParameter(Log4jWebSupport.LOG4J_CONFIG_LOCATION))
+                .thenReturn("log4j2-combined.xml,log4j2-override.xml");
+        when(servletContext.getResource("log4j2-combined.xml"))
+                .thenReturn(getClass().getResource("/log4j2-combined.xml"));
+        when(servletContext.getResource("log4j2-override.xml"))
+                .thenReturn(getClass().getResource("/log4j2-override.xml"));
+
+        final Log4jWebLifeCycle initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
+        try {
+            initializer.start();
+            initializer.setLoggerContext();
+
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            assertNotNull(ctx, "No LoggerContext");
+
+            assertNotNull(
+                    WebLoggerContextUtils.getServletContext(),
+                    "ServletContext is null in composite configuration - "
+                            + "${web:*} lookups will not resolve (issue #2351)");
+
+            final Configuration config = ctx.getConfiguration();
+            assertNotNull(config, "No Configuration");
+            assertTrue(
+                    config instanceof CompositeConfiguration,
+                    "Expected CompositeConfiguration for comma-separated log4jConfiguration");
+            final StrSubstitutor substitutor = config.getStrSubstitutor();
+            assertNotNull(substitutor, "No StrSubstitutor");
+
+            final String value = substitutor.replace("${web:servletContextName}");
+            assertEquals(
+                    expectedServletContextName,
+                    value,
+                    "${web:servletContextName} did not resolve in composite configuration (issue #2351)");
+        } finally {
+            initializer.stop();
+            ContextAnchor.THREAD_CONTEXT.remove();
+        }
     }
 }

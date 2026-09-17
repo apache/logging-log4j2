@@ -23,6 +23,7 @@ import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Handles messages that contain a format String. Dynamically determines if the format conforms to
@@ -243,6 +244,7 @@ public class FormattedMessage implements Message {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         messagePattern = in.readUTF();

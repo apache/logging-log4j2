@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Handles messages that contain an Object[].
@@ -117,6 +118,7 @@ public final class ObjectArrayMessage implements Message {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         array = (Object[]) in.readObject();
     }

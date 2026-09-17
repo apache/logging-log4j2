@@ -61,7 +61,7 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
-        if (!isActive) {
+        if (!isActive()) {
             return null;
         }
         return new JsonConfiguration(loggerContext, source);

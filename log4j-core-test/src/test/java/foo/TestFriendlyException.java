@@ -20,6 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.Constants;
 
@@ -30,9 +36,12 @@ import org.apache.logging.log4j.util.Constants;
  * <li>Non-Log4j<sup>1</sup> and fixed<sup>2</sup> (to {@code bar}) package origin</li>
  * <li>Sufficient causal chain depth</li>
  * <li>Circular causal chain</li>
+ * <li>Non-idempotent causal chain</li>
  * <li>Suppressed exceptions</li>
  * <li>Clutter-free stack trace (i.e., elements from JUnit, JDK, etc.)</li>
  * <li>Stack trace elements from named modules<sup>3</sup></li>
+ * <li>Stack trace elements of non-existent classes<sup>4</sup></li>
+ * <li>Exceptions with malfunctioning (e.g., colliding) {@link Object#equals(Object) equals()} and {@link Object#hashCode() hashCode()} implementations in the causal chain</li>
  * </ul>
  * <p>
  * <sup>1</sup> Helps with observing stack trace manipulation effects of Log4j.
@@ -43,6 +52,10 @@ import org.apache.logging.log4j.util.Constants;
  * <p>
  * <sup>3</sup> Helps with testing module name serialization.
  * </p>
+ * <p>
+ * <sup>4</sup> Helps with testing non-{@link Exception} types, e.g., {@link LinkageError} and {@link NoClassDefFoundError}.
+ * See <a href="https://github.com/apache/logging-log4j2/issues/4028">#4028</a> for details.
+ * </p>
  */
 public final class TestFriendlyException extends RuntimeException {
 
@@ -50,6 +63,8 @@ public final class TestFriendlyException extends RuntimeException {
         // Ensure the distinct packaging
         assertThat(TestFriendlyException.class.getPackage().getName()).doesNotStartWith("org.apache");
     }
+
+    private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
 
     public static final StackTraceElement ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT =
             new StackTraceElement("bar.OrgApacheReplacement", "someMethod", "OrgApacheReplacement.java", 0);
@@ -76,46 +91,138 @@ public final class TestFriendlyException extends RuntimeException {
         throw new IllegalStateException("should not have reached here");
     }
 
+    public static final StackTraceElement NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT =
+            new StackTraceElement("com.nonexistent.deliberately.missing.ClassName", "someMethod", "ClassName.java", 42);
+
     private static final String[] EXCLUDED_CLASS_NAME_PREFIXES = {
         "java.lang", "jdk.internal", "org.junit", "sun.reflect"
     };
 
-    public static final TestFriendlyException INSTANCE = create("r", 0, 2, new boolean[] {false}, new boolean[] {true});
+    public static final TestFriendlyException INSTANCE = create(
+            "r",
+            0,
+            2,
+            new boolean[] {false},
+            new boolean[] {true},
+            new boolean[] {true},
+            new boolean[] {true},
+            new int[] {5});
+
+    static {
+        ensureIdentityMalfunctionAtDifferentDepths();
+    }
+
+    /**
+     * Ensure we have identity malfunctioning exceptions that have different stack trace lengths.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/3933">#3933</a>
+     */
+    private static void ensureIdentityMalfunctionAtDifferentDepths() {
+        final Set<Throwable> visitedExceptions = Collections.newSetFromMap(new IdentityHashMap<>());
+        final Set<Integer> identityMalfunctioningExceptionStackTraceDepths = new HashSet<>();
+        final Queue<Throwable> exceptions = new LinkedList<>();
+        exceptions.add(INSTANCE);
+        while (!exceptions.isEmpty()) {
+            final Throwable exception = exceptions.remove();
+            if (!visitedExceptions.add(exception)
+                    || (exception instanceof TestFriendlyException
+                            && !((TestFriendlyException) exception).identityMalfunctioning)) {
+                continue;
+            }
+            identityMalfunctioningExceptionStackTraceDepths.add(exception.getStackTrace().length);
+            final Throwable cause = exception.getCause();
+            if (cause != null) {
+                exceptions.add(cause);
+            }
+            for (final Throwable suppressed : exception.getSuppressed()) {
+                exceptions.add(suppressed);
+            }
+        }
+        assertThat(identityMalfunctioningExceptionStackTraceDepths)
+                .describedAs("# of visited exceptions = %s", visitedExceptions.size())
+                .hasSizeGreaterThan(1);
+    }
 
     private static TestFriendlyException create(
             final String name,
             final int depth,
             final int maxDepth,
             final boolean[] circular,
-            final boolean[] namedModuleAllowed) {
-        final TestFriendlyException error = new TestFriendlyException(name, namedModuleAllowed);
+            final boolean[] nonIdempotentCauseAllowed,
+            final boolean[] namedModuleAllowed,
+            final boolean[] nonExistentClassAllowed,
+            final int[] maxIdentityMalfunctionCount) {
+        final TestFriendlyException error = new TestFriendlyException(
+                name, namedModuleAllowed, nonExistentClassAllowed, maxIdentityMalfunctionCount);
         if (depth < maxDepth) {
-            final TestFriendlyException cause = create(name + "_c", depth + 1, maxDepth, circular, namedModuleAllowed);
+
+            // Set the cause
+            final TestFriendlyException cause = create(
+                    name + "_c",
+                    depth + 1,
+                    maxDepth,
+                    circular,
+                    nonIdempotentCauseAllowed,
+                    namedModuleAllowed,
+                    nonExistentClassAllowed,
+                    maxIdentityMalfunctionCount);
             error.initCause(cause);
-            final TestFriendlyException suppressed =
-                    create(name + "_s", depth + 1, maxDepth, circular, namedModuleAllowed);
+
+            // Add a suppressed exception
+            final TestFriendlyException suppressed = create(
+                    name + "_s",
+                    depth + 1,
+                    maxDepth,
+                    circular,
+                    nonIdempotentCauseAllowed,
+                    namedModuleAllowed,
+                    nonExistentClassAllowed,
+                    maxIdentityMalfunctionCount);
             error.addSuppressed(suppressed);
+
+            // Make cause and the suppressed exceptions circular, if allowed
             final boolean circularAllowed = depth + 1 == maxDepth && !circular[0];
             if (circularAllowed) {
                 cause.initCause(error);
                 suppressed.initCause(error);
                 circular[0] = true;
             }
+
+            // Add a suppressed exception with a non-idempotent cause, if allowed.
+            // We add this odd exception sort deliberately as a suppressed exception.
+            // Having it in the causal chain breaks circular references, if present.
+            if (nonIdempotentCauseAllowed[0]) {
+                final TestFriendlyException exception = new TestFriendlyException(
+                        name + "_S", namedModuleAllowed, nonExistentClassAllowed, maxIdentityMalfunctionCount);
+                exception.nonIdempotentCause = true;
+                error.addSuppressed(exception);
+                nonIdempotentCauseAllowed[0] = false;
+            }
         }
         return error;
     }
 
-    private TestFriendlyException(final String message, final boolean[] namedModuleAllowed) {
+    private boolean nonIdempotentCause = false;
+
+    private final boolean identityMalfunctioning;
+
+    private TestFriendlyException(
+            final String message,
+            final boolean[] namedModuleAllowed,
+            final boolean[] nonExistentClassAllowed,
+            final int[] maxIdentityMalfunctionCount) {
         super(message);
-        removeExcludedStackTraceElements(namedModuleAllowed);
+        this.identityMalfunctioning = --maxIdentityMalfunctionCount[0] > 0;
+        removeExcludedStackTraceElements(namedModuleAllowed, nonExistentClassAllowed);
     }
 
-    private void removeExcludedStackTraceElements(final boolean[] namedModuleAllowed) {
+    private void removeExcludedStackTraceElements(
+            final boolean[] namedModuleAllowed, final boolean[] nonExistentClassAllowed) {
         final StackTraceElement[] oldStackTrace = getStackTrace();
         final boolean[] seenExcludedStackTraceElement = {false};
         final StackTraceElement[] newStackTrace = Arrays.stream(oldStackTrace)
-                .flatMap(stackTraceElement ->
-                        mapStackTraceElement(stackTraceElement, namedModuleAllowed, seenExcludedStackTraceElement))
+                .flatMap(stackTraceElement -> mapStackTraceElement(
+                        stackTraceElement, namedModuleAllowed, nonExistentClassAllowed, seenExcludedStackTraceElement))
                 .toArray(StackTraceElement[]::new);
         setStackTrace(newStackTrace);
     }
@@ -123,12 +230,14 @@ public final class TestFriendlyException extends RuntimeException {
     private static Stream<StackTraceElement> mapStackTraceElement(
             final StackTraceElement stackTraceElement,
             final boolean[] namedModuleAllowed,
+            final boolean[] nonExistentClassAllowed,
             final boolean[] seenExcludedStackTraceElement) {
-        final Stream<StackTraceElement> filteredStackTraceElement =
+        final Stream<StackTraceElement> filteredStackTraceElements =
                 filterStackTraceElement(stackTraceElement, seenExcludedStackTraceElement);
-        final Stream<StackTraceElement> javaBaseIncludedStackTraceElement =
-                namedModuleIncludedStackTraceElement(namedModuleAllowed);
-        return Stream.concat(javaBaseIncludedStackTraceElement, filteredStackTraceElement);
+        final Stream<StackTraceElement> optionalStackTraceElements = Stream.concat(
+                namedModuleIncludedStackTraceElement(namedModuleAllowed),
+                nonExistentClassIncludedStackTraceElement(nonExistentClassAllowed));
+        return Stream.concat(optionalStackTraceElements, filteredStackTraceElements);
     }
 
     private static Stream<StackTraceElement> filterStackTraceElement(
@@ -167,8 +276,38 @@ public final class TestFriendlyException extends RuntimeException {
         return Stream.of(NAMED_MODULE_STACK_TRACE_ELEMENT);
     }
 
+    private static Stream<StackTraceElement> nonExistentClassIncludedStackTraceElement(
+            final boolean[] nonExistentClassAllowed) {
+        if (!nonExistentClassAllowed[0]) {
+            return Stream.of();
+        }
+        nonExistentClassAllowed[0] = false;
+        return Stream.of(NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT);
+    }
+
+    @Override
+    public synchronized Throwable getCause() {
+        return nonIdempotentCause ? createEmptyThrowable() : super.getCause();
+    }
+
+    private static Throwable createEmptyThrowable() {
+        final Throwable throwable = new Throwable("Empty test throwable");
+        throwable.setStackTrace(EMPTY_STACK_TRACE);
+        return throwable;
+    }
+
     @Override
     public String getLocalizedMessage() {
         return getMessage() + " [localized]";
+    }
+
+    @Override
+    public int hashCode() {
+        return identityMalfunctioning ? 0 : super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return identityMalfunctioning || super.equals(obj);
     }
 }
