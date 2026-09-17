@@ -21,8 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.plugins.name.AliasesProvider;
-import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
 
 /**
  * Identifies a list of aliases for an annotated plugin element. This is supported by plugin classes and other element
@@ -31,7 +29,7 @@ import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
-@AliasesProvider(PluginAliasesProvider.class)
+@AliasesProvider
 public @interface PluginAliases {
 
     /**

@@ -21,8 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.PluginValueNameProvider;
 
 /**
  * Identifies a Plugin Value and its corresponding attribute alias for configuration formats that don't distinguish
@@ -37,7 +35,7 @@ import org.apache.logging.log4j.plugins.name.PluginValueNameProvider;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE_USE})
-@NameProvider(PluginValueNameProvider.class)
+@NameProvider
 @QualifierType
 public @interface PluginValue {
 
