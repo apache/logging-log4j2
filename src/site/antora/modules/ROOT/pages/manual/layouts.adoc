@@ -18,6 +18,8 @@
 = Layouts
 
 An xref:manual/appenders.adoc[appender] uses a *layout* to encode a link:../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html[`LogEvent`] into a form that meets the needs of whatever will be consuming the log event.
+Layouts can encode this data into a `String`, a `byte[]`, or to a `ByteBufferDestination`.
+Layouts used to support encoding data into an arbitrary `java.io.Serializable` classes in Log4j 2.x, but due to security concerns, this is no longer directly supported by layouts in Log4j 3.0.
 This page will try to answer following questions:
 
 * <<concerns,What are some common concerns shared by all predefined layouts?>>
@@ -554,7 +556,11 @@ include::partial$manual/plugin-preliminaries.adoc[]
 === Extending layouts
 
 Layouts are xref:manual/plugins.adoc[plugins] implementing link:../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html[the `Layout` interface].
-If your layout is a `String`-based one, we recommend you to extend your plugin class from link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html[`AbstractStringLayout`], which contains convenience for some of the boilerplate code shared by `String`-based layouts.
+It is recommended you extend from link:../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html[`AbstractStringLayout`].
+While annotating your layout with `@Plugin` and `@Configurable`, you need to make sure that
+
+* The plugin name in `@Plugin::value` or the simple class name of the plugin if no custom name is given must be unique across all available `Layout` plugins.
+
 You can check out following files for examples:
 
 * {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/SyslogLayout.java[`SyslogLayout.java`] – simple, single-file, extending from `AbstractStringLayout`
