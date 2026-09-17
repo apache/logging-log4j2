@@ -134,8 +134,9 @@ class ConsoleAppenderTest {
 
     @Test
     void testDefaultImmediateFlush() {
-        final ConsoleAppender app =
-                ConsoleAppender.newBuilder().setName("testDefaultImmediateFlush").build();
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testDefaultImmediateFlush")
+                .build();
         try {
             assertTrue(app.getImmediateFlush());
         } finally {
