@@ -3079,6 +3079,25 @@ The strategy merges filters on loggers using the rule above.</p>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="xml-features"><a class="anchor" href="#xml-features"></a>XML format</h3>
+<div class="paragraph">
+<p>Log4j 2 parses XML configuration files with the following parser features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DTD validation and the retrieval of external DTDs and external entities are <strong>disabled</strong>.
+Optional validation against an XML Schema is available instead: see the <a href="#configuration-attribute-strict"><code>strict</code></a> and <a href="#configuration-attribute-schema"><code>schema</code></a> attributes below.</p>
+</li>
+<li>
+<p><a href="#xinclude">XInclude</a> is <strong>enabled</strong> whenever the JAXP implementation supports it.
+If you wish to split a configuration among multiple files,
+use either XInclude or a <a href="#CompositeConfiguration">composite configuration</a>.
+Since included files have the same power as the configuration file itself, all of them must come from trusted sources: see the
+<a href="https://logging.apache.org/security.html#threat-common-sources-configuration">Log4j threat model</a>
+for details on the trust requirements for configuration sources.</p>
+</li>
+</ul>
+</div>
 <div class="sect3">
 <h4 id="xml-global-configuration-attributes"><a class="anchor" href="#xml-global-configuration-attributes"></a>Global configuration attributes</h4>
 <div class="paragraph">

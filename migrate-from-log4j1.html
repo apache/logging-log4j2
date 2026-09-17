@@ -900,6 +900,39 @@ Log4j 2 extended this mechanism, by introducing pluggable <a href="manual/lookup
 </div>
 </div>
 <div class="sect3">
+<h4 id="configuration-xml-entities"><a class="anchor" href="#configuration-xml-entities"></a>External entities and validation</h4>
+<div class="paragraph">
+<p>Log4j 1 parses XML configuration files with support for <strong>external XML entities</strong>, and the Log4j 1 to Log4j 2 bridge keeps this behavior for backward compatibility.
+This is safe as long as configuration files come from trusted sources, which is a requirement of the
+<a href="https://logging.apache.org/security.html#threat-common-sources-configuration">Log4j threat model</a>:
+a configuration file can already instantiate arbitrary classes, so its entity declarations are as trusted as the rest of the file.</p>
+</div>
+<div class="paragraph">
+<p>Log4j 2 XML configuration files, on the other hand, are parsed <strong>without</strong> resolving external DTDs or external entities.
+If your Log4j 1 configuration file uses external entities to include other files, you need to inline their contents during the migration or convert them to
+<a href="manual/configuration.html#xinclude" class="xref page">XInclude</a>s.</p>
+</div>
+<div class="paragraph">
+<p>Validation also differs between the two formats:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Log4j 1 XML configuration files are validated against the bundled <code>log4j.dtd</code> (<strong>DTD validation</strong>).
+The bridge keeps validation enabled and prints validation errors as warnings to the
+<a href="manual/status-logger.html" class="xref page">status logger</a>.</p>
+</li>
+<li>
+<p>Log4j 2 XML configuration files use optional <strong>XML Schema</strong> validation instead: see the
+<a href="manual/configuration.html#configuration-attribute-strict" class="xref page"><code>strict</code></a>
+and
+<a href="manual/configuration.html#configuration-attribute-schema" class="xref page"><code>schema</code></a>
+attributes of the XML configuration format.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
 <h4 id="configuration-appenders"><a class="anchor" href="#configuration-appenders"></a>Appenders</h4>
 <div class="paragraph">
 <p>Log4j 2 contains an equivalent for most Log4j 1 appenders:</p>
@@ -1137,7 +1170,7 @@ To use this feature, you need to <a href="#log4j-1-2-api-installation">Install t
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_COMPATIBILITY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_1_COMPATIBILITY</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1178,6 +1211,21 @@ To use this feature, you need to <a href="#log4j-1-2-api-installation">Install t
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This property is <strong>not</strong> required for the <a href="#log4j.configuration"><code>log4j.configuration</code></a> property to work:
+pointing <code>log4j.configuration</code> at a Log4j 1 configuration file enables the Log4j 1 configuration file support on its own.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="log4j.configuration"><a class="anchor" href="#log4j.configuration"></a><code>log4j.configuration</code></h4>
@@ -1189,7 +1237,7 @@ To use this feature, you need to <a href="#log4j-1-2-api-installation">Install t
 <tbody>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LOG4J_CONFIGURATION</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
@@ -1207,7 +1255,21 @@ or
 <p>If not <code>null</code>, Log4j 2 will try to retrieve a <strong>Log4j 1</strong> configuration file from the given location.
 The configuration file name must end in <code>.properties</code> (Log4j 1 properties format) or <code>.xml</code> (Log4j 1 XML format).
 See also
-<a href="##limitations-of-the-log4j-1-x-bridge">limitations of Log4j 1 configuration compatibility layer</a>.</p>
+<a href="#limitations-of-the-log4j-1-x-bridge">limitations of Log4j 1 configuration compatibility layer</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This property is effective on its own: it does <strong>not</strong> require the <a href="#log4j1.compatibility"><code>log4j1.compatibility</code></a> property to be set.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
