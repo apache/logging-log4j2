@@ -120,7 +120,7 @@ public final class ObjectArrayMessage implements Message {
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
-        array = (Object[]) in.readObject();
+        array = SerializationUtil.readWrappedObjects(in);
     }
 
     @Override
@@ -130,6 +130,6 @@ public final class ObjectArrayMessage implements Message {
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeObject(array);
+        SerializationUtil.writeWrappedObjects(array, out);
     }
 }
