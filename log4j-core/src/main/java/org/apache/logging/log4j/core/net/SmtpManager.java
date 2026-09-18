@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.net;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Properties;
 import javax.activation.DataSource;
@@ -40,6 +42,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -47,12 +50,15 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manager for sending SMTP events.
  */
 public class SmtpManager extends MailManager {
     public static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
+
+    private static final int MAX_LINE_LENGTH = 998;
 
     private final Session session;
 
@@ -150,7 +156,7 @@ public class SmtpManager extends MailManager {
 
             final String subject = data.getSubjectSerializer().toSerializable(appendEvent);
 
-            sendMultipartMessage(message, mp, subject);
+            sendMultipartMessage(message, mp, subject, appendEvent);
         } catch (final MessagingException | IOException | RuntimeException e) {
             logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
@@ -262,6 +268,66 @@ public class SmtpManager extends MailManager {
             msg.setSubject(subject);
             Transport.send(msg);
         }
+    }
+
+    /**
+     * @since 2.27.0
+     */
+    @SuppressFBWarnings(
+            value = "SMTP_HEADER_INJECTION",
+            justification = "Header values are stripped of control characters and MIME-encoded before use.")
+    protected void sendMultipartMessage(
+            final MimeMessage msg, final MimeMultipart mp, final String subject, final LogEvent appendEvent)
+            throws MessagingException {
+        synchronized (msg) {
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            msg.setSubject(subject);
+            applyHeaders(msg, appendEvent);
+            Transport.send(msg);
+        }
+    }
+
+    private void applyHeaders(final MimeMessage msg, final LogEvent appendEvent) throws MessagingException {
+        final Property[] headers = data.getHeaders();
+        if (headers.length == 0) {
+            return;
+        }
+        final Serializer[] serializers = data.getHeaderSerializers();
+        for (final Property header : headers) {
+            msg.removeHeader(header.getName());
+        }
+        for (int i = 0; i < headers.length; i++) {
+            final String name = headers[i].getName();
+            msg.addHeader(name, encodeHeaderValue(name, serializers[i].toSerializable(appendEvent)));
+        }
+    }
+
+    static String encodeHeaderValue(final String name, final String value) throws MessagingException {
+        final int used = name.length() + 2;
+        String sanitized = replaceControlCharacters(value != null ? value : Strings.EMPTY);
+        if (sanitized.length() > MAX_LINE_LENGTH - used) {
+            sanitized = sanitized.substring(0, MAX_LINE_LENGTH - used);
+        }
+        try {
+            return MimeUtility.fold(used, MimeUtility.encodeText(sanitized, StandardCharsets.UTF_8.name(), null));
+        } catch (final UnsupportedEncodingException error) {
+            throw new MessagingException("Failed encoding the value of the `" + name + "` header.", error);
+        }
+    }
+
+    private static String replaceControlCharacters(final String value) {
+        StringBuilder replacement = null;
+        for (int i = 0; i < value.length(); i++) {
+            final char c = value.charAt(i);
+            if (c < ' ' || c == 0x7F) {
+                if (replacement == null) {
+                    replacement = new StringBuilder(value);
+                }
+                replacement.setCharAt(i, ' ');
+            }
+        }
+        return replacement != null ? replacement.toString() : value;
     }
 
     private synchronized void connect(final LogEvent appendEvent) {
