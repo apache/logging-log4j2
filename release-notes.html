@@ -438,6 +438,9 @@
 <p>Fix exceptions in JMX integration (<a href="https://github.com/apache/logging-log4j2/pull/4185">4185</a>)</p>
 </li>
 <li>
+<p>Default the Log4j 1 <code>SyslogAppender</code> bridge to UDP, matching Log4j 1 behavior. (<a href="https://github.com/apache/logging-log4j2/issues/4238">4238</a>)</p>
+</li>
+<li>
 <p>Fix <code>AbstractDatabaseManager</code> so a manager whose startup failed no longer accepts writes (which could NPE per event) and still runs <code>shutdownInternal()</code> to release resources acquired during startup. (<a href="https://github.com/apache/logging-log4j2/issues/4241">4241</a>, <a href="https://github.com/apache/logging-log4j2/issues/4242">4242</a>, <a href="https://github.com/apache/logging-log4j2/pull/4246">4246</a>)</p>
 </li>
 <li>

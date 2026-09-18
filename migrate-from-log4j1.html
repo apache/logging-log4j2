@@ -1016,7 +1016,9 @@ property.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/net/SyslogAppender.html">org.apache.log4j.net.SyslogAppender</a></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="manual/appenders/network.html#SyslogAppender" class="xref page">Syslog</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Does not support custom layouts.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does not support custom layouts.
+The <code>protocol</code> parameter is a <code>log4j-1.2-api</code> extension and defaults to <code>UDP</code>, matching Log4j 1 behavior.
+Other values are not recommended because <code>Log4j1SyslogLayout</code> does not escape newline characters for stream framing.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/rewrite/RewriteAppender.html">org.apache.log4j.rewrite.RewriteAppender</a></code></p></td>
