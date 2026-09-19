@@ -245,7 +245,10 @@ public final class ProviderUtil {
             final Comparator<Provider> comparator = Comparator.comparing(Provider::getPriority);
             switch (providers.size()) {
                 case 0:
-                    statusLogger.error("Log4j API could not find a logging provider.");
+                    statusLogger.error("Log4j API could not find a logging provider.\n"
+                            + "Log4j API will use Simple Logger by default.\n"
+                            + "See https://logging.apache.org/log4j/2.x/manual/installation.html "
+                            + "for instructions on how to configure Log4j API.");
                     break;
                 case 1:
                     break;
