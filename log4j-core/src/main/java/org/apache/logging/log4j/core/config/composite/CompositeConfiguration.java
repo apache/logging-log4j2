@@ -142,6 +142,18 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     }
 
     @Override
+    protected void doConfigure() {
+        super.doConfigure();
+        // The node-level merge above cannot capture elements a child's doConfigure() adds programmatically,
+        // so give each contributing configuration a chance to apply them to the merged configuration. This
+        // runs on the initial build and, because reconfigure() rebuilds a CompositeConfiguration, on every
+        // reconfiguration as well.
+        for (final AbstractConfiguration config : configurations) {
+            config.postConfigure(this);
+        }
+    }
+
+    @Override
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
