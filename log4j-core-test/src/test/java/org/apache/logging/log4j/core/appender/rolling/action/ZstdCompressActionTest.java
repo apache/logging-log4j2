@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.logging.log4j.core.appender.rolling.FileExtension;
 import org.junit.jupiter.api.Test;
@@ -36,8 +38,9 @@ class ZstdCompressActionTest {
         // Level 0 is below the minimum supported level (1)
         File source = new File(tempDir, "invalid-zero.log");
         File dest = new File(tempDir, "invalid-zero.log.zst");
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 0);
 
-        assertThrows(IllegalArgumentException.class, () -> new ZstdCompressAction(source, dest, true, 0));
+        assertThrows(IllegalArgumentException.class, action::execute);
     }
 
     /**
@@ -46,11 +49,12 @@ class ZstdCompressActionTest {
      * https://github.com/apache/logging-log4j2/discussions/2950.
      */
     @Test
-    void testRejectsUnsupportedNegativeLevel_NotYetImplemented(@TempDir File tempDir) {
+    void testRejectsUnsupportedNegativeLevelWhenExecuted(@TempDir File tempDir) {
         File source = new File(tempDir, "invalid-neg.log");
         File dest = new File(tempDir, "invalid-neg.log.zst");
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, -2);
 
-        assertThrows(IllegalArgumentException.class, () -> new ZstdCompressAction(source, dest, true, -1));
+        assertThrows(IllegalArgumentException.class, action::execute);
     }
 
     @Test
@@ -58,8 +62,19 @@ class ZstdCompressActionTest {
         // Level 23 is above the currently supported maximum level (22)
         File source = new File(tempDir, "invalid-high.log");
         File dest = new File(tempDir, "invalid-high.log.zst");
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 23);
 
-        assertThrows(IllegalArgumentException.class, () -> new ZstdCompressAction(source, dest, true, 23));
+        assertThrows(IllegalArgumentException.class, action::execute);
+    }
+
+    @Test
+    void testInvalidCompressionLevelDoesNotEscapeActionRunner(@TempDir File tempDir) {
+        File source = new File(tempDir, "invalid.log");
+        File dest = new File(tempDir, "invalid.log.zst");
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 0);
+
+        assertDoesNotThrow(action::run);
+        assertTrue(action.isComplete());
     }
 
     /**
@@ -83,12 +98,16 @@ class ZstdCompressActionTest {
      * and asserting nothing meaningful.
      */
     @Test
-    void testAcceptsZstdRangeBounds(@TempDir File tempDir) {
-        File source = new File(tempDir, "valid.log");
-        File dest = new File(tempDir, "valid.log.zst");
+    void testAcceptsZstdRangeBounds(@TempDir File tempDir) throws IOException {
+        File minimumSource = new File(tempDir, "minimum.log");
+        File minimumDestination = new File(tempDir, "minimum.log.zst");
+        File maximumSource = new File(tempDir, "maximum.log");
+        File maximumDestination = new File(tempDir, "maximum.log.zst");
+        writeContent(minimumSource, "minimum compression level");
+        writeContent(maximumSource, "maximum compression level");
 
-        new ZstdCompressAction(source, dest, true, 1);
-        new ZstdCompressAction(source, dest, true, 22);
+        assertTrue(new ZstdCompressAction(minimumSource, minimumDestination, true, 1).execute());
+        assertTrue(new ZstdCompressAction(maximumSource, maximumDestination, true, 22).execute());
     }
 
     @Test
@@ -105,16 +124,19 @@ class ZstdCompressActionTest {
     }
 
     @Test
-    void testFileExtensionUnspecifiedLevelMapping() {
-        // Verify FileExtension.ZSTD maps log4j2's framework-wide "unspecified compression level" sentinel (-1)
-        // to ZSTD_CLEVEL_DEFAULT (3). Passing the literal -1 here, not Deflater.DEFAULT_COMPRESSION: the mapping
-        // in FileExtension.ZSTD compares against the literal -1 sentinel value, not against that JDK constant.
-        ZstdCompressAction action =
-                (ZstdCompressAction) FileExtension.ZSTD.createCompressAction("source.log", "target.log.zst", true, -1);
+    void testFileExtensionDefersUnspecifiedLevelMappingUntilExecution(@TempDir File tempDir) throws IOException {
+        File source = new File(tempDir, "default.log");
+        File destination = new File(tempDir, "default.log.zst");
+        writeContent(source, "default compression level");
 
-        // Hardcoded, not ZstdConstants.ZSTD_CLEVEL_DEFAULT: both sides would drift together otherwise,
-        // making this assertion trivially true regardless of what the constant actually resolves to.
-        assertEquals(3, action.getCompressionLevel());
+        ZstdCompressAction action = (ZstdCompressAction)
+                FileExtension.ZSTD.createCompressAction(source.getPath(), destination.getPath(), true, -1);
+
+        assertEquals(-1, action.getCompressionLevel());
+        assertEquals(3, ZstdCompressAction.resolveCompressionLevel(Deflater.DEFAULT_COMPRESSION));
+        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(-1));
+        assertTrue(action.execute());
+        assertTrue(destination.exists(), "Compressed file must exist after execute()");
     }
 
     private static void writeContent(final File file, final String content) throws IOException {

@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
+import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 
@@ -33,9 +34,7 @@ import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
  * Negative (fast-compression) levels are not currently supported; this may change in a future release.
  * </p>
  *
- * @apiNote An explicitly configured level of -1 currently resolves to the Zstd default level (3).
- * This is provisional behavior tied to the current lack of negative-level support and may change
- * in a future release without a corresponding API signature change.
+ * @since 2.27.0
  */
 public final class ZstdCompressAction extends AbstractAction {
 
@@ -102,6 +101,10 @@ public final class ZstdCompressAction extends AbstractAction {
         return compressionLevel;
     }
 
+    static int resolveCompressionLevel(final int compressionLevel) {
+        return compressionLevel == Deflater.DEFAULT_COMPRESSION ? ZstdConstants.ZSTD_CLEVEL_DEFAULT : compressionLevel;
+    }
+
     /**
      * Creates a new instance.
      *
@@ -118,7 +121,7 @@ public final class ZstdCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.compressionLevel = checkCompressionLevel(compressionLevel);
+        this.compressionLevel = compressionLevel;
     }
 
     /**
@@ -146,13 +149,16 @@ public final class ZstdCompressAction extends AbstractAction {
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
-        checkCompressionLevel(compressionLevel);
+        // -1 (Deflater.DEFAULT_COMPRESSION) is the framework-wide sentinel for an unspecified compression level.
+        // Zstd uses -1 as a distinct fast-compression level, so map the sentinel to Zstd's default level here.
+        final int level = resolveCompressionLevel(compressionLevel);
+        checkCompressionLevel(level);
         if (source.exists()) {
             try (final FileInputStream fis = new FileInputStream(source);
                     final OutputStream fos = new FileOutputStream(destination);
                     final OutputStream zstdOut = ZstdCompressorOutputStream.builder()
                             .setOutputStream(fos)
-                            .setLevel(compressionLevel)
+                            .setLevel(level)
                             .get();
                     // Reduce native invocations by buffering data into ZstdCompressorOutputStream
                     final OutputStream os = new BufferedOutputStream(zstdOut, BUF_SIZE)) {
