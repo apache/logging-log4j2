@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * LOG4J2-2602.
@@ -44,21 +44,22 @@ public class RollingAppenderSizeWithTimeTest {
 
     private static final String DIR = "target/rolling-size-test";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderSizeWithTimeTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private Logger logger;
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderSizeWithTimeTest.class.getName());
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderSizeWithTimeTest.class.getName());
     }
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
         final List<String> messages = new ArrayList<>();
         for (int i = 0; i < 5000; ++i) {
             final String message = "This is test message number " + i;
@@ -68,11 +69,11 @@ public class RollingAppenderSizeWithTimeTest {
                 Thread.sleep(10);
             }
         }
-        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
+        if (!loggerContext.stop(30, TimeUnit.SECONDS)) {
+            System.err.println("Could not stop cleanly " + loggerContext + " for " + this);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertTrue(dir.exists(), "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         for (final File file : files) {
@@ -91,7 +92,7 @@ public class RollingAppenderSizeWithTimeTest {
                 messages.remove(line);
             }
         }
-        assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
+        assertTrue(messages.isEmpty(), "Log messages lost : " + messages.size());
+        assertTrue(files.length > 2, "Files not rolled : " + files.length);
     }
 }

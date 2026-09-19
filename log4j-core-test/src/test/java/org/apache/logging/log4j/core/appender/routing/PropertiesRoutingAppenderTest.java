@@ -16,48 +16,51 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
  */
+@LoggerContextSource("log4j-routing.properties")
 public class PropertiesRoutingAppenderTest {
-    private static final String CONFIG = "log4j-routing.properties";
     private static final String UNKNOWN_LOG_FILE = "target/rolling1/rollingtestProps-Unknown.log";
     private static final String ALERT_LOG_FILE = "target/routing1/routingtestProps-Alert.log";
     private static final String ACTIVITY_LOG_FILE = "target/routing1/routingtestProps-Activity.log";
 
     private ListAppender app;
+    private LoggerContext context = null;
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain rules = loggerContextRule.withCleanFilesRule(UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
-
-    @Before
-    public void setUp() {
-        this.app = this.loggerContextRule.getListAppender("List");
+    PropertiesRoutingAppenderTest(LoggerContext context) {
+        this.context = context;
     }
 
-    @After
-    public void tearDown() {
+    @RegisterExtension
+    CleanFiles cleanFiles = new CleanFiles(false, true, 10, UNKNOWN_LOG_FILE, ALERT_LOG_FILE, ACTIVITY_LOG_FILE);
+
+    @BeforeEach
+    public void beforeEach() throws Exception {
+        this.app = this.context.getConfiguration().getAppender("List");
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
         this.app.clear();
-        this.loggerContextRule.getLoggerContext().stop();
+        this.context.stop();
     }
 
     @Test
@@ -65,15 +68,15 @@ public class PropertiesRoutingAppenderTest {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events. Expected 1, got " + list.size(), 1, list.size());
+        assertNotNull(list, "No events generated");
+        assertTrue(list.size() == 1, "Incorrect number of events. Expected 1, got " + list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Alert");
         EventLogger.logEvent(msg);
         File file = new File(ALERT_LOG_FILE);
-        assertTrue("Alert file was not created", file.exists());
+        assertTrue(file.exists(), "Alert file was not created");
         msg = new StructuredDataMessage("Test", "This is a test", "Activity");
         EventLogger.logEvent(msg);
         file = new File(ACTIVITY_LOG_FILE);
-        assertTrue("Activity file was not created", file.exists());
+        assertTrue(file.exists(), "Activity file was not created");
     }
 }

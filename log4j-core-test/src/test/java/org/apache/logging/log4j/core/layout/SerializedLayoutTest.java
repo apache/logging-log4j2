@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,15 +39,15 @@ import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.SerialUtil;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
+@UsingAnyThreadContext
 public class SerializedLayoutTest {
     private static final String DAT_PATH = "target/test-classes/serializedEvent.dat";
     LoggerContext ctx = LoggerContext.getContext();
@@ -55,17 +55,14 @@ public class SerializedLayoutTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
-
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
@@ -124,8 +121,7 @@ public class SerializedLayoutTest {
         assertFalse(data.isEmpty());
         int i = 0;
         for (final byte[] item : data) {
-            assertEquals(
-                    "Incorrect event", expected[i], SerialUtil.deserialize(item).toString());
+            assertEquals(expected[i], SerialUtil.deserialize(item).toString(), "Incorrect event");
             ++i;
         }
         for (final Appender app : appenders.values()) {

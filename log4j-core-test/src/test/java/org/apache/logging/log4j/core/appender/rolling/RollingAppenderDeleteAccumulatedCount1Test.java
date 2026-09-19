@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.awaitility.Awaitility.waitAtMost;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that sibling conditions are invoked in configured order.
@@ -46,21 +46,22 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-count1.xml";
     private static final String DIR = "target/rolling-with-delete-accum-count1/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
         final Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
         final Path p2 = writeTextTo(DIR + "/my-2.log");
         final Path p3 = writeTextTo(DIR + "/my-3.log");
         final Path p4 = writeTextTo(DIR + "/my-4.log");
         final Path p5 = writeTextTo(DIR + "/my-5.log");
 
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = loggerContext.getLogger(RollingAppenderDeleteAccumulatedCount1Test.class.getName());
         for (int i = 0; i < 10; ++i) {
             updateLastModified(p1, p2, p3, p4, p5); // make my-*.log files most recent
 
@@ -69,17 +70,17 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
         }
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
 
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
 
         waitAtMost(7, TimeUnit.SECONDS).untilAsserted(() -> {
             final File[] files = Objects.requireNonNull(dir.listFiles(), "listFiles()");
-            assertTrue("Dir " + DIR + " should contain files", files.length > 0);
+            assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
 
             // The 5 my-*.log files must exist
             for (final String name : expected) {
-                assertTrue("missing " + name, new File(dir, name).exists());
+                assertTrue(new File(dir, name).exists(), "missing " + name);
             }
 
             // Only allow my-*.log and test-*.log
@@ -97,7 +98,7 @@ public class RollingAppenderDeleteAccumulatedCount1Test {
                     .count();
 
             // Tolerate CRLF/LF differences + timing jitter
-            assertTrue("expected rolled count in [6, 9], got " + rolled, rolled >= 6 && rolled <= 9);
+            assertTrue(rolled >= 6 && rolled <= 9, "expected rolled count in [6, 9], got " + rolled);
         });
     }
 

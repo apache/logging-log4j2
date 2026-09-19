@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.layout;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,22 +28,27 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.test.junit.CleanFolders;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1482
  */
-@Category(Layouts.Csv.class)
+@Tag("Layouts.Csv")
 public abstract class Log4j2_1482_Test {
 
     static final String CONFIG_LOCATION = "log4j2-1482.xml";
 
     static final String FOLDER = "target/log4j2-1482";
+
+    @RegisterExtension
+    private CleanFoldersRuleExtension cleanFolders = new CleanFoldersRuleExtension(
+            FOLDER,
+            CONFIG_LOCATION,
+            Log4j2_1482_Test.class.getName(),
+            this.getClass().getClassLoader());
 
     private static final int LOOP_COUNT = 10;
 
@@ -56,14 +63,10 @@ public abstract class Log4j2_1482_Test {
                 final File[] files = folder.toFile().listFiles();
                 Arrays.sort(files);
                 System.out.println("Run " + runNumber + ": " + Arrays.toString(files));
-                Assert.fail(
-                        String.format("Run %,d, line %,d of %,d: \"%s\" in %s", runNumber, i++, size, string, lines));
+                fail(String.format("Run %,d, line %,d of %,d: \"%s\" in %s", runNumber, i++, size, string, lines));
             }
         }
     }
-
-    @Rule
-    public CleanFolders cleanFolders = new CleanFolders(FOLDER);
 
     protected abstract void log(int runNumber);
 
