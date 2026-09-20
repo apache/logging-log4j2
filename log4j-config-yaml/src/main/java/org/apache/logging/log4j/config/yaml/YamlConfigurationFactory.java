@@ -20,13 +20,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 
 @Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("YamlConfigurationFactory")
-@Order(7)
+@Ordered(7)
 public class YamlConfigurationFactory extends ConfigurationFactory {
 
     /**
