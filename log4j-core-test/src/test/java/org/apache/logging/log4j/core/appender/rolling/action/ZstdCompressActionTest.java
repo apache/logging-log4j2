@@ -34,13 +34,16 @@ import org.junit.jupiter.api.io.TempDir;
 class ZstdCompressActionTest {
 
     @Test
-    void testRejectsCompressionLevelZero(@TempDir File tempDir) {
-        // Level 0 is below the minimum supported level (1)
-        File source = new File(tempDir, "invalid-zero.log");
-        File dest = new File(tempDir, "invalid-zero.log.zst");
+    void testMapsCompressionLevelZeroToDefault(@TempDir File tempDir) throws IOException {
+        // Zstd reads level 0 as "use the default level", and it was accepted for `.zst` before 2.27.0
+        File source = new File(tempDir, "zero.log");
+        File dest = new File(tempDir, "zero.log.zst");
+        writeContent(source, "zero compression level");
         ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 0);
 
-        assertThrows(IllegalArgumentException.class, action::execute);
+        assertEquals(3, ZstdCompressAction.resolveCompressionLevel(0));
+        assertTrue(action.execute());
+        assertTrue(dest.exists(), "Compressed file must exist after execute()");
     }
 
     /**

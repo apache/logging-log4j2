@@ -101,8 +101,17 @@ public final class ZstdCompressAction extends AbstractAction {
         return compressionLevel;
     }
 
+    /**
+     * Resolves the configured level: -1 is the rollover framework's "unspecified" sentinel, and 0 is the level
+     * Zstd itself reads as "use the default level".
+     *
+     * @param compressionLevel configured Zstandard compression level
+     * @return the level to compress with
+     */
     static int resolveCompressionLevel(final int compressionLevel) {
-        return compressionLevel == Deflater.DEFAULT_COMPRESSION ? ZstdConstants.ZSTD_CLEVEL_DEFAULT : compressionLevel;
+        return compressionLevel == Deflater.DEFAULT_COMPRESSION || compressionLevel == 0
+                ? ZstdConstants.ZSTD_CLEVEL_DEFAULT
+                : compressionLevel;
     }
 
     /**
