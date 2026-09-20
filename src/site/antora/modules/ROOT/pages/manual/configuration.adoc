@@ -93,13 +93,6 @@ include::partial$configuration-file-format-deps.adoc[]
 Starting with Log4j 2, the configuration file syntax has been considered part of the public API and has remained stable across significant version upgrades.
 ====
 
-[WARNING]
-====
-The syntax of the configuration file changed between Log4j{nbsp}1 and Log4j{nbsp}2.
-Files in the Log4j{nbsp}1 syntax are ignored by default.
-To enable partial support for old configuration syntax, see xref:manual/migration.adoc#ConfigurationCompatibility[configuration compatibility].
-====
-
 The Log4j runtime is composed of xref:manual/plugins.adoc[plugins], which are like beans in the Spring Framework and Java EE.
 Appenders, layouts, filters, configuration loaders, and similar components are all accessed as plugins.
 
