@@ -61,12 +61,10 @@ public class OrderComparator implements Comparator<Class<?>> {
     }
 
     private static OptionalInt getOrder(final Class<?> clazz) {
-        // Check for legacy @Order annotation first
         final Order order = clazz.getAnnotation(Order.class);
         if (order != null) {
             return OptionalInt.of(order.value());
         }
-        // Fall back to @Ordered via AnnotationUtil
         return AnnotationUtil.getOrder(clazz);
     }
 }
