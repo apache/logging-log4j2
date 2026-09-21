@@ -59,6 +59,35 @@ class DatagramOutputStreamTest {
     }
 
     @Test
+    @UsingStatusListener
+    void flushShouldSendSmallEventAfterDroppingOversizedPayload(final ListStatusListener statusListener)
+            throws Exception {
+        final InetAddress loopback = InetAddress.getByName(LOOPBACK);
+        try (DatagramSocket receiver = new DatagramSocket(0, loopback)) {
+            receiver.setSoTimeout(2000);
+            final int port = receiver.getLocalPort();
+            final byte[] small = {1, 2, 3, 4};
+            try (DatagramOutputStream out = new DatagramOutputStream(LOOPBACK, port, null, null)) {
+                final byte[] chunk = new byte[ENCODER_CHUNK_SIZE];
+                for (int i = 0; i < 9; i++) {
+                    out.write(chunk);
+                }
+                assertDoesNotThrow(out::flush);
+                out.write(small);
+                out.flush();
+            }
+            final byte[] received = new byte[MAX_DATAGRAM_PAYLOAD];
+            final DatagramPacket packet = new DatagramPacket(received, received.length);
+            receiver.receive(packet);
+            assertThat(packet.getLength()).isEqualTo(small.length);
+            assertThat(received).startsWith(small);
+            assertThat(statusListener.getStatusData())
+                    .anyMatch(data -> data.getLevel() == Level.WARN
+                            && data.getMessage().getFormattedMessage().contains("exceeds"));
+        }
+    }
+
+    @Test
     void flushShouldSendConcatenatedChunks() throws Exception {
         final InetAddress loopback = InetAddress.getByName(LOOPBACK);
         try (DatagramSocket receiver = new DatagramSocket(0, loopback)) {
