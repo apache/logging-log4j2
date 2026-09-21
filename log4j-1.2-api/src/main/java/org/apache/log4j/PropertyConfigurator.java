@@ -152,7 +152,7 @@ public class PropertyConfigurator implements Configurator {
     private static void warnFullCompatibilityDisabled() {
         LogLog.warn(
                 "Ignoring `PropertyConfigurator` call, since `log4j1.compatibility` is not enabled.\n"
-                        + "See https://logging.staged.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
+                        + "See https://logging.apache.org/log4j/2.x/migrate-from-log4j1.html#log4j1.compatibility for details.");
     }
 
     /**
