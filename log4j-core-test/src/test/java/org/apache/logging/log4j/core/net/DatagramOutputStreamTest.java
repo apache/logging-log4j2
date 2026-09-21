@@ -60,6 +60,25 @@ class DatagramOutputStreamTest {
 
     @Test
     @UsingStatusListener
+    void closeShouldWarnAndDropWhenSingleWriteExceedsMaxDatagramSize(final ListStatusListener statusListener)
+            throws Exception {
+        final InetAddress loopback = InetAddress.getByName(LOOPBACK);
+        try (DatagramSocket receiver = new DatagramSocket(0, loopback)) {
+            receiver.setSoTimeout(500);
+            final int port = receiver.getLocalPort();
+            try (DatagramOutputStream out = new DatagramOutputStream(LOOPBACK, port, null, null)) {
+                out.write(new byte[MAX_DATAGRAM_PAYLOAD + 1]);
+            }
+            final DatagramPacket packet = new DatagramPacket(new byte[64], 64);
+            assertThrows(SocketTimeoutException.class, () -> receiver.receive(packet));
+            assertThat(statusListener.getStatusData())
+                    .anyMatch(data -> data.getLevel() == Level.WARN
+                            && data.getMessage().getFormattedMessage().contains("exceeds"));
+        }
+    }
+
+    @Test
+    @UsingStatusListener
     void flushShouldSendSmallEventAfterDroppingOversizedPayload(final ListStatusListener statusListener)
             throws Exception {
         final InetAddress loopback = InetAddress.getByName(LOOPBACK);
