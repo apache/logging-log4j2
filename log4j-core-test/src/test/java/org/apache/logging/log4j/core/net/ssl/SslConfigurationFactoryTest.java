@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Properties;
 import java.util.stream.Stream;
+import javax.net.ssl.SSLHandshakeException;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
@@ -130,5 +132,32 @@ class SslConfigurationFactoryTest {
         final TrustStoreConfiguration trustStoreConfig = config.getTrustStoreConfig();
         assertNotNull(trustStoreConfig);
         KeyStoreConfigurationTest.checkKeystoreConfiguration(trustStoreConfig);
+    }
+
+    @Test
+    void trustStoreThatFailsToLoadRejectsHandshake() {
+        final Properties props = new Properties();
+        props.setProperty(TRUSTSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_LOCATION + ".missing");
+        props.setProperty(TRUSTSTORE_TYPE_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_TYPE);
+        final SslConfiguration sslConfiguration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+        assertNotNull(sslConfiguration);
+        assertNotNull(sslConfiguration.getTrustStoreConfig());
+        assertThatThrownBy(() -> SslConfigurationTest.handshake(sslConfiguration))
+                .isInstanceOf(SSLHandshakeException.class);
+    }
+
+    @Test
+    void keyStoreThatFailsToLoadRejectsHandshake() {
+        final Properties props = new Properties();
+        addTruststoreConfiguration(props);
+        addKeystoreConfiguration(props);
+        props.setProperty(KEYSTORE_PASSWORD_PROP_NAME, "wrongPassword!");
+        final SslConfiguration sslConfiguration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+        assertNotNull(sslConfiguration);
+        assertNotNull(sslConfiguration.getKeyStoreConfig());
+        assertThatThrownBy(() -> SslConfigurationTest.handshake(sslConfiguration))
+                .isInstanceOf(SSLHandshakeException.class);
     }
 }
