@@ -702,6 +702,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        public Rfc5424LayoutBuilder setEnterpriseNumber(final Integer enterpriseNumber) {
+            this.enterpriseNumber = enterpriseNumber;
+            return this;
+        }
+
         public Rfc5424LayoutBuilder setIncludeMDC(final boolean includeMDC) {
             this.includeMDC = includeMDC;
             return this;

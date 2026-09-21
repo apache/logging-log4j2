@@ -158,12 +158,14 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             return asBuilder();
         }
 
-        public void setImmediateFail(final boolean immediateFail) {
+        public B setImmediateFail(final boolean immediateFail) {
             this.immediateFail = immediateFail;
+            return asBuilder();
         }
 
-        public void setReconnectIntervalMillis(final long reconnectIntervalMillis) {
+        public B setReconnectIntervalMillis(final long reconnectIntervalMillis) {
             this.reconnectIntervalMillis = reconnectIntervalMillis;
+            return asBuilder();
         }
 
         /**

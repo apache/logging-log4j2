@@ -41,14 +41,17 @@ public class SocketPerformancePreferences implements Builder<SocketPerformancePr
 
     @PluginBuilderAttribute
     @Required
+    @SuppressWarnings("log4j.public.setter")
     private int bandwidth;
 
     @PluginBuilderAttribute
     @Required
+    @SuppressWarnings("log4j.public.setter")
     private int connectionTime;
 
     @PluginBuilderAttribute
     @Required
+    @SuppressWarnings("log4j.public.setter")
     private int latency;
 
     public void apply(final Socket socket) {
