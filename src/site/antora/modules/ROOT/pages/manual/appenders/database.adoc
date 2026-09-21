@@ -457,7 +457,7 @@ is set to `false`.
 | `boolean`
 | `true`
 |
-If `true`, values written to columns of a string type are truncated to the size reported by the database metadata.
+If `true`, values written to `CHAR`, `VARCHAR`, `NVARCHAR`, `LONGVARCHAR` and `LONGNVARCHAR` columns are silently truncated to the column precision reported by the JDBC driver.
 This avoids errors caused by values that are longer than the target column.
 |===
 
