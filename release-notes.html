@@ -462,6 +462,9 @@
 <p>Fix Pattern Layout&#8217;s stack trace rendering for non-idempotent <code>Throwable::getCause</code> (<a href="https://github.com/apache/logging-log4j2/issues/4279">4279</a>, <a href="https://github.com/apache/logging-log4j2/pull/4303">4303</a>)</p>
 </li>
 <li>
+<p>Grow <code>DatagramOutputStream</code> buffer instead of copying on every write, and drop oversized UDP payloads (<a href="https://github.com/apache/logging-log4j2/issues/4333">4333</a>, <a href="https://github.com/apache/logging-log4j2/pull/4336">4336</a>)</p>
+</li>
+<li>
 <p>Guard <code>%rEx{short.*}</code> against an empty root-cause stack trace (<a href="https://github.com/apache/logging-log4j2/issues/4334">4334</a>)</p>
 </li>
 <li>
