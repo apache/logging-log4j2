@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Verifies that a {@link CompositeConfiguration} invokes {@link AbstractConfiguration#postConfigure(Configuration)}
@@ -76,7 +76,7 @@ public class CompositeConfigurationPostConfigureTest {
         final LoggerContext ctx = new LoggerContext("postConfigureInitial");
         final CompositeConfiguration composite = composite(ctx);
         composite.initialize();
-        assertNotNull("postConfigure contribution missing from the composite", composite.getAppender(MARKER));
+        assertNotNull(composite.getAppender(MARKER), "postConfigure contribution missing from the composite");
     }
 
     @Test
@@ -85,13 +85,13 @@ public class CompositeConfigurationPostConfigureTest {
         final CompositeConfiguration composite = composite(ctx);
         composite.initialize();
         final Appender first = composite.getAppender(MARKER);
-        assertNotNull("postConfigure contribution missing after the initial build", first);
+        assertNotNull(first, "postConfigure contribution missing after the initial build");
 
         final Configuration reconfigured = composite.reconfigure();
-        assertNotNull("reconfigure() returned null", reconfigured);
+        assertNotNull(reconfigured, "reconfigure() returned null");
         reconfigured.initialize();
         final Appender second = reconfigured.getAppender(MARKER);
-        assertNotNull("postConfigure contribution dropped on reconfigure", second);
-        assertNotSame("reconfigure should rebuild the contribution on the new configuration", first, second);
+        assertNotNull(second, "postConfigure contribution dropped on reconfigure");
+        assertNotSame(first, second, "reconfigure should rebuild the contribution on the new configuration");
     }
 }

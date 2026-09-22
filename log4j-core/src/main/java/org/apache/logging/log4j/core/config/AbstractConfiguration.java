@@ -817,7 +817,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @since 2.27.0
      */
     public void postConfigure(final Configuration target) {
-        // no-op by default; a custom Configuration overrides this to contribute programmatic elements.
     }
 
     public static Level getDefaultLevel() {
