@@ -62,7 +62,7 @@ public class DumpTag extends TagSupport {
                 final Object value = this.pageContext.getAttribute(name, this.scope);
 
                 this.pageContext.getOut().write("<dt><code>" + escapeHtml(name) + "</code></dt>");
-                this.pageContext.getOut().write("<dd><code>" + escapeHtml(String.valueOf(value)) + "</code></dd>");
+                this.pageContext.getOut().write("<dd><code>" + escapeHtml(value) + "</code></dd>");
             }
             this.pageContext.getOut().write("</dl>");
         } catch (final IOException e) {
@@ -72,8 +72,8 @@ public class DumpTag extends TagSupport {
         return Tag.EVAL_PAGE;
     }
 
-    private static String escapeHtml(final String value) {
-        final StringBuilder builder = new StringBuilder(value);
+    private static String escapeHtml(final Object value) {
+        final StringBuilder builder = new StringBuilder().append(value);
         StringBuilders.escapeXml(builder, 0);
         return builder.toString();
     }
