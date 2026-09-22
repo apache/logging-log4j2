@@ -145,7 +145,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final StackTraceElement location,
             final Message message,
             final Throwable throwable) {
-        getTranslatorType().log(fqcn, location, level, marker, message, throwable);
+        // A null location means "not yet computed", not "caller opted out".
+        // logMessage(fqcn, ...) already fills this in; the location-bearing entry point must too.
+        final StackTraceElement resolvedLocation = location != null ? location : calcLocationIfRequested(fqcn);
+        getTranslatorType().log(fqcn, resolvedLocation, level, marker, message, throwable);
     }
 
     abstract static class TranslatorType {
