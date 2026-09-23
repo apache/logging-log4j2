@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
@@ -37,6 +38,11 @@ public class DatagramOutputStream extends OutputStream {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * IPv4 UDP payload limit (65,535 - 8 UDP - 20 IP). {@link DatagramSocket#send} rejects larger packets.
+     */
+    private static final int MAX_DATAGRAM_LENGTH = 65_507;
+
     private static final int SHIFT_1 = 8;
     private static final int SHIFT_2 = 16;
     private static final int SHIFT_3 = 24;
@@ -45,7 +51,9 @@ public class DatagramOutputStream extends OutputStream {
     private final InetAddress inetAddress;
     private final int port;
 
-    private byte[] data;
+    private final ByteArrayOutputStream data = new ByteArrayOutputStream();
+
+    private long droppedLength;
 
     private final byte[] header;
     private final byte[] footer;
@@ -94,15 +102,25 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void flush() throws IOException {
         try {
-            if (this.data != null && this.datagramSocket != null && this.inetAddress != null) {
+            if ((this.data.size() > 0 || droppedLength > 0)
+                    && this.datagramSocket != null
+                    && this.inetAddress != null) {
                 if (footer != null) {
                     copy(footer, 0, footer.length);
                 }
-                final DatagramPacket packet = new DatagramPacket(data, data.length, inetAddress, port);
-                datagramSocket.send(packet);
+                if (droppedLength > 0) {
+                    LOGGER.warn(
+                            "UDP datagram of {} bytes exceeds the maximum of {} bytes and will be dropped",
+                            droppedLength,
+                            MAX_DATAGRAM_LENGTH);
+                } else {
+                    final byte[] payload = data.toByteArray();
+                    datagramSocket.send(new DatagramPacket(payload, payload.length, inetAddress, port));
+                }
             }
         } finally {
-            data = null;
+            data.reset();
+            droppedLength = 0;
             if (header != null) {
                 copy(header, 0, header.length);
             }
@@ -112,7 +130,7 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void close() throws IOException {
         if (datagramSocket != null) {
-            if (data != null) {
+            if (data.size() > 0 || droppedLength > 0) {
                 flush();
             }
             datagramSocket.close();
@@ -121,12 +139,10 @@ public class DatagramOutputStream extends OutputStream {
     }
 
     private void copy(final byte[] bytes, final int offset, final int length) {
-        final int index = data == null ? 0 : data.length;
-        final byte[] copy = new byte[length + index];
-        if (data != null) {
-            System.arraycopy(data, 0, copy, 0, data.length);
+        if (droppedLength > 0 || (long) data.size() + length > MAX_DATAGRAM_LENGTH) {
+            droppedLength = (droppedLength > 0 ? droppedLength : data.size()) + length;
+            return;
         }
-        System.arraycopy(bytes, offset, copy, index, length);
-        data = copy;
+        data.write(bytes, offset, length);
     }
 }
