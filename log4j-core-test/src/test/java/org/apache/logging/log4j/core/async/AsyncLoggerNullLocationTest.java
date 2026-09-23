@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * AsyncLogger must compute caller location when {@code includeLocation} is enabled and the
- * caller passes a null location, matching {@code logMessage(fqcn, level, marker, message, thrown)}.
+ * AsyncLogger must compute caller location when {@code includeLocation} is enabled and
+ * {@code atInfo().log} passes a null location.
  */
 @Tag(Tags.ASYNC_LOGGERS)
 class AsyncLoggerNullLocationTest {
@@ -62,7 +62,7 @@ class AsyncLoggerNullLocationTest {
         final AsyncLogger logger = (AsyncLogger) context.getLogger("com.foo.Bar");
         final String fqcn = AbstractLogger.class.getName();
 
-        logger.logMessage(Level.INFO, null, fqcn, null, new SimpleMessage("null-location"), null);
+        logger.atInfo().log("null-location");
 
         final StackTraceElement supplied = new StackTraceElement("com.example.Caller", "supplied", "Caller.java", 7);
         logger.logMessage(Level.INFO, null, fqcn, supplied, new SimpleMessage("supplied-location"), null);
