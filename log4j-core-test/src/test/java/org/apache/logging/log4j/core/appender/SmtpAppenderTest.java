@@ -134,7 +134,6 @@ class SmtpAppenderTest {
         assertNotNull(appender);
         assertEquals("Test", appender.getName());
 
-        // `MailManager` names encode every mail attribute except the password, which is checked on the session below.
         final SmtpAppender expected = SmtpAppender.newBuilder()
                 .setName("Test")
                 .setTo("to@example.com")
