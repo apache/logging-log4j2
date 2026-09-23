@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="4316" link="https://github.com/apache/logging-log4j2/pull/4316"/>
   <description format="asciidoc">
-    HTML-escape scope attribute names and values rendered by the `log:dump` JSP tag (`DumpTag`) to prevent cross-site scripting
+    Fix HTML-escaped `log:dump` JSP tag attributes to prevent XSS
   </description>
 </entry>
