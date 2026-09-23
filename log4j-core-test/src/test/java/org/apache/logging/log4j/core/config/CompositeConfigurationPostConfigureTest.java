@@ -51,9 +51,6 @@ public class CompositeConfigurationPostConfigureTest {
         }
     }
 
-    // A stream-backed source has no URI, so CompositeConfiguration.reconfigure() reuses the same child
-    // configuration instead of rebuilding it through a ConfigurationFactory; this keeps the test free of any
-    // factory registration while still exercising the real reconfigure() path.
     private static ConfigurationSource streamSource() throws Exception {
         return new ConfigurationSource(new ByteArrayInputStream(XML));
     }
