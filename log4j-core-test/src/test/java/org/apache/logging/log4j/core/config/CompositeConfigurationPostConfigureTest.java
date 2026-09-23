@@ -37,7 +37,6 @@ public class CompositeConfigurationPostConfigureTest {
                     + "<Configuration><Loggers><Root level=\"INFO\"/></Loggers></Configuration>\n")
             .getBytes(StandardCharsets.UTF_8);
 
-    /** A configuration that contributes a programmatic appender through the {@code postConfigure} hook. */
     private static final class ContributingConfiguration extends XmlConfiguration {
         ContributingConfiguration(final LoggerContext ctx, final ConfigurationSource source) {
             super(ctx, source);
