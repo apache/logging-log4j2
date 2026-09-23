@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
   <issue id="3415" link="https://github.com/apache/logging-log4j2/issues/3415"/>
+  <issue id="4321" link="https://github.com/apache/logging-log4j2/pull/4321"/>
   <description format="asciidoc">
     Improve the diagnostic shown when no Log4j API provider is available
   </description>

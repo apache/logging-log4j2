@@ -65,7 +65,7 @@ class ProviderUtilTest {
         assertThat(statusLogger.getEntries())
                 .contains(" ERROR Log4j API could not find a logging provider.\n"
                         + "Log4j API will use Simple Logger by default.\n"
-                        + "See https://logging.apache.org/log4j/2.x/manual/installation.html "
+                        + "See https://logging.apache.org/log4j/2.x/manual/installation.html#impl "
                         + "for instructions on how to configure Log4j API.");
     }
 
