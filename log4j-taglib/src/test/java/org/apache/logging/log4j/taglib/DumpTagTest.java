@@ -106,6 +106,27 @@ class DumpTagTest {
     }
 
     @Test
+    void testDoEndTagNullToString() throws Exception {
+        final Object value = new Object() {
+            @Override
+            public String toString() {
+                return null;
+            }
+        };
+        this.context.setAttribute("attr", value, PageContext.PAGE_SCOPE);
+
+        final int returnValue = this.tag.doEndTag();
+        assertEquals(Tag.EVAL_PAGE, returnValue, "The return value is not correct.");
+
+        this.writer.flush();
+        final String output = new String(this.output.toByteArray(), UTF8);
+        assertEquals(
+                "<dl>" + "<dt><code>attr</code></dt>" + "<dd><code>null</code></dd>" + "</dl>",
+                output,
+                "A null toString() must render as null.");
+    }
+
+    @Test
     void testDoEndTagSessionScopeNoAttributes() throws Exception {
         this.context.setAttribute("badAttribute01", "skippedValue01", PageContext.PAGE_SCOPE);
 
