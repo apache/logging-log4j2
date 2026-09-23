@@ -816,8 +816,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param target the effective (composite) configuration to contribute to
      * @since 2.27.0
      */
-    public void postConfigure(final Configuration target) {
-    }
+    public void postConfigure(final Configuration target) {}
 
     public static Level getDefaultLevel() {
         final String levelName = PropertiesUtil.getProperties()
