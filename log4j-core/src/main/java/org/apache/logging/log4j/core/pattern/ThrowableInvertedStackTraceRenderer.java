@@ -62,13 +62,7 @@ final class ThrowableInvertedStackTraceRenderer
         } else {
             final Context.Metadata metadata = context.metadataByThrowable.get(throwable);
             lineCapacityAcquired = renderCause(
-                    buffer,
-                    throwable.getCause(),
-                    context,
-                    visitedThrowables,
-                    prefix,
-                    lineSeparator,
-                    lineCapacityAcquired);
+                    buffer, metadata.cause, context, visitedThrowables, prefix, lineSeparator, lineCapacityAcquired);
             if (!lineCapacityAcquired) {
                 acquireLineCapacity(context);
             }

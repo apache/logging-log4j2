@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,6 +40,7 @@ import org.junitpioneer.jupiter.WritesSystemProperty;
 /**
  * Tests configuring a Syslog appender.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 @UsingStatusListener
 @WritesSystemProperty
 class SyslogAppenderConfigurationTest {
@@ -90,7 +92,7 @@ class SyslogAppenderConfigurationTest {
 
     @Test
     void testPropertiesProtocolDefault() throws Exception {
-        checkProtocolPropertiesConfig(Protocol.TCP, "target/test-classes/log4j1-syslog-protocol-default.properties");
+        checkProtocolPropertiesConfig(Protocol.UDP, "target/test-classes/log4j1-syslog-protocol-default.properties");
     }
 
     @Test
@@ -105,7 +107,7 @@ class SyslogAppenderConfigurationTest {
 
     @Test
     void testXmlProtocolDefault() throws Exception {
-        checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-syslog.xml");
+        checkProtocolXmlConfig(Protocol.UDP, "target/test-classes/log4j1-syslog.xml");
     }
 
     @Test
