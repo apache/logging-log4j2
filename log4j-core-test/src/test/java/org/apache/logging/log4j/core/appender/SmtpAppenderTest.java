@@ -111,7 +111,7 @@ class SmtpAppenderTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    void testCreateAppenderForwardsMailAttributes() {
+    void testCreateAppenderForwardsMailAttributes() throws Exception {
         final SmtpAppender appender = SmtpAppender.createAppender(
                 new DefaultConfiguration(),
                 "Test",
@@ -121,7 +121,7 @@ class SmtpAppenderTest {
                 "from@example.com",
                 "replyTo@example.com",
                 "Subject Pattern %m",
-                "smtp",
+                "smtps",
                 HOST,
                 "4711",
                 "username",
@@ -134,7 +134,7 @@ class SmtpAppenderTest {
         assertNotNull(appender);
         assertEquals("Test", appender.getName());
 
-        // `MailManager` names encode the mail attributes, so an equal name means every attribute was forwarded.
+        // `MailManager` names encode every mail attribute except the password, which is checked on the session below.
         final SmtpAppender expected = SmtpAppender.newBuilder()
                 .setName("Test")
                 .setTo("to@example.com")
@@ -143,7 +143,7 @@ class SmtpAppenderTest {
                 .setFrom("from@example.com")
                 .setReplyTo("replyTo@example.com")
                 .setSubject("Subject Pattern %m")
-                .setSmtpProtocol("smtp")
+                .setSmtpProtocol("smtps")
                 .setSmtpHost(HOST)
                 .setSmtpPort(4711)
                 .setSmtpUsername("username")
@@ -153,6 +153,13 @@ class SmtpAppenderTest {
                 .build();
         assertNotNull(expected);
         assertEquals(expected.getManager().getName(), appender.getManager().getName());
+        final java.lang.reflect.Field field = SmtpManager.class.getDeclaredField("session");
+        field.setAccessible(true);
+        final javax.mail.Session session = (javax.mail.Session) field.get(appender.getManager());
+        assertEquals(
+                "password",
+                session.requestPasswordAuthentication(null, 0, "smtps", null, null)
+                        .getPassword());
     }
 
     @Test
