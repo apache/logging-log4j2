@@ -347,6 +347,9 @@
 <div class="ulist">
 <ul>
 <li>
+<p>Removes the now-dead <code>checkMessageFactory</code> machinery from <code>LoggerContext</code> now that the logger registry keys loggers by their message factory. Requests for a logger with a different factory now return a distinct, correctly-bound logger instead of the old logger plus a warning. (<a href="https://github.com/apache/logging-log4j2/pull/2936">2936</a>)</p>
+</li>
+<li>
 <p>Remove the <code>jvmrunargs</code> lookup. (<a href="https://github.com/apache/logging-log4j2/pull/3874">3874</a>)</p>
 </li>
 </ul>
