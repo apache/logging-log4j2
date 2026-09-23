@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
@@ -286,7 +287,7 @@ public class MapFilter extends AbstractFilter {
     /** @deprecated  use {@link #getStringMap()} instead */
     @Deprecated
     protected Map<String, List<String>> getMap() {
-        final Map<String, List<String>> result = new HashMap<>(map.size());
+        final Map<String, List<String>> result = Maps.newHashMap(map.size());
         map.forEach((key, value) -> result.put(key, (List<String>) value));
         return result;
     }

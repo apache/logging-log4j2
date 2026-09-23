@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
@@ -29,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.internal.Maps;
 
 /**
  * Rewrites log event levels for a given logger name.
@@ -45,11 +45,9 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
     /**
      * Creates a policy to rewrite levels for a given logger name.
      *
-     * @param loggerNamePrefix
-     *        The logger name prefix for events to rewrite; all event logger names that start with this string will be
-     *        rewritten.
-     * @param levelPairs
-     *        The levels to rewrite, the key is the source level, the value the target level.
+     * @param loggerNamePrefix The logger name prefix for events to rewrite; all event logger names that start with this string will be
+     *                         rewritten.
+     * @param levelPairs       The levels to rewrite, the key is the source level, the value the target level.
      * @return a new LoggerNameLevelRewritePolicy
      */
     @PluginFactory
@@ -58,7 +56,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
             @PluginAttribute("logger") final String loggerNamePrefix,
             @PluginElement("KeyValuePair") final KeyValuePair[] levelPairs) {
         // @formatter:on
-        final Map<Level, Level> newMap = new HashMap<>(levelPairs.length);
+        final Map<Level, Level> newMap = Maps.newHashMap(levelPairs.length);
         for (final KeyValuePair keyValuePair : levelPairs) {
             newMap.put(getLevel(keyValuePair.getKey()), getLevel(keyValuePair.getValue()));
         }
