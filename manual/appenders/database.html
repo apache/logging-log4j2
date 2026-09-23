@@ -1365,6 +1365,13 @@ Otherwise, they will be ignored.</p></td>
 <a href="#JdbcAppender-attr-ignoreExceptions"><code>ignoreExceptions</code></a>
 is set to <code>false</code>.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JdbcAppender-attr-truncateStrings"></a>truncateStrings</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, values written to <code>CHAR</code>, <code>VARCHAR</code>, <code>NVARCHAR</code>, <code>LONGVARCHAR</code> and <code>LONGNVARCHAR</code> columns are silently truncated to the column precision reported by the JDBC driver.
+This avoids errors caused by values that are longer than the target column.</p></td>
+</tr>
 </tbody>
 </table>
 <table id="JdbcAppender-elements" class="tableblock frame-all grid-all stretch">
