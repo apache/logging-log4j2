@@ -29,13 +29,6 @@ import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.junit.jupiter.api.Test;
 
-/**
- * Verifies that a {@link CompositeConfiguration} invokes {@link AbstractConfiguration#postConfigure(Configuration)}
- * on each of its source configurations, so a custom {@code Configuration} can contribute programmatic elements that
- * the node-level merge cannot capture. Without the hook the merged configuration runs only its own
- * {@code doConfigure()} and a child's programmatic additions are silently dropped, on both the initial build and
- * after a reconfiguration.
- */
 public class CompositeConfigurationPostConfigureTest {
 
     private static final String MARKER = "programmaticMarker";
