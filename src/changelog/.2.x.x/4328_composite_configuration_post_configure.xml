@@ -4,5 +4,6 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4328" link="https://github.com/apache/logging-log4j2/issues/4328"/>
+  <issue id="4329" link="https://github.com/apache/logging-log4j2/pull/4329"/>
   <description format="asciidoc">Add `AbstractConfiguration.postConfigure()` so a custom configuration keeps its programmatic elements inside a `CompositeConfiguration`.</description>
 </entry>
