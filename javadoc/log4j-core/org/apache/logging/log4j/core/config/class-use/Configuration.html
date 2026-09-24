@@ -1243,32 +1243,39 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Initializes the Logging Context.</div>
 </div>
-<div class="col-first odd-row-color"><code>static void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">Configurator.</span><code><a href="../Configurator.html#reconfigure(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">reconfigure</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AbstractConfiguration.</span><code><a href="../AbstractConfiguration.html#postConfigure(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">postConfigure</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;target)</code></div>
 <div class="col-last odd-row-color">
+<div class="block">Invoked by a <a href="../composite/CompositeConfiguration.html" title="class in org.apache.logging.log4j.core.config.composite"><code>CompositeConfiguration</code></a> after it has
+ configured the merged node tree, to let this contributing configuration add programmatic elements
+ (appenders, loggers, filters) to the effective <code>target</code> configuration.</div>
+</div>
+<div class="col-first even-row-color"><code>static void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Configurator.</span><code><a href="../Configurator.html#reconfigure(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">reconfigure</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last even-row-color">
 <div class="block">Reconfigure using an already constructed Configuration.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-first odd-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ConfigurationAware.</span><code><a href="../ConfigurationAware.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
-<div class="col-last even-row-color">
+<div class="col-first even-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ConfigurationAware.</span><code><a href="../ConfigurationAware.html#setConfiguration(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">setConfiguration</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Injects the current Configuration into this object.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="../LoggerConfig.Builder.html" title="type parameter in LoggerConfig.Builder">B</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.Builder.</span><code><a href="../LoggerConfig.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.26.0 use <a href="../LoggerConfig.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>LoggerConfig.Builder.setConfig(Configuration)</code></a>.</div>
 </div>
 </div>
-<div class="col-first even-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="../LoggerConfig.RootLogger.Builder.html" title="type parameter in LoggerConfig.RootLogger.Builder">B</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LoggerConfig.RootLogger.Builder.</span><code><a href="../LoggerConfig.RootLogger.Builder.html#withConfig(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">withConfig</a><wbr>(<a href="../Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;config)</code></div>
+<div class="col-last odd-row-color">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.26.0 use <a href="../LoggerConfig.RootLogger.Builder.html#setConfig(org.apache.logging.log4j.core.config.Configuration)"><code>LoggerConfig.RootLogger.Builder.setConfig(Configuration)</code></a>.</div>
 </div>

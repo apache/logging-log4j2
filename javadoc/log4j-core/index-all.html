@@ -4042,6 +4042,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#doConfigure()" class="member-name-link">doConfigure()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html#doConfigure()" class="member-name-link">doConfigure()</a> - Method in class org.apache.logging.log4j.core.config.composite.<a href="org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" title="class in org.apache.logging.log4j.core.config.composite">CompositeConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/DefaultConfiguration.html#doConfigure()" class="member-name-link">doConfigure()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/DefaultConfiguration.html" title="class in org.apache.logging.log4j.core.config">DefaultConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/util/PluginRegistry.PluginTest.html#doesMatchClass()" class="member-name-link">doesMatchClass()</a> - Method in class org.apache.logging.log4j.core.config.plugins.util.<a href="org/apache/logging/log4j/core/config/plugins/util/PluginRegistry.PluginTest.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginRegistry.PluginTest</a></dt>
@@ -14331,6 +14333,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.Builder.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction.Builder</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
 <dd>
 <div class="block">Builder for the POSIX view attribute action.</div>
+</dd>
+<dt><a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html#postConfigure(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">postConfigure(Configuration)</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AbstractConfiguration.html" title="class in org.apache.logging.log4j.core.config">AbstractConfiguration</a></dt>
+<dd>
+<div class="block">Invoked by a <a href="org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" title="class in org.apache.logging.log4j.core.config.composite"><code>CompositeConfiguration</code></a> after it has
+ configured the merged node tree, to let this contributing configuration add programmatic elements
+ (appenders, loggers, filters) to the effective <code>target</code> configuration.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/jmx/StatusLoggerAdmin.html#postDeregister()" class="member-name-link">postDeregister()</a> - Method in class org.apache.logging.log4j.core.jmx.<a href="org/apache/logging/log4j/core/jmx/StatusLoggerAdmin.html" title="class in org.apache.logging.log4j.core.jmx">StatusLoggerAdmin</a></dt>
 <dd>&nbsp;</dd>

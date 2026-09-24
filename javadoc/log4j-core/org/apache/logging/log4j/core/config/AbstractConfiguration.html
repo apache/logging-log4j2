@@ -372,81 +372,88 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isShutdownHookEnabled()" class="member-name-link">isShutdownHookEnabled</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#preConfigure(org.apache.logging.log4j.core.config.Node)" class="member-name-link">preConfigure</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;node)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#postConfigure(org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">postConfigure</a><wbr>(<a href="Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;target)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Invoked by a <a href="composite/CompositeConfiguration.html" title="class in org.apache.logging.log4j.core.config.composite"><code>CompositeConfiguration</code></a> after it has
+ configured the merged node tree, to let this contributing configuration add programmatic elements
+ (appenders, loggers, filters) to the effective <code>target</code> configuration.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processConditionals(org.apache.logging.log4j.core.config.Node)" class="member-name-link">processConditionals</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;node)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#preConfigure(org.apache.logging.log4j.core.config.Node)" class="member-name-link">preConfigure</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;node)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processConditionals(org.apache.logging.log4j.core.config.Node)" class="member-name-link">processConditionals</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;node)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Process conditions by evaluating them and including the children of conditions that are true
  and discarding those that are not.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processSelect(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.plugins.util.PluginType)" class="member-name-link">processSelect</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;selectNode,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processSelect(org.apache.logging.log4j.core.config.Node,org.apache.logging.log4j.core.config.plugins.util.PluginType)" class="member-name-link">processSelect</a><wbr>(<a href="Node.html" title="class in org.apache.logging.log4j.core.config">Node</a>&nbsp;selectNode,
  <a href="plugins/util/PluginType.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginType</a>&lt;?&gt;&nbsp;type)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Handle Select nodes.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeAppender(java.lang.String)" class="member-name-link">removeAppender</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appenderName)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeAppender(java.lang.String)" class="member-name-link">removeAppender</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appenderName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Remove an Appender.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(org.apache.logging.log4j.core.config.ConfigurationListener)" class="member-name-link">removeListener</a><wbr>(<a href="ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a>&nbsp;listener)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeListener(org.apache.logging.log4j.core.config.ConfigurationListener)" class="member-name-link">removeListener</a><wbr>(<a href="ConfigurationListener.html" title="interface in org.apache.logging.log4j.core.config">ConfigurationListener</a>&nbsp;listener)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Remove a ConfigurationListener.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeLogger(java.lang.String)" class="member-name-link">removeLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerName)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeLogger(java.lang.String)" class="member-name-link">removeLogger</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;loggerName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Remove a LoggerConfig.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiser(org.apache.logging.log4j.core.net.Advertiser)" class="member-name-link">setAdvertiser</a><wbr>(<a href="../net/Advertiser.html" title="interface in org.apache.logging.log4j.core.net">Advertiser</a>&nbsp;advertiser)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLoggerAdditive(org.apache.logging.log4j.core.Logger,boolean)" class="member-name-link">setLoggerAdditive</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiser(org.apache.logging.log4j.core.net.Advertiser)" class="member-name-link">setAdvertiser</a><wbr>(<a href="../net/Advertiser.html" title="interface in org.apache.logging.log4j.core.net">Advertiser</a>&nbsp;advertiser)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLoggerAdditive(org.apache.logging.log4j.core.Logger,boolean)" class="member-name-link">setLoggerAdditive</a><wbr>(<a href="../Logger.html" title="class in org.apache.logging.log4j.core">Logger</a>&nbsp;logger,
  boolean&nbsp;additive)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Marks a LoggerConfig as additive.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setName(java.lang.String)" class="member-name-link">setName</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Set the name of the configuration.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setNanoClock(org.apache.logging.log4j.core.util.NanoClock)" class="member-name-link">setNanoClock</a><wbr>(<a href="../util/NanoClock.html" title="interface in org.apache.logging.log4j.core.util">NanoClock</a>&nbsp;nanoClock)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setNanoClock(org.apache.logging.log4j.core.util.NanoClock)" class="member-name-link">setNanoClock</a><wbr>(<a href="../util/NanoClock.html" title="interface in org.apache.logging.log4j.core.util">NanoClock</a>&nbsp;nanoClock)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the <a href="../util/NanoClock.html" title="interface in org.apache.logging.log4j.core.util"><code>NanoClock</code></a> instance for this configuration.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPluginManager(org.apache.logging.log4j.core.config.plugins.util.PluginManager)" class="member-name-link">setPluginManager</a><wbr>(<a href="plugins/util/PluginManager.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginManager</a>&nbsp;pluginManager)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setScriptManager(org.apache.logging.log4j.core.script.ScriptManager)" class="member-name-link">setScriptManager</a><wbr>(<a href="../script/ScriptManager.html" title="class in org.apache.logging.log4j.core.script">ScriptManager</a>&nbsp;scriptManager)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setToDefault()" class="member-name-link">setToDefault</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setup()" class="member-name-link">setup</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPluginManager(org.apache.logging.log4j.core.config.plugins.util.PluginManager)" class="member-name-link">setPluginManager</a><wbr>(<a href="plugins/util/PluginManager.html" title="class in org.apache.logging.log4j.core.config.plugins.util">PluginManager</a>&nbsp;pluginManager)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#start()" class="member-name-link">start</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setScriptManager(org.apache.logging.log4j.core.script.ScriptManager)" class="member-name-link">setScriptManager</a><wbr>(<a href="../script/ScriptManager.html" title="class in org.apache.logging.log4j.core.script">ScriptManager</a>&nbsp;scriptManager)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setToDefault()" class="member-name-link">setToDefault</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setup()" class="member-name-link">setup</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#start()" class="member-name-link">start</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Start the configuration.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop(long,java.util.concurrent.TimeUnit)" class="member-name-link">stop</a><wbr>(long&nbsp;timeout,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop(long,java.util.concurrent.TimeUnit)" class="member-name-link">stop</a><wbr>(long&nbsp;timeout,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;timeUnit)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Tear down the configuration.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static byte[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#toByteArray(java.io.InputStream)" class="member-name-link">toByteArray</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html" title="class or interface in java.io" class="external-link">InputStream</a>&nbsp;is)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>protected static byte[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#toByteArray(java.io.InputStream)" class="member-name-link">toByteArray</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html" title="class or interface in java.io" class="external-link">InputStream</a>&nbsp;is)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Reads an InputStream using buffered reads into a byte array buffer.</div>
 </div>
 </div>
@@ -834,6 +841,28 @@ implements <a href="Configuration.html" title="interface in org.apache.logging.l
 <section class="detail" id="doConfigure()">
 <h3>doConfigure</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">doConfigure</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="postConfigure(org.apache.logging.log4j.core.config.Configuration)">
+<h3>postConfigure</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">postConfigure</span><wbr><span class="parameters">(<a href="Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;target)</span></div>
+<div class="block">Invoked by a <a href="composite/CompositeConfiguration.html" title="class in org.apache.logging.log4j.core.config.composite"><code>CompositeConfiguration</code></a> after it has
+ configured the merged node tree, to let this contributing configuration add programmatic elements
+ (appenders, loggers, filters) to the effective <code>target</code> configuration.
+ <p>
+ A <code>CompositeConfiguration</code> merges the child configurations at the node level and runs its own
+ <a href="#doConfigure()"><code>doConfigure()</code></a> on the merged tree; it never calls a child's <code>doConfigure()</code>. As a result any
+ element a custom <code>Configuration</code> adds programmatically in its <code>doConfigure()</code> override is lost
+ under a composite configuration, on both the initial build and every reconfiguration. Such a
+ configuration overrides this method to re-apply those elements to <code>target</code>. The default is a no-op.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>target</code> - the effective (composite) configuration to contribute to</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
 </section>
 </li>
 <li>
