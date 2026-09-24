@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
@@ -151,6 +153,51 @@ class ConsoleAppenderTest {
             assertTrue(app.getImmediateFlush());
         } finally {
             app.stop();
+        }
+    }
+
+    @Test
+    void testBufferSizeHonored() {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testBufferSizeHonored")
+                .setBufferSize(16384)
+                .build();
+        try {
+            assertNotNull(app.getManager());
+            assertEquals(16384, app.getManager().getByteBuffer().capacity());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    void testDefaultBufferSize() {
+        final ConsoleAppender app =
+                ConsoleAppender.newBuilder().setName("testDefaultBufferSize").build();
+        try {
+            assertEquals(Constants.ENCODER_BYTE_BUFFER_SIZE, app.getManager().getByteBuffer().capacity());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    void testDifferentBufferSizesUseDifferentManagers() {
+        final ConsoleAppender app1 = ConsoleAppender.newBuilder()
+                .setName("testBufferSizeManager1")
+                .setTarget(Target.SYSTEM_ERR)
+                .setBufferSize(8192)
+                .build();
+        final ConsoleAppender app2 = ConsoleAppender.newBuilder()
+                .setName("testBufferSizeManager2")
+                .setTarget(Target.SYSTEM_ERR)
+                .setBufferSize(16384)
+                .build();
+        try {
+            assertNotSame(app1.getManager(), app2.getManager());
+        } finally {
+            app1.stop();
+            app2.stop();
         }
     }
 
