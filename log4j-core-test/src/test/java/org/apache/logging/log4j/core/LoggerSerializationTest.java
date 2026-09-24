@@ -16,26 +16,34 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.test.AbstractSerializationTest;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class LoggerSerializationTest extends AbstractSerializationTest {
+class LoggerSerializationTest {
 
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            {new LoggerContext("").getLogger("", null)},
-            {LogManager.getRootLogger()},
-            {LogManager.getLogger()},
-            {LogManager.getLogger("test")}
-        });
+    static Stream<Serializable> data() {
+        return Stream.of(
+                new LoggerContext("").getLogger("", null),
+                (Serializable) LogManager.getRootLogger(),
+                (Serializable) LogManager.getLogger(),
+                (Serializable) LogManager.getLogger("test"));
     }
 
-    public LoggerSerializationTest(final Serializable serializable) {
-        super(serializable);
+    @ParameterizedTest
+    @MethodSource("data")
+    void testSerializationRoundtripEquals(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip(serializable));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data")
+    void testSerializationRoundtripNoException(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip());
     }
 }

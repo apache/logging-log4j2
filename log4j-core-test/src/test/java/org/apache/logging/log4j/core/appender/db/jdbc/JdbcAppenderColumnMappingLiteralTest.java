@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -27,36 +27,21 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.RuleChainFactory;
 import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.h2.util.IOUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+@LoggerContextSource("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-literal.xml")
 public class JdbcAppenderColumnMappingLiteralTest extends AbstractH2Test {
 
-    @Rule
-    public final RuleChain rules;
-
-    private final JdbcRule jdbcRule;
-
-    public JdbcAppenderColumnMappingLiteralTest() {
-        this(new JdbcRule(
-                JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_TMPDIR,
-                "CREATE TABLE dsMappingLogEntry (id INTEGER, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
-                "DROP TABLE IF EXISTS dsMappingLogEntry"));
-    }
-
-    protected JdbcAppenderColumnMappingLiteralTest(final JdbcRule jdbcRule) {
-        this.rules = RuleChainFactory.create(
-                jdbcRule,
-                new LoggerContextRule(
-                        "org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-literal.xml"));
-        this.jdbcRule = jdbcRule;
-    }
+    @RegisterExtension
+    private final JdbcRule jdbcRule = new JdbcRule(
+            JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_TMPDIR,
+            "CREATE TABLE dsMappingLogEntry (id INTEGER, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
+            "DROP TABLE IF EXISTS dsMappingLogEntry");
 
     @Test
     public void test() throws Exception {
@@ -75,18 +60,18 @@ public class JdbcAppenderColumnMappingLiteralTest extends AbstractH2Test {
             try (final Statement statement = connection.createStatement();
                     final ResultSet resultSet = statement.executeQuery("SELECT * FROM dsMappingLogEntry ORDER BY id")) {
 
-                assertTrue("There should be at least one row.", resultSet.next());
+                assertTrue(resultSet.next(), "There should be at least one row.");
 
-                assertEquals("The level column is not correct (1).", "FATAL", resultSet.getNString("level"));
-                assertEquals("The logger column is not correct (1).", logger.getName(), resultSet.getNString("logger"));
-                assertEquals("The message column is not correct (1).", "Hello World!", resultSet.getString("message"));
+                assertEquals("FATAL", resultSet.getNString("level"), "The level column is not correct (1).");
+                assertEquals(logger.getName(), resultSet.getNString("logger"), "The logger column is not correct (1).");
+                assertEquals("Hello World!", resultSet.getString("message"), "The message column is not correct (1).");
                 assertEquals(
-                        "The exception column is not correct (1).",
                         stackTrace,
                         IOUtils.readStringAndClose(
-                                resultSet.getNClob("exception").getCharacterStream(), -1));
+                                resultSet.getNClob("exception").getCharacterStream(), -1),
+                        "The exception column is not correct (1).");
 
-                assertFalse("There should not be two rows.", resultSet.next());
+                assertFalse(resultSet.next(), "There should not be two rows.");
             }
         }
     }

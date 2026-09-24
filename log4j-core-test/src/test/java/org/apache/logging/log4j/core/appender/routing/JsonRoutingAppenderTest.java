@@ -16,42 +16,42 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
  */
 public class JsonRoutingAppenderTest {
-    private static final String CONFIG = "log4j-routing.json";
     private static final String LOG_FILENAME = "target/rolling1/rollingtest-Unknown.log";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain rules = loggerContextRule.withCleanFilesRule(LOG_FILENAME);
+    @RegisterExtension
+    CleanFiles cleanFiles = new CleanFiles(false, true, 10, LOG_FILENAME);
 
     @Test
-    public void routingTest() {
+    @LoggerContextSource("log4j-routing.json")
+    public void routingTest(final LoggerContext loggerContext) {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        final List<LogEvent> list = loggerContextRule.getListAppender("List").getEvents();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events. Expected 1, got " + list.size(), 1, list.size());
+        final ListAppender app = loggerContext.getConfiguration().getAppender("List");
+        final List<LogEvent> list = app.getEvents();
+        assertNotNull(list, "No events generated");
+        assertTrue(list.size() == 1, "Incorrect number of events. Expected 1, got " + list.size());
         msg = new StructuredDataMessage("Test", "This is a test", "Unknown");
         EventLogger.logEvent(msg);
         final File file = new File(LOG_FILENAME);
-        assertTrue("File was not created", file.exists());
+        assertTrue(file.exists(), "File was not created");
     }
 }

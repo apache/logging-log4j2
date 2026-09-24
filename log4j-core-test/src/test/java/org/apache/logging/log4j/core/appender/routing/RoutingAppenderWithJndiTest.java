@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
@@ -29,13 +28,12 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.JndiRule;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * RoutingAppenderWithJndiTest
@@ -43,14 +41,9 @@ import org.junit.rules.RuleChain;
 public class RoutingAppenderWithJndiTest {
 
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/logging/context-name";
-    private ListAppender listAppender1;
-    private ListAppender listAppender2;
 
-    public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing-by-jndi.xml");
-
-    @ClassRule
-    public static RuleChain rules =
-            RuleChain.outerRule(new JndiRule(initBindings())).around(loggerContextRule);
+    @RegisterExtension
+    private JndiRule jndiRule = new JndiRule(initBindings());
 
     private static Map<String, Object> initBindings() {
         System.setProperty("log4j2.enableJndiLookup", "true");
@@ -59,14 +52,9 @@ public class RoutingAppenderWithJndiTest {
         return Collections.emptyMap();
     }
 
-    @Before
-    public void before() {
-        listAppender1 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List1");
-        listAppender2 = RoutingAppenderWithJndiTest.loggerContextRule.getListAppender("List2");
-    }
-
-    @After
-    public void after() {
+    @AfterEach
+    public void after(
+            @Named("List1") final ListAppender listAppender1, @Named("List2") final ListAppender listAppender2) {
         if (listAppender1 != null) {
             listAppender1.clear();
         }
@@ -76,14 +64,17 @@ public class RoutingAppenderWithJndiTest {
     }
 
     @Test
+    @LoggerContextSource("log4j-routing-by-jndi.xml")
     @SuppressWarnings("BanJNDI")
-    public void routingTest() throws NamingException {
+    public void routingTest(
+            @Named("List1") final ListAppender listAppender1, @Named("List2") final ListAppender listAppender2)
+            throws NamingException {
         // default route when there's no jndi resource
         StructuredDataMessage msg =
                 new StructuredDataMessage("Test", "This is a message from unknown context", "Context");
         EventLogger.logEvent(msg);
         final File defaultLogFile = new File("target/routingbyjndi/routingbyjnditest-unknown.log");
-        assertTrue("The default log file was not created", defaultLogFile.exists());
+        assertTrue(defaultLogFile.exists(), "The default log file was not created");
 
         // now set jndi resource to Application1
         final Context context = new InitialContext();
@@ -91,43 +82,38 @@ public class RoutingAppenderWithJndiTest {
 
         msg = new StructuredDataMessage("Test", "This is a message from Application1", "Context");
         EventLogger.logEvent(msg);
-        assertNotNull("No events generated", listAppender1.getEvents());
-        assertEquals(
+        assertNotNull(listAppender1.getEvents(), "No events generated");
+        assertTrue(
+                listAppender1.getEvents().size() == 1,
                 "Incorrect number of events. Expected 1, got "
-                        + listAppender1.getEvents().size(),
-                1,
-                listAppender1.getEvents().size());
+                        + listAppender1.getEvents().size());
 
         // now set jndi resource to Application2
         context.rebind(JNDI_CONTEXT_NAME, "Application2");
 
         msg = new StructuredDataMessage("Test", "This is a message from Application2", "Context");
         EventLogger.logEvent(msg);
-        assertNotNull("No events generated", listAppender2.getEvents());
-        assertEquals(
+        assertNotNull(listAppender2.getEvents(), "No events generated");
+        assertTrue(
+                listAppender2.getEvents().size() == 1,
                 "Incorrect number of events. Expected 1, got "
-                        + listAppender2.getEvents().size(),
-                1,
-                listAppender2.getEvents().size());
-        assertEquals(
+                        + listAppender2.getEvents().size());
+        assertTrue(
+                listAppender1.getEvents().size() == 1,
                 "Incorrect number of events. Expected 1, got "
-                        + listAppender1.getEvents().size(),
-                1,
-                listAppender1.getEvents().size());
+                        + listAppender1.getEvents().size());
 
         msg = new StructuredDataMessage("Test", "This is another message from Application2", "Context");
         EventLogger.logEvent(msg);
-        assertNotNull("No events generated", listAppender2.getEvents());
-        assertEquals(
+        assertNotNull(listAppender2.getEvents(), "No events generated");
+        assertTrue(
+                listAppender2.getEvents().size() == 2,
                 "Incorrect number of events. Expected 2, got "
-                        + listAppender2.getEvents().size(),
-                2,
-                listAppender2.getEvents().size());
-        assertEquals(
+                        + listAppender2.getEvents().size());
+        assertTrue(
+                listAppender1.getEvents().size() == 1,
                 "Incorrect number of events. Expected 1, got "
-                        + listAppender1.getEvents().size(),
-                1,
-                listAppender1.getEvents().size());
+                        + listAppender1.getEvents().size());
 
         // now set jndi resource to Application3.
         // The context name, 'Application3', will be used as log file name by the default route.
@@ -135,7 +121,7 @@ public class RoutingAppenderWithJndiTest {
         msg = new StructuredDataMessage("Test", "This is a message from Application3", "Context");
         EventLogger.logEvent(msg);
         final File application3LogFile = new File("target/routingbyjndi/routingbyjnditest-Application3.log");
-        assertTrue("The Application3 log file was not created", application3LogFile.exists());
+        assertTrue(application3LogFile.exists(), "The Application3 log file was not created");
 
         // now set jndi resource to Application4
         // The context name, 'Application4', will be used as log file name by the default route.
@@ -143,6 +129,6 @@ public class RoutingAppenderWithJndiTest {
         msg = new StructuredDataMessage("Test", "This is a message from Application4", "Context");
         EventLogger.logEvent(msg);
         final File application4LogFile = new File("target/routingbyjndi/routingbyjnditest-Application4.log");
-        assertTrue("The Application3 log file was not created", application4LogFile.exists());
+        assertTrue(application4LogFile.exists(), "The Application3 log file was not created");
     }
 }

@@ -38,22 +38,21 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.JndiRule;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-@Category(Appenders.Jms.class)
+@Tag("Appenders.Jms")
 public class JmsAppenderTest {
 
     private static final String CONNECTION_FACTORY_NAME = "jms/connectionFactory";
@@ -76,24 +75,23 @@ public class JmsAppenderTest {
     private final ObjectMessage objectMessage = mock(ObjectMessage.class);
     private final MapMessage mapMessage = mock(MapMessage.class);
 
+    @RegisterExtension
     private final JndiRule jndiRule = new JndiRule(createBindings());
-    private final LoggerContextRule ctx = new LoggerContextRule("JmsAppenderTest.xml");
 
-    @Rule
-    public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);
+    private LoggerContext ctx = null;
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty("log4j2.enableJndiJms");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j2.enableJndiJms", "true");
     }
 
     public JmsAppenderTest() throws Exception {
-        // this needs to set up before LoggerContextRule
+        // this needs to set up before LoggerContext
         given(connectionFactory.createConnection()).willReturn(connection);
         given(connectionFactory.createConnection(anyString(), anyString())).willThrow(IllegalArgumentException.class);
         given(connection.createSession(eq(false), eq(Session.AUTO_ACKNOWLEDGE))).willReturn(session);
@@ -136,15 +134,16 @@ public class JmsAppenderTest {
         return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // we have 4 appenders all connecting to the same ConnectionFactory
         then(connection).should(times(4)).start();
     }
 
     @Test
-    public void testAppendToQueue() throws Exception {
-        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsAppender");
+    @LoggerContextSource("JmsAppenderTest.xml")
+    public void testAppendToQueue(LoggerContext ctx) throws Exception {
+        final JmsAppender appender = (JmsAppender) ctx.getConfiguration().getAppender("JmsAppender");
         final LogEvent event = createLogEvent();
         appender.append(event);
         then(session).should().createTextMessage(eq(LOG_MESSAGE));
@@ -156,8 +155,9 @@ public class JmsAppenderTest {
     }
 
     @Test
-    public void testAppendToQueueWithMessageLayout() throws Exception {
-        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsAppender-MessageLayout");
+    @LoggerContextSource("JmsAppenderTest.xml")
+    public void testAppendToQueueWithMessageLayout(LoggerContext ctx) throws Exception {
+        final JmsAppender appender = (JmsAppender) ctx.getConfiguration().getAppender("JmsAppender-MessageLayout");
         final LogEvent event = createMapMessageLogEvent();
         appender.append(event);
         then(session).should().createMapMessage();
@@ -169,8 +169,9 @@ public class JmsAppenderTest {
     }
 
     @Test
-    public void testJmsQueueAppenderCompatibility() throws Exception {
-        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsQueueAppender");
+    @LoggerContextSource("JmsAppenderTest.xml")
+    public void testJmsQueueAppenderCompatibility(LoggerContext ctx) throws Exception {
+        final JmsAppender appender = (JmsAppender) ctx.getConfiguration().getAppender("JmsQueueAppender");
         final LogEvent expected = createLogEvent();
         appender.append(expected);
         then(session).should().createObjectMessage(eq(expected));
@@ -182,8 +183,9 @@ public class JmsAppenderTest {
     }
 
     @Test
-    public void testJmsTopicAppenderCompatibility() throws Exception {
-        final JmsAppender appender = (JmsAppender) ctx.getRequiredAppender("JmsTopicAppender");
+    @LoggerContextSource("JmsAppenderTest.xml")
+    public void testJmsTopicAppenderCompatibility(LoggerContext ctx) throws Exception {
+        final JmsAppender appender = (JmsAppender) ctx.getConfiguration().getAppender("JmsTopicAppender");
         final LogEvent expected = createLogEvent();
         appender.append(expected);
         then(session).should().createObjectMessage(eq(expected));

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static junit.framework.Assert.fail;
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,14 +39,14 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.hamcrest.Matcher;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RollingAppenderRestartTest {
 
@@ -56,14 +56,17 @@ public class RollingAppenderRestartTest {
     private static final Path DIR = Paths.get("target/rolling-restart");
     private static final Path FILE = DIR.resolve("test.log");
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR.toAbsolutePath().toString(),
+            CONFIG,
+            RollingAppenderRestartTest.class.getName(),
+            this.getClass().getClassLoader(),
+            false,
+            true,
+            5);
 
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(
-            false, true, 5, DIR.toAbsolutePath().toString());
-
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         tearDown();
         Files.createDirectories(DIR);
@@ -84,7 +87,7 @@ public class RollingAppenderRestartTest {
         assumeTrue(creationTime.equals(newTime) || creationTime.toMillis() == 0L);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() throws IOException {
         if (Files.exists(DIR)) {
             PathUtils.deleteDirectory(DIR);
@@ -92,15 +95,15 @@ public class RollingAppenderRestartTest {
     }
 
     @Test
-    public void testAppender() throws Exception {
-        final Logger logger = loggerContextRule.getLogger();
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
+        final Logger logger = loggerContext.getLogger(RollingAppenderRestartTest.class.getName());
         logger.info("This is test message number 1");
         // The GZ compression takes place asynchronously.
         // Make sure it's done before validating.
         Thread.yield();
         final String name = "RollingFile";
-        final RollingFileAppender appender = loggerContextRule.getAppender(name);
-        assertNotNull(name, appender);
+        final RollingFileAppender appender = loggerContext.getConfiguration().getAppender(name);
+        assertNotNull(appender, name);
         if (appender.getManager().getSemaphore().tryAcquire(5, TimeUnit.SECONDS)) {
             // If we are in here, either the rollover is done or has not taken place yet.
             validate();
@@ -114,7 +117,7 @@ public class RollingAppenderRestartTest {
         final File[] files = DIR.toFile().listFiles();
         Arrays.sort(files);
         assertTrue(
-                "was expecting files with '.gz' suffix, found: " + Arrays.toString(files),
-                hasGzippedFile.matches(files));
+                hasGzippedFile.matches(files),
+                "was expecting files with '.gz' suffix, found: " + Arrays.toString(files));
     }
 }
