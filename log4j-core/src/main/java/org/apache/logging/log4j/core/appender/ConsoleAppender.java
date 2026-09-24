@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -173,16 +174,22 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                     ? getDirectOutputStream(target)
                     : follow ? getFollowOutputStream(target) : getDefaultOutputStream(target);
 
-            final String managerName = target.name() + '.' + follow + '.' + direct;
-            final OutputStreamManager manager =
-                    OutputStreamManager.getManager(managerName, new FactoryData(stream, managerName, layout), factory);
+            final boolean bufferedIo = isBufferedIo();
+            final int bufferSize = getBufferSize();
+            if (!bufferedIo && bufferSize > 0) {
+                LOGGER.warn("The bufferSize is set to {} but bufferedIo is false.", bufferSize);
+            }
+            final String managerName =
+                    target.name() + '.' + follow + '.' + direct + '.' + bufferedIo + '.' + bufferSize;
+            final OutputStreamManager manager = OutputStreamManager.getManager(
+                    managerName, new FactoryData(stream, managerName, layout, bufferSize), factory);
             return new ConsoleAppender(
                     getName(),
                     layout,
                     getFilter(),
                     manager,
                     isIgnoreExceptions(),
-                    isImmediateFlush(),
+                    !bufferedIo || isImmediateFlush(),
                     target,
                     getPropertyArray());
         }
@@ -193,7 +200,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 ConsoleAppender.DEFAULT_TARGET == Target.SYSTEM_ERR ? System.err : System.out);
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
-        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
+        return OutputStreamManager.getManager(
+                managerName,
+                new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE),
+                factory);
     }
 
     private static OutputStream getDefaultOutputStream(Target target) {
@@ -280,6 +290,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         private final OutputStream os;
         private final String name;
         private final Layout layout;
+        private final int bufferSize;
 
         /**
          * Constructor.
@@ -287,11 +298,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          * @param os The OutputStream.
          * @param type The name of the target.
          * @param layout A layout
+         * @param bufferSize The buffer size.
          */
-        public FactoryData(final OutputStream os, final String type, final Layout layout) {
+        public FactoryData(final OutputStream os, final String type, final Layout layout, final int bufferSize) {
             this.os = os;
             this.name = type;
             this.layout = layout;
+            this.bufferSize = bufferSize;
         }
     }
 
@@ -309,7 +322,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.name, data.layout, true);
+            return new OutputStreamManager(data.os, data.name, data.layout, true, data.bufferSize);
         }
     }
 
