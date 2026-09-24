@@ -1,10 +1,10 @@
 {
+  "//": [
+    "Only local builds and release website staging use this file.",
+    "`package-lock.json` is not committed, so npm resolves the dependency tree on first use.",
+    "Live website deployments replace both files with the ones on the `gha/v0` branch of `logging-parent`."
+  ],
   "dependencies": {
-    "@antora/cli": "^3.2.0-alpha.4",
-    "@antora/site-generator-default": "^3.2.0-alpha.4",
-    "@asciidoctor/tabs": "^1.0.0-beta.6",
-    "asciidoctor-kroki": "^0.18.1",
-    "fast-xml-parser": "^5.0.6",
-    "handlebars": "^4.7.8"
+    "@org.apache.logging/logging-parent": "github:apache/logging-parent#gha/v0"
   }
 }
