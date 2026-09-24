@@ -105,6 +105,41 @@ public class ConsoleAppenderTest {
     }
 
     @Test
+    public void testImmediateFlushFalse() {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testImmediateFlushFalse")
+                .setImmediateFlush(false)
+                .build();
+        try {
+            assertFalse(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    public void testDefaultImmediateFlush() {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testDefaultImmediateFlush")
+                .build();
+        try {
+            assertTrue(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    public void testDefaultAppenderImmediateFlush() {
+        final ConsoleAppender app = ConsoleAppender.createDefaultAppenderForLayout(PatternLayout.createDefaultLayout());
+        try {
+            assertTrue(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
     public void testFollowSystemErr() {
         testFollowSystemPrintStream(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
     }
