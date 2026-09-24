@@ -806,7 +806,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * configured the merged node tree, to let this contributing configuration add programmatic elements
      * (appenders, loggers, filters) to the effective {@code target} configuration.
      * <p>
-     * A {@link CompositeConfiguration} merges the child configurations at the node level and runs its own
+     * A {@code CompositeConfiguration} merges the child configurations at the node level and runs its own
      * {@link #doConfigure()} on the merged tree; it never calls a child's {@code doConfigure()}. As a result any
      * element a custom {@code Configuration} adds programmatically in its {@code doConfigure()} override is lost
      * under a composite configuration, on both the initial build and every reconfiguration. Such a
