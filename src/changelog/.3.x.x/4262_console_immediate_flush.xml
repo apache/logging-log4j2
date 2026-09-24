@@ -4,6 +4,7 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4262" link="https://github.com/apache/logging-log4j2/issues/4262"/>
+  <issue id="4325" link="https://github.com/apache/logging-log4j2/pull/4325"/>
   <description format="asciidoc">
     Fixes the `ConsoleAppender` builder to honor the configured `immediateFlush` setting instead of always flushing after each event.
   </description>
