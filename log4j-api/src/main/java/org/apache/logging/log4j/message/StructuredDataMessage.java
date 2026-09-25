@@ -23,6 +23,13 @@ import org.apache.logging.log4j.util.StringBuilders;
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.
  * <p>
+ * The SD-ID, the MSGID and every key are checked against the syntax of
+ * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6">RFC 5424</a>, and an invalid value throws an
+ * {@link IllegalArgumentException}.
+ * Prefer the constructors that take a {@link StructuredDataId}: when it declares required or optional keys, this
+ * message accepts only those keys.
+ * </p>
+ * <p>
  * Thread-safety note: the contents of this message can be modified after construction.
  * When using asynchronous loggers and appenders it is not recommended to modify this message after the message is
  * logged, because it is undefined whether the logged message string will contain the old values or the modified
@@ -38,11 +45,11 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     private static final int MAX_LENGTH = 32;
     private static final int HASHVAL = 31;
 
-    private StructuredDataId id;
+    private StructuredDataId sdId;
 
     private String message;
 
-    private String type;
+    private String msgId;
 
     private final int maxLength;
 
@@ -57,121 +64,137 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Creates a StructuredDataMessage using an ID (max 32 characters), message, and type (max 32 characters).
-     * @param id The String id.
+     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message, and MSGID (max 32 characters).
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
      * @param msg The message.
-     * @param type The message type.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @throws IllegalArgumentException if {@code sdId} or {@code msgId} is not valid.
      */
-    public StructuredDataMessage(final String id, final String msg, final String type) {
-        this(id, msg, type, MAX_LENGTH);
+    public StructuredDataMessage(final String sdId, final String msg, final String msgId) {
+        this(sdId, msg, msgId, null, MAX_LENGTH);
     }
 
     /**
-     * Creates a StructuredDataMessage using an ID (user specified max characters), message, and type (user specified
-     * maximum number of characters).
-     * @param id The String id.
+     * Creates a StructuredDataMessage using an SD-ID (user specified max characters), message, and MSGID (max 32
+     * characters).
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
      * @param msg The message.
-     * @param type The message type.
-     * @param maxLength The maximum length of keys;
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param maxLength The maximum length of the SD-ID and of keys;
+     * @throws IllegalArgumentException if {@code sdId} or {@code msgId} is not valid.
      * @since 2.9.0
      */
-    public StructuredDataMessage(final String id, final String msg, final String type, final int maxLength) {
-        this.id = new StructuredDataId(id, null, null, maxLength);
-        this.message = msg;
-        this.type = type;
-        this.maxLength = maxLength;
+    public StructuredDataMessage(final String sdId, final String msg, final String msgId, final int maxLength) {
+        this(sdId, msg, msgId, null, maxLength);
     }
 
     /**
-     * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
+     * Creates a StructuredDataMessage using an SD-ID (max 32 characters), message, MSGID (max 32 characters), and an
      * initial map of structured data to include.
-     * @param id The String id.
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
      * @param msg The message.
-     * @param type The message type.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
      * @param data The StructuredData map.
+     * @throws IllegalArgumentException if {@code sdId}, {@code msgId} or a key of {@code data} is not valid.
      */
-    public StructuredDataMessage(final String id, final String msg, final String type, final Map<String, String> data) {
-        this(id, msg, type, data, MAX_LENGTH);
+    public StructuredDataMessage(
+            final String sdId, final String msg, final String msgId, final Map<String, String> data) {
+        this(sdId, msg, msgId, data, MAX_LENGTH);
     }
 
     /**
-     * Creates a StructuredDataMessage using an (user specified max characters), message, and type (user specified
-     * maximum number of characters, and an initial map of structured data to include.
-     * @param id The String id.
+     * Creates a StructuredDataMessage using an SD-ID (user specified max characters), message, MSGID (max 32
+     * characters), and an initial map of structured data to include.
+     * @param sdId The SD-ID, as described in RFC 5424 section 6.3.2.
      * @param msg The message.
-     * @param type The message type.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
      * @param data The StructuredData map.
-     * @param maxLength The maximum length of keys;
+     * @param maxLength The maximum length of the SD-ID and of keys;
+     * @throws IllegalArgumentException if {@code sdId}, {@code msgId} or a key of {@code data} is not valid.
      * @since 2.9.0
      */
     public StructuredDataMessage(
-            final String id, final String msg, final String type, final Map<String, String> data, final int maxLength) {
-        super(data);
-        this.id = new StructuredDataId(id, null, null, maxLength);
-        this.message = msg;
-        this.type = type;
-        this.maxLength = maxLength;
-    }
-
-    /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
-     * @param id The StructuredDataId.
-     * @param msg The message.
-     * @param type The message type.
-     */
-    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type) {
-        this(id, msg, type, MAX_LENGTH);
-    }
-
-    /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, and type (max 32 characters).
-     * @param id The StructuredDataId.
-     * @param msg The message.
-     * @param type The message type.
-     * @param maxLength The maximum length of keys;
-     * @since 2.9.0
-     */
-    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type, final int maxLength) {
-        this.id = id;
-        this.message = msg;
-        this.type = type;
-        this.maxLength = maxLength;
-    }
-
-    /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
-     * of structured data to include.
-     * @param id The StructuredDataId.
-     * @param msg The message.
-     * @param type The message type.
-     * @param data The StructuredData map.
-     */
-    public StructuredDataMessage(
-            final StructuredDataId id, final String msg, final String type, final Map<String, String> data) {
-        this(id, msg, type, data, MAX_LENGTH);
-    }
-
-    /**
-     * Creates a StructuredDataMessage using a StructuredDataId, message, type (max 32 characters), and an initial map
-     * of structured data to include.
-     * @param id The StructuredDataId.
-     * @param msg The message.
-     * @param type The message type.
-     * @param data The StructuredData map.
-     * @param maxLength The maximum length of keys;
-     * @since 2.9.0
-     */
-    public StructuredDataMessage(
-            final StructuredDataId id,
+            final String sdId,
             final String msg,
-            final String type,
+            final String msgId,
             final Map<String, String> data,
             final int maxLength) {
-        super(data);
-        this.id = id;
+        this(toStructuredDataId(sdId, maxLength), msg, msgId, data, maxLength);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID (max 32 characters).
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @throws IllegalArgumentException if {@code sdId} is null or {@code msgId} is not valid.
+     */
+    public StructuredDataMessage(final StructuredDataId sdId, final String msg, final String msgId) {
+        this(sdId, msg, msgId, null, MAX_LENGTH);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, and MSGID (max 32 characters).
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param maxLength The maximum length of keys;
+     * @throws IllegalArgumentException if {@code sdId} is null or {@code msgId} is not valid.
+     * @since 2.9.0
+     */
+    public StructuredDataMessage(
+            final StructuredDataId sdId, final String msg, final String msgId, final int maxLength) {
+        this(sdId, msg, msgId, null, maxLength);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max 32 characters), and an initial map
+     * of structured data to include.
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID, as described in RFC 5424 section 6.2.7.
+     * @param data The StructuredData map.
+     * @throws IllegalArgumentException if {@code sdId} is null, or {@code msgId} or a key of {@code data} is not valid.
+     */
+    public StructuredDataMessage(
+            final StructuredDataId sdId, final String msg, final String msgId, final Map<String, String> data) {
+        this(sdId, msg, msgId, data, MAX_LENGTH);
+    }
+
+    /**
+     * Creates a StructuredDataMessage using a StructuredDataId, message, MSGID (max 32 characters), and an initial map
+     * of structured data to include.
+     * <p>
+     * All other public constructors delegate to this one.
+     * The MSGID must be 1 to 32 printable US-ASCII characters, as described in
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.7">RFC 5424 section 6.2.7</a>.
+     * Each key must be a valid PARAM-NAME and, if {@code sdId} declares required or optional keys, one of those keys.
+     * </p>
+     * @param sdId The StructuredDataId.
+     * @param msg The message.
+     * @param msgId The MSGID.
+     * @param data The StructuredData map, may be null.
+     * @param maxLength The maximum length of keys;
+     * @throws IllegalArgumentException if {@code sdId} is null, or {@code msgId} or a key of {@code data} is not valid.
+     * @since 2.9.0
+     */
+    public StructuredDataMessage(
+            final StructuredDataId sdId,
+            final String msg,
+            final String msgId,
+            final Map<String, String> data,
+            final int maxLength) {
+        if (sdId == null) {
+            throw new IllegalArgumentException("No SD-ID was supplied");
+        }
+        validateMsgId(msgId);
+        this.sdId = sdId;
         this.message = msg;
-        this.type = type;
+        this.msgId = msgId;
         this.maxLength = maxLength;
+        if (data != null) {
+            putAll(data);
+        }
     }
 
     /**
@@ -180,11 +203,11 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param map The StructuredData map.
      */
     private StructuredDataMessage(final StructuredDataMessage msg, final Map<String, String> map) {
-        super(map);
-        this.id = msg.id;
+        this.sdId = msg.sdId;
         this.message = msg.message;
-        this.type = msg.type;
-        this.maxLength = MAX_LENGTH;
+        this.msgId = msg.msgId;
+        this.maxLength = msg.maxLength;
+        putAll(map);
     }
 
     /**
@@ -209,42 +232,48 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     /**
-     * Returns this message id.
+     * Returns the SD-ID of this message.
      * @return the StructuredDataId.
      */
     public StructuredDataId getId() {
-        return id;
+        return sdId;
     }
 
     /**
-     * Sets the id from a String. This ID can be at most 32 characters long.
-     * @param id The String id.
+     * Sets the SD-ID from a String. This SD-ID can be at most 32 characters long.
+     * @param sdId The SD-ID.
+     * @throws IllegalArgumentException if {@code sdId} is not valid.
      */
-    protected void setId(final String id) {
-        this.id = new StructuredDataId(id, null, null);
+    protected void setId(final String sdId) {
+        setId(toStructuredDataId(sdId, MAX_LENGTH));
     }
 
     /**
-     * Sets the id.
-     * @param id The StructuredDataId.
+     * Sets the SD-ID.
+     * @param sdId The StructuredDataId.
+     * @throws IllegalArgumentException if {@code sdId} is null or does not declare a key of this message.
      */
-    protected void setId(final StructuredDataId id) {
-        this.id = id;
+    protected void setId(final StructuredDataId sdId) {
+        if (sdId == null) {
+            throw new IllegalArgumentException("No SD-ID was supplied");
+        }
+        for (final String key : getData().keySet()) {
+            validateDeclaredKey(sdId, key);
+        }
+        this.sdId = sdId;
     }
 
     /**
-     * Returns this message type.
-     * @return the type.
+     * Returns the MSGID of this message.
+     * @return the MSGID.
      */
     public String getType() {
-        return type;
+        return msgId;
     }
 
-    protected void setType(final String type) {
-        if (type.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("structured data type exceeds maximum length of 32 characters: " + type);
-        }
-        this.type = type;
+    protected void setType(final String msgId) {
+        validateMsgId(msgId);
+        this.msgId = msgId;
     }
 
     @Override
@@ -362,7 +391,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         // Encode type
         sb.append("<type>");
         int start = sb.length();
-        sb.append(type);
+        sb.append(msgId);
         StringBuilders.escapeXml(sb, start);
         sb.append("</type>\n");
 
@@ -450,10 +479,10 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         if (!super.equals(o)) {
             return false;
         }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
+        if (msgId != null ? !msgId.equals(that.msgId) : that.msgId != null) {
             return false;
         }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
+        if (sdId != null ? !sdId.equals(that.sdId) : that.sdId != null) {
             return false;
         }
         if (message != null ? !message.equals(that.message) : that.message != null) {
@@ -466,8 +495,8 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = HASHVAL * result + (type != null ? type.hashCode() : 0);
-        result = HASHVAL * result + (id != null ? id.hashCode() : 0);
+        result = HASHVAL * result + (msgId != null ? msgId.hashCode() : 0);
+        result = HASHVAL * result + (sdId != null ? sdId.hashCode() : 0);
         result = HASHVAL * result + (message != null ? message.hashCode() : 0);
         return result;
     }
@@ -550,6 +579,9 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @since 2.9.0
      */
     protected void validateKey(final String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Structured data keys cannot be null");
+        }
         if (maxLength > 0 && key.length() > maxLength) {
             throw new IllegalArgumentException(
                     "Structured data keys are limited to " + maxLength + " characters. key: " + key);
@@ -559,6 +591,54 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
             if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
                 throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters"
                         + "and may not contain a space, =, ], or \"");
+            }
+        }
+        if (sdId != null) {
+            validateDeclaredKey(sdId, key);
+        }
+    }
+
+    private static StructuredDataId toStructuredDataId(final String sdId, final int maxLength) {
+        if (sdId == null) {
+            throw new IllegalArgumentException("No SD-ID was supplied");
+        }
+        return new StructuredDataId(sdId, null, null, maxLength);
+    }
+
+    private static void validateDeclaredKey(final StructuredDataId sdId, final String key) {
+        final String[] required = sdId.getRequired();
+        final String[] optional = sdId.getOptional();
+        if ((required == null && optional == null) || contains(required, key) || contains(optional, key)) {
+            return;
+        }
+        throw new IllegalArgumentException(
+                "Structured data key " + key + " is not declared by SD-ID " + sdId.getName());
+    }
+
+    private static boolean contains(final String[] keys, final String key) {
+        if (keys != null) {
+            for (final String candidate : keys) {
+                if (key.equals(candidate)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void validateMsgId(final String msgId) {
+        if (msgId == null || msgId.isEmpty()) {
+            throw new IllegalArgumentException("No MSGID was supplied");
+        }
+        if (msgId.length() > MAX_LENGTH) {
+            throw new IllegalArgumentException(
+                    "MSGID exceeds maximum length of " + MAX_LENGTH + " characters: " + msgId);
+        }
+        for (int i = 0; i < msgId.length(); i++) {
+            final char c = msgId.charAt(i);
+            if (c < '!' || c > '~') {
+                throw new IllegalArgumentException(
+                        "MSGID must contain printable US ASCII characters and may not contain a space: " + msgId);
             }
         }
     }

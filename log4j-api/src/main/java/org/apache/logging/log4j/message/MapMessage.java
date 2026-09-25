@@ -214,9 +214,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     /**
      * Adds all the elements from the specified Map.
+     * <p>
+     * Every key is validated before any element is added.
+     * </p>
      * @param map The Map to add.
      */
     public void putAll(final Map<String, String> map) {
+        for (final Map.Entry<String, String> entry : map.entrySet()) {
+            validate(entry.getKey(), entry.getValue());
+        }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             data.putValue(entry.getKey(), entry.getValue());
         }
