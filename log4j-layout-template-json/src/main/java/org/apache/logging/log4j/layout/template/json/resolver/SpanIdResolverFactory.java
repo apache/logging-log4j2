@@ -14,11 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Export
-@Open("org.apache.logging.log4j.core")
-@Version("2.22.0")
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import aQute.bnd.annotation.jpms.Open;
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+
+/**
+ * {@link SpanIdResolver} factory.
+ */
+@Plugin(name = "SpanIdResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class SpanIdResolverFactory implements EventResolverFactory {
+
+    private static final SpanIdResolverFactory INSTANCE = new SpanIdResolverFactory();
+
+    private SpanIdResolverFactory() {}
+
+    @PluginFactory
+    public static SpanIdResolverFactory getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String getName() {
+        return SpanIdResolver.getName();
+    }
+
+    @Override
+    public SpanIdResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
+        return SpanIdResolver.getInstance();
+    }
+}
