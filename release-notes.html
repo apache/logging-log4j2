@@ -483,6 +483,9 @@
 <p>Guard <code>%rEx{short.*}</code> against an empty root-cause stack trace (<a href="https://github.com/apache/logging-log4j2/issues/4334">4334</a>)</p>
 </li>
 <li>
+<p>org.apache.logging.log4j.core.util.FileUtils.mkdir(File, boolean) looses exception causes. (<a href="https://github.com/apache/logging-log4j2/issues/4354">4354</a>)</p>
+</li>
+<li>
 <p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
 </li>
 <li>
