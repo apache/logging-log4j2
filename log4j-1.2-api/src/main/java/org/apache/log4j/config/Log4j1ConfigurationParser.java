@@ -72,8 +72,23 @@ public class Log4j1ConfigurationParser {
 
     private final Properties properties = new Properties();
 
+    private final boolean preserveLookups;
+
     private final ConfigurationBuilder<BuiltConfiguration> builder =
             ConfigurationBuilderFactory.newConfigurationBuilder();
+
+    public Log4j1ConfigurationParser() {
+        this(false);
+    }
+
+    /**
+     * @param preserveLookups when {@code true}, {@code ${name}} is rewritten to a Log4j 2 lookup instead of being
+     *     resolved against the current JVM. The configuration converter uses this so the output does not capture host
+     *     system properties. The runtime factory keeps the default, which resolves variables.
+     */
+    Log4j1ConfigurationParser(final boolean preserveLookups) {
+        this.preserveLookups = preserveLookups;
+    }
 
     /**
      * Parses a Log4j 1.2 properties configuration file in ISO 8859-1 encoding into a ConfigurationBuilder.
@@ -105,11 +120,19 @@ public class Log4j1ConfigurationParser {
                 builder.setStatusLevel(Level.DEBUG);
             }
             // global threshold
-            final String threshold = OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
+            final String threshold = preserveLookups
+                    ? translateLookups(properties.getProperty(PropertiesConfiguration.THRESHOLD_KEY))
+                    : OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
             if (threshold != null) {
-                final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
-                builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
-                        .setAttribute("level", level));
+                final String trimmedThreshold = threshold.trim();
+                if (preserveLookups && trimmedThreshold.contains("${")) {
+                    builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                            .setAttribute("level", trimmedThreshold));
+                } else {
+                    final Level level = OptionConverter.convertLevel(trimmedThreshold, Level.ALL);
+                    builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                            .setAttribute("level", level));
+                }
             }
             // Root
             buildRootLogger(getLog4jValue(ROOTCATEGORY));
@@ -135,8 +158,9 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
+                final String rawValue = Objects.toString(entry.getValue(), Strings.EMPTY);
                 PropertyComponentBuilder propertyComponentBuilder =
-                        builder.newProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+                        builder.newProperty(key, preserveLookups ? translateLookups(rawValue) : rawValue);
                 builder.add(propertyComponentBuilder);
             }
         }
@@ -452,9 +476,57 @@ public class Log4j1ConfigurationParser {
     }
 
     private String getProperty(final String key) {
-        final String value = properties.getProperty(key);
-        final String substVars = OptionConverter.substVars(value, properties);
-        return substVars == null ? null : substVars.trim();
+        final String substituted = substitute(properties.getProperty(key));
+        return substituted == null ? null : substituted.trim();
+    }
+
+    private String substitute(final String value) {
+        if (value == null) {
+            return null;
+        }
+        return preserveLookups ? translateLookups(value) : OptionConverter.substVars(value, properties);
+    }
+
+    /**
+     * Rewrites Log4j 1 {@code ${name}} variables without reading the current JVM.
+     * A name defined in the properties file stays a configuration property. Any other name becomes {@code ${sys:name}}.
+     */
+    private String translateLookups(final String value) {
+        if (value == null) {
+            return null;
+        }
+        final StringBuilder translated = new StringBuilder();
+        int index = 0;
+        while (true) {
+            final int start = value.indexOf("${", index);
+            if (start < 0) {
+                if (index == 0) {
+                    return value;
+                }
+                translated.append(value.substring(index));
+                return translated.toString();
+            }
+            final int end = value.indexOf('}', start);
+            if (end < 0) {
+                throw new IllegalArgumentException(
+                        Strings.dquote(value) + " has no closing brace. Opening brace at position " + start + '.');
+            }
+            translated.append(value, index, start);
+            final String key = value.substring(start + 2, end);
+            if (isDefinedProperty(key)) {
+                translated.append("${").append(key).append('}');
+            } else {
+                translated.append("${sys:").append(key).append('}');
+            }
+            index = end + 1;
+        }
+    }
+
+    private boolean isDefinedProperty(final String key) {
+        return !key.startsWith("log4j.")
+                && !key.equals(ROOTCATEGORY)
+                && !key.equals(ROOTLOGGER)
+                && properties.getProperty(key) != null;
     }
 
     private String getProperty(final String key, final String defaultValue) {
