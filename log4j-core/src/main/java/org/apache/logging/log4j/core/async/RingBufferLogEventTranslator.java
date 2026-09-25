@@ -175,8 +175,11 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                 TraceContextProviderService.getTraceFlags());
     }
     /**
+     * Updates the cached thread values from the current thread.
+     *
      * @deprecated since 2.25.0. {@link RingBufferLogEventTranslator} instances should only be used on the thread that
-     * created it.
+     * created them. This method is retained for internal use to refresh the thread name after
+     * {@link Thread#setName(String)}.
      */
     @Deprecated
     public void updateThreadValues() {
