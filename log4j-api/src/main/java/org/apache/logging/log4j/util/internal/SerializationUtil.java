@@ -77,8 +77,6 @@ public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_CLASSES = Arrays.asList(
             "java.math.BigDecimal",
             "java.math.BigInteger",
-            // for Message delegate
-            "java.rmi.MarshalledObject",
             // all primitives
             "boolean",
             "byte",
