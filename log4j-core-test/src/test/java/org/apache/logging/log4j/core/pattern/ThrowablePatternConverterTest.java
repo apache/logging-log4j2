@@ -304,6 +304,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
@@ -328,6 +329,10 @@ public class ThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
                             "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+                            "	Suppressed: foo.TestFriendlyException: r_c_S [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 3 more",
+                            "	Caused by: java.lang.Throwable: Empty test throwable",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
@@ -347,6 +352,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s [localized]",
@@ -365,6 +371,10 @@ public class ThrowablePatternConverterTest {
                             "		... suppressed 2 lines",
                             "		... 3 more",
                             "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+                            "	Suppressed: foo.TestFriendlyException: r_c_S [localized]",
+                            "		...",
+                            "		... 3 more",
+                            "	Caused by: java.lang.Throwable: Empty test throwable",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	... suppressed 2 lines",
                             "	... 3 more",
@@ -383,6 +393,7 @@ public class ThrowablePatternConverterTest {
                     asList(
                             "foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	...",
@@ -407,6 +418,10 @@ public class ThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
                             "	Caused by: [CIRCULAR REFERENCE: foo.TestFriendlyException: r_c [localized]]",
+                            "	Suppressed: foo.TestFriendlyException: r_c_S [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 3 more",
+                            "	Caused by: java.lang.Throwable: Empty test throwable",
                             "Caused by: foo.TestFriendlyException: r_c_c [localized]",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
@@ -577,7 +592,7 @@ public class ThrowablePatternConverterTest {
         return convert(pattern, EXCEPTION);
     }
 
-    private static String convert(final String pattern, final Throwable throwable) {
+    static String convert(final String pattern, final Throwable throwable) {
         final List<PatternFormatter> patternFormatters = PATTERN_PARSER.parse(pattern, false, true, true);
         final LogEvent logEvent =
                 Log4jLogEvent.newBuilder().setThrown(throwable).setLevel(LEVEL).build();

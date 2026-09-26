@@ -20,8 +20,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -64,13 +67,18 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     }
 
     private void convertThrowable(final StringBuilder builder, final Throwable throwable) {
-        builder.append(throwable.toString()).append('\n');
-        for (final StackTraceElement element : throwable.getStackTrace()) {
-            builder.append("\tat ").append(element).append('\n');
-        }
-        if (throwable.getCause() != null) {
+        final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (Throwable currentThrowable = throwable; visitedThrowables.add(currentThrowable); ) {
+            builder.append(currentThrowable).append('\n');
+            for (final StackTraceElement element : currentThrowable.getStackTrace()) {
+                builder.append("\tat ").append(element).append('\n');
+            }
+            final Throwable cause = currentThrowable.getCause();
+            if (cause == null || visitedThrowables.contains(cause)) {
+                break;
+            }
             builder.append("Caused by ");
-            this.convertThrowable(builder, throwable.getCause());
+            currentThrowable = cause;
         }
     }
 

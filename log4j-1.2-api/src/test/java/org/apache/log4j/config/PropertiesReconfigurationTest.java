@@ -43,11 +43,13 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test reconfiguring with an XML configuration.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class PropertiesReconfigurationTest {
 
     private class TestListener implements ConfigurationListener {
