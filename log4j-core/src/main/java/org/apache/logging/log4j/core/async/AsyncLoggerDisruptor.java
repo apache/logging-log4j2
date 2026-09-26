@@ -226,19 +226,10 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     }
 
     EventRoute getEventRoute(final Level logLevel) {
-        final int remainingCapacity = remainingDisruptorCapacity();
-        if (remainingCapacity < 0) {
+        if (hasLog4jBeenShutDown(disruptor)) {
             return EventRoute.DISCARD;
         }
         return asyncQueueFullPolicy.getRoute(backgroundThreadId, logLevel);
-    }
-
-    private int remainingDisruptorCapacity() {
-        final Disruptor<RingBufferLogEvent> temp = disruptor;
-        if (hasLog4jBeenShutDown(temp)) {
-            return -1;
-        }
-        return (int) temp.getRingBuffer().remainingCapacity();
     }
     /**
      * Returns {@code true} if the specified disruptor is null.
