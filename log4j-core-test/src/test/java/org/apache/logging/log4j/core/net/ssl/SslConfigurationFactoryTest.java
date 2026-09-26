@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -89,6 +90,19 @@ class SslConfigurationFactoryTest {
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
+    }
+
+    @Test
+    void testStoreLocationWithoutTypeUsesDefaultType() {
+        final Properties props = new Properties();
+        props.setProperty(KEYSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.KEYSTORE_LOCATION);
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getKeyStoreConfig());
+        assertEquals(SslConfigurationDefaults.KEYSTORE_TYPE, configuration.getKeyStoreConfig().getKeyStoreType());
     }
 
     static Stream<Arguments> windowsKeystoreConfigs() {

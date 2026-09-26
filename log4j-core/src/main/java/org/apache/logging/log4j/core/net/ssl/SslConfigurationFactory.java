@@ -94,6 +94,8 @@ public class SslConfigurationFactory {
     }
 
     private static char[] getPassword(final String password, final String keyStoreType) {
+        final String effectiveKeyStoreType =
+                keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
         // Note from Tomcat's SSLUtiBase#getStore:
         //
         // JKS key stores treat null and "" interchangeably.
@@ -103,7 +105,8 @@ public class SslConfigurationFactory {
         // - generally use null if pass is null or ""
         // - for JKS or PKCS12 only use null if pass is null
         //   (because JKS will auto-switch to PKCS12)
-        if (keyStoreType.equals(StoreConfiguration.JKS) || keyStoreType.equals(StoreConfiguration.PKCS12)) {
+        if (effectiveKeyStoreType.equals(StoreConfiguration.JKS)
+                || effectiveKeyStoreType.equals(StoreConfiguration.PKCS12)) {
             return password != null ? password.toCharArray() : null;
         }
         return Strings.isEmpty(password) ? null : password.toCharArray();
