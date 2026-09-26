@@ -35,6 +35,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -267,6 +268,30 @@ class HttpAppenderTest {
         WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
                 .withHeader("X-Test", equalTo("header value"))
                 .withHeader("X-Runtime", equalTo(JAVA_LOOKUP.getRuntime()))
+                .withHeader("Content-Type", containing("application/json"))
+                .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
+    }
+
+    @Test
+    void testAppendSkipsHeaderWithInvalidRuntimeValue() throws Exception {
+        WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
+        ThreadContext.put("tenant", "tenant\nwith-line-break");
+        try {
+            final Appender appender = HttpAppender.newBuilder()
+                    .setName("Http")
+                    .setLayout(JsonLayout.createDefaultLayout())
+                    .setConfiguration(CONFIGURATION)
+                    .setIgnoreExceptions(false)
+                    .setUrl(wireMockUrl("/test/log4j/", false, false))
+                    .setHeaders(new Property[] {Property.createProperty("X-Tenant", "${ctx:tenant}")})
+                    .build();
+            appender.append(createLogEvent());
+        } finally {
+            ThreadContext.remove("tenant");
+        }
+
+        WIRE_MOCK.verify(postRequestedFor(urlEqualTo("/test/log4j/"))
+                .withoutHeader("X-Tenant")
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
     }
