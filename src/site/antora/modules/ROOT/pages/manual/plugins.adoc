@@ -215,7 +215,7 @@ The `GraalVmProcessor` requires your project's `groupId` and `artifactId` to cor
 Provide these values to the processor using the `log4j.graalvm.groupId` and `log4j.graalvm.artifactId` annotation processor options.
 ====
 
-.Suppressing annotation processor notes in strict build environments
+.Enabling annotation processor notes
 [%collapsible]
 ====
 `PluginProcessor` and `GraalVmProcessor` emit `NOTE`-level diagnostics when they write their descriptors.
