@@ -216,9 +216,10 @@ class GraalVmProcessorTest {
     }
 
     @Test
-    void whenNoGroupIdAndArtifactId_thenWarningIsPrinted(@TempDir(cleanup = CleanupMode.NEVER) Path outputDir)
-            throws Exception {
-        List<String> diagnostics = generateDescriptor(sourceDir, null, null, outputDir);
+    void whenNoGroupIdAndArtifactId_thenWarningIsEmittedWhenConfigured(
+            @TempDir(cleanup = CleanupMode.NEVER) Path outputDir) throws Exception {
+        List<String> diagnostics = generateDescriptor(
+                sourceDir, null, null, outputDir, "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=WARNING");
         assertThat(diagnostics).hasSize(1);
         // The warning message should contain the information about the missing groupId and artifactId arguments
         assertThat(diagnostics.get(0))
@@ -241,9 +242,13 @@ class GraalVmProcessorTest {
     }
 
     @Test
-    void noteEmittedByDefaultWithLog4jPrefix(@TempDir Path outputDir) throws Exception {
-        List<Diagnostic<? extends JavaFileObject>> diagnostics =
-                generateDiagnostics(sourceDir, GROUP_ID, ARTIFACT_ID, outputDir);
+    void noteEmittedWhenConfiguredWithLog4jPrefix(@TempDir Path outputDir) throws Exception {
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = generateDiagnostics(
+                sourceDir,
+                GROUP_ID,
+                ARTIFACT_ID,
+                outputDir,
+                "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=NOTE");
 
         assertThat(diagnostics)
                 .anyMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
@@ -253,13 +258,9 @@ class GraalVmProcessorTest {
     }
 
     @Test
-    void notesSuppressedWithoutAffectingMetadataGeneration(@TempDir Path outputDir) throws Exception {
-        List<Diagnostic<? extends JavaFileObject>> diagnostics = generateDiagnostics(
-                sourceDir,
-                GROUP_ID,
-                ARTIFACT_ID,
-                outputDir,
-                "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=warning");
+    void notesSuppressedByDefaultWithoutAffectingMetadataGeneration(@TempDir Path outputDir) throws Exception {
+        List<Diagnostic<? extends JavaFileObject>> diagnostics =
+                generateDiagnostics(sourceDir, GROUP_ID, ARTIFACT_ID, outputDir);
 
         assertThat(diagnostics)
                 .noneMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
