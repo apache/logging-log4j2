@@ -711,16 +711,15 @@ Provide these values to the processor using the <code>log4j.graalvm.groupId</cod
 </table>
 </div>
 <details>
-<summary class="title">Suppressing annotation processor notes in strict build environments</summary>
+<summary class="title">Enabling annotation processor notes</summary>
 <div class="content">
 <div class="paragraph">
-<p>Some build environments treat all compiler notes or warnings as errors (e.g., Maven with <code>-Werror</code> or Gradle with <code>options.compilerArgs &lt;&lt; '-Werror'</code>).
-By default, <code>PluginProcessor</code> and <code>GraalVmProcessor</code> emit <code>NOTE</code>-level diagnostics when they write their descriptors, which can cause the build to fail in those environments.
-To suppress these informational notes, pass the <code>log4j.plugin.processor.minAllowedMessageKind</code> annotation processor option with a value of <code>WARNING</code> or <code>ERROR</code>.
-This instructs aforementioned processors to only emit diagnostics at or above the specified severity, silencing routine notes while preserving genuine warnings and errors.</p>
+<p><code>PluginProcessor</code> and <code>GraalVmProcessor</code> emit <code>NOTE</code>-level diagnostics when they write their descriptors.
+To enable these informational notes, pass the <code>log4j.plugin.processor.minAllowedMessageKind</code> annotation processor option with a value of less severity than <code>ERROR</code>, which is the default.
+This instructs aforementioned processors to only emit diagnostics at or above the specified severity.</p>
 </div>
 <div class="paragraph">
-<p>Accepted values (case-insensitive): <code>NOTE</code> (default), <code>WARNING</code>, <code>MANDATORY_WARNING</code>, <code>ERROR</code>, <code>OTHER</code>.</p>
+<p>Accepted values (case-insensitive): <code>NOTE</code>, <code>WARNING</code>, <code>MANDATORY_WARNING</code>, <code>ERROR</code> (default), <code>OTHER</code>.</p>
 </div>
 <div id="_tabs_1" class="openblock tabs is-sync is-loading">
 <div class="content">
@@ -738,7 +737,7 @@ This instructs aforementioned processors to only emit diagnostics at or above th
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;compilerArgs&gt;
-  &lt;arg&gt;-Alog4j.plugin.processor.minAllowedMessageKind=WARNING&lt;/arg&gt;
+  &lt;arg&gt;-Alog4j.plugin.processor.minAllowedMessageKind=NOTE&lt;/arg&gt;
 &lt;/compilerArgs&gt;</code></pre>
 </div>
 </div>
@@ -747,7 +746,7 @@ This instructs aforementioned processors to only emit diagnostics at or above th
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">compileJava {
-  options.compilerArgs &lt;&lt; '-Alog4j.plugin.processor.minAllowedMessageKind=WARNING'
+  options.compilerArgs &lt;&lt; '-Alog4j.plugin.processor.minAllowedMessageKind=NOTE'
 }</code></pre>
 </div>
 </div>
