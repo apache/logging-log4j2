@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,10 +30,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -43,21 +43,22 @@ public class RollingAppenderDeleteMaxDepthTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-maxdepth.xml";
     private static final String DIR = "target/rolling-with-delete-depth/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
         // create some files that match the glob but exceed maxDepth
         final Path p1 = writeTextTo(DIR + "/1/test-4.log"); // glob="**/test-4.log"
         final Path p2 = writeTextTo(DIR + "/2/test-4.log");
         final Path p3 = writeTextTo(DIR + "/1/2/test-4.log");
         final Path p4 = writeTextTo(DIR + "/1/2/3/test-4.log");
 
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = loggerContext.getLogger(RollingAppenderDeleteMaxDepthTest.class.getName());
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
             logger.debug("This is a test message number " + i); // 30 chars:
@@ -65,20 +66,20 @@ public class RollingAppenderDeleteMaxDepthTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
+        assertTrue(dir.listFiles().length > 0, "Dir " + DIR + " should contain files");
 
         final File[] files = dir.listFiles();
         final List<String> expected = Arrays.asList("1", "2", "test-1.log", "test-2.log", "test-3.log");
-        assertEquals(Arrays.toString(files), expected.size(), files.length);
+        assertEquals(expected.size(), files.length, Arrays.toString(files));
         for (final File file : files) {
-            assertTrue("test-4.log should have been deleted", expected.contains(file.getName()));
+            assertTrue(expected.contains(file.getName()), "test-4.log should have been deleted");
         }
 
-        assertTrue(p1 + " should not have been deleted", Files.exists(p1));
-        assertTrue(p2 + " should not have been deleted", Files.exists(p2));
-        assertTrue(p3 + " should not have been deleted", Files.exists(p3));
-        assertTrue(p4 + " should not have been deleted", Files.exists(p4));
+        assertTrue(Files.exists(p1), p1 + " should not have been deleted");
+        assertTrue(Files.exists(p2), p2 + " should not have been deleted");
+        assertTrue(Files.exists(p3), p3 + " should not have been deleted");
+        assertTrue(Files.exists(p4), p4 + " should not have been deleted");
     }
 
     private Path writeTextTo(final String location) throws IOException {

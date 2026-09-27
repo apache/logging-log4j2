@@ -16,21 +16,24 @@
  */
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-@Category(Appenders.Kafka.class)
+@Tag("Appenders.Kafka")
+@LoggerContextSource("KafkaAppenderCloseTimeoutTest.xml")
 public class KafkaAppenderCloseTimeoutTest {
 
     private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
@@ -65,22 +68,20 @@ public class KafkaAppenderCloseTimeoutTest {
                 }
             };
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeAll
+    public static void setUpAll() {
         KafkaManager.producerFactory = config -> kafka;
     }
 
-    @Rule
-    public LoggerContextRule ctx = new LoggerContextRule("KafkaAppenderCloseTimeoutTest.xml");
-
-    @Before
+    @BeforeEach
     public void setUp() {
         kafka.clear();
     }
 
-    @Test(timeout = 2000)
-    public void testClose() {
-        final Appender appender = ctx.getRequiredAppender("KafkaAppender");
+    @Test
+    @Timeout(2000)
+    public void testClose(@Named("KafkaAppender") final Appender appender) {
+        assertNotNull(appender, "Appender named KafkaAppender was null.");
         appender.stop();
     }
 }

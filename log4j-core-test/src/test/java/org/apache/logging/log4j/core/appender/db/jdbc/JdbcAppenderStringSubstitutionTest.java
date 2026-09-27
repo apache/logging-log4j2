@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 public class JdbcAppenderStringSubstitutionTest {
 
@@ -31,23 +34,19 @@ public class JdbcAppenderStringSubstitutionTest {
         System.setProperty(KEY, VALUE);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.getProperties().remove(KEY);
     }
 
-    @Rule
-    public final LoggerContextRule rule =
-            new LoggerContextRule("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-jdbc-string-substitution.xml");
-
     @Test
-    public void test() {
-        final JdbcAppender appender = rule.getAppender("databaseAppender", JdbcAppender.class);
-        Assert.assertNotNull(appender);
+    @LoggerContextSource("org/apache/logging/log4j/core/appender/db/jdbc/log4j2-jdbc-string-substitution.xml")
+    public void test(@Named("databaseAppender") JdbcAppender appender) {
+        assertNotNull(appender);
         final JdbcDatabaseManager manager = appender.getManager();
-        Assert.assertNotNull(manager);
+        assertNotNull(manager);
         final String sqlStatement = manager.getSqlStatement();
-        Assert.assertFalse(sqlStatement, sqlStatement.contains(KEY));
-        Assert.assertTrue(sqlStatement, sqlStatement.contains(VALUE));
+        assertFalse(sqlStatement.contains(KEY), sqlStatement);
+        assertTrue(sqlStatement.contains(VALUE), sqlStatement);
     }
 }

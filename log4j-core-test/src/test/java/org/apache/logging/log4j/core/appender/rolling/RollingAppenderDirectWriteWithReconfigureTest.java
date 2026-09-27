@@ -19,19 +19,18 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URI;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -44,25 +43,25 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
 
     private static final int MAX_TRIES = 10;
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private Logger logger;
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteWithReconfigureTest.class.getName());
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderDirectWriteWithReconfigureTest.class.getName());
     }
 
     @Test
-    public void testRollingFileAppenderWithReconfigure() throws Exception {
+    public void testRollingFileAppenderWithReconfigure(final LoggerContext context) throws Exception {
         logger.debug("Before reconfigure");
 
         @SuppressWarnings("resource") // managed by the rule.
-        final LoggerContext context = loggerContextRule.getLoggerContext();
         final Configuration config = context.getConfiguration();
         context.setConfigLocation(new URI(CONFIG));
         context.reconfigure();
@@ -75,7 +74,7 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
             }
         }
 
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(dir.listFiles().length, is(equalTo(2)));

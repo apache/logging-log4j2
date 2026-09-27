@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -36,15 +36,16 @@ public class RollingAppenderCustomDeleteActionTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete.xml";
     private static final String DIR = "target/rolling-with-delete/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
-        final Logger logger = loggerContextRule.getLogger();
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
+        final Logger logger = loggerContext.getLogger(RollingAppenderCustomDeleteActionTest.class.getName());
         // Trigger the rollover
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
@@ -53,8 +54,8 @@ public class RollingAppenderCustomDeleteActionTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
+        assertTrue(dir.listFiles().length > 0, "Dir " + DIR + " should contain files");
 
         final int MAX_TRIES = 20;
         for (int i = 0; i < MAX_TRIES; i++) {
@@ -65,9 +66,9 @@ public class RollingAppenderCustomDeleteActionTest {
             if (files.length == 3) {
                 for (final File file : files) {
                     assertTrue(
-                            "test-4.log should have been deleted",
                             Arrays.asList("test-1.log", "test-2.log", "test-3.log")
-                                    .contains(file.getName()));
+                                    .contains(file.getName()),
+                            "test-4.log should have been deleted");
                 }
                 return; // test succeeded
             }

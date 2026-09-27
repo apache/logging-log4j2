@@ -21,19 +21,19 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * LOG4J2-1804.
@@ -41,20 +41,20 @@ import org.junit.rules.RuleChain;
 public class RollingAppenderCronAndSizeTest {
 
     private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
-
     private static final String DIR = "target/rolling-cron-size";
-
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     private Logger logger;
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderCronAndSizeTest.class.getName());
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
+
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderCronAndSizeTest.class.getName());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class RollingAppenderCronAndSizeTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         Arrays.sort(files);
         assertNotNull(files);
@@ -88,9 +88,9 @@ public class RollingAppenderCronAndSizeTest {
             fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
             previous = fileParts[1];
             assertEquals(
-                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
                     Integer.toString(fileCounter),
-                    fileParts[2]);
+                    fileParts[2],
+                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
         }
     }
 }

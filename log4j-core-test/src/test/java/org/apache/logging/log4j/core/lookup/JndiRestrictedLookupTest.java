@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.Serializable;
 import javax.naming.Context;
@@ -24,11 +24,9 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import org.apache.logging.log4j.message.Message;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.zapodot.junit.ldap.EmbeddedLdapRule;
-import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * JndiLookupTest
@@ -39,26 +37,22 @@ public class JndiRestrictedLookupTest {
     private static final String RESOURCE = "JndiExploit";
     private static final String TEST_STRING = "TestString";
     private static final String TEST_MESSAGE = "TestMessage";
-    private static final String LEVEL = "TestLevel";
     private static final String DOMAIN_DSN = "dc=apache,dc=org";
     private static final String DOMAIN = "apache.org";
 
-    @Rule
-    public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder.newInstance()
-            .usingDomainDsn(DOMAIN_DSN)
-            .importingLdifs("JndiRestrictedLookup.ldif")
-            .build();
+    @RegisterExtension
+    private EmbeddedLdapExtension ldapExtension = new EmbeddedLdapExtension(DOMAIN_DSN);
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         System.setProperty("log4j2.enableJndiLookup", "true");
     }
 
     @Test
     @SuppressWarnings("BanJNDI")
     public void testBadUriLookup() throws Exception {
-        final int port = embeddedLdapRule.embeddedServerPort();
-        final Context context = embeddedLdapRule.context();
+        final int port = ldapExtension.embeddedServerPort();
+        final Context context = ldapExtension.context();
         context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(
@@ -71,8 +65,8 @@ public class JndiRestrictedLookupTest {
     @Test
     @SuppressWarnings("BanJNDI")
     public void testReferenceLookup() throws Exception {
-        final int port = embeddedLdapRule.embeddedServerPort();
-        final Context context = embeddedLdapRule.context();
+        final int port = ldapExtension.embeddedServerPort();
+        final Context context = ldapExtension.context();
         context.bind("cn=" + RESOURCE + "," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
@@ -84,8 +78,8 @@ public class JndiRestrictedLookupTest {
     @Test
     @SuppressWarnings("BanJNDI")
     public void testSerializableLookup() throws Exception {
-        final int port = embeddedLdapRule.embeddedServerPort();
-        final Context context = embeddedLdapRule.context();
+        final int port = ldapExtension.embeddedServerPort();
+        final Context context = ldapExtension.context();
         context.bind("cn=" + TEST_STRING + "," + DOMAIN_DSN, "Test Message");
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
@@ -97,8 +91,8 @@ public class JndiRestrictedLookupTest {
     @Test
     @SuppressWarnings("BanJNDI")
     public void testBadSerializableLookup() throws Exception {
-        final int port = embeddedLdapRule.embeddedServerPort();
-        final Context context = embeddedLdapRule.context();
+        final int port = ldapExtension.embeddedServerPort();
+        final Context context = ldapExtension.context();
         context.bind("cn=" + TEST_MESSAGE + "," + DOMAIN_DSN, new SerializableMessage("Test Message"));
         final StrLookup lookup = new JndiLookup();
         final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);

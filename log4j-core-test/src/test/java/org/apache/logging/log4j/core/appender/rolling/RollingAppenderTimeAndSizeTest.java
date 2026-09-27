@@ -21,10 +21,10 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -32,11 +32,11 @@ import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -47,24 +47,25 @@ public class RollingAppenderTimeAndSizeTest {
 
     private static final String DIR = "target/rolling3/test";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderTimeAndSizeTest.class.getName(),
+            this.getClass().getClassLoader());
 
     private Logger logger;
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderTimeAndSizeTest.class.getName());
     }
 
     @Test
     public void testAppender() throws Exception {
         final Random rand = new Random();
         final File logFile = new File("target/rolling3/rollingtest.log");
-        assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
+        assertTrue(logFile.exists(), "target/rolling3/rollingtest.log does not exist");
         final FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         for (int j = 0; j < 100; ++j) {
             final int count = rand.nextInt(50);
@@ -75,7 +76,7 @@ public class RollingAppenderTimeAndSizeTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         Arrays.sort(files);
         assertNotNull(files);
@@ -94,11 +95,11 @@ public class RollingAppenderTimeAndSizeTest {
             fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
             previous = fileParts[1];
             assertEquals(
-                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
                     Integer.toString(fileCounter),
-                    fileParts[2]);
+                    fileParts[2],
+                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
         }
         final FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
-        assertNotEquals("Creation times are equal", time, endTime);
+        assertNotEquals(time, endTime, "Creation times are equal");
     }
 }

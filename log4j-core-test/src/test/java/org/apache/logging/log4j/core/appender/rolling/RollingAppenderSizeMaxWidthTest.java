@@ -16,62 +16,41 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.apache.logging.log4j.core.test.junit.CleanFolders;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
  */
-@RunWith(Parameterized.class)
-public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            {
-                new LoggerContextRule("log4j-rolling-size-max-width-1.xml"),
-            },
-            {
-                new LoggerContextRule("log4j-rolling-size-max-width-2.xml"),
-            },
-            {
-                new LoggerContextRule("log4j-rolling-size-max-width-3.xml"),
-            },
-            {
-                new LoggerContextRule("log4j-rolling-size-max-width-4.xml"),
-            },
-        });
-    }
+public abstract class RollingAppenderSizeMaxWidthTest implements RolloverListener {
 
     private static final String DIR = "target/rolling-max-width/archive";
     private static final String MESSAGE = "This is test message number ";
-    private static final int COUNT = 10000;
     private static final int[] POWERS_OF_10 = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
     };
-    public LoggerContextRule loggerContextRule;
 
-    @Rule
-    public RuleChain chain;
+    private LoggerContext context;
+
+    @RegisterExtension
+    private CleanFolders cleanFolders;
 
     List<String> rolledFileNames = new ArrayList<>();
     int min;
@@ -90,15 +69,16 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
         return POWERS_OF_10[pow];
     }
 
-    public RollingAppenderSizeMaxWidthTest(final LoggerContextRule loggerContextRule) {
-        this.loggerContextRule = loggerContextRule;
-        this.chain = loggerContextRule.withCleanFoldersRule(DIR);
+    public RollingAppenderSizeMaxWidthTest(final LoggerContext context) {
+        this.context = context;
+        this.cleanFolders = new CleanFolders(DIR);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderSizeMaxWidthTest.class.getName());
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getRequiredAppender("RollingFile");
+        this.logger = context.getLogger(RollingAppenderSizeMaxWidthTest.class.getName());
+        final RollingFileAppender app =
+                (RollingFileAppender) context.getConfiguration().getAppender("RollingFile");
         app.getManager().addRolloverListener(this);
         final ArrayPatternConverter[] patternConverters =
                 app.getManager().getPatternProcessor().getPatternConverters();
@@ -128,17 +108,17 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
         } else {
             policy = app.getTriggeringPolicy();
         }
-        assertNotNull("No SizeBasedTriggeringPolicy", policy);
+        assertNotNull(policy, "No SizeBasedTriggeringPolicy");
         rolloverSize = policy.getMaxFileSize();
     }
 
     @Test
     public void testAppender() {
         if (minWidth > 0) {
-            assertTrue("min must be greater than or equal to the minimum width", min > -powerOfTen(minWidth));
+            assertTrue(min > -powerOfTen(minWidth), "min must be greater than or equal to the minimum width");
         }
         if (maxWidth < Integer.MAX_VALUE) {
-            assertTrue("max must be less than or equal to the maximum width", max <= powerOfTen(maxWidth));
+            assertTrue(max <= powerOfTen(maxWidth), "max must be less than or equal to the maximum width");
         }
         long bytes = 0;
         for (int i = 0; i < 10000; ++i) {
@@ -149,21 +129,21 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
         final long minExpected = ((bytes / rolloverSize) * 95) / 100;
         final long maxExpected = ((bytes / rolloverSize) * 105) / 100;
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertTrue(dir.exists(), "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertTrue(
-                "Not enough rollovers: expected: " + minExpected + ", actual: " + rolloverCount,
-                rolloverCount + 1 >= minExpected);
+                rolloverCount + 1 >= minExpected,
+                "Not enough rollovers: expected: " + minExpected + ", actual: " + rolloverCount);
         assertTrue(
-                "Too many rollovers: expected: " + maxExpected + ", actual: " + rolloverCount,
-                rolloverCount <= maxExpected);
+                rolloverCount <= maxExpected,
+                "Too many rollovers: expected: " + maxExpected + ", actual: " + rolloverCount);
         final int maxFiles = max - min + 1;
         final int maxExpectedFiles = Math.min(maxFiles, rolloverCount);
         assertEquals(
-                "More files than expected. expected: " + maxExpectedFiles + ", actual: " + files.length,
                 maxExpectedFiles,
-                files.length);
+                files.length,
+                "More files than expected. expected: " + maxExpectedFiles + ", actual: " + files.length);
     }
 
     @Override

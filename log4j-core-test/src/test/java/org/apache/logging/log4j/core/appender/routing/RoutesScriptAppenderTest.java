@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,50 +28,31 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.categories.Scripts;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-@RunWith(Parameterized.class)
-@Category(Scripts.Groovy.class) // technically only half of these tests require groovy
-public class RoutesScriptAppenderTest {
+@Tag("Scripts.Groovy") // technically only half of these tests require groovy
+public abstract class RoutesScriptAppenderTest {
 
-    @Parameterized.Parameters(name = "{0} {1}")
-    public static Object[][] getParameters() {
-        // @formatter:off
-        return new Object[][] {
-            {"log4j-routing-routes-script-groovy.xml", false},
-            {"log4j-routing-routes-script-javascript.xml", false},
-            {"log4j-routing-script-staticvars-javascript.xml", true},
-            {"log4j-routing-script-staticvars-groovy.xml", true},
-        };
-        // @formatter:on
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, JavaScript");
     }
 
-    @Rule
-    public final LoggerContextRule loggerContextRule;
-
+    private LoggerContext loggerContext;
     private final boolean expectBindingEntries;
 
-    public RoutesScriptAppenderTest(final String configLocation, final boolean expectBindingEntries) {
-        this.loggerContextRule = new LoggerContextRule(configLocation);
+    public RoutesScriptAppenderTest(LoggerContext loggerContext, final boolean expectBindingEntries) {
+        this.loggerContext = loggerContext;
         this.expectBindingEntries = expectBindingEntries;
     }
 
@@ -76,60 +60,59 @@ public class RoutesScriptAppenderTest {
         final RoutingAppender routingAppender = getRoutingAppender();
         final ConcurrentMap<Object, Object> map = routingAppender.getScriptStaticVariables();
         if (expectBindingEntries) {
-            assertEquals("TestValue2", map.get("TestKey"));
-            assertEquals("HEXDUMP", map.get("MarkerName"));
+            assertEquals(map.get("TestKey"), "TestValue2");
+            assertEquals(map.get("MarkerName"), "HEXDUMP");
         }
     }
 
     private ListAppender getListAppender() {
         final String key = "Service2";
         final RoutingAppender routingAppender = getRoutingAppender();
-        Assert.assertTrue(routingAppender.isStarted());
+        assertTrue(routingAppender.isStarted());
         final Map<String, AppenderControl> appenders = routingAppender.getAppenders();
         final AppenderControl appenderControl = appenders.get(key);
-        assertNotNull("No appender control generated for '" + key + "'; appenders = " + appenders, appenderControl);
+        assertNotNull(appenderControl, "No appender control generated for '" + key + "'; appenders = " + appenders);
         return (ListAppender) appenderControl.getAppender();
     }
 
     private RoutingAppender getRoutingAppender() {
-        return loggerContextRule.getRequiredAppender("Routing", RoutingAppender.class);
+        return (RoutingAppender) loggerContext.getConfiguration().getAppender("Routing");
     }
 
     private void logAndCheck() {
         final Marker marker = MarkerManager.getMarker("HEXDUMP");
-        final Logger logger = loggerContextRule.getLogger(RoutesScriptAppenderTest.class);
+        final Logger logger = (Logger) loggerContext.getLogger(RoutesScriptAppenderTest.class);
         logger.error("Hello");
         final ListAppender listAppender = getListAppender();
-        assertEquals("Incorrect number of events", 1, listAppender.getEvents().size());
+        assertEquals(1, listAppender.getEvents().size(), "Incorrect number of events");
         logger.error("World");
-        assertEquals("Incorrect number of events", 2, listAppender.getEvents().size());
+        assertEquals(2, listAppender.getEvents().size(), "Incorrect number of events");
         logger.error(marker, "DEADBEEF");
-        assertEquals("Incorrect number of events", 3, listAppender.getEvents().size());
+        assertEquals(3, listAppender.getEvents().size(), "Incorrect number of events");
     }
 
-    @Test(expected = AssertionError.class)
-    public void testAppenderAbsence() {
-        loggerContextRule.getListAppender("List1");
+    @Test
+    public void testNotListAppender() {
+        Appender appender = loggerContext.getConfiguration().getAppender("List1");
+        assertFalse(appender instanceof ListAppender);
     }
 
     @Test
     public void testListAppenderPresence() {
         // No appender until an event is routed, even thought we initialized the default route on startup.
-        Assert.assertNull(
-                "No appender control generated",
-                getRoutingAppender().getAppenders().get("Service2"));
+        assertNull(getRoutingAppender().getAppenders().get("Service2"), "No appender control generated");
     }
 
     @Test
     public void testNoPurgePolicy() {
         // No PurgePolicy in this test
-        Assert.assertNull("Unexpected PurgePolicy", getRoutingAppender().getPurgePolicy());
+        assertNull(getRoutingAppender().getPurgePolicy(), "Unexpected PurgePolicy");
     }
 
     @Test
     public void testNoRewritePolicy() {
         // No RewritePolicy in this test
-        Assert.assertNull("Unexpected RewritePolicy", getRoutingAppender().getRewritePolicy());
+        assertNull(getRoutingAppender().getRewritePolicy(), "Unexpected RewritePolicy");
     }
 
     @Test
@@ -138,8 +121,8 @@ public class RoutesScriptAppenderTest {
         assertEquals(expectBindingEntries, routingAppender.getDefaultRouteScript() != null);
         assertEquals(expectBindingEntries, routingAppender.getDefaultRoute() != null);
         final Routes routes = routingAppender.getRoutes();
-        Assert.assertNotNull(routes);
-        Assert.assertNotNull(routes.getPatternScript());
+        assertNotNull(routes);
+        assertNotNull(routes.getPatternScript());
         final LogEvent logEvent =
                 DefaultLogEventFactory.getInstance().createEvent("", null, "", Level.ERROR, null, null, null);
         assertEquals("Service2", routes.getPattern(logEvent, new ConcurrentHashMap<>()));

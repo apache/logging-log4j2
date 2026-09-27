@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.core.test.junit.JndiRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.JndiExtension;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * JndiLookupTest
@@ -40,11 +40,11 @@ public class JndiLookupTest {
     private static final String TEST_STRINGS_NAME = "string-collection";
     private static final Collection<String> TEST_STRINGS_COLLECTION = Arrays.asList("one", "two", "three");
 
-    @Rule
-    public JndiRule jndiRule = new JndiRule(createBindings());
+    @RegisterExtension
+    public final JndiExtension ext = new JndiExtension(createBindings());
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         System.setProperty("log4j2.enableJndiLookup", "true");
     }
 

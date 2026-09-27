@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -36,16 +36,17 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-accum-size.xml";
     private static final String DIR = "target/rolling-with-delete-accum-size/test";
 
-    private final LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
 
     @Test
-    public void testAppender() throws Exception {
+    public void testAppender(final LoggerContext loggerContext) throws Exception {
 
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = loggerContext.getLogger(RollingAppenderDeleteAccumulatedSizeTest.class.getName());
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
             logger.debug("This is a test message number " + i); // 30 chars:
@@ -53,21 +54,21 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
+        assertTrue(dir.listFiles().length > 0, "Dir " + DIR + " should contain files");
 
         final File[] files = dir.listFiles();
         for (final File file : files) {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        assertEquals(Arrays.toString(files), 4, files.length);
+        assertEquals(4, files.length, Arrays.toString(files));
         long total = 0;
         for (final File file : files) {
             // sometimes test-6.log remains
-            assertTrue("unexpected file " + file, file.getName().startsWith("test-"));
+            assertTrue(file.getName().startsWith("test-"), "unexpected file " + file);
             total += file.length();
         }
-        assertTrue("accumulatedSize=" + total, total <= 500);
+        assertTrue(total <= 500, "accumulatedSize=" + total);
     }
 }

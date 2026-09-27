@@ -20,30 +20,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+@LoggerContextSource("log4j2-pattern-layout-with-context.xml")
 public class PatternResolverDoesNotEvaluateThreadContextTest {
 
-    private static final String CONFIG = "log4j2-pattern-layout-with-context.xml";
     private static final String PARAMETER = "user";
     private ListAppender listAppender;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        listAppender = context.getRequiredAppender("list", ListAppender.class);
-        listAppender.clear();
+    @BeforeEach
+    public void beforeEach(@Named("list") final ListAppender appender) {
+        this.listAppender = appender.clear();
     }
 
     @Test
-    public void testNoUserSet() {
+    public void testNoUserSet(final LoggerContext context) {
         final Logger logger = context.getLogger(getClass());
         logger.info("This is a test");
         final List<String> messages = listAppender.getMessages();
@@ -56,7 +53,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     }
 
     @Test
-    public void testMessageIsNotLookedUp() {
+    public void testMessageIsNotLookedUp(final LoggerContext context) {
         final Logger logger = context.getLogger(getClass());
         logger.info("This is a ${upper:test}");
         final List<String> messages = listAppender.getMessages();
@@ -69,7 +66,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     }
 
     @Test
-    public void testUser() {
+    public void testUser(final LoggerContext context) {
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "123");
         try {
@@ -87,7 +84,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     }
 
     @Test
-    public void testUserIsLookup() {
+    public void testUserIsLookup(final LoggerContext context) {
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "${java:version}");
         try {
@@ -105,7 +102,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     }
 
     @Test
-    public void testUserHasLookup() {
+    public void testUserHasLookup(final LoggerContext context) {
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "user${java:version}name");
         try {

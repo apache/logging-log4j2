@@ -21,9 +21,9 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,15 +31,15 @@ import java.io.FileReader;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.CleanFoldersRuleExtension;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -47,25 +47,25 @@ import org.junit.rules.RuleChain;
 public class RollingAppenderDirectWrite1906Test {
 
     private static final String CONFIG = "log4j-rolling-direct-1906.xml";
-
     private static final String DIR = "target/rolling-direct-1906";
-
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
     private Logger logger;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         StatusLogger.getLogger().registerListener(new NoopStatusListener());
     }
 
-    @Before
-    public void setUp() {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWrite1906Test.class.getName());
+    @RegisterExtension
+    CleanFoldersRuleExtension extension = new CleanFoldersRuleExtension(
+            DIR,
+            CONFIG,
+            RollingAppenderDeleteScriptTest.class.getName(),
+            this.getClass().getClassLoader());
+
+    @BeforeEach
+    public void setUp(final LoggerContext loggerContext) {
+        this.logger = loggerContext.getLogger(RollingAppenderDirectWrite1906Test.class.getName());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class RollingAppenderDirectWrite1906Test {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
@@ -91,12 +91,12 @@ public class RollingAppenderDirectWrite1906Test {
                 final String[] parts = line.split((" "));
                 final String expected = "rollingfile." + parts[0] + ".log";
 
-                assertEquals(logFileNameError(expected, actual), expected, actual);
+                assertEquals(expected, actual, logFileNameError(expected, actual));
                 ++found;
             }
             reader.close();
         }
-        assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
+        assertEquals(count, found, "Incorrect number of events read. Expected " + count + ", Actual " + found);
     }
 
     private String logFileNameError(final String expected, final String actual) {
