@@ -508,7 +508,7 @@ Only the `java:` protocol is supported.
 |
 |
 It specifies the
-https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/InitialContextFactory.html[`InitialContextFactory`].
+https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/InitialContextFactory.html[`InitialContextFactory`]
 
 See
 https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY[INITIAL_CONTEXT_FACTORY]
@@ -526,7 +526,7 @@ See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/C
 | String
 |
 |
-A configuration parameter for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+A configuration parameter for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>. It can specify a remote JNDI provider and should only point to a trusted provider.
 
 See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]
 for details.
