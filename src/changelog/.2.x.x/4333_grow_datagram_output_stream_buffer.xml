@@ -5,9 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
-  <issue id="4225" link="https://github.com/apache/logging-log4j2/issues/4225"/>
-  <issue id="4228" link="https://github.com/apache/logging-log4j2/pull/4228"/>
+  <issue id="4333" link="https://github.com/apache/logging-log4j2/issues/4333"/>
+  <issue id="4336" link="https://github.com/apache/logging-log4j2/pull/4336"/>
   <description format="asciidoc">
-    Allow `log4j.plugin.processor.minAllowedMessageKind` to filter `GraalVmProcessor` diagnostics and prefix all plugin processor messages with `[Log4j]`.
+    Grow `DatagramOutputStream` buffer instead of copying on every write, and drop oversized UDP payloads
   </description>
 </entry>
