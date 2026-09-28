@@ -44,7 +44,7 @@ public class Log4j1ConfigurationConverterLookupTest {
     }
 
     @Test
-    public void filePropertyKeepsItsNameAndTranslatesNestedSystemLookups() throws Exception {
+    public void filePropertyReferenceUsesSysLookup() throws Exception {
         final String home = System.getProperty("user.home");
         final String xml = convert("log4j.rootLogger=INFO, FILE\n"
                 + "app.dir=${user.home}/data\n"
@@ -52,7 +52,7 @@ public class Log4j1ConfigurationConverterLookupTest {
                 + "log4j.appender.FILE.File=${app.dir}/app.log\n");
 
         assertFalse(xml.contains(home), xml);
-        assertTrue(xml.contains("${app.dir}/app.log"), xml);
+        assertTrue(xml.contains("${sys:app.dir}/app.log"), xml);
         assertTrue(xml.contains("${sys:user.home}/data"), xml);
     }
 
@@ -70,6 +70,16 @@ public class Log4j1ConfigurationConverterLookupTest {
 
         assertTrue(xml.contains(home + "/logs/app.log"), xml);
         assertFalse(xml.contains("${sys:user.home}"), xml);
+    }
+
+    @Test
+    public void thresholdLookupIsKept() throws Exception {
+        final String xml = convert("log4j.rootLogger=INFO, FILE\n"
+                + "log4j.threshold=${lvl}\n"
+                + "log4j.appender.FILE=org.apache.log4j.FileAppender\n"
+                + "log4j.appender.FILE.File=app.log\n");
+
+        assertTrue(xml.contains("level=\"${sys:lvl}\""), xml);
     }
 
     private static String convert(final String properties) throws IOException {

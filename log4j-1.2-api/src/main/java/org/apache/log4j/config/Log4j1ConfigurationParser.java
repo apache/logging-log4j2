@@ -488,8 +488,8 @@ public class Log4j1ConfigurationParser {
     }
 
     /**
-     * Rewrites Log4j 1 {@code ${name}} variables without reading the current JVM.
-     * A name defined in the properties file stays a configuration property. Any other name becomes {@code ${sys:name}}.
+     * Rewrites every Log4j 1 {@code ${name}} to {@code ${sys:name}} without reading the current JVM.
+     * {@code ${sys:name}} falls back to a configuration property when the system property is unset.
      */
     private String translateLookups(final String value) {
         if (value == null) {
@@ -513,20 +513,9 @@ public class Log4j1ConfigurationParser {
             }
             translated.append(value, index, start);
             final String key = value.substring(start + 2, end);
-            if (isDefinedProperty(key)) {
-                translated.append("${").append(key).append('}');
-            } else {
-                translated.append("${sys:").append(key).append('}');
-            }
+            translated.append("${sys:").append(key).append('}');
             index = end + 1;
         }
-    }
-
-    private boolean isDefinedProperty(final String key) {
-        return !key.startsWith("log4j.")
-                && !key.equals(ROOTCATEGORY)
-                && !key.equals(ROOTLOGGER)
-                && properties.getProperty(key) != null;
     }
 
     private String getProperty(final String key, final String defaultValue) {
