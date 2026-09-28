@@ -1,6 +1,6 @@
 {
   "//": [
-    "Only local builds and release website staging use this file.",
+    "Only local builds, CI site builds and release website staging use this file.",
     "`package-lock.json` is not committed, so npm resolves the dependency tree on first use.",
     "Live website deployments replace both files with the ones on the `gha/v0` branch of `logging-parent`."
   ],
