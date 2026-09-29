@@ -7,6 +7,6 @@
        type="changed">
   <issue id="4271" link="https://github.com/apache/logging-log4j2/pull/4271"/>
   <description format="asciidoc">
-    Align the serialization format of `Log4jLogEvent` with that of `ObjectMessage`.
+    Align the serialization format of `Log4jLogEvent` with that of `ObjectMessage`: log events serialized by earlier versions can no longer be deserialized.
   </description>
 </entry>
