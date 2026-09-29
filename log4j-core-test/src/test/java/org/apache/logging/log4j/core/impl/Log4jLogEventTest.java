@@ -29,7 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ObjectStreamException;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -145,6 +147,21 @@ public class Log4jLogEventTest {
         final Log4jLogEvent evt2 = deserialize(serialize(evt));
 
         assertEquals(new SimpleMessage("abc"), evt2.getMessage());
+    }
+
+    @Test
+    @Tag(Tags.SERIALIZATION)
+    void testJavaIoSerializableWithClassNotOnAllowlist() {
+        final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
+                .setLoggerName("some.test") //
+                .setLoggerFqcn(Strings.EMPTY) //
+                .setLevel(Level.INFO) //
+                .setMessage(new ObjectMessage(URI.create("https://logging.apache.org/"))) //
+                .build();
+
+        final byte[] binary = serialize(evt);
+        final IllegalStateException e = assertThrows(IllegalStateException.class, () -> deserialize(binary));
+        assertInstanceOf(ObjectStreamException.class, e.getCause());
     }
 
     @Test

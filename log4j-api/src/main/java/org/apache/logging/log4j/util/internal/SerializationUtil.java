@@ -103,6 +103,16 @@ public final class SerializationUtil {
         return bout.toByteArray();
     }
 
+    /**
+     * Reads an object written by {@link #writeWrappedObject}.
+     *
+     * <p>The object is read from a nested stream, filtered in the same way as {@code in}.
+     * If the class of the object is not available, {@code null} is returned and a warning is logged.
+     * Other errors, including classes rejected by the filter, are thrown.</p>
+     *
+     * @param in The input stream.
+     * @return The object or {@code null}.
+     */
     @SuppressFBWarnings(
             value = "OBJECT_DESERIALIZATION",
             justification = "The nested stream is filtered in the same way as the outer stream.")
@@ -116,7 +126,11 @@ public final class SerializationUtil {
         copyObjectInputFilter(in, ois);
         try {
             return ois.readObject();
+        } catch (final IOException e) {
+            // Includes classes rejected by the stream's filter
+            throw e;
         } catch (final Exception | LinkageError e) {
+            // The class is not available or not compatible
             StatusLogger.getLogger().warn("Ignoring {} during deserialization", e.getMessage());
             return null;
         } finally {

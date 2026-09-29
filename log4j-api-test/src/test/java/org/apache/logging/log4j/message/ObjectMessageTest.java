@@ -17,9 +17,12 @@
 package org.apache.logging.log4j.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.ObjectStreamException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.test.UnserializableMessage;
 import org.apache.logging.log4j.test.junit.Mutable;
@@ -110,5 +113,13 @@ class ObjectMessageTest {
         final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
         assertThat(actual).isInstanceOf(ObjectMessage.class);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void testDeserializationOfClassNotOnAllowlist() {
+        final byte[] data = SerialUtil.serialize(new ObjectMessage(URI.create("https://logging.apache.org/")));
+        assertThatThrownBy(() -> SerialUtil.deserialize(data))
+                .hasCauseInstanceOf(ObjectStreamException.class)
+                .hasStackTraceContaining("java.net.URI");
     }
 }
