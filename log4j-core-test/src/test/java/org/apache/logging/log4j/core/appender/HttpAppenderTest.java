@@ -273,7 +273,8 @@ class HttpAppenderTest {
     }
 
     @Test
-    void testAppendSkipsHeaderWithInvalidRuntimeValue() throws Exception {
+    @UsingStatusListener
+    void testAppendSkipsHeaderWithInvalidRuntimeValue(final ListStatusListener statusListener) throws Exception {
         WIRE_MOCK.stubFor(post(urlEqualTo("/test/log4j/")).willReturn(SUCCESS_RESPONSE));
         ThreadContext.put("tenant", "tenant\nwith-line-break");
         try {
@@ -294,6 +295,9 @@ class HttpAppenderTest {
                 .withoutHeader("X-Tenant")
                 .withHeader("Content-Type", containing("application/json"))
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
+
+        assertThat(statusListener.getStatusData().map(StatusData::getFormattedStatus))
+                .anySatisfy(message -> assertThat(message).contains("Skipping HTTP header X-Tenant because its value is invalid"));
     }
 
     @Test
