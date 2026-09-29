@@ -105,6 +105,20 @@ class SslConfigurationFactoryTest {
         assertEquals(SslConfigurationDefaults.KEYSTORE_TYPE, configuration.getKeyStoreConfig().getKeyStoreType());
     }
 
+    @Test
+    void testTrustStoreLocationWithoutTypeUsesDefaultType() {
+        final Properties props = new Properties();
+        props.setProperty(TRUSTSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_LOCATION);
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getTrustStoreConfig());
+        assertEquals(
+                SslConfigurationDefaults.KEYSTORE_TYPE, configuration.getTrustStoreConfig().getKeyStoreType());
+    }
+
     static Stream<Arguments> windowsKeystoreConfigs() {
         final String[] emptyOrNull = {"", null};
         final Stream.Builder<Arguments> builder = Stream.builder();

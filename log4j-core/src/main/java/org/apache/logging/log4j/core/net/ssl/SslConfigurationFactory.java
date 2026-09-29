@@ -105,8 +105,8 @@ public class SslConfigurationFactory {
         // - generally use null if pass is null or ""
         // - for JKS or PKCS12 only use null if pass is null
         //   (because JKS will auto-switch to PKCS12)
-        if (effectiveKeyStoreType.equals(StoreConfiguration.JKS)
-                || effectiveKeyStoreType.equals(StoreConfiguration.PKCS12)) {
+        if (StoreConfiguration.JKS.equalsIgnoreCase(effectiveKeyStoreType)
+                || StoreConfiguration.PKCS12.equalsIgnoreCase(effectiveKeyStoreType)) {
             return password != null ? password.toCharArray() : null;
         }
         return Strings.isEmpty(password) ? null : password.toCharArray();
