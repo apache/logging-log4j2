@@ -107,12 +107,8 @@ public class FilteredObjectInputStream extends ObjectInputStream {
 
     /**
      * Unconditionally rejects dynamic proxy classes.
-     * <p>
-     *     Proxy class descriptors do not pass through {@link #resolveClass(ObjectStreamClass)}, so they would
-     *     otherwise bypass the allowlist entirely. No supported Log4j serialized form contains a dynamic proxy, and
-     *     the JEP 290 filter used on Java 9 and later rejects proxy classes as well, since their synthetic class names
-     *     never match the allowlist.
-     * </p>
+     *
+     * <p>No supported Log4j serialized form contains a dynamic proxy.</p>
      */
     @Override
     protected Class<?> resolveProxyClass(final String[] interfaces) throws IOException, ClassNotFoundException {
