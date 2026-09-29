@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URLConnection;
@@ -40,6 +41,21 @@ class BasicAuthorizationProviderTest {
 
         final String credentials = "usér:passé";
         final String expected = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(ISO_8859_1));
+        assertThat(connection.requestValue).isEqualTo(expected);
+    }
+
+    @Test
+    void defaultsToUtf8WhenNoEncodingPropertyIsConfigured() throws Exception {
+        final Properties properties = new Properties();
+        properties.setProperty("logging.auth.username", "usér");
+        properties.setProperty("logging.auth.password", "passé");
+        final BasicAuthorizationProvider provider = new BasicAuthorizationProvider(new PropertiesUtil(properties));
+
+        final RecordingURLConnection connection = new RecordingURLConnection();
+        provider.addAuthorization(connection);
+
+        final String credentials = "usér:passé";
+        final String expected = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(UTF_8));
         assertThat(connection.requestValue).isEqualTo(expected);
     }
 
