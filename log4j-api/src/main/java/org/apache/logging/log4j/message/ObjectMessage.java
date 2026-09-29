@@ -130,7 +130,6 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         obj = SerializationUtil.readWrappedObject(in);
     }

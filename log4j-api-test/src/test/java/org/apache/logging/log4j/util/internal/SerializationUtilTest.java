@@ -18,7 +18,16 @@ package org.apache.logging.log4j.util.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.message.ObjectMessage;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -50,5 +59,31 @@ class SerializationUtilTest {
     @MethodSource("arrays")
     void stripArrayString(final Class<?> arrayClass, final Class<?> componentClazz) {
         assertThat(SerializationUtil.stripArray(arrayClass.getName())).isEqualTo(componentClazz.getName());
+    }
+
+    static final class Payload implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+
+    @Test
+    @EnabledForJreRange(min = JRE.JAVA_9)
+    void readWrappedObjectUsesObjectInputFilterOfOuterStream() throws Exception {
+        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(bout)) {
+            out.writeObject(new ObjectMessage(new Payload()));
+        }
+        final byte[] data = bout.toByteArray();
+
+        final ObjectInputStream unfiltered = new ObjectInputStream(new ByteArrayInputStream(data));
+        assertThat(((ObjectMessage) unfiltered.readObject()).getParameter()).isInstanceOf(Payload.class);
+
+        // Java 9 API accessed through reflection, since this module targets Java 8
+        final Class<?> filterClass = Class.forName("java.io.ObjectInputFilter");
+        final Object filter = Class.forName("java.io.ObjectInputFilter$Config")
+                .getMethod("createFilter", String.class)
+                .invoke(null, "!" + Payload.class.getName());
+        final ObjectInputStream filtered = new ObjectInputStream(new ByteArrayInputStream(data));
+        ObjectInputStream.class.getMethod("setObjectInputFilter", filterClass).invoke(filtered, filter);
+        assertThat(((ObjectMessage) filtered.readObject()).getParameter()).isNull();
     }
 }

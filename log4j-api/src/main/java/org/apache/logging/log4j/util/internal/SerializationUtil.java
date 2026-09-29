@@ -25,51 +25,29 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Provides methods to increase the safety of object serialization/deserialization.
  */
 public final class SerializationUtil {
 
-    private static final String DEFAULT_FILTER_CLASS =
-            "org.apache.logging.log4j.util.internal.DefaultObjectInputFilter";
     private static final Method setObjectInputFilter;
     private static final Method getObjectInputFilter;
-    private static final Method newObjectInputFilter;
 
     static {
-        Method[] methods = ObjectInputStream.class.getMethods();
         Method setMethod = null;
         Method getMethod = null;
-        for (final Method method : methods) {
+        for (final Method method : ObjectInputStream.class.getMethods()) {
             if (method.getName().equals("setObjectInputFilter")) {
                 setMethod = method;
             } else if (method.getName().equals("getObjectInputFilter")) {
                 getMethod = method;
             }
         }
-        Method newMethod = null;
-        try {
-            if (setMethod != null) {
-                final Class<?> clazz = Class.forName(DEFAULT_FILTER_CLASS);
-                methods = clazz.getMethods();
-                for (final Method method : methods) {
-                    if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
-                        newMethod = method;
-                        break;
-                    }
-                }
-            }
-        } catch (final ClassNotFoundException ex) {
-            // Ignore the exception
-        }
-        newObjectInputFilter = newMethod;
         setObjectInputFilter = setMethod;
         getObjectInputFilter = getMethod;
     }
@@ -103,25 +81,16 @@ public final class SerializationUtil {
 
     @SuppressFBWarnings(
             value = "OBJECT_DESERIALIZATION",
-            justification =
-                    "Object deserialization uses either Java 9 native filter or our custom filter to limit the kinds of classes deserialized.")
+            justification = "The nested stream is filtered in the same way as the outer stream.")
+    @SuppressWarnings("deprecation")
     public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        assertFiltered(in);
         final byte[] data = (byte[]) in.readObject();
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
-        final ObjectInputStream ois;
-        if (in instanceof FilteredObjectInputStream) {
-            ois = new FilteredObjectInputStream(bin, ((FilteredObjectInputStream) in).getAllowedClasses());
-        } else {
-            try {
-                final Object obj = getObjectInputFilter.invoke(in);
-                final Object filter = newObjectInputFilter.invoke(null, obj);
-                ois = new ObjectInputStream(bin);
-                setObjectInputFilter.invoke(ois, filter);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
-            }
-        }
+        final ObjectInputStream ois = in instanceof org.apache.logging.log4j.util.FilteredObjectInputStream
+                ? new org.apache.logging.log4j.util.FilteredObjectInputStream(
+                        bin, ((org.apache.logging.log4j.util.FilteredObjectInputStream) in).getAllowedClasses())
+                : new ObjectInputStream(bin);
+        copyObjectInputFilter(in, ois);
         try {
             return ois.readObject();
         } catch (final Exception | LinkageError e) {
@@ -132,10 +101,21 @@ public final class SerializationUtil {
         }
     }
 
-    public static void assertFiltered(final java.io.ObjectInputStream stream) {
-        if (!(stream instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
-            throw new IllegalArgumentException(
-                    "readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+    /**
+     * Applies the {@code ObjectInputFilter} of {@code source} to {@code target} on Java 9 or later.
+     */
+    private static void copyObjectInputFilter(final ObjectInputStream source, final ObjectInputStream target)
+            throws StreamCorruptedException {
+        if (setObjectInputFilter == null) {
+            return;
+        }
+        try {
+            final Object filter = getObjectInputFilter.invoke(source);
+            if (filter != null) {
+                setObjectInputFilter.invoke(target, filter);
+            }
+        } catch (final IllegalAccessException | InvocationTargetException ex) {
+            throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
         }
     }
 
