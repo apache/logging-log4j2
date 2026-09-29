@@ -187,6 +187,14 @@ class ParameterizedMessageTest {
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 
+    @Test
+    void testSerializableWithNullArguments() {
+        final Message expected = new ParameterizedMessage("Hello!", (Object[]) null, null);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual.getParameters()).isNull();
+        assertThat(actual.getFormattedMessage()).isEqualTo("Hello!");
+    }
+
     /**
      * In this test cases, constructed the following scenarios: <br>
      * <p>
