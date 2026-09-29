@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Provides methods to increase the safety of object serialization/deserialization.
@@ -86,9 +87,8 @@ public final class SerializationUtil {
     public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         final byte[] data = (byte[]) in.readObject();
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
-        final ObjectInputStream ois = in instanceof org.apache.logging.log4j.util.FilteredObjectInputStream
-                ? new org.apache.logging.log4j.util.FilteredObjectInputStream(
-                        bin, ((org.apache.logging.log4j.util.FilteredObjectInputStream) in).getAllowedClasses())
+        final ObjectInputStream ois = in instanceof FilteredObjectInputStream
+                ? new FilteredObjectInputStream(bin, ((FilteredObjectInputStream) in).getAllowedClasses())
                 : new ObjectInputStream(bin);
         copyObjectInputFilter(in, ois);
         try {
