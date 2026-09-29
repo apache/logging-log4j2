@@ -20,11 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -66,24 +69,57 @@ class SerializationUtilTest {
     }
 
     @Test
+    void readWrappedObjectAddsNoAllowlistOfItsOwn() throws Exception {
+        // `java.net` is outside the allowlist of `FilteredObjectInputStream`
+        final URI uri = URI.create("https://logging.apache.org/");
+        final byte[] data = serialize(new ObjectMessage(uri));
+
+        assertThat(readParameter(new ObjectInputStream(new ByteArrayInputStream(data))))
+                .isEqualTo(uri);
+    }
+
+    @Test
     @EnabledForJreRange(min = JRE.JAVA_9)
     void readWrappedObjectUsesObjectInputFilterOfOuterStream() throws Exception {
+        final byte[] data = serialize(new ObjectMessage(new Payload()));
+
+        final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
+        setObjectInputFilter(in, "!" + Payload.class.getName());
+        assertThat(readParameter(in)).isNull();
+    }
+
+    @Test
+    @EnabledForJreRange(min = JRE.JAVA_9)
+    @SuppressWarnings("deprecation")
+    void readWrappedObjectUsesObjectInputFilterOfOuterFilteredStream() throws Exception {
+        // `Payload` is in `org.apache.logging.log4j.`, so only the filter can reject it
+        final byte[] data = serialize(new ObjectMessage(new Payload()));
+
+        final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(data));
+        setObjectInputFilter(in, "!" + Payload.class.getName());
+        assertThat(readParameter(in)).isNull();
+    }
+
+    private static byte[] serialize(final Serializable obj) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (final ObjectOutputStream out = new ObjectOutputStream(bout)) {
-            out.writeObject(new ObjectMessage(new Payload()));
+            out.writeObject(obj);
         }
-        final byte[] data = bout.toByteArray();
+        return bout.toByteArray();
+    }
 
-        final ObjectInputStream unfiltered = new ObjectInputStream(new ByteArrayInputStream(data));
-        assertThat(((ObjectMessage) unfiltered.readObject()).getParameter()).isInstanceOf(Payload.class);
+    private static Object readParameter(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        return ((ObjectMessage) in.readObject()).getParameter();
+    }
 
-        // Java 9 API accessed through reflection, since this module targets Java 8
+    /**
+     * Java 9 API accessed through reflection, since this module targets Java 8.
+     */
+    private static void setObjectInputFilter(final ObjectInputStream in, final String pattern) throws Exception {
         final Class<?> filterClass = Class.forName("java.io.ObjectInputFilter");
         final Object filter = Class.forName("java.io.ObjectInputFilter$Config")
                 .getMethod("createFilter", String.class)
-                .invoke(null, "!" + Payload.class.getName());
-        final ObjectInputStream filtered = new ObjectInputStream(new ByteArrayInputStream(data));
-        ObjectInputStream.class.getMethod("setObjectInputFilter", filterClass).invoke(filtered, filter);
-        assertThat(((ObjectMessage) filtered.readObject()).getParameter()).isNull();
+                .invoke(null, pattern);
+        ObjectInputStream.class.getMethod("setObjectInputFilter", filterClass).invoke(in, filter);
     }
 }
