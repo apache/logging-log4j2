@@ -425,7 +425,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Deserializes log events with the process-wide `jdk.serialFilter` recommended by OpenJDK,
+            <!-- Runs the tests tagged `serialization` with the process-wide `jdk.serialFilter` recommended by OpenJDK,
                  allowing only the classes that `FilteredObjectInputStream` allows by default. -->
             <id>test-serial-filter</id>
             <goals>
@@ -433,13 +433,7 @@
             </goals>
             <configuration>
               <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;java.rmi.MarshalledObject;org.apache.logging.log4j.**;!*</argLine>
-              <includes>
-                <include>**/core/LogEventTest.java</include>
-                <include>**/core/async/RingBufferLogEventTest.java</include>
-                <include>**/core/impl/Log4jLogEventTest.java</include>
-                <include>**/core/impl/MutableLogEventTest.java</include>
-                <include>**/core/layout/SerializedLayoutTest.java</include>
-              </includes>
+              <groups>serialization</groups>
             </configuration>
           </execution>
           <execution>

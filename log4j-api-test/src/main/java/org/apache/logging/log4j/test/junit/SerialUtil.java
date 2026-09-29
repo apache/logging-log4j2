@@ -32,12 +32,15 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
 /**
  * Utility class to facilitate serializing and deserializing objects.
  * <p>
- * Objects are deserialized with {@link FilteredObjectInputStream}, to check that the serialized forms of Log4j
- * classes only contain the classes allowed by default.
- * This is <strong>not</strong> a recommendation to use {@link FilteredObjectInputStream}:
- * applications should restrict deserialization with an {@code ObjectInputFilter},
- * for example using the {@code jdk.serialFilter} system property.
+ * The input streams created by this class are used by two kinds of tests:
  * </p>
+ * <ul>
+ * <li>If the {@code jdk.serialFilter} system property is set, they are plain {@link ObjectInputStream}s,
+ * to test deserialization with the process-wide filter recommended by OpenJDK.</li>
+ * <li>Otherwise, they are instances of the deprecated {@link FilteredObjectInputStream}, to test that the
+ * serialized forms of Log4j classes only contain the classes it allows by default.
+ * This is <strong>not</strong> a recommendation to use {@link FilteredObjectInputStream}.</li>
+ * </ul>
  */
 public class SerialUtil {
 
@@ -82,10 +85,10 @@ public class SerialUtil {
     }
 
     /**
-     * Deserialize an object from the specified byte array using a stream that applies Log4j's
-     * deserialization allow-list, extended with the supplied extra classes.
+     * Deserialize an object from the specified byte array (see the class Javadoc).
      * @param data byte array representing the serialized object
-     * @param allowedExtraClasses fully-qualified class names to add to the default allow-list
+     * @param allowedExtraClasses fully-qualified class names to add to the default allowlist of
+     *     {@link FilteredObjectInputStream}
      * @return the deserialized object
      */
     @SuppressWarnings("unchecked")
@@ -100,7 +103,7 @@ public class SerialUtil {
     }
 
     /**
-     * Creates a {@link FilteredObjectInputStream} that applies Log4j's deserialization allowlist.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param data data to deserialize,
      * @return an object input stream.
      */
@@ -110,8 +113,8 @@ public class SerialUtil {
     }
 
     /**
-     * Creates a {@link FilteredObjectInputStream} that applies Log4j's
-     * deserialization allowlist, extended with the supplied extra classes.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
+     * The supplied extra classes are only used by {@link FilteredObjectInputStream}.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(
@@ -121,7 +124,7 @@ public class SerialUtil {
     }
 
     /**
-     * Creates a {@link FilteredObjectInputStream} that applies Log4j's deserialization allowlist.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param stream stream of data to deserialize,
      * @return an object input stream.
      */
@@ -131,12 +134,14 @@ public class SerialUtil {
     }
 
     /**
-     * Creates a {@link FilteredObjectInputStream} that applies Log4j's
-     * deserialization allowlist, extended with the supplied extra classes.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
+     * The supplied extra classes are only used by {@link FilteredObjectInputStream}.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(
             final InputStream stream, final Collection<String> allowedExtraClasses) throws IOException {
-        return new FilteredObjectInputStream(stream, allowedExtraClasses);
+        return System.getProperty("jdk.serialFilter") != null
+                ? new ObjectInputStream(stream)
+                : new FilteredObjectInputStream(stream, allowedExtraClasses);
     }
 }
