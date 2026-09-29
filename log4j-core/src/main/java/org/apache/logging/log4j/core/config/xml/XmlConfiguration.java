@@ -150,6 +150,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 if (is != null) {
                     final javax.xml.transform.Source src = new StreamSource(is, schemaResource);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                    disableExternalResolution(factory);
                     Schema schema = null;
                     try {
                         schema = factory.newSchema(src);
@@ -158,6 +159,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                     }
                     if (schema != null) {
                         final Validator validator = schema.newValidator();
+                        disableExternalResolution(validator);
                         try {
                             validator.validate(new StreamSource(new ByteArrayInputStream(buffer)));
                         } catch (final IOException ioe) {
@@ -214,6 +216,41 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final AbstractMethodError err) {
             LOGGER.warn(
                     "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
+        }
+    }
+
+    /**
+     * Prevents the schema validator from retrieving external DTDs and schemas, matching the entity restrictions
+     * applied to the {@link DocumentBuilderFactory} in {@link #disableDtdProcessing(DocumentBuilderFactory)}.
+     */
+    private static void disableExternalResolution(final SchemaFactory factory) {
+        try {
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (final SAXException e) {
+            LOGGER.warn("The SchemaFactory [{}] does not support secure processing: {}", factory, e);
+        }
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_DTD);
+        setProperty(factory, XMLConstants.ACCESS_EXTERNAL_SCHEMA);
+    }
+
+    private static void disableExternalResolution(final Validator validator) {
+        setProperty(validator, XMLConstants.ACCESS_EXTERNAL_DTD);
+        setProperty(validator, XMLConstants.ACCESS_EXTERNAL_SCHEMA);
+    }
+
+    private static void setProperty(final SchemaFactory factory, final String propertyName) {
+        try {
+            factory.setProperty(propertyName, "");
+        } catch (final SAXException e) {
+            LOGGER.warn("The SchemaFactory [{}] does not support the property [{}]: {}", factory, propertyName, e);
+        }
+    }
+
+    private static void setProperty(final Validator validator, final String propertyName) {
+        try {
+            validator.setProperty(propertyName, "");
+        } catch (final SAXException e) {
+            LOGGER.warn("The Validator [{}] does not support the property [{}]: {}", validator, propertyName, e);
         }
     }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="4366" link="https://github.com/apache/logging-log4j2/pull/4366"/>
+  <description format="asciidoc">
+    Disable external DTD and schema resolution in the strict-mode schema validation of the Log4j Core `XmlConfiguration`, matching the entity restrictions already applied to its `DocumentBuilderFactory`.
+  </description>
+</entry>
