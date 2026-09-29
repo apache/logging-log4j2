@@ -1340,7 +1340,8 @@ public class Log4jLogEvent implements LogEvent {
         private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
             this.messageString = message.getFormattedMessage();
             s.defaultWriteObject();
-            SerializationUtil.writeWrappedObject(message, s);
+            // Messages that cannot be serialized are replaced with a `SimpleMessage`
+            SerializationUtil.writeWrappedObject(message, () -> new SimpleMessage(messageString), s);
         }
 
         private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {

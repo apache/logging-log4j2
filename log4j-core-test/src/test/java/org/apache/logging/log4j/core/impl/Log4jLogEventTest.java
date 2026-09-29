@@ -50,6 +50,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.UnserializableMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -129,6 +130,21 @@ public class Log4jLogEventTest {
         assertEquals(evt.getThrown(), evt2.getThrown());
         assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
         assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
+    }
+
+    @Test
+    @Tag(Tags.SERIALIZATION)
+    void testJavaIoSerializableWithUnserializableMessage() {
+        final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
+                .setLoggerName("some.test") //
+                .setLoggerFqcn(Strings.EMPTY) //
+                .setLevel(Level.INFO) //
+                .setMessage(new UnserializableMessage("abc")) //
+                .build();
+
+        final Log4jLogEvent evt2 = deserialize(serialize(evt));
+
+        assertEquals(new SimpleMessage("abc"), evt2.getMessage());
     }
 
     @Test

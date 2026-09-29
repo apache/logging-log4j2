@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
@@ -69,13 +70,37 @@ public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_PACKAGES =
             Arrays.asList("java.lang.", "java.time.", "java.util.", "org.apache.logging.log4j.");
 
-    public static void writeWrappedObject(final Serializable obj, final ObjectOutputStream out) throws IOException {
+    /**
+     * Serializes an object into a byte array and writes the array to the output stream.
+     * <p>
+     *     If the object is neither {@code null} nor {@link Serializable}, or its serialization fails, the value returned by
+     *     {@code fallback} is written instead. Failed serializations are logged as warnings.
+     * </p>
+     *
+     * @param obj The object to write.
+     * @param fallback Provides the value to write if {@code obj} cannot be serialized.
+     * @param out The output stream.
+     */
+    public static void writeWrappedObject(
+            final Object obj, final Supplier<Serializable> fallback, final ObjectOutputStream out) throws IOException {
+        byte[] data = null;
+        if (obj == null || obj instanceof Serializable) {
+            try {
+                data = toByteArray((Serializable) obj);
+            } catch (final IOException | RuntimeException e) {
+                StatusLogger.getLogger()
+                        .warn("Unable to serialize an object of type {}, using a fallback value.", obj.getClass(), e);
+            }
+        }
+        out.writeObject(data != null ? data : toByteArray(fallback.get()));
+    }
+
+    private static byte[] toByteArray(final Serializable obj) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
-            oos.flush();
-            out.writeObject(bout.toByteArray());
         }
+        return bout.toByteArray();
     }
 
     @SuppressFBWarnings(

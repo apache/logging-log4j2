@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.test.UnserializableMessage;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,7 @@ class ObjectMessageTest {
         return Stream.of(
                 "World",
                 new NonSerializable(),
+                new UnserializableMessage("World"),
                 new BigDecimal("123.456"),
                 // LOG4J2-3680
                 new RuntimeException(),

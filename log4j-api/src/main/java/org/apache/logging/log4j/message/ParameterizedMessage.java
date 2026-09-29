@@ -23,7 +23,6 @@ import com.google.errorprone.annotations.InlineMe;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
@@ -376,8 +375,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         out.defaultWriteObject();
         out.writeInt(args.length);
         for (final Object arg : args) {
-            final Serializable serializableArg = arg instanceof Serializable ? (Serializable) arg : String.valueOf(arg);
-            SerializationUtil.writeWrappedObject(serializableArg, out);
+            SerializationUtil.writeWrappedObject(arg, () -> String.valueOf(arg), out);
         }
     }
 

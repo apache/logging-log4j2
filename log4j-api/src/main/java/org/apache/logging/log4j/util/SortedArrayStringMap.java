@@ -18,7 +18,6 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -470,8 +469,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
         if (size > 0) {
             for (int i = 0; i < size; i++) {
                 s.writeObject(keys[i]);
-                SerializationUtil.writeWrappedObject(
-                        (values[i] instanceof Serializable) ? (Serializable) values[i] : null, s);
+                final Object value = values[i];
+                SerializationUtil.writeWrappedObject(value, () -> String.valueOf(value), s);
             }
         }
     }
