@@ -297,7 +297,8 @@ class HttpAppenderTest {
                 .withRequestBody(containing("\"message\" : \"" + LOG_MESSAGE + "\"")));
 
         assertThat(statusListener.getStatusData().map(StatusData::getFormattedStatus))
-                .anySatisfy(message -> assertThat(message).contains("Skipping HTTP header X-Tenant because its value is invalid"));
+                .anySatisfy(message ->
+                        assertThat(message).contains("Skipping HTTP header X-Tenant because its value is invalid"));
     }
 
     @Test
