@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
     <issue id="4339" link="https://github.com/apache/logging-log4j2/issues/4339"/>
+    <issue id="4363" link="https://github.com/apache/logging-log4j2/pull/4363"/>
     <description format="asciidoc">
         Prevent `JndiManager` instances from sharing an `InitialContext` across different JNDI environments
     </description>

@@ -22,11 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 import org.junit.jupiter.api.Test;
 
@@ -37,13 +41,24 @@ class JndiManagerTest {
 
     private static final String TRUE = "true";
     private static final AtomicInteger INITIAL_CONTEXT_CREATIONS = new AtomicInteger();
+    private static final List<Context> CONTEXTS = new ArrayList<>();
 
     public static final class TestInitialContextFactory implements InitialContextFactory {
 
         @Override
         public Context getInitialContext(final Hashtable<?, ?> environment) {
             INITIAL_CONTEXT_CREATIONS.incrementAndGet();
-            return mock(Context.class);
+            final Context context = mock(Context.class);
+            CONTEXTS.add(context);
+            return context;
+        }
+    }
+
+    public static final class FailingInitialContextFactory implements InitialContextFactory {
+
+        @Override
+        public Context getInitialContext(final Hashtable<?, ?> environment) throws NamingException {
+            throw new NamingException("test");
         }
     }
 
@@ -132,6 +147,32 @@ class JndiManagerTest {
             }
         } finally {
             System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
+            System.clearProperty("log4j2.enableJndiJms");
+        }
+    }
+
+    @Test
+    void testNamingExceptionIsRethrown() {
+        System.setProperty("log4j2.enableJndiJms", TRUE);
+        try {
+            final Properties properties = new Properties();
+            properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, FailingInitialContextFactory.class.getName());
+            assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(properties));
+        } finally {
+            System.clearProperty("log4j2.enableJndiJms");
+        }
+    }
+
+    @Test
+    void testCloseClosesContext() throws Exception {
+        System.setProperty("log4j2.enableJndiJms", TRUE);
+        CONTEXTS.clear();
+        try {
+            final Properties properties = new Properties();
+            properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
+            JndiManager.getJndiManager(properties).close();
+            verify(CONTEXTS.get(0)).close();
+        } finally {
             System.clearProperty("log4j2.enableJndiJms");
         }
     }
