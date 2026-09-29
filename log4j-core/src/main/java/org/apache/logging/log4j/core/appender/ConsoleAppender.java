@@ -239,11 +239,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
             final boolean bufferedIo = isBufferedIo();
             final int bufferSize = getBufferSize();
-            if (!bufferedIo && bufferSize > 0) {
-                LOGGER.warn("The bufferSize is set to {} but bufferedIo is false.", bufferSize);
-            }
-            final String managerName =
-                    target.name() + '.' + follow + '.' + direct + '.' + bufferedIo + '.' + bufferSize;
+            final String managerName = target.name() + '.' + follow + '.' + direct + '.' + bufferSize;
             final OutputStreamManager manager = OutputStreamManager.getManager(
                     managerName, new FactoryData(stream, managerName, layout, bufferSize), factory);
             return new ConsoleAppender(
@@ -263,9 +259,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
         return OutputStreamManager.getManager(
-                managerName,
-                new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE),
-                factory);
+                managerName, new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE), factory);
     }
 
     private static OutputStream getDefaultOutputStream(Target target) {

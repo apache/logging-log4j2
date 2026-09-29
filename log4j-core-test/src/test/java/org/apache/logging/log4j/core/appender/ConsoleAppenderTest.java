@@ -175,7 +175,23 @@ class ConsoleAppenderTest {
         final ConsoleAppender app =
                 ConsoleAppender.newBuilder().setName("testDefaultBufferSize").build();
         try {
-            assertEquals(Constants.ENCODER_BYTE_BUFFER_SIZE, app.getManager().getByteBuffer().capacity());
+            assertEquals(
+                    Constants.ENCODER_BYTE_BUFFER_SIZE,
+                    app.getManager().getByteBuffer().capacity());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    void testUnbufferedIoForcesImmediateFlush() {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testUnbufferedIoForcesImmediateFlush")
+                .setBufferedIo(false)
+                .setImmediateFlush(false)
+                .build();
+        try {
+            assertTrue(app.getImmediateFlush());
         } finally {
             app.stop();
         }
