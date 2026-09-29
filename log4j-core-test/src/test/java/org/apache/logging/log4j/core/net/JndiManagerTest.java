@@ -16,11 +16,18 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.util.Hashtable;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.naming.Context;
+import javax.naming.spi.InitialContextFactory;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,6 +36,16 @@ import org.junit.jupiter.api.Test;
 class JndiManagerTest {
 
     private static final String TRUE = "true";
+    private static final AtomicInteger INITIAL_CONTEXT_CREATIONS = new AtomicInteger();
+
+    public static final class TestInitialContextFactory implements InitialContextFactory {
+
+        @Override
+        public Context getInitialContext(final Hashtable<?, ?> environment) {
+            INITIAL_CONTEXT_CREATIONS.incrementAndGet();
+            return mock(Context.class);
+        }
+    }
 
     @Test
     void testIsJndiContextSelectorEnabled() {
@@ -77,6 +94,46 @@ class JndiManagerTest {
     @Test
     void testIsJndiLookupEnabled() {
         assertFalse(JndiManager.isJndiLookupEnabled());
+    }
+
+    @Test
+    void testJndiManagersAreNotSharedAcrossEnvironments() {
+        System.setProperty("log4j2.enableJndiJms", TRUE);
+        INITIAL_CONTEXT_CREATIONS.set(0);
+        try {
+            final Properties firstProperties = new Properties();
+            firstProperties.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
+            firstProperties.setProperty(Context.PROVIDER_URL, "provider-one");
+
+            final Properties secondProperties = new Properties();
+            secondProperties.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
+            secondProperties.setProperty(Context.PROVIDER_URL, "provider-two");
+
+            try (final JndiManager first = JndiManager.getJndiManager(firstProperties);
+                    final JndiManager second = JndiManager.getJndiManager(secondProperties)) {
+                assertNotSame(first, second);
+                assertEquals(2, INITIAL_CONTEXT_CREATIONS.get());
+            }
+        } finally {
+            System.clearProperty("log4j2.enableJndiJms");
+        }
+    }
+
+    @Test
+    void testDefaultManagersAreNotShared() {
+        System.setProperty("log4j2.enableJndiJms", TRUE);
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class.getName());
+        INITIAL_CONTEXT_CREATIONS.set(0);
+        try {
+            try (final JndiManager first = JndiManager.getDefaultManager();
+                    final JndiManager second = JndiManager.getDefaultManager()) {
+                assertNotSame(first, second);
+                assertEquals(2, INITIAL_CONTEXT_CREATIONS.get());
+            }
+        } finally {
+            System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
+            System.clearProperty("log4j2.enableJndiJms");
+        }
     }
 
     @Test
