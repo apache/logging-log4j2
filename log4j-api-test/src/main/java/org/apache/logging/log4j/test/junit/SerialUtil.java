@@ -31,6 +31,13 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Utility class to facilitate serializing and deserializing objects.
+ * <p>
+ * Objects are deserialized with {@link FilteredObjectInputStream}, to check that the serialized forms of Log4j
+ * classes only contain the classes allowed by default.
+ * This is <strong>not</strong> a recommendation to use {@link FilteredObjectInputStream}:
+ * applications should restrict deserialization with an {@code ObjectInputFilter},
+ * for example using the {@code jdk.serialFilter} system property.
+ * </p>
  */
 public class SerialUtil {
 
