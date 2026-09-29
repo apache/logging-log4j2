@@ -102,7 +102,9 @@ class SslConfigurationFactoryTest {
 
         assertNotNull(configuration);
         assertNotNull(configuration.getKeyStoreConfig());
-        assertEquals(SslConfigurationDefaults.KEYSTORE_TYPE, configuration.getKeyStoreConfig().getKeyStoreType());
+        assertEquals(
+                SslConfigurationDefaults.KEYSTORE_TYPE,
+                configuration.getKeyStoreConfig().getKeyStoreType());
     }
 
     @Test
@@ -116,7 +118,8 @@ class SslConfigurationFactoryTest {
         assertNotNull(configuration);
         assertNotNull(configuration.getTrustStoreConfig());
         assertEquals(
-                SslConfigurationDefaults.KEYSTORE_TYPE, configuration.getTrustStoreConfig().getKeyStoreType());
+                SslConfigurationDefaults.KEYSTORE_TYPE,
+                configuration.getTrustStoreConfig().getKeyStoreType());
     }
 
     static Stream<Arguments> windowsKeystoreConfigs() {
