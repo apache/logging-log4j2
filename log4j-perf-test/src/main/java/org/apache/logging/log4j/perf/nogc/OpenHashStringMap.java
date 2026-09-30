@@ -29,7 +29,6 @@ import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Open hash map-based implementation of the {@code ReadOnlyStringMap} interface.
@@ -691,7 +690,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
 
     @SuppressWarnings("unchecked")
     private void readObject(final ObjectInputStream s) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(s);
         s.defaultReadObject();
         arraySize = HashCommon.arraySize(size, loadFactor);
         maxFill = HashCommon.maxFill(arraySize, loadFactor);

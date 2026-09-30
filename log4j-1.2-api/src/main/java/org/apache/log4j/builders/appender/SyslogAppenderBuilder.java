@@ -77,7 +77,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final AtomicReference<String> facility = new AtomicReference<>();
         final AtomicReference<String> level = new AtomicReference<>();
         final AtomicReference<String> host = new AtomicReference<>();
-        final AtomicReference<Protocol> protocol = new AtomicReference<>(Protocol.TCP);
+        final AtomicReference<Protocol> protocol = new AtomicReference<>(Protocol.UDP);
         final AtomicBoolean header = new AtomicBoolean(false);
         final AtomicBoolean facilityPrinting = new AtomicBoolean(false);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
@@ -100,7 +100,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                             set(HEADER_PARAM, currentElement, header);
                             break;
                         case PROTOCOL_PARAM:
-                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement, Protocol.TCP.name())));
+                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement, Protocol.UDP.name())));
                             break;
                         case SYSLOG_HOST_PARAM:
                             set(SYSLOG_HOST_PARAM, currentElement, host);
@@ -140,7 +140,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final String facility = getProperty(FACILITY_PARAM, DEFAULT_FACILITY);
         final boolean facilityPrinting = getBooleanProperty(FACILITY_PRINTING_PARAM, false);
         final boolean header = getBooleanProperty(HEADER_PARAM, false);
-        final String protocol = getProperty(PROTOCOL_PARAM, Protocol.TCP.name());
+        final String protocol = getProperty(PROTOCOL_PARAM, Protocol.UDP.name());
         final String syslogHost = getProperty(SYSLOG_HOST_PARAM, DEFAULT_HOST + ":" + DEFAULT_PORT);
 
         return createAppender(

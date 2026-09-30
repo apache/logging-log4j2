@@ -95,6 +95,16 @@ github:
       # At least one positive review must be present
       required_pull_request_reviews:
         required_approving_review_count: 1
+    # Every PR must carry a `port-to-*` or `port-done` label (see `.github/workflows/check-port-label.yaml`).
+    # Kept as a separate ruleset, so that it can be limited to the branches that run the workflow.
+    - name: "Port label"
+      type: branch
+      branches:
+        includes:
+          - "2.x"
+      required_status_checks:
+        - app_slug: github-actions
+          name: "Check port label"
     # Use raw rules, until a convenience notation for `restrict_update` is introduced.
     # See: https://github.com/apache/infrastructure-asfyaml/issues/96
     #

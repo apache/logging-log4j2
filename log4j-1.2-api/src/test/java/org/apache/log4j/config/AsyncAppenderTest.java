@@ -29,6 +29,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,6 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Test configuration from XML.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 @UsingStatusListener
 class AsyncAppenderTest {
 

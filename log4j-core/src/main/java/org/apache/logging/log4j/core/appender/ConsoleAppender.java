@@ -97,9 +97,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final Filter filter,
             final OutputStreamManager manager,
             final boolean ignoreExceptions,
+            final boolean immediateFlush,
             final Target target,
             final Property[] properties) {
-        super(name, layout, filter, ignoreExceptions, true, properties, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         this.target = target;
     }
 
@@ -178,6 +179,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 null,
                 getDefaultManager(layout),
                 true,
+                true,
                 DEFAULT_TARGET,
                 null);
     }
@@ -238,7 +240,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final OutputStreamManager manager =
                     OutputStreamManager.getManager(managerName, new FactoryData(stream, managerName, layout), factory);
             return new ConsoleAppender(
-                    getName(), layout, getFilter(), manager, isIgnoreExceptions(), target, getPropertyArray());
+                    getName(),
+                    layout,
+                    getFilter(),
+                    manager,
+                    isIgnoreExceptions(),
+                    isImmediateFlush(),
+                    target,
+                    getPropertyArray());
         }
     }
 

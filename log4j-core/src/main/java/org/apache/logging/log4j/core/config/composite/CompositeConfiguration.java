@@ -142,6 +142,14 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     }
 
     @Override
+    protected void doConfigure() {
+        super.doConfigure();
+        for (final AbstractConfiguration config : configurations) {
+            config.postConfigure(this);
+        }
+    }
+
+    @Override
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();

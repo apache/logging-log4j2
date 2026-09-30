@@ -41,9 +41,7 @@ class ObjectArrayMessageTest {
     }
 
     /**
-     * Round-trips through a filtered stream (see {@link SerialUtil#getObjectInputStream})
-     * to verify that {@code readObject}'s new {@code SerializationUtil.assertFiltered}
-     * check accepts streams that carry a filter.
+     * Round-trips through the stream returned by {@link SerialUtil#getObjectInputStream}.
      */
     @Test
     void testSerializableRoundTripThroughFilteredStream() {

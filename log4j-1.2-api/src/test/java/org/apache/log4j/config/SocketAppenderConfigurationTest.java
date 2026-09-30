@@ -31,11 +31,13 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests configuring a Syslog appender.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class SocketAppenderConfigurationTest {
 
     private SocketAppender check(final Protocol expected, final Configuration configuration) {

@@ -83,7 +83,7 @@ public class PluginProcessor extends AbstractProcessor {
      * </p>
      * <p>
      *     Accepted values (case-insensitive): {@code NOTE}, {@code WARNING}, {@code MANDATORY_WARNING},
-     *     {@code ERROR}, {@code OTHER}. Defaults to {@code NOTE}.
+     *     {@code ERROR}, {@code OTHER}. Defaults to {@code ERROR}.
      * </p>
      */
     static final String MIN_ALLOWED_MESSAGE_KIND_OPTION = "log4j.plugin.processor.minAllowedMessageKind";
@@ -97,7 +97,8 @@ public class PluginProcessor extends AbstractProcessor {
 
     private final List<Element> processedElements = new ArrayList<>();
     private final PluginCache pluginCache = new PluginCache();
-    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+    private static final Diagnostic.Kind DEFAULT_MIN_ALLOWED_MESSAGE_KIND = Diagnostic.Kind.ERROR;
+    private Diagnostic.Kind minAllowedMessageKind = DEFAULT_MIN_ALLOWED_MESSAGE_KIND;
 
     @Override
     public void init(final ProcessingEnvironment processingEnv) {
@@ -107,15 +108,21 @@ public class PluginProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
-                printMessage(
-                        Diagnostic.Kind.WARNING,
-                        String.format(
-                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                PluginProcessor.class.getName(),
-                                kindValue,
-                                MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                Diagnostic.Kind.NOTE,
-                                Arrays.toString(Diagnostic.Kind.values())));
+                // We should not use `PluginProcessor::printMessage`, since we
+                // report a failure on the user-provided `Diagnostic.Kind` that
+                // `PluginProcessor::printMessage` depends on.
+                processingEnv
+                        .getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "%s%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        MESSAGE_PREFIX,
+                                        PluginProcessor.class.getName(),
+                                        kindValue,
+                                        MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                        DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
+                                        Arrays.toString(Diagnostic.Kind.values())));
             }
         }
     }

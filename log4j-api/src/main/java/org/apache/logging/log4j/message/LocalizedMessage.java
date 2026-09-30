@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Provides some level of compatibility with Log4j 1.x and convenience but is not the recommended way to Localize
@@ -284,7 +283,6 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         formattedMessage = in.readUTF();
         key = in.readUTF();

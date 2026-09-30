@@ -16,25 +16,31 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.util.Strings;
 import org.h2.jdbcx.JdbcDataSource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+@LoggerContextSource("log4j2-jdbc-driver-manager.xml")
 public class LoggerPrintWriterJdbcH2Test {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-jdbc-driver-manager.xml");
+    private LoggerContext context = null;
+
+    LoggerPrintWriterJdbcH2Test(LoggerContext context) {
+        this.context = context;
+    }
 
     private static final String H2_URL = "jdbc:h2:mem:Log4j";
 
@@ -45,7 +51,9 @@ public class LoggerPrintWriterJdbcH2Test {
     private ListAppender listAppender;
 
     private PrintWriter createLoggerPrintWriter() {
-        return IoBuilder.forLogger(context.getLogger()).setLevel(Level.ALL).buildPrintWriter();
+        return IoBuilder.forLogger(context.getLogger("LoggerPrintWriterJdbcH2Test"))
+                .setLevel(Level.ALL)
+                .buildPrintWriter();
     }
 
     private ListAppender getListAppender() {
@@ -60,14 +68,16 @@ public class LoggerPrintWriterJdbcH2Test {
         this.listAppender = listAppender;
     }
 
-    @Before
-    public void setUp() {
-        this.setListAppender(context.getListAppender("List").clear());
-        Assert.assertEquals(0, this.getListAppender().getMessages().size());
+    @BeforeEach
+    void setUp() {
+        ListAppender listApp = context.getConfiguration().getAppender("List");
+        listApp.clear();
+        this.setListAppender(listApp);
+        assertEquals(0, this.getListAppender().getMessages().size());
     }
 
     @Test
-    @Ignore("DataSource#setLogWriter() has no effect in H2, it uses its own internal logging and an SLF4J bridge.")
+    @Disabled("DataSource#setLogWriter() has no effect in H2, it uses its own internal logging and an SLF4J bridge.")
     public void testDataSource_setLogWriter() throws SQLException {
         final JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUrl(H2_URL);
@@ -78,7 +88,7 @@ public class LoggerPrintWriterJdbcH2Test {
         try (final Connection conn = dataSource.getConnection()) {
             conn.prepareCall("select 1");
         }
-        Assert.assertTrue(!this.getListAppender().getMessages().isEmpty());
+        assertTrue(!this.getListAppender().getMessages().isEmpty());
     }
 
     @Test
@@ -90,6 +100,6 @@ public class LoggerPrintWriterJdbcH2Test {
         } finally {
             DriverManager.setLogWriter(null);
         }
-        Assert.assertTrue(!this.getListAppender().getMessages().isEmpty());
+        assertTrue(!this.getListAppender().getMessages().isEmpty());
     }
 }
