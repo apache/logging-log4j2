@@ -32,6 +32,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
@@ -194,6 +195,7 @@ class RingBufferLogEventTest {
     }
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testSerializationDeserialization() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         final String loggerName = "logger.name";

@@ -36,6 +36,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.ClockFactoryTest;
@@ -50,6 +51,7 @@ import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 public class Log4jLogEventTest {
@@ -96,6 +98,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testJavaIoSerializable() {
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
                 .setLoggerName("some.test") //
@@ -124,6 +127,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testJavaIoSerializableWithThrown() {
         final Error thrown = new InternalError("test error");
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
@@ -165,6 +169,7 @@ public class Log4jLogEventTest {
     // };
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testJavaIoSerializableWithUnknownThrowable() {
         final String loggerName = "some.test";
         final Marker marker = null;
