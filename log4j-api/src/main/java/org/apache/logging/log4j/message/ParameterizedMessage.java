@@ -382,7 +382,6 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         final int argCount = in.readInt();
         args = new Object[argCount];

@@ -494,7 +494,6 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * deserialize it).
      */
     private void readObject(final java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(s);
         // Read in the threshold (ignored), and any hidden stuff
         s.defaultReadObject();
 
