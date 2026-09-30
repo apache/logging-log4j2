@@ -425,6 +425,18 @@
             </configuration>
           </execution>
           <execution>
+            <!-- Runs the tests tagged `serialization` with the process-wide `jdk.serialFilter` recommended by OpenJDK,
+                 allowing only the classes that `FilteredObjectInputStream` allows by default. -->
+            <id>test-serial-filter</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;java.rmi.MarshalledObject;org.apache.logging.log4j.**;!*</argLine>
+              <groups>serialization</groups>
+            </configuration>
+          </execution>
+          <execution>
             <id>test-without-jackson-databind</id>
             <goals>
               <goal>test</goal>
