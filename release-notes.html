@@ -401,6 +401,9 @@
 <p><code>FilteredObjectInputStream</code> now rejects dynamic proxy classes. (<a href="https://github.com/apache/logging-log4j2/pull/4269">4269</a>)</p>
 </li>
 <li>
+<p>The <code>SerialUtil</code> test helper now applies the deserialization allowlist also on Java 9 and later. (<a href="https://github.com/apache/logging-log4j2/pull/4270">4270</a>)</p>
+</li>
+<li>
 <p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
 </li>
 <li>
