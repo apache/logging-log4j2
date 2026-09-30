@@ -49,7 +49,6 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Implementation of a LogEvent.
@@ -1077,7 +1076,6 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        SerializationUtil.assertFiltered(stream);
         throw new InvalidObjectException("Proxy required");
     }
 
