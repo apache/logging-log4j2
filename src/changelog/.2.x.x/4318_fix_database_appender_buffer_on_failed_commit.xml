@@ -7,8 +7,6 @@
        type="fixed">
     <issue id="4318" link="https://github.com/apache/logging-log4j2/issues/4318"/>
     <description format="asciidoc">
-        Clear the buffer of a buffered database appender when connecting or committing a transaction fails.
-        Previously the events were kept, so the next flush sent them again and the buffer grew without bound
-        while the database failure persisted.
+        Clear the buffer of a database appender when connecting or committing a transaction fails.
     </description>
 </entry>
