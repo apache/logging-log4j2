@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("CustomConfigurationFactory")
-@Order(50)
+@Ordered(50)
 public final class CustomConfigurationFactory extends ConfigurationFactory {
 
     /**

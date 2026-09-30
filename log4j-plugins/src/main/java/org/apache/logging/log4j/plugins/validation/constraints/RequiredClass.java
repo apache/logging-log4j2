@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.validators.RequiredClassValidator;
 
 /**
- * Marks a plugin builder field or plugin factory parameter as required.
+ * Requires that a given class be available.
  *
  * @since 3.0.0
  */
