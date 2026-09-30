@@ -1544,9 +1544,8 @@ If your terminal supports 24-bit colors, you can specify:
 [#ansi-windows]
 ==== ANSI styling on Windows
 
-ANSI escape sequences are supported natively on many platforms, but not by default on Windows.
-To enable ANSI support add the http://jansi.fusesource.org/[Jansi] dependency to your application, and set xref:manual/systemproperties.adoc#log4j.console.jansiEnabled[the `log4j.console.jansiEnabled` system property] to `false`.
-This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
+ANSI escape sequences are supported natively on many platforms, but is disabled by default in `cmd.exe` on Windows.
+To enable ANSI escape sequences, create a registry key of name `HKEY_CURRENT_USER\Console\VirtualTerminalLevel` of type `DWORD` and set its value to `0x1`.
 
 See
 https://devblogs.microsoft.com/commandline/understanding-windows-console-host-settings/[Understanding Windows Console Host Settings]
