@@ -398,6 +398,9 @@
 <p>Switch the default minimum allowed plugin processor message severity from NOTE to ERROR (<a href="https://github.com/apache/logging-log4j2/issues/4225">4225</a>, <a href="https://github.com/apache/logging-log4j2/pull/4256">4256</a>)</p>
 </li>
 <li>
+<p><code>FilteredObjectInputStream</code> now rejects dynamic proxy classes. (<a href="https://github.com/apache/logging-log4j2/pull/4269">4269</a>)</p>
+</li>
+<li>
 <p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
 </li>
 <li>
