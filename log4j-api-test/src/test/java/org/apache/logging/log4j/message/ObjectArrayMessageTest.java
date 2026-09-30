@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,5 +38,19 @@ class ObjectArrayMessageTest {
     @Test
     void testGetThrowable() {
         assertNull(OBJECT_ARRAY_MESSAGE.getThrowable());
+    }
+
+    @Test
+    void testNonSerializableElementIsReplacedByItsStringForm() {
+        final ObjectArrayMessage original = new ObjectArrayMessage("A", new NonSerializable(), "C");
+        final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
+        assertArrayEquals(new Object[] {"A", "non-serializable", "C"}, restored.getParameters());
+    }
+
+    private static final class NonSerializable {
+        @Override
+        public String toString() {
+            return "non-serializable";
+        }
     }
 }
