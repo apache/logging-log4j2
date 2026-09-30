@@ -107,7 +107,12 @@ class SortedArrayStringMapTest {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
-        original.putValue("unserializable", new Object());
+        original.putValue("unserializable", new Object() {
+            @Override
+            public String toString() {
+                return "unserializable value";
+            }
+        });
 
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
@@ -115,7 +120,7 @@ class SortedArrayStringMapTest {
         final SortedArrayStringMap expected = new SortedArrayStringMap();
         expected.putValue("a", "avalue");
         expected.putValue("B", "Bvalue");
-        expected.putValue("unserializable", null);
+        expected.putValue("unserializable", "unserializable value");
         assertEquals(expected, copy);
     }
 

@@ -444,7 +444,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;java.rmi.MarshalledObject;org.apache.logging.log4j.**;!*</argLine>
+              <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;org.apache.logging.log4j.**;!*</argLine>
               <groups>serialization</groups>
             </configuration>
           </execution>
