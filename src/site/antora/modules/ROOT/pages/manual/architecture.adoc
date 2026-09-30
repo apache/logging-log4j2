@@ -444,16 +444,16 @@ Logger -[#green,thickness=6]-> LoggerConfig : delegates `log()`
 @enduml
 ....
 
-[#logger-hiearchy]
+[#logger-hierarchy]
 === Logger hierarchy
 
 Log4j Core has a *hierarchical* model of ``LoggerConfig``s, and hence ``Logger``s.
 A `LoggerConfig` called `child` is said to be parented by `parent`, if `parent` has the _longest prefix match_ on name.
 This match is case-sensitive and performed after tokenizing the name by splitting it from `.` (dot) characters.
 For a positive name match, tokens must match exhaustively.
-See xref:#logger-hiearchy-diagram[xrefstyle=short] for an example.
+See xref:#logger-hierarchy-diagram[xrefstyle=short] for an example.
 
-[#logger-hiearchy-diagram]
+[#logger-hierarchy-diagram]
 .Example hierarchy of loggers named `X`, `X.Y`, `X.Y.Z`, and `X.YZ`
 [plantuml]
 ....
@@ -777,7 +777,7 @@ that handles the low-level access to the external resource and an `Appender` tha
 
 Managers that share the same resource are shared between appenders regardless of the `Configuration` or `LoggerContext` of the appenders.
 For example
-xref:manual/appenders.adoc#FileAppender[`FileAppender`]s
+xref:manual/appenders/file.adoc#FileAppender[`FileAppender`]s
 with the same `fileName` attribute all share the same
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/appender/FileManager.html[`FileManager`].
 

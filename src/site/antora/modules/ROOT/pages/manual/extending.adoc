@@ -97,7 +97,7 @@ Hence, you can extend it by providing a `org.apache.logging.log4j.spi.Provider` 
 
 Having multiple ``Provider``s in the classpath is strongly discouraged.
 A specific provider can be <<bindings,bound>> using a custom bundle class if Log4j Core is also available.
-Alternatively, you can use xref:manual/systemproperties.adoc#log4j.provider[the `log4j.provider` property] to explicitly select one.
+Alternatively, you can use {log4j2-url}/manual/systemproperties.html#log4j2.provider[the `log4j2.provider` property] to explicitly select one.
 
 [#LoggerContextFactory]
 === `LoggerContextFactory`
