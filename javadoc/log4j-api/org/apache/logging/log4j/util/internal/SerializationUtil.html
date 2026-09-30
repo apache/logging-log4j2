@@ -114,7 +114,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#readWrappedObject(java.io.ObjectInputStream)" class="member-name-link">readWrappedObject</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Reads an object written by <a href="#writeWrappedObject(java.lang.Object,java.util.function.Supplier,java.io.ObjectOutputStream)"><code>writeWrappedObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;, java.io.ObjectOutputStream)</code></a>.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#stripArray(java.lang.Class)" class="member-name-link">stripArray</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;clazz)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -125,10 +127,36 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Gets the class name of an array component recursively.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#unwrapObject(java.io.ObjectInputStream,byte%5B%5D)" class="member-name-link">unwrapObject</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in,
+ byte[]&nbsp;data)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Deserializes an object serialized by <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#unwrapObjects(java.io.ObjectInputStream,byte%5B%5D%5B%5D)" class="member-name-link">unwrapObjects</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in,
+ byte[][]&nbsp;wrapped)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Deserializes each element of an array serialized by <a href="#wrapObjects(java.lang.Object%5B%5D)"><code>wrapObjects(java.lang.Object[])</code></a>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static byte[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#wrapObject(java.lang.Object,java.util.function.Supplier)" class="member-name-link">wrapObject</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;fallback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Serializes an object into a byte array.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static byte[][]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#wrapObjects(java.lang.Object%5B%5D)" class="member-name-link">wrapObjects</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;array)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Serializes each element of an array with <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a>.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#writeWrappedObject(java.io.Serializable,java.io.ObjectOutputStream)" class="member-name-link">writeWrappedObject</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;obj,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#writeWrappedObject(java.lang.Object,java.util.function.Supplier,java.io.ObjectOutputStream)" class="member-name-link">writeWrappedObject</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;fallback,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectOutputStream.html" title="class or interface in java.io" class="external-link">ObjectOutputStream</a>&nbsp;out)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Writes the result of <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a> to the output stream.</div>
+</div>
 </div>
 </div>
 </div>
@@ -167,12 +195,40 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="writeWrappedObject(java.io.Serializable,java.io.ObjectOutputStream)">
+<section class="detail" id="writeWrappedObject(java.lang.Object,java.util.function.Supplier,java.io.ObjectOutputStream)">
 <h3>writeWrappedObject</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">writeWrappedObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&nbsp;obj,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">writeWrappedObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;fallback,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectOutputStream.html" title="class or interface in java.io" class="external-link">ObjectOutputStream</a>&nbsp;out)</span>
                                throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Writes the result of <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a> to the output stream.</div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>obj</code> - The object to write.</dd>
+<dd><code>fallback</code> - Provides the value to write if <code>obj</code> cannot be serialized.</dd>
+<dd><code>out</code> - The output stream.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="wrapObject(java.lang.Object,java.util.function.Supplier)">
+<h3>wrapObject</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">byte[]</span>&nbsp;<span class="element-name">wrapObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;obj,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;fallback)</span>
+                         throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Serializes an object into a byte array.
+ <p>
+     If the object is neither <code>null</code> nor <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link"><code>Serializable</code></a>, or its serialization fails, the value returned by
+     <code>fallback</code> is serialized instead. Failed serializations are logged as warnings.
+ </p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>obj</code> - The object to serialize.</dd>
+<dd><code>fallback</code> - Provides the value to serialize if <code>obj</code> cannot be serialized.</dd>
+<dt>Returns:</dt>
+<dd>The serialized form of <code>obj</code> or of the fallback value.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
 </dl>
@@ -184,10 +240,85 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">readWrappedObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in)</span>
                                 throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassNotFoundException.html" title="class or interface in java.lang" class="external-link">ClassNotFoundException</a></span></div>
+<div class="block">Reads an object written by <a href="#writeWrappedObject(java.lang.Object,java.util.function.Supplier,java.io.ObjectOutputStream)"><code>writeWrappedObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;, java.io.ObjectOutputStream)</code></a>.</div>
 <dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>in</code> - The input stream.</dd>
+<dt>Returns:</dt>
+<dd>The object or <code>null</code>.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassNotFoundException.html" title="class or interface in java.lang" class="external-link">ClassNotFoundException</a></code></dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><a href="#unwrapObject(java.io.ObjectInputStream,byte%5B%5D)"><code>unwrapObject(java.io.ObjectInputStream, byte[])</code></a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="unwrapObject(java.io.ObjectInputStream,byte[])">
+<h3>unwrapObject</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">unwrapObject</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in,
+ byte[]&nbsp;data)</span>
+                           throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Deserializes an object serialized by <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a>.
+
+ <p>The object is read from a nested stream, filtered in the same way as <code>in</code>.
+ If the class of the object is not available, <code>null</code> is returned and a warning is logged.
+ Other errors, including classes rejected by the filter, are thrown.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>in</code> - The input stream that contained <code>data</code>.</dd>
+<dd><code>data</code> - The serialized object.</dd>
+<dt>Returns:</dt>
+<dd>The object or <code>null</code>.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="wrapObjects(java.lang.Object[])">
+<h3>wrapObjects</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">byte[][]</span>&nbsp;<span class="element-name">wrapObjects</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]&nbsp;array)</span>
+                            throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Serializes each element of an array with <a href="#wrapObject(java.lang.Object,java.util.function.Supplier)"><code>wrapObject(java.lang.Object, java.util.function.Supplier&lt;java.io.Serializable&gt;)</code></a>.
+
+ <p>Elements that cannot be serialized are replaced by their <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#valueOf-java.lang.Object-" title="class or interface in java.lang" class="external-link"><code>String.valueOf(Object)</code></a> representation.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>array</code> - An array or <code>null</code>.</dd>
+<dt>Returns:</dt>
+<dd>The serialized elements or <code>null</code>.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="unwrapObjects(java.io.ObjectInputStream,byte[][])">
+<h3>unwrapObjects</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>[]</span>&nbsp;<span class="element-name">unwrapObjects</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/ObjectInputStream.html" title="class or interface in java.io" class="external-link">ObjectInputStream</a>&nbsp;in,
+ byte[][]&nbsp;wrapped)</span>
+                              throws <span class="exceptions"><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Deserializes each element of an array serialized by <a href="#wrapObjects(java.lang.Object%5B%5D)"><code>wrapObjects(java.lang.Object[])</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>in</code> - The input stream that contained <code>wrapped</code>.</dd>
+<dd><code>wrapped</code> - The serialized elements or <code>null</code>.</dd>
+<dt>Returns:</dt>
+<dd>The deserialized elements or <code>null</code>.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><a href="#unwrapObject(java.io.ObjectInputStream,byte%5B%5D)"><code>unwrapObject(java.io.ObjectInputStream, byte[])</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>

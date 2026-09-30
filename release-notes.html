@@ -404,6 +404,18 @@
 <p>The <code>SerialUtil</code> test helper now applies the deserialization allowlist also on Java 9 and later. (<a href="https://github.com/apache/logging-log4j2/pull/4270">4270</a>)</p>
 </li>
 <li>
+<p>Align the serialization format of <code>Log4jLogEvent</code> with that of <code>ObjectMessage</code>: log events serialized by earlier versions can no longer be deserialized. (<a href="https://github.com/apache/logging-log4j2/pull/4271">4271</a>)</p>
+</li>
+<li>
+<p>Throw instead of ignoring nested objects rejected during deserialization of messages and log events. (<a href="https://github.com/apache/logging-log4j2/pull/4271">4271</a>)</p>
+</li>
+<li>
+<p>Use the default Java serialization for <code>SortedArrayStringMap</code>, except for its values. (<a href="https://github.com/apache/logging-log4j2/pull/4272">4272</a>)</p>
+</li>
+<li>
+<p>Replace <code>ObjectArrayMessage</code> and <code>ParameterizedMessage</code> arguments that cannot be serialized with their string form. (<a href="https://github.com/apache/logging-log4j2/pull/4274">4274</a>)</p>
+</li>
+<li>
 <p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
 </li>
 <li>

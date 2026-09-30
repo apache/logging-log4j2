@@ -443,7 +443,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature">class ObjectArrayMessage extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <dl class="name-value">
 <dt>serialVersionUID:</dt>
-<dd>-5903272448334166185L</dd>
+<dd>3470900984521271892L</dd>
 </dl>
 <ul class="block-list">
 <li>
@@ -521,7 +521,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature">class ParameterizedMessage extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <dl class="name-value">
 <dt>serialVersionUID:</dt>
-<dd>-665975803997290697L</dd>
+<dd>-4633763537142017035L</dd>
 </dl>
 <ul class="block-list">
 <li>
@@ -1314,7 +1314,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature">class SortedArrayStringMap extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <dl class="name-value">
 <dt>serialVersionUID:</dt>
-<dd>-5748905872274478116L</dd>
+<dd>-3516174557123823846L</dd>
 </dl>
 <ul class="block-list">
 <li>
@@ -1342,12 +1342,10 @@ loadScripts(document, 'script');</script>
  serialize it).</div>
 <dl class="notes">
 <dt>Serial Data:</dt>
-<dd>The <i>capacity</i> of the SortedArrayStringMap (the length of the
-             bucket array) is emitted (int), followed by the
-             <i>size</i> (an int, the number of key-value
-             mappings), followed by the key (Object) and value (Object)
-             for each key-value mapping.  The key-value mappings are
-             emitted in no particular order.</dd>
+<dd>The serializable fields, followed by the <code>values</code> array,
+             as a <code>byte[][]</code> array of the same length as <code>keys</code>.
+             Each value is serialized separately
+             so that values that cannot be serialized can be replaced with their string representation.</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
 </dl>
@@ -1362,6 +1360,15 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>immutable</h5>
 <pre>boolean immutable</pre>
+</li>
+<li class="block-list">
+<h5>keys</h5>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[] keys</pre>
+</li>
+<li class="block-list">
+<h5>size</h5>
+<pre>int size</pre>
+<div class="block">The number of key-value mappings contained in this map.</div>
 </li>
 <li class="block-list">
 <h5>threshold</h5>
