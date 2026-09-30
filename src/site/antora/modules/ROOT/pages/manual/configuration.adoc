@@ -407,7 +407,7 @@ Between the two operations log events might be lost.
 Overrides the logging level of {log4j2-url}/manual/status-logger.adoc[Status Logger].
 
 WARNING: Since 2.24.0 this attribute is deprecated and should be replaced with the
-{log4j2-url}/manual/systemproperties.html#log4j.sta.statusLoggerLevel[`log4j2.statusLoggerLevel`]
+{log4j2-url}/manual/systemproperties.html#log4j2.statusLoggerLevel[`log4j2.statusLoggerLevel`]
 configuration property.
 
 [id=configuring-loggers]

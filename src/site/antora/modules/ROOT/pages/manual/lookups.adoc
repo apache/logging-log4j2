@@ -274,13 +274,6 @@ ${bundle:org.example.Main:errorMessage}
 Do you want to use the values in Spring Boot's `application.properties` file?
 Use <<SpringBootLookup3>> instead.
 ====
-
-[#collection]
-== Collection
-
-Log4j bundles several predefined lookups to assist in several common deployment use cases.
-Following sections explain all these in detail.
-
 [#ContextMapLookup]
 === Context Map Lookup
 

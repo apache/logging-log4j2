@@ -68,7 +68,7 @@ See {project-github-url}/log4j-core/src/main/java/org/apache/logging/log4j/core/
 ====
 The name of a plugin given in either `@Plugin::value` or derived from the simple name of the annotated class should be distinct within the same `@Namespace::value`.
 In case of a name collision, a warning will be emitted, and the plugin <<plugin-discovery,discovery order>> will determine the effective plugin.
-For example, to override the `File` plugin which is provided by the built-in xref:manual/appenders.adoc#FileAppender[File Appender], you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
+For example, to override the `File` plugin which is provided by the built-in xref:manual/appenders/file.adoc#FileAppender[File Appender], you would need to place your plugin in a JAR file in the classpath ahead of Log4j Core JAR.
 In an OSGi environment, the order that bundles are scanned for plugins generally follows the same order that bundles were installed into the framework; see https://www.osgi.org/javadoc/r5/core/org/osgi/framework/BundleContext.html#getBundles()[`getBundles()`] and https://www.osgi.org/javadoc/r5/core/org/osgi/framework/SynchronousBundleListener.html[`SynchronousBundleListener`].
 In short, name collisions are even more unpredictable in an OSGi environment.
 ====
@@ -76,7 +76,7 @@ In short, name collisions are even more unpredictable in an OSGi environment.
 [#core]
 == Declaring plugins represented in a configuration file
 
-If your plugin needs to be represented by an element in a configuration file (such as an xref:manual/appenders.adoc[appender], xref:manual/layouts.adoc[layout], xref:manual/api.adoc#loggers[logger], or xref:manual/filters.adoc[filter]), following requirements must be met:
+If your plugin needs to be represented by an element in a configuration file (such as an xref:manual/appenders.adoc[appender], xref:manual/layouts.adoc[layout], xref:manual/api.adoc[logger], or xref:manual/filters.adoc[filter]), following requirements must be met:
 
 * The `@Namespace` annotation of the `@Plugin`-annotated class must be set to link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html#CORE_NAMESPACE[`Node.CORE_NAMESPACE`] (`Core`) or it must use the link:../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable.html[`@Configurable`] annotation
 * It must have a xref:declare-plugin-factory[plugin factory]
