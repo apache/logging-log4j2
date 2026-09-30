@@ -71,11 +71,7 @@ public final class SerializationUtil {
             Arrays.asList("java.lang.", "java.time.", "java.util.", "org.apache.logging.log4j.");
 
     /**
-     * Serializes an object into a byte array and writes the array to the output stream.
-     * <p>
-     *     If the object is neither {@code null} nor {@link Serializable}, or its serialization fails, the value returned by
-     *     {@code fallback} is written instead. Failed serializations are logged as warnings.
-     * </p>
+     * Writes the result of {@link #wrapObject} to the output stream.
      *
      * @param obj The object to write.
      * @param fallback Provides the value to write if {@code obj} cannot be serialized.
@@ -83,16 +79,30 @@ public final class SerializationUtil {
      */
     public static void writeWrappedObject(
             final Object obj, final Supplier<Serializable> fallback, final ObjectOutputStream out) throws IOException {
-        byte[] data = null;
+        out.writeObject(wrapObject(obj, fallback));
+    }
+
+    /**
+     * Serializes an object into a byte array.
+     * <p>
+     *     If the object is neither {@code null} nor {@link Serializable}, or its serialization fails, the value returned by
+     *     {@code fallback} is serialized instead. Failed serializations are logged as warnings.
+     * </p>
+     *
+     * @param obj The object to serialize.
+     * @param fallback Provides the value to serialize if {@code obj} cannot be serialized.
+     * @return The serialized form of {@code obj} or of the fallback value.
+     */
+    public static byte[] wrapObject(final Object obj, final Supplier<Serializable> fallback) throws IOException {
         if (obj == null || obj instanceof Serializable) {
             try {
-                data = toByteArray((Serializable) obj);
+                return toByteArray((Serializable) obj);
             } catch (final IOException | RuntimeException e) {
                 StatusLogger.getLogger()
                         .warn("Unable to serialize an object of type {}, using a fallback value.", obj.getClass(), e);
             }
         }
-        out.writeObject(data != null ? data : toByteArray(fallback.get()));
+        return toByteArray(fallback.get());
     }
 
     private static byte[] toByteArray(final Serializable obj) throws IOException {
@@ -106,19 +116,30 @@ public final class SerializationUtil {
     /**
      * Reads an object written by {@link #writeWrappedObject}.
      *
+     * @param in The input stream.
+     * @return The object or {@code null}.
+     * @see #unwrapObject
+     */
+    public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        return unwrapObject(in, (byte[]) in.readObject());
+    }
+
+    /**
+     * Deserializes an object serialized by {@link #wrapObject}.
+     *
      * <p>The object is read from a nested stream, filtered in the same way as {@code in}.
      * If the class of the object is not available, {@code null} is returned and a warning is logged.
      * Other errors, including classes rejected by the filter, are thrown.</p>
      *
-     * @param in The input stream.
+     * @param in The input stream that contained {@code data}.
+     * @param data The serialized object.
      * @return The object or {@code null}.
      */
     @SuppressFBWarnings(
             value = "OBJECT_DESERIALIZATION",
             justification = "The nested stream is filtered in the same way as the outer stream.")
     @SuppressWarnings("deprecation")
-    public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        final byte[] data = (byte[]) in.readObject();
+    public static Object unwrapObject(final ObjectInputStream in, final byte[] data) throws IOException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
         final ObjectInputStream ois = in instanceof FilteredObjectInputStream
                 ? new FilteredObjectInputStream(bin, ((FilteredObjectInputStream) in).getAllowedClasses())
@@ -136,6 +157,45 @@ public final class SerializationUtil {
         } finally {
             ois.close();
         }
+    }
+
+    /**
+     * Serializes each element of an array with {@link #wrapObject}.
+     *
+     * <p>Elements that cannot be serialized are replaced by their {@link String#valueOf(Object)} representation.</p>
+     *
+     * @param array An array or {@code null}.
+     * @return The serialized elements or {@code null}.
+     */
+    public static byte[][] wrapObjects(final Object[] array) throws IOException {
+        if (array == null) {
+            return null;
+        }
+        final byte[][] wrapped = new byte[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            final Object item = array[i];
+            wrapped[i] = wrapObject(item, () -> String.valueOf(item));
+        }
+        return wrapped;
+    }
+
+    /**
+     * Deserializes each element of an array serialized by {@link #wrapObjects}.
+     *
+     * @param in The input stream that contained {@code wrapped}.
+     * @param wrapped The serialized elements or {@code null}.
+     * @return The deserialized elements or {@code null}.
+     * @see #unwrapObject
+     */
+    public static Object[] unwrapObjects(final ObjectInputStream in, final byte[][] wrapped) throws IOException {
+        if (wrapped == null) {
+            return null;
+        }
+        final Object[] array = new Object[wrapped.length];
+        for (int i = 0; i < wrapped.length; i++) {
+            array[i] = unwrapObject(in, wrapped[i]);
+        }
+        return array;
     }
 
     /**
