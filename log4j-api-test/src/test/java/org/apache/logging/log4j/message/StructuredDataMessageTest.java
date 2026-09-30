@@ -54,6 +54,14 @@ class StructuredDataMessageTest {
     }
 
     @Test
+    void testMsgEscapesStructuredDataValues() {
+        final StructuredDataMessage msg = new StructuredDataMessage("id", "message", "type");
+        msg.put("key", "a\"\\]");
+        final String expected = "type [id key=\"" + "a" + "\\\"" + "\\\\" + "\\]" + "\"] message";
+        assertEquals(expected, msg.getFormattedMessage());
+    }
+
+    @Test
     void testMsgXml() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
