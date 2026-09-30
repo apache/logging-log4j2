@@ -40,6 +40,8 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
 
     private static final int CAUSED_BY_STRING_LENGTH = 10;
 
+    private static final String ESCAPED_MESSAGE_PREFIX = "!LOG4J2!:";
+
     private static final Field THROWABLE_CAUSE;
 
     private static final Field THROWABLE_MESSAGE;
@@ -69,7 +71,21 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
     private void convertThrowable(final StringBuilder builder, final Throwable throwable) {
         final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Throwable currentThrowable = throwable; visitedThrowables.add(currentThrowable); ) {
-            builder.append(currentThrowable).append('\n');
+            final String throwableString = currentThrowable.toString();
+            final int messageStart = throwableString.indexOf(": ");
+            if (messageStart >= 0) {
+                final String message = throwableString.substring(messageStart + 2);
+                if (requiresEscaping(message)) {
+                    builder.append(throwableString, 0, messageStart + 2)
+                            .append(ESCAPED_MESSAGE_PREFIX)
+                            .append(escape(message));
+                } else {
+                    builder.append(throwableString);
+                }
+            } else {
+                builder.append(throwableString);
+            }
+            builder.append('\n');
             for (final StackTraceElement element : currentThrowable.getStackTrace()) {
                 builder.append("\tat ").append(element).append('\n');
             }
@@ -104,6 +120,9 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             throwableClassName = firstLine.substring(0, colon);
             if (firstLine.length() > colon + 1) {
                 message = firstLine.substring(colon + 1).trim();
+                if (message.startsWith(ESCAPED_MESSAGE_PREFIX)) {
+                    message = unescape(message.substring(ESCAPED_MESSAGE_PREFIX.length()));
+                }
             }
         } else {
             throwableClassName = firstLine;
@@ -120,8 +139,14 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                 break;
             }
 
-            stackTrace.add(StackTraceElementAttributeConverter.convertString(
-                    line.trim().substring(3).trim()));
+            if (line.startsWith("\tat ")) {
+                try {
+                    stackTrace.add(StackTraceElementAttributeConverter.convertString(
+                            line.substring(4).trim()));
+                } catch (final IndexOutOfBoundsException ignored) {
+                    // Ignore malformed stack trace lines while preserving the rest of the throwable.
+                }
+            }
         }
 
         return this.getThrowable(
@@ -134,12 +159,14 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             final Throwable cause,
             final StackTraceElement[] stackTrace) {
         try {
-            @SuppressWarnings("unchecked")
-            final Class<Throwable> throwableClass = (Class<Throwable>) LoaderUtil.loadClass(throwableClassName);
+            final Class<?> loadedClass = Class.forName(throwableClassName, false, LoaderUtil.getClassLoader());
 
-            if (!Throwable.class.isAssignableFrom(throwableClass)) {
+            if (!Throwable.class.isAssignableFrom(loadedClass)) {
                 return null;
             }
+
+            @SuppressWarnings("unchecked")
+            final Class<Throwable> throwableClass = (Class<Throwable>) loadedClass;
 
             Throwable throwable;
             if (message != null && cause != null) {
@@ -242,5 +269,33 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
         } catch (final Exception e) {
             return null;
         }
+    }
+
+    private static boolean requiresEscaping(final String message) {
+        return message.contains("\\")
+                || message.contains("\n")
+                || message.contains("\r")
+                || message.startsWith(ESCAPED_MESSAGE_PREFIX);
+    }
+
+    private static String escape(final String message) {
+        return message.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n");
+    }
+
+    private static String unescape(final String message) {
+        final StringBuilder result = new StringBuilder(message.length());
+        for (int i = 0; i < message.length(); i++) {
+            final char current = message.charAt(i);
+            if (current == '\\' && i + 1 < message.length()) {
+                final char next = message.charAt(i + 1);
+                if (next == '\\' || next == 'n' || next == 'r') {
+                    result.append(next == 'n' ? '\n' : next == 'r' ? '\r' : '\\');
+                    i++;
+                    continue;
+                }
+            }
+            result.append(current);
+        }
+        return result.toString();
     }
 }
