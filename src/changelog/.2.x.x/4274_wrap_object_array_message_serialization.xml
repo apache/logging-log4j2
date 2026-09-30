@@ -7,6 +7,6 @@
        type="changed">
   <issue id="4274" link="https://github.com/apache/logging-log4j2/pull/4274"/>
   <description format="asciidoc">
-    Serialize the elements of `ObjectArrayMessage` and `ParameterizedMessage` separately, replacing those that cannot be serialized with their string representation.
+    Replace `ObjectArrayMessage` and `ParameterizedMessage` arguments that cannot be serialized with their string form.
   </description>
 </entry>
