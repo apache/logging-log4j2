@@ -398,6 +398,12 @@
 <p>Switch the default minimum allowed plugin processor message severity from NOTE to ERROR (<a href="https://github.com/apache/logging-log4j2/issues/4225">4225</a>, <a href="https://github.com/apache/logging-log4j2/pull/4256">4256</a>)</p>
 </li>
 <li>
+<p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
+</li>
+<li>
+<p>When deserializing with <code>ObjectInputStream</code>, stop adding the Log4j allowlist to the <code>ObjectInputFilter</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
+</li>
+<li>
 <p>Fix stack trace rendering for exceptions with identity malfunction (e.g., colliding <code>equals()</code> and/or <code>hashCode()</code> implementations) (<a href="https://github.com/apache/logging-log4j2/issues/3933">3933</a>, <a href="https://github.com/apache/logging-log4j2/pull/4133">4133</a>)</p>
 </li>
 <li>
@@ -409,8 +415,15 @@
 <li>
 <p><code>CronTriggeringPolicy</code> no longer delays startup, and names direct write files after the rollover period rather than the startup time. (<a href="https://github.com/apache/logging-log4j2/pull/4226">4226</a>)</p>
 </li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
+<div class="ulist">
+<ul>
 <li>
-<p>Harden <code>readObject(ObjectInputStream)</code> method argument checks in serializable API models (<a href="https://github.com/apache/logging-log4j2/pull/4098">4098</a>)</p>
+<p>Deprecate <code>FilteredObjectInputStream</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
 </li>
 </ul>
 </div>
