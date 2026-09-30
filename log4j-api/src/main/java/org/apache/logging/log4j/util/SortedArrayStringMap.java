@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.util;
 
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -56,7 +55,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
 
-    private static final long serialVersionUID = -5748905872274478116L;
+    private static final long serialVersionUID = -3516174557123823846L;
     private static final int HASHVAL = 31;
 
     private static final TriConsumer<String, Object, StringMap> PUT_ALL =
@@ -69,13 +68,13 @@ public class SortedArrayStringMap implements IndexedStringMap {
 
     private static final String FROZEN = "Frozen collection cannot be modified";
 
-    private transient String[] keys = EMPTY;
+    private String[] keys = EMPTY;
     private transient Object[] values = EMPTY;
 
     /**
      * The number of key-value mappings contained in this map.
      */
-    private transient int size;
+    private int size;
 
     /**
      * The next size value at which to resize (capacity * load factor).
@@ -444,35 +443,14 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * Save the state of the {@code SortedArrayStringMap} instance to a stream (i.e.,
      * serialize it).
      *
-     * @serialData The <i>capacity</i> of the SortedArrayStringMap (the length of the
-     *             bucket array) is emitted (int), followed by the
-     *             <i>size</i> (an int, the number of key-value
-     *             mappings), followed by the key (Object) and value (Object)
-     *             for each key-value mapping.  The key-value mappings are
-     *             emitted in no particular order.
+     * @serialData The serializable fields, followed by the {@code values} array,
+     *             as a {@code byte[][]} array of the same length as {@code keys}.
+     *             Each value is serialized separately
+     *             so that values that cannot be serialized can be replaced with their string representation.
      */
     private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
-        // Write out the threshold, and any hidden stuff
         s.defaultWriteObject();
-
-        // Write out number of buckets
-        if (keys == EMPTY) {
-            s.writeInt(ceilingNextPowerOfTwo(threshold));
-        } else {
-            s.writeInt(keys.length);
-        }
-
-        // Write out size (number of Mappings)
-        s.writeInt(size);
-
-        // Write out keys and values (alternating)
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                s.writeObject(keys[i]);
-                final Object value = values[i];
-                SerializationUtil.writeWrappedObject(value, () -> String.valueOf(value), s);
-            }
-        }
+        s.writeObject(SerializationUtil.wrapObjects(values));
     }
 
     /**
@@ -493,37 +471,12 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * deserialize it).
      */
     private void readObject(final java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
-        // Read in the threshold (ignored), and any hidden stuff
         s.defaultReadObject();
-
-        // set other fields that need values
-        keys = EMPTY;
-        values = EMPTY;
-
-        // Read in number of buckets
-        final int capacity = s.readInt();
-        if (capacity < 0) {
-            throw new InvalidObjectException("Illegal capacity: " + capacity);
+        values = SerializationUtil.unwrapObjects(s, (byte[][]) s.readObject());
+        if (keys.length == 0) {
+            // Restore the shared instance, used to detect a map that is not inflated yet
+            keys = EMPTY;
+            values = EMPTY;
         }
-
-        // Read number of mappings
-        final int mappings = s.readInt();
-        if (mappings < 0) {
-            throw new InvalidObjectException("Illegal mappings count: " + mappings);
-        }
-
-        // allocate the bucket array;
-        if (mappings > 0) {
-            inflateTable(capacity);
-        } else {
-            threshold = capacity;
-        }
-
-        // Read the keys and values, and put the mappings in the arrays
-        for (int i = 0; i < mappings; i++) {
-            keys[i] = (String) s.readObject();
-            values[i] = SerializationUtil.readWrappedObject(s);
-        }
-        size = mappings;
     }
 }
