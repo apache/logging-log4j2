@@ -50,6 +50,7 @@ import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 public class Log4jLogEventTest {
@@ -96,6 +97,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
+    @Tag("serialization")
     void testJavaIoSerializable() {
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
                 .setLoggerName("some.test") //
@@ -124,6 +126,7 @@ public class Log4jLogEventTest {
     }
 
     @Test
+    @Tag("serialization")
     void testJavaIoSerializableWithThrown() {
         final Error thrown = new InternalError("test error");
         final Log4jLogEvent evt = Log4jLogEvent.newBuilder() //
@@ -165,6 +168,7 @@ public class Log4jLogEventTest {
     // };
 
     @Test
+    @Tag("serialization")
     void testJavaIoSerializableWithUnknownThrowable() {
         final String loggerName = "some.test";
         final Marker marker = null;
