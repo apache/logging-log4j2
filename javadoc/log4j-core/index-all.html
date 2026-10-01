@@ -19086,7 +19086,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">since 2.25.0. <a href="org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.html" title="class in org.apache.logging.log4j.core.async"><code>RingBufferLogEventTranslator</code></a> instances should only be used on the thread that
- created it.</div>
+ created them. This method is retained for internal use to refresh the thread name after
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#setName-java.lang.String-" title="class or interface in java.lang" class="external-link"><code>Thread.setName(String)</code></a>.</div>
 </div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html#updateTime()" class="member-name-link">updateTime()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/PatternProcessor.html" title="class in org.apache.logging.log4j.core.appender.rolling">PatternProcessor</a></dt>
