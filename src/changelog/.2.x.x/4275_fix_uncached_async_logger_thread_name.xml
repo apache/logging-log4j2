@@ -6,7 +6,8 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4275" link="https://github.com/apache/logging-log4j2/issues/4275"/>
+  <issue id="4280" link="https://github.com/apache/logging-log4j2/pull/4280"/>
   <description format="asciidoc">
-    Restore current thread names in fully asynchronous log events when `log4j2.asyncLoggerThreadNameStrategy` is set to `UNCACHED`.
+    Fix stale thread names in fully asynchronous loggers using the `UNCACHED` strategy.
   </description>
 </entry>
