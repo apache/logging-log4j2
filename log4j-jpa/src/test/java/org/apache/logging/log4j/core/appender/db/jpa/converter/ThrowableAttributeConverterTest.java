@@ -19,8 +19,10 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -68,6 +70,18 @@ class ThrowableAttributeConverterTest {
 
         assertNotNull(reversed, "The reversed value should not be null.");
         assertEquals(stackTrace, getStackTrace(reversed), "The reversed value is not correct.");
+    }
+
+    @Test
+    void testConvertCyclicCause() {
+        final Exception exception1 = new Exception("exception1");
+        final Exception exception2 = new Exception("exception2");
+        exception1.initCause(exception2);
+        exception2.initCause(exception1);
+        final String converted = converter.convertToDatabaseColumn(exception1);
+        assertTrue(converted.contains("exception1"));
+        assertTrue(converted.contains("exception2"));
+        assertEquals(1, StringUtils.countMatches(converted, "Caused by "));
     }
 
     @Test

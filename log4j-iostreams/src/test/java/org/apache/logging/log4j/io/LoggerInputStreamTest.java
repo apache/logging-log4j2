@@ -16,20 +16,25 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerInputStreamTest extends AbstractStreamTest {
     protected ByteArrayInputStream wrapped;
     protected ByteArrayOutputStream read;
     protected InputStream in;
+
+    LoggerInputStreamTest(LoggerContext context) {
+        super(context);
+    }
 
     protected InputStream createInputStream() {
         return IoBuilder.forLogger(getExtendedLogger())
@@ -38,7 +43,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
                 .buildInputStream();
     }
 
-    @Before
+    @BeforeEach
     public void createStream() {
         this.wrapped = new ByteArrayInputStream((FIRST + "\r\n" + LAST).getBytes());
         this.read = new ByteArrayOutputStream();
@@ -69,7 +74,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     @Test
     public void testRead_ByteArray() throws Exception {
         final byte[] bytes = new byte[FIRST.length()];
-        assertEquals("len", bytes.length, this.in.read(bytes));
+        assertEquals(bytes.length, this.in.read(bytes), "len");
         if (!(this.in instanceof BufferedInputStream)) {
             assertMessages();
         }
@@ -80,7 +85,7 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
     @Test
     public void testRead_ByteArray_Offset_Length() throws Exception {
         final byte[] bytes = new byte[FIRST.length() * 2];
-        assertEquals("len", FIRST.length(), this.in.read(bytes, 0, FIRST.length()));
+        assertEquals(FIRST.length(), this.in.read(bytes, 0, FIRST.length()), "len");
         if (!(this.in instanceof BufferedInputStream)) {
             assertMessages();
         }
@@ -107,11 +112,11 @@ public class LoggerInputStreamTest extends AbstractStreamTest {
         if (!(this.in instanceof BufferedInputStream)) {
             assertMessages();
         }
-        assertEquals("carriage return", '\r', this.in.read());
+        assertEquals('\r', this.in.read(), "carriage return");
         if (!(this.in instanceof BufferedInputStream)) {
             assertMessages();
         }
-        assertEquals("newline", '\n', this.in.read());
+        assertEquals('\n', this.in.read(), "newline");
         assertMessages(FIRST);
     }
 

@@ -222,6 +222,7 @@ class GraalVmProcessorTest {
         assertThat(diagnostics).hasSize(1);
         // The warning message should contain the information about the missing groupId and artifactId arguments
         assertThat(diagnostics.get(0))
+                .startsWith("[Log4j] ")
                 .contains(
                         "recommended",
                         "-A" + GraalVmProcessor.GROUP_ID + "=<groupId>",
@@ -239,8 +240,56 @@ class GraalVmProcessorTest {
                 .exists();
     }
 
+    @Test
+    void noteEmittedByDefaultWithLog4jPrefix(@TempDir Path outputDir) throws Exception {
+        List<Diagnostic<? extends JavaFileObject>> diagnostics =
+                generateDiagnostics(sourceDir, GROUP_ID, ARTIFACT_ID, outputDir);
+
+        assertThat(diagnostics)
+                .anyMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
+                        && diagnostic
+                                .getMessage(Locale.ROOT)
+                                .startsWith("[Log4j] GraalVmProcessor: writing GraalVM metadata"));
+    }
+
+    @Test
+    void notesSuppressedWithoutAffectingMetadataGeneration(@TempDir Path outputDir) throws Exception {
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = generateDiagnostics(
+                sourceDir,
+                GROUP_ID,
+                ARTIFACT_ID,
+                outputDir,
+                "-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=warning");
+
+        assertThat(diagnostics)
+                .noneMatch(diagnostic -> diagnostic.getKind() == Diagnostic.Kind.NOTE
+                        && diagnostic.getMessage(Locale.ROOT).contains("writing GraalVM metadata"));
+        assertThat(outputDir.resolve("META-INF/native-image/log4j-generated/groupId/artifactId/reflect-config.json"))
+                .exists();
+    }
+
     private static List<String> generateDescriptor(
-            Path sourceDir, @Nullable String groupId, @Nullable String artifactId, Path outputDir) throws Exception {
+            Path sourceDir,
+            @Nullable String groupId,
+            @Nullable String artifactId,
+            Path outputDir,
+            String... extraOptions)
+            throws Exception {
+        return generateDiagnostics(sourceDir, groupId, artifactId, outputDir, extraOptions).stream()
+                .filter(d -> d.getKind() != Diagnostic.Kind.NOTE)
+                .map(d -> d.getMessage(Locale.ROOT))
+                // This message appears when the test runs on JDK 8
+                .filter(m -> !"unknown enum constant java.lang.annotation.ElementType.MODULE".equals(m))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Diagnostic<? extends JavaFileObject>> generateDiagnostics(
+            Path sourceDir,
+            @Nullable String groupId,
+            @Nullable String artifactId,
+            Path outputDir,
+            String... extraOptions)
+            throws Exception {
         // Instantiate the tooling
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.ROOT, UTF_8);
@@ -267,6 +316,7 @@ class GraalVmProcessorTest {
         if (artifactId != null) {
             options.add("-A" + GraalVmProcessor.ARTIFACT_ID + "=" + artifactId);
         }
+        options.addAll(asList(extraOptions));
 
         // Compile the sources
         final DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
@@ -274,12 +324,6 @@ class GraalVmProcessorTest {
                 compiler.getTask(null, fileManager, diagnosticCollector, options, null, sources);
         task.call();
 
-        // Verify successful compilation
-        return diagnosticCollector.getDiagnostics().stream()
-                .filter(d -> d.getKind() != Diagnostic.Kind.NOTE)
-                .map(d -> d.getMessage(Locale.ROOT))
-                // This message appears when the test runs on JDK 8
-                .filter(m -> !"unknown enum constant java.lang.annotation.ElementType.MODULE".equals(m))
-                .collect(Collectors.toList());
+        return diagnosticCollector.getDiagnostics();
     }
 }

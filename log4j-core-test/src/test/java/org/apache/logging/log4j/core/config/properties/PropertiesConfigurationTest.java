@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -32,12 +33,17 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
@@ -56,6 +62,21 @@ class PropertiesConfigurationTest {
         final Filter filter = config.getFilter();
         assertNotNull(filter, "No Filter");
         assertInstanceOf(ThresholdFilter.class, filter, "Not a Threshold Filter");
+
+        final List<Property> rootProperties = config.getRootLogger().getPropertyList();
+        assertNotNull(rootProperties, "Root properties list should not be null");
+        assertEquals(1, rootProperties.size());
+        assertEquals("client.address", rootProperties.get(0).getName());
+        assertEquals("${web:request.remoteAddress}", rootProperties.get(0).getValue());
+
+        final LoggerConfig log4jLogger = loggers.get("org.apache.logging.log4j");
+        assertNotNull(log4jLogger, "org.apache.logging.log4j logger should not be null");
+        final List<Property> log4jProperties = log4jLogger.getPropertyList();
+        assertNotNull(log4jProperties, "org.apache.logging.log4j properties list should not be null");
+        assertEquals(1, log4jProperties.size());
+        assertEquals("subsystem", log4jProperties.get(0).getName());
+        assertEquals("Database", log4jProperties.get(0).getValue());
+
         final Logger logger = LogManager.getLogger(getClass());
         logger.info("Welcome to Log4j!");
     }
@@ -151,5 +172,26 @@ class PropertiesConfigurationTest {
         assertEquals(2, firstEvents.size());
         final List<LogEvent> thirdEvents = third.getEvents();
         assertEquals(1, thirdEvents.size());
+    }
+
+    @Test
+    @UsingStatusListener
+    @LoggerContextSource("log4j2-unresolved-layout.properties")
+    void testUnresolvedLayoutDoesNotFailConfiguration(final Configuration config, final ListStatusListener listener) {
+        assertEquals(LifeCycle.State.STARTED, config.getState());
+        assertTrue(
+                listener.findStatusData(Level.ERROR).anyMatch(data -> data.getMessage()
+                        .getFormattedMessage()
+                        .contains("Unable to locate plugin for ThisLayoutDoesNotExist")),
+                "Unresolved layout was not reported");
+        assertTrue(
+                listener.getStatusData()
+                        .map(StatusData::getThrowable)
+                        .noneMatch(NullPointerException.class::isInstance),
+                "Unresolved layout caused a NullPointerException");
+        final Appender appender = config.getAppender("StdOut");
+        assertNotNull(appender, "Appender was not created");
+        assertInstanceOf(ConsoleAppender.class, appender);
+        assertNotNull(appender.getLayout(), "No default layout");
     }
 }

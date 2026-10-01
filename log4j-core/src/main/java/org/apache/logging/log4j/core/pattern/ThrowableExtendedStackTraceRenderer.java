@@ -20,7 +20,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -112,7 +112,7 @@ final class ThrowableExtendedStackTraceRenderer
             final Map<String, ClassResourceInfo> classResourceInfoByName = new HashMap<>();
 
             // Walk over the causal chain
-            final Set<Throwable> visitedThrowables = new HashSet<>();
+            final Set<Throwable> visitedThrowables = Collections.newSetFromMap(new IdentityHashMap<>());
             final Queue<Throwable> pendingThrowables = new ArrayDeque<>(Collections.singleton(rootThrowable));
             Throwable throwable;
             while ((throwable = pendingThrowables.poll()) != null && visitedThrowables.add(throwable)) {
@@ -181,7 +181,7 @@ final class ThrowableExtendedStackTraceRenderer
                     if (clazz != null) {
                         return clazz;
                     }
-                } catch (final Exception ignored) {
+                } catch (final Throwable ignored) {
                     // Do nothing
                 }
             }
