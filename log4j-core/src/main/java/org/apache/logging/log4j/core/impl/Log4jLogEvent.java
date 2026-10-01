@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.core.util.internal.WrappedObjects;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Implementation of a LogEvent.
@@ -1222,12 +1222,12 @@ public class Log4jLogEvent implements LogEvent {
             this.messageString = message.getFormattedMessage();
             s.defaultWriteObject();
             // Messages that cannot be serialized are replaced with a `SimpleMessage`
-            SerializationUtil.writeWrappedObject(message, () -> new SimpleMessage(messageString), s);
+            WrappedObjects.writeWrappedObject(message, () -> new SimpleMessage(messageString), s);
         }
 
         private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
             in.defaultReadObject();
-            final Object wrapped = SerializationUtil.readWrappedObject(in);
+            final Object wrapped = WrappedObjects.readWrappedObject(in);
             message = wrapped instanceof Message ? (Message) wrapped : null;
         }
 
