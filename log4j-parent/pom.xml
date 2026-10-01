@@ -106,14 +106,14 @@
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>5.1.1</groovy.version>
-    <h2.version>2.4.240</h2.version>
+    <h2.version>2.5.250</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
     <hsqldb.version>2.7.4</hsqldb.version>
     <!-- wiremock and elasticsearch-java libraries used for testing require Jackson 2 -->
     <!-- The log4j project is using Jackson 3. -->
-    <jackson2.test.version>2.22.2</jackson2.test.version>
-    <jackson-bom.version>3.2.2</jackson-bom.version>
+    <jackson2.test.version>2.22.3</jackson2.test.version>
+    <jackson-bom.version>3.2.3</jackson-bom.version>
     <javax-jms.version>2.0.1</javax-jms.version>
     <java-allocation-instrumenter.version>3.3.5</java-allocation-instrumenter.version>
     <jctools.version>4.0.7</jctools.version>
@@ -126,10 +126,10 @@
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
-    <mockito.version>5.23.0</mockito.version>
+    <mockito.version>5.24.0</mockito.version>
     <nashorn.version>15.7</nashorn.version>
     <opentest4j.version>1.3.0</opentest4j.version>
-    <org.eclipse.osgi.version>3.24.200</org.eclipse.osgi.version>
+    <org.eclipse.osgi.version>3.24.300</org.eclipse.osgi.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.framework.version>1.10.0</osgi.framework.version>
@@ -140,7 +140,7 @@
     <spotbugs-annotations.version>4.10.4</spotbugs-annotations.version>
     <system-stubs.version>2.1.8</system-stubs.version>
     <velocity.version>1.7</velocity.version>
-    <xmlunit.version>2.13.0</xmlunit.version>
+    <xmlunit.version>2.14.0</xmlunit.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
@@ -150,7 +150,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <!-- AssertJ and Mockito request different versions -->
-    <byte-buddy.version>1.18.12</byte-buddy.version>
+    <byte-buddy.version>1.18.14</byte-buddy.version>
   </properties>
 
   <dependencyManagement>
