@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -114,10 +113,9 @@ public final class TestHelpers {
             final BiConsumer<LoggerContext, ListAppender> consumer) {
 
         // Create the configuration builder.
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder()
-                        .setStatusLevel(Level.ERROR)
-                        .setConfigurationName(configName);
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .setStatusLevel(Level.ERROR)
+                .setConfigurationName(configName);
 
         // Create the configuration.
         final String eventTemplateJson = writeJson(eventTemplate);
@@ -125,10 +123,10 @@ public final class TestHelpers {
         final Configuration config = configBuilder
                 .add(configBuilder
                         .newAppender(appenderName, "List")
-                        .addAttribute("raw", true)
+                        .setAttribute("raw", true)
                         .add(configBuilder
                                 .newLayout("JsonTemplateLayout")
-                                .addAttribute("eventTemplate", eventTemplateJson)))
+                                .setAttribute("eventTemplate", eventTemplateJson)))
                 .add(configBuilder.newRootLogger(Level.ALL).add(configBuilder.newAppenderRef(appenderName)))
                 .build(false);
 

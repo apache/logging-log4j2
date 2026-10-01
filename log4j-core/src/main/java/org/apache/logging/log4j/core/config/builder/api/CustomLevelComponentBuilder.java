@@ -16,8 +16,28 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.config.CustomLevels;
+
 /**
- * Assembler for constructing CustomLevel Components.
+ * A builder interface for constructing and configuring {@link CustomLevels} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.4
  */
-public interface CustomLevelComponentBuilder extends ComponentBuilder<CustomLevelComponentBuilder> {}
+public interface CustomLevelComponentBuilder extends ComponentBuilder<CustomLevelComponentBuilder> {
+
+    /**
+     * Sets the 'intLevel' attribute on the custom-level component.
+     *
+     * @param intLevel the integer level value
+     * @return this builder (for chaining)
+     * @since 2.27.0
+     */
+    default CustomLevelComponentBuilder setIntLevel(int intLevel) {
+        return setAttribute("intLevel", intLevel);
+    }
+}

@@ -16,8 +16,46 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import org.apache.logging.log4j.core.script.Script;
+import org.jspecify.annotations.Nullable;
+
 /**
- * Assembler for constructing Layout Components.
+ * A builder interface for constructing and configuring {@link Script} components in a Log4j configuration.
+ *
+ * <p>
+ *   Instances of this builder are designed for single-threaded use and are not thread-safe. Developers
+ *   should avoid sharing instances between threads.
+ * </p>
+ *
  * @since 2.5
  */
-public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponentBuilder> {}
+public interface ScriptComponentBuilder extends ComponentBuilder<ScriptComponentBuilder> {
+
+    /**
+     * Sets the 'language' attribute on the script component.
+     * <p>
+     *   If the given {@code language} argument is {@code null} the attribute will be removed (if present).
+     * </p>
+     *
+     * @param language the script language
+     * @return this builder (for chaining)
+     * @since 2.27.0
+     */
+    default ScriptComponentBuilder setLanguage(final @Nullable String language) {
+        return setAttribute("language", language);
+    }
+
+    /**
+     * Sets the 'text' attribute on the script component.
+     * <p>
+     *   If the given {@code text} argument is {@code null} the attribute will be removed (if present).
+     * </p>
+     *
+     * @param text the script text
+     * @return this builder (for chaining)
+     * @since 2.27.0
+     */
+    default ScriptComponentBuilder setText(final @Nullable String text) {
+        return setAttribute("text", text);
+    }
+}

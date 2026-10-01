@@ -36,6 +36,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Checks that the Log4j 1.x XML configuration reader resolves external entities through
  * {@link ConfigurationSource}, so they are subject to the {@code log4j2.Configuration.allowedProtocols} restrictions.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class XmlConfigurationExternalEntityTest {
 
     private static final String INJECTED_LOGGER = "external-entity-injected";

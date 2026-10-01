@@ -44,5 +44,11 @@ jobs:
       # Convert the PR into draft
       pull-requests: write
     with:
-      # The path to the changelog directory for the current development branch.
-      changelog-path: src/changelog/.2.x.x
+      # The path to the changelog directory of the branch targeted by the PR.
+      # This workflow runs from the default branch for PRs against *every* branch,
+      # so the path is derived from the base branch of the PR that triggered it.
+      changelog-path: ${{
+          github.event.workflow_run.pull_requests[0].base.ref == 'main'
+          && 'src/changelog/.3.x.x'
+          || 'src/changelog/.2.x.x'
+        }}

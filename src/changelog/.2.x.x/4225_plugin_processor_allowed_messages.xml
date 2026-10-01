@@ -5,8 +5,9 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="4098" link="https://github.com/apache/logging-log4j2/pull/4098"/>
+  <issue id="4225" link="https://github.com/apache/logging-log4j2/issues/4225"/>
+  <issue id="4256" link="https://github.com/apache/logging-log4j2/pull/4256"/>
   <description format="asciidoc">
-    Harden `readObject(ObjectInputStream)` method argument checks in serializable API models
+    Switch the default minimum allowed plugin processor message severity from NOTE to ERROR
   </description>
 </entry>

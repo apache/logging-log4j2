@@ -18,6 +18,17 @@
 [id=xml-features]
 = XML format
 
+Log4j 2 parses XML configuration files with the following parser features:
+
+* DTD validation and the retrieval of external DTDs and external entities are **disabled**.
+Optional validation against an XML Schema is available instead: see the <<configuration-attribute-strict,`strict`>> and <<configuration-attribute-schema,`schema`>> attributes below.
+* <<xinclude,XInclude>> is **enabled** whenever the JAXP implementation supports it.
+If you wish to split a configuration among multiple files,
+use either XInclude or a xref:manual/configuration.adoc#CompositeConfiguration[composite configuration].
+Since included files have the same power as the configuration file itself, all of them must come from trusted sources: see the
+https://logging.apache.org/security.html#threat-common-sources-configuration[Log4j threat model]
+for details on the trust requirements for configuration sources.
+
 [id=xml-global-configuration-attributes]
 == Global configuration attributes
 

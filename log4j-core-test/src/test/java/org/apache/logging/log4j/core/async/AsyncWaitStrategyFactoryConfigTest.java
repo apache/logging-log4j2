@@ -52,10 +52,9 @@ class AsyncWaitStrategyFactoryConfigTest {
     void testConfigWaitStrategyFactoryFromProperties(final LoggerContext context) {
         final AsyncWaitStrategyFactory asyncWaitStrategyFactory =
                 context.getConfiguration().getAsyncWaitStrategyFactory();
-        assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
-        assertThat(
-                "factory is YieldingWaitStrategyFactory",
-                asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
+        assertNull(
+                asyncWaitStrategyFactory,
+                "AsyncWaitStrategyFactory should be null when using a test-local class in properties");
     }
 
     @Test

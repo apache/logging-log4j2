@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.SocketPerformancePreferences;
@@ -134,10 +133,9 @@ class SocketAppenderSslSocketOptionsTest {
     private static Configuration createConfiguration(final Path tempDir, final int port) throws Exception {
 
         // Create the configuration builder
-        final ConfigurationBuilder<BuiltConfiguration> configBuilder =
-                ConfigurationBuilderFactory.newConfigurationBuilder()
-                        .setStatusLevel(Level.ERROR)
-                        .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
+        final ConfigurationBuilder<?> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder()
+                .setStatusLevel(Level.ERROR)
+                .setConfigurationName(SocketAppenderReconnectTest.class.getSimpleName());
 
         // Stage the key store password file
         final Path keyStorePasswordFilePath = tempDir.resolve("keyStorePassword");
@@ -150,47 +148,47 @@ class SocketAppenderSslSocketOptionsTest {
         // Create the `SocketOptions` element
         final ComponentBuilder<?> socketPerformancePreferencesComponentBuilder = configBuilder
                 .newComponent("SocketPerformancePreferences")
-                .addAttribute("bandwidth", SOCKET_PERFORMANCE_PREFERENCE_BANDWIDTH)
-                .addAttribute("connectionTime", SOCKET_PERFORMANCE_PREFERENCE_CONNECTION_TIME)
-                .addAttribute("latency", SOCKET_PERFORMANCE_PREFERENCE_LATENCY);
+                .setAttribute("bandwidth", SOCKET_PERFORMANCE_PREFERENCE_BANDWIDTH)
+                .setAttribute("connectionTime", SOCKET_PERFORMANCE_PREFERENCE_CONNECTION_TIME)
+                .setAttribute("latency", SOCKET_PERFORMANCE_PREFERENCE_LATENCY);
         final ComponentBuilder<?> socketOptionsComponentBuilder = configBuilder
                 .newComponent("SocketOptions")
-                .addAttribute("keepAlive", SOCKET_OPTION_KEEP_ALIVE)
-                .addAttribute("receiveBufferSize", SOCKET_OPTION_RECEIVE_BUFFER_SIZE)
-                .addAttribute("reuseAddress", SOCKET_OPTION_REUSE_ADDRESS)
-                .addAttribute("rfc1349TrafficClass", SOCKET_OPTION_RFC1349_TRAFFIC_CLASS)
-                .addAttribute("sendBufferSize", SOCKET_OPTION_SEND_BUFFER_SIZE)
-                .addAttribute("soLinger", SOCKET_OPTION_LINGER)
-                .addAttribute("soTimeout", SOCKET_OPTION_TIMEOUT)
-                .addAttribute("tcpNoDelay", SOCKET_OPTION_TCP_NO_DELAY)
+                .setAttribute("keepAlive", SOCKET_OPTION_KEEP_ALIVE)
+                .setAttribute("receiveBufferSize", SOCKET_OPTION_RECEIVE_BUFFER_SIZE)
+                .setAttribute("reuseAddress", SOCKET_OPTION_REUSE_ADDRESS)
+                .setAttribute("rfc1349TrafficClass", SOCKET_OPTION_RFC1349_TRAFFIC_CLASS)
+                .setAttribute("sendBufferSize", SOCKET_OPTION_SEND_BUFFER_SIZE)
+                .setAttribute("soLinger", SOCKET_OPTION_LINGER)
+                .setAttribute("soTimeout", SOCKET_OPTION_TIMEOUT)
+                .setAttribute("tcpNoDelay", SOCKET_OPTION_TCP_NO_DELAY)
                 .addComponent(socketPerformancePreferencesComponentBuilder);
 
         // Create the `Ssl` element
         final ComponentBuilder<?> keyStoreComponentBuilder = configBuilder
                 .newComponent("KeyStore")
-                .addAttribute("type", KEYSTORE_TYPE)
-                .addAttribute("location", KEYSTORE_LOCATION)
-                .addAttribute("passwordFile", keyStorePasswordFilePath);
+                .setAttribute("type", KEYSTORE_TYPE)
+                .setAttribute("location", KEYSTORE_LOCATION)
+                .setAttribute("passwordFile", keyStorePasswordFilePath);
         final ComponentBuilder<?> trustStoreComponentBuilder = configBuilder
                 .newComponent("TrustStore")
-                .addAttribute("type", TRUSTSTORE_TYPE)
-                .addAttribute("location", TRUSTSTORE_LOCATION)
-                .addAttribute("passwordFile", trustStorePasswordFilePath);
+                .setAttribute("type", TRUSTSTORE_TYPE)
+                .setAttribute("location", TRUSTSTORE_LOCATION)
+                .setAttribute("passwordFile", trustStorePasswordFilePath);
         final ComponentBuilder<?> sslComponentBuilder = configBuilder
                 .newComponent("Ssl")
-                .addAttribute("protocol", "TLS")
+                .setAttribute("protocol", "TLS")
                 .addComponent(keyStoreComponentBuilder)
                 .addComponent(trustStoreComponentBuilder);
 
         // Create the `Socket` element
         final AppenderComponentBuilder appenderComponentBuilder = configBuilder
                 .newAppender(APPENDER_NAME, "Socket")
-                .addAttribute("host", "localhost")
-                .addAttribute("port", port)
-                .addAttribute("ignoreExceptions", false)
-                .addAttribute("reconnectionDelayMillis", 10)
-                .addAttribute("immediateFlush", true)
-                .add(configBuilder.newLayout("PatternLayout").addAttribute("pattern", "%m%n"))
+                .setAttribute("host", "localhost")
+                .setAttribute("port", port)
+                .setAttribute("ignoreExceptions", false)
+                .setAttribute("reconnectionDelayMillis", 10)
+                .setAttribute("immediateFlush", true)
+                .add(configBuilder.newLayout("PatternLayout").setAttribute("pattern", "%m%n"))
                 .addComponent(socketOptionsComponentBuilder)
                 .addComponent(sslComponentBuilder);
 

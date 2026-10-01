@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -108,7 +109,7 @@ public class Log4j1ConfigurationParser {
             if (threshold != null) {
                 final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
                 builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
-                        .addAttribute("level", level));
+                        .setAttribute("level", level));
             }
             // Root
             buildRootLogger(getLog4jValue(ROOTCATEGORY));
@@ -134,7 +135,9 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
-                builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+                PropertyComponentBuilder propertyComponentBuilder =
+                        builder.newProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+                builder.add(propertyComponentBuilder);
             }
         }
     }
@@ -204,7 +207,7 @@ public class Log4j1ConfigurationParser {
                     target = null;
             }
             if (target != null) {
-                appenderBuilder.addAttribute("target", target);
+                appenderBuilder.setAttribute("target", target);
             }
         }
         buildAttribute(appenderName, appenderBuilder, "Follow", "follow");
@@ -236,13 +239,13 @@ public class Log4j1ConfigurationParser {
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
         final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", ".yyyy-MM-dd");
-        appenderBuilder.addAttribute("filePattern", fileName + "%d{" + datePattern + "}");
+        appenderBuilder.setAttribute("filePattern", fileName + "%d{" + datePattern + "}");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
+                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").setAttribute("modulate", true));
         appenderBuilder.addComponent(triggeringPolicy);
         appenderBuilder.addComponent(builder.newComponent("DefaultRolloverStrategy")
-                .addAttribute("max", Integer.MAX_VALUE)
-                .addAttribute("fileIndex", "min"));
+                .setAttribute("max", Integer.MAX_VALUE)
+                .setAttribute("fileIndex", "min"));
         builder.add(appenderBuilder);
     }
 
@@ -251,16 +254,16 @@ public class Log4j1ConfigurationParser {
                 builder.newAppender(appenderName, RollingFileAppender.PLUGIN_NAME);
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
-        appenderBuilder.addAttribute("filePattern", fileName + ".%i");
+        appenderBuilder.setAttribute("filePattern", fileName + ".%i");
         final String maxFileSizeString = getLog4jAppenderValue(appenderName, "MaxFileSize", "10485760");
         final String maxBackupIndexString = getLog4jAppenderValue(appenderName, "MaxBackupIndex", "1");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(
-                        builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", maxFileSizeString));
+                        builder.newComponent("SizeBasedTriggeringPolicy").setAttribute("size", maxFileSizeString));
         appenderBuilder.addComponent(triggeringPolicy);
         appenderBuilder.addComponent(builder.newComponent("DefaultRolloverStrategy")
-                .addAttribute("max", maxBackupIndexString)
-                .addAttribute("fileIndex", "min"));
+                .setAttribute("max", maxBackupIndexString)
+                .setAttribute("fileIndex", "min"));
         builder.add(appenderBuilder);
     }
 
@@ -271,7 +274,7 @@ public class Log4j1ConfigurationParser {
             final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
-            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+            componentBuilder.setAttribute(targetAttributeName, attributeValue);
         }
     }
 
@@ -282,7 +285,7 @@ public class Log4j1ConfigurationParser {
             final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
-            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+            componentBuilder.setAttribute(targetAttributeName, attributeValue);
         } else {
             reportWarning("Missing " + sourceAttributeName + " for " + componentName);
         }
@@ -358,8 +361,8 @@ public class Log4j1ConfigurationParser {
                 }
                 case "org.apache.log4j.HTMLLayout": {
                     final LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
-                    htmlLayout.addAttribute("title", getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
-                    htmlLayout.addAttribute(
+                    htmlLayout.setAttribute("title", getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
+                    htmlLayout.setAttribute(
                             "locationInfo",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
                     appenderBuilder.add(htmlLayout);
@@ -367,10 +370,10 @@ public class Log4j1ConfigurationParser {
                 }
                 case "org.apache.log4j.xml.XMLLayout": {
                     final LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
-                    xmlLayout.addAttribute(
+                    xmlLayout.setAttribute(
                             "locationInfo",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
-                    xmlLayout.addAttribute(
+                    xmlLayout.setAttribute(
                             "properties",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.Properties", FALSE)));
                     appenderBuilder.add(xmlLayout);
@@ -385,7 +388,7 @@ public class Log4j1ConfigurationParser {
     private LayoutComponentBuilder newPatternLayout(final String pattern) {
         final LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout");
         if (pattern != null) {
-            layoutBuilder.addAttribute("pattern", pattern);
+            layoutBuilder.setAttribute("pattern", pattern);
         }
         return layoutBuilder;
     }
