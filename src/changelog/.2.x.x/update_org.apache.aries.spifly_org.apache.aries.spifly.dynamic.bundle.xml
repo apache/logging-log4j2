@@ -4,5 +4,5 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
   <issue id="4384" link="https://github.com/apache/logging-log4j2/pull/4384"/>
-  <description format="asciidoc">Update `org.slf4j:slf4j-nop` to version `2.0.20`</description>
+  <description format="asciidoc">Update `org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle` to version `1.3.8`</description>
 </entry>
