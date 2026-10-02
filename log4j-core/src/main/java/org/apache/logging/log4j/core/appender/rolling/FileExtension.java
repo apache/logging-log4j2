@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.ZstdCompressAction;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 
 /**
@@ -99,8 +100,7 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("zstd", source(renameTo), target(compressedName), deleteSource);
+            return new ZstdCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     };
 
