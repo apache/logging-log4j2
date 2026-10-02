@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -37,12 +38,33 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
 
     private final transient KeyStore keyStore;
 
+    private final StoreConfigurationException loadFailure;
+
     public AbstractKeyStoreConfiguration(
             final String location, final PasswordProvider passwordProvider, final String keyStoreType)
             throws StoreConfigurationException {
         super(location, passwordProvider);
         this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
         this.keyStore = this.load();
+        this.loadFailure = null;
+    }
+
+    AbstractKeyStoreConfiguration(
+            final String location, final String keyStoreType, final StoreConfigurationException loadFailure) {
+        super(location, new MemoryPasswordProvider(null));
+        this.keyStoreType = keyStoreType == null ? SslConfigurationDefaults.KEYSTORE_TYPE : keyStoreType;
+        this.keyStore = createEmptyKeyStore();
+        this.loadFailure = Objects.requireNonNull(loadFailure, "loadFailure");
+    }
+
+    private static KeyStore createEmptyKeyStore() {
+        try {
+            final KeyStore keyStore = KeyStore.getInstance(SslConfigurationDefaults.KEYSTORE_TYPE);
+            keyStore.load(null, null);
+            return keyStore;
+        } catch (final GeneralSecurityException | IOException error) {
+            throw new IllegalStateException("Failed to create an empty key store", error);
+        }
     }
 
     /**
@@ -121,6 +143,10 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
 
     public KeyStore getKeyStore() {
         return this.keyStore;
+    }
+
+    StoreConfigurationException getLoadFailure() {
+        return loadFailure;
     }
 
     @Override

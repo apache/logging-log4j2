@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -182,5 +183,18 @@ class KeyStoreConfigurationTest {
                 }
             }
         });
+    }
+
+    @Test
+    void pluginFactoryRecordsLoadFailureWithEmptyKeyStore() throws Exception {
+        final KeyStoreConfiguration config = KeyStoreConfiguration.createOrRecordFailure(
+                SslKeyStoreConstants.KEYSTORE_LOCATION,
+                "wrongPassword!".toCharArray(),
+                null,
+                null,
+                SslKeyStoreConstants.KEYSTORE_TYPE,
+                null);
+        assertThat(config.getLoadFailure()).isNotNull();
+        assertThat(config.getKeyStore().size()).isZero();
     }
 }
