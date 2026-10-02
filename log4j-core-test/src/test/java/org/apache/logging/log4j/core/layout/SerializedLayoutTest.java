@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -163,5 +164,18 @@ class SerializedLayoutTest {
             final LogEvent event = (LogEvent) ois.readObject();
             assertNotNull(event);
         }
+    }
+
+    @Test
+    public void testSerializationFailure() {
+        final SerializedLayout layout = SerializedLayout.createLayout();
+        assertEquals(0, layout.toByteArray(new UnserializableLogEvent()).length);
+    }
+
+    private static final class UnserializableLogEvent extends AbstractLogEvent {
+        private static final long serialVersionUID = 1L;
+
+        @SuppressWarnings({"serial", "unused"})
+        private final Object unserializableField = new Object();
     }
 }
