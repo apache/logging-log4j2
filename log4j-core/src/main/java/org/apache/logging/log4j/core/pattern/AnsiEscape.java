@@ -59,6 +59,11 @@ public enum AnsiEscape {
     NORMAL("0"),
 
     /**
+     * Reset general attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    RESET("0"),
+
+    /**
      * Bright general attribute.
      *
      * @deprecated This attribute sets font-weight as "bold" and doesn't set color brightness. Use BOLD if you
@@ -73,14 +78,34 @@ public enum AnsiEscape {
     BOLD("1"),
 
     /**
+     * Bold intensity attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    INTENSITY_BOLD("1"),
+
+    /**
      * Dim general attribute.
      */
     DIM("2"),
 
     /**
+     * Faint / dim general attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    FAINT("2"),
+
+    /**
+     * Faint intensity attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    INTENSITY_FAINT("2"),
+
+    /**
+     * Italic general attribute.
+     */
+    ITALIC("3"),
+
+    /**
      * Underline general attribute.
      */
-    UNDERLINE("3"),
+    UNDERLINE("4"),
 
     /**
      * Blink general attribute.
@@ -88,14 +113,59 @@ public enum AnsiEscape {
     BLINK("5"),
 
     /**
+     * Slow blink general attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    BLINK_SLOW("5"),
+
+    /**
+     * Fast blink general attribute.
+     */
+    BLINK_FAST("6"),
+
+    /**
      * Reverse general attribute.
      */
     REVERSE("7"),
 
     /**
-     * Normal general attribute.
+     * Reverse / negative general attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    NEGATIVE_ON("7"),
+
+    /**
+     * Conceal / hidden general attribute.
      */
     HIDDEN("8"),
+
+    /**
+     * Conceal general attribute (Jansi {@code AnsiRenderer.Code} name).
+     */
+    CONCEAL_ON("8"),
+
+    /**
+     * Double underline general attribute.
+     */
+    UNDERLINE_DOUBLE("21"),
+
+    /**
+     * Turns underline off.
+     */
+    UNDERLINE_OFF("24"),
+
+    /**
+     * Turns blink off.
+     */
+    BLINK_OFF("25"),
+
+    /**
+     * Turns reverse / negative video off.
+     */
+    NEGATIVE_OFF("27"),
+
+    /**
+     * Turns conceal off.
+     */
+    CONCEAL_OFF("28"),
 
     /**
      * Black foreground color.
@@ -226,6 +296,11 @@ public enum AnsiEscape {
      * White background color.
      */
     BG_WHITE("47"),
+
+    /**
+     * Default background color.
+     */
+    BG_DEFAULT("49"),
 
     /**
      * Bright black foreground color.
