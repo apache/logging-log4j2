@@ -18,10 +18,13 @@ package org.apache.logging.log4j.core.appender.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -32,6 +35,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 class AbstractDatabaseManagerTest {
@@ -239,6 +244,84 @@ class AbstractDatabaseManagerTest {
         then(manager).should().commitAndClose();
         then(manager).should().shutdownInternal();
         then(manager).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    @UsingStatusListener
+    void testBufferedEventsAreDiscardedWhenCommitFails(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
+        final LogEvent event4 = mock(LogEvent.class);
+        final LogEvent event5 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event3.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event4.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event5.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        manager.startup();
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .when(manager)
+                .commitAndClose();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.write(event3, null);
+        manager.write(event4, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.write(event5, null);
+        manager.flush();
+
+        verify(manager, times(5)).writeInternal(any(LogEvent.class), isNull());
+        assertEquals(
+                1L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 2 buffered events"))
+                        .count());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testBufferedEventsAreDiscardedWhenConnectFails(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        manager.startup();
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        doThrow(new DbAppenderLoggingException("Failed to connect"))
+                .doNothing()
+                .when(manager)
+                .connectAndStart();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.flush();
+
+        verify(manager, times(0)).writeInternal(any(LogEvent.class), isNull());
+        assertEquals(
+                1L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 2 buffered events"))
+                        .count());
     }
 
     @Test
