@@ -49,7 +49,7 @@ When `true`, a Log4j JDBC Appender can use JNDI to retrieve a https://docs.oracl
 | Default value | `false`
 |===
 
-When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary components using the `java:` protocol.
+When `true`, a Log4j JMS Appender can use JNDI to retrieve the necessary components. The `factoryName` and `providerURL` attributes can be used to configure the JNDI provider, which may be remote. These attributes should only point to trusted providers.
 
 [id=log4j2.enableJndiLookup]
 == `log4j2.enableJndiLookup`
