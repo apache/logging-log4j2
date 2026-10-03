@@ -130,25 +130,11 @@ public class ReusableLogEventFactory implements LogEventFactory {
 
     @Override
     public void recycle(final LogEvent event) {
-        if (event instanceof ReusableLogEvent) {
-            ((ReusableLogEvent) event).clear();
-            if (event instanceof MutableLogEvent) {
-                recycler.release((MutableLogEvent) event);
+        if (event instanceof final ReusableLogEvent reusable) {
+            reusable.clear();
+            if (reusable instanceof final MutableLogEvent mutable) {
+                recycler.release(mutable);
             }
-        }
-    }
-
-    /**
-     * Switches the {@code reserved} flag off if the specified event is a MutableLogEvent, otherwise does nothing.
-     * This flag is used internally to verify that a reusable log event is no longer in use and can be reused.
-     * @param logEvent the log event to make available again
-     * @since 2.7
-     * @deprecated use {@link #recycle(LogEvent)}
-     */
-    @Deprecated(since = "3.0.0")
-    public static void release(final LogEvent logEvent) { // LOG4J2-1583
-        if (logEvent instanceof ReusableLogEvent) {
-            ((ReusableLogEvent) logEvent).clear();
         }
     }
 }
