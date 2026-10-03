@@ -14,28 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.test;
+package org.apache.logging.log4j.test.junit;
 
-import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.io.Serializable;
-import org.junit.jupiter.api.Test;
+public class SecurityManagerExtension implements BeforeEachCallback, AfterEachCallback {
+    private SecurityManager securityManagerBefore;
+    private final SecurityManager securityManager;
 
-/**
- * Subclasses tests {@link Serializable} objects.
- */
-public abstract class AbstractSerializationTest {
-
-    public AbstractSerializationTest() {}
-
-    @Test
-    public void testSerializationRoundtripEquals(Serializable serializable) {
-        assertThat(serializable, serializesRoundTrip(serializable));
+    public SecurityManagerExtension(final SecurityManager securityManager) {
+        this.securityManager = securityManager;
     }
 
-    @Test
-    public void testSerializationRoundtripNoException(Serializable serializable) {
-        assertThat(serializable, serializesRoundTrip());
+    public void beforeEach(ExtensionContext ctx) {
+        securityManagerBefore = System.getSecurityManager();
+        System.setSecurityManager(securityManager);
+    }
+
+    public void afterEach(ExtensionContext ctx) {
+        System.setSecurityManager(securityManagerBefore);
     }
 }

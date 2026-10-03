@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.security.Permission;
 import java.util.PropertyPermission;
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.SecurityManagerExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
@@ -41,8 +41,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @ResourceLock("java.lang.SecurityManager")
 public class SystemPropertiesPropertySourceSecurityManagerIT {
 
-    @Rule
-    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+    @RegisterExtension
+    public final SecurityManagerExtension ext = new SecurityManagerExtension(new TestSecurityManager());
 
     /**
      * Always throws a SecurityException for any environment variables permission
