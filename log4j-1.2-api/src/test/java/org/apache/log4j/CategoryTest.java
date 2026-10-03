@@ -16,6 +16,7 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -27,11 +28,14 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.NullAppender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -42,6 +46,7 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
@@ -52,6 +57,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests of Category.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class CategoryTest {
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
@@ -407,6 +413,72 @@ class CategoryTest {
         } finally {
             LogManager.resetConfiguration();
         }
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testSetLevelCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        final Level initialLevel = category.getEffectiveLevel();
+        category.setLevel(Level.FATAL);
+        assertEquals(initialLevel, category.getEffectiveLevel(), "level should be unchanged when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testSetAdditivityCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        final boolean initialAdditivity = category.getAdditivity();
+        category.setAdditivity(!initialAdditivity);
+        assertEquals(
+                initialAdditivity,
+                category.getAdditivity(),
+                "additivity should be unchanged when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testAddAppenderCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        category.addAppender(new NullAppender());
+        assertFalse(
+                category.getAllAppenders().hasMoreElements(), "no appenders should be added when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testSetPriorityCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        final Priority initialPriority = category.getPriority();
+        category.setPriority(Level.FATAL);
+        assertEquals(initialPriority, category.getPriority(), "priority should be unchanged when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testSetResourceBundleCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        final ResourceBundle bundle = ResourceBundle.getBundle("L7D", new Locale("en", "US"));
+        category.setResourceBundle(bundle);
+        assertNull(category.getResourceBundle(), "resource bundle should not be set when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testRemoveAppenderCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        assertDoesNotThrow(
+                () -> category.removeAppender("TestAppender"),
+                "removeAppender should be a no-op and not throw exceptions when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testRemoveAllAppendersCompatibilityDisabled() {
+        final Category category = Category.getInstance("TestCategory");
+        assertDoesNotThrow(
+                category::removeAllAppenders,
+                "removeAllAppenders should be a no-op and not throw exceptions when compatibility is off");
     }
 
     /**
