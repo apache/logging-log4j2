@@ -289,7 +289,7 @@ class XmlConfigurationConstructHierarchyTest {
         givenPlugin("Console");
         // `nested.xml` (an `<Appenders>` fragment) is included by absolute URI and itself includes `included.xml`
         // (a `<Console>`) by a relative href.
-        final String document = "<Configuration xmlns:xi=\"http://www.w3.org/2001/XInclude\">" + "<xi:include href=\""
+        final String document = "<Configuration xmlns:xi=\"http://www.w3.org/2001/XInclude\"><xi:include href=\""
                 + NESTED_URI + "\"/></Configuration>";
         final Element element = parse(document, true);
 
