@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.internal.Maps;
 
 /**
  * A lookup designed for {@code Properties} defined in the configuration. This is similar
@@ -102,7 +102,7 @@ public final class PropertiesLookup implements StrLookup {
         // The raw property values must be used without the substitution handled by the plugin framework
         // which calls this method, otherwise we risk re-interpolating through unexpected data.
         // The PropertiesLookup is unique in that results from this lookup support recursive evaluation.
-        final Map<String, ConfigurationPropertyResult> result = new HashMap<>(props.length);
+        final Map<String, ConfigurationPropertyResult> result = Maps.newHashMap(props.length);
         for (Property property : props) {
             result.put(property.getName(), new ConfigurationPropertyResult(property.getRawValue()));
         }

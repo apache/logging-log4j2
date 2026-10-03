@@ -19,9 +19,10 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.util.internal.Maps;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
@@ -150,7 +151,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
 
     @Override
     public Map<String, String> toMap() {
-        final Map<String, String> result = new HashMap<>(size());
+        final Map<String, String> result = Maps.newHashMap(size());
         for (int i = 0; i < size(); i++) {
             final Object value = getValueAt(i);
             result.put(getKeyAt(i), value == null ? null : String.valueOf(value));

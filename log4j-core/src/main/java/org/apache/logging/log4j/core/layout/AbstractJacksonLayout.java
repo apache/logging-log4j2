@@ -27,7 +27,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -42,6 +41,7 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -356,7 +356,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     private Map<String, String> resolveAdditionalFields(final LogEvent logEvent) {
         // Note: LinkedHashMap retains order
-        final Map<String, String> additionalFieldsMap = new LinkedHashMap<>(additionalFields.length);
+        final Map<String, String> additionalFieldsMap = Maps.newLinkedHashMap(additionalFields.length);
         final StrSubstitutor strSubstitutor = configuration.getStrSubstitutor();
 
         // Go over each field

@@ -22,8 +22,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.util.internal.Maps;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.message.ThreadInformation;
 
@@ -51,7 +52,7 @@ public class ExtendedThreadInfoFactory implements ThreadInfoFactory {
         final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
         final ThreadInfo[] array = bean.dumpAllThreads(true, true);
 
-        final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(array.length);
+        final Map<ThreadInformation, StackTraceElement[]> threads = Maps.newHashMap(array.length);
         for (final ThreadInfo info : array) {
             threads.put(new ExtendedThreadInformation(info), info.getStackTrace());
         }
