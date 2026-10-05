@@ -167,6 +167,20 @@ public class ConsoleAppenderTest {
     }
 
     @Test
+    public void testUnbufferedIoForcesImmediateFlush() {
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                .setName("testUnbufferedIoForcesImmediateFlush")
+                .setBufferedIo(false)
+                .setImmediateFlush(false)
+                .build();
+        try {
+            assertTrue(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
     public void testDifferentBufferSizesUseDifferentManagers() {
         final ConsoleAppender app1 = ConsoleAppender.newBuilder()
                 .setName("testBufferSizeManager1")
