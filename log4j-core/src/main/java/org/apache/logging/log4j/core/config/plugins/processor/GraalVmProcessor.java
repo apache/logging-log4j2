@@ -84,7 +84,8 @@ public class GraalVmProcessor extends AbstractProcessor {
     private final Map<String, ReachabilityMetadata.Type> reachableTypes = new HashMap<>();
     private final List<Element> processedElements = new ArrayList<>();
     private Annotations annotationUtil;
-    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+    private static final Diagnostic.Kind DEFAULT_MIN_ALLOWED_MESSAGE_KIND = Diagnostic.Kind.ERROR;
+    private Diagnostic.Kind minAllowedMessageKind = DEFAULT_MIN_ALLOWED_MESSAGE_KIND;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -95,15 +96,21 @@ public class GraalVmProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
-                printMessage(
-                        Diagnostic.Kind.WARNING,
-                        String.format(
-                                "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
-                                GraalVmProcessor.class.getName(),
-                                kindValue,
-                                PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                Diagnostic.Kind.NOTE,
-                                Arrays.toString(Diagnostic.Kind.values())));
+                // We should not use `GraalVmProcessor::printMessage`, since we
+                // report a failure on the user-provided `Diagnostic.Kind` that
+                // `GraalVmProcessor::printMessage` depends on.
+                processingEnv
+                        .getMessager()
+                        .printMessage(
+                                Diagnostic.Kind.WARNING,
+                                String.format(
+                                        "%s%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        MESSAGE_PREFIX,
+                                        GraalVmProcessor.class.getName(),
+                                        kindValue,
+                                        PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION,
+                                        DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
+                                        Arrays.toString(Diagnostic.Kind.values())));
             }
         }
     }

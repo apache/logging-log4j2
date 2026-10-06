@@ -801,6 +801,23 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setParents();
     }
 
+    /**
+     * Invoked by a {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration} after it has
+     * configured the merged node tree, to let this contributing configuration add programmatic elements
+     * (appenders, loggers, filters) to the effective {@code target} configuration.
+     * <p>
+     * A {@code CompositeConfiguration} merges the child configurations at the node level and runs its own
+     * {@link #doConfigure()} on the merged tree; it never calls a child's {@code doConfigure()}. As a result any
+     * element a custom {@code Configuration} adds programmatically in its {@code doConfigure()} override is lost
+     * under a composite configuration, on both the initial build and every reconfiguration. Such a
+     * configuration overrides this method to re-apply those elements to {@code target}. The default is a no-op.
+     * </p>
+     *
+     * @param target the effective (composite) configuration to contribute to
+     * @since 2.27.0
+     */
+    public void postConfigure(final Configuration target) {}
+
     public static Level getDefaultLevel() {
         final String levelName = PropertiesUtil.getProperties()
                 .getStringProperty(DefaultConfiguration.DEFAULT_LEVEL, Level.ERROR.name());

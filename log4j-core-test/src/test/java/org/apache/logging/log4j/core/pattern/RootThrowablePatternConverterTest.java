@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.Issue;
 
 /**
  * {@link RootThrowablePatternConverter} tests.
@@ -46,6 +48,17 @@ class RootThrowablePatternConverterTest {
 
         PropertyTest() {
             super("%rEx", THROWING_METHOD);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"short.className", "short.methodName", "short.lineNumber", "short.fileName"})
+        @Issue("https://github.com/apache/logging-log4j2/issues/4334")
+        void short_properties_should_not_fail_when_root_cause_has_empty_stack_trace(final String propertyName) {
+            final RuntimeException rootCause = new RuntimeException("root");
+            rootCause.setStackTrace(new StackTraceElement[0]);
+            final RuntimeException wrapper = new RuntimeException("wrapper", rootCause);
+            final String output = convert("%rEx{" + propertyName + "}", wrapper);
+            assertThat(output).isEmpty();
         }
     }
 

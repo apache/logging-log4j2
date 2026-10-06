@@ -35,6 +35,7 @@ final class ThrowableInvertedPropertyRendererFactory extends ThrowablePropertyRe
     @Nullable
     private static StackTraceElement extractThrowingMethod(final Throwable throwable) {
         final Throwable rootThrowable = Throwables.getRootCause(throwable);
-        return rootThrowable.getStackTrace()[0];
+        @Nullable final StackTraceElement[] stackTraceElements = rootThrowable.getStackTrace();
+        return (stackTraceElements != null && stackTraceElements.length > 0) ? stackTraceElements[0] : null;
     }
 }

@@ -145,7 +145,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final StackTraceElement location,
             final Message message,
             final Throwable throwable) {
-        getTranslatorType().log(fqcn, location, level, marker, message, throwable);
+        final StackTraceElement resolvedLocation = location != null ? location : calcLocationIfRequested(fqcn);
+        getTranslatorType().log(fqcn, resolvedLocation, level, marker, message, throwable);
     }
 
     abstract static class TranslatorType {
@@ -238,6 +239,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, level, marker, message, thrown);
+        initTranslatorThreadValues(translator);
         publish(translator);
     }
 
@@ -265,6 +267,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, location, level, marker, message, thrown);
+        initTranslatorThreadValues(translator);
         publish(translator);
     }
 
@@ -354,6 +357,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 CLOCK, //
                 nanoClock //
                 );
+    }
+
+    private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
+        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
+            translator.updateThreadValues();
+        }
     }
 
     /**

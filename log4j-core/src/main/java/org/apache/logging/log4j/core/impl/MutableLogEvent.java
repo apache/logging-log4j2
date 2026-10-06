@@ -42,7 +42,6 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Mutable implementation of the {@code LogEvent} interface.
@@ -535,7 +534,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        SerializationUtil.assertFiltered(stream);
         throw new InvalidObjectException("Proxy required");
     }
 
