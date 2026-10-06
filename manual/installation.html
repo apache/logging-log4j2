@@ -82,9 +82,6 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../thanks.html">Thanks</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -120,7 +117,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
@@ -606,13 +603,13 @@ Refer to <a href="#impl-core">Installing Log4j Core</a> for the installation ins
 <dt class="hdlist1"><code>log4j-to-jul</code></dt>
 <dd>
 <p>The bridge that translates Log4j API calls to <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>.
-See <a href="#impl-jul">Installing JUL</a> for the installation instructions.</p>
+See <a href="#impl-jul">[impl-jul]</a> for the installation instructions.</p>
 </dd>
 <dt class="hdlist1"><code>log4j-to-slf4j</code></dt>
 <dd>
 <p>The bridge that translates Log4j API calls to <a href="https://www.slf4j.org">SLF4J</a>.
 Since currently only
-<a href="https://logback.qos.ch">Logback</a> implements SLF4J natively, refer to <a href="#impl-logback">Installing Logback</a> for the installation instructions.</p>
+<a href="https://logback.qos.ch">Logback</a> implements SLF4J natively, refer to <a href="#impl-logback">[impl-logback]</a> for the installation instructions.</p>
 </dd>
 </dl>
 </div>
@@ -1184,21 +1181,21 @@ Loggers.Root.AppenderRef.ref = CONSOLE</code></pre>
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_12_log4j2_xml" class="tab">
-<p>log4j2.xml</p>
+<li id="_tabs_12_xml" class="tab">
+<p>XML</p>
 </li>
-<li id="_tabs_12_log4j2_json" class="tab">
-<p>log4j2.json</p>
+<li id="_tabs_12_json" class="tab">
+<p>JSON</p>
 </li>
-<li id="_tabs_12_log4j2_yaml" class="tab">
-<p>log4j2.yaml</p>
+<li id="_tabs_12_yaml" class="tab">
+<p>YAML</p>
 </li>
-<li id="_tabs_12_log4j2_properties" class="tab">
-<p>log4j2.properties</p>
+<li id="_tabs_12_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_12_log4j2_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_xml">
+<div id="_tabs_12_xml--panel" class="tabpanel" aria-labelledby="_tabs_12_xml">
 <div class="paragraph">
 <p>JPMS users need to add:</p>
 </div>
@@ -1213,12 +1210,12 @@ Loggers.Root.AppenderRef.ref = CONSOLE</code></pre>
 <p>to their <code>module-info.java</code> descriptor.</p>
 </div>
 </div>
-<div id="_tabs_12_log4j2_json--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_json">
+<div id="_tabs_12_json--panel" class="tabpanel" aria-labelledby="_tabs_12_json">
 <div class="paragraph">
 <p>No dependency required.</p>
 </div>
 </div>
-<div id="_tabs_12_log4j2_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_yaml">
+<div id="_tabs_12_yaml--panel" class="tabpanel" aria-labelledby="_tabs_12_yaml">
 <div id="_tabs_13" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
@@ -1258,7 +1255,7 @@ Loggers.Root.AppenderRef.ref = CONSOLE</code></pre>
 </div>
 </div>
 </div>
-<div id="_tabs_12_log4j2_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_log4j2_properties">
+<div id="_tabs_12_properties--panel" class="tabpanel" aria-labelledby="_tabs_12_properties">
 <div id="_tabs_14" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
@@ -1300,42 +1297,90 @@ Loggers.Root.AppenderRef.ref = CONSOLE</code></pre>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="impl-jul"><a class="anchor" href="#impl-jul"></a>Installing JUL</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Are you using <a href="https://github.com/jboss-logging/jboss-logmanager">JBoss Log Manager</a> as your JUL implementation?
-You can skip this section and use the <a href="https://github.com/jboss-logging/log4j2-jboss-logmanager"><code>log4j2-jboss-logmanager</code></a> and <a href="https://github.com/jboss-logging/slf4j-jboss-logmanager"><code>slf4j-jboss-logmanager</code></a> bridges from the JBoss Logging project instead.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Java Platform contains a very simple logging API and its implementation called <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>.
-Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:</p>
-</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Gradle</dt>
+<dd>
 <div id="_tabs_15" class="openblock tabs is-sync is-loading">
 <div class="content">
 <div class="ulist tablist">
 <ul>
-<li id="_tabs_15_maven" class="tab">
-<p>Maven</p>
+<li id="_tabs_15_xml" class="tab">
+<p>XML</p>
 </li>
-<li id="_tabs_15_gradle" class="tab">
-<p>Gradle</p>
+<li id="_tabs_15_json" class="tab">
+<p>JSON</p>
+</li>
+<li id="_tabs_15_yaml" class="tab">
+<p>YAML</p>
+</li>
+<li id="_tabs_15_properties" class="tab">
+<p>Properties</p>
 </li>
 </ul>
 </div>
-<div id="_tabs_15_maven--panel" class="tabpanel" aria-labelledby="_tabs_15_maven">
+<div id="_tabs_15_xml--panel" class="tabpanel" aria-labelledby="_tabs_15_xml">
+<div class="paragraph">
+<p>JPMS users need to add:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">module foo.bar {
+    requires java.xml;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to their <code>module-info.java</code> descriptor.</p>
+</div>
+</div>
+<div id="_tabs_15_json--panel" class="tabpanel" aria-labelledby="_tabs_15_json">
+<div class="paragraph">
+<p>No dependency required.</p>
+</div>
+</div>
+<div id="_tabs_15_yaml--panel" class="tabpanel" aria-labelledby="_tabs_15_yaml">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-yaml'</code></pre>
+</div>
+</div>
+</div>
+<div id="_tabs_15_properties--panel" class="tabpanel" aria-labelledby="_tabs_15_properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">runtimeOnly 'org.apache.logging.log4j:log4j-config-properties'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div id="impl-jul" class="paragraph">
+<p>=== Installing JUL</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Are you using <a href="https://github.com/jboss-logging/jboss-logmanager">JBoss Log Manager</a> as your JUL implementation?
+You can skip this section and use the <a href="https://github.com/jboss-logging/log4j2-jboss-logmanager"><code>log4j2-jboss-logmanager</code></a> and <a href="https://github.com/jboss-logging/slf4j-jboss-logmanager"><code>slf4j-jboss-logmanager</code></a> bridges from the JBoss Logging project instead.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>Java Platform contains a very simple logging API and its implementation called <a href="https://docs.oracle.com/en/java/javase/17/core/java-logging-overview.html">JUL (Java Logging)</a>.
+Since it is embedded in the platform, it only requires the addition of bridges from Log4j API and SLF4J:</p>
+</div>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Maven</dt>
+<dd>
 <div class="paragraph">
 <p>We assume you use <a href="../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1363,8 +1408,9 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-</div>
-<div id="_tabs_15_gradle--panel" class="tabpanel" aria-labelledby="_tabs_15_gradle">
+</dd>
+<dt class="hdlist1">Gradle</dt>
+<dd>
 <div class="paragraph">
 <p>We assume you use <a href="../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1374,31 +1420,26 @@ Since it is embedded in the platform, it only requires the addition of bridges f
 runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.18' // SLF4J-to-JUL bridge</code></pre>
 </div>
 </div>
+</dd>
+</dl>
 </div>
-</div>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="paragraph">
 <p>To configure JUL, see <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.logging/java/util/logging/LogManager.html"><code>java.util.logging.LogManager</code></a>.</p>
 </div>
+<div id="impl-logback" class="paragraph">
+<p>=== Installing Logback</p>
 </div>
-<div class="sect2">
-<h3 id="impl-logback"><a class="anchor" href="#impl-logback"></a>Installing Logback</h3>
 <div class="paragraph">
 <p>To install <a href="https://logback.qos.ch">Logback</a> as the logging implementation, you only need to add a Log4j-to-SLF4J bridge:</p>
 </div>
-<div id="_tabs_16" class="openblock tabs is-sync is-loading">
-<div class="content">
-<div class="ulist tablist">
-<ul>
-<li id="_tabs_16_maven" class="tab">
-<p>Maven</p>
-</li>
-<li id="_tabs_16_gradle" class="tab">
-<p>Gradle</p>
-</li>
-</ul>
 </div>
-<div id="_tabs_16_maven--panel" class="tabpanel" aria-labelledby="_tabs_16_maven">
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Maven</dt>
+<dd>
 <div class="paragraph">
 <p>We assume you use <a href="../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1424,8 +1465,9 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.18' // SLF4J-to-JUL bridge</code></pre>
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-</div>
-<div id="_tabs_16_gradle--panel" class="tabpanel" aria-labelledby="_tabs_16_gradle">
+</dd>
+<dt class="hdlist1">Gradle</dt>
+<dd>
 <div class="paragraph">
 <p>We assume you use <a href="../components.html#log4j-bom" class="xref page"><code>log4j-bom</code></a> for dependency management.</p>
 </div>
@@ -1435,11 +1477,16 @@ runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.18' // SLF4J-to-JUL bridge</code></pre>
 runtimeOnly 'org.apache.logging.log4j:log4j-to-slf4j' // Log4j-to-SLF4J bridge</code></pre>
 </div>
 </div>
+</dd>
+</dl>
 </div>
-</div>
-</div>
+<div class="exampleblock">
+<div class="content">
 <div class="paragraph">
 <p>To configure Logback, see <a href="https://logback.qos.ch/manual/configuration.html">Logback&#8217;s configuration documentation</a>.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>

@@ -82,9 +82,6 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../thanks.html">Thanks</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -120,7 +117,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
@@ -410,7 +407,7 @@ delivered so this method should not be used if a highly available solution is re
 <div class="paragraph">
 <p>While this is not the recommended 12-Factor approach, it performs very well.
 However, it requires that the  application declares a volume where the log files will reside and then configures the log forwarder to tail  those files.
-Care must also be taken to automatically manage the disk space used for the logs, which Log4j  can perform via the "Delete" action on the <a href="appenders.html#RollingFileAppender" class="xref page">RollingFileAppender</a>.</p>
+Care must also be taken to automatically manage the disk space used for the logs, which Log4j  can perform via the "Delete" action on the <a href="appenders/rolling-file.html#RollingFileAppender" class="xref page">RollingFileAppender</a>.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="../_images/DockerLogFile.png" alt="File" width="Logging to a File"></span></p>
@@ -431,7 +428,7 @@ Care must also be taken to automatically manage the disk space used for the logs
 <p>Similar to sending logs to a forwarder, logs can also be sent to a cluster of aggregators.
 However, setting this up is not as simple since, to be highly available, a cluster of aggregators must be used.
 However, the SocketAppender currently can only be configured with a single host and port.
-To allow  for failover if the primary aggregator fails the SocketAppender must be enclosed in a  <a href="appenders.html#FailoverAppender" class="xref page">FailoverAppender</a>, which would also have the secondary aggregator configured.
+To allow  for failover if the primary aggregator fails the SocketAppender must be enclosed in a  <a href="appenders/delegating.html#FailoverAppender" class="xref page">FailoverAppender</a>, which would also have the secondary aggregator configured.
 Another option is to have the SocketAppender  point to a highly available proxy that can forward to the Log Aggregator.</p>
 </div>
 <div class="paragraph">

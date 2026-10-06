@@ -82,9 +82,6 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="thanks.html">Thanks</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -120,7 +117,7 @@
     <a class="nav-link" href="manual/systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="manual/customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="manual/customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
@@ -573,9 +570,7 @@ java.lang.RuntimeException: Message
 <p>As a temporary solution, the SLF4J-to-Log4j API bridges contain a special
 <a href="https://logging.apache.org/log4j/2.x/manual/api.html#logger-message-factories"><code>MessageFactory</code></a>
 that classifies trailing <code>Throwable</code> arguments in the same way Logback does.
-To use it, you need to set the
-<a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.messageFactory"><code>log4j2.messageFactory</code></a>
-configuration property to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>.</p>
+To use it, you need to set the <a href="manual/systemproperties.html#log4j.message.factory" class="xref page"><code>log4j.message.factory</code></a> configuration property to <code>org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory</code>.</p>
 </div>
 </td>
 </tr>

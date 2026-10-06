@@ -82,9 +82,6 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../thanks.html">Thanks</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -120,7 +117,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
@@ -306,6 +303,8 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>An <a href="appenders.html" class="xref page">appender</a> uses a <strong>layout</strong> to encode a <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/LogEvent.html"><code>LogEvent</code></a> into a form that meets the needs of whatever will be consuming the log event.
+Layouts can encode this data into a <code>String</code>, a <code>byte[]</code>, or to a <code>ByteBufferDestination</code>.
+Layouts used to support encoding data into an arbitrary <code>java.io.Serializable</code> classes in Log4j 2.x, but due to security concerns, this is no longer directly supported by layouts in Log4j 3.0.
 This page will try to answer following questions:</p>
 </div>
 <div class="ulist">
@@ -1187,13 +1186,13 @@ If this is the case, we really appreciate it if you can <strong>share your use c
 <h3 id="extending-plugins"><a class="anchor" href="#extending-plugins"></a>Plugin preliminaries</h3>
 <div class="paragraph">
 <p>Log4j plugin system is the de facto extension mechanism embraced by various Log4j components.
-Plugins make it possible for extensible components to <em>receive</em> feature implementations without any explicit links in between.
+Plugins provide extension points to components, that can be used to implement new features, without modifying the original component.
 It is analogous to a <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> framework, but curated for Log4j-specific needs.</p>
 </div>
 <div class="paragraph">
-<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.
+<p>In a nutshell, you annotate your classes with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Plugin.html"><code>@Plugin</code></a> and their (<code>static</code>) factory methods with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Factory.html"><code>@Factory</code></a>.
 Last, you inform the Log4j plugin system to discover these custom classes.
-This is done using running the <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
+This is done using running the <a href="../javadoc/log4j-plugin-processor/org/apache/logging/log4j/plugin/processor/PluginProcessor.html"><code>PluginProcessor</code></a> annotation processor while building your project.
 Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
 </div>
 </div>
@@ -1201,8 +1200,18 @@ Refer to <a href="plugins.html" class="xref page">Plugins</a> for details.</p>
 <h3 id="extending-layouts"><a class="anchor" href="#extending-layouts"></a>Extending layouts</h3>
 <div class="paragraph">
 <p>Layouts are <a href="plugins.html" class="xref page">plugins</a> implementing <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/Layout.html">the <code>Layout</code> interface</a>.
-If your layout is a <code>String</code>-based one, we recommend you to extend your plugin class from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html"><code>AbstractStringLayout</code></a>, which contains convenience for some of the boilerplate code shared by <code>String</code>-based layouts.
-You can check out following files for examples:</p>
+It is recommended you extend from <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/layout/AbstractStringLayout.html"><code>AbstractStringLayout</code></a>.
+While annotating your layout with <code>@Plugin</code> and <code>@Configurable</code>, you need to make sure that</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The plugin name in <code>@Plugin::value</code> or the simple class name of the plugin if no custom name is given must be unique across all available <code>Layout</code> plugins.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can check out following files for examples:</p>
 </div>
 <div class="ulist">
 <ul>

@@ -82,9 +82,6 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="https://logging.apache.org/security.html">Security</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../thanks.html">Thanks</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -120,7 +117,7 @@
     <a class="nav-link" href="systemproperties.html">Configuration properties</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="customconfig.html">Programmatic Configuration</a>
+    <a class="nav-link" href="customconfig.html">Programmatic configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
@@ -314,21 +311,21 @@ Instance factories may be customized through post-processor service classes whic
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <code>org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory</code> runtime keeps a registry of bindings between <code>Key&lt;T&gt;</code> and <code>Supplier&lt;T&gt;</code>, where <code>org.apache.logging.log4j.plugins.di.Key&lt;T&gt;</code> describes an instance type <code>T</code>, optional qualifier annotation type, and optional name plus namespace, and  <code>java.util.function.Supplier&lt;T&gt;</code> defines a factory for obtaining instances of <code>T</code> matching the corresponding <code>Key&lt;T&gt;</code>.
-To obtain a factory for a given key, if a binding is not already registered for said key, then the raw class of the key (i.e., the <code>Class&lt;T&gt;</code> instance from <code>Key&lt;T&gt;</code>) is checked for a single constructor annotated with <code>@org.apache.logging.log4j.plugins.Inject</code> or a no-arg constructor if no <code>@Inject</code> constructor is present.
+<p>The <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/ConfigurableInstanceFactory.html"><code>ConfigurableInstanceFactory</code></a> runtime keeps a registry of bindings between <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/Key.html"><code>Key&lt;T&gt;</code></a> and <code>Supplier&lt;T&gt;</code>, where <code>Key&lt;T&gt;</code> describes an instance type <code>T</code>, optional qualifier annotation type, and optional name plus namespace, and  <code>java.util.function.Supplier&lt;T&gt;</code> defines a factory for obtaining instances of <code>T</code> matching the corresponding <code>Key&lt;T&gt;</code>.
+To obtain a factory for a given key, if a binding is not already registered for said key, then the raw class of the key (i.e., the <code>Class&lt;T&gt;</code> instance from <code>Key&lt;T&gt;</code>) is checked for a single constructor annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Inject.html"><code>@Inject</code></a> or a no-arg constructor if no <code>@Inject</code> constructor is present.
 The injectable constructor is invoked with arguments which are obtained by looking up factories matching the <code>Key&lt;?&gt;</code> of each constructor parameter.
-Then, fields that are annotated with <code>@Inject</code> or annotated with an annotation that is itself annotated with <code>@QualifierType</code> (i.e., a <em>qualifier annotation</em>) are injected from factories matching the <code>Key&lt;?&gt;</code> of the field.
+Then, fields that are annotated with <code>@Inject</code> or annotated with an annotation that is itself annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/QualifierType.html"><code>@QualifierType</code></a> (i.e., a <em>qualifier annotation</em>) are injected from factories matching the <code>Key&lt;?&gt;</code> of the field.
 Next, methods that are annotated with <code>@Inject</code> or have a parameter annotated with a qualifier annotation are invoked using factories matching the <code>Key&lt;?&gt;</code> of each parameter.
 Lastly, no-arg methods annotated with <code>@Inject</code> are invoked which can be useful for post-injection initialization logic.
 Additional strategies for resolving factories for unbound keys may be registered which are consulted first before falling back to this <code>@Inject</code> reflection logic.</p>
 </div>
 <div class="paragraph">
-<p>Bindings may be registered using <code>ConfigurableInstanceFactory::registerBinding</code> or <code>ConfigurableInstanceFactory::registerBindingIfAbsent</code> using explicit <code>Binding&lt;T&gt;</code> instances, or they may be registered using <code>ConfigurableInstanceFactory::registerBundle</code> as <em>bundles</em> which are instances or injectable <code>Class&lt;T&gt;</code> instances that contain one or more annotated factory methods.
-Annotated factory methods are non-abstract methods annotated with an annotation that is itself annotated with <code>@org.apache.logging.log4j.plugins.FactoryType</code>.
-Built-in factory annotations include <code>@org.apache.logging.log4j.plugins.Factory</code> and <code>@org.apache.logging.log4j.plugins.PluginFactory</code>.</p>
+<p>Bindings may be registered using <code>ConfigurableInstanceFactory::registerBinding</code> or <code>ConfigurableInstanceFactory::registerBindingIfAbsent</code> using explicit <code>Key&lt;T&gt;</code> and <code>Supplier&lt;T&gt;</code> pairs, or they may be registered using <code>ConfigurableInstanceFactory::registerBundle</code> as <em>bundles</em> which are instances or injectable <code>Class&lt;T&gt;</code> instances that contain one or more annotated factory methods.
+Annotated factory methods are non-abstract methods annotated with an annotation that is itself annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/FactoryType.html"><code>@FactoryType</code></a>.
+Built-in factory annotations include <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Factory.html"><code>@Factory</code></a> and <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/PluginFactory.html"><code>@PluginFactory</code></a>.</p>
 </div>
 <div class="paragraph">
-<p><code>ConfigurableInstanceFactory</code> can create <code>@Configurable</code> namespace plugins from a tree of <code>org.apache.logging.log4j.plugins.Node</code> instances using <code>org.apache.logging.log4j.core.config.ConfigurationProcessor</code>.
+<p><code>ConfigurableInstanceFactory</code> can create <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Configurable"><code>@Configurable</code></a> namespace plugins from a tree of <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Node.html"><code>Node</code></a> instances using <a href="../javadoc/log4j-core/org/apache/logging/log4j/core/config/ConfigurationProcessor.html"><code>ConfigurationProcessor</code></a>.
 This allows for node attributes and child nodes to be injected into a plugin class along with any other registered bindings.
 To configure a <code>Node</code>, its plugin class is checked for a static method annotated with a factory annotation (such as <code>@PluginFactory</code> or <code>@Factory</code>) first before falling back to checking for an <code>@Inject</code> constructor or a no-args constructor.
 This static factory method or constructor has its parameters injected.
@@ -347,8 +344,8 @@ An <code>ConfigurableInstanceFactory</code> can be obtained via <code>LoggerCont
 <em>Injectable fields</em> are fields annotated with <code>@Inject</code> or a qualifier annotation.
 <em>Injectable methods</em> are methods annotated with <code>@Inject</code> or are not annotated with a factory annotation and have at least one parameter annotated with a qualifier annotation.
 <em>Injectable constructors</em> are constructors annotated with <code>@Inject</code>; only one such constructor should exist per class.
-When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with <code>@org.apache.logging.log4j.plugins.name.NameProvider</code>), then the provided name or name of the field or parameter are included in the <code>Key&lt;T&gt;</code> for the injection point.
-When these elements are annotated with a <code>@Namespace</code> annotation or meta-annotation, then that namespace name is included in the <code>Key&lt;T&gt;</code> for the injection point.
+When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/name/NameProvider.html"><code>@NameProvider</code></a>), then the provided name or name of the field or parameter are included in the <code>Key&lt;T&gt;</code> for the injection point.
+When these elements are annotated with a <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Namespace.html"><code>@Namespace</code></a> annotation or meta-annotation, then that namespace name is included in the <code>Key&lt;T&gt;</code> for the injection point.
 Similarly, when a field or parameter is annotated with a qualifier annotation, then that qualifier annotation type is included in the <code>Key&lt;T&gt;</code> for the injection point.</p>
 </div>
 <div class="paragraph">
@@ -356,7 +353,9 @@ Similarly, when a field or parameter is annotated with a qualifier annotation, t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class ExampleBean {
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.apache.logging.log4j.plugins.Inject;
+
+class ExampleBean {
     @Override
     public String toString() {
         return "ExampleBean";
@@ -406,21 +405,21 @@ class MethodInjection {
 <div class="sect2">
 <h3 id="_names_and_qualifiers"><a class="anchor" href="#_names_and_qualifiers"></a>Names and Qualifiers</h3>
 <div class="paragraph">
-<p>Qualifiers are annotations that are annotated with <code>@org.apache.logging.log4j.plugins.QualifierType</code>.
+<p>Qualifiers are annotations that are annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/QualifierType.html"><code>@QualifierType</code></a>.
 Qualifiers provide a way to match dependencies and factories based on more than just their type.
-For example, the <code>@org.apache.logging.log4j.plugins.Named</code> qualifier allows for creating different bindings of the same type with different names (along with support for aliases).
+For example, the <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Named.html"><code>@Named</code></a> qualifier allows for creating different bindings of the same type with different names (along with support for aliases).
 Qualifiers on an injection point request a binding with that qualifier type and name.
 Qualifiers on a factory method register a binding with that qualifier type and name.
-The name for a qualifier is provided via an <code>org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider</code> strategy class given in the <code>@NameProvider</code> annotation declared on the qualifier annotation.
-Aliases are likewise provided via an <code>org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider</code> strategy class given in the <code>@AliasesProvider</code> annotated declared on the qualifier annotation.</p>
+The name for a qualifier is provided via an <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/name/AnnotatedElementNameProvider.html"><code>AnnotatedElementNameProvider</code></a> strategy class given in the <code>@NameProvider</code> annotation declared on the qualifier annotation.
+Aliases are likewise provided via an <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/name/AnnotatedElementAliasesProvider.html"><code>AnnotatedElementAliasesProvider</code></a> strategy class given in the <code>@AliasesProvider</code> annotated declared on the qualifier annotation.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_scopes"><a class="anchor" href="#_scopes"></a>Scopes</h3>
 <div class="paragraph">
 <p>Scopes control the lifecycle of instances returned from a factory.
-Scopes correspond to an annotation that is annotated with <code>@org.apache.logging.log4j.plugins.ScopeType</code>.
-By default, <code>@org.apache.logging.log4j.plugins.Singleton</code> and the default scope are supported.
+Scopes correspond to an annotation that is annotated with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/ScopeType.html"><code>@ScopeType</code></a>.
+By default, <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Singleton.html"><code>@Singleton</code></a> and the default scope are supported.
 The <code>@Singleton</code> scope ensures that only a single instance is returned from factories bound in that scope.
 The default scope returns a new instance every time.
 Additional scopes may be registered via <code>ConfigurableInstanceFactory::registerScope</code>.</p>
@@ -432,24 +431,27 @@ Additional scopes may be registered via <code>ConfigurableInstanceFactory::regis
 <h2 id="_injector_callbacks"><a class="anchor" href="#_injector_callbacks"></a>Injector Callbacks</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>An <code>ConfigurableInstanceFactory</code> may be initialized with <code>org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor</code> service classes.
+<p>An <code>ConfigurableInstanceFactory</code> may be initialized with <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/di/spi/ConfigurableInstanceFactoryPostProcessor.html"><code>ConfigurableInstanceFactoryPostProcessor</code></a> service classes.
 These service classes must be declared in their respective <code>module-info.java</code> files containing <code>provides org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor with my.fully.qualified.ClassName;</code> and should also be declared in a file named <code>META-INF/services/org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor</code> containing the line <code>my.fully.qualified.ClassName</code> for traditional classpath usage.
-Post-processor services are invoked in the order defined by the <code>@Order</code> annotation on the class.
+Post-processor services are invoked in the order defined by the <a href="../javadoc/log4j-plugins/org/apache/logging/log4j/plugins/Ordered.html"><code>@Ordered</code></a> annotation on the class.
 Each post-processor is given the <code>ConfigurableInstanceFactory</code> being initialized where it can be introspected and modified.</p>
 </div>
 <div class="sect2">
 <h3 id="_configurable_bindings"><a class="anchor" href="#_configurable_bindings"></a>Configurable Bindings</h3>
 <div class="paragraph">
-<p>The default callback sets up bindings for the following keys if none have been registered.
-Some of these bindings were previously configured through various system properties which are supported via the default callback and its default bindings, though they can be directly registered via custom callbacks with a negative order value.</p>
+<p>Log4j sets up <a href="https://github.com/apache/logging-log4j2/tree/main/log4j-core/src/main/java/org/apache/logging/log4j/core/impl/CoreDefaultBundle.java"><code>CoreDefaultBundle</code></a> containing default bindings for the following types if none are already registered.
+More details can be found in the <a href="extending.html" class="xref page">extending Log4j manual</a>.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>org.apache.logging.log4j.core.ContextDataInjector</code></p>
+<p><code>org.apache.logging.log4j.core.async.AsyncQueueFullPolicy</code></p>
 </li>
 <li>
 <p><code>org.apache.logging.log4j.core.config.ConfigurationFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.config.URIConfigurationFactory</code></p>
 </li>
 <li>
 <p><code>org.apache.logging.log4j.core.config.composite.MergeStrategy</code></p>
@@ -458,7 +460,13 @@ Some of these bindings were previously configured through various system propert
 <p><code>org.apache.logging.log4j.core.impl.LogEventFactory</code></p>
 </li>
 <li>
+<p><code>org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor</code></p>
+</li>
+<li>
 <p><code>org.apache.logging.log4j.core.lookup.InterpolatorFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor</code></p>
 </li>
 <li>
 <p><code>org.apache.logging.log4j.core.lookup.StrSubstitutor</code></p>
@@ -480,6 +488,21 @@ Some of these bindings were previously configured through various system propert
 </li>
 <li>
 <p><code>org.apache.logging.log4j.core.config.ConfigurationScheduler</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.kit.recycler.RecyclerFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.message.FlowMessageFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.message.MessageFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.spi.LoggerContextFactory</code></p>
+</li>
+<li>
+<p><code>org.apache.logging.log4j.spi.Provider</code></p>
 </li>
 </ul>
 </div>
