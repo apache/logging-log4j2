@@ -22,7 +22,9 @@ import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZstdCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.Bzip2CompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.DeflateCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.ZstdCompressAction;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 
 /**
@@ -56,8 +58,7 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
+            return new Bzip2CompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     DEFLATE(".deflate") {
@@ -67,8 +68,7 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
+            return new DeflateCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     PACK200(".pack200") {
@@ -78,7 +78,6 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
             return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
         }
     },
@@ -89,7 +88,6 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
             return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
         }
     },
