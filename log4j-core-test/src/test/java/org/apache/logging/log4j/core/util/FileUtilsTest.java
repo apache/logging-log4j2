@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,8 @@ class FileUtilsTest {
         @Test
         void testMkdirFileAlreadyExistsNotDir() throws IOException {
             Files.createFile(testDir.toPath());
-            assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, true));
+            final IOException exception = assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, true));
+            assertEquals(FileAlreadyExistsException.class, exception.getCause().getClass());
             Files.delete(testDir.toPath());
         }
 
