@@ -197,9 +197,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
         return OutputStreamManager.getManager(
-                managerName,
-                new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE),
-                factory);
+                managerName, new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE), factory);
     }
 
     private static OutputStream getDefaultOutputStream(Target target) {

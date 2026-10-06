@@ -160,7 +160,9 @@ public class ConsoleAppenderTest {
         final ConsoleAppender app =
                 ConsoleAppender.newBuilder().setName("testDefaultBufferSize").build();
         try {
-            assertEquals(Constants.ENCODER_BYTE_BUFFER_SIZE, app.getManager().getByteBuffer().capacity());
+            assertEquals(
+                    Constants.ENCODER_BYTE_BUFFER_SIZE,
+                    app.getManager().getByteBuffer().capacity());
         } finally {
             app.stop();
         }
