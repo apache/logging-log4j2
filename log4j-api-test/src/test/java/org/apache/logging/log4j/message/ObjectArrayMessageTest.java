@@ -49,4 +49,18 @@ class ObjectArrayMessageTest {
         final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
         assertArrayEquals(original.getParameters(), restored.getParameters());
     }
+
+    @Test
+    void testNonSerializableElementIsReplacedByItsStringForm() {
+        final ObjectArrayMessage original = new ObjectArrayMessage("A", new NonSerializable(), "C");
+        final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
+        assertArrayEquals(new Object[] {"A", "non-serializable", "C"}, restored.getParameters());
+    }
+
+    private static final class NonSerializable {
+        @Override
+        public String toString() {
+            return "non-serializable";
+        }
+    }
 }
