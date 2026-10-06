@@ -113,7 +113,8 @@ public class PluginProcessorPublicSetterTest {
     }
 
     @Test
-    void noteEmittedByDefault() {
+    void noteEmittedWhenConfigured() {
+        setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=NOTE");
         final List<Diagnostic<? extends JavaFileObject>> noteDiagnostics = diagnosticCollector.getDiagnostics().stream()
                 .filter(d -> d.getKind() == Diagnostic.Kind.NOTE)
                 .collect(Collectors.toList());
@@ -141,7 +142,7 @@ public class PluginProcessorPublicSetterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"NOTE", "note"})
-    void explicitNoteKindBehavesLikeDefault(final String kindValue) {
+    void explicitNoteKindEmitsNotes(final String kindValue) {
         setupWithOptions("-A" + PluginProcessor.MIN_ALLOWED_MESSAGE_KIND_OPTION + "=" + kindValue);
 
         assertThat(errorDiagnostics).anyMatch(d -> d.getMessage(Locale.ROOT)
