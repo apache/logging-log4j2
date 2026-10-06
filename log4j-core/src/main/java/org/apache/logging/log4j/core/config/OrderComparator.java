@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.OptionalInt;
-import org.apache.logging.log4j.plugins.internal.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.Ordered;
 
 /**
  * Comparator for classes annotated with {@link Order} or {@link org.apache.logging.log4j.plugins.Ordered}.
@@ -65,6 +65,7 @@ public class OrderComparator implements Comparator<Class<?>> {
         if (order != null) {
             return OptionalInt.of(order.value());
         }
-        return AnnotationUtil.getOrder(clazz);
+        final Ordered ordered = clazz.getAnnotation(Ordered.class);
+        return ordered == null ? OptionalInt.empty() : OptionalInt.of(ordered.value());
     }
 }
