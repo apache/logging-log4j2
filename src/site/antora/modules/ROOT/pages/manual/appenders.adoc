@@ -249,6 +249,26 @@ Some application servers modify `System.out` and `System.err` to always point to
 
 4+h| Optional
 
+| [[ConsoleAppender-attr-bufferSize]]bufferSize
+| `int`
+| xref:manual/systemproperties.adoc#log4j2.encoderByteBufferSize[`8192`]
+a|
+The size of the
+https://docs.oracle.com/javase/{java-target-version}/docs/api/java/nio/ByteBuffer.html[`ByteBuffer`]
+internally used by the appender.
+
+Appenders with different `bufferSize` values do not share the same manager.
+
+See <<buffering,Buffering>> for more details.
+
+| [[ConsoleAppender-attr-bufferedIo]]bufferedIo
+| `boolean`
+| `true`
+|
+If set to `true`, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.
+
+See <<buffering,Buffering>> for more details.
+
 | [[ConsoleAppender-attr-direct]]direct
 | `boolean`
 | `false`
