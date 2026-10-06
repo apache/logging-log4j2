@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="removed">
+  <issue id="2936" link="https://github.com/apache/logging-log4j2/pull/2936"/>
+  <description format="asciidoc">
+    Removes the now-dead `checkMessageFactory` machinery from `LoggerContext` now that the
+    logger registry keys loggers by their message factory. Requests for a logger with a different
+    factory now return a distinct, correctly-bound logger instead of the old logger plus a warning.
+  </description>
+</entry>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="updated">
+  <issue id="4379" link="https://github.com/apache/logging-log4j2/pull/4379"/>
+  <description format="asciidoc">Update `org.springframework:spring-core` to version `7.0.9`</description>
+</entry>

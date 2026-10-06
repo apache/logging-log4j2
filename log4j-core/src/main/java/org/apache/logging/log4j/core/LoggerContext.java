@@ -63,13 +63,11 @@ import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
-import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.jspecify.annotations.Nullable;
@@ -180,38 +178,6 @@ public class LoggerContext extends AbstractLifeCycle
             final String configLocation,
             final ConfigurableInstanceFactory instanceFactory) {
         this(contextName, externalContext, fileToUri(configLocation), instanceFactory);
-    }
-
-    /**
-     * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
-     * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
-     * MessageFactory.
-     *
-     * @param logger The logger to check
-     * @param messageFactory The message factory to check.
-     */
-    private void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
-        final String name = logger.getName();
-        final MessageFactory loggerMessageFactory = logger.getMessageFactory();
-        final MessageFactory currentMessageFactory = defaultMessageFactory;
-        if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
-            StatusLogger.getLogger()
-                    .warn(
-                            "The Logger {} was created with the message factory {} and is now requested with the "
-                                    + "message factory {}, which may create log events with unexpected formatting.",
-                            name,
-                            loggerMessageFactory,
-                            messageFactory);
-        } else if (messageFactory == null && loggerMessageFactory != currentMessageFactory) {
-            StatusLogger.getLogger()
-                    .warn(
-                            "The Logger {} was created with the message factory {} and is now requested with a null "
-                                    + "message factory (defaults to {}), which may create log events with unexpected "
-                                    + "formatting.",
-                            name,
-                            loggerMessageFactory,
-                            currentMessageFactory.getClass().getName());
-        }
     }
 
     public PropertyEnvironment getEnvironment() {
@@ -563,19 +529,16 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
-     * Obtains a Logger from the Context.
+     * Obtains a logger from the context.
      *
-     * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
-     *            logger but will log a warning if mismatched.
-     * @return The Logger.
+     * @param name a logger name
+     * @param messageFactory a message factory to associate the logger with
+     * @return a logger matching the given name and message factory
      */
     @Override
-    public Logger getLogger(final String name, final MessageFactory messageFactory) {
+    public Logger getLogger(final String name, final @Nullable MessageFactory messageFactory) {
         final MessageFactory actualMessageFactory = messageFactory != null ? messageFactory : defaultMessageFactory;
-        final Logger logger = loggerRegistry.computeIfAbsent(name, actualMessageFactory, this::newLogger);
-        checkMessageFactory(logger, actualMessageFactory);
-        return logger;
+        return loggerRegistry.computeIfAbsent(name, actualMessageFactory, this::newLogger);
     }
 
     /**
@@ -617,7 +580,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return True if the Logger exists, false otherwise.
      */
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name, final @Nullable MessageFactory messageFactory) {
         return loggerRegistry.hasLogger(name, messageFactory);
     }
 
