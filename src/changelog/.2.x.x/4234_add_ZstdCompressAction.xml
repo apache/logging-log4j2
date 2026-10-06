@@ -5,6 +5,6 @@
        type="added">
   <issue id="4234" link="https://github.com/apache/logging-log4j2/pull/4234"/>
   <description format="asciidoc">
-    Add configurable Zstandard compression levels for rolling file appenders.
+    Honor configurable compression levels for Zstandard, BZip2, and Deflate rolling file compression.
   </description>
 </entry>
