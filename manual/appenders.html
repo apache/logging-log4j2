@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Appenders :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/appenders.html">
-    <meta name="generator" content="Antora 3.2.0">
+    <meta name="generator" content="Antora 3.2.1">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -699,6 +699,29 @@ Some application servers modify <code>System.out</code> and <code>System.err</co
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">Optional</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-bufferSize"></a>bufferSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="systemproperties.html#log4j2.encoderByteBufferSize" class="xref page"><code>8192</code></a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The size of the
+<a href="https://docs.oracle.com/javase/17/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
+internally used by the appender.</p>
+</div>
+<div class="paragraph">
+<p>Appenders with different <code>bufferSize</code> values do not share the same manager.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#buffering">Buffering</a> for more details.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-bufferedIo"></a>bufferedIo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to <code>true</code>, Log4j Core will format each log event in an internal buffer, before sending it to the underlying resource.</p>
+<p class="tableblock">See <a href="#buffering">Buffering</a> for more details.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="ConsoleAppender-attr-direct"></a>direct</code></p></td>
