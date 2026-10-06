@@ -325,6 +325,63 @@ class AbstractDatabaseManagerTest {
     }
 
     @Test
+    @UsingStatusListener
+    void testEmptyBufferIsNotReportedAsDiscarded(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        manager.startup();
+
+        doThrow(new DbAppenderLoggingException("Failed to connect"))
+                .when(manager)
+                .connectAndStart();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        assertEquals(
+                0L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("buffered events"))
+                        .count());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testDiscardedBufferIsReportedAgainAfterRestart(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .when(manager)
+                .commitAndClose();
+
+        manager.startup();
+        manager.write(event1, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.shutdown();
+        manager.startup();
+
+        manager.write(event2, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        assertEquals(
+                2L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 1 buffered events"))
+                        .count());
+    }
+
+    @Test
     void testStartupShutdown01() throws Exception {
         setUp("testName01", 0);
 
