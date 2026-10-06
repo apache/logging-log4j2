@@ -17,19 +17,16 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 
 /**
  * Compresses a file using Zip compression.
  */
 public final class ZipCompressAction extends AbstractAction {
-
-    private static final int BUF_SIZE = 8192;
 
     /**
      * Source file.
@@ -108,30 +105,16 @@ public final class ZipCompressAction extends AbstractAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destination))) {
-                zos.setLevel(level);
-
-                final ZipEntry zipEntry = new ZipEntry(source.getName());
-                zos.putNextEntry(zipEntry);
-
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    zos.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete " + source.toString() + '.');
-            }
-
-            return true;
+        if (!source.exists()) {
+            return false;
         }
-
-        return false;
+        checkLevel(level);
+        return CompressActionSupport.execute(source, destination, deleteSource, output -> {
+            final ZipOutputStream zipOutput = new ZipOutputStream(output);
+            zipOutput.setLevel(level);
+            zipOutput.putNextEntry(new ZipEntry(source.getName()));
+            return zipOutput;
+        });
     }
 
     /**

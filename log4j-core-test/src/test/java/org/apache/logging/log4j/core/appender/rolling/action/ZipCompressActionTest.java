@@ -56,6 +56,15 @@ class ZipCompressActionTest {
     }
 
     @Test
+    void testStaticExecuteReturnsFalseForMissingSourceBeforeValidatingLevel(@TempDir File tempDir) throws IOException {
+        File source = new File(tempDir, "missing.log");
+        File destination = new File(tempDir, "missing.log.zip");
+
+        assertFalse(ZipCompressAction.execute(source, destination, true, 10));
+        assertFalse(destination.exists());
+    }
+
+    @Test
     void testCompression(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "test.log");
         File dest = new File(tempDir, "test.log.zip");

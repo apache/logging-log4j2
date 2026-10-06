@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 
 /**
  * Compresses a file using GZ compression.
@@ -142,29 +140,11 @@ public final class GzCompressAction extends AbstractAction {
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
         checkCompressionLevel(compressionLevel);
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final OutputStream fos = new FileOutputStream(destination);
-                    final OutputStream gzipOut =
-                            new ConfigurableLevelGZIPOutputStream(fos, BUF_SIZE, compressionLevel);
-                    // Reduce native invocations by buffering data into GZIPOutputStream
-                    final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    os.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete {}.", source);
-            }
-
-            return true;
-        }
-
-        return false;
+        return CompressActionSupport.execute(
+                source,
+                destination,
+                deleteSource,
+                output -> new ConfigurableLevelGZIPOutputStream(output, BUF_SIZE, compressionLevel));
     }
 
     private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {

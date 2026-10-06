@@ -14,15 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.appender.rolling.action;
+package org.apache.logging.log4j.core.appender.rolling.action.internal;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Objects;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
@@ -33,12 +29,8 @@ import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
  * Supports positive compression levels in the range [{@value #MIN_COMPRESSION_LEVEL}, {@link ZstdConstants#ZSTD_CLEVEL_MAX}].
  * Negative (fast-compression) levels are not currently supported; this may change in a future release.
  * </p>
- *
- * @since 2.27.0
  */
-public final class ZstdCompressAction extends AbstractAction {
-
-    private static final int BUF_SIZE = 8192;
+public final class ZstdCompressAction extends AbstractCompressAction {
 
     /**
      * Minimum supported Zstd compression level. Negative (fast-compression) levels are intentionally
@@ -46,21 +38,6 @@ public final class ZstdCompressAction extends AbstractAction {
      * https://github.com/apache/logging-log4j2/discussions/2950.
      */
     static final int MIN_COMPRESSION_LEVEL = 1;
-
-    /**
-     * Source file.
-     */
-    private final File source;
-
-    /**
-     * Destination file.
-     */
-    private final File destination;
-
-    /**
-     * If true, attempt to delete file on completion.
-     */
-    private final boolean deleteSource;
 
     /**
      * Zstandard compression level to use.
@@ -124,69 +101,25 @@ public final class ZstdCompressAction extends AbstractAction {
      */
     public ZstdCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
+        super(source, destination, deleteSource);
         this.compressionLevel = compressionLevel;
     }
 
-    /**
-     * Compress.
-     *
-     * @return true if successfully compressed.
-     * @throws IOException on IO exception.
-     */
+    /** Validates the resolved Zstandard compression level. */
     @Override
-    public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource, compressionLevel);
+    protected void validateCompressionLevel() {
+        checkCompressionLevel(resolveCompressionLevel(compressionLevel));
     }
 
-    /**
-     * Compress a file.
-     *
-     * @param source           file to compress, may not be null.
-     * @param destination      compressed file, may not be null.
-     * @param deleteSource     if true, attempt to delete file on completion.  Failure to delete
-     *                         does not cause an exception to be thrown or affect return value.
-     * @param compressionLevel Zstandard compression level.
-     * @return true if source file compressed.
-     * @throws IOException on IO exception.
-     */
-    public static boolean execute(
-            final File source, final File destination, final boolean deleteSource, final int compressionLevel)
-            throws IOException {
+    @Override
+    protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
         // -1 (Deflater.DEFAULT_COMPRESSION) is the framework-wide sentinel for an unspecified compression level.
         // Zstd uses -1 as a distinct fast-compression level, so map the sentinel to Zstd's default level here.
         final int level = resolveCompressionLevel(compressionLevel);
-        checkCompressionLevel(level);
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final OutputStream fos = new FileOutputStream(destination);
-                    final OutputStream zstdOut = ZstdCompressorOutputStream.builder()
-                            .setOutputStream(fos)
-                            .setLevel(level)
-                            .get();
-                    // Reduce native invocations by buffering data into ZstdCompressorOutputStream
-                    final OutputStream os = new BufferedOutputStream(zstdOut, BUF_SIZE)) {
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    os.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete {}.", source);
-            }
-
-            return true;
-        }
-
-        return false;
+        return ZstdCompressorOutputStream.builder()
+                .setOutputStream(output)
+                .setLevel(level)
+                .get();
     }
 
     /**
@@ -203,18 +136,6 @@ public final class ZstdCompressAction extends AbstractAction {
     public String toString() {
         return ZstdCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", deleteSource="
                 + deleteSource + ']';
-    }
-
-    public File getSource() {
-        return source;
-    }
-
-    public File getDestination() {
-        return destination;
-    }
-
-    public boolean isDeleteSource() {
-        return deleteSource;
     }
 
     public int getCompressionLevel() {
