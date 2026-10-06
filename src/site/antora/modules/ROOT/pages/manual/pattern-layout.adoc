@@ -433,7 +433,7 @@ You can also define custom date formats, see following examples:
 `%d\{UNIX_MILLIS}` outputs the epoch time in milliseconds.
 
 Note that the granularity of the sub-second formatters depends on the platform.
-Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j2.clock[the `log4j2.clock` system property] to `SystemMillisClock`.
+Users may revert to a millisecond-precision clock when running on Java 9 by setting xref:manual/systemproperties.adoc#log4j.configuration.clock[the `log4j.configuration.clock` system property] to `SystemMillisClock`.
 
 [WARNING]
 ====
@@ -1735,7 +1735,7 @@ Furthermore, the converter must also specify the `@ConverterKeys` annotation to 
 ====
 Unlike most other plugins, **pattern converters do not use a `@PluginFactory`**.
 Instead, each converter is required to provide a static `newInstance(String[])` factory method.
-The `String[]` argument denots the the values that are specified within the curly braces that following the conversion specifier.
+The `String[]` argument denotes the values that are specified within the curly braces that following the conversion specifier.
 ====
 
 Refer to following sources for simple examples:
