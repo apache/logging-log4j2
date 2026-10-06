@@ -3,6 +3,6 @@
        xmlns="https://logging.apache.org/xml/ns"
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="updated">
-  <issue id="4380" link="https://github.com/apache/logging-log4j2/pull/4380"/>
-  <description format="asciidoc">Update `com.github.luben:zstd-jni` to version `1.5.7-19`</description>
+  <issue id="4381" link="https://github.com/apache/logging-log4j2/pull/4381"/>
+  <description format="asciidoc">Update `org.junit:junit-bom` to version `6.1.3`</description>
 </entry>
