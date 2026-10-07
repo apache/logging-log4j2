@@ -126,6 +126,18 @@ import org.apache.logging.log4j.util.Strings;
  *   The variable $${${name}} must be used.
  * </pre>
  * <p>
+ * Inside a variable reference, the escape character also removes the special meaning of a
+ * following <code>$</code>, <code>:</code>, <code>-</code> or <code>}</code> character.
+ * This allows default values to contain closing braces or the <code>:-</code> sequence.
+ * For example, if the <code>tz</code> variable is undefined:
+ * </p>
+ * <pre>
+ *   ${tz:-%d{HH:mm:ss$}{GMT+00$}}
+ * </pre>
+ * <p>
+ * results in <code>%d{HH:mm:ss}{GMT+00}</code>.
+ * </p>
+ * <p>
  * In some complex scenarios you might even want to perform substitution in the
  * names of variables, for instance
  * </p>
@@ -165,6 +177,13 @@ public class StrSubstitutor implements ConfigurationAware {
 
     public static final String ESCAPE_DELIMITER_STRING = ":\\-";
     public static final StrMatcher DEFAULT_VALUE_ESCAPE_DELIMITER = StrMatcher.stringMatcher(ESCAPE_DELIMITER_STRING);
+
+    /**
+     * Characters that, besides the escape character itself, lose their special meaning when they are preceded by the
+     * escape character inside a variable reference: the characters of the default value delimiter and the
+     * closing brace.
+     */
+    private static final String ESCAPABLE_CHARS = ":-}";
 
     private static final int BUF_SIZE = 256;
 
@@ -1049,6 +1068,11 @@ public class StrSubstitutor implements ConfigurationAware {
                 int endMatchLen = 0;
                 int nestedVarCount = 0;
                 while (pos < bufEnd) {
+                    if (isEscapeSequence(chars, pos, bufEnd, escape)) {
+                        // an escaped character has no special meaning
+                        pos += 2;
+                        continue;
+                    }
                     if (substitutionInVariablesEnabled
                             && (endMatchLen = prefixMatcher.isMatch(chars, pos, offset, bufEnd)) != 0) {
                         // found a nested variable start
@@ -1084,6 +1108,10 @@ public class StrSubstitutor implements ConfigurationAware {
                                 final char[] varNameExprChars = varNameExpr.toCharArray();
                                 int valueDelimiterMatchLen = 0;
                                 for (int i = 0; i < varNameExprChars.length; i++) {
+                                    if (isEscapeSequence(varNameExprChars, i, varNameExprChars.length, escape)) {
+                                        i++;
+                                        continue;
+                                    }
                                     // if there's any nested variable when nested variable substitution disabled, then
                                     // stop resolving name and default value.
                                     if (!substitutionInVariablesEnabled
@@ -1122,6 +1150,10 @@ public class StrSubstitutor implements ConfigurationAware {
                                         break;
                                     }
                                 }
+                            }
+                            varName = unescape(varName, escape);
+                            if (varDefaultValue != null) {
+                                varDefaultValue = unescape(varDefaultValue, escape);
                             }
 
                             // on the first call initialize priorVariables
@@ -1171,6 +1203,46 @@ public class StrSubstitutor implements ConfigurationAware {
             return altered ? 1 : 0;
         }
         return lengthChange;
+    }
+
+    /**
+     * Checks if the character at the given position is the escape character followed by a character that can be
+     * escaped.
+     *
+     * @param chars  the characters to check
+     * @param pos  the position of the candidate escape character
+     * @param end  the end position (exclusive) of the characters to consider
+     * @param escape  the escape character
+     * @return true if the two characters at the given position form an escape sequence
+     */
+    private static boolean isEscapeSequence(final char[] chars, final int pos, final int end, final char escape) {
+        return chars[pos] == escape && pos + 1 < end && isEscapable(chars[pos + 1], escape);
+    }
+
+    private static boolean isEscapable(final char c, final char escape) {
+        return c == escape || ESCAPABLE_CHARS.indexOf(c) >= 0;
+    }
+
+    /**
+     * Removes the escape character in front of each escaped character.
+     *
+     * @param text  the text to unescape
+     * @param escape  the escape character
+     * @return the text without escape characters
+     */
+    private static String unescape(final String text, final char escape) {
+        if (text.indexOf(escape) < 0) {
+            return text;
+        }
+        final char[] chars = text.toCharArray();
+        final StringBuilder result = new StringBuilder(chars.length);
+        for (int i = 0; i < chars.length; i++) {
+            if (isEscapeSequence(chars, i, chars.length, escape)) {
+                i++;
+            }
+            result.append(chars[i]);
+        }
+        return result.toString();
     }
 
     /**
