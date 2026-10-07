@@ -78,7 +78,7 @@ public final class ZipCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.level = checkLevel(level);
+        this.level = level;
     }
 
     /**
@@ -105,11 +105,7 @@ public final class ZipCompressAction extends AbstractAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        if (!source.exists()) {
-            return false;
-        }
-        checkLevel(level);
-        return CompressActionSupport.execute(source, destination, deleteSource, output -> {
+        return CompressActionSupport.execute(source, destination, deleteSource, () -> checkLevel(level), output -> {
             final ZipOutputStream zipOutput = new ZipOutputStream(output);
             zipOutput.setLevel(level);
             zipOutput.putNextEntry(new ZipEntry(source.getName()));

@@ -30,28 +30,35 @@ import org.junit.jupiter.api.io.TempDir;
 class GzCompressActionTest {
 
     @Test
-    void testRejectsCompressionLevelLowerThanDefault(@TempDir File tempDir) {
+    void testRejectsCompressionLevelLowerThanDefault(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-low.log");
         File dest = new File(tempDir, "invalid-low.log.gz");
+        writeContent(source, "test data");
 
-        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, -2));
+        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, -2).execute());
     }
 
     @Test
-    void testRejectsCompressionLevelHigherThanBest(@TempDir File tempDir) {
+    void testRejectsCompressionLevelHigherThanBest(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-high.log");
         File dest = new File(tempDir, "invalid-high.log.gz");
+        writeContent(source, "test data");
 
-        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, 10));
+        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, 10).execute());
     }
 
     @Test
-    void testAcceptsDeflaterRangeBounds(@TempDir File tempDir) {
-        File source = new File(tempDir, "valid.log");
-        File dest = new File(tempDir, "valid.log.gz");
+    void testAcceptsDeflaterRangeBounds(@TempDir File tempDir) throws IOException {
+        File defaultSource = new File(tempDir, "default.log");
+        File defaultDestination = new File(tempDir, "default.log.gz");
+        File maximumSource = new File(tempDir, "maximum.log");
+        File maximumDestination = new File(tempDir, "maximum.log.gz");
+        writeContent(defaultSource, "default compression level");
+        writeContent(maximumSource, "maximum compression level");
 
-        new GzCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION);
-        new GzCompressAction(source, dest, true, Deflater.BEST_COMPRESSION);
+        assertTrue(
+                new GzCompressAction(defaultSource, defaultDestination, true, Deflater.DEFAULT_COMPRESSION).execute());
+        assertTrue(new GzCompressAction(maximumSource, maximumDestination, true, Deflater.BEST_COMPRESSION).execute());
     }
 
     @Test

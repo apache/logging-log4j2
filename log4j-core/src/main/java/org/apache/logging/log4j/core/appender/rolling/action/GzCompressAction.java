@@ -83,7 +83,7 @@ public final class GzCompressAction extends AbstractAction {
         this.source = source;
         this.destination = destination;
         this.deleteSource = deleteSource;
-        this.compressionLevel = checkCompressionLevel(compressionLevel);
+        this.compressionLevel = compressionLevel;
     }
 
     /**
@@ -139,11 +139,11 @@ public final class GzCompressAction extends AbstractAction {
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
-        checkCompressionLevel(compressionLevel);
         return CompressActionSupport.execute(
                 source,
                 destination,
                 deleteSource,
+                () -> checkCompressionLevel(compressionLevel),
                 output -> new ConfigurableLevelGZIPOutputStream(output, BUF_SIZE, compressionLevel));
     }
 

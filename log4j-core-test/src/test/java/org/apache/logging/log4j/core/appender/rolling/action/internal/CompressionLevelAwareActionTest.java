@@ -70,7 +70,7 @@ class CompressionLevelAwareActionTest {
         assertTrue(defaultDestination.exists());
         assertTrue(zeroDestination.exists());
         assertEquals('9', Files.readAllBytes(defaultDestination.toPath())[3]);
-        assertEquals('9', Files.readAllBytes(zeroDestination.toPath())[3]);
+        assertEquals('1', Files.readAllBytes(zeroDestination.toPath())[3]);
     }
 
     @Test
@@ -98,7 +98,7 @@ class CompressionLevelAwareActionTest {
     }
 
     @Test
-    void testInvalidLevelsFailWhenCompressionExecutes(@TempDir File tempDir) {
+    void testInvalidLevelsFailWhenCompressionExecutes(@TempDir File tempDir) throws IOException {
         assertInvalidCompressionLevel(FileExtension.BZIP2, tempDir, -2);
         assertInvalidCompressionLevel(FileExtension.BZIP2, tempDir, 10);
         assertInvalidCompressionLevel(FileExtension.DEFLATE, tempDir, -2);
@@ -106,10 +106,12 @@ class CompressionLevelAwareActionTest {
     }
 
     private static void assertInvalidCompressionLevel(
-            final FileExtension extension, final File tempDir, final int level) {
+            final FileExtension extension, final File tempDir, final int level) throws IOException {
+        final File source = writeSource(tempDir, "invalid-" + extension.getExtension() + '-' + level + ".log");
         final Action action = assertDoesNotThrow(() -> extension.createCompressAction(
-                new File(tempDir, "invalid.log").getPath(),
-                new File(tempDir, "invalid.log." + extension.getExtension()).getPath(),
+                source.getPath(),
+                new File(tempDir, "invalid-" + extension.getExtension() + '-' + level + '.' + extension.getExtension())
+                        .getPath(),
                 true,
                 level));
 

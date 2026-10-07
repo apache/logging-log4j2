@@ -52,8 +52,9 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
     }
 
     private int resolveCompressionLevel() {
-        return compressionLevel == Deflater.DEFAULT_COMPRESSION || compressionLevel == Deflater.NO_COMPRESSION
-                ? BZip2CompressorOutputStream.MAX_BLOCKSIZE
-                : compressionLevel;
+        if (compressionLevel == Deflater.DEFAULT_COMPRESSION) {
+            return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
+        }
+        return compressionLevel == 0 ? BZip2CompressorOutputStream.MIN_BLOCKSIZE : compressionLevel;
     }
 }

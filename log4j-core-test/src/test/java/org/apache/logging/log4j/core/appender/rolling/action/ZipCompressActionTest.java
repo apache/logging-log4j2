@@ -30,29 +30,40 @@ import org.junit.jupiter.api.io.TempDir;
 class ZipCompressActionTest {
 
     @Test
-    void testRejectsCompressionLevelBelowRange(@TempDir File tempDir) {
+    void testRejectsCompressionLevelBelowRange(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-low.log");
         File dest = new File(tempDir, "invalid-low.log.zip");
+        writeContent(source, "test data");
 
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2));
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2).execute());
     }
 
     @Test
-    void testRejectsCompressionLevelAboveRange(@TempDir File tempDir) {
+    void testRejectsCompressionLevelAboveRange(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-high.log");
         File dest = new File(tempDir, "invalid-high.log.zip");
+        writeContent(source, "test data");
 
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10));
+        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10).execute());
     }
 
     @Test
-    void testAcceptsCompressionLevelRangeBounds(@TempDir File tempDir) {
-        File source = new File(tempDir, "valid.log");
-        File dest = new File(tempDir, "valid.log.zip");
+    void testAcceptsCompressionLevelRangeBounds(@TempDir File tempDir) throws IOException {
+        File defaultSource = new File(tempDir, "default.log");
+        File defaultDestination = new File(tempDir, "default.log.zip");
+        File noCompressionSource = new File(tempDir, "no-compression.log");
+        File noCompressionDestination = new File(tempDir, "no-compression.log.zip");
+        File maximumSource = new File(tempDir, "maximum.log");
+        File maximumDestination = new File(tempDir, "maximum.log.zip");
+        writeContent(defaultSource, "default compression level");
+        writeContent(noCompressionSource, "no compression level");
+        writeContent(maximumSource, "maximum compression level");
 
-        new ZipCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION);
-        new ZipCompressAction(source, dest, true, Deflater.NO_COMPRESSION);
-        new ZipCompressAction(source, dest, true, Deflater.BEST_COMPRESSION);
+        assertTrue(
+                new ZipCompressAction(defaultSource, defaultDestination, true, Deflater.DEFAULT_COMPRESSION).execute());
+        assertTrue(new ZipCompressAction(noCompressionSource, noCompressionDestination, true, Deflater.NO_COMPRESSION)
+                .execute());
+        assertTrue(new ZipCompressAction(maximumSource, maximumDestination, true, Deflater.BEST_COMPRESSION).execute());
     }
 
     @Test

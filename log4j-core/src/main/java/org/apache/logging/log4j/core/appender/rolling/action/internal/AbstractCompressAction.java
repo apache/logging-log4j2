@@ -39,8 +39,8 @@ public abstract class AbstractCompressAction extends AbstractAction {
 
     @Override
     public final boolean execute() throws IOException {
-        validateCompressionLevel();
-        return CompressActionSupport.execute(source, destination, deleteSource, this::createCompressorOutputStream);
+        return CompressActionSupport.execute(
+                source, destination, deleteSource, this::validateCompressionLevel, this::createCompressorOutputStream);
     }
 
     protected abstract OutputStream createCompressorOutputStream(OutputStream output) throws IOException;

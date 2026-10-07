@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -35,6 +33,7 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
@@ -43,6 +42,8 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -162,12 +163,18 @@ class RollingFileManagerTest {
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
     }
 
+    @UsingStatusListener
     @ParameterizedTest
-    @CsvSource({"bz2, -2", "bz2, 10", "deflate, -2", "deflate, 10"})
-    void testInvalidCompressionLevelFailsOnlyInAsynchronousCompression(
-            final String extension, final String compressionLevel, @TempDir final File tempDir) throws Exception {
+    @CsvSource({"bz2, -2", "bz2, 10", "deflate, -2", "deflate, 10", "gz, -2", "gz, 10", "zip, -2", "zip, 10"})
+    void testInvalidCompressionLevelLogsAfterAsynchronousRollover(
+            final String extension,
+            final String compressionLevel,
+            @TempDir final File tempDir,
+            final ListStatusListener statusListener)
+            throws Exception {
         final File activeFile = new File(tempDir, "active.log");
         final File renamedFile = new File(tempDir, "archive-1");
+        final File compressedFile = new File(tempDir, "archive-1." + extension);
         final Configuration configuration = new NullConfiguration();
         final DefaultRolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setMax("1")
@@ -193,16 +200,19 @@ class RollingFileManagerTest {
         assertNotNull(manager);
         try {
             manager.initialize();
-            manager.writeToDestination("Test".getBytes(StandardCharsets.US_ASCII), 0, 4);
+            manager.writeToDestination("Test".getBytes(), 0, 4);
+            statusListener.clear();
 
-            final RolloverDescription description = assertDoesNotThrow(() -> strategy.rollover(manager));
-            assertTrue(description.getSynchronous().execute());
-            assertFalse(activeFile.exists());
-            assertTrue(renamedFile.exists());
-            assertThrows(IllegalArgumentException.class, description.getAsynchronous()::execute);
+            manager.rollover();
         } finally {
             manager.close();
         }
+
+        assertTrue(activeFile.exists());
+        assertTrue(renamedFile.exists());
+        assertFalse(compressedFile.exists());
+        assertTrue(statusListener.findStatusData(Level.WARN).anyMatch(data -> data.getFormattedStatus()
+                .contains("IllegalArgumentException")));
     }
 
     @Test
