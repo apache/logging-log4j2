@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -41,6 +44,9 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junitpioneer.jupiter.Issue;
 
 class RollingFileManagerTest {
@@ -154,6 +160,49 @@ class RollingFileManagerTest {
 
         // The logged content should be unchanged
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"bz2, -2", "bz2, 10", "deflate, -2", "deflate, 10"})
+    void testInvalidCompressionLevelFailsOnlyInAsynchronousCompression(
+            final String extension, final String compressionLevel, @TempDir final File tempDir) throws Exception {
+        final File activeFile = new File(tempDir, "active.log");
+        final File renamedFile = new File(tempDir, "archive-1");
+        final Configuration configuration = new NullConfiguration();
+        final DefaultRolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+                .setMax("1")
+                .setCompressionLevelStr(compressionLevel)
+                .setConfig(configuration)
+                .build();
+        final RollingFileManager manager = RollingFileManager.getFileManager(
+                activeFile.getPath(),
+                new File(tempDir, "archive-%i." + extension).getPath(),
+                true,
+                false,
+                NoOpTriggeringPolicy.INSTANCE,
+                strategy,
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration);
+        assertNotNull(manager);
+        try {
+            manager.initialize();
+            manager.writeToDestination("Test".getBytes(StandardCharsets.US_ASCII), 0, 4);
+
+            final RolloverDescription description = assertDoesNotThrow(() -> strategy.rollover(manager));
+            assertTrue(description.getSynchronous().execute());
+            assertFalse(activeFile.exists());
+            assertTrue(renamedFile.exists());
+            assertThrows(IllegalArgumentException.class, description.getAsynchronous()::execute);
+        } finally {
+            manager.close();
+        }
     }
 
     @Test

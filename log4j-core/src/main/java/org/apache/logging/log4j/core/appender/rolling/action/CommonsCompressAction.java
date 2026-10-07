@@ -16,23 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 
 /**
- * Compresses a file using bzip2 compression.
+ * Compresses a file using Apache Commons Compress.
  */
 public final class CommonsCompressAction extends AbstractAction {
-
-    private static final int BUF_SIZE = 8192;
 
     /**
      * Compressor name. One of "gz", "bzip2", "xz", "zst", "pack200" or "deflate".
@@ -67,6 +62,7 @@ public final class CommonsCompressAction extends AbstractAction {
             final String name, final File source, final File destination, final boolean deleteSource) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
+
         this.name = name;
         this.source = source;
         this.destination = destination;
@@ -103,16 +99,15 @@ public final class CommonsCompressAction extends AbstractAction {
             return false;
         }
         LOGGER.debug("Starting {} compression of {}", name, source.getPath());
-        try (final FileInputStream input = new FileInputStream(source);
-                final FileOutputStream fileOutput = new FileOutputStream(destination);
-                final BufferedOutputStream output = new BufferedOutputStream(
-                        new CompressorStreamFactory().createCompressorOutputStream(name, fileOutput))) {
-            IOUtils.copy(input, output, BUF_SIZE);
-            LOGGER.debug("Finished {} compression of {}", name, source.getPath());
-        } catch (final CompressorException e) {
-            throw new IOException(e);
-        }
+        CompressActionSupport.execute(source, destination, output -> {
+            try {
+                return new CompressorStreamFactory().createCompressorOutputStream(name, output);
+            } catch (final CompressorException e) {
+                throw new IOException(e);
+            }
+        });
 
+        LOGGER.debug("Finished {} compression of {}", name, source.getPath());
         if (deleteSource) {
             try {
                 if (Files.deleteIfExists(source.toPath())) {
@@ -125,7 +120,6 @@ public final class CommonsCompressAction extends AbstractAction {
                 LOGGER.warn("Unable to delete {} after {} compression, {}", source.toString(), name, ex.getMessage());
             }
         }
-
         return true;
     }
 
