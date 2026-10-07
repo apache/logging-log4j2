@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Test;
 
 @Tag("Appenders.Jpa")
 class ThrowableAttributeConverterTest {
+    private static final AtomicInteger NON_THROWABLE_INITIALIZATION_COUNT = new AtomicInteger();
+
     private ThrowableAttributeConverter converter;
 
     @BeforeEach
@@ -85,6 +88,45 @@ class ThrowableAttributeConverterTest {
     }
 
     @Test
+    void testMessageWithLineBreaksRoundTrips() {
+        final String message = "first line\nCaused by java.lang.Error: second line\r\nC:\\new\\path and \\\\n";
+        final IllegalStateException exception = new IllegalStateException(message);
+
+        final Throwable reversed =
+                this.converter.convertToEntityAttribute(this.converter.convertToDatabaseColumn(exception));
+
+        assertNotNull(reversed);
+        assertEquals(message, reversed.getMessage());
+        assertNull(reversed.getCause());
+        assertEquals(exception.getStackTrace().length, reversed.getStackTrace().length);
+    }
+
+    @Test
+    void testMalformedStackTraceLineIsIgnored() {
+        final String serialized = IllegalStateException.class.getName()
+                + ": message\n"
+                + "not a stack trace frame\n"
+                + "\tat java.lang.Thread.run(Thread.java:1)\n";
+
+        final Throwable reversed = this.converter.convertToEntityAttribute(serialized);
+
+        assertNotNull(reversed);
+        assertEquals("message", reversed.getMessage());
+        assertEquals(1, reversed.getStackTrace().length);
+        assertEquals("run", reversed.getStackTrace()[0].getMethodName());
+    }
+
+    @Test
+    void testNonThrowableClassIsNotInitialized() {
+        assertEquals(0, NON_THROWABLE_INITIALIZATION_COUNT.get());
+
+        final String serialized = NonThrowableWithStaticInitializer.class.getName() + ": message\n";
+        assertNull(this.converter.convertToEntityAttribute(serialized));
+
+        assertEquals(0, NON_THROWABLE_INITIALIZATION_COUNT.get());
+    }
+
+    @Test
     void testConvertNullToDatabaseColumn() {
         assertNull(this.converter.convertToDatabaseColumn(null), "The converted value should be null.");
     }
@@ -107,5 +149,11 @@ class ThrowableAttributeConverterTest {
         }
 
         return returnValue;
+    }
+
+    private static class NonThrowableWithStaticInitializer {
+        static {
+            NON_THROWABLE_INITIALIZATION_COUNT.incrementAndGet();
+        }
     }
 }
