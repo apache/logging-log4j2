@@ -48,16 +48,10 @@ public final class ZipCompressAction extends AbstractAction {
      */
     private final int level;
 
-    /**
-     * Validates that the compression level is in the valid range [-1, 9].
-     *
-     * @param level the compression level to validate
-     * @return the level if valid
-     * @throws IllegalArgumentException if level is not in the range [-1, 9]
-     */
-    private static int checkLevel(final int level) {
+    private static int resolveCompressionLevel(final int level) {
         if (level < java.util.zip.Deflater.DEFAULT_COMPRESSION || level > 9) {
-            throw new IllegalArgumentException("Compression level must be in the range [-1, 9], got: " + level);
+            LOGGER.warn("Unsupported ZIP compression level {}; using default level {}.", level, -1);
+            return java.util.zip.Deflater.DEFAULT_COMPRESSION;
         }
         return level;
     }
@@ -105,9 +99,9 @@ public final class ZipCompressAction extends AbstractAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        return CompressActionSupport.execute(source, destination, deleteSource, () -> checkLevel(level), output -> {
+        return CompressActionSupport.execute(source, destination, deleteSource, output -> {
             final ZipOutputStream zipOutput = new ZipOutputStream(output);
-            zipOutput.setLevel(level);
+            zipOutput.setLevel(resolveCompressionLevel(level));
             zipOutput.putNextEntry(new ZipEntry(source.getName()));
             return zipOutput;
         });

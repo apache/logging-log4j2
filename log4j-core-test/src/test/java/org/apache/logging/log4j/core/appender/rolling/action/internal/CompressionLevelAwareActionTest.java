@@ -16,11 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action.internal;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -59,18 +57,28 @@ class CompressionLevelAwareActionTest {
     }
 
     @Test
-    void testBzip2ResolvesDefaultLevels(@TempDir File tempDir) throws IOException {
+    void testBzip2FallsBackToDefaultForUnsupportedLevels(@TempDir File tempDir) throws IOException {
         File defaultSource = writeSource(tempDir, "default.log");
         File defaultDestination = new File(tempDir, "default.log.bz2");
         File zeroSource = writeSource(tempDir, "zero.log");
         File zeroDestination = new File(tempDir, "zero.log.bz2");
+        File lowSource = writeSource(tempDir, "low.log");
+        File lowDestination = new File(tempDir, "low.log.bz2");
+        File highSource = writeSource(tempDir, "high.log");
+        File highDestination = new File(tempDir, "high.log.bz2");
 
         assertTrue(new Bzip2CompressAction(defaultSource, defaultDestination, true, -1).execute());
         assertTrue(new Bzip2CompressAction(zeroSource, zeroDestination, true, 0).execute());
+        assertTrue(new Bzip2CompressAction(lowSource, lowDestination, true, -2).execute());
+        assertTrue(new Bzip2CompressAction(highSource, highDestination, true, 10).execute());
         assertTrue(defaultDestination.exists());
         assertTrue(zeroDestination.exists());
+        assertTrue(lowDestination.exists());
+        assertTrue(highDestination.exists());
         assertEquals('9', Files.readAllBytes(defaultDestination.toPath())[3]);
-        assertEquals('1', Files.readAllBytes(zeroDestination.toPath())[3]);
+        assertEquals('9', Files.readAllBytes(zeroDestination.toPath())[3]);
+        assertEquals('9', Files.readAllBytes(lowDestination.toPath())[3]);
+        assertEquals('9', Files.readAllBytes(highDestination.toPath())[3]);
     }
 
     @Test
@@ -98,24 +106,23 @@ class CompressionLevelAwareActionTest {
     }
 
     @Test
-    void testInvalidLevelsFailWhenCompressionExecutes(@TempDir File tempDir) throws IOException {
-        assertInvalidCompressionLevel(FileExtension.BZIP2, tempDir, -2);
-        assertInvalidCompressionLevel(FileExtension.BZIP2, tempDir, 10);
-        assertInvalidCompressionLevel(FileExtension.DEFLATE, tempDir, -2);
-        assertInvalidCompressionLevel(FileExtension.DEFLATE, tempDir, 10);
+    void testUnsupportedLevelsFallBackToDefault(@TempDir File tempDir) throws IOException {
+        assertCompressionSucceeds(FileExtension.BZIP2, tempDir, -2);
+        assertCompressionSucceeds(FileExtension.BZIP2, tempDir, 10);
+        assertCompressionSucceeds(FileExtension.DEFLATE, tempDir, -2);
+        assertCompressionSucceeds(FileExtension.DEFLATE, tempDir, 10);
     }
 
-    private static void assertInvalidCompressionLevel(
-            final FileExtension extension, final File tempDir, final int level) throws IOException {
+    private static void assertCompressionSucceeds(final FileExtension extension, final File tempDir, final int level)
+            throws IOException {
         final File source = writeSource(tempDir, "invalid-" + extension.getExtension() + '-' + level + ".log");
-        final Action action = assertDoesNotThrow(() -> extension.createCompressAction(
-                source.getPath(),
-                new File(tempDir, "invalid-" + extension.getExtension() + '-' + level + '.' + extension.getExtension())
-                        .getPath(),
-                true,
-                level));
+        final File destination =
+                new File(tempDir, "invalid-" + extension.getExtension() + '-' + level + '.' + extension.getExtension());
+        final Action action = extension.createCompressAction(source.getPath(), destination.getPath(), true, level);
 
-        assertThrows(IllegalArgumentException.class, action::execute);
+        assertTrue(action.execute());
+        assertTrue(destination.exists());
+        assertFalse(source.exists());
     }
 
     private static File writeSource(final File tempDir, final String name) throws IOException {

@@ -34,19 +34,6 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
     }
 
     @Override
-    protected void validateCompressionLevel() {
-        final int level = resolveCompressionLevel();
-        if (level < BZip2CompressorOutputStream.MIN_BLOCKSIZE || level > BZip2CompressorOutputStream.MAX_BLOCKSIZE) {
-            throw new IllegalArgumentException("BZip2 compression level must be in the range ["
-                    + BZip2CompressorOutputStream.MIN_BLOCKSIZE
-                    + ", "
-                    + BZip2CompressorOutputStream.MAX_BLOCKSIZE
-                    + "], got: "
-                    + compressionLevel);
-        }
-    }
-
-    @Override
     protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
         return new BZip2CompressorOutputStream(output, resolveCompressionLevel());
     }
@@ -55,6 +42,14 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
         if (compressionLevel == Deflater.DEFAULT_COMPRESSION) {
             return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
         }
-        return compressionLevel == 0 ? BZip2CompressorOutputStream.MIN_BLOCKSIZE : compressionLevel;
+        if (compressionLevel < BZip2CompressorOutputStream.MIN_BLOCKSIZE
+                || compressionLevel > BZip2CompressorOutputStream.MAX_BLOCKSIZE) {
+            LOGGER.warn(
+                    "Unsupported BZip2 compression level {}; using default level {}.",
+                    compressionLevel,
+                    BZip2CompressorOutputStream.MAX_BLOCKSIZE);
+            return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
+        }
+        return compressionLevel;
     }
 }

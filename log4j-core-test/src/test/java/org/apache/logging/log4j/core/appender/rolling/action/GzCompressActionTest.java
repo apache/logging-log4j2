@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -30,21 +29,9 @@ import org.junit.jupiter.api.io.TempDir;
 class GzCompressActionTest {
 
     @Test
-    void testRejectsCompressionLevelLowerThanDefault(@TempDir File tempDir) throws IOException {
-        File source = new File(tempDir, "invalid-low.log");
-        File dest = new File(tempDir, "invalid-low.log.gz");
-        writeContent(source, "test data");
-
-        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, -2).execute());
-    }
-
-    @Test
-    void testRejectsCompressionLevelHigherThanBest(@TempDir File tempDir) throws IOException {
-        File source = new File(tempDir, "invalid-high.log");
-        File dest = new File(tempDir, "invalid-high.log.gz");
-        writeContent(source, "test data");
-
-        assertThrows(IllegalArgumentException.class, () -> new GzCompressAction(source, dest, true, 10).execute());
+    void testFallsBackFromUnsupportedCompressionLevels(@TempDir File tempDir) throws IOException {
+        assertFallsBackToDefault(tempDir, "invalid-low.log", -2);
+        assertFallsBackToDefault(tempDir, "invalid-high.log", 10);
     }
 
     @Test
@@ -91,5 +78,16 @@ class GzCompressActionTest {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(content);
         }
+    }
+
+    private static void assertFallsBackToDefault(
+            final File tempDir, final String sourceName, final int compressionLevel) throws IOException {
+        final File source = new File(tempDir, sourceName);
+        final File destination = new File(tempDir, sourceName + ".gz");
+        writeContent(source, "test data");
+
+        assertTrue(new GzCompressAction(source, destination, true, compressionLevel).execute());
+        assertTrue(destination.exists());
+        assertFalse(source.exists());
     }
 }

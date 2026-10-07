@@ -47,48 +47,26 @@ public final class ZstdCompressAction extends AbstractCompressAction {
     private final int compressionLevel;
 
     /**
-     * Validates that the compression level is a positive integer in the range [{@value #MIN_COMPRESSION_LEVEL}, {@link ZstdConstants#ZSTD_CLEVEL_MAX}].
-     *
-     * @param compressionLevel Zstandard compression level
-     * @return the compression level if valid
-     * @throws IllegalArgumentException if compressionLevel is not in the range [{@value #MIN_COMPRESSION_LEVEL}, {@link ZstdConstants#ZSTD_CLEVEL_MAX}]
-     */
-    private static int checkCompressionLevel(final int compressionLevel) {
-        final int minCompressionLevel = MIN_COMPRESSION_LEVEL;
-        final int maxCompressionLevel = ZstdConstants.ZSTD_CLEVEL_MAX;
-
-        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
-            if (compressionLevel < 0) {
-                throw new IllegalArgumentException(
-                        "Negative Zstd fast-compression levels are not yet supported by Log4j2 (got: "
-                                + compressionLevel
-                                + "). Only the standard range ["
-                                + minCompressionLevel
-                                + ", "
-                                + maxCompressionLevel
-                                + "] is currently supported.");
-            }
-            throw new IllegalArgumentException("Zstd compression level must be in the range ["
-                    + minCompressionLevel
-                    + ", "
-                    + maxCompressionLevel
-                    + "], got: "
-                    + compressionLevel);
-        }
-        return compressionLevel;
-    }
-
-    /**
-     * Resolves the configured level: -1 is the rollover framework's "unspecified" sentinel, and 0 is the level
-     * Zstd itself reads as "use the default level".
+     * Resolves the configured level, falling back to the Zstd default for unsupported values.
      *
      * @param compressionLevel configured Zstandard compression level
      * @return the level to compress with
      */
     static int resolveCompressionLevel(final int compressionLevel) {
-        return compressionLevel == Deflater.DEFAULT_COMPRESSION || compressionLevel == 0
-                ? ZstdConstants.ZSTD_CLEVEL_DEFAULT
-                : compressionLevel;
+        if (compressionLevel == Deflater.DEFAULT_COMPRESSION || compressionLevel == 0) {
+            return ZstdConstants.ZSTD_CLEVEL_DEFAULT;
+        }
+        final int minCompressionLevel = MIN_COMPRESSION_LEVEL;
+        final int maxCompressionLevel = ZstdConstants.ZSTD_CLEVEL_MAX;
+
+        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
+            LOGGER.warn(
+                    "Unsupported Zstd compression level {}; using default level {}.",
+                    compressionLevel,
+                    ZstdConstants.ZSTD_CLEVEL_DEFAULT);
+            return ZstdConstants.ZSTD_CLEVEL_DEFAULT;
+        }
+        return compressionLevel;
     }
 
     /**
@@ -105,16 +83,10 @@ public final class ZstdCompressAction extends AbstractCompressAction {
         this.compressionLevel = compressionLevel;
     }
 
-    /** Validates the resolved Zstandard compression level. */
-    @Override
-    protected void validateCompressionLevel() {
-        checkCompressionLevel(resolveCompressionLevel(compressionLevel));
-    }
-
     @Override
     protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
         // -1 (Deflater.DEFAULT_COMPRESSION) is the framework-wide sentinel for an unspecified compression level.
-        // Zstd uses -1 as a distinct fast-compression level, so map the sentinel to Zstd's default level here.
+        // Zstd uses -1 as a distinct fast-compression level, so resolve it to Zstd's default level here.
         final int level = resolveCompressionLevel(compressionLevel);
         return ZstdCompressorOutputStream.builder()
                 .setOutputStream(output)

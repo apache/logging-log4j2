@@ -64,31 +64,9 @@ public final class CompressActionSupport {
             final boolean deleteSource,
             final CompressorOutputStreamFactory compressorOutputStreamFactory)
             throws IOException {
-        return execute(source, destination, deleteSource, () -> {}, compressorOutputStreamFactory);
-    }
-
-    /**
-     * Compresses a source file after running a pre-compression action.
-     *
-     * @param source source file
-     * @param destination destination file
-     * @param deleteSource whether to delete the source file after successful compression
-     * @param compressionLevelValidator action to run after checking the source exists and before compression
-     * @param compressorOutputStreamFactory factory for the compressor output stream
-     * @return {@code true} if the source file was compressed
-     * @throws IOException if an I/O error occurs
-     */
-    public static boolean execute(
-            final File source,
-            final File destination,
-            final boolean deleteSource,
-            final Runnable compressionLevelValidator,
-            final CompressorOutputStreamFactory compressorOutputStreamFactory)
-            throws IOException {
         if (!source.exists()) {
             return false;
         }
-        compressionLevelValidator.run();
         try (final FileInputStream input = new FileInputStream(source);
                 final FileOutputStream fileOutput = new FileOutputStream(destination);
                 final OutputStream compressorOutput = compressorOutputStreamFactory.create(fileOutput);

@@ -34,23 +34,23 @@ public final class DeflateCompressAction extends AbstractCompressAction {
         this.compressionLevel = compressionLevel;
     }
 
-    @Override
-    protected void validateCompressionLevel() {
+    private int resolveCompressionLevel() {
         if (compressionLevel < Deflater.DEFAULT_COMPRESSION || compressionLevel > Deflater.BEST_COMPRESSION) {
-            throw new IllegalArgumentException("Deflate compression level must be in the range ["
-                    + Deflater.DEFAULT_COMPRESSION
-                    + ", "
-                    + Deflater.BEST_COMPRESSION
-                    + "], got: "
-                    + compressionLevel);
+            LOGGER.warn(
+                    "Unsupported Deflate compression level {}; using default level {}.",
+                    compressionLevel,
+                    Deflater.DEFAULT_COMPRESSION);
+            return Deflater.DEFAULT_COMPRESSION;
         }
+        return compressionLevel;
     }
 
     @Override
     protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
         final DeflateParameters parameters = new DeflateParameters();
-        if (compressionLevel != Deflater.DEFAULT_COMPRESSION) {
-            parameters.setCompressionLevel(compressionLevel);
+        final int level = resolveCompressionLevel();
+        if (level != Deflater.DEFAULT_COMPRESSION) {
+            parameters.setCompressionLevel(level);
         }
         return new DeflateCompressorOutputStream(output, parameters);
     }

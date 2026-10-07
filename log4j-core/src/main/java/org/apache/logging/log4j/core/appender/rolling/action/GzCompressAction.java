@@ -53,17 +53,16 @@ public final class GzCompressAction extends AbstractAction {
      */
     private final int compressionLevel;
 
-    private static int checkCompressionLevel(final int compressionLevel) {
+    private static int resolveCompressionLevel(final int compressionLevel) {
         final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
         final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
 
         if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
-            throw new IllegalArgumentException("GZIP compression level must be in the range ["
-                    + minCompressionLevel
-                    + ", "
-                    + maxCompressionLevel
-                    + "], got: "
-                    + compressionLevel);
+            LOGGER.warn(
+                    "Unsupported GZIP compression level {}; using default level {}.",
+                    compressionLevel,
+                    Deflater.DEFAULT_COMPRESSION);
+            return Deflater.DEFAULT_COMPRESSION;
         }
         return compressionLevel;
     }
@@ -143,8 +142,8 @@ public final class GzCompressAction extends AbstractAction {
                 source,
                 destination,
                 deleteSource,
-                () -> checkCompressionLevel(compressionLevel),
-                output -> new ConfigurableLevelGZIPOutputStream(output, BUF_SIZE, compressionLevel));
+                output -> new ConfigurableLevelGZIPOutputStream(
+                        output, BUF_SIZE, resolveCompressionLevel(compressionLevel)));
     }
 
     private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {

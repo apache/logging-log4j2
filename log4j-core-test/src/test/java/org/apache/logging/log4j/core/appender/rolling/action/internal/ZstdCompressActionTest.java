@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action.internal;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -52,32 +51,42 @@ class ZstdCompressActionTest {
      * https://github.com/apache/logging-log4j2/discussions/2950.
      */
     @Test
-    void testRejectsUnsupportedNegativeLevelWhenExecuted(@TempDir File tempDir) {
+    void testFallsBackFromUnsupportedNegativeLevel(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-neg.log");
         File dest = new File(tempDir, "invalid-neg.log.zst");
+        writeContent(source, "invalid negative compression level");
         ZstdCompressAction action = new ZstdCompressAction(source, dest, true, -2);
 
-        assertThrows(IllegalArgumentException.class, action::execute);
+        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(-2));
+        assertTrue(action.execute());
+        assertTrue(dest.exists());
+        assertFalse(source.exists());
     }
 
     @Test
-    void testRejectsCompressionLevelAboveMax(@TempDir File tempDir) {
+    void testFallsBackFromCompressionLevelAboveMax(@TempDir File tempDir) throws IOException {
         // Level 23 is above the currently supported maximum level (22)
         File source = new File(tempDir, "invalid-high.log");
         File dest = new File(tempDir, "invalid-high.log.zst");
+        writeContent(source, "invalid high compression level");
         ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 23);
 
-        assertThrows(IllegalArgumentException.class, action::execute);
+        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(23));
+        assertTrue(action.execute());
+        assertTrue(dest.exists());
+        assertFalse(source.exists());
     }
 
     @Test
-    void testInvalidCompressionLevelDoesNotEscapeActionRunner(@TempDir File tempDir) {
+    void testUnsupportedCompressionLevelDoesNotEscapeActionRunner(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid.log");
         File dest = new File(tempDir, "invalid.log.zst");
-        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 0);
+        writeContent(source, "unsupported compression level");
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, -2);
 
         assertDoesNotThrow(action::run);
         assertTrue(action.isComplete());
+        assertTrue(dest.exists());
     }
 
     /**

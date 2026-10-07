@@ -166,7 +166,7 @@ class RollingFileManagerTest {
     @UsingStatusListener
     @ParameterizedTest
     @CsvSource({"bz2, -2", "bz2, 10", "deflate, -2", "deflate, 10", "gz, -2", "gz, 10", "zip, -2", "zip, 10"})
-    void testInvalidCompressionLevelLogsAfterAsynchronousRollover(
+    void testUnsupportedCompressionLevelFallsBackAfterAsynchronousRollover(
             final String extension,
             final String compressionLevel,
             @TempDir final File tempDir,
@@ -209,10 +209,12 @@ class RollingFileManagerTest {
         }
 
         assertTrue(activeFile.exists());
-        assertTrue(renamedFile.exists());
-        assertFalse(compressedFile.exists());
-        assertTrue(statusListener.findStatusData(Level.WARN).anyMatch(data -> data.getFormattedStatus()
-                .contains("IllegalArgumentException")));
+        assertFalse(renamedFile.exists());
+        assertTrue(compressedFile.exists());
+        assertTrue(statusListener
+                .findStatusData(Level.WARN)
+                .anyMatch(data -> data.getFormattedStatus().contains("Unsupported")
+                        && data.getFormattedStatus().contains("using default level")));
     }
 
     @Test
