@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -25,8 +23,6 @@ import org.apache.logging.log4j.util.Strings;
  * Creates an SSL configuration from Log4j properties.
  */
 public class SslConfigurationFactory {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String trustStorelocation = "log4j2.trustStoreLocation";
     private static final String trustStorePassword = "log4j2.trustStorePassword";
@@ -50,40 +46,26 @@ public class SslConfigurationFactory {
         if (Strings.isNotEmpty(location) || storeType != null) {
             final String password = props.getStringProperty(trustStorePassword);
             final char[] passwordChars = getPassword(password, storeType);
-            try {
-                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(
-                        Strings.trimToNull(location),
-                        passwordChars,
-                        props.getStringProperty(trustStorePasswordEnvVar),
-                        props.getStringProperty(trustStorePasswordFile),
-                        storeType,
-                        props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
-            } catch (Exception ex) {
-                LOGGER.warn(
-                        "Unable to create trust store configuration due to: {} {}",
-                        ex.getClass().getName(),
-                        ex.getMessage());
-            }
+            trustStoreConfiguration = TrustStoreConfiguration.createOrRecordFailure(
+                    Strings.trimToNull(location),
+                    passwordChars,
+                    props.getStringProperty(trustStorePasswordEnvVar),
+                    props.getStringProperty(trustStorePasswordFile),
+                    storeType,
+                    props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
         }
         location = props.getStringProperty(keyStoreLocation);
         storeType = props.getStringProperty(keyStoreType);
         if (Strings.isNotEmpty(location) || storeType != null) {
             final String password = props.getStringProperty(keyStorePassword);
             final char[] passwordChars = getPassword(password, storeType);
-            try {
-                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(
-                        Strings.trimToNull(location),
-                        passwordChars,
-                        props.getStringProperty(keyStorePasswordEnvVar),
-                        props.getStringProperty(keyStorePasswordFile),
-                        storeType,
-                        props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
-            } catch (Exception ex) {
-                LOGGER.warn(
-                        "Unable to create key store configuration due to: {} {}",
-                        ex.getClass().getName(),
-                        ex.getMessage());
-            }
+            keyStoreConfiguration = KeyStoreConfiguration.createOrRecordFailure(
+                    Strings.trimToNull(location),
+                    passwordChars,
+                    props.getStringProperty(keyStorePasswordEnvVar),
+                    props.getStringProperty(keyStorePasswordFile),
+                    storeType,
+                    props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
             final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);

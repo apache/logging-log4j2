@@ -46,6 +46,17 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
                 : trustManagerFactoryAlgorithm;
     }
 
+    private TrustStoreConfiguration(
+            final String location,
+            final String keyStoreType,
+            final String trustManagerFactoryAlgorithm,
+            final StoreConfigurationException loadFailure) {
+        super(location, keyStoreType, loadFailure);
+        this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null
+                ? TrustManagerFactory.getDefaultAlgorithm()
+                : trustManagerFactoryAlgorithm;
+    }
+
     /**
      * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
      */
@@ -93,7 +104,6 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @return a new TrustStoreConfiguration
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
      */
-    @PluginFactory
     public static TrustStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             @PluginAttribute("location") final String location,
@@ -124,6 +134,35 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
             return new TrustStoreConfiguration(location, provider, keyStoreType, trustManagerFactoryAlgorithm);
         } catch (final Exception ex) {
             throw new StoreConfigurationException("Could not configure TrustStore", ex);
+        }
+    }
+
+    @PluginFactory
+    static TrustStoreConfiguration createOrRecordFailure(
+            // @formatter:off
+            @PluginAttribute("location") final String location,
+            @PluginAttribute(value = "password", sensitive = true) final char[] password,
+            @PluginAttribute("passwordEnvironmentVariable") final String passwordEnvironmentVariable,
+            @PluginAttribute("passwordFile") final String passwordFile,
+            @PluginAttribute("type") final String keyStoreType,
+            @PluginAttribute("trustManagerFactoryAlgorithm") final String trustManagerFactoryAlgorithm) {
+        // @formatter:on
+        try {
+            return createKeyStoreConfiguration(
+                    location,
+                    password,
+                    passwordEnvironmentVariable,
+                    passwordFile,
+                    keyStoreType,
+                    trustManagerFactoryAlgorithm);
+        } catch (final StoreConfigurationException error) {
+            return new TrustStoreConfiguration(location, keyStoreType, trustManagerFactoryAlgorithm, error);
+        } catch (final IllegalStateException error) {
+            return new TrustStoreConfiguration(
+                    location,
+                    keyStoreType,
+                    trustManagerFactoryAlgorithm,
+                    new StoreConfigurationException(error.getMessage(), error));
         }
     }
 
