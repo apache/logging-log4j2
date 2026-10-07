@@ -110,6 +110,22 @@ class RollingAppenderRandomDelayTest {
     }
 
     @Test
+    void testRollingFileManagerRunsAsyncActionDelayedPastIdleThreadTimeout(@TempDir File tempDir) throws Exception {
+        final long delayMillis = 1500;
+        final CountDownLatch completed = new CountDownLatch(1);
+        final RecordingAction action = new RecordingAction(new AtomicInteger(), completed);
+        final RolloverStrategy strategy =
+                manager -> new RolloverDescriptionImpl(manager.getFileName(), false, null, action);
+        final File file = new File(tempDir, "delayed.log");
+
+        try (TestRollingFileManager manager = new TestRollingFileManager(file, strategy, delayMillis)) {
+            manager.rollover();
+
+            assertTrue(completed.await(5, TimeUnit.SECONDS), "Delayed async rollover action did not run");
+        }
+    }
+
+    @Test
     void testRollingFileManagerUsesNoAsyncActionDelayByDefault(@TempDir File tempDir) {
         final RolloverStrategy strategy =
                 manager -> new RolloverDescriptionImpl(manager.getFileName(), false, null, null);
