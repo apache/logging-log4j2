@@ -382,7 +382,7 @@ dependencies {
   // Assuming `log4j-bom`, `log4j-core`, and `log4j-layout-template-json` is added
 
   // SLF4J-to-Log4j bridge // <2>
-  runtimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
+  testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j2-impl' // <1>
 
 }
 ----
