@@ -20,12 +20,16 @@ import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.RemoteEndpointAwareJdkSSLOptions;
 import com.datastax.driver.core.Session;
+import io.netty.channel.socket.SocketChannel;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
@@ -35,6 +39,7 @@ import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -44,6 +49,7 @@ import org.apache.logging.log4j.util.Strings;
 public class CassandraManager extends AbstractDatabaseManager {
 
     private static final int DEFAULT_PORT = 9042;
+    private static final String VERIFY_HOST_NAME_PROPERTY = "log4j2.sslVerifyHostName";
 
     private final Cluster cluster;
     private final String keyspace;
@@ -172,7 +178,11 @@ public class CassandraManager extends AbstractDatabaseManager {
                     .addContactPointsWithPorts(data.contactPoints)
                     .withClusterName(data.clusterName);
             if (data.useTls) {
-                builder.withSSL();
+                if (PropertiesUtil.getProperties().getBooleanProperty(VERIFY_HOST_NAME_PROPERTY, false)) {
+                    builder.withSSL(new HostnameVerifyingSSLOptions());
+                } else {
+                    builder.withSSL();
+                }
             }
             if (Strings.isNotBlank(data.username)) {
                 builder.withCredentials(data.username, data.password);
@@ -210,6 +220,22 @@ public class CassandraManager extends AbstractDatabaseManager {
                     insertQueryTemplate,
                     columnMappings,
                     data.batched ? new BatchStatement(data.batchType) : null);
+        }
+    }
+
+    private static final class HostnameVerifyingSSLOptions extends RemoteEndpointAwareJdkSSLOptions {
+
+        private HostnameVerifyingSSLOptions() {
+            super(null, null);
+        }
+
+        @Override
+        protected SSLEngine newSSLEngine(final SocketChannel channel, final InetSocketAddress remoteEndpoint) {
+            final SSLEngine engine = super.newSSLEngine(channel, remoteEndpoint);
+            final SSLParameters sslParameters = engine.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            engine.setSSLParameters(sslParameters);
+            return engine;
         }
     }
 
