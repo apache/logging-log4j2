@@ -34,9 +34,15 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
     private static final long JVM_START_TIME = initStartTime();
 
     private final long minSize;
+    private final long startTime;
 
     private OnStartupTriggeringPolicy(final long minSize) {
+        this(minSize, JVM_START_TIME);
+    }
+
+    OnStartupTriggeringPolicy(final long minSize, final long startTime) {
         this.minSize = minSize;
+        this.startTime = startTime;
     }
 
     /**
@@ -77,7 +83,12 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        if (manager.getFileTime() < JVM_START_TIME && manager.getFileSize() >= minSize) {
+        // The manager rounds the time of an existing file to the nearest second.
+        // The same must be done to the start time, or a file created by this JVM just after the start of a second
+        // would look older than the JVM.
+        if (RollingFileManager.alignMillisToSecond(manager.getFileTime())
+                        < RollingFileManager.alignMillisToSecond(startTime)
+                && manager.getFileSize() >= minSize) {
             StatusLogger.getLogger().debug("Initiating rollover at startup");
             if (minSize == 0) {
                 manager.setRenameEmptyFiles(true);
