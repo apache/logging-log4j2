@@ -19,6 +19,10 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -38,6 +42,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
@@ -119,5 +125,33 @@ class OnStartupTriggeringPolicyTest {
             assertTrue(Files.exists(rolled), "Missing: " + rolled + ", files on disk = " + files);
             assertEquals(size, Files.size(rolled), rolled.toString());
         }
+    }
+
+    /**
+     * {@link RollingFileManager} rounds the time of an existing file to the nearest second, but not the time it sets
+     * after a rollover.
+     * A file created by the running JVM must never look older than the JVM, whichever of the two applies.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // Created by this JVM in the first half of its start second, so the file time was rounded down.
+        "1755031147200, 1755031147000, false",
+        // Created by this JVM right after a rollover, so the file time is not rounded and the start time rounds up.
+        "1755031147600, 1755031147900, false",
+        // Created by this JVM exactly at its start.
+        "1755031147000, 1755031147000, false",
+        // Created by an earlier process.
+        "1755031147200, 1755031146000, true",
+        "1755031147600, 1755031147000, true",
+    })
+    void testPolicyDoesNotRolloverFileCreatedByThisJvm(
+            final long startTime, final long fileTime, final boolean expectedRollover) {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(fileTime);
+        when(manager.getFileSize()).thenReturn(1L);
+
+        new OnStartupTriggeringPolicy(1, startTime).initialize(manager);
+
+        verify(manager, times(expectedRollover ? 1 : 0)).rollover();
     }
 }
