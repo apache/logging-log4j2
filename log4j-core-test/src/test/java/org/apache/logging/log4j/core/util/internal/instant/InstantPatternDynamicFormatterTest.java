@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DynamicPatternSequence;
@@ -374,11 +375,33 @@ class InstantPatternDynamicFormatterTest {
     @MethodSource("formatterInputs")
     void output_should_match_DateTimeFormatter(
             final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
+        assertOutputMatchesDateTimeFormatter(pattern, locale, timeZone, instant);
+    }
+
+    @ParameterizedTest
+    @MethodSource("formatterInputsBeforeTheEpoch")
+    void output_before_the_epoch_should_match_DateTimeFormatter(
+            final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
+        assertOutputMatchesDateTimeFormatter(pattern, locale, timeZone, instant);
+    }
+
+    private static void assertOutputMatchesDateTimeFormatter(
+            final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
         final String log4jOutput = formatInstant(pattern, locale, timeZone, instant);
         final String javaOutput = DateTimeFormatter.ofPattern(pattern, locale)
                 .withZone(timeZone.toZoneId())
                 .format(instant);
         assertThat(log4jOutput).isEqualTo(javaOutput);
+    }
+
+    static Stream<Arguments> formatterInputsBeforeTheEpoch() {
+        return Stream.of("s", "ss", "mm:ss", "HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss,SSSSSS", "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+                .flatMap(pattern -> LongStream.of(-1, -59, -60, -61, -3_599, -3_601, -86_401, -1_000_000_000L)
+                        .mapToObj(epochSecond -> {
+                            final MutableInstant instant = new MutableInstant();
+                            instant.initFromEpochSecond(epochSecond, 123_456_789);
+                            return Arguments.of(pattern, Locale.US, TimeZone.getTimeZone("Europe/Paris"), instant);
+                        }));
     }
 
     static Stream<Arguments> formatterInputs() {

@@ -90,7 +90,8 @@ public class MutableInstant implements Instant, Serializable, TemporalAccessor {
      */
     public void initFromEpochMilli(final long epochMilli, final int nanoOfMillisecond) {
         validateNanoOfMillisecond(nanoOfMillisecond);
-        this.epochSecond = epochMilli / MILLIS_PER_SECOND;
+        // Floor division, so that `nanoOfSecond` is not negative for instants before the epoch
+        this.epochSecond = Math.floorDiv(epochMilli, (long) MILLIS_PER_SECOND);
         this.nanoOfSecond =
                 (int) (epochMilli - (epochSecond * MILLIS_PER_SECOND)) * NANOS_PER_MILLI + nanoOfMillisecond;
     }
