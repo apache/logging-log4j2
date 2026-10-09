@@ -923,7 +923,10 @@ A logger conversion specifier can be optionally followed by a _precision specifi
 If the number is positive, the layout prints the corresponding number of the rightmost logger name components.
 If negative, the layout removes the corresponding number of leftmost logger name components.
 * If the precision contains periods then the number before the first period identifies the length to be printed from items that precede tokens in the rest of the pattern.
-If the number after the first period is followed by an asterisk it indicates how many of the rightmost tokens will be printed in full.
+Each numeric token is the maximum number of characters to print from the corresponding name component; a component that is not longer than its number is printed in full.
+A token consisting of an asterisk (`*`) prints its component in full, as does every remaining component.
+For example, in `%c{1.2.*}` the first component is abbreviated to 1 character, the second to 2 characters, and `commons`, `test` and `Foo` are printed in full.
+The rightmost component is subject to the last token as well, so `%c{1.2}` applied to `org.apache.commons.test.Foo` produces `o.ap.co.te.Foo`.
 * If the precision contains any non-integer characters, then the layout abbreviates the name based on the pattern.
 If the precision integer is less than one, the layout still prints the right-most token in full.
 
@@ -977,15 +980,15 @@ See the table below for abbreviation examples:
 
 |%c{1.2.*}
 |org.apache.commons.test.Foo
-|o.a.c.test.Foo
+|o.ap.commons.test.Foo
 
 |%c{1.3.*}
 |org.apache.commons.test.Foo
-|o.a.commons.test.Foo
+|o.apa.commons.test.Foo
 
 |%c{1.8.*}
 |org.apache.commons.test.Foo
-|org.apache.commons.test.Foo
+|o.apache.commons.test.Foo
 |===
 
 [#converter-marker]
