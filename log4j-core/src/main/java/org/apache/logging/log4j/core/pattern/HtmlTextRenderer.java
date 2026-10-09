@@ -16,22 +16,24 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.util.Transform;
+
 /**
- * TODO Renders an input as HTML output.
+ * Renders an input as HTML-escaped text, the same way {@link org.apache.logging.log4j.core.layout.HtmlLayout} does.
  */
 public final class HtmlTextRenderer implements TextRenderer {
 
     public HtmlTextRenderer(final String[] formats) {
-        // TODO Auto-generated constructor stub
+        // No options to process.
     }
 
     @Override
     public void render(final String input, final StringBuilder output, final String styleName) {
-        // TODO Auto-generated method stub
+        output.append(Transform.escapeHtmlTags(input));
     }
 
     @Override
     public void render(final StringBuilder input, final StringBuilder output) {
-        // TODO Auto-generated method stub
+        output.append(Transform.escapeHtmlTags(input.toString()));
     }
 }
