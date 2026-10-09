@@ -217,4 +217,28 @@ class MessagePatternConverterTest {
         converter.format(event, sb);
         assertEquals("type [id key=\"val\"] message", sb.toString(), "Unexpected result");
     }
+
+    @Test
+    void testHtmlOptionKeepsPlainMessage() {
+        assertEquals("Hello", formatWithHtmlOption(new SimpleMessage("Hello")));
+    }
+
+    @Test
+    void testHtmlOptionEscapesMarkup() {
+        final Message msg = new ParameterizedMessage("User {} said: {}", "<b>Tom & Jerry</b>", "\"it's\"");
+        assertEquals(
+                "User &lt;b&gt;Tom &amp; Jerry&lt;/b&gt; said: &quot;it&#39;s&quot;", formatWithHtmlOption(msg));
+    }
+
+    private static String formatWithHtmlOption(final Message msg) {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"html"});
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg)
+                .build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        return sb.toString();
+    }
 }
