@@ -53,6 +53,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     private static final long serialVersionUID = -5031471831131487120L;
 
+    private static final char BACKSLASH = '\\';
+
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
      */
@@ -387,7 +389,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      *            the first format specifier it recognizes. The supported formats are XML, JSON, and JAVA. The default
      *            format is key1="value1" key2="value2" as required by
      *            <a href="https://datatracker.ietf.org/doc/html/rfc5424">RFC 5424</a>
-     *            messages.
+     *            messages, where {@code "}, {@code \} and {@code ]} in a value are escaped with a backslash.
      *
      * @return The formatted message.
      */
@@ -409,15 +411,54 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         return null;
     }
 
+    /**
+     * Appends the entries as {@code key="value"} pairs separated by spaces.
+     * <p>
+     * As required for a {@code PARAM-VALUE} by
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.3">RFC 5424, section 6.3.3</a>,
+     * the characters {@code "}, {@code \} and {@code ]} in a value are escaped with a backslash.
+     * </p>
+     *
+     * @param sb the builder to append to
+     */
     protected void appendMap(final StringBuilder sb) {
         for (int i = 0; i < data.size(); i++) {
             if (i > 0) {
                 sb.append(' ');
             }
             sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            final int valueStart = sb.length();
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
+            escapeParamValue(sb, valueStart);
             sb.append(Chars.DQUOTE);
         }
+    }
+
+    private static void escapeParamValue(final StringBuilder sb, final int start) {
+        int escapeCount = 0;
+        for (int i = start; i < sb.length(); i++) {
+            if (isParamValueSpecial(sb.charAt(i))) {
+                escapeCount++;
+            }
+        }
+        if (escapeCount == 0) {
+            return;
+        }
+        // Shift characters right-to-left in place, so that the cost stays linear.
+        final int unescapedLength = sb.length();
+        sb.setLength(unescapedLength + escapeCount);
+        int writePos = sb.length() - 1;
+        for (int readPos = unescapedLength - 1; readPos >= start; readPos--) {
+            final char c = sb.charAt(readPos);
+            sb.setCharAt(writePos--, c);
+            if (isParamValueSpecial(c)) {
+                sb.setCharAt(writePos--, BACKSLASH);
+            }
+        }
+    }
+
+    private static boolean isParamValueSpecial(final char c) {
+        return c == Chars.DQUOTE || c == BACKSLASH || c == ']';
     }
 
     protected void asJson(final StringBuilder sb) {

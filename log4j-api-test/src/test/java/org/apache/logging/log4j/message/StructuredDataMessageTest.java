@@ -41,6 +41,13 @@ class StructuredDataMessageTest {
     }
 
     @Test
+    void testMsgEscapesParamValues() {
+        final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", "message", "Alert");
+        msg.put("key", "a] b=\"c\" \\");
+        assertEquals("Alert [MsgId@12345 key=\"a\\] b=\\\"c\\\" \\\\\"] message", msg.getFormattedMessage());
+    }
+
+    @Test
     void testMsgNonFull() {
         final String testMsg = "Test message {}";
         final StructuredDataMessage msg = new StructuredDataMessage("MsgId@12345", testMsg, "Alert");
