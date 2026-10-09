@@ -379,7 +379,7 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
     }
 
     private static long toEpochMinutes(final Instant instant) {
-        return instant.getEpochSecond() / 60;
+        return Math.floorDiv(instant.getEpochSecond(), 60L);
     }
 
     private static TemporalAccessor toTemporalAccessor(final Instant instant) {
@@ -780,11 +780,11 @@ final class InstantPatternDynamicFormatter implements InstantPatternFormatter {
         }
 
         private static void formatUnpaddedSeconds(StringBuilder buffer, Instant instant) {
-            buffer.append(instant.getEpochSecond() % 60L);
+            buffer.append(Math.floorMod(instant.getEpochSecond(), 60L));
         }
 
         private static void formatPaddedSeconds(StringBuilder buffer, Instant instant) {
-            long secondsInMinute = instant.getEpochSecond() % 60L;
+            long secondsInMinute = Math.floorMod(instant.getEpochSecond(), 60L);
             buffer.append((char) ((secondsInMinute / 10L) + '0'));
             buffer.append((char) ((secondsInMinute % 10L) + '0'));
         }
