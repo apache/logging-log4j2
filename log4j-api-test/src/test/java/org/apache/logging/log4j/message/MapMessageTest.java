@@ -234,6 +234,30 @@ class MapMessageTest {
     }
 
     @Test
+    void testDefaultFormatEscapesQuotes() {
+        final StringMapMessage msg = new StringMapMessage().with("key", "a\" other=\"b");
+        assertEquals("key=\"a\\\" other=\\\"b\"", msg.getFormattedMessage());
+    }
+
+    @Test
+    void testDefaultFormatEscapesBackslashes() {
+        final StringMapMessage msg = new StringMapMessage().with("key", "C:\\temp\\");
+        assertEquals("key=\"C:\\\\temp\\\\\"", msg.getFormattedMessage());
+    }
+
+    @Test
+    void testDefaultFormatEscapesClosingBrackets() {
+        final StringMapMessage msg = new StringMapMessage().with("key", "a] b");
+        assertEquals("key=\"a\\] b\"", msg.getFormattedMessage());
+    }
+
+    @Test
+    void testDefaultFormatLeavesOtherCharactersUntouched() {
+        final StringMapMessage msg = new StringMapMessage().with("key", "[a=b, c 'd' <e> {f} é");
+        assertEquals("key=\"[a=b, c 'd' <e> {f} é\"", msg.getFormattedMessage());
+    }
+
+    @Test
     void testJava() {
         final String testMsg = "Test message {}";
         final StringMapMessage msg = new StringMapMessage();
