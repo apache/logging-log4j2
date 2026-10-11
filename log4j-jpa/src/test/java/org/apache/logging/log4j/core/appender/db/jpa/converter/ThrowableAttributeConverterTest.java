@@ -95,6 +95,46 @@ class ThrowableAttributeConverterTest {
         assertNull(this.converter.convertToEntityAttribute(""), "The converted attribute should be null (2).");
     }
 
+    @Test
+    void testConvertDefaultConstructor() {
+        final DefaultConstructorException exception = new DefaultConstructorException();
+        final String converted = converter.convertToDatabaseColumn(exception);
+        final Throwable reversed = converter.convertToEntityAttribute(converted);
+
+        assertNotNull(reversed);
+        assertEquals(DefaultConstructorException.class, reversed.getClass());
+        assertEquals(exception.getMessage(), reversed.getMessage());
+        assertNull(reversed.getCause());
+        assertEquals(getStackTrace(exception), getStackTrace(reversed));
+    }
+
+    @Test
+    void testConvertDefaultConstructorWithCause() {
+        final DefaultConstructorException exception = new DefaultConstructorException();
+        exception.initCause(new IllegalArgumentException("Original cause."));
+        final String converted = converter.convertToDatabaseColumn(exception);
+        final Throwable reversed = converter.convertToEntityAttribute(converted);
+
+        assertNotNull(reversed);
+        assertEquals(DefaultConstructorException.class, reversed.getClass());
+        assertEquals(exception.getMessage(), reversed.getMessage());
+        assertNotNull(reversed.getCause());
+        assertEquals(getStackTrace(exception), getStackTrace(reversed));
+    }
+
+    @Test
+    void testConvertNoMessageDefaultConstructor() {
+        final NoMessageDefaultConstructorException exception = new NoMessageDefaultConstructorException();
+        final String converted = converter.convertToDatabaseColumn(exception);
+        final Throwable reversed = converter.convertToEntityAttribute(converted);
+
+        assertNotNull(reversed);
+        assertEquals(NoMessageDefaultConstructorException.class, reversed.getClass());
+        assertNull(reversed.getMessage());
+        assertNull(reversed.getCause());
+        assertEquals(getStackTrace(exception), getStackTrace(reversed));
+    }
+
     private static String getStackTrace(final Throwable throwable) {
         String returnValue = throwable.toString() + '\n';
 
@@ -107,5 +147,19 @@ class ThrowableAttributeConverterTest {
         }
 
         return returnValue;
+    }
+
+    public static class DefaultConstructorException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public DefaultConstructorException() {
+            super("Message from default constructor.");
+        }
+    }
+
+    public static class NoMessageDefaultConstructorException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public NoMessageDefaultConstructorException() {}
     }
 }
