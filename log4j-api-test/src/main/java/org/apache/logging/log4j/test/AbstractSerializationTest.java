@@ -20,29 +20,22 @@ import static org.apache.logging.log4j.test.SerializableMatchers.serializesRound
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.Serializable;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
 
 /**
  * Subclasses tests {@link Serializable} objects.
  */
-@RunWith(Parameterized.class)
 public abstract class AbstractSerializationTest {
 
-    private final Serializable serializable;
-
-    public AbstractSerializationTest(final Serializable serializable) {
-        this.serializable = serializable;
-    }
+    public AbstractSerializationTest() {}
 
     @Test
-    public void testSerializationRoundtripEquals() {
+    public void testSerializationRoundtripEquals(Serializable serializable) {
         assertThat(serializable, serializesRoundTrip(serializable));
     }
 
     @Test
-    public void testSerializationRoundtripNoException() {
+    public void testSerializationRoundtripNoException(Serializable serializable) {
         assertThat(serializable, serializesRoundTrip());
     }
 }
