@@ -240,10 +240,6 @@
     <!-- the parent POM must come first: -->
     <module>log4j-parent</module>
 
-    <!-- Next unpublished, but internally and *implicitly* (e.g., as a plugin dependency) consumed modules in alphabetical order: -->
-    <module>log4j-api-java9</module>
-    <module>log4j-core-java9</module>
-
     <!-- Last comes the rest of the modules in alphabetical order.
          Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
