@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.ReusableLogEvent;
+import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
@@ -43,44 +43,65 @@ import org.jspecify.annotations.Nullable;
  */
 public class Log4jLogEvent implements LogEvent {
 
-    private final Marker marker;
-    private final Level level;
-    private final String loggerName;
-    private Message message;
-    private final MutableInstant instant = new MutableInstant();
-    private final Throwable thrown;
-    private final StringMap contextData;
-    private final ThreadContext.ContextStack contextStack;
-    private long threadId;
-    private String threadName;
-    private int threadPriority;
-    private boolean endOfBatch = false;
-    /** @since Log4J 2.4 */
-    private final long nanoTime;
+    // 1. Fields with an immutable type, initialized in the constructor
     // Location data
     private final String loggerFqcn;
-    private @Nullable StackTraceElement source;
+    private final Level level;
+    private final String loggerName;
+    private final Marker marker;
+    private final Throwable thrown;
+    /** @since Log4J 2.4 */
+    private final long nanoTime;
+    // This field is mutable, but its state is not shared with other objects.
+    private final MutableInstant instant = new MutableInstant();
+
+    // 2. Fields with setters, initialized in the constructor.
+    private boolean endOfBatch;
     private boolean includeLocation;
+
+    // 3. Fields with an immutable type, initialized lazily.
+    //    These fields self-initialize if not provided.
+    private @Nullable StackTraceElement source;
+    private String threadName;
+    private long threadId;
+    private int threadPriority;
+
+    // 4. Fields with a potentially mutable type.
+    //    These fields can cause mutability problems for Log4jLogEvent.
+    private Message message;
+    private final StringMap contextData;
+    private final ThreadContext.ContextStack contextStack;
 
     /** LogEvent Builder helper class. */
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LogEvent> {
 
+        // 1. Fields with an immutable type, initialized eagerly.
+        //    These fields always keep the value assigned.
         private String loggerFqcn;
-        private Marker marker;
         private Level level;
         private String loggerName;
-        private Message message;
+        private Marker marker;
         private Throwable thrown;
-        private final MutableInstant instant = new MutableInstant();
-        private StringMap contextData;
-        private ThreadContext.ContextStack contextStack = ThreadContext.getImmutableStack();
-        private long threadId;
-        private String threadName;
-        private int threadPriority;
-        private StackTraceElement source;
+        private boolean endOfBatch;
         private boolean includeLocation;
-        private boolean endOfBatch = false;
         private long nanoTime;
+        // This field is mutable, but it is always copied.
+        private final MutableInstant instant = new MutableInstant();
+
+        // 2. Fields with an immutable type, initialized lazily.
+        //    These fields self-initialize if not provided.
+        private StackTraceElement source;
+        private String threadName;
+        private long threadId;
+        private int threadPriority;
+
+        // 3. Fields with a mutable type.
+        //    These fields require special handling.
+        private Message message;
+        private StringMap contextData;
+        private ThreadContext.ContextStack contextStack;
+
+        // 4. Fields with dependency-injected values.
         private Clock clock;
         private ContextDataInjector contextDataInjector;
 
@@ -88,49 +109,51 @@ public class Log4jLogEvent implements LogEvent {
             initDefaultContextData();
         }
 
+        /**
+         * Initializes the builder with an <strong>immutable</strong> instance or a copy of the log event fields.
+         *
+         * @param other The log event to copy.
+         */
         public Builder(final LogEvent other) {
             Objects.requireNonNull(other);
-            if (other instanceof ReusableLogEvent) {
-                ((ReusableLogEvent) other).initializeBuilder(this);
-                return;
-            }
+            // These can be safely copied, since the getters have no side effects.
             this.loggerFqcn = other.getLoggerFqcn();
-            this.marker = other.getMarker();
             this.level = other.getLevel();
             this.loggerName = other.getLoggerName();
-            this.message = other.getMessage();
-            this.instant.initFrom(other.getInstant());
+            this.marker = other.getMarker();
             this.thrown = other.getThrown();
-            this.contextStack = other.getContextStack();
-            this.includeLocation = other.isIncludeLocation();
             this.endOfBatch = other.isEndOfBatch();
+            this.includeLocation = other.isIncludeLocation();
             this.nanoTime = other.getNanoTime();
+            this.instant.initFrom(other.getInstant());
 
-            initDefaultContextData();
-            // Avoid unnecessarily initializing thrownProxy, threadName and source if possible
-            if (other instanceof Log4jLogEvent) {
-                final Log4jLogEvent evt = (Log4jLogEvent) other;
-                this.contextData = evt.contextData;
-                this.source = evt.source;
-                this.threadId = evt.threadId;
-                this.threadName = evt.threadName;
-                this.threadPriority = evt.threadPriority;
-            } else {
-                if (other.getContextData() instanceof StringMap) {
-                    this.contextData = (StringMap) other.getContextData();
-                } else {
-                    if (this.contextData.isFrozen()) {
-                        this.contextData = ContextDataFactory.createContextData();
-                    } else {
-                        this.contextData.clear();
-                    }
-                    this.contextData.putAll(other.getContextData());
-                }
-                this.source = other.getSource();
-                this.threadId = other.getThreadId();
-                this.threadName = other.getThreadName();
-                this.threadPriority = other.getThreadPriority();
-            }
+            // These getters are:
+            // * side-effect-free in RingBufferLogEvent and MutableLogEvent,
+            // * have side effects in Log4jLogEvent,
+            //   but since we are copying the event, we want to call them.
+            this.threadId = other.getThreadId();
+            this.threadPriority = other.getThreadPriority();
+            this.threadName = other.getThreadName();
+            // The `getSource()` method is:
+            // * side-effect-free in RingBufferLogEvent,
+            // * have side effects in Log4jLogEvent and MutableLogEvent,
+            //   but since we are copying the event, we want to call it.
+            this.source = other.getSource();
+
+            Message message = other.getMessage();
+            this.message = message instanceof ReusableMessage
+                    ? ((ReusableMessage) message).memento()
+                    : InternalAsyncUtil.makeMessageImmutable(message);
+
+            ReadOnlyStringMap contextData = other.getContextData();
+            this.contextData = contextData instanceof StringMap && ((StringMap) contextData).isFrozen()
+                    ? (StringMap) contextData
+                    : contextData != null
+                            ? ContextDataFactory.createContextData(contextData)
+                            : ContextDataFactory.emptyFrozenContextData();
+
+            // TODO: The immutability of the context stack is not checked.
+            this.contextStack = other.getContextStack();
         }
 
         public Builder setLevel(final Level level) {
@@ -260,8 +283,8 @@ public class Log4jLogEvent implements LogEvent {
 
         private void initTimeFields() {
             if (instant.getEpochMillisecond() == 0) {
-                if (message instanceof TimestampMessage) {
-                    instant.initFromEpochMilli(((TimestampMessage) message).getTimestamp(), 0);
+                if (message instanceof final TimestampMessage tm) {
+                    instant.initFromEpochMilli(tm.getTimestamp(), 0);
                 } else {
                     instant.initFrom(clock != null ? clock : ClockFactory.getClock());
                 }
@@ -271,6 +294,7 @@ public class Log4jLogEvent implements LogEvent {
         private void initDefaultContextData() {
             contextDataInjector = ContextDataInjectorFactory.createInjector();
             contextData = contextDataInjector.injectContextData(null, ContextDataFactory.createContextData());
+            contextStack = ThreadContext.getImmutableStack();
         }
     }
 
@@ -279,7 +303,7 @@ public class Log4jLogEvent implements LogEvent {
      * @return a new empty builder.
      */
     public static Builder newBuilder() {
-        return new Builder().setLoggerName(Strings.EMPTY);
+        return new Builder();
     }
 
     public Log4jLogEvent() {
@@ -333,12 +357,11 @@ public class Log4jLogEvent implements LogEvent {
         this.threadName = threadName;
         this.threadPriority = threadPriority;
         this.source = source;
-        if (message instanceof LoggerNameAwareMessage) {
-            ((LoggerNameAwareMessage) message).setLoggerName(loggerName);
+        if (message instanceof final LoggerNameAwareMessage awareMessage) {
+            awareMessage.setLoggerName(loggerName);
         }
         this.nanoTime = nanoTime;
-        final long millis =
-                message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : timestampMillis;
+        final long millis = message instanceof final TimestampMessage tm ? tm.getTimestamp() : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);
     }
 
@@ -355,7 +378,15 @@ public class Log4jLogEvent implements LogEvent {
         if (getMessage() instanceof ReusableMessage) {
             makeMessageImmutable();
         }
+        populateLazilyInitializedFields();
         return this;
+    }
+
+    private void populateLazilyInitializedFields() {
+        getSource();
+        getThreadId();
+        getThreadPriority();
+        getThreadName();
     }
 
     /**
@@ -386,7 +417,9 @@ public class Log4jLogEvent implements LogEvent {
     }
 
     public void makeMessageImmutable() {
-        message = new MementoMessage(message.getFormattedMessage(), message.getFormat(), message.getParameters());
+        message = message instanceof ReusableMessage reusable
+                ? reusable.memento()
+                : InternalAsyncUtil.makeMessageImmutable(message);
     }
 
     @Override
@@ -526,7 +559,7 @@ public class Log4jLogEvent implements LogEvent {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        final String n = loggerName.isEmpty() ? LoggerConfig.ROOT : loggerName;
+        final String n = Strings.isEmpty(loggerName) ? LoggerConfig.ROOT : loggerName;
         sb.append("Logger=").append(n);
         sb.append(" Level=").append(level.name());
         sb.append(" Message=").append(message == null ? null : message.getFormattedMessage());
@@ -556,66 +589,60 @@ public class Log4jLogEvent implements LogEvent {
         if (nanoTime != that.nanoTime) {
             return false;
         }
-        if (loggerFqcn != null ? !loggerFqcn.equals(that.loggerFqcn) : that.loggerFqcn != null) {
+        if (!Objects.equals(loggerFqcn, that.loggerFqcn)) {
             return false;
         }
-        if (level != null ? !level.equals(that.level) : that.level != null) {
+        if (!Objects.equals(level, that.level)) {
             return false;
         }
-        if (source != null ? !source.equals(that.source) : that.source != null) {
+        if (!Objects.equals(source, that.source)) {
             return false;
         }
-        if (marker != null ? !marker.equals(that.marker) : that.marker != null) {
+        if (!Objects.equals(marker, that.marker)) {
             return false;
         }
-        if (contextData != null ? !contextData.equals(that.contextData) : that.contextData != null) {
+        if (!Objects.equals(contextData, that.contextData)) {
             return false;
         }
         if (!message.equals(that.message)) {
             return false;
         }
-        if (!loggerName.equals(that.loggerName)) {
+        if (!Objects.equals(loggerName, that.loggerName)) {
             return false;
         }
-        if (contextStack != null ? !contextStack.equals(that.contextStack) : that.contextStack != null) {
+        if (!Objects.equals(contextStack, that.contextStack)) {
             return false;
         }
         if (threadId != that.threadId) {
             return false;
         }
-        if (threadName != null ? !threadName.equals(that.threadName) : that.threadName != null) {
+        if (!Objects.equals(threadName, that.threadName)) {
             return false;
         }
         if (threadPriority != that.threadPriority) {
             return false;
         }
-        if (!Objects.equals(thrown, that.thrown)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(thrown, that.thrown);
     }
 
     @Override
     public int hashCode() {
-        // Check:OFF: MagicNumber
-        int result = loggerFqcn != null ? loggerFqcn.hashCode() : 0;
-        result = 31 * result + (marker != null ? marker.hashCode() : 0);
-        result = 31 * result + (level != null ? level.hashCode() : 0);
-        result = 31 * result + loggerName.hashCode();
-        result = 31 * result + message.hashCode();
-        result = 31 * result + instant.hashCode();
-        result = 31 * result + (int) (nanoTime ^ (nanoTime >>> 32));
-        result = 31 * result + (thrown != null ? thrown.hashCode() : 0);
-        result = 31 * result + (contextData != null ? contextData.hashCode() : 0);
-        result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
-        result = 31 * result + (int) (threadId ^ (threadId >>> 32));
-        result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
-        result = 31 * result + threadPriority;
-        result = 31 * result + (source != null ? source.hashCode() : 0);
-        result = 31 * result + (includeLocation ? 1 : 0);
-        result = 31 * result + (endOfBatch ? 1 : 0);
-        // Check:ON: MagicNumber
-        return result;
+        return Objects.hash(
+                loggerFqcn,
+                marker,
+                level,
+                loggerName,
+                message,
+                instant,
+                nanoTime,
+                thrown,
+                contextData,
+                contextStack,
+                threadId,
+                threadName,
+                threadPriority,
+                source,
+                includeLocation,
+                endOfBatch);
     }
 }
