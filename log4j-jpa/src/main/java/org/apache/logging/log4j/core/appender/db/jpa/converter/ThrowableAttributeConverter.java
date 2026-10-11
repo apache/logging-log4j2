@@ -174,7 +174,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
                 if (throwable == null) {
                     throwable = this.getThrowable(throwableClass);
                     if (throwable != null) {
-                        THROWABLE_MESSAGE.set(throwable, cause);
+                        THROWABLE_MESSAGE.set(throwable, message);
                     }
                 }
             } else {
