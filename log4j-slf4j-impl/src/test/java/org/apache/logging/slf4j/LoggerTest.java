@@ -25,6 +25,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.message.AbstractMessageFactory;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory2;
+import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.StringFormattedMessage;
+import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +54,77 @@ class LoggerTest {
     public LoggerTest(final LoggerContext context) {
         this.ctx = context;
         this.logger = LoggerFactory.getLogger("LoggerTest");
+    }
+
+    @Test
+    void locationAwareLoggerUsesConfiguredMessageFactory() {
+        final String name = "LoggerTest.CustomMessageFactory";
+        final Log4jLogger customLogger = new Log4jLogger(
+                new Log4jMarkerFactory(), ctx.getLogger(name, StringFormatterMessageFactory.INSTANCE), name);
+
+        final ListAppender list = getAppenderByName("UnformattedList");
+        list.clear();
+
+        // Control: regular logging honors the configured message factory.
+        customLogger.info("value=%s", "normal");
+
+        assertEquals(1, list.getEvents().size());
+        assertEquals(
+                StringFormattedMessage.class,
+                list.getEvents().get(0).getMessage().getClass());
+        assertEquals("value=normal", list.getEvents().get(0).getMessage().getFormattedMessage());
+
+        list.clear();
+
+        // Regression: location-aware logging must use the same factory.
+        customLogger.log(
+                null,
+                LoggerTest.class.getName(),
+                LocationAwareLogger.INFO_INT,
+                "value=%s",
+                new Object[] {"aware"},
+                null);
+
+        assertEquals(1, list.getEvents().size());
+        assertEquals(
+                StringFormattedMessage.class,
+                list.getEvents().get(0).getMessage().getClass());
+        assertEquals("value=aware", list.getEvents().get(0).getMessage().getFormattedMessage());
+    }
+
+    @Test
+    void locationAwareLoggerUsesConfiguredMessageFactoryWithoutParameters() {
+        final MessageFactory2 factory = new AbstractMessageFactory() {
+            @Override
+            public Message newMessage(final String message) {
+                return new ObjectMessage("factory:" + message);
+            }
+
+            @Override
+            public Message newMessage(final String message, final Object... params) {
+                return new ParameterizedMessage(message, params);
+            }
+        };
+
+        final String name = "LoggerTest.CustomNullParameterFactory";
+        final Log4jLogger customLogger = new Log4jLogger(new Log4jMarkerFactory(), ctx.getLogger(name, factory), name);
+
+        final ListAppender list = getAppenderByName("UnformattedList");
+        list.clear();
+
+        customLogger.info("plain");
+        assertEquals(1, list.getEvents().size());
+        assertEquals("factory:plain", list.getEvents().get(0).getMessage().getFormattedMessage());
+
+        list.clear();
+
+        final Throwable explicitThrowable = new IllegalStateException("expected");
+        customLogger.log(
+                null, LoggerTest.class.getName(), LocationAwareLogger.INFO_INT, "plain", null, explicitThrowable);
+
+        assertEquals(1, list.getEvents().size());
+        assertEquals("factory:plain", list.getEvents().get(0).getMessage().getFormattedMessage());
+        assertEquals(explicitThrowable, list.getEvents().get(0).getThrown());
     }
 
     @Test
