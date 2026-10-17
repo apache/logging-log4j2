@@ -17,12 +17,16 @@
 package org.apache.logging.log4j.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Class Description goes here.
@@ -170,5 +174,23 @@ public class CronExpressionTest {
         System.err.println(sdf.format(fireDate));
         final Date expected = new GregorianCalendar(2015, Calendar.NOVEMBER, 1, 0, 0, 0).getTime();
         assertEquals(expected, fireDate, "Dates not equal.");
+    }
+
+    @Test
+    public void testMinDateIsEpoch() {
+        assertEquals(0, CronExpression.MIN_DATE.getTime());
+        assertEquals(0, CronExpression.MIN_CAL.getTimeInMillis());
+    }
+
+    /**
+     * The first fire time in a zone west of UTC is after the epoch, so searching backwards from the epoch
+     * must stop at the epoch instead of looping forever.
+     */
+    @Test
+    @Timeout(value = 1, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+    public void testPrevFireTimeAtEpochReturnsNullPromptly() throws Exception {
+        final CronExpression parser = new CronExpression("* * * * * ?");
+        parser.setTimeZone(TimeZone.getTimeZone("America/Phoenix"));
+        assertNull(parser.getPrevFireTime(new Date(0)));
     }
 }
