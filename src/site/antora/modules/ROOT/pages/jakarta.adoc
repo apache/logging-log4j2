@@ -98,6 +98,12 @@ To do it, you must create a `web.xml` descriptor and add the `Log4jServletContex
 ----
 include::example$manual/webapp/web.xml[tag=context-listener]
 ----
+
+Context listeners are destroyed in reverse initialization order.
+Registering the Log4j listener first allows other listeners to log during their `contextDestroyed()` callbacks before Log4j shuts down.
+
+Since Log4j 2.21.0, this works alongside automatic listener registration;
+you do not need to set `isLog4jAutoShutdownDisabled` to `true`.
 ====
 
 [#log4j-jakarta-manual-instalation]
@@ -139,7 +145,17 @@ If set to `true`, the `Log4jServletContainerInitializer` will be disabled, which
 | Default value | `false`
 |===
 
-If set to `true`, the `Log4jServletContextListener` will not register a `Log4jServletContextListener` to handle the web application shut down.
+If set to `true`, the `Log4jServletContainerInitializer` will not register a `Log4jServletContextListener` to shut down Log4j when the web application stops.
+Automatic initialization remains enabled.
+
+You must arrange for Log4j to shut down, for example by registering
+`org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener`
+as the first listener in `web.xml`.
+Do not register `Log4jServletContextListener` when this parameter is `true`.
+
+If you only need logging during other listeners' `contextDestroyed()` callbacks,
+leave this parameter at its default value and follow the
+<<log4j-jakarta-web-installation,listener-ordering guidance>>.
 
 [id=log4j.stop.timeout.timeunit]
 ==== `log4j.stop.timeout.timeunit`
