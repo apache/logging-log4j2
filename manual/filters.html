@@ -398,9 +398,31 @@ e.g., log event creation, population of context data, formatting, transfer throu
 </div>
 <div class="sect2">
 <h3 id="logger-stage"><a class="anchor" href="#logger-stage"></a>1. <code>Logger</code> stage</h3>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../_images/diag-2158b7cc88b372c32a9592f8cdbc1cc926bb8b80.svg" alt="Diagram">
+<pre>@startuml
+start
+group Logger
+
+:A Logger method;
+
+switch (Apply global filter)
+case (DENY)
+    #pink:Discard;
+    detach
+case (ACCEPT)
+case (NEUTRAL)
+    if (Is less severe than logger level?) then (yes)
+        #pink:Discard;
+        detach
+    else (no)
+        ' The label improves spacing
+        label a1
+    endif
+endswitch
+end group
+:Create LogEvent;
+stop</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -472,9 +494,29 @@ or
 </div>
 <div class="sect2">
 <h3 id="logger-config-stage"><a class="anchor" href="#logger-config-stage"></a>2. <code>LoggerConfig</code> stage</h3>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../_images/diag-4d55aeb99a0ae8707b4121b1f76e9544af16b3c4.svg" alt="Diagram">
+<pre>@startuml
+start
+:LogEvent;
+
+group LoggerConfig
+repeat
+
+:LoggerConfig#log();
+
+if (Apply logger filter) then (DENY)
+    #pink:Discard;
+    detach
+else (not DENY)
+    ' The label improves spacing
+    label a1
+endif
+repeat while (Go to parent logger?) is (yes)
+-&gt; no;
+end group
+stop
+@enduml</pre>
 </div>
 </div>
 <div class="paragraph">
