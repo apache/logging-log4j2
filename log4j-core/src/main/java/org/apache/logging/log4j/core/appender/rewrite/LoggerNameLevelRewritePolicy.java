@@ -80,7 +80,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     @Override
     public LogEvent rewrite(final LogEvent event) {
-        if (event.getLoggerName() == null || !event.getLoggerName().startsWith(loggerName)) {
+        if (!matchesLoggerNameOrDescendant(event.getLoggerName())) {
             return event;
         }
         final Level sourceLevel = event.getLevel();
@@ -91,5 +91,20 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         final LogEvent result =
                 new Log4jLogEvent.Builder(event).setLevel(newLevel).build();
         return result;
+    }
+
+    /**
+     * Matches {@code eventLoggerName} against the configured {@link #loggerName} the same way the rest of
+     * Log4j treats logger-name hierarchy: either an exact match, or a true descendant separated by a '.'.
+     * A plain {@code startsWith} check would also match an unrelated sibling package that merely shares the
+     * same character prefix, e.g. a policy for {@code "com.foo"} would incorrectly also match
+     * {@code "com.foobar.Baz"}.
+     */
+    private boolean matchesLoggerNameOrDescendant(final String eventLoggerName) {
+        if (eventLoggerName == null || !eventLoggerName.startsWith(loggerName)) {
+            return false;
+        }
+        return eventLoggerName.length() == loggerName.length()
+                || eventLoggerName.charAt(loggerName.length()) == '.';
     }
 }

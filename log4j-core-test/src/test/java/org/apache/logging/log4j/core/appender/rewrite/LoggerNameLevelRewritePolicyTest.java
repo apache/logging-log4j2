@@ -85,4 +85,47 @@ class LoggerNameLevelRewritePolicyTest {
         rewritten = updatePolicy.rewrite(logEvent);
         assertEquals(Level.WARN, rewritten.getLevel());
     }
+
+    /**
+     * {@code rewrite} matches the configured logger name with
+     * {@link String#startsWith(String)}, so a policy configured for {@code "com.foo"} must not also match a
+     * sibling package such as {@code "com.foobar"}, which merely happens to share the same character prefix
+     * without being a sub-logger of it. It must still match a genuine child logger such as
+     * {@code "com.foo.Bar"}, consistent with every other logger-name-hierarchy feature in Log4j.
+     */
+    @Test
+    void testPrefixMatchRespectsLoggerHierarchyBoundary() {
+        final KeyValuePair[] rewrite = new KeyValuePair[] {new KeyValuePair("WARN", "DEBUG")};
+        final LoggerNameLevelRewritePolicy policy = LoggerNameLevelRewritePolicy.createPolicy("com.foo", rewrite);
+
+        final LogEvent siblingPackageEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("com.foobar.PaymentProcessor")
+                .setLevel(Level.WARN)
+                .setMessage(new SimpleMessage("Test"))
+                .build();
+        assertEquals(
+                Level.WARN,
+                policy.rewrite(siblingPackageEvent).getLevel(),
+                "a rule for 'com.foo' must not also match the unrelated sibling package 'com.foobar'");
+
+        final LogEvent childLoggerEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("com.foo.Bar")
+                .setLevel(Level.WARN)
+                .setMessage(new SimpleMessage("Test"))
+                .build();
+        assertEquals(
+                Level.DEBUG,
+                policy.rewrite(childLoggerEvent).getLevel(),
+                "a rule for 'com.foo' must still match its own child logger 'com.foo.Bar'");
+
+        final LogEvent exactMatchEvent = Log4jLogEvent.newBuilder()
+                .setLoggerName("com.foo")
+                .setLevel(Level.WARN)
+                .setMessage(new SimpleMessage("Test"))
+                .build();
+        assertEquals(
+                Level.DEBUG,
+                policy.rewrite(exactMatchEvent).getLevel(),
+                "a rule for 'com.foo' must still match the exact logger name 'com.foo'");
+    }
 }
