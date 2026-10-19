@@ -87,6 +87,8 @@ public class RollingAppenderCountTest implements RolloverListener {
 
     @AfterClass
     public static void afterClass() throws Exception {
+        final int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
+        assertEquals("Expected 17 files, got " + count, 17, count);
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
@@ -104,8 +106,6 @@ public class RollingAppenderCountTest implements RolloverListener {
         }
 
         assertTrue("Expected at least 16 rollovers", rollover.await(10, TimeUnit.SECONDS));
-        final int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
-        assertEquals("Expected 17 files, got " + count, 17, count);
     }
 
     @Override
