@@ -1198,7 +1198,8 @@ This requires additional runtime dependencies:</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The JNDI name of the
 <a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory"><code>ConnectionFactory</code></a>.</p>
-<p class="tableblock">Only the <code>java:</code> protocol is supported.</p></td>
+<p class="tableblock">Only the <code>java:</code> protocol or a name without a scheme is supported.
+A name without a scheme is resolved by the provider set in <a href="#JmsAppender-attr-providerURL"><code>providerURL</code></a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-destinationBindingName"></a>destinationBindingName</code></p></td>
@@ -1209,7 +1210,8 @@ This requires additional runtime dependencies:</p>
 <a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/queue"><code>Queue</code></a>
 or a
 <a href="https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/topic"><code>Topic</code></a>.</p>
-<p class="tableblock">Only the <code>java:</code> protocol is supported.</p></td>
+<p class="tableblock">Only the <code>java:</code> protocol or a name without a scheme is supported.
+A name without a scheme is resolved by the provider set in <a href="#JmsAppender-attr-providerURL"><code>providerURL</code></a>.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top" colspan="4"><p class="tableblock">JNDI configuration (overrides system properties)</p></th>
@@ -1235,7 +1237,8 @@ for details.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="JmsAppender-attr-providerURL"></a>providerURL</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A configuration parameter for the <a href="#JmsAppender-attr-factoryName"><code>InitialContextFactory</code></a>.</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A configuration parameter for the <a href="#JmsAppender-attr-factoryName"><code>InitialContextFactory</code></a>.
+It can point to a remote JNDI provider, so it must only point to a trusted provider.</p>
 <p class="tableblock">See <a href="https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>
 for details.</p></td>
 </tr>
