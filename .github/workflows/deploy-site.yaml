@@ -47,6 +47,9 @@ jobs:
           whoami: ${{ github.ref_name }}-site-stg-out
           subdir: content/log4j/2.x
       install-required: true
+      # Build with the `package.json` and `package-lock.json` from the `gha/v0` branch of `logging-parent`,
+      # which centralizes the NPM dependencies of all Apache Logging websites
+      npm-dependencies-ref: "gha/v0"
       target-branch: ${{ github.ref_name }}-site-stg-out
 
   deploy-site-pro:
@@ -64,6 +67,9 @@ jobs:
           whoami: ${{ github.ref_name }}-out
           subdir: content/log4j/2.x
       install-required: true
+      # Build with the `package.json` and `package-lock.json` from the `gha/v0` branch of `logging-parent`,
+      # which centralizes the NPM dependencies of all Apache Logging websites
+      npm-dependencies-ref: "gha/v0"
       target-branch: ${{ github.ref_name }}-out
 
   export-version:

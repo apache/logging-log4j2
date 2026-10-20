@@ -26,5 +26,10 @@ public final class Tags {
      */
     public static final String ASYNC_LOGGERS = "org.apache.logging.log4j.core.test.categories.AsyncLoggers";
 
+    /**
+     * Tests that deserialize Log4j classes.
+     */
+    public static final String SERIALIZATION = "serialization";
+
     private Tags() {}
 }

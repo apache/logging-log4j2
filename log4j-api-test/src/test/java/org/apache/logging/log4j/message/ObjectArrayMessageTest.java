@@ -41,14 +41,26 @@ class ObjectArrayMessageTest {
     }
 
     /**
-     * Round-trips through a filtered stream (see {@link SerialUtil#getObjectInputStream})
-     * to verify that {@code readObject}'s new {@code SerializationUtil.assertFiltered}
-     * check accepts streams that carry a filter.
+     * Round-trips through the stream returned by {@link SerialUtil#getObjectInputStream}.
      */
     @Test
     void testSerializableRoundTripThroughFilteredStream() {
         final ObjectArrayMessage original = new ObjectArrayMessage("A", "B", "C");
         final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
         assertArrayEquals(original.getParameters(), restored.getParameters());
+    }
+
+    @Test
+    void testNonSerializableElementIsReplacedByItsStringForm() {
+        final ObjectArrayMessage original = new ObjectArrayMessage("A", new NonSerializable(), "C");
+        final ObjectArrayMessage restored = SerialUtil.deserialize(SerialUtil.serialize(original));
+        assertArrayEquals(new Object[] {"A", "non-serializable", "C"}, restored.getParameters());
+    }
+
+    private static final class NonSerializable {
+        @Override
+        public String toString() {
+            return "non-serializable";
+        }
     }
 }
