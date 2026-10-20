@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.security.KeyStore;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -120,6 +121,21 @@ class SslConfigurationFactoryTest {
         assertEquals(
                 SslConfigurationDefaults.KEYSTORE_TYPE,
                 configuration.getTrustStoreConfig().getKeyStoreType());
+    }
+
+    @Test
+    void testEmptyPasswordLoadsCertificateWithoutExplicitStoreType() throws Exception {
+        final Properties props = new Properties();
+        props.setProperty(KEYSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION);
+        props.setProperty(KEYSTORE_PASSWORD_PROP_NAME, "");
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getKeyStoreConfig());
+        final KeyStore loadedKeyStore = configuration.getKeyStoreConfig().getKeyStore();
+        assertNotNull(loadedKeyStore.getCertificate("1"));
     }
 
     static Stream<Arguments> windowsKeystoreConfigs() {
