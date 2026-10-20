@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -280,6 +281,38 @@ class InstantPatternThreadLocalCachedFormatterTest {
         verify(patternFormatter).formatTo(any(StringBuilder.class), eq(instant1));
         verify(patternFormatter).formatTo(any(StringBuilder.class), eq(instant3));
         verifyNoMoreInteractions(patternFormatter);
+    }
+
+    @Test
+    void a_failed_formatting_should_not_poison_the_cache() {
+
+        // Mock a pattern formatter that succeeds for one instant and fails for another
+        final InstantPatternFormatter patternFormatter = mock(InstantPatternFormatter.class);
+        when(patternFormatter.getPrecision()).thenReturn(ChronoUnit.MILLIS);
+        final Instant goodInstant = INSTANT0;
+        final String goodOutput = "goodInstant";
+        doAnswer(invocation -> {
+                    final StringBuilder buffer = invocation.getArgument(0);
+                    buffer.append(goodOutput);
+                    return null;
+                })
+                .when(patternFormatter)
+                .formatTo(any(StringBuilder.class), eq(goodInstant));
+        final MutableInstant badInstant = offsetInstant(goodInstant, 1, 0);
+        doThrow(new IllegalStateException("failed on purpose"))
+                .when(patternFormatter)
+                .formatTo(any(StringBuilder.class), eq(badInstant));
+
+        final InstantFormatter cachedFormatter =
+                InstantPatternThreadLocalCachedFormatter.ofMilliPrecision(patternFormatter);
+
+        // Populate the cache, then clobber its buffer with a failed formatting
+        assertThat(cachedFormatter.format(goodInstant)).isEqualTo(goodOutput);
+        assertThatThrownBy(() -> cachedFormatter.format(badInstant)).isInstanceOf(IllegalStateException.class);
+
+        // Neither instant may be served from the half-written buffer
+        assertThatThrownBy(() -> cachedFormatter.format(badInstant)).isInstanceOf(IllegalStateException.class);
+        assertThat(cachedFormatter.format(goodInstant)).isEqualTo(goodOutput);
     }
 
     private static MutableInstant offsetInstant(
