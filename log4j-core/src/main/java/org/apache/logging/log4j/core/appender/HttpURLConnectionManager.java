@@ -98,8 +98,12 @@ public class HttpURLConnectionManager extends HttpManager {
             urlConnection.setRequestProperty("Content-Type", layout.getContentType());
         }
         for (final Property header : headers) {
-            urlConnection.setRequestProperty(
-                    header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
+            try {
+                urlConnection.setRequestProperty(
+                        header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
+            } catch (final IllegalArgumentException e) {
+                LOGGER.warn("Skipping HTTP header {} because its value is invalid", header.getName(), e);
+            }
         }
         if (sslConfiguration != null) {
             final SSLContext sslContext = sslConfiguration.getSslContext();
