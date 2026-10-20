@@ -25,7 +25,6 @@ import java.util.IllegalFormatException;
 import java.util.Locale;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Handles messages that consist of a format string conforming to java.text.MessageFormat.
@@ -165,7 +164,6 @@ public class MessageFormatMessage implements Message {
     }
 
     private void readObject(final ObjectInputStream in) throws IOException {
-        SerializationUtil.assertFiltered(in);
         parameters = null;
         throwable = null;
         formattedMessage = in.readUTF();

@@ -25,10 +25,12 @@ import java.io.ObjectInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.test.junit.Tags;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,6 +42,7 @@ class LogEventTest {
     private static final TestClass TESTER = new TestClass();
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testSerialization() throws Exception {
         final LogEvent event1 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -66,6 +69,7 @@ class LogEventTest {
     }
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testNanoTimeIsNotSerialized1() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
@@ -85,6 +89,7 @@ class LogEventTest {
     }
 
     @Test
+    @Tag(Tags.SERIALIZATION)
     void testNanoTimeIsNotSerialized2() {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
