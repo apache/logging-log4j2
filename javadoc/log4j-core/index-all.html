@@ -9750,11 +9750,11 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:H">H</h2>
 <dl class="index">
-<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html#handleEventException(java.lang.Throwable,long,T)" class="member-name-link">handleEventException(Throwable, long, AsyncLoggerConfigDisruptor.Log4jEventWrapper)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerConfigDefaultExceptionHandler</a></dt>
+<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html#handleEventException(java.lang.Throwable,long,T)" class="member-name-link">handleEventException(Throwable, long, RingBufferLogEvent)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerDefaultExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html#handleOnShutdownException(java.lang.Throwable)" class="member-name-link">handleOnShutdownException(Throwable)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerConfigDefaultExceptionHandler</a></dt>
+<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html#handleOnShutdownException(java.lang.Throwable)" class="member-name-link">handleOnShutdownException(Throwable)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerDefaultExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html#handleOnStartException(java.lang.Throwable)" class="member-name-link">handleOnStartException(Throwable)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerConfigDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerConfigDefaultExceptionHandler</a></dt>
+<dt><a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html#handleOnStartException(java.lang.Throwable)" class="member-name-link">handleOnStartException(Throwable)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/AsyncLoggerDefaultExceptionHandler.html" title="class in org.apache.logging.log4j.core.async">AsyncLoggerDefaultExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html#handlesThrowable()" class="member-name-link">handlesThrowable()</a> - Method in class org.apache.logging.log4j.core.pattern.<a href="org/apache/logging/log4j/core/pattern/AbstractStyleNameConverter.html" title="class in org.apache.logging.log4j.core.pattern">AbstractStyleNameConverter</a></dt>
 <dd>&nbsp;</dd>
@@ -14657,8 +14657,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Default hook to write footer during close.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/net/JndiManager.html#releaseSub(long,java.util.concurrent.TimeUnit)" class="member-name-link">releaseSub(long, TimeUnit)</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/JndiManager.html" title="class in org.apache.logging.log4j.core.net">JndiManager</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/ReliabilityStrategy.html" class="type-name-link" title="interface in org.apache.logging.log4j.core.config">ReliabilityStrategy</a> - Interface in <a href="org/apache/logging/log4j/core/config/package-summary.html">org.apache.logging.log4j.core.config</a></dt>
 <dd>
 <div class="block">Interface for objects that know how to ensure delivery of log events to the appropriate appenders, even during and
@@ -17863,6 +17861,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Blocks until all Log4j tasks have completed execution after a shutdown request and all appenders have shut down,
  or the timeout occurs, or the current thread is interrupted, whichever happens first.</div>
 </dd>
+<dt><a href="org/apache/logging/log4j/core/net/JndiManager.html#stop(long,java.util.concurrent.TimeUnit)" class="member-name-link">stop(long, TimeUnit)</a> - Method in class org.apache.logging.log4j.core.net.<a href="org/apache/logging/log4j/core/net/JndiManager.html" title="class in org.apache.logging.log4j.core.net">JndiManager</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.html#stop(long,java.util.concurrent.TimeUnit)" class="member-name-link">stop(long, TimeUnit)</a> - Method in class org.apache.logging.log4j.core.util.<a href="org/apache/logging/log4j/core/util/DefaultShutdownCallbackRegistry.html" title="class in org.apache.logging.log4j.core.util">DefaultShutdownCallbackRegistry</a></dt>
 <dd>
 <div class="block">Cancels the shutdown thread only if this is started.</div>
