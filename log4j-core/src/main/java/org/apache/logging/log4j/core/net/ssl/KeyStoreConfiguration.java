@@ -51,6 +51,17 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 : keyManagerFactoryAlgorithm;
     }
 
+    private KeyStoreConfiguration(
+            final String location,
+            final String keyStoreType,
+            final String keyManagerFactoryAlgorithm,
+            final StoreConfigurationException loadFailure) {
+        super(location, keyStoreType, loadFailure);
+        this.keyManagerFactoryAlgorithm = keyManagerFactoryAlgorithm == null
+                ? KeyManagerFactory.getDefaultAlgorithm()
+                : keyManagerFactoryAlgorithm;
+    }
+
     /**
      *
      * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
@@ -102,7 +113,6 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
      * @return a new KeyStoreConfiguration
      * @throws StoreConfigurationException Thrown if this call cannot load the KeyStore.
      */
-    @PluginFactory
     public static KeyStoreConfiguration createKeyStoreConfiguration(
             // @formatter:off
             @PluginAttribute("location") final String location,
@@ -133,6 +143,29 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
             return new KeyStoreConfiguration(location, provider, keyStoreType, keyManagerFactoryAlgorithm);
         } catch (final Exception ex) {
             throw new StoreConfigurationException("Could not configure KeyStore", ex);
+        }
+    }
+
+    @PluginFactory
+    static KeyStoreConfiguration createOrRecordFailure(
+            // @formatter:off
+            @PluginAttribute("location") final String location,
+            @PluginAttribute(value = "password", sensitive = true) final char[] password,
+            @PluginAttribute("passwordEnvironmentVariable") final String passwordEnvironmentVariable,
+            @PluginAttribute("passwordFile") final String passwordFile,
+            @PluginAttribute("type") final String keyStoreType,
+            @PluginAttribute("keyManagerFactoryAlgorithm") final String keyManagerFactoryAlgorithm) {
+        // @formatter:on
+        try {
+            return createKeyStoreConfiguration(
+                    location,
+                    password,
+                    passwordEnvironmentVariable,
+                    passwordFile,
+                    keyStoreType,
+                    keyManagerFactoryAlgorithm);
+        } catch (final StoreConfigurationException error) {
+            return new KeyStoreConfiguration(location, keyStoreType, keyManagerFactoryAlgorithm, error);
         }
     }
 

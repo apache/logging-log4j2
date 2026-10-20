@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -103,5 +104,30 @@ class TrustStoreConfigurationTest {
                         new MemoryPasswordProvider("wrongPassword!".toCharArray()),
                         null,
                         null));
+    }
+
+    @Test
+    void pluginFactoryRecordsLoadFailureWithEmptyKeyStore() throws Exception {
+        final TrustStoreConfiguration config = TrustStoreConfiguration.createOrRecordFailure(
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION + ".missing",
+                null,
+                null,
+                null,
+                SslKeyStoreConstants.TRUSTSTORE_TYPE,
+                null);
+        assertThat(config.getLoadFailure()).isNotNull();
+        assertThat(config.getKeyStore().size()).isZero();
+    }
+
+    @Test
+    void pluginFactoryRecordsConflictingPasswordSources() {
+        final TrustStoreConfiguration config = TrustStoreConfiguration.createOrRecordFailure(
+                SslKeyStoreConstants.TRUSTSTORE_LOCATION,
+                SslKeyStoreConstants.TRUSTSTORE_PWD(),
+                "LOG4J_TRUSTSTORE_PASSWORD",
+                "trustStore.password",
+                SslKeyStoreConstants.TRUSTSTORE_TYPE,
+                null);
+        assertThat(config.getLoadFailure()).hasCauseInstanceOf(IllegalStateException.class);
     }
 }

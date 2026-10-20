@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Objects;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -25,6 +27,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -107,29 +110,13 @@ public class SslConfiguration {
     }
 
     @Nullable
-    private static SSLContext createDefaultSslContext(final String protocol) {
-        try {
-            return SSLContext.getDefault();
-        } catch (final NoSuchAlgorithmException defaultContextError) {
-            LOGGER.error(
-                    "Failed to create an `SSLContext` using the default configuration, falling back to creating an empty one",
-                    defaultContextError);
-            try {
-                final SSLContext emptyContext = SSLContext.getInstance(protocol);
-                emptyContext.init(new KeyManager[0], new TrustManager[0], null);
-                return emptyContext;
-            } catch (final Exception emptyContextError) {
-                LOGGER.error("Failed to create an empty `SSLContext`", emptyContextError);
-                return null;
-            }
-        }
-    }
-
-    @Nullable
     private static SSLContext createSslContext(
             final String protocol,
             @Nullable final KeyStoreConfiguration keyStoreConfig,
             @Nullable final TrustStoreConfiguration trustStoreConfig) {
+        if (hasLoadFailure(keyStoreConfig) || hasLoadFailure(trustStoreConfig)) {
+            return createRejectingSslContext();
+        }
         try {
             final SSLContext sslContext = SSLContext.getInstance(protocol);
             @Nullable final KeyManager[] keyManagers = loadKeyManagers(keyStoreConfig);
@@ -138,9 +125,32 @@ public class SslConfiguration {
             return sslContext;
         } catch (final Exception error) {
             LOGGER.error(
-                    "Failed to create an `SSLContext` using the provided configuration, falling back to a default instance",
+                    "Failed to create an `SSLContext` using the provided configuration, all TLS connections using this configuration will be rejected",
                     error);
-            return createDefaultSslContext(protocol);
+            return createRejectingSslContext();
+        }
+    }
+
+    private static boolean hasLoadFailure(@Nullable final AbstractKeyStoreConfiguration storeConfig) {
+        if (storeConfig == null || storeConfig.getLoadFailure() == null) {
+            return false;
+        }
+        LOGGER.error(
+                "Failed to load the store located at `{}`, all TLS connections using this configuration will be rejected",
+                storeConfig.getLocation(),
+                storeConfig.getLoadFailure());
+        return true;
+    }
+
+    @Nullable
+    private static SSLContext createRejectingSslContext() {
+        try {
+            final SSLContext sslContext = SSLContext.getInstance(SslConfigurationDefaults.PROTOCOL);
+            sslContext.init(new KeyManager[0], new TrustManager[] {RejectingTrustManager.INSTANCE}, null);
+            return sslContext;
+        } catch (final GeneralSecurityException error) {
+            LOGGER.error("Failed to create an `SSLContext` rejecting all connections", error);
+            return null;
         }
     }
 
@@ -262,5 +272,29 @@ public class SslConfiguration {
     @Nullable
     public SSLContext getSslContext() {
         return sslContext;
+    }
+
+    static final class RejectingTrustManager implements X509TrustManager {
+
+        static final RejectingTrustManager INSTANCE = new RejectingTrustManager();
+
+        private static final String MESSAGE = "The `Ssl` configuration is invalid, see the status logger for the cause";
+
+        @Override
+        public void checkClientTrusted(final X509Certificate[] chain, final String authType)
+                throws CertificateException {
+            throw new CertificateException(MESSAGE);
+        }
+
+        @Override
+        public void checkServerTrusted(final X509Certificate[] chain, final String authType)
+                throws CertificateException {
+            throw new CertificateException(MESSAGE);
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
     }
 }
