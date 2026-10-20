@@ -26,7 +26,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -385,7 +384,6 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
      * the de-serialized object.
      */
     private void readObject(final ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
-        SerializationUtil.assertFiltered(aInputStream);
         // always perform the default de-serialization first
         aInputStream.defaultReadObject();
         logger = LogManager.getContext().getLogger(name);

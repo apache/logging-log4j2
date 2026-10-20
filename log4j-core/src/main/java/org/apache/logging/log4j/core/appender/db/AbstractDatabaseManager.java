@@ -119,6 +119,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     private boolean writeWhileNotRunningLogged;
 
+    private boolean bufferedEventsDiscardedLogged;
+
     /**
      * Constructs the base manager.
      *
@@ -199,15 +201,30 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     @Override
     public final synchronized void flush() {
         if (this.isRunning() && isBuffered()) {
-            this.connectAndStart();
+            boolean flushed = false;
             try {
-                for (final LogEvent event : this.buffer) {
-                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                this.connectAndStart();
+                try {
+                    for (final LogEvent event : this.buffer) {
+                        this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                    }
+                } finally {
+                    this.commitAndClose();
                 }
+                flushed = true;
             } finally {
-                this.commitAndClose();
-                // not sure if this should be done when writing the events failed
-                this.buffer.clear();
+                try {
+                    if (!flushed && !this.buffer.isEmpty() && !this.bufferedEventsDiscardedLogged) {
+                        this.bufferedEventsDiscardedLogged = true;
+                        LOGGER.warn(
+                                "{} {} discarded {} buffered events after a database flush failure",
+                                getClass().getSimpleName(),
+                                getName(),
+                                this.buffer.size());
+                    }
+                } finally {
+                    this.buffer.clear();
+                }
             }
         }
     }
@@ -279,6 +296,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
                 this.running = true;
                 this.shutDown = false;
                 this.writeWhileNotRunningLogged = false;
+                this.bufferedEventsDiscardedLogged = false;
             } catch (final Exception e) {
                 logError("Could not perform database startup operations", e);
             }

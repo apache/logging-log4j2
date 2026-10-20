@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Objects;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
@@ -153,7 +152,6 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         charSequence = message;
     }
