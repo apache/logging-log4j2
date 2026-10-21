@@ -25,7 +25,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -54,6 +56,37 @@ public class AbstractDatabaseAppenderTest {
         }
     }
 
+    private static class StubLocalAbstractDatabaseManager extends LocalAbstractDatabaseManager {
+        StubLocalAbstractDatabaseManager(final String name, final int bufferSize) {
+            super(name, bufferSize);
+        }
+
+        @Override
+        protected boolean commitAndClose() {
+            return true;
+        }
+
+        @Override
+        protected void connectAndStart() {
+            // noop
+        }
+
+        @Override
+        protected boolean shutdownInternal() {
+            return true;
+        }
+
+        @Override
+        protected void startupInternal() {
+            // noop
+        }
+
+        @Override
+        protected void writeInternal(final LogEvent event, final Serializable serializable) {
+            // noop
+        }
+    }
+
     private LocalAbstractDatabaseAppender appender;
 
     @Mock
@@ -65,21 +98,23 @@ public class AbstractDatabaseAppenderTest {
 
     @Test
     public void testAppend() {
-        setUp("name");
-        given(manager.commitAndClose()).willReturn(true);
+        final LocalAbstractDatabaseManager runningManager = spy(new StubLocalAbstractDatabaseManager("name", 0));
+        appender = new LocalAbstractDatabaseAppender("name", null, true, runningManager);
+        given(runningManager.commitAndClose()).willReturn(true);
+        runningManager.startup();
 
         final LogEvent event1 = mock(LogEvent.class);
         final LogEvent event2 = mock(LogEvent.class);
 
         appender.append(event1);
-        then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event1), isNull());
-        reset(manager);
+        then(runningManager).should().isBuffered();
+        then(runningManager).should().writeThrough(same(event1), isNull());
+        reset(runningManager);
 
         appender.append(event2);
-        then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event2), isNull());
-        reset(manager);
+        then(runningManager).should().isBuffered();
+        then(runningManager).should().writeThrough(same(event2), isNull());
+        reset(runningManager);
     }
 
     @Test

@@ -42,8 +42,6 @@
       org.junit.*;resolution:=optional,
       org.hamcrest.*;resolution:=optional,
       org.junitpioneer.*;resolution:=optional,
-      org.apache.maven.*;resolution:=optional,
-      org.codehaus.plexus.util.*;resolution:=optional,
       org.mockito.*;resolution:=optional
     </bnd-extra-package-options>
     <bnd-extra-module-options>
@@ -51,12 +49,7 @@
       junit;transitive=false,
       org.hamcrest;transitive=false,
       org.junit.jupiter.api;transitive=false,
-      org.junitpioneer;transitive=false,
-      <!-- Filebased module names: MUST be static -->
-      maven.core;substitute="maven-core";transitive=false;static=true,
-      maven.model;substitute="maven-model";transitive=false;static=true,
-      maven.model.builder;substitute="maven-model-builder";transitive=false;static=true,
-      plexus.utils;substitute="plexus-utils";transitive=false;static=true
+      org.junitpioneer;transitive=false
     </bnd-extra-module-options>
   </properties>
   <!--
@@ -96,18 +89,6 @@
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -175,6 +156,29 @@
         <configuration>
           <excludedGroups>performance,smoke</excludedGroups>
         </configuration>
+      </plugin>
+
+      <!-- Runs the tests for the Java 9 variants of `log4j-api` classes.
+           These need to run against the packaged multi-release JAR, hence the `integration-test` phase. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>java9-variant-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <!-- Restricted to the `java9` package: `StackLocatorTestIT` predates this binding,
+                   installs a `SecurityManager` and is not runnable on the build JDK as-is. -->
+              <includes>
+                <include>org/apache/logging/log4j/util/java9/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

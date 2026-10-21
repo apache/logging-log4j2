@@ -95,11 +95,11 @@ public final class JAnsiTextRenderer implements TextRenderer {
     private static final int CSI_LENGTH = 2;
 
     private static Map.Entry<String, String> entry(final String name, final AnsiEscape... codes) {
-        final StringBuilder sb = new StringBuilder(AnsiEscape.CSI.getCode());
-        for (final AnsiEscape code : codes) {
-            sb.append(code.getCode());
+        final String[] names = new String[codes.length];
+        for (int i = 0; i < codes.length; i++) {
+            names[i] = codes[i].name();
         }
-        return new AbstractMap.SimpleImmutableEntry<>(name, sb.toString());
+        return new AbstractMap.SimpleImmutableEntry<>(name, AnsiEscape.createSequence(names));
     }
 
     @SafeVarargs
@@ -201,12 +201,12 @@ public final class JAnsiTextRenderer implements TextRenderer {
         if (formats.length > 1) {
             final String stylesStr = formats[1];
             final Map<String, String> map = AnsiEscape.createMap(
-                    stylesStr.split("\\s", -1), new String[] {"BeginToken", "EndToken", "Style"}, ",");
+                    stylesStr.split("\\s", -1), new String[] {"BEGINTOKEN", "ENDTOKEN", "STYLE"}, ",");
 
-            // Handle the special tokens
-            beginToken = Objects.toString(map.remove("BeginToken"), BEGIN_TOKEN);
-            endToken = Objects.toString(map.remove("EndToken"), END_TOKEN);
-            final String predefinedStyle = map.remove("Style");
+            // Handle the special tokens. createMap stores keys in root upper-case.
+            beginToken = Objects.toString(map.remove("BEGINTOKEN"), BEGIN_TOKEN);
+            endToken = Objects.toString(map.remove("ENDTOKEN"), END_TOKEN);
+            final String predefinedStyle = map.remove("STYLE");
 
             // Create style map
             final Map<String, String> styleMap = new HashMap<>(map.size() + defaultStyleMap.size());
@@ -214,7 +214,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
             if (predefinedStyle != null) {
                 final Map<String, String> predefinedMap = PREFEDINED_STYLE_MAPS.get(predefinedStyle);
                 if (predefinedMap != null) {
-                    map.putAll(predefinedMap);
+                    predefinedMap.forEach((k, v) -> map.put(toRootUpperCase(k), v));
                 } else {
                     LOGGER.warn(
                             "Unknown predefined map name {}, pick one of {}",

@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -71,8 +72,23 @@ public class Log4j1ConfigurationParser {
 
     private final Properties properties = new Properties();
 
+    private final boolean preserveLookups;
+
     private final ConfigurationBuilder<BuiltConfiguration> builder =
             ConfigurationBuilderFactory.newConfigurationBuilder();
+
+    public Log4j1ConfigurationParser() {
+        this(false);
+    }
+
+    /**
+     * @param preserveLookups when {@code true}, {@code ${name}} is rewritten to a Log4j 2 lookup instead of being
+     *     resolved against the current JVM. The configuration converter uses this so the output does not capture host
+     *     system properties. The runtime factory keeps the default, which resolves variables.
+     */
+    Log4j1ConfigurationParser(final boolean preserveLookups) {
+        this.preserveLookups = preserveLookups;
+    }
 
     /**
      * Parses a Log4j 1.2 properties configuration file in ISO 8859-1 encoding into a ConfigurationBuilder.
@@ -104,11 +120,19 @@ public class Log4j1ConfigurationParser {
                 builder.setStatusLevel(Level.DEBUG);
             }
             // global threshold
-            final String threshold = OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
+            final String threshold = preserveLookups
+                    ? translateLookups(properties.getProperty(PropertiesConfiguration.THRESHOLD_KEY))
+                    : OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
             if (threshold != null) {
-                final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
-                builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
-                        .addAttribute("level", level));
+                final String trimmedThreshold = threshold.trim();
+                if (preserveLookups && trimmedThreshold.contains("${")) {
+                    builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                            .setAttribute("level", trimmedThreshold));
+                } else {
+                    final Level level = OptionConverter.convertLevel(trimmedThreshold, Level.ALL);
+                    builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                            .setAttribute("level", level));
+                }
             }
             // Root
             buildRootLogger(getLog4jValue(ROOTCATEGORY));
@@ -134,7 +158,10 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : new TreeMap<>(properties).entrySet()) {
             final String key = entry.getKey().toString();
             if (!key.startsWith("log4j.") && !key.equals(ROOTCATEGORY) && !key.equals(ROOTLOGGER)) {
-                builder.addProperty(key, Objects.toString(entry.getValue(), Strings.EMPTY));
+                final String rawValue = Objects.toString(entry.getValue(), Strings.EMPTY);
+                PropertyComponentBuilder propertyComponentBuilder =
+                        builder.newProperty(key, preserveLookups ? translateLookups(rawValue) : rawValue);
+                builder.add(propertyComponentBuilder);
             }
         }
     }
@@ -204,7 +231,7 @@ public class Log4j1ConfigurationParser {
                     target = null;
             }
             if (target != null) {
-                appenderBuilder.addAttribute("target", target);
+                appenderBuilder.setAttribute("target", target);
             }
         }
         buildAttribute(appenderName, appenderBuilder, "Follow", "follow");
@@ -236,13 +263,13 @@ public class Log4j1ConfigurationParser {
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
         final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", ".yyyy-MM-dd");
-        appenderBuilder.addAttribute("filePattern", fileName + "%d{" + datePattern + "}");
+        appenderBuilder.setAttribute("filePattern", fileName + "%d{" + datePattern + "}");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
-                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
+                .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").setAttribute("modulate", true));
         appenderBuilder.addComponent(triggeringPolicy);
         appenderBuilder.addComponent(builder.newComponent("DefaultRolloverStrategy")
-                .addAttribute("max", Integer.MAX_VALUE)
-                .addAttribute("fileIndex", "min"));
+                .setAttribute("max", Integer.MAX_VALUE)
+                .setAttribute("fileIndex", "min"));
         builder.add(appenderBuilder);
     }
 
@@ -251,16 +278,16 @@ public class Log4j1ConfigurationParser {
                 builder.newAppender(appenderName, RollingFileAppender.PLUGIN_NAME);
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
-        appenderBuilder.addAttribute("filePattern", fileName + ".%i");
+        appenderBuilder.setAttribute("filePattern", fileName + ".%i");
         final String maxFileSizeString = getLog4jAppenderValue(appenderName, "MaxFileSize", "10485760");
         final String maxBackupIndexString = getLog4jAppenderValue(appenderName, "MaxBackupIndex", "1");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(
-                        builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", maxFileSizeString));
+                        builder.newComponent("SizeBasedTriggeringPolicy").setAttribute("size", maxFileSizeString));
         appenderBuilder.addComponent(triggeringPolicy);
         appenderBuilder.addComponent(builder.newComponent("DefaultRolloverStrategy")
-                .addAttribute("max", maxBackupIndexString)
-                .addAttribute("fileIndex", "min"));
+                .setAttribute("max", maxBackupIndexString)
+                .setAttribute("fileIndex", "min"));
         builder.add(appenderBuilder);
     }
 
@@ -271,7 +298,7 @@ public class Log4j1ConfigurationParser {
             final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
-            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+            componentBuilder.setAttribute(targetAttributeName, attributeValue);
         }
     }
 
@@ -282,7 +309,7 @@ public class Log4j1ConfigurationParser {
             final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
-            componentBuilder.addAttribute(targetAttributeName, attributeValue);
+            componentBuilder.setAttribute(targetAttributeName, attributeValue);
         } else {
             reportWarning("Missing " + sourceAttributeName + " for " + componentName);
         }
@@ -358,8 +385,8 @@ public class Log4j1ConfigurationParser {
                 }
                 case "org.apache.log4j.HTMLLayout": {
                     final LayoutComponentBuilder htmlLayout = builder.newLayout("HtmlLayout");
-                    htmlLayout.addAttribute("title", getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
-                    htmlLayout.addAttribute(
+                    htmlLayout.setAttribute("title", getLog4jAppenderValue(name, "layout.Title", "Log4J Log Messages"));
+                    htmlLayout.setAttribute(
                             "locationInfo",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
                     appenderBuilder.add(htmlLayout);
@@ -367,10 +394,10 @@ public class Log4j1ConfigurationParser {
                 }
                 case "org.apache.log4j.xml.XMLLayout": {
                     final LayoutComponentBuilder xmlLayout = builder.newLayout("Log4j1XmlLayout");
-                    xmlLayout.addAttribute(
+                    xmlLayout.setAttribute(
                             "locationInfo",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.LocationInfo", FALSE)));
-                    xmlLayout.addAttribute(
+                    xmlLayout.setAttribute(
                             "properties",
                             Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.Properties", FALSE)));
                     appenderBuilder.add(xmlLayout);
@@ -385,7 +412,7 @@ public class Log4j1ConfigurationParser {
     private LayoutComponentBuilder newPatternLayout(final String pattern) {
         final LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout");
         if (pattern != null) {
-            layoutBuilder.addAttribute("pattern", pattern);
+            layoutBuilder.setAttribute("pattern", pattern);
         }
         return layoutBuilder;
     }
@@ -449,9 +476,46 @@ public class Log4j1ConfigurationParser {
     }
 
     private String getProperty(final String key) {
-        final String value = properties.getProperty(key);
-        final String substVars = OptionConverter.substVars(value, properties);
-        return substVars == null ? null : substVars.trim();
+        final String substituted = substitute(properties.getProperty(key));
+        return substituted == null ? null : substituted.trim();
+    }
+
+    private String substitute(final String value) {
+        if (value == null) {
+            return null;
+        }
+        return preserveLookups ? translateLookups(value) : OptionConverter.substVars(value, properties);
+    }
+
+    /**
+     * Rewrites every Log4j 1 {@code ${name}} to {@code ${sys:name}} without reading the current JVM.
+     * {@code ${sys:name}} falls back to a configuration property when the system property is unset.
+     */
+    private String translateLookups(final String value) {
+        if (value == null) {
+            return null;
+        }
+        final StringBuilder translated = new StringBuilder();
+        int index = 0;
+        while (true) {
+            final int start = value.indexOf("${", index);
+            if (start < 0) {
+                if (index == 0) {
+                    return value;
+                }
+                translated.append(value.substring(index));
+                return translated.toString();
+            }
+            final int end = value.indexOf('}', start);
+            if (end < 0) {
+                throw new IllegalArgumentException(
+                        Strings.dquote(value) + " has no closing brace. Opening brace at position " + start + '.');
+            }
+            translated.append(value, index, start);
+            final String key = value.substring(start + 2, end);
+            translated.append("${sys:").append(key).append('}');
+            index = end + 1;
+        }
     }
 
     private String getProperty(final String key, final String defaultValue) {

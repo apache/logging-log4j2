@@ -37,8 +37,7 @@ public final class WebLoggerContextUtils {
     private WebLoggerContextUtils() {}
 
     private static final Lock WEB_SUPPORT_LOOKUP = new ReentrantLock();
-    private static final String SERVLET_CONTEXT = "__SERVLET_CONTEXT__";
-
+    private static final String SERVLET_CONTEXT = "org.apache.logging.log4j.web.servletContext";
     /**
      * Finds the main {@link org.apache.logging.log4j.core.LoggerContext} configured for the given ServletContext.
      *
@@ -110,18 +109,29 @@ public final class WebLoggerContextUtils {
         };
     }
 
+    /**
+     * @deprecated Use {@link #setServletContext(LoggerContext, ServletContext)} instead.
+     * @since 2.27.0
+     */
+    @Deprecated
     public static Map.Entry<String, Object> createExternalEntry(final ServletContext servletContext) {
         return new AbstractMap.SimpleEntry<>(SERVLET_CONTEXT, servletContext);
     }
 
-    public static void setServletContext(LoggerContext lc, ServletContext servletContext) {
+    /**
+     * Sets the ServletContext for the given LoggerContext.
+     *
+     * @param lc the LoggerContext
+     * @param servletContext the ServletContext
+     */
+    public static void setServletContext(final LoggerContext lc, final ServletContext servletContext) {
         if (lc != null) {
             lc.putObject(SERVLET_CONTEXT, servletContext);
         }
     }
 
     /**
-     * Gets the current {@link ServletContext} if it has already been assigned to a LoggerContext's external context.
+     * Gets the current {@link ServletContext} if it has already been assigned to a LoggerContext.
      *
      * @return the current ServletContext attached to a LoggerContext or {@code null} if none could be found
      * @since 2.1
@@ -132,10 +142,20 @@ public final class WebLoggerContextUtils {
             lc = LogManager.getContext(false);
         }
 
-        final Object obj = lc != null ? lc.getObject(SERVLET_CONTEXT) : null;
+        if (lc == null) {
+            return null;
+        }
+
+        final Object obj = lc.getObject(SERVLET_CONTEXT);
         if (obj instanceof ServletContext) {
             return (ServletContext) obj;
         }
+
+        final Object legacy = lc.getExternalContext();
+        if (legacy instanceof ServletContext) {
+            return (ServletContext) legacy;
+        }
+
         return null;
     }
 }

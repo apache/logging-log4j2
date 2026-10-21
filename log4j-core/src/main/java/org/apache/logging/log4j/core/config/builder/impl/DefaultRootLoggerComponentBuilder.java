@@ -16,84 +16,61 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
+import static org.apache.logging.log4j.core.config.LoggerConfig.RootLogger;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
+ * A default implementation of the {@link RootLoggerComponentBuilder} interface for building
+ * a {@link RootLogger} component for a Log4j configuration.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
+ *
  * @since 2.4
  */
+@ProviderType
 class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfigurationBuilder<RootLoggerComponentBuilder>
         implements RootLoggerComponentBuilder {
 
     /**
-     * Configure the root logger.
-     * @param builder
-     * @param level
+     * Create a new root logger component builder instance with the default plugin-type "{@code Root}".
+     * @param builder the configuration builder.
      */
-    public DefaultRootLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String level) {
-        super(builder, "", "Root");
-        if (level != null) {
-            addAttribute("level", level);
-        }
+    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder) {
+        this(builder, "Root");
     }
 
     /**
-     * Configure the root logger.
-     * @param builder
-     * @param level
-     * @param includeLocation
+     * Create a new root logger component builder instance with the given plugin-type.
+     * @param builder the configuration builder
+     * @param pluginType the target plugin-type of the logger component
      */
     public DefaultRootLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level,
-            final boolean includeLocation) {
-        super(builder, "", "Root");
-        if (level != null) {
-            addAttribute("level", level);
-        }
-        addAttribute("includeLocation", includeLocation);
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String pluginType) {
+        super(builder, pluginType, "");
     }
 
     /**
-     * Configure the root logger.
-     * @param builder
-     * @param level
-     * @param type
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the given {@code builder} is {@code null}
      */
-    public DefaultRootLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String level, final String type) {
-        super(builder, "", type);
-        if (level != null) {
-            addAttribute("level", level);
-        }
-    }
-
-    /**
-     * Configure the root logger.
-     * @param builder
-     * @param level
-     * @param type
-     */
-    public DefaultRootLoggerComponentBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level,
-            final String type,
-            final boolean includeLocation) {
-        super(builder, "", type);
-        if (level != null) {
-            addAttribute("level", level);
-        }
-        addAttribute("includeLocation", includeLocation);
-    }
-
     @Override
     public RootLoggerComponentBuilder add(final AppenderRefComponentBuilder builder) {
         return addComponent(builder);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws NullPointerException if the given {@code builder} is {@code null}
+     */
     @Override
     public RootLoggerComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);

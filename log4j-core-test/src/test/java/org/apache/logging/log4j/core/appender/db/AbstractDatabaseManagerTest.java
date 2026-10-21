@@ -18,11 +18,15 @@ package org.apache.logging.log4j.core.appender.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -31,6 +35,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 class AbstractDatabaseManagerTest {
@@ -57,13 +63,26 @@ class AbstractDatabaseManagerTest {
         }
 
         @Override
-        protected void startupInternal() {
+        protected void startupInternal() throws Exception {
             // noop
         }
 
         @Override
         protected void writeInternal(final LogEvent event, final Serializable serializable) {
             // noop
+        }
+    }
+
+    /** Stub whose {@link #startupInternal()} fails after (simulated) partial resource acquisition. */
+    private static class FailingStartupDatabaseManager extends StubDatabaseManager {
+
+        private FailingStartupDatabaseManager(final String name, final int bufferSize) {
+            super(name, bufferSize);
+        }
+
+        @Override
+        protected void startupInternal() throws Exception {
+            throw new Exception("simulated startup failure");
         }
     }
 
@@ -228,6 +247,141 @@ class AbstractDatabaseManagerTest {
     }
 
     @Test
+    @UsingStatusListener
+    void testBufferedEventsAreDiscardedWhenCommitFails(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        final LogEvent event3 = mock(LogEvent.class);
+        final LogEvent event4 = mock(LogEvent.class);
+        final LogEvent event5 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event3.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event4.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event5.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        manager.startup();
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .when(manager)
+                .commitAndClose();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.write(event3, null);
+        manager.write(event4, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.write(event5, null);
+        manager.flush();
+
+        verify(manager, times(5)).writeInternal(any(LogEvent.class), isNull());
+        assertEquals(
+                1L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 2 buffered events"))
+                        .count());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testBufferedEventsAreDiscardedWhenConnectFails(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        manager.startup();
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        doThrow(new DbAppenderLoggingException("Failed to connect"))
+                .doNothing()
+                .when(manager)
+                .connectAndStart();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.flush();
+
+        verify(manager, times(0)).writeInternal(any(LogEvent.class), isNull());
+        assertEquals(
+                1L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 2 buffered events"))
+                        .count());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testEmptyBufferIsNotReportedAsDiscarded(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        manager.startup();
+
+        doThrow(new DbAppenderLoggingException("Failed to connect"))
+                .when(manager)
+                .connectAndStart();
+
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        assertEquals(
+                0L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("buffered events"))
+                        .count());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testDiscardedBufferIsReportedAgainAfterRestart(final ListStatusListener statusListener) throws Exception {
+        setUp("name", 10);
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+
+        when(event1.toImmutable()).thenReturn(mock(LogEvent.class));
+        when(event2.toImmutable()).thenReturn(mock(LogEvent.class));
+
+        doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .doThrow(new DbAppenderLoggingException("Failed to commit the transaction"))
+                .doReturn(true)
+                .when(manager)
+                .commitAndClose();
+
+        manager.startup();
+        manager.write(event1, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        manager.shutdown();
+        manager.startup();
+
+        manager.write(event2, null);
+        assertThrows(DbAppenderLoggingException.class, manager::flush);
+
+        assertEquals(
+                2L,
+                statusListener
+                        .getStatusData()
+                        .filter(statusData -> statusData.getFormattedStatus().contains("discarded 1 buffered events"))
+                        .count());
+    }
+
+    @Test
     void testStartupShutdown01() throws Exception {
         setUp("testName01", 0);
 
@@ -271,5 +425,60 @@ class AbstractDatabaseManagerTest {
         setUp("bufferSize=12, anotherKey02=coolValue02", 12);
 
         assertEquals("bufferSize=12, anotherKey02=coolValue02", manager.toString(), "The string is not correct.");
+    }
+
+    /**
+     * After startupInternal fails, the manager must not accept writes (avoids per-event NPEs on unassigned state).
+     */
+    @Test
+    void testFailedStartupSkipsWrite() throws Exception {
+        manager = spy(new FailingStartupDatabaseManager("failedStartupWrite", 0));
+
+        manager.startup();
+        assertFalse(manager.isRunning(), "Manager must not be running after startupInternal fails.");
+        then(manager).should().startupInternal();
+
+        final LogEvent event1 = mock(LogEvent.class);
+        final LogEvent event2 = mock(LogEvent.class);
+        manager.write(event1, null);
+        manager.write(event2, null);
+
+        then(manager).should(never()).writeThrough(same(event1), isNull());
+        then(manager).should(never()).writeThrough(same(event2), isNull());
+        then(manager).should(never()).writeInternal(same(event1), isNull());
+        then(manager).should(never()).writeInternal(same(event2), isNull());
+        then(manager).should(never()).connectAndStart();
+    }
+
+    /**
+     * After startupInternal fails, shutdown must still invoke shutdownInternal so partial resources are released.
+     */
+    @Test
+    void testFailedStartupStillShutsDown() throws Exception {
+        manager = spy(new FailingStartupDatabaseManager("failedStartupShutdown", 0));
+
+        manager.startup();
+        assertFalse(manager.isRunning(), "Manager must not be running after startupInternal fails.");
+
+        assertTrue(manager.shutdown(), "shutdown should complete after a failed startup.");
+        then(manager).should().shutdownInternal();
+        assertFalse(manager.isRunning(), "Manager must remain not running after shutdown.");
+
+        // second shutdown must not call shutdownInternal again
+        reset(manager);
+        assertTrue(manager.shutdown());
+        then(manager).should(never()).shutdownInternal();
+    }
+
+    /**
+     * Shutdown without a prior successful startup still runs shutdownInternal once (factory-time resources).
+     */
+    @Test
+    void testShutdownWithoutStartupStillRunsShutdownInternal() throws Exception {
+        setUp("neverStarted", 0);
+
+        assertFalse(manager.isRunning());
+        assertTrue(manager.shutdown());
+        then(manager).should().shutdownInternal();
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <issue id="4238" link="https://github.com/apache/logging-log4j2/issues/4238"/>
+    <description format="asciidoc">
+        Default the Log4j 1 `SyslogAppender` bridge to UDP, matching Log4j 1 behavior.
+    </description>
+</entry>

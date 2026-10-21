@@ -69,6 +69,8 @@ public class PluginProcessor extends AbstractProcessor {
 
     private static final Element[] EMPTY_ELEMENT_ARRAY = {};
 
+    private static final String MESSAGE_PREFIX = "[Log4j] ";
+
     private static final String SUPPRESS_WARNING_PUBLIC_SETTER_STRING = "log4j.public.setter";
 
     /**
@@ -81,7 +83,7 @@ public class PluginProcessor extends AbstractProcessor {
      * </p>
      * <p>
      *     Accepted values (case-insensitive): {@code NOTE}, {@code WARNING}, {@code MANDATORY_WARNING},
-     *     {@code ERROR}, {@code OTHER}. Defaults to {@code NOTE}.
+     *     {@code ERROR}, {@code OTHER}. Defaults to {@code ERROR}.
      * </p>
      */
     static final String MIN_ALLOWED_MESSAGE_KIND_OPTION = "log4j.plugin.processor.minAllowedMessageKind";
@@ -95,7 +97,8 @@ public class PluginProcessor extends AbstractProcessor {
 
     private final List<Element> processedElements = new ArrayList<>();
     private final PluginCache pluginCache = new PluginCache();
-    private Diagnostic.Kind minAllowedMessageKind = Diagnostic.Kind.NOTE;
+    private static final Diagnostic.Kind DEFAULT_MIN_ALLOWED_MESSAGE_KIND = Diagnostic.Kind.ERROR;
+    private Diagnostic.Kind minAllowedMessageKind = DEFAULT_MIN_ALLOWED_MESSAGE_KIND;
 
     @Override
     public void init(final ProcessingEnvironment processingEnv) {
@@ -105,16 +108,20 @@ public class PluginProcessor extends AbstractProcessor {
             try {
                 minAllowedMessageKind = Diagnostic.Kind.valueOf(kindValue.toUpperCase(Locale.ROOT));
             } catch (final IllegalArgumentException e) {
+                // We should not use `PluginProcessor::printMessage`, since we
+                // report a failure on the user-provided `Diagnostic.Kind` that
+                // `PluginProcessor::printMessage` depends on.
                 processingEnv
                         .getMessager()
                         .printMessage(
                                 Diagnostic.Kind.WARNING,
                                 String.format(
-                                        "%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        "%s%s: unrecognized value `%s` for option `%s`, using default `%s`. Valid values: %s",
+                                        MESSAGE_PREFIX,
                                         PluginProcessor.class.getName(),
                                         kindValue,
                                         MIN_ALLOWED_MESSAGE_KIND_OPTION,
-                                        Diagnostic.Kind.NOTE,
+                                        DEFAULT_MIN_ALLOWED_MESSAGE_KIND,
                                         Arrays.toString(Diagnostic.Kind.values())));
             }
         }
@@ -134,7 +141,7 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private void printMessage(final Diagnostic.Kind kind, final String message) {
         if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
-            processingEnv.getMessager().printMessage(kind, message);
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message);
         }
     }
 
@@ -144,7 +151,7 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private void printMessage(final Diagnostic.Kind kind, final String message, final Element element) {
         if (kind.ordinal() <= minAllowedMessageKind.ordinal()) {
-            processingEnv.getMessager().printMessage(kind, message, element);
+            processingEnv.getMessager().printMessage(kind, MESSAGE_PREFIX + message, element);
         }
     }
 

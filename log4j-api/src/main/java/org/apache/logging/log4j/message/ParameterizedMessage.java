@@ -23,7 +23,6 @@ import com.google.errorprone.annotations.InlineMe;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
@@ -77,7 +76,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
-    private static final long serialVersionUID = -665975803997290697L;
+    private static final long serialVersionUID = -4633763537142017035L;
 
     private static final ThreadLocal<FormatBufferHolder> FORMAT_BUFFER_HOLDER_REF =
             Constants.ENABLE_THREADLOCALS ? ThreadLocal.withInitial(FormatBufferHolder::new) : null;
@@ -374,20 +373,11 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeInt(args.length);
-        for (final Object arg : args) {
-            final Serializable serializableArg = arg instanceof Serializable ? (Serializable) arg : String.valueOf(arg);
-            SerializationUtil.writeWrappedObject(serializableArg, out);
-        }
+        out.writeObject(SerializationUtil.wrapObjects(args));
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
-        final int argCount = in.readInt();
-        args = new Object[argCount];
-        for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            args[argIndex] = SerializationUtil.readWrappedObject(in);
-        }
+        args = SerializationUtil.unwrapObjects(in, (byte[][]) in.readObject());
     }
 }

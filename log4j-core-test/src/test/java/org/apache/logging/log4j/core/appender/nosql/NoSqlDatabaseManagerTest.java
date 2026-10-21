@@ -25,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
+import foo.TestFriendlyException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -426,6 +427,30 @@ public class NoSqlDatabaseManagerTest {
 
             assertTrue("The context stack should be list.", object.get("contextStack") instanceof List);
             assertEquals("The context stack is not correct.", stack.asList(), object.get("contextStack"));
+        }
+    }
+
+    @Test
+    public void testWriteInternalWithCyclicCause() {
+        given(connection.isClosed()).willReturn(false);
+        final Throwable exception = TestFriendlyException.INSTANCE;
+
+        try (final NoSqlDatabaseManager<?> manager =
+                NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0, provider, null, null)) {
+            manager.startup();
+            manager.connectAndStart();
+            manager.writeInternal(
+                    Log4jLogEvent.newBuilder().setThrown(exception).build(), null);
+
+            then(connection).should().insertObject(captor.capture());
+            final Map<String, Object> thrown =
+                    (Map<String, Object>) captor.getValue().unwrap().get("thrown");
+            final Map<String, Object> cause = (Map<String, Object>) thrown.get("cause");
+            final Map<String, Object> nestedCause = (Map<String, Object>) cause.get("cause");
+            assertEquals(exception.getMessage(), thrown.get("message"));
+            assertEquals(exception.getCause().getMessage(), cause.get("message"));
+            assertEquals(exception.getCause().getCause().getMessage(), nestedCause.get("message"));
+            assertNull("The cycle should not be serialized.", nestedCause.get("cause"));
         }
     }
 }

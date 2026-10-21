@@ -159,4 +159,20 @@ class LoggerConfigTest {
         assertNotNull(loggerConfig.getAppenderRefs());
         assertTrue(loggerConfig.getAppenderRefs().isEmpty());
     }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void testRootLoggerBuilderWithFilterAlias() {
+        final Filter filter = mock(Filter.class);
+        final LoggerConfig viaTypo = LoggerConfig.RootLogger.newRootBuilder()
+                .setConfig(new NullConfiguration())
+                .withtFilter(filter)
+                .build();
+        final LoggerConfig viaAlias = LoggerConfig.RootLogger.newRootBuilder()
+                .setConfig(new NullConfiguration())
+                .withFilter(filter)
+                .build();
+        assertSame(filter, viaTypo.getFilter());
+        assertSame(filter, viaAlias.getFilter());
+    }
 }

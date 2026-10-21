@@ -18,32 +18,64 @@ package org.apache.logging.log4j.core.config.builder.impl;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
+import org.jspecify.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Extends {@code DefaultComponentBuilder} to specify
- * {@code DefaultConfigurationBuilder<? extends Configuration>} as the
- * {@code ConfigurationBuilder} type.
+ * Extends {@code DefaultComponentBuilder} to specify {@code DefaultConfigurationBuilder<? extends Configuration>}
+ * as the {@code ConfigurationBuilder} type.
+ *
+ * <p>
+ *   Note: This builder is not thread-safe. Instances should not be shared between threads.
+ * </p>
  *
  * @since 2.4
  */
-class DefaultComponentAndConfigurationBuilder<T extends ComponentBuilder<T>>
+@ProviderType
+abstract class DefaultComponentAndConfigurationBuilder<T extends ComponentBuilder<T>>
         extends DefaultComponentBuilder<T, DefaultConfigurationBuilder<? extends Configuration>> {
 
-    DefaultComponentAndConfigurationBuilder(
+    /**
+     * Constructs a new instance with the given plugin-type and {@code null} name and value.
+     * @param builder the configuration-builder
+     * @param pluginType the plugin-type of the component being built
+     * @throws NullPointerException if either the {@code builder} or {@code pluginType} arguments are {@code null}
+     */
+    protected DefaultComponentAndConfigurationBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String pluginType) {
+
+        this(builder, pluginType, null, null);
+    }
+
+    /**
+     * Constructs a new instance with the given plugin-type, name and {@code null} value.
+     * @param builder the configuration-builder
+     * @param pluginType the plugin-type of the component being built
+     * @param name the component name
+     * @throws NullPointerException if either the {@code builder} or {@code pluginType} arguments are {@code null}
+     */
+    protected DefaultComponentAndConfigurationBuilder(
             final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String name,
-            final String type,
-            final String value) {
-        super(builder, name, type, value);
+            final String pluginType,
+            final @Nullable String name) {
+
+        this(builder, pluginType, name, null);
     }
 
-    DefaultComponentAndConfigurationBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String name, final String type) {
-        super(builder, name, type);
-    }
+    /**
+     * Constructs a new instance with the given plugin-type, name and value.
+     * @param builder the configuration-builder
+     * @param pluginType the plugin-type of the component being built
+     * @param name the component name
+     * @param value the component value
+     * @throws NullPointerException if either the {@code builder} or {@code pluginType} arguments are {@code null}
+     */
+    protected DefaultComponentAndConfigurationBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String pluginType,
+            final @Nullable String name,
+            final @Nullable String value) {
 
-    public DefaultComponentAndConfigurationBuilder(
-            final DefaultConfigurationBuilder<? extends Configuration> builder, final String type) {
-        super(builder, type);
+        super(builder, pluginType, name, value);
     }
 }

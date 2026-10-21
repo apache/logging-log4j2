@@ -49,7 +49,13 @@ class JAnsiTextRendererTest {
                         "\u001b[2mfaint text\u001b[m and \u001b[5mblinking text\u001b[m"),
                 // Return broken escapes as is
                 Arguments.of("", "Hello @|crazy|@ world!", "Hello @|crazy|@ world!"),
-                Arguments.of("", "Hello @|world!", "Hello @|world!"));
+                Arguments.of("", "Hello @|world!", "Hello @|world!"),
+                // Predefined Style=Spock: Name is BG_RED + WHITE
+                Arguments.of("Style=Spock", "@|Name XYZ|@", "\u001b[41;37mXYZ\u001b[m"),
+                // Predefined Style=Kirk: Name is BG_RED + YELLOW + BOLD
+                Arguments.of("Style=Kirk", "@|Name XYZ|@", "\u001b[41;33;1mXYZ\u001b[m"),
+                // User-supplied ANSI names still work when a predefined style is selected
+                Arguments.of("Style=Spock", "@|bg_red,white XYZ|@", "\u001b[41;37mXYZ\u001b[m"));
     }
 
     @ParameterizedTest

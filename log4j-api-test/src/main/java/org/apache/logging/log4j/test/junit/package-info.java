@@ -14,9 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+// The unused `BundleTestInfo` class was removed.
+@BaselineIgnore("2.27.0")
 @Export
 @Version("2.27.0")
 package org.apache.logging.log4j.test.junit;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.osgi.annotation.bundle.Export;
 import org.osgi.annotation.versioning.Version;

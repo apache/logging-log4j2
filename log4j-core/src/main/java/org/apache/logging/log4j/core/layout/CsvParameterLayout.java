@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 
 /**
  * A Comma-Separated Value (CSV) layout to log event parameters.
@@ -95,7 +96,7 @@ public class CsvParameterLayout extends AbstractCsvLayout {
         final Object[] parameters = message.getParameters();
         final StringBuilder buffer = getStringBuilder();
         try {
-            getFormat().printRecord(buffer, parameters);
+            getFormat().printRecord(buffer, parameters == null ? Constants.EMPTY_OBJECT_ARRAY : parameters);
             return buffer.toString();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(message, e);

@@ -46,7 +46,10 @@ final class InstantPatternLegacyFormatter implements InstantPatternFormatter {
     private final BiConsumer<StringBuilder, Instant> formatter;
 
     InstantPatternLegacyFormatter(final String pattern, final Locale locale, final TimeZone timeZone) {
-        this.precision = new InstantPatternDynamicFormatter(pattern, locale, timeZone).getPrecision();
+        // Replaces 'n' used in legacy patterns with 'S' to obtain the right precision.
+        // In legacy patterns, the precision of 'n' depends on the pattern length, but
+        // in `DateTimeFormatter`, it is always nanoseconds.
+        this.precision = new InstantPatternDynamicFormatter(pattern.replace('n', 'S'), locale, timeZone).getPrecision();
         this.pattern = pattern;
         this.locale = locale;
         this.timeZone = timeZone;

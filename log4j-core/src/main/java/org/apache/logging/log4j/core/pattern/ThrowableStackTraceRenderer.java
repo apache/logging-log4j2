@@ -103,7 +103,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             buffer.append(lineSeparator);
             renderStackTraceElements(buffer, context, metadata, prefix, lineSeparator);
             renderSuppressed(buffer, metadata.suppressed, context, visitedThrowables, prefix + '\t', lineSeparator);
-            renderCause(buffer, throwable.getCause(), context, visitedThrowables, prefix, lineSeparator);
+            renderCause(buffer, metadata.cause, context, visitedThrowables, prefix, lineSeparator);
         }
     }
 
@@ -283,15 +283,27 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
              */
             final Throwable[] suppressed;
 
+            /**
+             * The cause of this {@link Throwable}.
+             * This needs to be captured separately since {@link Throwable#getCause()} can change.
+             *
+             * @see <a href="https://github.com/apache/logging-log4j2/issues/3929">#4279</a>
+             * @see <a href="https://github.com/apache/logging-log4j2/pull/3934">#4303</a>
+             */
+            @Nullable
+            final Throwable cause;
+
             private Metadata(
                     final int commonElementCount,
                     final int stackLength,
                     final StackTraceElement[] stackTrace,
-                    final Throwable[] suppressed) {
+                    final Throwable[] suppressed,
+                    @Nullable final Throwable cause) {
                 this.commonElementCount = commonElementCount;
                 this.stackLength = stackLength;
                 this.stackTrace = stackTrace;
                 this.suppressed = suppressed;
+                this.cause = cause;
             }
 
             static Map<Throwable, Metadata> ofThrowable(final Throwable throwable) {
@@ -312,8 +324,9 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 // Populate metadata of the current throwable
                 @Nullable
                 final StackTraceElement[] rootTrace = parentThrowable == null ? null : parentThrowable.getStackTrace();
+                @Nullable final Throwable cause = throwable.getCause();
                 final Metadata metadata =
-                        populateMetadata(rootTrace, throwable.getStackTrace(), throwable.getSuppressed());
+                        populateMetadata(rootTrace, throwable.getStackTrace(), throwable.getSuppressed(), cause);
                 metadataByThrowable.put(throwable, metadata);
 
                 // Populate metadata of suppressed exceptions
@@ -325,7 +338,6 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                 }
 
                 // Populate metadata of the causal chain
-                @Nullable final Throwable cause = throwable.getCause();
                 if (cause != null && !visitedThrowables.contains(cause)) {
                     visitedThrowables.add(cause);
                     populateMetadata(metadataByThrowable, visitedThrowables, throwable, cause);
@@ -335,7 +347,8 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
             private static Metadata populateMetadata(
                     @Nullable final StackTraceElement[] parentTrace,
                     final StackTraceElement[] currentTrace,
-                    final Throwable[] suppressed) {
+                    final Throwable[] suppressed,
+                    @Nullable final Throwable cause) {
                 int commonElementCount;
                 int stackLength;
                 if (parentTrace != null) {
@@ -353,7 +366,7 @@ class ThrowableStackTraceRenderer<C extends ThrowableStackTraceRenderer.Context>
                     commonElementCount = 0;
                     stackLength = currentTrace.length;
                 }
-                return new Metadata(commonElementCount, stackLength, currentTrace, suppressed);
+                return new Metadata(commonElementCount, stackLength, currentTrace, suppressed, cause);
             }
         }
     }
