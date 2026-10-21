@@ -47,6 +47,8 @@
       <!-- java.management: used by ProcessIdPatternConverter -->
       java.lang.management;resolution:=optional,
       javax.management.*;resolution:=optional,
+      <!-- java.desktop: used by the deprecated LoggerContext property change listener methods -->
+      java.beans;resolution:=optional,
       <!-- java.sql -->
       java.sql.*;resolution:=optional,
       <!-- java.xml -->
@@ -58,6 +60,7 @@
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Optional dependencies can not be transitive -->
+      java.desktop;transitive=false,
       java.management;transitive=false,
       java.sql;transitive=false,
       java.xml;transitive=false,

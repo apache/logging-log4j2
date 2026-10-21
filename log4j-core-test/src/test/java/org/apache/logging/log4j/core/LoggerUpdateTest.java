@@ -17,12 +17,17 @@
 package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -64,5 +69,50 @@ public class LoggerUpdateTest {
         final Configuration config = context.getConfiguration();
         context.addConfigurationStartedListener(configuration -> assertSame(config, configuration));
         context.updateLoggers();
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void propertyChangeListenerReceivesOldAndNewConfigurationOnReconfiguration(final LoggerContext context) {
+        // Given a java.beans listener, as registered by Log4j Core 2 consumers such as Micrometer
+        final List<PropertyChangeEvent> events = new ArrayList<>();
+        context.addPropertyChangeListener(events::add);
+        final Configuration previous = context.getConfiguration();
+        final Configuration replacement = new DefaultConfiguration();
+
+        // When the configuration is replaced
+        context.setConfiguration(replacement);
+
+        // Then the listener sees the old and the new configuration
+        assertThat(events).isNotEmpty();
+        final PropertyChangeEvent last = events.get(events.size() - 1);
+        assertThat(last.getSource()).isSameAs(context);
+        assertThat(last.getPropertyName()).isEqualTo(LoggerContext.PROPERTY_CONFIG);
+        assertThat(last.getOldValue()).isSameAs(previous);
+        assertThat(last.getNewValue()).isSameAs(replacement);
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void removedPropertyChangeListenerIsNotNotified(final LoggerContext context) {
+        // Given a listener that was registered and then removed
+        final List<PropertyChangeEvent> events = new ArrayList<>();
+        final PropertyChangeListener listener = events::add;
+        context.addPropertyChangeListener(listener);
+        context.removePropertyChangeListener(listener);
+
+        // When the loggers are updated
+        context.updateLoggers();
+
+        // Then the listener is not called
+        assertThat(events).isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void nullPropertyChangeListenerIsRejected(final LoggerContext context) {
+        assertThatThrownBy(() -> context.addPropertyChangeListener(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("listener");
     }
 }
