@@ -46,8 +46,11 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
      * Creates a policy to rewrite levels for a given logger name.
      *
      * @param loggerNamePrefix
-     *        The logger name prefix for events to rewrite; all event logger names that start with this string will be
-     *        rewritten.
+     *        The logger name prefix for events to rewrite; an event will be rewritten if its logger name is
+     *        exactly this string, or a true descendant of it in the usual Log4j logger-name hierarchy sense
+     *        (this string followed by {@code '.'} and more). An empty string matches every logger name, and a
+     *        prefix that already ends with {@code '.'} is matched as a plain string prefix, since the
+     *        trailing separator already supplies the hierarchy boundary.
      * @param levelPairs
      *        The levels to rewrite, the key is the source level, the value the target level.
      * @return a new LoggerNameLevelRewritePolicy
@@ -80,7 +83,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     @Override
     public LogEvent rewrite(final LogEvent event) {
-        if (event.getLoggerName() == null || !event.getLoggerName().startsWith(loggerName)) {
+        if (!matchesLoggerNameOrDescendant(event.getLoggerName())) {
             return event;
         }
         final Level sourceLevel = event.getLevel();
@@ -91,5 +94,26 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
         final LogEvent result =
                 new Log4jLogEvent.Builder(event).setLevel(newLevel).build();
         return result;
+    }
+
+    /**
+     * Matches {@code eventLoggerName} against the configured {@link #loggerName} the same way the rest of
+     * Log4j treats logger-name hierarchy: either an exact match, or a true descendant separated by a '.'.
+     * A plain {@code startsWith} check would also match an unrelated sibling package that merely shares the
+     * same character prefix, e.g. a policy for {@code "com.foo"} would incorrectly also match
+     * {@code "com.foobar.Baz"}.
+     * <p>
+     * An empty {@link #loggerName} (matches every logger, by design) or one that already ends with the
+     * separator (the separator itself already supplies the hierarchy boundary) is exempt from the extra
+     * boundary check, since a plain prefix match is already unambiguous in both cases.
+     */
+    private boolean matchesLoggerNameOrDescendant(final String eventLoggerName) {
+        if (eventLoggerName == null || !eventLoggerName.startsWith(loggerName)) {
+            return false;
+        }
+        return loggerName.isEmpty()
+                || loggerName.endsWith(".")
+                || eventLoggerName.length() == loggerName.length()
+                || eventLoggerName.charAt(loggerName.length()) == '.';
     }
 }
