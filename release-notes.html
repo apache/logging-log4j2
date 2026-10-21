@@ -550,6 +550,9 @@
 <p>Do not output partially serialized log events in <code>SerializedLayout</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4368">4368</a>)</p>
 </li>
 <li>
+<p>Fix <code>%d</code> printing wrong seconds for instants before the epoch. (<a href="https://github.com/apache/logging-log4j2/issues/4399">4399</a>, <a href="https://github.com/apache/logging-log4j2/pull/4400">4400</a>)</p>
+</li>
+<li>
 <p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
 </li>
 <li>
