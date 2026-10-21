@@ -56,8 +56,34 @@ class AnsiEscapeTest {
         "underline_double, 21",
         "underline_off, 24",
         "bg_default, 49",
+        "black, 30",
+        "red, 31",
+        "green, 32",
+        "yellow, 33",
+        "blue, 34",
+        "magenta, 35",
+        "cyan, 36",
+        "white, 37",
+        "default, 39",
+        "fg_black, 30",
+        "fg_red, 31",
+        "fg_green, 32",
+        "fg_yellow, 33",
+        "fg_blue, 34",
+        "fg_magenta, 35",
+        "fg_cyan, 36",
+        "fg_white, 37",
+        "fg_default, 39",
+        "bg_black, 40",
+        "bg_red, 41",
+        "bg_green, 42",
+        "bg_yellow, 43",
+        "bg_blue, 44",
+        "bg_magenta, 45",
+        "bg_cyan, 46",
+        "bg_white, 47",
     })
     void styleMapsToSgr(final String name, final String sgrCode) {
-        assertEquals("\u001B[" + sgrCode + "m", AnsiEscape.createSequence(name));
+        assertEquals("\u001B[" + sgrCode + "m", AnsiEscape.createSequence(name), name);
     }
 }
