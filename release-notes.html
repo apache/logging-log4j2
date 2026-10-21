@@ -345,6 +345,9 @@
 <li>
 <p>Fix <code>CronExpression.MIN_DATE</code> to be the epoch instead of depending on the JVM start time and default time zone, and stop <code>CronExpression.getPrevFireTime</code> from searching before the epoch.</p>
 </li>
+<li>
+<p>Restore the deprecated <code>LoggerContext#addPropertyChangeListener</code> and <code>#removePropertyChangeListener</code> methods, so that Log4j Core 2 consumers such as Micrometer&#8217;s <code>Log4j2Metrics</code> keep working.</p>
+</li>
 </ul>
 </div>
 </div>
