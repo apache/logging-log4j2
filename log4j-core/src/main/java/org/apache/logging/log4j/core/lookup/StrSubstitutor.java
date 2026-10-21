@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,7 +136,8 @@ import org.apache.logging.log4j.util.Strings;
  *   ${tz:-%d{HH:mm:ss$}{GMT+00$}}
  * </pre>
  * <p>
- * results in <code>%d{HH:mm:ss}{GMT+00}</code>.
+ * results in <code>%d{HH:mm:ss}{GMT+00}</code>. A <code>$${</code> inside a variable reference still escapes the
+ * variable that follows, as outside of one.
  * </p>
  * <p>
  * In some complex scenarios you might even want to perform substitution in the
@@ -1068,8 +1070,7 @@ public class StrSubstitutor implements ConfigurationAware {
                 int endMatchLen = 0;
                 int nestedVarCount = 0;
                 while (pos < bufEnd) {
-                    if (isEscapeSequence(chars, pos, bufEnd, escape)) {
-                        // an escaped character has no special meaning
+                    if (isEscapeSequence(chars, pos, bufEnd)) {
                         pos += 2;
                         continue;
                     }
@@ -1087,28 +1088,30 @@ public class StrSubstitutor implements ConfigurationAware {
                     } else {
                         // found variable end marker
                         if (nestedVarCount == 0) {
-                            String varNameExpr =
-                                    new String(chars, startPos + startMatchLen, pos - startPos - startMatchLen);
+                            final VariableExpression expression;
                             if (substitutionInVariablesEnabled) {
                                 // initialize priorVariables if they're not already set
                                 if (priorVariables == null) {
                                     priorVariables = new ArrayList<>();
                                 }
-                                final StringBuilder bufName = new StringBuilder(varNameExpr);
-                                substitute(event, bufName, 0, bufName.length(), priorVariables);
-                                varNameExpr = bufName.toString();
+                                expression = resolveNestedVariables(
+                                        event, chars, startPos + startMatchLen, pos, priorVariables);
+                            } else {
+                                expression = VariableExpression.literal(
+                                        new String(chars, startPos + startMatchLen, pos - startPos - startMatchLen));
                             }
+                            final String varNameExpr = expression.text;
                             pos += endMatchLen;
                             final int endPos = pos;
 
-                            String varName = varNameExpr;
+                            String varName = unescape(expression, 0, varNameExpr.length());
                             String varDefaultValue = null;
 
                             if (valueDelimiterMatcher != null) {
                                 final char[] varNameExprChars = varNameExpr.toCharArray();
                                 int valueDelimiterMatchLen = 0;
                                 for (int i = 0; i < varNameExprChars.length; i++) {
-                                    if (isEscapeSequence(varNameExprChars, i, varNameExprChars.length, escape)) {
+                                    if (isLiteralEscapeSequence(expression, i)) {
                                         i++;
                                         continue;
                                     }
@@ -1123,14 +1126,18 @@ public class StrSubstitutor implements ConfigurationAware {
                                         final int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
                                         if (matchLen != 0) {
                                             final String varNamePrefix =
-                                                    varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
-                                            varName = varNamePrefix + varNameExpr.substring(i + matchLen - 1);
+                                                    unescape(expression, 0, i) + Interpolator.PREFIX_SEPARATOR;
+                                            varName = varNamePrefix
+                                                    + unescape(expression, i + matchLen - 1, varNameExpr.length());
                                             for (int j = i + matchLen; j < varNameExprChars.length; ++j) {
                                                 if ((valueDelimiterMatchLen =
                                                                 valueDelimiterMatcher.isMatch(varNameExprChars, j))
                                                         != 0) {
-                                                    varName = varNamePrefix + varNameExpr.substring(i + matchLen, j);
-                                                    varDefaultValue = varNameExpr.substring(j + valueDelimiterMatchLen);
+                                                    varName = varNamePrefix + unescape(expression, i + matchLen, j);
+                                                    varDefaultValue = unescape(
+                                                            expression,
+                                                            j + valueDelimiterMatchLen,
+                                                            varNameExpr.length());
                                                     break;
                                                 }
                                             }
@@ -1138,22 +1145,20 @@ public class StrSubstitutor implements ConfigurationAware {
                                         } else if ((valueDelimiterMatchLen =
                                                         valueDelimiterMatcher.isMatch(varNameExprChars, i))
                                                 != 0) {
-                                            varName = varNameExpr.substring(0, i);
-                                            varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                            varName = unescape(expression, 0, i);
+                                            varDefaultValue = unescape(
+                                                    expression, i + valueDelimiterMatchLen, varNameExpr.length());
                                             break;
                                         }
                                     } else if ((valueDelimiterMatchLen =
                                                     valueDelimiterMatcher.isMatch(varNameExprChars, i))
                                             != 0) {
-                                        varName = varNameExpr.substring(0, i);
-                                        varDefaultValue = varNameExpr.substring(i + valueDelimiterMatchLen);
+                                        varName = unescape(expression, 0, i);
+                                        varDefaultValue =
+                                                unescape(expression, i + valueDelimiterMatchLen, varNameExpr.length());
                                         break;
                                     }
                                 }
-                            }
-                            varName = unescape(varName, escape);
-                            if (varDefaultValue != null) {
-                                varDefaultValue = unescape(varDefaultValue, escape);
                             }
 
                             // on the first call initialize priorVariables
@@ -1207,42 +1212,163 @@ public class StrSubstitutor implements ConfigurationAware {
 
     /**
      * Checks if the character at the given position is the escape character followed by a character that can be
-     * escaped.
+     * escaped. The escape character in <code>$${</code> is not part of such a sequence: it escapes the variable
+     * that follows, as before, and that variable still ends with its own suffix.
      *
      * @param chars  the characters to check
      * @param pos  the position of the candidate escape character
      * @param end  the end position (exclusive) of the characters to consider
-     * @param escape  the escape character
      * @return true if the two characters at the given position form an escape sequence
      */
-    private static boolean isEscapeSequence(final char[] chars, final int pos, final int end, final char escape) {
-        return chars[pos] == escape && pos + 1 < end && isEscapable(chars[pos + 1], escape);
-    }
-
-    private static boolean isEscapable(final char c, final char escape) {
-        return c == escape || ESCAPABLE_CHARS.indexOf(c) >= 0;
+    private boolean isEscapeSequence(final char[] chars, final int pos, final int end) {
+        final char escape = getEscapeChar();
+        return chars[pos] == escape
+                && pos + 1 < end
+                && (chars[pos + 1] == escape || ESCAPABLE_CHARS.indexOf(chars[pos + 1]) >= 0)
+                && getVariablePrefixMatcher().isMatch(chars, pos + 1, pos + 1, end) == 0;
     }
 
     /**
-     * Removes the escape character in front of each escaped character.
-     *
-     * @param text  the text to unescape
-     * @param escape  the escape character
-     * @return the text without escape characters
+     * Checks if the character at the given position of a variable expression starts an escape sequence. Only the
+     * text of the expression itself, not the value of a nested variable, contains escape sequences.
      */
-    private static String unescape(final String text, final char escape) {
-        if (text.indexOf(escape) < 0) {
-            return text;
-        }
-        final char[] chars = text.toCharArray();
-        final StringBuilder result = new StringBuilder(chars.length);
-        for (int i = 0; i < chars.length; i++) {
-            if (isEscapeSequence(chars, i, chars.length, escape)) {
+    private boolean isLiteralEscapeSequence(final VariableExpression expression, final int pos) {
+        return expression.isLiteral(pos)
+                && expression.isLiteral(pos + 1)
+                && isEscapeSequence(expression.chars, pos, expression.chars.length);
+    }
+
+    /**
+     * Returns a part of a variable expression without the escape character of each of its escape sequences.
+     *
+     * @param expression  the variable expression
+     * @param beginIndex  the beginning index, inclusive
+     * @param endIndex  the ending index, exclusive
+     * @return the unescaped part of the expression
+     */
+    private String unescape(final VariableExpression expression, final int beginIndex, final int endIndex) {
+        final StringBuilder result = new StringBuilder(endIndex - beginIndex);
+        for (int i = beginIndex; i < endIndex; i++) {
+            if (i + 1 < endIndex && isLiteralEscapeSequence(expression, i)) {
                 i++;
             }
-            result.append(chars[i]);
+            result.append(expression.chars[i]);
         }
         return result.toString();
+    }
+
+    /**
+     * Resolves the nested variables in the expression between a variable prefix and its suffix, one at a time, and
+     * records which characters of the result come from the expression itself.
+     *
+     * @param event  the current LogEvent, if there is one
+     * @param chars  the characters that contain the expression
+     * @param start  the start of the expression
+     * @param end  the end (exclusive) of the expression
+     * @param priorVariables  the stack keeping track of the replaced variables
+     * @return the expression with its nested variables resolved
+     */
+    private VariableExpression resolveNestedVariables(
+            final LogEvent event,
+            final char[] chars,
+            final int start,
+            final int end,
+            final List<String> priorVariables) {
+        final StrMatcher prefixMatcher = getVariablePrefixMatcher();
+        final char escape = getEscapeChar();
+        final StringBuilder text = new StringBuilder(end - start);
+        final BitSet literalPositions = new BitSet();
+        int pos = start;
+        while (pos < end) {
+            final int prefixLen = prefixMatcher.isMatch(chars, pos, start, end);
+            final int last = text.length() - 1;
+            if (prefixLen != 0 && last >= 0 && text.charAt(last) == escape) {
+                // escaped variable: drop the escape character and keep the prefix as text
+                literalPositions.clear(last);
+                text.setLength(last);
+                for (int i = 0; i < prefixLen; i++) {
+                    literalPositions.set(text.length());
+                    text.append(chars[pos++]);
+                }
+            } else if (prefixLen != 0) {
+                final int varEnd = findVariableEnd(chars, pos + prefixLen, start, end);
+                final StringBuilder nested = new StringBuilder(varEnd - pos).append(chars, pos, varEnd - pos);
+                substitute(event, nested, 0, nested.length(), priorVariables);
+                text.append(nested);
+                pos = varEnd;
+            } else {
+                literalPositions.set(text.length());
+                text.append(chars[pos++]);
+            }
+        }
+        return new VariableExpression(text.toString(), literalPositions);
+    }
+
+    /**
+     * Finds the end of a nested variable.
+     *
+     * @param chars  the characters that contain the variable
+     * @param nameStart  the position right after the variable prefix
+     * @param start  the start of the characters to consider
+     * @param end  the end (exclusive) of the characters to consider
+     * @return the position right after the variable suffix, or {@code end} if there is none
+     */
+    private int findVariableEnd(final char[] chars, final int nameStart, final int start, final int end) {
+        final StrMatcher prefixMatcher = getVariablePrefixMatcher();
+        final StrMatcher suffixMatcher = getVariableSuffixMatcher();
+        int pos = nameStart;
+        int nestedVarCount = 0;
+        while (pos < end) {
+            if (isEscapeSequence(chars, pos, end)) {
+                pos += 2;
+                continue;
+            }
+            final int prefixLen = prefixMatcher.isMatch(chars, pos, start, end);
+            if (prefixLen != 0) {
+                nestedVarCount++;
+                pos += prefixLen;
+                continue;
+            }
+            final int suffixLen = suffixMatcher.isMatch(chars, pos, start, end);
+            if (suffixLen == 0) {
+                pos++;
+            } else if (nestedVarCount == 0) {
+                return pos + suffixLen;
+            } else {
+                nestedVarCount--;
+                pos += suffixLen;
+            }
+        }
+        return end;
+    }
+
+    /**
+     * The expression between a variable prefix and its suffix, with its nested variables resolved.
+     */
+    private static final class VariableExpression {
+
+        private final String text;
+
+        private final char[] chars;
+
+        /** The positions of the characters that come from the expression itself, not from a nested variable. */
+        private final BitSet literalPositions;
+
+        private VariableExpression(final String text, final BitSet literalPositions) {
+            this.text = text;
+            this.chars = text.toCharArray();
+            this.literalPositions = literalPositions;
+        }
+
+        private static VariableExpression literal(final String text) {
+            final BitSet literalPositions = new BitSet(text.length());
+            literalPositions.set(0, text.length());
+            return new VariableExpression(text, literalPositions);
+        }
+
+        private boolean isLiteral(final int pos) {
+            return literalPositions.get(pos);
+        }
     }
 
     /**

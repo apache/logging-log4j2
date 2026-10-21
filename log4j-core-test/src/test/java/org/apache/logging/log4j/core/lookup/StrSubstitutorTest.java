@@ -145,7 +145,6 @@ class StrSubstitutorTest {
         // Example from https://github.com/apache/logging-log4j2/issues/2679
         assertEquals("%d{yyyy-MM-dd HH:mm:ss}{GMT+00}", sub.replace("${undefined:-%d{yyyy-MM-dd HH:mm:ss$}{GMT+00$}}"));
         assertEquals("}", sub.replace("${undefined:-$}}"));
-        // The same expression through the Interpolator, as in a configuration file
         final StrSubstitutor interpolating = new StrSubstitutor(new Interpolator(new PropertiesLookup(valuesMap)));
         assertEquals(
                 "%d{yyyy-MM-dd HH:mm:ss}{GMT+00}",
@@ -198,14 +197,41 @@ class StrSubstitutorTest {
     }
 
     @Test
+    void testEscapedVariableInDefaultValue() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("x", "set");
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        assertEquals("set", sub.replace("${x:-$${k}}"));
+        assertEquals("${k}", sub.replace("${undefined:-$${k}}"));
+    }
+
+    @Test
+    void testValuesOfNestedVariablesAreNotUnescaped() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("dollars", "a$$b");
+        valuesMap.put("brace", "a$}b");
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        assertEquals("a$$b", sub.replace("${undefined:-${dollars}}"));
+        assertEquals("a$}b", sub.replace("${undefined:-${brace}}"));
+    }
+
+    @Test
+    void testValueEndingWithEscapeCharacterEscapesFollowingVariable() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("dollar", "$");
+        valuesMap.put("animal", "fox");
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        assertEquals("${animal}", sub.replace("${dollar}${animal}"));
+        assertEquals("${animal}", sub.replace("${undefined:-${dollar}${animal}}"));
+    }
+
+    @Test
     void testEscapeCharacterBeforeOtherCharactersIsLiteral() {
         final Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("animal", "quick brown fox");
         final StrSubstitutor sub = new StrSubstitutor(valuesMap);
-        // `$` keeps its literal meaning before any other character
         assertEquals("$x", sub.replace("${undefined:-$x}"));
         assertEquals("a$b c$ d", sub.replace("${undefined:-a$b c$ d}"));
-        // Outside of a variable reference only `$${` is an escape
         assertEquals("$$ quick brown fox", sub.replace("$$ ${animal}"));
         assertEquals("a$:b c$-d e$}f", sub.replace("a$:b c$-d e$}f"));
         assertEquals("${animal}", sub.replace("$${animal}"));
