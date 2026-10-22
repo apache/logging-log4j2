@@ -267,8 +267,9 @@ Otherwise, they will be ignored.
 
 | useTls
 | `boolean`
-| `true`
-| Whether to use TLS/SSL to connect to Cassandra. This is `false` by default.
+| `false`
+| Whether to use TLS/SSL to connect to Cassandra. Host name verification can be enabled with the global
+xref:manual/systemproperties.adoc#log4j2.sslVerifyHostName[`log4j2.sslVerifyHostName`] property.
 |===
 
 [#CassandraAppender-elements]
