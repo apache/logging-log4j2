@@ -31,6 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -56,6 +57,7 @@ public class RollingFileManager extends FileManager {
 
     private static final int MAX_TRIES = 3;
     private static final int MIN_DURATION = 100;
+    private static final long ASYNC_EXECUTOR_KEEP_ALIVE_MILLIS = 1000;
     private static final FileTime EPOCH = FileTime.fromMillis(0);
 
     protected long size;
@@ -73,8 +75,8 @@ public class RollingFileManager extends FileManager {
     private final CopyOnWriteArrayList<RolloverListener> rolloverListeners = new CopyOnWriteArrayList<>();
 
     /* This executor service schedules asynchronous rollover actions and ensures they are completed when the manager
-    is stopped. */
-    private final ScheduledExecutorService asyncExecutor = new ScheduledThreadPoolExecutor(1, threadFactory);
+    is stopped. Its thread is non-daemon, so it must time out when idle or it keeps the JVM running. */
+    private final ScheduledExecutorService asyncExecutor = createAsyncExecutor(threadFactory);
 
     private static final AtomicReferenceFieldUpdater<RollingFileManager, TriggeringPolicy> triggeringPolicyUpdater =
             AtomicReferenceFieldUpdater.newUpdater(
@@ -760,6 +762,13 @@ public class RollingFileManager extends FileManager {
                 semaphore.release();
             }
         }
+    }
+
+    private static ScheduledExecutorService createAsyncExecutor(final ThreadFactory threadFactory) {
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, threadFactory);
+        executor.setKeepAliveTime(ASYNC_EXECUTOR_KEEP_ALIVE_MILLIS, TimeUnit.MILLISECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
     }
 
     long getAsyncActionDelayMillis() {

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -32,6 +33,8 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
@@ -154,6 +157,56 @@ class RollingFileManagerTest {
 
         // The logged content should be unchanged
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
+    }
+
+    @Test
+    void testAsyncActionThreadEndsWhenIdle() throws IOException {
+        final AtomicReference<Thread> actionThread = new AtomicReference<>();
+        class RecordingAsynchronousAction extends AbstractAction {
+            @Override
+            public boolean execute() {
+                actionThread.set(Thread.currentThread());
+                return true;
+            }
+        }
+        class AsynchronousOnlyStrategy implements RolloverStrategy {
+            @Override
+            public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
+                return new RolloverDescriptionImpl(
+                        manager.getFileName(), false, null, new RecordingAsynchronousAction());
+            }
+        }
+
+        final File file = File.createTempFile("testAsyncActionThreadEndsWhenIdle", "log");
+        final RollingFileManager manager = RollingFileManager.getFileManager(
+                file.getAbsolutePath(),
+                "testAsyncActionThreadEndsWhenIdle.log.%d{yyyy-MM-dd}",
+                true,
+                false,
+                OnStartupTriggeringPolicy.createPolicy(1),
+                new AsynchronousOnlyStrategy(),
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                new NullConfiguration());
+        assertNotNull(manager);
+        try {
+            manager.initialize();
+            final String testContent = "Test";
+            manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
+            manager.rollover();
+
+            await().atMost(10, TimeUnit.SECONDS)
+                    .until(() ->
+                            actionThread.get() != null && !actionThread.get().isAlive());
+        } finally {
+            manager.close();
+        }
     }
 
     @Test
