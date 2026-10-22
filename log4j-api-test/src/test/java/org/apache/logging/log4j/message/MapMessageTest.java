@@ -325,6 +325,13 @@ class MapMessageTest {
     }
 
     @Test
+    void testDefaultFormatEscapesStructuredDataValues() {
+        final StringMapMessage msg = new StringMapMessage().with("key", "a\"\\]");
+        final String expected = "key=\"" + "a" + "\\\"" + "\\\\" + "\\]" + "\"";
+        assertEquals(expected, msg.getFormattedMessage());
+    }
+
+    @Test
     void testGetUsesDeepToString() {
         final String key = "key";
         final ObjectMapMessage msg = new ObjectMapMessage().with(key, new FormattableTestType());
