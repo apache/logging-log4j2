@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
@@ -26,22 +26,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressAc
 /**
  * Compresses a file using Zip compression.
  */
-public final class ZipCompressAction extends AbstractAction {
-
-    /**
-     * Source file.
-     */
-    private final File source;
-
-    /**
-     * Destination file.
-     */
-    private final File destination;
-
-    /**
-     * If true, attempts to delete file on completion.
-     */
-    private final boolean deleteSource;
+public final class ZipCompressAction extends AbstractCompressAction {
 
     /**
      * Compression level.
@@ -49,11 +34,7 @@ public final class ZipCompressAction extends AbstractAction {
     private final int level;
 
     private static int resolveCompressionLevel(final int level) {
-        if (level < java.util.zip.Deflater.DEFAULT_COMPRESSION || level > 9) {
-            LOGGER.warn("Unsupported ZIP compression level {}; using default level {}.", level, -1);
-            return java.util.zip.Deflater.DEFAULT_COMPRESSION;
-        }
-        return level;
+        return CompressActionSupport.resolveCompressionLevel("ZIP", level, -1, 9, -1);
     }
 
     /**
@@ -66,12 +47,7 @@ public final class ZipCompressAction extends AbstractAction {
      * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
+        super(source, destination, deleteSource);
         this.level = level;
     }
 
@@ -83,7 +59,19 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource, level);
+        return super.execute();
+    }
+
+    /**
+     * Creates the ZIP stream using the configured level or the default for unsupported levels.
+     *
+     * @param output destination output stream
+     * @return compressor output stream
+     * @throws IOException on IO exception.
+     */
+    @Override
+    protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
+        return createCompressorOutputStream(output, source, level);
     }
 
     /**
@@ -99,12 +87,27 @@ public final class ZipCompressAction extends AbstractAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        return CompressActionSupport.execute(source, destination, deleteSource, output -> {
-            final ZipOutputStream zipOutput = new ZipOutputStream(output);
+        return CompressActionSupport.execute(
+                source, destination, deleteSource, output -> createCompressorOutputStream(output, source, level));
+    }
+
+    private static OutputStream createCompressorOutputStream(
+            final OutputStream output, final File source, final int level) throws IOException {
+        final ZipOutputStream zipOutput = new ZipOutputStream(output);
+        try {
             zipOutput.setLevel(resolveCompressionLevel(level));
             zipOutput.putNextEntry(new ZipEntry(source.getName()));
             return zipOutput;
-        });
+        } catch (final IOException | RuntimeException | Error failure) {
+            try {
+                zipOutput.close();
+            } catch (final IOException closeFailure) {
+                if (closeFailure != failure) {
+                    failure.addSuppressed(closeFailure);
+                }
+            }
+            throw failure;
+        }
     }
 
     /**

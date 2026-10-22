@@ -16,12 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.zip.Deflater;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -84,10 +88,30 @@ class GzCompressActionTest {
             final File tempDir, final String sourceName, final int compressionLevel) throws IOException {
         final File source = new File(tempDir, sourceName);
         final File destination = new File(tempDir, sourceName + ".gz");
-        writeContent(source, "test data");
+        final File defaultDestination = new File(tempDir, sourceName + ".default.gz");
+        final byte[] content = new byte[65536];
+        final Random random = new Random(0);
+        random.nextBytes(content);
+        // Repeated blocks with varying distances distinguish the compression levels.
+        for (int i = 1024; i < content.length; i += 128) {
+            System.arraycopy(content, random.nextInt(i - 128), content, i, 128);
+        }
+        Files.write(source.toPath(), content);
 
+        assertTrue(new GzCompressAction(source, defaultDestination, false, Deflater.DEFAULT_COMPRESSION).execute());
+        final byte[] defaultBytes = Files.readAllBytes(defaultDestination.toPath());
+        for (int level = Deflater.NO_COMPRESSION; level <= Deflater.BEST_COMPRESSION; level++) {
+            if (level == 6) { // The Deflater default is level 6.
+                continue;
+            }
+            assertTrue(new GzCompressAction(source, destination, false, level).execute());
+            assertFalse(
+                    Arrays.equals(defaultBytes, Files.readAllBytes(destination.toPath())),
+                    "Test data must distinguish the default from level " + level);
+        }
         assertTrue(new GzCompressAction(source, destination, true, compressionLevel).execute());
         assertTrue(destination.exists());
         assertFalse(source.exists());
+        assertArrayEquals(defaultBytes, Files.readAllBytes(destination.toPath()));
     }
 }

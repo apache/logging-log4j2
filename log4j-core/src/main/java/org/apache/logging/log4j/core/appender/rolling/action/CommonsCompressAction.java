@@ -99,13 +99,16 @@ public final class CommonsCompressAction extends AbstractAction {
             return false;
         }
         LOGGER.debug("Starting {} compression of {}", name, source.getPath());
-        CompressActionSupport.execute(source, destination, output -> {
+        final boolean compressed = CompressActionSupport.execute(source, destination, output -> {
             try {
                 return new CompressorStreamFactory().createCompressorOutputStream(name, output);
             } catch (final CompressorException e) {
                 throw new IOException(e);
             }
         });
+        if (!compressed) {
+            return false;
+        }
 
         LOGGER.debug("Finished {} compression of {}", name, source.getPath());
         if (deleteSource) {

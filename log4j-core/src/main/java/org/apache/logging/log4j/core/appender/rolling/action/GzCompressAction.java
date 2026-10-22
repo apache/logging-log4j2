@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Objects;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
@@ -27,24 +26,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressAc
 /**
  * Compresses a file using GZ compression.
  */
-public final class GzCompressAction extends AbstractAction {
-
-    private static final int BUF_SIZE = 8192;
-
-    /**
-     * Source file.
-     */
-    private final File source;
-
-    /**
-     * Destination file.
-     */
-    private final File destination;
-
-    /**
-     * If true, attempt to delete file on completion.
-     */
-    private final boolean deleteSource;
+public final class GzCompressAction extends AbstractCompressAction {
 
     /**
      * GZIP compression level to use.
@@ -54,17 +36,12 @@ public final class GzCompressAction extends AbstractAction {
     private final int compressionLevel;
 
     private static int resolveCompressionLevel(final int compressionLevel) {
-        final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
-        final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
-
-        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
-            LOGGER.warn(
-                    "Unsupported GZIP compression level {}; using default level {}.",
-                    compressionLevel,
-                    Deflater.DEFAULT_COMPRESSION);
-            return Deflater.DEFAULT_COMPRESSION;
-        }
-        return compressionLevel;
+        return CompressActionSupport.resolveCompressionLevel(
+                "GZIP",
+                compressionLevel,
+                Deflater.DEFAULT_COMPRESSION,
+                Deflater.BEST_COMPRESSION,
+                Deflater.DEFAULT_COMPRESSION);
     }
 
     /**
@@ -76,12 +53,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
+        super(source, destination, deleteSource);
         this.compressionLevel = compressionLevel;
     }
 
@@ -103,7 +75,19 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource, compressionLevel);
+        return super.execute();
+    }
+
+    /**
+     * Creates the GZIP stream using the configured level or the default for unsupported levels.
+     *
+     * @param output destination output stream
+     * @return compressor output stream
+     * @throws IOException on IO exception.
+     */
+    @Override
+    protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
+        return new ConfigurableLevelGZIPOutputStream(output, BUF_SIZE, resolveCompressionLevel(compressionLevel));
     }
 
     /**

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action.internal;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -25,12 +26,62 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.rolling.FileExtension;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
+@StatusLoggerLevel("DEBUG")
 class CompressionLevelAwareActionTest {
+
+    @Test
+    void testCommonsDoesNotDeleteSourceWhenCompressionWasSkipped(@TempDir File tempDir) throws IOException {
+        final File source = writeSource(tempDir, "source.log");
+        final File destination = new File(tempDir, "source.log.deflate");
+        // Simulate a source disappearing at the second existence check and being replaced before deletion.
+        final File changingSource = new File(source.getPath()) {
+            private int checks;
+
+            @Override
+            public boolean exists() {
+                return ++checks == 1;
+            }
+        };
+
+        assertFalse(CommonsCompressAction.execute("deflate", changingSource, destination, true));
+        assertTrue(source.exists());
+        assertFalse(destination.exists());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"BZIP2, bzip2", "DEFLATE, deflate", "ZSTD, zstd"})
+    @UsingStatusListener
+    void testPreservesCompressionDebugLogs(
+            final FileExtension extension, final String name, @TempDir File tempDir, final ListStatusListener listener)
+            throws IOException {
+        final File source = writeSource(tempDir, "source.log");
+        final File destination = new File(tempDir, "source.log" + extension.getExtension());
+        listener.clear();
+
+        assertTrue(extension
+                .createCompressAction(source.getPath(), destination.getPath(), true, -1)
+                .execute());
+        assertTrue(listener.findStatusData(Level.DEBUG).anyMatch(data -> data.getMessage()
+                .getFormattedMessage()
+                .equals("Starting " + name + " compression of " + source.getPath())));
+        assertTrue(listener.findStatusData(Level.DEBUG).anyMatch(data -> data.getMessage()
+                .getFormattedMessage()
+                .equals("Finished " + name + " compression of " + source.getPath())));
+        assertTrue(listener.findStatusData(Level.DEBUG)
+                .anyMatch(data -> data.getMessage().getFormattedMessage().equals("Deleted " + source)));
+    }
 
     @Test
     void testBzip2PassesConfiguredBlockSizeToCompressor(@TempDir File tempDir) throws IOException {
@@ -118,11 +169,16 @@ class CompressionLevelAwareActionTest {
         final File source = writeSource(tempDir, "invalid-" + extension.getExtension() + '-' + level + ".log");
         final File destination =
                 new File(tempDir, "invalid-" + extension.getExtension() + '-' + level + '.' + extension.getExtension());
+        final File defaultDestination = new File(tempDir, "default-" + extension.getExtension() + '-' + level);
+        assertTrue(extension
+                .createCompressAction(source.getPath(), defaultDestination.getPath(), false, -1)
+                .execute());
         final Action action = extension.createCompressAction(source.getPath(), destination.getPath(), true, level);
 
         assertTrue(action.execute());
         assertTrue(destination.exists());
         assertFalse(source.exists());
+        assertArrayEquals(Files.readAllBytes(defaultDestination.toPath()), Files.readAllBytes(destination.toPath()));
     }
 
     private static File writeSource(final File tempDir, final String name) throws IOException {

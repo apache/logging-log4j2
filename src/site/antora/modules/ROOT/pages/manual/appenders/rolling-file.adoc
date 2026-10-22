@@ -662,7 +662,7 @@ Both rollover strategies support the following configuration parameters:
 | [[RolloverStrategy-attr-compressionLevel]]compressionLevel
 | `int`
 | `-1`
-| Determine the compression level of archived log files. The default value selects the format-specific compression default. Unsupported values fall back to that default and log a warning during asynchronous compression.
+| Determine the compression level of archived log files. The default value selects the format-specific compression default. Unsupported values fall back to that default. During asynchronous compression, a warning is logged once per format and unsupported configured level per class loader, rather than on every rollover.
 
 See <<RolloverStrategy-compress>> for more details.
 

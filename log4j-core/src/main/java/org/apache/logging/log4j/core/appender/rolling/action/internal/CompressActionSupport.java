@@ -22,14 +22,43 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.status.StatusLogger;
 
-/** Common file handling for compression actions. */
+/** Common file handling and compression-level resolution for compression actions. */
 public final class CompressActionSupport {
 
     private static final int BUF_SIZE = 8192;
+    private static final ConcurrentMap<String, Set<Integer>> WARNED_LEVELS = new ConcurrentHashMap<>();
 
     private CompressActionSupport() {}
+
+    /**
+     * Resolves a compression level during compression execution, reporting each unsupported format and configured
+     * level only once.
+     *
+     * @param format compression format
+     * @param level configured compression level
+     * @param minimum minimum supported level
+     * @param maximum maximum supported level
+     * @param defaultLevel format-specific default
+     * @return the configured level if supported, otherwise the default
+     */
+    public static int resolveCompressionLevel(
+            final String format, final int level, final int minimum, final int maximum, final int defaultLevel) {
+        if (level >= minimum && level <= maximum) {
+            return level;
+        }
+        if (WARNED_LEVELS
+                .computeIfAbsent(format, key -> ConcurrentHashMap.newKeySet())
+                .add(level)) {
+            StatusLogger.getLogger()
+                    .warn("Unsupported {} compression level {}; using default level {}.", format, level, defaultLevel);
+        }
+        return defaultLevel;
+    }
 
     /**
      * Compresses a source file while retaining it.
@@ -77,8 +106,12 @@ public final class CompressActionSupport {
                 output.write(buffer, 0, count);
             }
         }
-        if (deleteSource && !source.delete()) {
-            StatusLogger.getLogger().warn("Unable to delete {}.", source);
+        if (deleteSource) {
+            if (source.delete()) {
+                StatusLogger.getLogger().debug("Deleted {}", source);
+            } else {
+                StatusLogger.getLogger().warn("Unable to delete {}.", source);
+            }
         }
         return true;
     }

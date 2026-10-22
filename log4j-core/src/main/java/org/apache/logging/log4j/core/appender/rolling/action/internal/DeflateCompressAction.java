@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateParameters;
+import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /** Compresses a file using Deflate compression. */
 public final class DeflateCompressAction extends AbstractCompressAction {
@@ -30,19 +31,17 @@ public final class DeflateCompressAction extends AbstractCompressAction {
 
     public DeflateCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        super(source, destination, deleteSource);
+        super(source, destination, deleteSource, "deflate");
         this.compressionLevel = compressionLevel;
     }
 
     private int resolveCompressionLevel() {
-        if (compressionLevel < Deflater.DEFAULT_COMPRESSION || compressionLevel > Deflater.BEST_COMPRESSION) {
-            LOGGER.warn(
-                    "Unsupported Deflate compression level {}; using default level {}.",
-                    compressionLevel,
-                    Deflater.DEFAULT_COMPRESSION);
-            return Deflater.DEFAULT_COMPRESSION;
-        }
-        return compressionLevel;
+        return CompressActionSupport.resolveCompressionLevel(
+                "Deflate",
+                compressionLevel,
+                Deflater.DEFAULT_COMPRESSION,
+                Deflater.BEST_COMPRESSION,
+                Deflater.DEFAULT_COMPRESSION);
     }
 
     @Override

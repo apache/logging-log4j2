@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /** Compresses a file using BZip2 compression. */
 public final class Bzip2CompressAction extends AbstractCompressAction {
@@ -29,7 +30,7 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
 
     public Bzip2CompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        super(source, destination, deleteSource);
+        super(source, destination, deleteSource, "bzip2");
         this.compressionLevel = compressionLevel;
     }
 
@@ -42,14 +43,11 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
         if (compressionLevel == Deflater.DEFAULT_COMPRESSION) {
             return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
         }
-        if (compressionLevel < BZip2CompressorOutputStream.MIN_BLOCKSIZE
-                || compressionLevel > BZip2CompressorOutputStream.MAX_BLOCKSIZE) {
-            LOGGER.warn(
-                    "Unsupported BZip2 compression level {}; using default level {}.",
-                    compressionLevel,
-                    BZip2CompressorOutputStream.MAX_BLOCKSIZE);
-            return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
-        }
-        return compressionLevel;
+        return CompressActionSupport.resolveCompressionLevel(
+                "BZip2",
+                compressionLevel,
+                BZip2CompressorOutputStream.MIN_BLOCKSIZE,
+                BZip2CompressorOutputStream.MAX_BLOCKSIZE,
+                BZip2CompressorOutputStream.MAX_BLOCKSIZE);
     }
 }
