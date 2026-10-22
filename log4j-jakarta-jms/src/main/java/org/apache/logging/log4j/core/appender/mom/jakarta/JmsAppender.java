@@ -191,7 +191,7 @@ public final class JmsAppender extends AbstractAppender {
         public String toString() {
             return "Builder [name=" + getName() + ", factoryName=" + factoryName + ", providerUrl=" + providerUrl
                     + ", urlPkgPrefixes=" + urlPkgPrefixes + ", securityPrincipalName=" + securityPrincipalName
-                    + ", securityCredentials=" + securityCredentials + ", factoryBindingName=" + factoryBindingName
+                    + ", securityCredentials=*****, factoryBindingName=" + factoryBindingName
                     + ", destinationBindingName=" + destinationBindingName + ", username=" + userName + ", layout="
                     + getLayout() + ", filter=" + getFilter() + ", ignoreExceptions=" + isIgnoreExceptions()
                     + ", jmsManager=" + jmsManager + "]";
