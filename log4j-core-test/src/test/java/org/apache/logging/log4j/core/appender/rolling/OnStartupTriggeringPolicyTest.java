@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -50,6 +51,15 @@ class OnStartupTriggeringPolicyTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void testFileCreatedAfterJvmStartIsNotOlderThanStartTimeAtSecondPrecision() {
+        final long startupTime = 1755031147175L;
+        final long fileCreationTime = 1755031147480L;
+        final long fileTime = RollingFileManager.alignMillisToSecond(fileCreationTime);
+        assertFalse(OnStartupTriggeringPolicy.isFileOlderThanStartup(fileTime, startupTime));
+        assertTrue(OnStartupTriggeringPolicy.isFileOlderThanStartup(fileTime - 1000, startupTime));
+    }
 
     @Test
     void testPolicy() throws Exception {
