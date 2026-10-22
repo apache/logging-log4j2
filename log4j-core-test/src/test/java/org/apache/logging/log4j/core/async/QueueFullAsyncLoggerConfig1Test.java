@@ -40,6 +40,14 @@ public class QueueFullAsyncLoggerConfig1Test extends QueueFullAbstractTest {
     }
 
     @Override
+    @Test
+    @LoggerContextSource
+    protected void testQueueFullDoesNotDiscardOtherThreadsMessages(
+            final LoggerContext ctx, final @Named(APPENDER_NAME) BlockingAppender blockingAppender) throws Exception {
+        super.testQueueFullDoesNotDiscardOtherThreadsMessages(ctx, blockingAppender);
+    }
+
+    @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
         assertAsyncLoggerConfig(ctx, 128);
     }
