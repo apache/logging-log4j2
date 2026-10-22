@@ -2508,8 +2508,11 @@ characters, then truncate from the end.</p></td>
                    | &lt;keyword&gt;
 &lt;hex&gt; ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
         | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
-&lt;keyword&gt; ::= "normal" | "bold" | "dim" | "underline"
-            | "blink" | "reverse" | "hidden"
+&lt;keyword&gt; ::= "normal" | "reset" | "bold" | "intensity_bold" | "dim" | "faint" | "intensity_faint"
+            | "italic" | "underline" | "underline_double" | "underline_off"
+            | "blink" | "blink_slow" | "blink_fast" | "blink_off"
+            | "reverse" | "negative_on" | "negative_off" | "hidden" | "conceal_on" | "conceal_off"
+            | "bg_default"
             | "black" | "bg_black" | "bright_black" | "bg_bright_black"
             | "red" | "bg_red" | "bright_red" | "bg_bright_red"
             | "green" | "bg_green" | "bright_green" | "bg_bright_green"
@@ -2528,33 +2531,65 @@ characters, then truncate from the end.</p></td>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>normal</code></dt>
+<dt class="hdlist1"><code>normal</code> / <code>reset</code></dt>
 <dd>
 <p>Reverts all parameters to their default value</p>
 </dd>
-<dt class="hdlist1"><code>bold</code></dt>
+<dt class="hdlist1"><code>bold</code> / <code>intensity_bold</code></dt>
 <dd>
 <p>Increases the font weight or the color intensity</p>
 </dd>
-<dt class="hdlist1"><code>dim</code></dt>
+<dt class="hdlist1"><code>dim</code> / <code>faint</code> / <code>intensity_faint</code></dt>
 <dd>
-<p>Decreases the fond weight or the color intensity</p>
+<p>Decreases the font weight or the color intensity</p>
+</dd>
+<dt class="hdlist1"><code>italic</code></dt>
+<dd>
+<p>Renders the text in italic on terminals that support it</p>
 </dd>
 <dt class="hdlist1"><code>underline</code></dt>
 <dd>
 <p>Underlines the text on some terminals</p>
 </dd>
-<dt class="hdlist1"><code>blink</code></dt>
+<dt class="hdlist1"><code>underline_double</code></dt>
+<dd>
+<p>Double-underlines the text on terminals that support it</p>
+</dd>
+<dt class="hdlist1"><code>underline_off</code></dt>
+<dd>
+<p>Removes any underline</p>
+</dd>
+<dt class="hdlist1"><code>blink</code> / <code>blink_slow</code></dt>
 <dd>
 <p>Causes the text to blink</p>
 </dd>
-<dt class="hdlist1"><code>reverse</code></dt>
+<dt class="hdlist1"><code>blink_fast</code></dt>
+<dd>
+<p>Causes the text to blink rapidly on terminals that support it</p>
+</dd>
+<dt class="hdlist1"><code>blink_off</code></dt>
+<dd>
+<p>Stops the text blinking</p>
+</dd>
+<dt class="hdlist1"><code>reverse</code> / <code>negative_on</code></dt>
 <dd>
 <p>Swaps foreground and background colors</p>
 </dd>
-<dt class="hdlist1"><code>hidden</code></dt>
+<dt class="hdlist1"><code>negative_off</code></dt>
+<dd>
+<p>Restores the original foreground and background colors</p>
+</dd>
+<dt class="hdlist1"><code>hidden</code> / <code>conceal_on</code></dt>
 <dd>
 <p>Hides the text</p>
+</dd>
+<dt class="hdlist1"><code>conceal_off</code></dt>
+<dd>
+<p>Reveals hidden text</p>
+</dd>
+<dt class="hdlist1"><code>bg_default</code></dt>
+<dd>
+<p>Resets the background color to the terminal default</p>
 </dd>
 </dl>
 </div>

@@ -145,33 +145,49 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Cyan background color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#BG_GREEN" class="member-name-link">BG_GREEN</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#BG_DEFAULT" class="member-name-link">BG_DEFAULT</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Default background color.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#BG_GREEN" class="member-name-link">BG_GREEN</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Green background color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#BG_MAGENTA" class="member-name-link">BG_MAGENTA</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#BG_MAGENTA" class="member-name-link">BG_MAGENTA</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Magenta background color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#BG_RED" class="member-name-link">BG_RED</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#BG_RED" class="member-name-link">BG_RED</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Red background color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#BG_WHITE" class="member-name-link">BG_WHITE</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#BG_WHITE" class="member-name-link">BG_WHITE</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">White background color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#BG_YELLOW" class="member-name-link">BG_YELLOW</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#BG_YELLOW" class="member-name-link">BG_YELLOW</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Yellow background color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#BLACK" class="member-name-link">BLACK</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#BLACK" class="member-name-link">BLACK</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Black foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#BLINK" class="member-name-link">BLINK</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#BLINK" class="member-name-link">BLINK</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Blink general attribute.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#BLINK_FAST" class="member-name-link">BLINK_FAST</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Fast blink general attribute.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#BLINK_OFF" class="member-name-link">BLINK_OFF</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Turns blink off.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#BLINK_SLOW" class="member-name-link">BLINK_SLOW</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Slow blink general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
 </div>
 <div class="col-first even-row-color"><code><a href="#BLUE" class="member-name-link">BLUE</a></code></div>
 <div class="col-last even-row-color">
@@ -219,6 +235,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Bright yellow foreground color.</div>
 </div>
+<div class="col-first odd-row-color"><code><a href="#CONCEAL_OFF" class="member-name-link">CONCEAL_OFF</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Turns conceal off.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#CONCEAL_ON" class="member-name-link">CONCEAL_ON</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Conceal general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="#CSI" class="member-name-link">CSI</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block">The Control Sequence Introducer (or Control Sequence Initiator).</div>
@@ -235,85 +259,109 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Dim general attribute.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_BLACK" class="member-name-link">FG_BLACK</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#FAINT" class="member-name-link">FAINT</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Faint / dim general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#FG_BLACK" class="member-name-link">FG_BLACK</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Black foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_BLUE" class="member-name-link">FG_BLUE</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_BLUE" class="member-name-link">FG_BLUE</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Blue foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_BLACK" class="member-name-link">FG_BRIGHT_BLACK</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_BLACK" class="member-name-link">FG_BRIGHT_BLACK</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Bright black foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_BLUE" class="member-name-link">FG_BRIGHT_BLUE</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_BLUE" class="member-name-link">FG_BRIGHT_BLUE</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Bright blue foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_CYAN" class="member-name-link">FG_BRIGHT_CYAN</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_CYAN" class="member-name-link">FG_BRIGHT_CYAN</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Bright cyan foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_GREEN" class="member-name-link">FG_BRIGHT_GREEN</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_GREEN" class="member-name-link">FG_BRIGHT_GREEN</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Bright green foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_MAGENTA" class="member-name-link">FG_BRIGHT_MAGENTA</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_MAGENTA" class="member-name-link">FG_BRIGHT_MAGENTA</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Bright magenta foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_RED" class="member-name-link">FG_BRIGHT_RED</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_RED" class="member-name-link">FG_BRIGHT_RED</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Bright red foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_WHITE" class="member-name-link">FG_BRIGHT_WHITE</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_WHITE" class="member-name-link">FG_BRIGHT_WHITE</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Bright white foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_BRIGHT_YELLOW" class="member-name-link">FG_BRIGHT_YELLOW</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_BRIGHT_YELLOW" class="member-name-link">FG_BRIGHT_YELLOW</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Bright yellow foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_CYAN" class="member-name-link">FG_CYAN</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_CYAN" class="member-name-link">FG_CYAN</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Cyan foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_DEFAULT" class="member-name-link">FG_DEFAULT</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_DEFAULT" class="member-name-link">FG_DEFAULT</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Default foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_GREEN" class="member-name-link">FG_GREEN</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_GREEN" class="member-name-link">FG_GREEN</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Green foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_MAGENTA" class="member-name-link">FG_MAGENTA</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_MAGENTA" class="member-name-link">FG_MAGENTA</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Magenta foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_RED" class="member-name-link">FG_RED</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_RED" class="member-name-link">FG_RED</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Red foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#FG_WHITE" class="member-name-link">FG_WHITE</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#FG_WHITE" class="member-name-link">FG_WHITE</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">White foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#FG_YELLOW" class="member-name-link">FG_YELLOW</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#FG_YELLOW" class="member-name-link">FG_YELLOW</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Yellow foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#GREEN" class="member-name-link">GREEN</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#GREEN" class="member-name-link">GREEN</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Green foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#HIDDEN" class="member-name-link">HIDDEN</a></code></div>
+<div class="col-first even-row-color"><code><a href="#HIDDEN" class="member-name-link">HIDDEN</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Conceal / hidden general attribute.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#INTENSITY_BOLD" class="member-name-link">INTENSITY_BOLD</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Normal general attribute.</div>
+<div class="block">Bold intensity attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#INTENSITY_FAINT" class="member-name-link">INTENSITY_FAINT</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Faint intensity attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#ITALIC" class="member-name-link">ITALIC</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Italic general attribute.</div>
 </div>
 <div class="col-first even-row-color"><code><a href="#MAGENTA" class="member-name-link">MAGENTA</a></code></div>
 <div class="col-last even-row-color">
 <div class="block">Magenta foreground color.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#NEGATIVE_OFF" class="member-name-link">NEGATIVE_OFF</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Turns reverse / negative video off.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#NEGATIVE_ON" class="member-name-link">NEGATIVE_ON</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Reverse / negative general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
 </div>
 <div class="col-first odd-row-color"><code><a href="#NORMAL" class="member-name-link">NORMAL</a></code></div>
 <div class="col-last odd-row-color">
@@ -323,28 +371,40 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Red foreground color.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#REVERSE" class="member-name-link">REVERSE</a></code></div>
+<div class="col-first odd-row-color"><code><a href="#RESET" class="member-name-link">RESET</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Reset general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#REVERSE" class="member-name-link">REVERSE</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Reverse general attribute.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#SEPARATOR" class="member-name-link">SEPARATOR</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#SEPARATOR" class="member-name-link">SEPARATOR</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Escape separator.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#SUFFIX" class="member-name-link">SUFFIX</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="#SUFFIX" class="member-name-link">SUFFIX</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Escape suffix.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#UNDERLINE" class="member-name-link">UNDERLINE</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#UNDERLINE" class="member-name-link">UNDERLINE</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Underline general attribute.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="#WHITE" class="member-name-link">WHITE</a></code></div>
+<div class="col-first even-row-color"><code><a href="#UNDERLINE_DOUBLE" class="member-name-link">UNDERLINE_DOUBLE</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Double underline general attribute.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="#UNDERLINE_OFF" class="member-name-link">UNDERLINE_OFF</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Turns underline off.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="#WHITE" class="member-name-link">WHITE</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">White foreground color.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="#YELLOW" class="member-name-link">YELLOW</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code><a href="#YELLOW" class="member-name-link">YELLOW</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Yellow foreground color.</div>
 </div>
 </div>
@@ -451,6 +511,13 @@ the order they are declared.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="RESET">
+<h3>RESET</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">RESET</span></div>
+<div class="block">Reset general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
 <section class="detail" id="BRIGHT">
 <h3>BRIGHT</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BRIGHT</span></div>
@@ -469,10 +536,38 @@ the order they are declared.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="INTENSITY_BOLD">
+<h3>INTENSITY_BOLD</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">INTENSITY_BOLD</span></div>
+<div class="block">Bold intensity attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
 <section class="detail" id="DIM">
 <h3>DIM</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">DIM</span></div>
 <div class="block">Dim general attribute.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="FAINT">
+<h3>FAINT</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">FAINT</span></div>
+<div class="block">Faint / dim general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="INTENSITY_FAINT">
+<h3>INTENSITY_FAINT</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">INTENSITY_FAINT</span></div>
+<div class="block">Faint intensity attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ITALIC">
+<h3>ITALIC</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">ITALIC</span></div>
+<div class="block">Italic general attribute.</div>
 </section>
 </li>
 <li>
@@ -490,6 +585,20 @@ the order they are declared.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="BLINK_SLOW">
+<h3>BLINK_SLOW</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BLINK_SLOW</span></div>
+<div class="block">Slow blink general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="BLINK_FAST">
+<h3>BLINK_FAST</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BLINK_FAST</span></div>
+<div class="block">Fast blink general attribute.</div>
+</section>
+</li>
+<li>
 <section class="detail" id="REVERSE">
 <h3>REVERSE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">REVERSE</span></div>
@@ -497,10 +606,59 @@ the order they are declared.</div>
 </section>
 </li>
 <li>
+<section class="detail" id="NEGATIVE_ON">
+<h3>NEGATIVE_ON</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">NEGATIVE_ON</span></div>
+<div class="block">Reverse / negative general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
 <section class="detail" id="HIDDEN">
 <h3>HIDDEN</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">HIDDEN</span></div>
-<div class="block">Normal general attribute.</div>
+<div class="block">Conceal / hidden general attribute.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="CONCEAL_ON">
+<h3>CONCEAL_ON</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">CONCEAL_ON</span></div>
+<div class="block">Conceal general attribute (Jansi <code>AnsiRenderer.Code</code> name).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="UNDERLINE_DOUBLE">
+<h3>UNDERLINE_DOUBLE</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">UNDERLINE_DOUBLE</span></div>
+<div class="block">Double underline general attribute.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="UNDERLINE_OFF">
+<h3>UNDERLINE_OFF</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">UNDERLINE_OFF</span></div>
+<div class="block">Turns underline off.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="BLINK_OFF">
+<h3>BLINK_OFF</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BLINK_OFF</span></div>
+<div class="block">Turns blink off.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="NEGATIVE_OFF">
+<h3>NEGATIVE_OFF</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">NEGATIVE_OFF</span></div>
+<div class="block">Turns reverse / negative video off.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="CONCEAL_OFF">
+<h3>CONCEAL_OFF</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">CONCEAL_OFF</span></div>
+<div class="block">Turns conceal off.</div>
 </section>
 </li>
 <li>
@@ -683,6 +841,13 @@ the order they are declared.</div>
 <h3>BG_WHITE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BG_WHITE</span></div>
 <div class="block">White background color.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="BG_DEFAULT">
+<h3>BG_DEFAULT</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="AnsiEscape.html" title="enum in org.apache.logging.log4j.core.pattern">AnsiEscape</a></span>&nbsp;<span class="element-name">BG_DEFAULT</span></div>
+<div class="block">Default background color.</div>
 </section>
 </li>
 <li>
