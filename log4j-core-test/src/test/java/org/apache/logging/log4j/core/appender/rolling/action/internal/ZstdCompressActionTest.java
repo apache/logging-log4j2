@@ -24,13 +24,112 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
+import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.FileExtension;
+import org.apache.logging.log4j.core.appender.rolling.NoOpTriggeringPolicy;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ZstdCompressActionTest {
+
+    @Test
+    @UsingStatusListener
+    void testMissingZstdJniOnlyFailsAsynchronousCompression(
+            @TempDir final File tempDir, final ListStatusListener statusListener) throws Exception {
+        final File source = new File(tempDir, "missing-jni.log");
+        final File renamed = new File(tempDir, "archive-1");
+        writeContent(source, "source must be retained");
+        final URL[] locations = {
+            ZstdCompressAction.class.getProtectionDomain().getCodeSource().getLocation(),
+            ZstdUtils.class.getProtectionDomain().getCodeSource().getLocation(),
+            getClass().getProtectionDomain().getCodeSource().getLocation()
+        };
+        try (final URLClassLoader loader = new URLClassLoader(
+                locations, getClass().getClassLoader()) {
+            @Override
+            protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+                if (name.startsWith("com.github.luben.zstd.")) {
+                    throw new ClassNotFoundException(name);
+                }
+                if (name.startsWith("org.apache.logging.log4j.core.")
+                        || name.startsWith("org.apache.commons.compress.")) {
+                    synchronized (getClassLoadingLock(name)) {
+                        Class<?> type = findLoadedClass(name);
+                        if (type == null) {
+                            type = findClass(name);
+                        }
+                        if (resolve) {
+                            resolveClass(type);
+                        }
+                        return type;
+                    }
+                }
+                return super.loadClass(name, resolve);
+            }
+        }) {
+            statusListener.clear();
+            final Thread thread = Thread.currentThread();
+            final ClassLoader previous = thread.getContextClassLoader();
+            try {
+                thread.setContextClassLoader(loader);
+                loader.loadClass(getClass().getName() + "$MissingZstdRollover")
+                        .getMethod("verify", File.class)
+                        .invoke(null, tempDir);
+            } finally {
+                thread.setContextClassLoader(previous);
+            }
+            assertTrue(source.exists());
+            assertEquals("Next", new String(Files.readAllBytes(source.toPath())));
+            assertEquals("source must be retained", new String(Files.readAllBytes(renamed.toPath())));
+            assertTrue(statusListener.findStatusData(Level.WARN).anyMatch(data -> data.getFormattedStatus()
+                    .contains("zstd-jni is missing")));
+        }
+    }
+
+    /** Runs the production rollover path in the loader that cannot access zstd-jni. */
+    public static class MissingZstdRollover {
+        public static void verify(final File tempDir) throws IOException {
+            final NullConfiguration configuration = new NullConfiguration();
+            final RollingFileAppender appender = RollingFileAppender.newBuilder()
+                    .setName("missing-zstd-jni")
+                    .setConfiguration(configuration)
+                    .setLayout(PatternLayout.newBuilder()
+                            .withConfiguration(configuration)
+                            .withPattern("%m")
+                            .build())
+                    .withFileName(new File(tempDir, "missing-jni.log").getPath())
+                    .withFilePattern(new File(tempDir, "archive-%i.zst").getPath())
+                    .withPolicy(NoOpTriggeringPolicy.INSTANCE)
+                    .withStrategy(DefaultRolloverStrategy.newBuilder()
+                            .setCompressionLevelStr("-1")
+                            .setConfig(configuration)
+                            .build())
+                    .build();
+            appender.start();
+            try {
+                appender.getManager().rollover();
+                appender.append(Log4jLogEvent.newBuilder()
+                        .setMessage(new SimpleMessage("Next"))
+                        .build());
+            } finally {
+                appender.stop();
+            }
+        }
+    }
 
     @Test
     void testMapsCompressionLevelZeroToDefault(@TempDir File tempDir) throws IOException {

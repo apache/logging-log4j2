@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
+import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /**
@@ -83,6 +84,9 @@ public final class ZstdCompressAction extends AbstractCompressAction {
 
     @Override
     protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
+        if (!ZstdUtils.isZstdCompressionAvailable()) {
+            throw new IOException("Zstandard compression is not available: zstd-jni is missing.");
+        }
         // -1 (Deflater.DEFAULT_COMPRESSION) is the framework-wide sentinel for an unspecified compression level.
         // Zstd uses -1 as a distinct fast-compression level, so resolve it to Zstd's default level here.
         final int level = resolveCompressionLevel(compressionLevel);
