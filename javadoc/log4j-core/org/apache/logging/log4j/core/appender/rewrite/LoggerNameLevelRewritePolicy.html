@@ -146,8 +146,11 @@ implements <a href="RewritePolicy.html" title="interface in org.apache.logging.l
 <div class="block">Creates a policy to rewrite levels for a given logger name.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>loggerNamePrefix</code> - The logger name prefix for events to rewrite; all event logger names that start with this string will be
-        rewritten.</dd>
+<dd><code>loggerNamePrefix</code> - The logger name prefix for events to rewrite; an event will be rewritten if its logger name is
+        exactly this string, or a true descendant of it in the usual Log4j logger-name hierarchy sense
+        (this string followed by <code>'.'</code> and more). An empty string matches every logger name, and a
+        prefix that already ends with <code>'.'</code> is matched as a plain string prefix, since the
+        trailing separator already supplies the hierarchy boundary.</dd>
 <dd><code>levelPairs</code> - The levels to rewrite, the key is the source level, the value the target level.</dd>
 <dt>Returns:</dt>
 <dd>a new LoggerNameLevelRewritePolicy</dd>
