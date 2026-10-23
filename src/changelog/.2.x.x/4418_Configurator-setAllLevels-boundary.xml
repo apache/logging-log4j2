@@ -7,6 +7,6 @@
        type="fixed">
     <issue id="4418" link="https://github.com/apache/logging-log4j2/issues/4418"/>
     <description format="asciidoc">
-        Fix `Configurator.setAllLevels()` also changing the level of sibling loggers that only share a character prefix with the given parent logger name, instead of only its descendants.
+        Fix `Configurator.setAllLevels()` changing sibling loggers.
     </description>
 </entry>
