@@ -661,8 +661,8 @@ Both rollover strategies support the following configuration parameters:
 
 | [[RolloverStrategy-attr-compressionLevel]]compressionLevel
 | `int`
-| `7`
-| Determine the compression level of archived log files.
+| `-1`
+| Determine the compression level of archived log files. The default value selects the format-specific compression default. Unsupported values fall back to that default. During asynchronous compression, a warning is logged once per format and unsupported configured level per class loader, rather than on every rollover.
 
 See <<RolloverStrategy-compress>> for more details.
 
@@ -958,11 +958,11 @@ algorithm
 | https://docs.oracle.com/javase/8/docs/api/java/util/zip/GZIPOutputStream.html[GZIP] archive using the DEFLATE algorithm
 
 | [[RolloverStrategy-compress-bz2]]`.bz2`<<commons-compress-dep,^dep^>>
-| {x-mark}
+| {check-mark}
 |https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/bzip2/BZip2CompressorOutputStream.html[BZip2] algorithm
 
 | [[RolloverStrategy-compress-deflate]]`.deflate`<<commons-compress-dep,^dep^>>
-| {x-mark}
+| {check-mark}
 | https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/deflate/DeflateCompressorOutputStream.html[DEFLATE] algorithm
 
 | [[RolloverStrategy-compress-pack200]]`.pack200`<<commons-compress-dep,^dep^>>
@@ -974,10 +974,14 @@ algorithm
 | https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/xz/package-summary.html[XZ] algorithm
 
 | [[RolloverStrategy-compress-zst]]`.zst` <<commons-compress-dep,^dep^>>
-| {x-mark}
+| {check-mark}
 | https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html[ZStandard] algorithm
 
 |===
+
+For Zstd (`.zst`), `compressionLevel` accepts the standard positive range up to the zstd library's own maximum, currently `[1, 22]` (enforced at runtime via `ZstdConstants.ZSTD_CLEVEL_MAX`, which may change with the underlying zstd-jni version). If unset, or if explicitly set to `-1` or `0`, the Zstd default level (currently `3`) is used. Other negative Zstd fast-compression levels are not supported and fall back to the Zstd default.
+
+For BZip2 (`.bz2`), levels `[1, 9]` select the BZip2 block size; unset, `-1`, and unsupported values use the default block size (`9`). For ZIP (`.zip`), GZip (`.gz`), and Deflate (`.deflate`), `compressionLevel` uses the standard Deflater range `[-1, 9]`, where `0` disables compression.
 
 If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePattern`>> attribute is set, the current log file:
 

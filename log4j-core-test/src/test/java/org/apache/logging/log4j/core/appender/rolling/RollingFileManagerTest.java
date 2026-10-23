@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,12 +27,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.zip.ZipInputStream;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
@@ -40,7 +45,12 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junitpioneer.jupiter.Issue;
 
 class RollingFileManagerTest {
@@ -154,6 +164,94 @@ class RollingFileManagerTest {
 
         // The logged content should be unchanged
         assertEquals(testContent, new String(Files.readAllBytes(file.toPath()), StandardCharsets.US_ASCII));
+    }
+
+    @UsingStatusListener
+    @ParameterizedTest
+    @CsvSource({
+        "bz2, -27183",
+        "bz2, 27183",
+        "deflate, -27183",
+        "deflate, 27183",
+        "gz, -27183",
+        "gz, 27183",
+        "zip, -27183",
+        "zip, 27183",
+        "zst, -27183",
+        "zst, 27183"
+    })
+    void testUnsupportedCompressionLevelFallsBackAfterAsynchronousRollover(
+            final String extension,
+            final String compressionLevel,
+            @TempDir final File tempDir,
+            final ListStatusListener statusListener)
+            throws Exception {
+        final File activeFile = new File(tempDir, "active.log");
+        final File renamedFile = new File(tempDir, "archive-1");
+        final File compressedFile = new File(tempDir, "archive-1." + extension);
+        final Configuration configuration = new NullConfiguration();
+        final DefaultRolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+                .setMax("2")
+                .setCompressionLevelStr(compressionLevel)
+                .setConfig(configuration)
+                .build();
+        final RollingFileManager manager = RollingFileManager.getFileManager(
+                activeFile.getPath(),
+                new File(tempDir, "archive-%i." + extension).getPath(),
+                true,
+                false,
+                NoOpTriggeringPolicy.INSTANCE,
+                strategy,
+                null,
+                PatternLayout.createDefaultLayout(),
+                0,
+                true,
+                false,
+                null,
+                null,
+                null,
+                configuration);
+        assertNotNull(manager);
+        try {
+            manager.initialize();
+            manager.writeToDestination("Test".getBytes(), 0, 4);
+            statusListener.clear();
+
+            manager.rollover();
+            manager.writeToDestination("Test".getBytes(), 0, 4);
+            manager.rollover();
+            manager.writeToDestination("Next".getBytes(), 0, 4);
+        } finally {
+            manager.close();
+        }
+
+        assertTrue(activeFile.exists());
+        assertEquals("Next", new String(Files.readAllBytes(activeFile.toPath())));
+        assertFalse(renamedFile.exists());
+        assertTrue(compressedFile.exists());
+        assertTrue(new File(tempDir, "archive-2." + extension).exists());
+        assertEquals(
+                1,
+                statusListener
+                        .findStatusData(Level.WARN)
+                        .filter(data -> data.getFormattedStatus().contains("Unsupported")
+                                && data.getFormattedStatus().contains("compression level " + compressionLevel + ";")
+                                && data.getFormattedStatus().contains("using default level"))
+                        .count());
+        try (final InputStream input = new FileInputStream(compressedFile)) {
+            if ("zip".equals(extension)) {
+                try (final ZipInputStream zipInput = new ZipInputStream(input)) {
+                    assertNotNull(zipInput.getNextEntry());
+                    assertEquals("Test", IOUtils.toString(new InputStreamReader(zipInput)));
+                }
+            } else {
+                final String format = "bz2".equals(extension) ? "bzip2" : "zst".equals(extension) ? "zstd" : extension;
+                try (final InputStream compressedInput =
+                        new CompressorStreamFactory().createCompressorInputStream(format, input)) {
+                    assertEquals("Test", IOUtils.toString(new InputStreamReader(compressedInput)));
+                }
+            }
+        }
     }
 
     @Test
