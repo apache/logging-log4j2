@@ -53,7 +53,7 @@ public final class GzCompressAction extends AbstractCompressAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        super(source, destination, deleteSource);
+        super(source, destination, deleteSource, "gzip");
         this.compressionLevel = compressionLevel;
     }
 

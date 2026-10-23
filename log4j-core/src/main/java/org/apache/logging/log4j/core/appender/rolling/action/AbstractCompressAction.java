@@ -42,40 +42,27 @@ public abstract class AbstractCompressAction extends AbstractAction {
     private final String compressionName;
 
     /**
-     * Creates a compression action without start and finish debug messages.
+     * Creates a compression action.
      *
      * @param source file to compress, must not be null
      * @param destination compressed file, must not be null
      * @param deleteSource whether to delete the source after successful compression
-     */
-    protected AbstractCompressAction(final File source, final File destination, final boolean deleteSource) {
-        this(source, destination, deleteSource, null);
-    }
-
-    /**
-     * Creates a compression action with an optional format name for start and finish debug messages.
-     *
-     * @param source file to compress, must not be null
-     * @param destination compressed file, must not be null
-     * @param deleteSource whether to delete the source after successful compression
-     * @param compressionName format name for debug messages, or null to omit them
+     * @param compressionName format name for debug messages, must not be null
      */
     protected AbstractCompressAction(
             final File source, final File destination, final boolean deleteSource, final String compressionName) {
         this.source = Objects.requireNonNull(source, "source");
         this.destination = Objects.requireNonNull(destination, "destination");
         this.deleteSource = deleteSource;
-        this.compressionName = compressionName;
+        this.compressionName = Objects.requireNonNull(compressionName, "compressionName");
     }
 
     @Override
     public boolean execute() throws IOException {
-        if (compressionName != null) {
-            LOGGER.debug("Starting {} compression of {}", compressionName, source.getPath());
-        }
+        LOGGER.debug("Starting {} compression of {}", compressionName, source.getPath());
         final boolean compressed =
                 CompressActionSupport.execute(source, destination, deleteSource, this::createCompressorOutputStream);
-        if (compressed && compressionName != null) {
+        if (compressed) {
             LOGGER.debug("Finished {} compression of {}", compressionName, source.getPath());
         }
         return compressed;

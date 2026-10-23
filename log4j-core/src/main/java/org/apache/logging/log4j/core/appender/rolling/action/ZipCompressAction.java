@@ -47,7 +47,7 @@ public final class ZipCompressAction extends AbstractCompressAction {
      * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        super(source, destination, deleteSource);
+        super(source, destination, deleteSource, "zip");
         this.level = level;
     }
 

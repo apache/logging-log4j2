@@ -61,7 +61,7 @@ class CompressionLevelAwareActionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"BZIP2, bzip2", "DEFLATE, deflate", "ZSTD, zstd"})
+    @CsvSource({"BZIP2, bzip2", "DEFLATE, deflate", "ZSTD, zstd", "GZ, gzip", "ZIP, zip"})
     @UsingStatusListener
     void testPreservesCompressionDebugLogs(
             final FileExtension extension, final String name, @TempDir File tempDir, final ListStatusListener listener)
