@@ -62,13 +62,6 @@ public final class ZipCompressAction extends AbstractCompressAction {
         return super.execute();
     }
 
-    /**
-     * Creates the ZIP stream using the configured level or the default for unsupported levels.
-     *
-     * @param output destination output stream
-     * @return compressor output stream
-     * @throws IOException on IO exception.
-     */
     @Override
     protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
         return createCompressorOutputStream(output, source, level);

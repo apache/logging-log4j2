@@ -56,7 +56,7 @@ class ZipCompressActionTest {
 
         final IOException failure = assertThrows(IOException.class, () -> action.createCompressorOutputStream(output));
         assertSame(writeFailure, failure);
-        // Closing the ZIP retries finishing the entry and releases its Deflater even if that fails.
+        // Closing the ZIP attempts to finish the entry, causing another write.
         assertTrue(output.writes > 1);
         assertArrayEquals(new Throwable[] {closeFailure}, failure.getSuppressed());
     }

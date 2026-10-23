@@ -144,11 +144,6 @@ class ZstdCompressActionTest {
         assertTrue(dest.exists(), "Compressed file must exist after execute()");
     }
 
-    /**
-     * Negative (fast-compression) Zstd levels are intentionally out of scope for this change.
-     * Support may be added in a future release; see the discussion at
-     * https://github.com/apache/logging-log4j2/discussions/2950.
-     */
     @Test
     void testFallsBackFromUnsupportedNegativeLevel(@TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-neg.log");
@@ -188,26 +183,13 @@ class ZstdCompressActionTest {
         assertTrue(dest.exists());
     }
 
-    /**
-     * Pins the level bounds this test class (and the {@code rolling-file.adoc} documentation) assume.
-     * A zstd-jni/commons-compress upgrade that changes these values won't be caught by the other tests here,
-     * since they exercise the range relative to {@link ZstdConstants}, not against a fixed expectation.
-     * If this fails, update the documented range and this test's hardcoded boundary values accordingly.
-     */
     @Test
     void testAssumedZstdLevelBoundsHaveNotChanged() {
         assertEquals(22, ZstdConstants.ZSTD_CLEVEL_MAX);
         assertEquals(3, ZstdConstants.ZSTD_CLEVEL_DEFAULT);
     }
 
-    /**
-     * Uses hardcoded boundary values (not {@link ZstdConstants} or {@link ZstdCompressAction#MIN_COMPRESSION_LEVEL})
-     * on purpose: referencing the same constants the code under test derives its bounds from would make this
-     * test trivially pass regardless of what those constants actually resolve to. If a zstd-jni/commons-compress
-     * upgrade shifts the actual default/max, or {@code MIN_COMPRESSION_LEVEL} is changed, this test should fail
-     * alongside {@link #testAssumedZstdLevelBoundsHaveNotChanged()} rather than silently re-deriving new bounds
-     * and asserting nothing meaningful.
-     */
+    // Keep these bounds independent of the constants used by the implementation.
     @Test
     void testAcceptsZstdRangeBounds(@TempDir File tempDir) throws IOException {
         File minimumSource = new File(tempDir, "minimum.log");
