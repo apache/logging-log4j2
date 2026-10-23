@@ -39,13 +39,17 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -102,6 +106,45 @@ class HtmlLayoutTest {
             "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
     private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
+
+    // Markup that would break out of element content or attribute values, plus a character invalid in XML 1.0
+    private static final String UNSAFE = "<script>alert('x')</script>\" onmouseover=\"x\u0000&";
+
+    private static final String ESCAPED =
+            "&lt;script&gt;alert(&#39;x&#39;)&lt;/script&gt;&quot; onmouseover=&quot;x\uFFFD&amp;";
+
+    @Test
+    void testUserControlledContentIsEscaped() {
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("mdcKey" + UNSAFE, "mdcValue" + UNSAFE);
+        final DefaultThreadContextStack contextStack = new DefaultThreadContextStack();
+        contextStack.clear();
+        contextStack.push("ndc" + UNSAFE);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("logger" + UNSAFE)
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("message" + UNSAFE))
+                .setThreadName("thread" + UNSAFE)
+                .setContextData(contextData)
+                .setContextStack(contextStack)
+                .setThrown(new RuntimeException("thrown" + UNSAFE))
+                .setSource(new StackTraceElement("Class", "method", "file" + UNSAFE + ".java", 1))
+                .build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setLocationInfo(true).build();
+
+        final String output = layout.toSerializable(event);
+
+        assertFalse(output.contains("<script>"), output);
+        assertFalse(output.contains("\" onmouseover"), output);
+        assertFalse(output.contains("\u0000"), output);
+        assertTrue(output.contains("<td title=\"thread" + ESCAPED + " thread\">thread" + ESCAPED + "</td>"), output);
+        assertTrue(output.contains("<td title=\"logger" + ESCAPED + " logger\">logger" + ESCAPED + "</td>"), output);
+        assertTrue(output.contains("<td>file" + ESCAPED + ".java:1</td>"), output);
+        assertTrue(output.contains("<td title=\"Message\">message" + ESCAPED + "</td>"), output);
+        assertTrue(output.contains("NDC: [ndc" + ESCAPED + "]"), output);
+        assertTrue(output.contains("MDC: {mdcKey" + ESCAPED + "=mdcValue" + ESCAPED + "}"), output);
+        assertTrue(output.contains("java.lang.RuntimeException: thrown" + ESCAPED), output);
+    }
 
     @Test
     void testDefaultContentType() {
