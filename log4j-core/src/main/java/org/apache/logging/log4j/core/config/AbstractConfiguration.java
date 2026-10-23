@@ -959,17 +959,30 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             return;
         }
         final String loggerName = logger.getName();
-        appenders.putIfAbsent(appender.getName(), appender);
+        final Appender registered = appenders.putIfAbsent(appender.getName(), appender);
+        // The configuration owns a single appender per name: when another instance is already registered under
+        // this name, attach that one instead of an instance the configuration would never start or stop.
+        final Appender effective = registered == null ? appender : registered;
+        if (effective != appender) {
+            LOGGER.warn(
+                    "An appender named '{}' is already registered; attaching the registered instance to logger '{}' instead of the given one",
+                    appender.getName(),
+                    loggerName);
+        }
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
-            lc.addAppender(appender, null, null);
+            lc.addAppender(effective, null, null);
         } else {
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addAppender(appender, null, null);
+            nlc.addAppender(effective, null, null);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.addAppender(effective, null, null);
+            }
         }
     }
 
@@ -984,6 +997,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
+        if (filter == null || logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
@@ -992,9 +1008,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addFilter(filter);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.addFilter(filter);
+            }
         }
     }
 
@@ -1010,6 +1030,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void setLoggerAdditive(
             final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+        if (logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
@@ -1017,9 +1040,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.setAdditive(additive);
+            }
         }
     }
 
