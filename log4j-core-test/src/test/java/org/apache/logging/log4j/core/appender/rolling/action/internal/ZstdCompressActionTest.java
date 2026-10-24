@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
-import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
 import org.apache.logging.log4j.Level;
@@ -43,13 +42,17 @@ import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ZstdCompressActionTest {
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {Integer.MIN_VALUE, -1, 23})
     @UsingStatusListener
     void testMissingZstdJniOnlyFailsAsynchronousCompression(
-            @TempDir final File tempDir, final ListStatusListener statusListener) throws Exception {
+            final int configuredLevel, @TempDir final File tempDir, final ListStatusListener statusListener)
+            throws Exception {
         final File source = new File(tempDir, "missing-jni.log");
         final File renamed = new File(tempDir, "archive-1");
         writeContent(source, "source must be retained");
@@ -87,8 +90,8 @@ class ZstdCompressActionTest {
             try {
                 thread.setContextClassLoader(loader);
                 loader.loadClass(getClass().getName() + "$MissingZstdRollover")
-                        .getMethod("verify", File.class)
-                        .invoke(null, tempDir);
+                        .getMethod("verify", File.class, int.class)
+                        .invoke(null, tempDir, configuredLevel);
             } finally {
                 thread.setContextClassLoader(previous);
             }
@@ -102,20 +105,23 @@ class ZstdCompressActionTest {
 
     /** Runs the production rollover path in the loader that cannot access zstd-jni. */
     public static class MissingZstdRollover {
-        public static void verify(final File tempDir) throws IOException {
+        public static void verify(final File tempDir, final int configuredLevel) throws IOException {
             final NullConfiguration configuration = new NullConfiguration();
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
                     .setName("missing-zstd-jni")
                     .setConfiguration(configuration)
                     .setLayout(PatternLayout.newBuilder()
-                            .withConfiguration(configuration)
-                            .withPattern("%m")
+                            .setConfiguration(configuration)
+                            .setPattern("%m")
                             .build())
-                    .withFileName(new File(tempDir, "missing-jni.log").getPath())
-                    .withFilePattern(new File(tempDir, "archive-%i.zst").getPath())
-                    .withPolicy(NoOpTriggeringPolicy.INSTANCE)
-                    .withStrategy(DefaultRolloverStrategy.newBuilder()
-                            .setCompressionLevelStr("-1")
+                    .setFileName(new File(tempDir, "missing-jni.log").getPath())
+                    .setFilePattern(new File(tempDir, "archive-%i.zst").getPath())
+                    .setPolicy(NoOpTriggeringPolicy.INSTANCE)
+                    .setStrategy(DefaultRolloverStrategy.newBuilder()
+                            .setCompressionLevelStr(
+                                    configuredLevel == CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL
+                                            ? null
+                                            : Integer.toString(configuredLevel))
                             .setConfig(configuration)
                             .build())
                     .build();
@@ -139,19 +145,20 @@ class ZstdCompressActionTest {
         writeContent(source, "zero compression level");
         ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 0);
 
-        assertEquals(3, ZstdCompressAction.resolveCompressionLevel(0));
+        assertEquals(0, ZstdCompressAction.resolveCompressionLevel(0));
         assertTrue(action.execute());
         assertTrue(dest.exists(), "Compressed file must exist after execute()");
     }
 
-    @Test
-    void testFallsBackFromUnsupportedNegativeLevel(@TempDir File tempDir) throws IOException {
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -2, -5, -131072})
+    void testAcceptsNativeNegativeLevels(final int level, @TempDir File tempDir) throws IOException {
         File source = new File(tempDir, "invalid-neg.log");
         File dest = new File(tempDir, "invalid-neg.log.zst");
         writeContent(source, "invalid negative compression level");
-        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, -2);
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, level);
 
-        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(-2));
+        assertEquals(level, ZstdCompressAction.resolveCompressionLevel(level));
         assertTrue(action.execute());
         assertTrue(dest.exists());
         assertFalse(source.exists());
@@ -165,7 +172,7 @@ class ZstdCompressActionTest {
         writeContent(source, "invalid high compression level");
         ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 23);
 
-        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(23));
+        assertEquals(0, ZstdCompressAction.resolveCompressionLevel(23));
         assertTrue(action.execute());
         assertTrue(dest.exists());
         assertFalse(source.exists());
@@ -176,7 +183,7 @@ class ZstdCompressActionTest {
         File source = new File(tempDir, "invalid.log");
         File dest = new File(tempDir, "invalid.log.zst");
         writeContent(source, "unsupported compression level");
-        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, -2);
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 23);
 
         assertDoesNotThrow(action::run);
         assertTrue(action.isComplete());
@@ -222,12 +229,13 @@ class ZstdCompressActionTest {
         File destination = new File(tempDir, "default.log.zst");
         writeContent(source, "default compression level");
 
-        ZstdCompressAction action = (ZstdCompressAction)
-                FileExtension.ZSTD.createCompressAction(source.getPath(), destination.getPath(), true, -1);
+        ZstdCompressAction action = (ZstdCompressAction) FileExtension.ZSTD.createCompressAction(
+                source.getPath(), destination.getPath(), true, CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL);
 
-        assertEquals(-1, action.getCompressionLevel());
-        assertEquals(3, ZstdCompressAction.resolveCompressionLevel(Deflater.DEFAULT_COMPRESSION));
-        assertEquals(ZstdConstants.ZSTD_CLEVEL_DEFAULT, ZstdCompressAction.resolveCompressionLevel(-1));
+        assertEquals(CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL, action.getCompressionLevel());
+        assertEquals(
+                0, ZstdCompressAction.resolveCompressionLevel(CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL));
+        assertEquals(-1, ZstdCompressAction.resolveCompressionLevel(-1));
         assertTrue(action.execute());
         assertTrue(destination.exists(), "Compressed file must exist after execute()");
     }

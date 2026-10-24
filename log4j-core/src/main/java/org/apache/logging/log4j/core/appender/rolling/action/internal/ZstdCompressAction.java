@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
@@ -28,17 +27,12 @@ import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAct
 /**
  * Compresses a file using Zstandard compression.
  * <p>
- * Supports positive compression levels in the range [{@value #MIN_COMPRESSION_LEVEL}, {@link ZstdConstants#ZSTD_CLEVEL_MAX}].
- * Negative (fast-compression) levels are not supported.
- * See <a href="https://github.com/apache/logging-log4j2/discussions/2950">the compression configuration discussion</a>.
+ * Supports Zstandard compression levels, including negative fast-compression levels.
  * </p>
  *
  * @since 2.27.0
  */
 public final class ZstdCompressAction extends AbstractCompressAction {
-
-    /** Minimum supported Zstd compression level. */
-    static final int MIN_COMPRESSION_LEVEL = 1;
 
     /**
      * Zstandard compression level to use.
@@ -53,17 +47,15 @@ public final class ZstdCompressAction extends AbstractCompressAction {
      * @param compressionLevel configured Zstandard compression level
      * @return the level to compress with
      */
-    static int resolveCompressionLevel(final int compressionLevel) {
-        // Zstd treats -1 as a fast level, so map the Log4j "unspecified" value to the default.
-        if (compressionLevel == Deflater.DEFAULT_COMPRESSION || compressionLevel == 0) {
-            return ZstdConstants.ZSTD_CLEVEL_DEFAULT;
+    public static int resolveCompressionLevel(final int compressionLevel) {
+        if (compressionLevel == CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL || compressionLevel == 0) {
+            return 0;
+        }
+        if (!ZstdUtils.isZstdCompressionAvailable()) {
+            return compressionLevel;
         }
         return CompressActionSupport.resolveCompressionLevel(
-                "Zstd",
-                compressionLevel,
-                MIN_COMPRESSION_LEVEL,
-                ZstdConstants.ZSTD_CLEVEL_MAX,
-                ZstdConstants.ZSTD_CLEVEL_DEFAULT);
+                "Zstd", compressionLevel, ZstdConstants.ZSTD_CLEVEL_MIN, ZstdConstants.ZSTD_CLEVEL_MAX, 0);
     }
 
     /**

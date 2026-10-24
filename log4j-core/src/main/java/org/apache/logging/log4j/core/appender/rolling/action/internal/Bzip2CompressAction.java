@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
@@ -40,9 +39,6 @@ public final class Bzip2CompressAction extends AbstractCompressAction {
     }
 
     private int resolveCompressionLevel() {
-        if (compressionLevel == Deflater.DEFAULT_COMPRESSION) {
-            return BZip2CompressorOutputStream.MAX_BLOCKSIZE;
-        }
         return CompressActionSupport.resolveCompressionLevel(
                 "BZip2",
                 compressionLevel,

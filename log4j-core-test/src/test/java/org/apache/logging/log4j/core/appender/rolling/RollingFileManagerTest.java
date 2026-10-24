@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -54,6 +55,128 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junitpioneer.jupiter.Issue;
 
 class RollingFileManagerTest {
+
+    @ParameterizedTest
+    @CsvSource({
+        "ZIP, -1, -1",
+        "ZIP, 0, 0",
+        "GZ, -1, -1",
+        "GZ, 0, 0",
+        "DEFLATE, -1, -1",
+        "DEFLATE, 0, 0",
+        "BZIP2, 1, 1",
+        "BZIP2, 9, 9",
+        "BZIP2, -1, 9",
+        "BZIP2, 0, 9",
+        "ZSTD, -1, -1",
+        "ZSTD, -131072, -131072",
+        "ZSTD, 0, 0",
+        "ZSTD, 22, 22",
+        "ZIP, -2147483648, -1",
+        "GZ, -2147483648, -1",
+        "DEFLATE, -2147483648, -1",
+        "BZIP2, -2147483648, 9",
+        "ZSTD, -2147483648, 0"
+    })
+    @UsingStatusListener
+    void testFileExtensionResolvesNativeLevels(
+            final FileExtension extension,
+            final int configured,
+            final int expected,
+            final ListStatusListener listener) {
+        listener.clear();
+        assertEquals(expected, extension.resolveCompressionLevel(configured));
+        assertEquals(
+                configured != CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL && configured != expected ? 1 : 0,
+                listener.findStatusData(Level.WARN).count());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"false", "true"})
+    @UsingStatusListener
+    void testSharedStrategyResolvesEachFormatOnce(final boolean directWrite, final ListStatusListener listener) {
+        final Configuration configuration = new NullConfiguration();
+        final AbstractRolloverStrategy strategy = directWrite
+                ? DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .setCompressionLevelStr("0")
+                        .build()
+                : DefaultRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .setCompressionLevelStr("0")
+                        .build();
+        listener.clear();
+        strategy.initializeCompressionLevel(FileExtension.BZIP2);
+        strategy.initializeCompressionLevel(FileExtension.GZ);
+        strategy.initializeCompressionLevel(FileExtension.BZIP2);
+        assertEquals(9, strategy.resolveCompressionLevel(FileExtension.BZIP2, 0));
+        assertEquals(0, strategy.resolveCompressionLevel(FileExtension.GZ, 0));
+        assertEquals(1, listener.findStatusData(Level.WARN).count());
+    }
+
+    @Test
+    void testStrategiesDistinguishOmittedAndExplicitLevels() {
+        final Configuration configuration = new NullConfiguration();
+        assertEquals(
+                CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL,
+                DefaultRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .build()
+                        .getCompressionLevel());
+        assertEquals(
+                -1,
+                DefaultRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .setCompressionLevelStr("-1")
+                        .build()
+                        .getCompressionLevel());
+        assertEquals(
+                CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL,
+                DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .build()
+                        .getCompressionLevel());
+        assertEquals(
+                -1,
+                DirectWriteRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .setCompressionLevelStr("-1")
+                        .build()
+                        .getCompressionLevel());
+    }
+
+    @Test
+    @UsingStatusListener
+    void testReconfigurationResolvesLevelAgainstNewPattern(
+            @TempDir final File tempDir, final ListStatusListener listener) {
+        final Configuration configuration = new NullConfiguration();
+        final RollingFileAppender appender = RollingFileAppender.newBuilder()
+                .setName("compression-reconfiguration")
+                .setConfiguration(configuration)
+                .setFileName(new File(tempDir, "active.log").getPath())
+                .setFilePattern(new File(tempDir, "archive-%i.gz").getPath())
+                .setPolicy(NoOpTriggeringPolicy.INSTANCE)
+                .setStrategy(DefaultRolloverStrategy.newBuilder()
+                        .setConfig(configuration)
+                        .build())
+                .build();
+        assertNotNull(appender);
+        appender.start();
+        try {
+            final DefaultRolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+                    .setConfig(configuration)
+                    .setCompressionLevelStr("-2")
+                    .build();
+            listener.clear();
+            appender.getManager().setRolloverStrategy(strategy);
+            appender.getManager()
+                    .setPatternProcessor(new PatternProcessor(new File(tempDir, "archive-%i.zst").getPath()));
+            assertEquals(-2, strategy.resolveCompressionLevel(FileExtension.ZSTD, -2));
+            assertEquals(0, listener.findStatusData(Level.WARN).count());
+        } finally {
+            appender.stop();
+        }
+    }
 
     /**
      * Test the RollingFileManager with a custom DirectFileRolloverStrategy
@@ -169,20 +292,21 @@ class RollingFileManagerTest {
     @UsingStatusListener
     @ParameterizedTest
     @CsvSource({
-        "bz2, -27183",
-        "bz2, 27183",
-        "deflate, -27183",
-        "deflate, 27183",
-        "gz, -27183",
-        "gz, 27183",
-        "zip, -27183",
-        "zip, 27183",
-        "zst, -27183",
-        "zst, 27183"
+        "bz2, -2, false", "bz2, 10, false",
+        "deflate, -2, false", "deflate, 10, false",
+        "gz, -2, false", "gz, 10, false",
+        "zip, -2, false", "zip, 10, false",
+        "zst, -2147483647, false", "zst, 23, false",
+        "bz2, -2, true", "bz2, 10, true",
+        "deflate, -2, true", "deflate, 10, true",
+        "gz, -2, true", "gz, 10, true",
+        "zip, -2, true", "zip, 10, true",
+        "zst, -2147483647, true", "zst, 23, true"
     })
-    void testUnsupportedCompressionLevelFallsBackAfterAsynchronousRollover(
+    void testUnsupportedCompressionLevelIsResolvedBeforeRollover(
             final String extension,
             final String compressionLevel,
+            final boolean directWrite,
             @TempDir final File tempDir,
             final ListStatusListener statusListener)
             throws Exception {
@@ -190,13 +314,20 @@ class RollingFileManagerTest {
         final File renamedFile = new File(tempDir, "archive-1");
         final File compressedFile = new File(tempDir, "archive-1." + extension);
         final Configuration configuration = new NullConfiguration();
-        final DefaultRolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
-                .setMax("2")
-                .setCompressionLevelStr(compressionLevel)
-                .setConfig(configuration)
-                .build();
+        final RolloverStrategy strategy = directWrite
+                ? DirectWriteRolloverStrategy.newBuilder()
+                        .setMaxFiles("3")
+                        .setCompressionLevelStr(compressionLevel)
+                        .setConfig(configuration)
+                        .build()
+                : DefaultRolloverStrategy.newBuilder()
+                        .setMax("2")
+                        .setCompressionLevelStr(compressionLevel)
+                        .setConfig(configuration)
+                        .build();
+        statusListener.clear();
         final RollingFileManager manager = RollingFileManager.getFileManager(
-                activeFile.getPath(),
+                directWrite ? null : activeFile.getPath(),
                 new File(tempDir, "archive-%i." + extension).getPath(),
                 true,
                 false,
@@ -212,26 +343,34 @@ class RollingFileManagerTest {
                 null,
                 configuration);
         assertNotNull(manager);
+        assertEquals(
+                1,
+                statusListener
+                        .findStatusData(Level.WARN)
+                        .filter(data -> data.getFormattedStatus().contains("Unsupported")
+                                && data.getFormattedStatus().contains("compression level " + compressionLevel + ";"))
+                        .count());
+        statusListener.clear();
+        final File currentFile;
         try {
             manager.initialize();
             manager.writeToDestination("Test".getBytes(), 0, 4);
-            statusListener.clear();
-
             manager.rollover();
             manager.writeToDestination("Test".getBytes(), 0, 4);
             manager.rollover();
             manager.writeToDestination("Next".getBytes(), 0, 4);
+            currentFile = new File(manager.getFileName());
         } finally {
             manager.close();
         }
 
-        assertTrue(activeFile.exists());
-        assertEquals("Next", new String(Files.readAllBytes(activeFile.toPath())));
+        assertTrue(currentFile.exists());
+        assertEquals("Next", new String(Files.readAllBytes(currentFile.toPath())));
         assertFalse(renamedFile.exists());
         assertTrue(compressedFile.exists());
         assertTrue(new File(tempDir, "archive-2." + extension).exists());
         assertEquals(
-                1,
+                0,
                 statusListener
                         .findStatusData(Level.WARN)
                         .filter(data -> data.getFormattedStatus().contains("Unsupported")

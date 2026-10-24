@@ -118,7 +118,9 @@ class CompressionLevelAwareActionTest {
         File highSource = writeSource(tempDir, "high.log");
         File highDestination = new File(tempDir, "high.log.bz2");
 
-        assertTrue(new Bzip2CompressAction(defaultSource, defaultDestination, true, -1).execute());
+        assertTrue(new Bzip2CompressAction(
+                        defaultSource, defaultDestination, true, CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL)
+                .execute());
         assertTrue(new Bzip2CompressAction(zeroSource, zeroDestination, true, 0).execute());
         assertTrue(new Bzip2CompressAction(lowSource, lowDestination, true, -2).execute());
         assertTrue(new Bzip2CompressAction(highSource, highDestination, true, 10).execute());
@@ -171,7 +173,11 @@ class CompressionLevelAwareActionTest {
                 new File(tempDir, "invalid-" + extension.getExtension() + '-' + level + '.' + extension.getExtension());
         final File defaultDestination = new File(tempDir, "default-" + extension.getExtension() + '-' + level);
         assertTrue(extension
-                .createCompressAction(source.getPath(), defaultDestination.getPath(), false, -1)
+                .createCompressAction(
+                        source.getPath(),
+                        defaultDestination.getPath(),
+                        false,
+                        CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL)
                 .execute());
         final Action action = extension.createCompressAction(source.getPath(), destination.getPath(), true, level);
 

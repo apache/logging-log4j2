@@ -22,22 +22,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /** Common file handling and compression-level resolution for compression actions. */
 public final class CompressActionSupport {
 
     private static final int BUF_SIZE = 8192;
-    private static final ConcurrentMap<String, Set<Integer>> WARNED_LEVELS = new ConcurrentHashMap<>();
+    /** Marker for an omitted compression level, distinct from each compressor's native levels. */
+    public static final int UNSPECIFIED_COMPRESSION_LEVEL = Integer.MIN_VALUE;
 
     private CompressActionSupport() {}
 
     /**
-     * Resolves a compression level during compression execution, reporting each unsupported format and configured
-     * level only once.
+     * Resolves a compression level and warns if the configured value is unsupported.
      *
      * @param format compression format
      * @param level configured compression level
@@ -48,15 +45,14 @@ public final class CompressActionSupport {
      */
     public static int resolveCompressionLevel(
             final String format, final int level, final int minimum, final int maximum, final int defaultLevel) {
+        if (level == UNSPECIFIED_COMPRESSION_LEVEL) {
+            return defaultLevel;
+        }
         if (level >= minimum && level <= maximum) {
             return level;
         }
-        if (WARNED_LEVELS
-                .computeIfAbsent(format, key -> ConcurrentHashMap.newKeySet())
-                .add(level)) {
-            StatusLogger.getLogger()
-                    .warn("Unsupported {} compression level {}; using default level {}.", format, level, defaultLevel);
-        }
+        StatusLogger.getLogger()
+                .warn("Unsupported {} compression level {}; using default level {}.", format, level, defaultLevel);
         return defaultLevel;
     }
 
