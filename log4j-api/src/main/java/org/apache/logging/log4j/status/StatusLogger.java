@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
@@ -395,6 +396,27 @@ public class StatusLogger extends AbstractLogger {
      */
     static final class PropertiesUtilsDouble {
 
+        private static final String[] SYSTEM_PROPERTY_NAMES = {
+            DEBUG_PROPERTY_NAME,
+            MAX_STATUS_ENTRIES,
+            "log4j2.statusEntries",
+            DEFAULT_STATUS_LISTENER_LEVEL,
+            "log4j2.statusLoggerLevel",
+            STATUS_DATE_FORMAT,
+            "log4j2.StatusLogger.DateFormat",
+            "log4j2.statusLoggerDateFormat",
+            STATUS_DATE_FORMAT_ZONE,
+            "log4j2.statusLoggerDateFormatZone"
+        };
+
+        private static final String[] ENVIRONMENT_VARIABLE_NAMES = {
+            "LOG4J_DEBUG",
+            "LOG4J_STATUS_ENTRIES",
+            "LOG4J_STATUS_LOGGER_LEVEL",
+            "LOG4J_STATUS_LOGGER_DATE_FORMAT",
+            "LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE"
+        };
+
         @Nullable
         static String readProperty(final Map<String, Object> normalizedProperties, final String propertyName) {
             final String normalizedPropertyName = normalizePropertyName(propertyName);
@@ -413,7 +435,7 @@ public class StatusLogger extends AbstractLogger {
             try {
                 return System.getProperties();
             } catch (final SecurityException ignored) {
-                return new Properties();
+                return readEach(SYSTEM_PROPERTY_NAMES, System::getProperty);
             }
         }
 
@@ -423,8 +445,22 @@ public class StatusLogger extends AbstractLogger {
                 properties.putAll(System.getenv());
                 return properties;
             } catch (final SecurityException ignored) {
-                return new Properties();
+                return readEach(ENVIRONMENT_VARIABLE_NAMES, System::getenv);
             }
+        }
+
+        private static Properties readEach(final String[] names, final Function<String, String> reader) {
+            final Properties properties = new Properties();
+            for (final String name : names) {
+                try {
+                    final String value = reader.apply(name);
+                    if (value != null) {
+                        properties.setProperty(name, value);
+                    }
+                } catch (final SecurityException ignored) {
+                }
+            }
+            return properties;
         }
 
         // We need to roll out our own `.properties` reader.
