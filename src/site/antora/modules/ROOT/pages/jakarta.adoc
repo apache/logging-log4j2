@@ -71,6 +71,12 @@ an additional **Log4j Web** artifact is provided.
 [#log4j-jakarta-web-installation]
 === Installation
 
+[NOTE]
+====
+Spring Boot applications do not require Log4j Web because Spring Boot provides its own logging lifecycle integration.
+See xref:manual/installation.adoc#impl-core-spring-boot[Installing Log4j Core for Spring Boot applications].
+====
+
 To install Log4j Web in your web application, you need to add it as a runtime dependency:
 
 include::partial$features/servlet-support.adoc[]
