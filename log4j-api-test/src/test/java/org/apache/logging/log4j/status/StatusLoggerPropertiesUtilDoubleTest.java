@@ -23,10 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
+import java.security.Permission;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+import java.util.PropertyPermission;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -110,6 +113,51 @@ class StatusLoggerPropertiesUtilDoubleTest {
             assertThat(actualValue).describedAs("" + testCase).isEqualTo(expectedValue);
         } else {
             assertThat(actualValue).describedAs("" + testCase).isNull();
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void system_properties_should_be_skipped_if_access_is_denied() throws Exception {
+        restoreSystemProperties(() -> {
+            System.setProperty("log4j2.StatusLogger.DateFormat", "foo");
+            final Map<String, Object> normalizedProperties =
+                    readAllAvailablePropertiesDenying(new PropertyPermission("*", "read,write"));
+            assertThat(readProperty(normalizedProperties, "log4j2.StatusLogger.DateFormat"))
+                    .isNull();
+        });
+    }
+
+    @Test
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void environment_variables_should_be_skipped_if_access_is_denied() throws Exception {
+        withEnvironmentVariable("LOG4J_STATUS_LOGGER_DATE_FORMAT", "bar").execute(() -> {
+            final Map<String, Object> normalizedProperties =
+                    readAllAvailablePropertiesDenying(new RuntimePermission("getenv.*"));
+            assertThat(readProperty(normalizedProperties, "log4j2.StatusLogger.DateFormat"))
+                    .isNull();
+        });
+    }
+
+    private static Map<String, Object> readAllAvailablePropertiesDenying(final Permission deniedPermission) {
+        final SecurityManager securityManager = new SecurityManager() {
+            @Override
+            public void checkPermission(final Permission permission) {
+                if (deniedPermission.equals(permission)) {
+                    throw new SecurityException("denied: " + permission);
+                }
+            }
+        };
+        final SecurityManager previousSecurityManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(securityManager);
+        } catch (final UnsupportedOperationException error) {
+            Assumptions.abort("The JVM does not allow setting a security manager");
+        }
+        try {
+            return readAllAvailableProperties();
+        } finally {
+            System.setSecurityManager(previousSecurityManager);
         }
     }
 
