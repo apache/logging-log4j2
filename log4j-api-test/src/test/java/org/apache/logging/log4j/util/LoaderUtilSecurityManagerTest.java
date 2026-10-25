@@ -18,9 +18,7 @@ package org.apache.logging.log4j.util;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.security.AccessController;
 import java.security.Permission;
-import java.util.Arrays;
 import org.apache.logging.log4j.test.junit.SecurityManagerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -42,8 +40,15 @@ public class LoaderUtilSecurityManagerTest {
             }
         }
 
+        // Not `getClassContext()`: it omits native frames, and `doPrivileged` is native on Java 8
         private boolean isPrivileged() {
-            return Arrays.asList(getClassContext()).contains(AccessController.class);
+            for (final StackTraceElement element : new Throwable().getStackTrace()) {
+                if ("java.security.AccessController".equals(element.getClassName())
+                        && "doPrivileged".equals(element.getMethodName())) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
