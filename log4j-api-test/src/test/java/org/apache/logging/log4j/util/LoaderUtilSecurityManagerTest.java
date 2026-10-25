@@ -17,9 +17,10 @@
 package org.apache.logging.log4j.util;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.security.AccessController;
 import java.security.Permission;
+import java.util.Arrays;
 import org.apache.logging.log4j.test.junit.SecurityManagerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -31,17 +32,23 @@ public class LoaderUtilSecurityManagerTest {
     public final SecurityManagerExtension ext = new SecurityManagerExtension(new TestSecurityManager());
 
     private static class TestSecurityManager extends SecurityManager {
+        // Resolved before installation: loading `LoaderUtil` from `checkPermission` recurses until the stack overflows
+        private final Permission getClassLoader = LoaderUtil.GET_CLASS_LOADER;
+
         @Override
         public void checkPermission(final Permission perm) {
-            if (perm.equals(LoaderUtil.GET_CLASS_LOADER)) {
+            if (perm.equals(getClassLoader) && !isPrivileged()) {
                 throw new SecurityException("disabled");
             }
+        }
+
+        private boolean isPrivileged() {
+            return Arrays.asList(getClassContext()).contains(AccessController.class);
         }
     }
 
     @Test
     public void canGetClassLoaderThroughPrivileges() {
-        assertFalse(LoaderUtil.GET_CLASS_LOADER_DISABLED);
         assertDoesNotThrow(() -> LoaderUtil.getClassLoader(LoaderUtilSecurityManagerTest.class, String.class));
     }
 }

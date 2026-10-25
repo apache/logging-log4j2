@@ -16,24 +16,55 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * Sets a security manager for each test. The current security manager is first saved then restored after the test is
+ * run.
+ * <p>
+ * Using a security manager can mess up other tests so this is best used from integration tests (classes that end in
+ * "IT" instead of "Test" and "TestCase".)
+ * </p>
+ * <p>
+ * Tests are aborted if the running JVM does not allow setting a security manager.
+ * </p>
+ *
+ * @see SecurityManagerTestRule
+ * @since 2.27.0
+ */
 public class SecurityManagerExtension implements BeforeEachCallback, AfterEachCallback {
-    private SecurityManager securityManagerBefore;
+
     private final SecurityManager securityManager;
 
+    private SecurityManager securityManagerBefore;
+
+    /**
+     * Constructs a new instance with the given {@link SecurityManager}.
+     *
+     * @param securityManager
+     *            the {@link SecurityManager} to use while running a test.
+     */
     public SecurityManagerExtension(final SecurityManager securityManager) {
         this.securityManager = securityManager;
     }
 
-    public void beforeEach(ExtensionContext ctx) {
+    @Override
+    public void beforeEach(final ExtensionContext context) {
         securityManagerBefore = System.getSecurityManager();
-        System.setSecurityManager(securityManager);
+        try {
+            System.setSecurityManager(securityManager);
+        } catch (final UnsupportedOperationException e) {
+            Assumptions.abort("The JVM does not allow setting a security manager: " + e.getMessage());
+        }
     }
 
-    public void afterEach(ExtensionContext ctx) {
-        System.setSecurityManager(securityManagerBefore);
+    @Override
+    public void afterEach(final ExtensionContext context) {
+        if (System.getSecurityManager() == securityManager) {
+            System.setSecurityManager(securityManagerBefore);
+        }
     }
 }

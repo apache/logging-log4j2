@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
@@ -27,7 +29,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class MessageFormatMessageSerializationTest extends AbstractSerializationTest {
+public class MessageFormatMessageSerializationTest {
 
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -37,19 +39,15 @@ public class MessageFormatMessageSerializationTest extends AbstractSerialization
         });
     }
 
-    public MessageFormatMessageSerializationTest() {
-        super();
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripEquals(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip(serializable));
     }
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testSerializationRoundtripEquals(Serializable serializable) {
-        super.testSerializationRoundtripEquals(serializable);
-    }
-
-    @ParameterizedTest
-    @MethodSource("data")
-    public void testSerializationRoundtripNoException(Serializable serializable) {
-        super.testSerializationRoundtripNoException(serializable);
+    public void testSerializationRoundtripNoException(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip());
     }
 }
