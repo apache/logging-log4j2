@@ -119,4 +119,24 @@ class StatusLoggerPropertiesUtilDoubleTest {
         final Properties actualProperties = StatusLogger.PropertiesUtilsDouble.readPropertiesFile(propertiesFileName);
         assertThat(actualProperties).containsExactlyEntriesOf(singletonMap("foo", "bar"));
     }
+
+    @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ_WRITE)
+    void readAllAvailableProperties_should_not_fail_under_security_manager() {
+        final SecurityManager originalSecurityManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new SecurityManager() {
+                @Override
+                public void checkPermission(final java.security.Permission perm) {
+                    if (perm instanceof java.util.PropertyPermission || "getenv.*".equals(perm.getName())) {
+                        throw new SecurityException("Denied by test security manager: " + perm);
+                    }
+                }
+            });
+            final Map<String, Object> properties = readAllAvailableProperties();
+            assertThat(properties).isNotNull();
+        } finally {
+            System.setSecurityManager(originalSecurityManager);
+        }
+    }
 }
