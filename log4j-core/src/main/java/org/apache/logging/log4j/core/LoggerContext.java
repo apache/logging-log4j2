@@ -20,6 +20,7 @@ import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDO
 
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.spi.ServiceConsumer;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -85,6 +86,15 @@ public class LoggerContext extends AbstractLifeCycle
                 Consumer<Reconfigurable>,
                 LoggerContextShutdownEnabled {
 
+    /**
+     * Property name of the property change event fired if the configuration is changed.
+     *
+     * @deprecated since 3.0.0, use {@link #addConfigurationStartedListener(Consumer)} and
+     *     {@link #addConfigurationStoppedListener(Consumer)} instead.
+     */
+    @Deprecated
+    public static final String PROPERTY_CONFIG = "config";
+
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
     private final MessageFactory defaultMessageFactory;
@@ -92,6 +102,8 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final Collection<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
     private final Collection<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
+    // Created on first use so that java.desktop is only needed by callers of the deprecated java.beans methods
+    private final Lazy<LegacyPropertyChangeSupport> propertyChangeSupport = Lazy.lazy(LegacyPropertyChangeSupport::new);
     private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.lazy(CopyOnWriteArrayList::new);
     private final ConfigurableInstanceFactory instanceFactory;
     private final PropertyEnvironment environment;
@@ -675,10 +687,48 @@ public class LoggerContext extends AbstractLifeCycle
                 prev.stop();
                 notifyConfigurationStopped(prev);
             }
+            firePropertyChangeEvent(prev, config);
 
             return prev;
         } finally {
             configLock.unlock();
+        }
+    }
+
+    /**
+     * Adds a listener that is notified with a {@code PropertyChangeEvent} named {@link #PROPERTY_CONFIG} whenever the
+     * configuration is replaced or the loggers are updated.
+     * <p>
+     *   The old and new values of the event are the previous and the new {@link Configuration}.
+     *   This method only exists for binary compatibility with Log4j Core 2 consumers such as Micrometer.
+     * </p>
+     *
+     * @param listener a listener, not {@code null}
+     * @deprecated since 3.0.0, use {@link #addConfigurationStartedListener(Consumer)} and
+     *     {@link #addConfigurationStoppedListener(Consumer)} instead.
+     */
+    @Deprecated
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        propertyChangeSupport.get().add(Objects.requireNonNull(listener, "listener"));
+    }
+
+    /**
+     * Removes a listener added with {@link #addPropertyChangeListener(PropertyChangeListener)}.
+     *
+     * @param listener a listener
+     * @deprecated since 3.0.0, use {@link #removeConfigurationStartedListener(Consumer)} and
+     *     {@link #removeConfigurationStoppedListener(Consumer)} instead.
+     */
+    @Deprecated
+    public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        if (propertyChangeSupport.isInitialized()) {
+            propertyChangeSupport.get().remove(listener);
+        }
+    }
+
+    private void firePropertyChangeEvent(final Configuration oldConfiguration, final Configuration newConfiguration) {
+        if (propertyChangeSupport.isInitialized()) {
+            propertyChangeSupport.get().fireConfigurationChange(this, oldConfiguration, newConfiguration);
         }
     }
 
@@ -832,10 +882,12 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
+        final Configuration old = this.configuration;
         for (final Logger logger : loggerRegistry.getLoggers()) {
             logger.updateConfiguration(config);
         }
         notifyConfigurationStarted(config);
+        firePropertyChangeEvent(old, config);
     }
 
     /**
