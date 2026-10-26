@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -67,8 +68,13 @@ public class LoggerUpdateTest {
     @Timeout(3)
     public void testUpdateLoggersPropertyListeners(final LoggerContext context) throws Exception {
         final Configuration config = context.getConfiguration();
-        context.addConfigurationStartedListener(configuration -> assertSame(config, configuration));
-        context.updateLoggers();
+        final Consumer<Configuration> listener = configuration -> assertSame(config, configuration);
+        context.addConfigurationStartedListener(listener);
+        try {
+            context.updateLoggers();
+        } finally {
+            context.removeConfigurationStartedListener(listener);
+        }
     }
 
     @Test
@@ -76,12 +82,20 @@ public class LoggerUpdateTest {
     void propertyChangeListenerReceivesOldAndNewConfigurationOnReconfiguration(final LoggerContext context) {
         // Given a java.beans listener, as registered by Log4j Core 2 consumers such as Micrometer
         final List<PropertyChangeEvent> events = new ArrayList<>();
-        context.addPropertyChangeListener(events::add);
+        final PropertyChangeListener listener = events::add;
+        context.addPropertyChangeListener(listener);
         final Configuration previous = context.getConfiguration();
         final Configuration replacement = new DefaultConfiguration();
 
         // When the configuration is replaced
-        context.setConfiguration(replacement);
+        try {
+            context.setConfiguration(replacement);
+        } finally {
+            // Restore the shared context for the other tests in this class; `previous` has been stopped,
+            // so reload the original configuration file instead of reinstating it.
+            context.removePropertyChangeListener(listener);
+            context.reconfigure();
+        }
 
         // Then the listener sees the old and the new configuration
         assertThat(events).isNotEmpty();
