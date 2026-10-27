@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Closeable;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * Represents a connection to the NoSQL database. Serves as a factory for new (empty) objects and an endpoint for
@@ -29,14 +27,15 @@ import java.util.Set;
  */
 public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable {
     /**
-     * Returns root-level field names that must not be copied from a
+     * Indicates whether a root-level field must not be copied from a
      * {@link org.apache.logging.log4j.message.MapMessage MapMessage} into a database document.
      *
-     * @return reserved field names, or an empty set if none are reserved.
+     * @param fieldName the root-level field name.
+     * @return {@code true} if the field is reserved by this provider.
      * @since 2.27.0
      */
-    default Set<String> getReservedFieldNames() {
-        return Collections.emptySet();
+    default boolean isReservedFieldName(final String fieldName) {
+        return false;
     }
 
     /**

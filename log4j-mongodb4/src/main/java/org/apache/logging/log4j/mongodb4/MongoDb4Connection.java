@@ -23,8 +23,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.result.InsertOneResult;
-import java.util.Collections;
-import java.util.Set;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.nosql.AbstractNoSqlConnection;
@@ -39,8 +37,6 @@ import org.bson.Document;
 public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, MongoDb4DocumentObject> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final Set<String> RESERVED_FIELD_NAMES = Collections.singleton("_id");
 
     private static MongoCollection<Document> getOrCreateMongoCollection(
             final MongoDatabase database, final String collectionName, final boolean isCapped, final Long sizeInBytes) {
@@ -131,8 +127,8 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
     }
 
     @Override
-    public Set<String> getReservedFieldNames() {
-        return RESERVED_FIELD_NAMES;
+    public boolean isReservedFieldName(final String fieldName) {
+        return "_id".equals(fieldName);
     }
 
     @Override

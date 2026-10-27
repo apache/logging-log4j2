@@ -6,6 +6,6 @@
   <issue id="4331" link="https://github.com/apache/logging-log4j2/issues/4331"/>
   <description format="asciidoc">
     Skip provider-reserved root fields in NoSQL appender `MapMessage` documents, with a warning once per manager.
-    MongoDB and CouchDB reserve `_id` so the database generates document identifiers.
+    MongoDB reserves `_id`; CouchDB skips all root fields beginning with `_`, including document control and metadata fields.
   </description>
 </entry>

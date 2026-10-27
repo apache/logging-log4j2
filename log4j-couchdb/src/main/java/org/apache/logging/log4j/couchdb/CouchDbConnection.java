@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.couchdb;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.nosql.AbstractNoSqlConnection;
 import org.apache.logging.log4j.core.appender.nosql.DefaultNoSqlObject;
@@ -32,8 +30,6 @@ import org.lightcouch.Response;
  * The Apache CouchDB implementation of {@link NoSqlConnection}.
  */
 public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String, Object>, DefaultNoSqlObject> {
-    private static final Set<String> RESERVED_FIELD_NAMES = Collections.singleton("_id");
-
     private final CouchDbClient client;
 
     public CouchDbConnection(final CouchDbClient client) {
@@ -51,8 +47,8 @@ public final class CouchDbConnection extends AbstractNoSqlConnection<Map<String,
     }
 
     @Override
-    public Set<String> getReservedFieldNames() {
-        return RESERVED_FIELD_NAMES;
+    public boolean isReservedFieldName(final String fieldName) {
+        return fieldName.startsWith("_");
     }
 
     @Override

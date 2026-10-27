@@ -24,6 +24,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlDatabaseManager;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
@@ -36,12 +38,43 @@ import org.lightcouch.Response;
 class CouchDbConnectionTest {
 
     @Test
-    void mapMessageCannotChooseDocumentId() {
+    void mapMessageCannotSetReservedRootFields() {
         final CouchDbClient client = mock(CouchDbClient.class);
         given(client.save(any())).willReturn(mock(Response.class));
         final NoSqlProvider<CouchDbConnection> provider = () -> new CouchDbConnection(client);
+        final Map<String, Object> reservedFields = new HashMap<>();
+        reservedFields.put("_id", "_design/logs");
+        reservedFields.put("_rev", "1-abc");
+        reservedFields.put("_deleted", true);
+        reservedFields.put(
+                "_attachments", Collections.singletonMap("log.txt", Collections.singletonMap("data", "YQ==")));
+        reservedFields.put("_revisions", Collections.singletonMap("start", 1));
+        reservedFields.put("_revs_info", Collections.emptyList());
+        reservedFields.put("_local_seq", "1");
+        reservedFields.put("_conflicts", Collections.emptyList());
+        reservedFields.put("_deleted_conflicts", Collections.emptyList());
+        reservedFields.put("_access", Collections.emptyMap());
+        reservedFields.put("_replication_state", "completed");
+        reservedFields.put("_replication_state_time", "2026-10-27T00:00:00Z");
+        reservedFields.put("_replication_state_reason", "reason");
+        reservedFields.put("_replication_id", "replication-42");
+        reservedFields.put("_replication_stats", Collections.emptyMap());
+        reservedFields.put("_custom", "value");
+        reservedFields.put("_", "value");
         final MapMessage<?, Object> message = new MapMessage<>();
-        message.with("_id", "_design/logs").with("action", "login");
+        reservedFields.forEach(message::with);
+        message.with("action", "login")
+                .with("user_id", "user-7")
+                .with("attempts", 2)
+                .with("success", true)
+                .with("details", new HashMap<>(reservedFields));
+        final Map<String, Object> expected = new HashMap<>();
+        expected.put("action", "login");
+        expected.put("user_id", "user-7");
+        expected.put("attempts", 2);
+        expected.put("success", true);
+        expected.put("details", new HashMap<>(reservedFields));
+        final Map<String, Object> original = new HashMap<>(message.getData());
         final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
 
         try (final NoSqlDatabaseManager<?> manager =
@@ -50,8 +83,8 @@ class CouchDbConnectionTest {
             manager.write(event, message);
             manager.write(event, message);
 
-            then(client).should(times(2)).save(Collections.singletonMap("action", "login"));
-            assertEquals("_design/logs", message.get("_id"));
+            then(client).should(times(2)).save(expected);
+            assertEquals(original, message.getData());
         }
     }
 }

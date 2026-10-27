@@ -29,12 +29,9 @@ import static org.mockito.Mockito.times;
 import foo.TestFriendlyException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
@@ -130,9 +127,13 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessagePreservesFieldNamesAndValueTypes() {
-        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
+        given(connection.isReservedFieldName("_id")).willReturn(true);
         final MapMessage<?, Object> mapMessage = new MapMessage<>();
-        mapMessage.with("action", "login").with("attempts", 2).with("success", true);
+        mapMessage
+                .with("_id", "event-42")
+                .with("action", "login")
+                .with("attempts", 2)
+                .with("success", true);
         final Map<String, Object> expected = new HashMap<>();
         expected.put("action", "login");
         expected.put("attempts", 2);
@@ -143,7 +144,7 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessagePreservesIdWhenNoFieldsAreReserved() {
-        given(connection.getReservedFieldNames()).willCallRealMethod();
+        given(connection.isReservedFieldName("_id")).willCallRealMethod();
         final Map<String, Object> expected = new HashMap<>();
         expected.put("_id", "event-42");
         expected.put("action", "login");
@@ -154,7 +155,7 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessageSkipsReservedRootIdWithoutRenamingOtherFields() {
-        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
+        given(connection.isReservedFieldName("_id")).willReturn(true);
         final MapMessage<?, Object> mapMessage = messageWithReservedId();
         final Map<String, Object> actual = writeMapMessage(mapMessage);
         final Map<String, Object> expected = new HashMap<>();
@@ -167,11 +168,11 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessagePreservesNestedId() {
-        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
+        given(connection.isReservedFieldName("_id")).willReturn(true);
         final Map<String, Object> details = new HashMap<>();
         details.put("_id", "customer-7");
         final MapMessage<?, Object> mapMessage = new MapMessage<>();
-        mapMessage.with("action", "login").with("details", details);
+        mapMessage.with("_id", "event-42").with("action", "login").with("details", details);
         final Map<String, Object> expected = new HashMap<>();
         expected.put("action", "login");
         expected.put("details", details);
@@ -181,7 +182,8 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessageSkipsReservedFieldsAndWarnsOnlyOncePerManager() {
-        given(connection.getReservedFieldNames()).willReturn(new HashSet<>(Arrays.asList("_id", "reserved")));
+        given(connection.isReservedFieldName("_id")).willReturn(true);
+        given(connection.isReservedFieldName("reserved")).willReturn(true);
         final MapMessage<?, Object> mapMessage = messageWithReservedId().with("reserved", "value");
         final Map<String, Object> expected = new HashMap<>();
         expected.put("action", "login");
