@@ -60,6 +60,7 @@ class CouchDbConnectionTest {
         reservedFields.put("_replication_id", "replication-42");
         reservedFields.put("_replication_stats", Collections.emptyMap());
         reservedFields.put("_custom", "value");
+        reservedFields.put("_custom\nvalue", "value");
         reservedFields.put("_", "value");
         final MapMessage<?, Object> message = new MapMessage<>();
         reservedFields.forEach(message::with);
