@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.core.appender.rolling.action;
+package org.apache.logging.log4j.core.appender.rolling.action.internal;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
-import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
+import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 
 /**
  * Base class for actions that compress a file and optionally delete the source after successful compression.

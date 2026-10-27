@@ -18,31 +18,19 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.zip.Deflater;
-import java.util.zip.GZIPOutputStream;
-import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 
 /**
  * Compresses a file using GZ compression.
+ *
+ * @deprecated Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+ *             itself. Configure compression through the {@code compressionLevel} attribute of a rollover strategy
+ *             instead.
  */
-public final class GzCompressAction extends AbstractCompressAction {
+@Deprecated
+public final class GzCompressAction extends AbstractAction {
 
-    /**
-     * GZIP compression level to use.
-     *
-     * @see Deflater#setLevel(int)
-     */
-    private final int compressionLevel;
-
-    private static int resolveCompressionLevel(final int compressionLevel) {
-        return CompressActionSupport.resolveCompressionLevel(
-                "GZIP",
-                compressionLevel,
-                Deflater.DEFAULT_COMPRESSION,
-                Deflater.BEST_COMPRESSION,
-                Deflater.DEFAULT_COMPRESSION);
-    }
+    private final org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction delegate;
 
     /**
      * Creates a new instance.
@@ -53,8 +41,8 @@ public final class GzCompressAction extends AbstractCompressAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        super(source, destination, deleteSource, "gzip");
-        this.compressionLevel = compressionLevel;
+        this.delegate = new org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction(
+                source, destination, deleteSource, compressionLevel);
     }
 
     /**
@@ -75,12 +63,7 @@ public final class GzCompressAction extends AbstractCompressAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return super.execute();
-    }
-
-    @Override
-    protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
-        return new ConfigurableLevelGZIPOutputStream(output, BUF_SIZE, resolveCompressionLevel(compressionLevel));
+        return delegate.execute();
     }
 
     /**
@@ -115,21 +98,8 @@ public final class GzCompressAction extends AbstractCompressAction {
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
-        return CompressActionSupport.execute(
-                source,
-                destination,
-                deleteSource,
-                output -> new ConfigurableLevelGZIPOutputStream(
-                        output, BUF_SIZE, resolveCompressionLevel(compressionLevel)));
-    }
-
-    private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {
-
-        ConfigurableLevelGZIPOutputStream(final OutputStream out, final int bufSize, final int level)
-                throws IOException {
-            super(out, bufSize);
-            def.setLevel(level);
-        }
+        return org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction.execute(
+                source, destination, deleteSource, compressionLevel);
     }
 
     /**
@@ -139,24 +109,23 @@ public final class GzCompressAction extends AbstractCompressAction {
      */
     @Override
     protected void reportException(final Exception ex) {
-        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + delegate.getSource() + "'.", ex);
     }
 
     @Override
     public String toString() {
-        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", deleteSource="
-                + deleteSource + ']';
+        return delegate.toString();
     }
 
     public File getSource() {
-        return source;
+        return delegate.getSource();
     }
 
     public File getDestination() {
-        return destination;
+        return delegate.getDestination();
     }
 
     public boolean isDeleteSource() {
-        return deleteSource;
+        return delegate.isDeleteSource();
     }
 }

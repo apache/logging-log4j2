@@ -22,11 +22,11 @@ import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.Bzip2CompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.DeflateCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.internal.ZstdCompressAction;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 

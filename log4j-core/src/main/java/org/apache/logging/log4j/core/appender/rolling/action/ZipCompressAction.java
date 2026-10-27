@@ -18,24 +18,18 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 
 /**
  * Compresses a file using Zip compression.
+ *
+ * @deprecated Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+ *             itself. Configure compression through the {@code compressionLevel} attribute of a rollover strategy
+ *             instead.
  */
-public final class ZipCompressAction extends AbstractCompressAction {
+@Deprecated
+public final class ZipCompressAction extends AbstractAction {
 
-    /**
-     * Compression level.
-     */
-    private final int level;
-
-    private static int resolveCompressionLevel(final int level) {
-        return CompressActionSupport.resolveCompressionLevel("ZIP", level, -1, 9, -1);
-    }
+    private final org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction delegate;
 
     /**
      * Creates new instance.
@@ -47,8 +41,8 @@ public final class ZipCompressAction extends AbstractCompressAction {
      * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        super(source, destination, deleteSource, "zip");
-        this.level = level;
+        this.delegate = new org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction(
+                source, destination, deleteSource, level);
     }
 
     /**
@@ -59,12 +53,7 @@ public final class ZipCompressAction extends AbstractCompressAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return super.execute();
-    }
-
-    @Override
-    protected OutputStream createCompressorOutputStream(final OutputStream output) throws IOException {
-        return createCompressorOutputStream(output, source, level);
+        return delegate.execute();
     }
 
     /**
@@ -80,27 +69,8 @@ public final class ZipCompressAction extends AbstractCompressAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        return CompressActionSupport.execute(
-                source, destination, deleteSource, output -> createCompressorOutputStream(output, source, level));
-    }
-
-    private static OutputStream createCompressorOutputStream(
-            final OutputStream output, final File source, final int level) throws IOException {
-        final ZipOutputStream zipOutput = new ZipOutputStream(output);
-        try {
-            zipOutput.setLevel(resolveCompressionLevel(level));
-            zipOutput.putNextEntry(new ZipEntry(source.getName()));
-            return zipOutput;
-        } catch (final IOException | RuntimeException | Error failure) {
-            try {
-                zipOutput.close();
-            } catch (final IOException closeFailure) {
-                if (closeFailure != failure) {
-                    failure.addSuppressed(closeFailure);
-                }
-            }
-            throw failure;
-        }
+        return org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction.execute(
+                source, destination, deleteSource, level);
     }
 
     /**
@@ -110,28 +80,27 @@ public final class ZipCompressAction extends AbstractCompressAction {
      */
     @Override
     protected void reportException(final Exception ex) {
-        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + delegate.getSource() + "'.", ex);
     }
 
     @Override
     public String toString() {
-        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", level=" + level
-                + ", deleteSource=" + deleteSource + ']';
+        return delegate.toString();
     }
 
     public File getSource() {
-        return source;
+        return delegate.getSource();
     }
 
     public File getDestination() {
-        return destination;
+        return delegate.getDestination();
     }
 
     public boolean isDeleteSource() {
-        return deleteSource;
+        return delegate.isDeleteSource();
     }
 
     public int getLevel() {
-        return level;
+        return delegate.getLevel();
     }
 }

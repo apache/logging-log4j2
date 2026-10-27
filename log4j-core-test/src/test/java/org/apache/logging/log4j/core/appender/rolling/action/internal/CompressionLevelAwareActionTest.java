@@ -154,8 +154,15 @@ class CompressionLevelAwareActionTest {
         final Action deflateAction = FileExtension.DEFLATE.createCompressAction(
                 new File(tempDir, "test.log").getPath(), new File(tempDir, "test.log.deflate").getPath(), true, 9);
 
+        final Action gzAction = FileExtension.GZ.createCompressAction(
+                new File(tempDir, "test.log").getPath(), new File(tempDir, "test.log.gz").getPath(), true, 9);
+        final Action zipAction = FileExtension.ZIP.createCompressAction(
+                new File(tempDir, "test.log").getPath(), new File(tempDir, "test.log.zip").getPath(), true, 9);
+
         assertInstanceOf(Bzip2CompressAction.class, bzip2Action);
         assertInstanceOf(DeflateCompressAction.class, deflateAction);
+        assertInstanceOf(GzCompressAction.class, gzAction);
+        assertInstanceOf(ZipCompressAction.class, zipAction);
     }
 
     @Test

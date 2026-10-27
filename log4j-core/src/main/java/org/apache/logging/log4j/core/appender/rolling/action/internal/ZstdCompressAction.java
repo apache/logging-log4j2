@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
-import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /**
  * Compresses a file using Zstandard compression.

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -49,7 +49,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 public class CoreOsgiTest {
 
     @Test
-    public void testCompressionActionsWithSharedSuperclass() throws Exception {
+    public void testDeprecatedCompressionActionsDelegateToInternalImplementations() throws Exception {
         final File directory =
                 Files.createTempDirectory("log4j-osgi-compression").toFile();
         final File source = new File(directory, "source.log");
@@ -57,8 +57,8 @@ public class CoreOsgiTest {
         final File zip = new File(directory, "source.log.zip");
         try {
             Files.write(source.toPath(), "test".getBytes());
-            final AbstractCompressAction gzipAction = new GzCompressAction(source, gzip, false, -31415);
-            final AbstractCompressAction zipAction = new ZipCompressAction(source, zip, false, -31415);
+            final Action gzipAction = new GzCompressAction(source, gzip, false, -31415);
+            final Action zipAction = new ZipCompressAction(source, zip, false, -31415);
             assertTrue(gzipAction.execute());
             assertTrue(zipAction.execute());
             assertTrue(gzip.isFile());

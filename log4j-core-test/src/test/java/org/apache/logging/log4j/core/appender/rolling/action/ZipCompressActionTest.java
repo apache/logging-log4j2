@@ -17,15 +17,13 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
@@ -37,29 +35,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ZipCompressActionTest {
-
-    @Test
-    void testClosesZipStreamWhenEntryHeaderFails(@TempDir File tempDir) {
-        final IOException writeFailure = new IOException("header write failed");
-        final IOException closeFailure = new IOException("finishing ZIP failed");
-        class FailingOutput extends OutputStream {
-            private int writes;
-
-            @Override
-            public void write(final int value) throws IOException {
-                throw ++writes == 1 ? writeFailure : closeFailure;
-            }
-        }
-        final FailingOutput output = new FailingOutput();
-        final ZipCompressAction action =
-                new ZipCompressAction(new File(tempDir, "source.log"), new File(tempDir, "source.log.zip"), false, -1);
-
-        final IOException failure = assertThrows(IOException.class, () -> action.createCompressorOutputStream(output));
-        assertSame(writeFailure, failure);
-        // Closing the ZIP attempts to finish the entry, causing another write.
-        assertTrue(output.writes > 1);
-        assertArrayEquals(new Throwable[] {closeFailure}, failure.getSuppressed());
-    }
 
     @Test
     void testFallsBackFromUnsupportedCompressionLevels(@TempDir File tempDir) throws IOException {
@@ -154,5 +129,21 @@ class ZipCompressActionTest {
             // Compare the compressed payload, excluding timestamps in the ZIP headers.
             return Arrays.copyOfRange(bytes, offset, offset + size);
         }
+    }
+
+    @Test
+    void testDeprecatedClassKeepsPublicApi(@TempDir File tempDir) {
+        final File source = new File(tempDir, "source.log");
+        final File destination = new File(tempDir, "source.log.zip");
+
+        final ZipCompressAction action = new ZipCompressAction(source, destination, false, 5);
+
+        assertEquals(source, action.getSource());
+        assertEquals(destination, action.getDestination());
+        assertFalse(action.isDeleteSource());
+        assertEquals(5, action.getLevel());
+        assertEquals(
+                "ZipCompressAction[" + source + " to " + destination + ", level=5, deleteSource=false]",
+                action.toString());
     }
 }

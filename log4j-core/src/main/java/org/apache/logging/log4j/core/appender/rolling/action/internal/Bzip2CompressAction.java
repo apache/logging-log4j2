@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /** Compresses a file using BZip2 compression. */
 public final class Bzip2CompressAction extends AbstractCompressAction {

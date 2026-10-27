@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,5 +114,18 @@ class GzCompressActionTest {
         assertTrue(destination.exists());
         assertFalse(source.exists());
         assertArrayEquals(defaultBytes, Files.readAllBytes(destination.toPath()));
+    }
+
+    @Test
+    void testDeprecatedClassKeepsPublicApi(@TempDir File tempDir) {
+        final File source = new File(tempDir, "source.log");
+        final File destination = new File(tempDir, "source.log.gz");
+
+        final GzCompressAction action = new GzCompressAction(source, destination, true, 5);
+
+        assertEquals(source, action.getSource());
+        assertEquals(destination, action.getDestination());
+        assertTrue(action.isDeleteSource());
+        assertEquals("GzCompressAction[" + source + " to " + destination + ", deleteSource=true]", action.toString());
     }
 }

@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.util.zip.Deflater;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateParameters;
-import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
 
 /** Compresses a file using Deflate compression. */
 public final class DeflateCompressAction extends AbstractCompressAction {
