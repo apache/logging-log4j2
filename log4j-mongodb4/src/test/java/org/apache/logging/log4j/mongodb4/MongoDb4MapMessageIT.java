@@ -42,16 +42,23 @@ class MongoDb4MapMessageIT {
         final MapMessage<?, Object> mapMessage = new MapMessage<>();
         mapMessage.with("SomeName", "SomeValue");
         mapMessage.with("SomeInt", 1);
+        mapMessage.with("_id", "event-42");
+        mapMessage.with("details", new Document("_id", "nested-id"));
+        logger.info(mapMessage);
         logger.info(mapMessage);
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
         assertNotNull(database);
         final MongoCollection<Document> collection =
                 database.getCollection(getClass().getSimpleName());
         assertNotNull(collection);
+        assertEquals(2, collection.countDocuments());
         final Document first = collection.find().first();
         assertNotNull(first);
         final String firstJson = first.toJson();
         assertEquals("SomeValue", first.getString("SomeName"), firstJson);
         assertEquals(Integer.valueOf(1), first.getInteger("SomeInt"), firstJson);
+        assertNotNull(first.getObjectId("_id"), firstJson);
+        assertEquals("nested-id", first.get("details", Document.class).getString("_id"), firstJson);
+        assertEquals("event-42", mapMessage.get("_id"));
     }
 }

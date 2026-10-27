@@ -24,13 +24,17 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import foo.TestFriendlyException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
@@ -43,6 +47,9 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.MessageLayout;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -123,6 +130,7 @@ public class NoSqlDatabaseManagerTest {
 
     @Test
     public void testMapMessagePreservesFieldNamesAndValueTypes() {
+        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
         final MapMessage<?, Object> mapMessage = new MapMessage<>();
         mapMessage.with("action", "login").with("attempts", 2).with("success", true);
         final Map<String, Object> expected = new HashMap<>();
@@ -134,7 +142,8 @@ public class NoSqlDatabaseManagerTest {
     }
 
     @Test
-    public void testMapMessageCurrentlyCopiesTopLevelId() {
+    public void testMapMessagePreservesIdWhenNoFieldsAreReserved() {
+        given(connection.getReservedFieldNames()).willCallRealMethod();
         final Map<String, Object> expected = new HashMap<>();
         expected.put("_id", "event-42");
         expected.put("action", "login");
@@ -144,7 +153,8 @@ public class NoSqlDatabaseManagerTest {
     }
 
     @Test
-    public void testProposedMapMessageSkipsReservedRootIdWithoutRenamingOtherFields() {
+    public void testMapMessageSkipsReservedRootIdWithoutRenamingOtherFields() {
+        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
         final MapMessage<?, Object> mapMessage = messageWithReservedId();
         final Map<String, Object> actual = writeMapMessage(mapMessage);
         final Map<String, Object> expected = new HashMap<>();
@@ -152,11 +162,12 @@ public class NoSqlDatabaseManagerTest {
         expected.put("user_id", "user-7");
 
         assertEquals("The original message must remain unchanged", "event-42", mapMessage.get("_id"));
-        assertEquals("The proposed document should omit the provider-reserved root _id field", expected, actual);
+        assertEquals("The document should omit the provider-reserved root _id field", expected, actual);
     }
 
     @Test
     public void testMapMessagePreservesNestedId() {
+        given(connection.getReservedFieldNames()).willReturn(Collections.singleton("_id"));
         final Map<String, Object> details = new HashMap<>();
         details.put("_id", "customer-7");
         final MapMessage<?, Object> mapMessage = new MapMessage<>();
@@ -166,6 +177,44 @@ public class NoSqlDatabaseManagerTest {
         expected.put("details", details);
 
         assertEquals(expected, writeMapMessage(mapMessage));
+    }
+
+    @Test
+    public void testMapMessageSkipsReservedFieldsAndWarnsOnlyOncePerManager() {
+        given(connection.getReservedFieldNames()).willReturn(new HashSet<>(Arrays.asList("_id", "reserved")));
+        final MapMessage<?, Object> mapMessage = messageWithReservedId().with("reserved", "value");
+        final Map<String, Object> expected = new HashMap<>();
+        expected.put("action", "login");
+        expected.put("user_id", "user-7");
+        final StatusListener listener = mock(StatusListener.class);
+        given(listener.getStatusLevel()).willReturn(Level.WARN);
+        final StatusLogger statusLogger = StatusLogger.getLogger();
+        statusLogger.registerListener(listener);
+        try (final NoSqlDatabaseManager<?> manager =
+                NoSqlDatabaseManager.getNoSqlDatabaseManager("reservedFields", 0, provider, null, null)) {
+            manager.startup();
+            final LogEvent event =
+                    Log4jLogEvent.newBuilder().setMessage(mapMessage).build();
+            manager.write(event, mapMessage);
+            manager.write(event, mapMessage);
+
+            then(connection).should(times(2)).insertObject(captor.capture());
+            for (final NoSqlObject<Map<String, Object>> inserted : captor.getAllValues()) {
+                assertEquals(expected, inserted.unwrap());
+            }
+            final ArgumentCaptor<StatusData> statusCaptor = ArgumentCaptor.forClass(StatusData.class);
+            then(listener).should().log(statusCaptor.capture());
+            assertEquals(Level.WARN, statusCaptor.getValue().getLevel());
+            assertTrue(statusCaptor
+                    .getValue()
+                    .getMessage()
+                    .getFormattedMessage()
+                    .contains("ignored reserved field '_id'"));
+            assertEquals("event-42", mapMessage.get("_id"));
+            assertEquals("value", mapMessage.get("reserved"));
+        } finally {
+            statusLogger.removeListener(listener);
+        }
     }
 
     @Test

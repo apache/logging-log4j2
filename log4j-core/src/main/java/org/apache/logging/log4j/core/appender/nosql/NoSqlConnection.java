@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Closeable;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Represents a connection to the NoSQL database. Serves as a factory for new (empty) objects and an endpoint for
@@ -26,6 +28,17 @@ import java.io.Closeable;
  * @param <W> Specifies which type of database object is wrapped by the {@link NoSqlObject} implementation provided.
  */
 public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable {
+    /**
+     * Returns root-level field names that must not be copied from a
+     * {@link org.apache.logging.log4j.message.MapMessage MapMessage} into a database document.
+     *
+     * @return reserved field names, or an empty set if none are reserved.
+     * @since 2.27.0
+     */
+    default Set<String> getReservedFieldNames() {
+        return Collections.emptySet();
+    }
+
     /**
      * Instantiates and returns a {@link NoSqlObject} instance whose properties can be configured before ultimate
      * insertion via {@link #insertObject(NoSqlObject)}.

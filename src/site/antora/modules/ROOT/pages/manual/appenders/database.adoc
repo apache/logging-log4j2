@@ -1058,6 +1058,9 @@ This appender transforms log events into NoSQL documents in two ways:
 
 * If the optional <<NoSqlAppender-element-Layout,`Layout`>> configuration element is provided, the
 xref:manual/messages.adoc#MapMessage[`MapMessage`] returned by the layout will be converted into its NoSQL document.
+Since `2.27.0`, root fields reserved by the provider are skipped, with a warning logged once per appender manager.
+MongoDB and CouchDB reserve `_id`, allowing the database to generate document identifiers.
+Nested fields are unchanged.
 * Otherwise, a default conversion will be applied.
 You enhance the format with additional top level key/value pairs using nested
 <<NoSqlAppender-element-KeyValuePair,`KeyValuePair`>> configuration elements.

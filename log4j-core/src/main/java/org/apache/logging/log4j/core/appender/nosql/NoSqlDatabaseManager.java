@@ -116,6 +116,8 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private final KeyValuePair[] additionalFields;
 
+    private boolean reservedFieldWarningLogged;
+
     private NoSqlDatabaseManager(
             final String name,
             final int bufferSize,
@@ -260,8 +262,21 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
+        final Set<String> reservedFieldNames = connection.getReservedFieldNames();
         // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
-        mapMessage.forEach((key, value) -> noSqlObject.set(key, value));
+        mapMessage.forEach((key, value) -> {
+            if (reservedFieldNames.contains(key)) {
+                if (!reservedFieldWarningLogged) {
+                    reservedFieldWarningLogged = true;
+                    LOGGER.warn(
+                            "NoSQL manager {} ignored reserved field '{}'; further reserved field warnings will be suppressed",
+                            getName(),
+                            key);
+                }
+            } else {
+                noSqlObject.set(key, value);
+            }
+        });
     }
 
     @Override
