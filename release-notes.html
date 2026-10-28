@@ -343,6 +343,9 @@
 <p>Honor the <code>bufferSize</code> and <code>bufferedIo</code> settings in <code>ConsoleAppender</code>. (<a href="https://github.com/apache/logging-log4j2/issues/4338">4338</a>, <a href="https://github.com/apache/logging-log4j2/pull/4342">4342</a>)</p>
 </li>
 <li>
+<p>Restore the <code>LoggerConfig(String, Level, boolean)</code> constructor. (<a href="https://github.com/apache/logging-log4j2/pull/4433">4433</a>)</p>
+</li>
+<li>
 <p>Fix <code>CronExpression.MIN_DATE</code> to be the epoch instead of depending on the JVM start time and default time zone, and stop <code>CronExpression.getPrevFireTime</code> from searching before the epoch.</p>
 </li>
 <li>
