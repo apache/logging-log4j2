@@ -203,6 +203,27 @@ public class LoggerConfig extends AbstractFilterable {
 
     /**
      * Constructor that sets the name, level and additive values.
+     * @deprecated - Use {@link #LoggerConfig(String, Level, boolean, Configuration)} instead.
+     *
+     * @param name The Logger name.
+     * @param level The Level.
+     * @param additive true if the Logger is additive, false otherwise.
+     */
+    @Deprecated
+    public LoggerConfig(final String name, final Level level, final boolean additive) {
+        this(
+                name,
+                Collections.emptyList(),
+                null,
+                level,
+                additive,
+                null,
+                ((LoggerContext) LogManager.getContext(LoggerConfig.class.getClassLoader(), false)).getConfiguration(),
+                true);
+    }
+
+    /**
+     * Constructor that sets the name, level and additive values.
      *
      * @param name The Logger name.
      * @param level The Level.
