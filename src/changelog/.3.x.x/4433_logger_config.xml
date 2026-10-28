@@ -5,10 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
+  <issue id="4433" link="https://github.com/apache/logging-log4j2/pull/4433"/>
   <description format="asciidoc">
-    1. Adds back the LoggerConfig constructor used by Spring Boot.
-    2. Fix LoggerUpdaterTest:
-      * testUpdateLoggersPropertyListeners: it now keeps a reference to its configuration-started listener and removes it in a finally block.
-      * propertyChangeListenerReceivesOldAndNewConfigurationOnReconfiguration: in a finally block, it now removes its property-change listener and calls context.reconfigure().
+    Restore the `LoggerConfig(String, Level, boolean)` constructor.
   </description>
 </entry>

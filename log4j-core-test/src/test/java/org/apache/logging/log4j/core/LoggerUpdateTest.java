@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.beans.PropertyChangeEvent;
@@ -74,6 +75,17 @@ public class LoggerUpdateTest {
             context.updateLoggers();
         } finally {
             context.removeConfigurationStartedListener(listener);
+        }
+    }
+
+    @Test
+    public void testDeprecatedConstructor(final LoggerContext context) {
+        try {
+            Configuration configuration = context.getConfiguration();
+            LoggerConfig loggerConfig = new LoggerConfig("test1", Level.INFO, false);
+            assertThat(loggerConfig).isNotNull();
+        } catch (Exception ex) {
+            fail("Constructor should not have failed: " + ex.getMessage());
         }
     }
 
