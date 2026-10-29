@@ -46,6 +46,8 @@ import org.junitpioneer.jupiter.Issue;
 @SetTestProperty(key = "log4j2.scriptEnableLanguages", value = "groovy")
 class AbstractConfigurationTest {
 
+    private static final String MISMATCHED_KEY = "AbstractConfigurationTest.mismatch";
+
     @Test
     void propertiesCanComeLast() {
         final Configuration config = new TestConfiguration(null, Collections.singletonMap("console.name", "CONSOLE"));
@@ -164,25 +166,57 @@ class AbstractConfigurationTest {
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/3155")
     @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
-    void loggerMutatorsUpdateALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+    void addLoggerAppenderUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
         final Configuration config = context.getConfiguration();
-        // registered under a key that differs from its name, so each mutator finds it through putIfAbsent
-        final LoggerConfig registered = new LoggerConfig("AbstractConfigurationTest.other", Level.INFO, true);
-        config.addLogger("AbstractConfigurationTest.mismatch", registered);
-        final Logger logger = context.getLogger("AbstractConfigurationTest.mismatch");
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
         final ListAppender appender = new ListAppender("Mismatch");
         appender.start();
-        final int loggerConfigsBefore = config.getLoggers().size();
 
-        config.addLoggerAppender(logger, appender);
-        config.addLoggerFilter(
-                logger, ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY));
-        config.setLoggerAdditive(logger, false);
+        config.addLoggerAppender(context.getLogger(MISMATCHED_KEY), appender);
 
         assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
         assertThat(registered.getAppenders()).containsEntry("Mismatch", appender);
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void addLoggerFilterUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.addLoggerFilter(
+                context.getLogger(MISMATCHED_KEY),
+                ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY));
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
         assertThat(registered.hasFilter()).isTrue();
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void setLoggerAdditiveUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.setLoggerAdditive(context.getLogger(MISMATCHED_KEY), false);
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
         assertThat(registered.isAdditive()).isFalse();
+    }
+
+    /**
+     * Registers a LoggerConfig under a key that differs from its name, so the logger mutators find it through
+     * {@code putIfAbsent} instead of creating a new one.
+     */
+    private static LoggerConfig registerUnderAnotherName(final Configuration config) {
+        final LoggerConfig registered = new LoggerConfig("AbstractConfigurationTest.other", Level.INFO, true);
+        config.addLogger(MISMATCHED_KEY, registered);
+        return registered;
     }
 
     private static class TestConfiguration extends AbstractConfiguration {
