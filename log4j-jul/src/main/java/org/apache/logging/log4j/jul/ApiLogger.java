@@ -43,6 +43,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class ApiLogger extends Logger {
 
+    private static final ThreadLocal<Boolean> IS_LOGGABLE_IN_PROGRESS = new ThreadLocal<>();
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
     private static final String MUTATOR_DISABLED =
             "Ignoring call to `j.u.l.Logger.{}({})`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
@@ -80,7 +81,15 @@ public class ApiLogger extends Logger {
 
     @Override
     public boolean isLoggable(final Level level) {
-        return logger.isEnabled(LevelTranslator.toLevel(level));
+        if (Boolean.TRUE.equals(IS_LOGGABLE_IN_PROGRESS.get())) {
+            return false;
+        }
+        IS_LOGGABLE_IN_PROGRESS.set(Boolean.TRUE);
+        try {
+            return logger.isEnabled(LevelTranslator.toLevel(level));
+        } finally {
+            IS_LOGGABLE_IN_PROGRESS.set(Boolean.FALSE);
+        }
     }
 
     @Override
