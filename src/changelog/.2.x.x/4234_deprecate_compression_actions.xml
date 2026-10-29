@@ -6,6 +6,5 @@
   <issue id="4234" link="https://github.com/apache/logging-log4j2/pull/4234"/>
   <description format="asciidoc">
     Deprecate `org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction` and `ZipCompressAction`.
-    Their implementations moved to an internal package; configure compression through the `compressionLevel` attribute of the rollover strategy instead.
   </description>
 </entry>
