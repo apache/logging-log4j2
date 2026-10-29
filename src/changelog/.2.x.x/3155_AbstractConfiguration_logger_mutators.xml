@@ -7,6 +7,6 @@
        type="fixed">
     <issue id="3155" link="https://github.com/apache/logging-log4j2/issues/3155"/>
     <description format="asciidoc">
-        Fix `addLoggerAppender()` attaching an unregistered appender when its name is already registered, and `addLoggerFilter()`/`setLoggerAdditive()` failing on `null` arguments.
+        Fix `Logger.addAppender()` attaching an unregistered appender.
     </description>
 </entry>
