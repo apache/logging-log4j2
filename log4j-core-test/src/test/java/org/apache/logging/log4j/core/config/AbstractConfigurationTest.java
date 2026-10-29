@@ -161,6 +161,30 @@ class AbstractConfigurationTest {
         assertThat(logger.isAdditive()).isTrue();
     }
 
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void loggerMutatorsUpdateALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        // registered under a key that differs from its name, so each mutator finds it through putIfAbsent
+        final LoggerConfig registered = new LoggerConfig("AbstractConfigurationTest.other", Level.INFO, true);
+        config.addLogger("AbstractConfigurationTest.mismatch", registered);
+        final Logger logger = context.getLogger("AbstractConfigurationTest.mismatch");
+        final ListAppender appender = new ListAppender("Mismatch");
+        appender.start();
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.addLoggerAppender(logger, appender);
+        config.addLoggerFilter(
+                logger, ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY));
+        config.setLoggerAdditive(logger, false);
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+        assertThat(registered.getAppenders()).containsEntry("Mismatch", appender);
+        assertThat(registered.hasFilter()).isTrue();
+        assertThat(registered.isAdditive()).isFalse();
+    }
+
     private static class TestConfiguration extends AbstractConfiguration {
 
         private final Map<String, String> map;
