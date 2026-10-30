@@ -313,6 +313,36 @@ class Rfc5424LayoutTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"Transfer", "Transfer@32473"})
+    void testCollectionMergesElementsWithSameId(final String id) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+        final StructuredDataMessage msg = new StructuredDataMessage(id, "Transfer Complete", "Audit");
+        msg.put("Amount", "200.00");
+        final StructuredDataMessage msg2 = new StructuredDataMessage(id, null, "Audit");
+        msg2.put("ToAccount", "123456");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new StructuredDataCollectionMessage(Arrays.asList(msg, msg2)))
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[Transfer@32473 Amount=\"200.00\" ToAccount=\"123456\"]");
+    }
+
+    @Test
+    void testMdcElementMergesStructuredDataWithSameId() {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("loginId", "JohnDoe");
+        final StructuredDataMessage msg = new StructuredDataMessage("mdc", "Transfer Complete", "Audit");
+        msg.put("Amount", "200.00");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(msg)
+                .setContextData(contextData)
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[mdc@32473 Amount=\"200.00\" loginId=\"JohnDoe\"]");
+    }
+
     /**
      * Test case for escaping newlines and other SD PARAM-NAME special characters.
      */

@@ -442,7 +442,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final String sdId = getId(id);
 
         if (sdElements.containsKey(sdId)) {
-            final StructuredDataElement union = sdElements.get(id.toString());
+            final StructuredDataElement union = sdElements.get(sdId);
             union.union(map);
             sdElements.put(sdId, union);
         } else {
@@ -1214,7 +1214,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private class StructuredDataElement {
 
-        private final Map<String, String> fields;
+        private Map<String, String> fields;
         private final boolean discardIfEmpty;
         private final String prefix;
 
@@ -1240,7 +1240,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         void union(final Map<String, String> addFields) {
-            this.fields.putAll(addFields);
+            // The current fields might be unmodifiable, e.g. those of a `StructuredDataMessage`
+            final Map<String, String> union = new HashMap<>(fields);
+            union.putAll(addFields);
+            this.fields = union;
         }
 
         Map<String, String> getFields() {
