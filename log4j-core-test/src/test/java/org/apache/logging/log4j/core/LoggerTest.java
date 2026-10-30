@@ -216,6 +216,28 @@ class LoggerTest {
     }
 
     @Test
+    void setAllLevelsDoesNotChangeSiblingLoggers() {
+        // A logger whose name merely starts with the parent's name is a sibling, not a child, in the
+        // dot-separated hierarchy and must keep its own level
+        final String sibling = logger.getName() + "Sibling";
+        Configurator.setLevel(loggerChild.getName(), Level.INFO);
+        Configurator.setLevel(sibling, Level.INFO);
+        Configurator.setAllLevels(logger.getName(), Level.OFF);
+        assertEquals(Level.OFF, logger.getLevel());
+        assertEquals(Level.OFF, loggerChild.getLevel());
+        assertEquals(Level.INFO, LogManager.getLogger(sibling).getLevel(), "sibling logger must keep its level");
+    }
+
+    @Test
+    void setAllLevelsWithRootOrTrailingDotChangesDescendants() {
+        Configurator.setLevel(loggerChild.getName(), Level.INFO);
+        Configurator.setAllLevels(logger.getName() + ".", Level.WARN);
+        assertEquals(Level.WARN, loggerChild.getLevel());
+        Configurator.setAllLevels("", Level.ERROR);
+        assertEquals(Level.ERROR, loggerChild.getLevel());
+    }
+
+    @Test
     void debugChangeLevelChildLogger_ForLogger() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
