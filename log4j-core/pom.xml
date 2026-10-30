@@ -65,6 +65,7 @@
       javax.mail.*;version="[1.6,2)";resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.apache.commons.csv;resolution:=optional,
+      org.apache.commons.io.*;resolution:=optional,
       org.apache.kafka.*;resolution:=optional,
       org.codehaus.stax2.*;resolution:=optional,
       org.jctools.*;resolution:=optional,
