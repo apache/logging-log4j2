@@ -70,6 +70,7 @@
       org.codehaus.stax2.*;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
+      tools.jackson.*;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
       javax.tools;resolution:=optional,
       <!-- `java.sql`, which depends on `java.logging` is optional -->
@@ -100,6 +101,9 @@
       org.apache.commons.csv;transitive=false,
       org.jspecify;transitive=false,
       org.zeromq.jeromq;transitive=false,
+      tools.jackson.core;transitive=false,
+      tools.jackson.databind;transitive=false,
+      tools.jackson.dataformat.yaml;transitive=false,
       <!-- A module descriptor is only available in version 1.2.16+, hence it is not detected -->
       com.conversantmedia.disruptor;substitute="disruptor";transitive=false;static=true,
       <!-- Filebased module names: MUST be static -->
@@ -191,6 +195,22 @@
     <!-- Required for YAML support (including JSON requirements) -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Alternative YAML support using Jackson 3.x (requires Java 17+) -->
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
