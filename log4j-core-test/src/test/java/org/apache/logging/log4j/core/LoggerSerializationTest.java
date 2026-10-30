@@ -16,16 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.test.AbstractSerializationTest;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class LoggerSerializationTest extends AbstractSerializationTest {
+public class LoggerSerializationTest {
 
-    @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {new LoggerContext("").getLogger("", null)},
@@ -35,7 +37,15 @@ public class LoggerSerializationTest extends AbstractSerializationTest {
         });
     }
 
-    public LoggerSerializationTest(final Serializable serializable) {
-        super(serializable);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripEquals(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip(serializable));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripNoException(final Serializable serializable) {
+        assertThat(serializable, serializesRoundTrip());
     }
 }
