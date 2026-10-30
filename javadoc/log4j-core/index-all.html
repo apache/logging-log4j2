@@ -2189,7 +2189,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
 <dd>
-<div class="block">Compresses a file using bzip2 compression.</div>
+<div class="block">Compresses a file using Apache Commons Compress.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#%3Cinit%3E(java.lang.String,java.io.File,java.io.File,boolean)" class="member-name-link">CommonsCompressAction(String, File, File, boolean)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
 <dd>
@@ -4675,10 +4675,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compress.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#execute()" class="member-name-link">execute()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compresses.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#execute(boolean)" class="member-name-link">execute(boolean)</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
@@ -4697,10 +4699,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#execute(java.io.File,java.io.File,boolean,int)" class="member-name-link">execute(File, File, boolean, int)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compress a file.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#execute(java.io.File,java.io.File,boolean,int)" class="member-name-link">execute(File, File, boolean, int)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Compresses a file.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#execute(java.lang.String,java.io.File,java.io.File,boolean)" class="member-name-link">execute(String, File, File, boolean)</a> - Static method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
@@ -6569,9 +6573,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/config/builder/api/Component.html#getComponents()" class="member-name-link">getComponents()</a> - Method in class org.apache.logging.log4j.core.config.builder.api.<a href="org/apache/logging/log4j/core/config/builder/api/Component.html" title="class in org.apache.logging.log4j.core.config.builder.api">Component</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html#getCompressionLevel()" class="member-name-link">getCompressionLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the configured compression level before format-specific resolution.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html#getCompressionLevel()" class="member-name-link">getCompressionLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the configured compression level before format-specific resolution.</div>
+</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html#getCompressionLevelStr()" class="member-name-link">getCompressionLevelStr()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DefaultRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DefaultRolloverStrategy.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html#getCompressionLevelStr()" class="member-name-link">getCompressionLevelStr()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/DirectWriteRolloverStrategy.Builder.html" title="class in org.apache.logging.log4j.core.appender.rolling">DirectWriteRolloverStrategy.Builder</a></dt>
@@ -7127,9 +7135,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the destination.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html#getDestination()" class="member-name-link">getDestination()</a> - Method in class org.apache.logging.log4j.core.config.builder.impl.<a href="org/apache/logging/log4j/core/config/builder/impl/DefaultConfigurationBuilder.html" title="class in org.apache.logging.log4j.core.config.builder.impl">DefaultConfigurationBuilder</a></dt>
 <dd>
 <div class="block">Returns the configuration's destination.</div>
@@ -7953,7 +7965,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/AbstractLogEvent.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.<a href="org/apache/logging/log4j/core/AbstractLogEvent.html" title="class in org.apache.logging.log4j.core">AbstractLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/AppenderRef.html#getLevel()" class="member-name-link">getLevel()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/AppenderRef.html" title="class in org.apache.logging.log4j.core.config">AppenderRef</a></dt>
@@ -9160,9 +9174,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the source.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.async.<a href="org/apache/logging/log4j/core/async/RingBufferLogEvent.html" title="class in org.apache.logging.log4j.core.async">RingBufferLogEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.apache.logging.log4j.core.impl.<a href="org/apache/logging/log4j/core/impl/Log4jLogEvent.html" title="class in org.apache.logging.log4j.core.impl">Log4jLogEvent</a></dt>
@@ -9761,7 +9779,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
 <dd>
-<div class="block">Compresses a file using GZ compression.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+             itself. Configure compression through the <code>compressionLevel</code> attribute of a rollover strategy
+             instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#%3Cinit%3E(java.io.File,java.io.File,boolean)" class="member-name-link">GzCompressAction(File, File, boolean)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>
@@ -9771,6 +9793,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#%3Cinit%3E(java.io.File,java.io.File,boolean,int)" class="member-name-link">GzCompressAction(File, File, boolean, int)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates a new instance.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.CompressionType.html#GZIP" class="member-name-link">GZIP</a> - Enum constant in enum org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.CompressionType.html" title="enum in org.apache.logging.log4j.core.layout">GelfLayout.CompressionType</a></dt>
@@ -10591,9 +10614,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#isDeleteSource()" class="member-name-link">isDeleteSource()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html#isDirectWrite()" class="member-name-link">isDirectWrite()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html#isDone()" class="member-name-link">isDone()</a> - Method in class org.apache.logging.log4j.core.config.<a href="org/apache/logging/log4j/core/config/CronScheduledFuture.html" title="class in org.apache.logging.log4j.core.config">CronScheduledFuture</a></dt>
@@ -12326,7 +12353,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/tools/CustomLoggerGenerator.html#main(java.lang.String%5B%5D)" class="member-name-link">main(String[])</a> - Static method in class org.apache.logging.log4j.core.tools.<a href="org/apache/logging/log4j/core/tools/CustomLoggerGenerator.html" title="class in org.apache.logging.log4j.core.tools">CustomLoggerGenerator</a></dt>
 <dd>
-<div class="block">Delegates to <a href="org/apache/logging/log4j/core/tools/Generate.CustomLogger.html#main(java.lang.String%5B%5D)"><code>Generate.CustomLogger.main(String[])</code></a></div>
+<div class="block">Delegates to <a href="org/apache/logging/log4j/core/tools/Generate.CustomLogger.html#main(java.lang.String%5B%5D)"><code>main(String[])</code></a></div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/tools/ExtendedLoggerGenerator.html#main(java.lang.String%5B%5D)" class="member-name-link">main(String[])</a> - Static method in class org.apache.logging.log4j.core.tools.<a href="org/apache/logging/log4j/core/tools/ExtendedLoggerGenerator.html" title="class in org.apache.logging.log4j.core.tools">ExtendedLoggerGenerator</a></dt>
 <dd>
@@ -14992,10 +15019,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Capture exception.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#reportException(java.lang.Exception)" class="member-name-link">reportException(Exception)</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Captures exception.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/config/plugins/validation/constraints/Required.html" class="type-name-link" title="annotation in org.apache.logging.log4j.core.config.plugins.validation.constraints">Required</a> - Annotation Type in <a href="org/apache/logging/log4j/core/config/plugins/validation/constraints/package-summary.html">org.apache.logging.log4j.core.config.plugins.validation.constraints</a></dt>
@@ -18528,7 +18557,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Formats the event as an Object that can be serialized.</div>
 </dd>
-<dt><a href="org/apache/logging/log4j/core/layout/YamlLayout.html#toSerializable(org.apache.logging.log4j.core.LogEvent,java.io.Writer)" class="member-name-link">toSerializable(LogEvent, Writer)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/YamlLayout.html" title="class in org.apache.logging.log4j.core.layout">YamlLayout</a></dt>
+<dt><a href="org/apache/logging/log4j/core/layout/XmlLayout.html#toSerializable(org.apache.logging.log4j.core.LogEvent,java.io.Writer)" class="member-name-link">toSerializable(LogEvent, Writer)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/XmlLayout.html" title="class in org.apache.logging.log4j.core.layout">XmlLayout</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/layout/JsonLayout.html#toSerializable(org.apache.logging.log4j.core.LogEvent,java.io.Writer)" class="member-name-link">toSerializable(LogEvent, Writer)</a> - Method in class org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/JsonLayout.html" title="class in org.apache.logging.log4j.core.layout">JsonLayout</a></dt>
 <dd>&nbsp;</dd>
@@ -18603,7 +18632,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/FileRenameAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">FileRenameAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileCount.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileCount.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileCount</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileSize.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/IfAccumulatedFileSize.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileSize</a></dt>
@@ -18623,7 +18654,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/PosixViewAttributeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">PosixViewAttributeAction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/CompositeTriggeringPolicy.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/CompositeTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">CompositeTriggeringPolicy</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/CronTriggeringPolicy.html#toString()" class="member-name-link">toString()</a> - Method in class org.apache.logging.log4j.core.appender.rolling.<a href="org/apache/logging/log4j/core/appender/rolling/CronTriggeringPolicy.html" title="class in org.apache.logging.log4j.core.appender.rolling">CronTriggeringPolicy</a></dt>
@@ -20700,10 +20733,15 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" class="type-name-link" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a> - Class in <a href="org/apache/logging/log4j/core/appender/rolling/action/package-summary.html">org.apache.logging.log4j.core.appender.rolling.action</a></dt>
 <dd>
-<div class="block">Compresses a file using Zip compression.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+             itself. Configure compression through the <code>compressionLevel</code> attribute of a rollover strategy
+             instead.</div>
+</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html#%3Cinit%3E(java.io.File,java.io.File,boolean,int)" class="member-name-link">ZipCompressAction(File, File, boolean, int)</a> - Constructor for class org.apache.logging.log4j.core.appender.rolling.action.<a href="org/apache/logging/log4j/core/appender/rolling/action/ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates new instance.</div>
 </dd>
 <dt><a href="org/apache/logging/log4j/core/layout/GelfLayout.CompressionType.html#ZLIB" class="member-name-link">ZLIB</a> - Enum constant in enum org.apache.logging.log4j.core.layout.<a href="org/apache/logging/log4j/core/layout/GelfLayout.CompressionType.html" title="enum in org.apache.logging.log4j.core.layout">GelfLayout.CompressionType</a></dt>

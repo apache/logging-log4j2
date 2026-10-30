@@ -1430,8 +1430,11 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RolloverStrategy-attr-compressionLevel"></a>compressionLevel</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>7</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Determine the compression level of archived log files.</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compressor default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determine the compression level of archived log files using the compressor&#8217;s native levels.
+Omitting the attribute selects the format-specific default.
+Unsupported values fall back to that default and produce a warning when the strategy is first associated with a file extension, rather than on every rollover.
+If optional Zstd dependencies are unavailable, dependency failures are deferred to asynchronous compression.</p>
 <p class="tableblock">See <a href="#RolloverStrategy-compress">Compressing archived files</a> for more details.</p></td>
 </tr>
 <tr>
@@ -1720,12 +1723,12 @@ algorithm</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-bz2"></a><code>.bz2</code><a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2713;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/bzip2/BZip2CompressorOutputStream.html">BZip2</a> algorithm</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-deflate"></a><code>.deflate</code><a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2713;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/deflate/DeflateCompressorOutputStream.html">DEFLATE</a> algorithm</p></td>
 </tr>
 <tr>
@@ -1740,11 +1743,22 @@ algorithm</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a id="RolloverStrategy-compress-zst"></a><code>.zst</code> <a href="#commons-compress-dep"><sup>dep</sup></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2717;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#x2713;</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-compress/apidocs/org/apache/commons/compress/compressors/zstandard/package-summary.html">ZStandard</a> algorithm</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>For Zstd (<code>.zst</code>), <code>compressionLevel</code> accepts the library&#8217;s native range, including negative fast-compression levels.
+The supported bounds are obtained from <code>ZstdConstants.ZSTD_CLEVEL_MIN</code> and <code>ZstdConstants.ZSTD_CLEVEL_MAX</code> when Zstd is available.
+Omitting the attribute or setting it to <code>0</code> selects the Zstd default (currently <code>3</code>).
+An explicit <code>-1</code> selects the native fast-compression level, not the default.</p>
+</div>
+<div class="paragraph">
+<p>For BZip2 (<code>.bz2</code>), levels <code>[1, 9]</code> select the BZip2 block size.
+Omitting the attribute selects the default block size (<code>9</code>); unsupported values, including <code>-1</code> and <code>0</code>, fall back to <code>9</code> with a warning.
+For ZIP (<code>.zip</code>), GZip (<code>.gz</code>), and Deflate (<code>.deflate</code>), <code>compressionLevel</code> uses the standard Deflater range <code>[-1, 9]</code>, where <code>-1</code> selects the library default and <code>0</code> disables compression.</p>
+</div>
 <div class="paragraph">
 <p>If the <a href="#RolloverStrategy-attr-tempCompressedFilePattern"><code>tempCompressedFilePattern</code></a> attribute is set, the current log file:</p>
 </div>

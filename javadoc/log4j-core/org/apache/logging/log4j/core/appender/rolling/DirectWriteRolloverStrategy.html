@@ -190,7 +190,9 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCompressionLevel()" class="member-name-link">getCompressionLevel</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the configured compression level before format-specific resolution.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCurrentFileName(org.apache.logging.log4j.core.appender.rolling.RollingFileManager)" class="member-name-link">getCurrentFileName</a><wbr>(<a href="RollingFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingFileManager</a>&nbsp;manager)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -315,7 +317,7 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>maxFiles</code> - The maximum number of files that match the date portion of the pattern to keep.</dd>
-<dd><code>compressionLevelStr</code> - The compression level, 0 (less) through 9 (more); applies only to ZIP files.</dd>
+<dd><code>compressionLevelStr</code> - The native compression level; if omitted, uses the compressor's default.</dd>
 <dd><code>customActions</code> - custom actions to perform asynchronously after rollover</dd>
 <dd><code>stopCustomActionsOnError</code> - whether to stop executing asynchronous actions if an error occurs</dd>
 <dd><code>config</code> - The Configuration.</dd>
@@ -328,6 +330,11 @@ implements <a href="DirectFileRolloverStrategy.html" title="interface in org.apa
 <section class="detail" id="getCompressionLevel()">
 <h3>getCompressionLevel</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getCompressionLevel</span>()</div>
+<div class="block">Returns the configured compression level before format-specific resolution.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the configured level, or <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html#MIN_VALUE" title="class or interface in java.lang" class="external-link"><code>Integer.MIN_VALUE</code></a> if unspecified</dd>
+</dl>
 </section>
 </li>
 <li>

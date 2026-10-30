@@ -378,6 +378,9 @@
 <li>
 <p>Add <code>key</code> based literal filtering to JSON Template Layout&#8217;s Context Data (MDC) and Map resolvers. Harden <code>EcsLayout.json</code> using that. (<a href="https://github.com/apache/logging-log4j2/issues/4166">4166</a>, <a href="https://github.com/apache/logging-log4j2/pull/4186">4186</a>)</p>
 </li>
+<li>
+<p>Honor configurable compression levels for Zstandard, BZip2, and Deflate rolling file compression. (<a href="https://github.com/apache/logging-log4j2/pull/4234">4234</a>)</p>
+</li>
 </ul>
 </div>
 </div>
@@ -396,6 +399,9 @@
 </li>
 <li>
 <p>Switch the default minimum allowed plugin processor message severity from NOTE to ERROR (<a href="https://github.com/apache/logging-log4j2/issues/4225">4225</a>, <a href="https://github.com/apache/logging-log4j2/pull/4256">4256</a>)</p>
+</li>
+<li>
+<p>Use each compressor&#8217;s native compression levels, falling back to the format default with a warning for unsupported values. (<a href="https://github.com/apache/logging-log4j2/pull/4234">4234</a>)</p>
 </li>
 <li>
 <p>Merge the auxiliary <code>log4j-api-java9</code> and <code>log4j-core-java9</code> modules into <code>log4j-api</code> and <code>log4j-core</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4260">4260</a>)</p>
@@ -443,6 +449,9 @@
 <h3 id="release-notes-2-x-x-deprecated"><a class="anchor" href="#release-notes-2-x-x-deprecated"></a>Deprecated</h3>
 <div class="ulist">
 <ul>
+<li>
+<p>Deprecate <code>org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction</code> and <code>ZipCompressAction</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4234">4234</a>)</p>
+</li>
 <li>
 <p>Deprecate <code>FilteredObjectInputStream</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>)</p>
 </li>
@@ -596,6 +605,9 @@
 </li>
 <li>
 <p>Skip symbolic links in <code>PosixViewAttribute</code> unless <code>followLinks</code> is <code>true</code> (<a href="https://github.com/apache/logging-log4j2/pull/4229">4229</a>)</p>
+</li>
+<li>
+<p>Prevent lost rollover events for unsupported ZIP and GZip compression levels by warning and falling back to the format default. (<a href="https://github.com/apache/logging-log4j2/pull/4234">4234</a>)</p>
 </li>
 <li>
 <p>Fix HTML-escaped <code>log:dump</code> JSP tag attributes to prevent XSS (<a href="https://github.com/apache/logging-log4j2/pull/4316">4316</a>)</p>

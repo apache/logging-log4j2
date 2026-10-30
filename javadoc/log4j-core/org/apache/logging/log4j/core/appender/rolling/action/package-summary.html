@@ -65,7 +65,7 @@ loadScripts(document, 'script');</script>
 </div>
 <hr>
 <div class="package-signature"><span class="annotations">@Export
-@Version("2.26.0")
+@Version("2.27.0")
 </span>package <span class="element-name">org.apache.logging.log4j.core.appender.rolling.action</span></div>
 <section class="package-description" id="package-description">
 <div class="block">Support classes for the Rolling File Appender.</div>
@@ -108,7 +108,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CommonsCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CommonsCompressAction</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using bzip2 compression.</div>
+<div class="block">Compresses a file using Apache Commons Compress.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="CompositeAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">CompositeAction</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
@@ -131,8 +131,9 @@ loadScripts(document, 'script');</script>
 <div class="block">File rename action.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="GzCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">GzCompressAction</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using GZ compression.</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">Deprecated.
+<div class="deprecation-comment">Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+             itself.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="IfAccumulatedFileCount.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">IfAccumulatedFileCount</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
@@ -199,8 +200,9 @@ loadScripts(document, 'script');</script>
 <div class="block">FileVisitor that sorts files.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="ZipCompressAction.html" title="class in org.apache.logging.log4j.core.appender.rolling.action">ZipCompressAction</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Compresses a file using Zip compression.</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">Deprecated.
+<div class="deprecation-comment">Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+             itself.</div>
 </div>
 </div>
 </div>
