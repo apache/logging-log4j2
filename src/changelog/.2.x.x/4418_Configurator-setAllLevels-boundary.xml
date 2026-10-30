@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
     <issue id="4418" link="https://github.com/apache/logging-log4j2/issues/4418"/>
+    <issue id="4419" link="https://github.com/apache/logging-log4j2/pull/4419"/>
     <description format="asciidoc">
         Fix `Configurator.setAllLevels()` changing sibling loggers.
     </description>
