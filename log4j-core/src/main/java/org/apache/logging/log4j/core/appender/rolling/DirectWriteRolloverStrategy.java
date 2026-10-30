@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -95,7 +95,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
                     maxIndex = DEFAULT_MAX_FILES;
                 }
             }
-            final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
+            final int compressionLevel =
+                    Integers.parseInt(compressionLevelStr, CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL);
             return new DirectWriteRolloverStrategy(
                     maxIndex,
                     compressionLevel,
@@ -128,7 +129,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         /**
          * Defines compression level.
          *
-         * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
+         * @param compressionLevelStr The native compression level; if omitted, uses the compressor's default.
          * @return This builder for chaining convenience
          * @since 2.26.0
          */
@@ -265,7 +266,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * Creates the DirectWriteRolloverStrategy.
      *
      * @param maxFiles The maximum number of files that match the date portion of the pattern to keep.
-     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
+     * @param compressionLevelStr The native compression level; if omitted, uses the compressor's default.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      * @param config The Configuration.
@@ -348,8 +349,20 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
                 tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
     }
 
+    /**
+     * Returns the configured compression level before format-specific resolution.
+     *
+     * @return the configured level, or {@link Integer#MIN_VALUE} if unspecified
+     */
     public int getCompressionLevel() {
         return this.compressionLevel;
+    }
+
+    @Override
+    void initializeCompressionLevel(final FileExtension extension) {
+        if (extension != null) {
+            resolveCompressionLevel(extension, compressionLevel);
+        }
     }
 
     public List<Action> getCustomActions() {
@@ -432,6 +445,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         nextIndex = fileIndex + 1;
         final FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
+            final int compressionLevel = resolveCompressionLevel(fileExtension, this.compressionLevel);
             compressedName += fileExtension.getExtension();
             if (tempCompressedFilePattern != null) {
                 final StringBuilder buf = new StringBuilder();
