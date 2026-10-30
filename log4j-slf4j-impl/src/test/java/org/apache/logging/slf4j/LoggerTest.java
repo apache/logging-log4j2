@@ -18,6 +18,7 @@ package org.apache.logging.slf4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory2;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.util.Strings;
@@ -125,6 +127,25 @@ class LoggerTest {
         assertEquals(1, list.getEvents().size());
         assertEquals("factory:plain", list.getEvents().get(0).getMessage().getFormattedMessage());
         assertEquals(explicitThrowable, list.getEvents().get(0).getThrown());
+    }
+
+    @Test
+    void locationAwareLoggerReleasesReusableMessage() {
+        final String name = "LoggerTest.ReusableMessageFactory";
+        final Log4jLogger customLogger =
+                new Log4jLogger(new Log4jMarkerFactory(), ctx.getLogger(name, ReusableMessageFactory.INSTANCE), name);
+        final Message threadLocalMessage = ReusableMessageFactory.INSTANCE.newMessage("value={}", "first");
+        ReusableMessageFactory.release(threadLocalMessage);
+
+        customLogger.log(
+                null,
+                LoggerTest.class.getName(),
+                LocationAwareLogger.INFO_INT,
+                "value={}",
+                new Object[] {"aware"},
+                null);
+
+        assertSame(threadLocalMessage, ReusableMessageFactory.INSTANCE.newMessage("value={}", "next"));
     }
 
     @Test

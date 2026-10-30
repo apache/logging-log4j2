@@ -23,8 +23,7 @@ import java.io.Serializable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
@@ -363,15 +362,17 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
             return;
         }
         final Message msg;
-        final Throwable actualThrowable;
         if (params == null) {
-            msg = new SimpleMessage(message);
-            actualThrowable = throwable;
+            msg = logger.getMessageFactory().newMessage(message);
         } else {
-            msg = new ParameterizedMessage(message, params, throwable);
-            actualThrowable = throwable != null ? throwable : msg.getThrowable();
+            msg = logger.getMessageFactory().newMessage(message, params);
         }
-        logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, actualThrowable);
+        final Throwable actualThrowable = throwable != null ? throwable : msg.getThrowable();
+        try {
+            logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, actualThrowable);
+        } finally {
+            ReusableMessageFactory.release(msg);
+        }
     }
 
     @Override
