@@ -6,7 +6,8 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4350" link="https://github.com/apache/logging-log4j2/issues/4350"/>
-    <description format="asciidoc">
-      CassandraAppender now supports host-name verification when `log4j2.sslVerifyHostName` is enabled and its TLS default is documented correctly.
-    </description>
+  <issue id="4374" link="https://github.com/apache/logging-log4j2/pull/4374"/>
+  <description format="asciidoc">
+    Honor `log4j2.sslVerifyHostName` in the Cassandra appender when `useTls` is enabled.
+  </description>
 </entry>
