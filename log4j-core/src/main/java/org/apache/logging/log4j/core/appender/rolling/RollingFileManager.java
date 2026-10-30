@@ -222,6 +222,7 @@ public class RollingFileManager extends FileManager {
         this.rolloverStrategy = rolloverStrategy;
         this.fileName = fileName;
         this.directWrite = rolloverStrategy instanceof DirectFileRolloverStrategy;
+        initializeCompressionLevel(rolloverStrategy);
     }
 
     @SuppressFBWarnings(
@@ -682,7 +683,15 @@ public class RollingFileManager extends FileManager {
     }
 
     public void setPatternProcessor(final PatternProcessor patternProcessor) {
-        patternProcessorUpdater.compareAndSet(this, this.patternProcessor, patternProcessor);
+        if (patternProcessorUpdater.compareAndSet(this, this.patternProcessor, patternProcessor)) {
+            initializeCompressionLevel(rolloverStrategy);
+        }
+    }
+
+    private void initializeCompressionLevel(final RolloverStrategy strategy) {
+        if (strategy instanceof AbstractRolloverStrategy) {
+            ((AbstractRolloverStrategy) strategy).initializeCompressionLevel(patternProcessor.getFileExtension());
+        }
     }
 
     /**
