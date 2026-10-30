@@ -18,6 +18,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -185,5 +190,28 @@ class CronTriggeringPolicyTest {
     void testFactoryMethodSequence() {
         testFactoryMethod();
         testFactoryMethod();
+    }
+
+    private RollingFileManager mockManager(final long fileTime) {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(fileTime);
+        when(manager.getPatternProcessor()).thenReturn(new PatternProcessor("target/testcmd6.log.%d{yyyy-MM-dd}"));
+        return manager;
+    }
+
+    /**
+     * Tests that evaluateOnStartup does not roll over a file whose file time equals the current period's fire time.
+     */
+    @Test
+    void testEvaluateOnStartupDoesNotRollFileCreatedAtFireTime() throws Exception {
+        final Date periodStart = new CronExpression(CRON_EXPRESSION).getPrevFireTime(new Date());
+        final RollingFileManager manager = mockManager(periodStart.getTime());
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+            verify(manager, never()).rollover(any(Date.class), any(Date.class));
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
     }
 }
