@@ -568,6 +568,9 @@
 <p>Fix <code>%d</code> printing wrong seconds for instants before the epoch. (<a href="https://github.com/apache/logging-log4j2/issues/4399">4399</a>, <a href="https://github.com/apache/logging-log4j2/pull/4400">4400</a>)</p>
 </li>
 <li>
+<p>Preserve the message of exceptions that only have a no-arg constructor when <code>ThrowableAttributeConverter</code> restores them. (<a href="https://github.com/apache/logging-log4j2/issues/4028">4028</a>, <a href="https://github.com/apache/logging-log4j2/pull/4049">4049</a>)</p>
+</li>
+<li>
 <p>Fix <code>LoggerNameLevelRewritePolicy</code> matching a sibling package that only shares a character prefix with the configured logger name, instead of a true descendant. (<a href="https://github.com/apache/logging-log4j2/issues/4412">4412</a>)</p>
 </li>
 <li>
