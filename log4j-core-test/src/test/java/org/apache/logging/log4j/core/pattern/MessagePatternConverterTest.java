@@ -219,6 +219,13 @@ class MessagePatternConverterTest {
     }
 
     @Test
+    void testHtmlTextRendererEscapesString() {
+        final StringBuilder sb = new StringBuilder("prefix:");
+        new HtmlTextRenderer(null).render("<message> & \" '", sb, null);
+        assertEquals("prefix:&lt;message&gt; &amp; &quot; &apos;", sb.toString());
+    }
+
+    @Test
     void testStructuredDataFormatFull() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"FULL"});
         final Message msg = new StructuredDataMessage("id", "message", "type").with("key", "val");
