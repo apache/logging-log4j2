@@ -35,8 +35,15 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private final long minSize;
 
+    private final long startTime;
+
     private OnStartupTriggeringPolicy(final long minSize) {
+        this(minSize, JVM_START_TIME);
+    }
+
+    OnStartupTriggeringPolicy(final long minSize, final long startTime) {
         this.minSize = minSize;
+        this.startTime = startTime;
     }
 
     /**
@@ -77,7 +84,7 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @Override
     public void initialize(final RollingFileManager manager) {
-        if (isFileOlderThanStartup(manager.getFileTime(), JVM_START_TIME) && manager.getFileSize() >= minSize) {
+        if (isFileOlderThanStartup(manager.getFileTime(), startTime) && manager.getFileSize() >= minSize) {
             StatusLogger.getLogger().debug("Initiating rollover at startup");
             if (minSize == 0) {
                 manager.setRenameEmptyFiles(true);
@@ -89,7 +96,7 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     static boolean isFileOlderThanStartup(final long fileTime, final long startupTime) {
-        return fileTime < RollingFileManager.alignMillisToSecond(startupTime);
+        return RollingFileManager.alignMillisToSecond(fileTime) < RollingFileManager.alignMillisToSecond(startupTime);
     }
 
     /**
