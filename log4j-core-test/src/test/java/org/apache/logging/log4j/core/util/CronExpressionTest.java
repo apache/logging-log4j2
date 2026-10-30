@@ -184,6 +184,12 @@ class CronExpressionTest {
     }
 
     @Test
+    void testMinDateIsEpoch() {
+        assertThat(CronExpression.MIN_DATE.getTime()).isZero();
+        assertThat(CronExpression.MIN_CAL.getTimeInMillis()).isZero();
+    }
+
+    @Test
     @Timeout(value = 1, unit = TimeUnit.SECONDS)
     void testPrevFireTimeAtEpochReturnsNullPromptly() throws Exception {
         final CronExpression parser = new CronExpression("0 0 0 ? * SUN");

@@ -257,7 +257,8 @@ public final class CronExpression {
     public static final Calendar MIN_CAL = Calendar.getInstance();
 
     static {
-        MIN_CAL.set(1970, 0, 1);
+        // The epoch, independent of the time of day and the default time zone
+        MIN_CAL.setTimeInMillis(0);
     }
 
     public static final Date MIN_DATE = MIN_CAL.getTime();
