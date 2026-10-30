@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -159,7 +160,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
             final Throwable cause,
             final StackTraceElement[] stackTrace) {
         try {
-            final Class<?> loadedClass = Class.forName(throwableClassName, false, LoaderUtil.getClassLoader());
+            final Class<?> loadedClass = Class.forName(throwableClassName, false, getThrowableClassLoader());
 
             if (!Throwable.class.isAssignableFrom(loadedClass)) {
                 return null;
@@ -271,11 +272,17 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
         }
     }
 
+    private static ClassLoader getThrowableClassLoader() {
+        final String ignoreTccl =
+                PropertiesUtil.getProperties().getStringProperty(LoaderUtil.IGNORE_TCCL_PROPERTY, null);
+        final ClassLoader classLoader = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim())
+                ? null
+                : LoaderUtil.getThreadContextClassLoader();
+        return classLoader != null ? classLoader : LoaderUtil.class.getClassLoader();
+    }
+
     private static boolean requiresEscaping(final String message) {
-        return message.contains("\\")
-                || message.contains("\n")
-                || message.contains("\r")
-                || message.startsWith(ESCAPED_MESSAGE_PREFIX);
+        return message.contains("\n") || message.contains("\r") || message.startsWith(ESCAPED_MESSAGE_PREFIX);
     }
 
     private static String escape(final String message) {
