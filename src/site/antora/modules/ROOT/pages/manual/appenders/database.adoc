@@ -267,8 +267,9 @@ Otherwise, they will be ignored.
 
 | useTls
 | `boolean`
-| `true`
-| Whether to use TLS/SSL to connect to Cassandra. This is `false` by default.
+| `false`
+| Whether to use TLS/SSL to connect to Cassandra. This is `false` by default. To verify the host name against the TLS
+certificate, set the `log4j2.sslVerifyHostName` system property to `true` (this setting is `false` by default).
 |===
 
 [#CassandraAppender-elements]
