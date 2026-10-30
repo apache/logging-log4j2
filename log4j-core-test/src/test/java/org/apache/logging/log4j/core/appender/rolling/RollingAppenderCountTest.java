@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -25,21 +26,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
  */
-@Ignore("https://issues.apache.org/jira/browse/LOG4J2-3522")
-public class RollingAppenderCountTest {
+public class RollingAppenderCountTest implements RolloverListener {
 
     private static final String SOURCE = "src/test/resources/__files";
     private static final String DIR = "target/rolling_count";
@@ -47,6 +49,7 @@ public class RollingAppenderCountTest {
     private static final String FILENAME = "onStartup.log";
     private static final String TARGET = "rolling_test.log.";
 
+    private final CountDownLatch rollover = new CountDownLatch(16);
     private Logger logger;
 
     @Rule
@@ -59,6 +62,9 @@ public class RollingAppenderCountTest {
     @Before
     public void setUp() {
         this.logger = this.loggerContextRule.getLogger("LogTest");
+        final RollingFileAppender appender =
+                this.loggerContextRule.getRequiredAppender("RollingFile", RollingFileAppender.class);
+        appender.getManager().addRolloverListener(this);
     }
 
     @BeforeClass
@@ -95,8 +101,18 @@ public class RollingAppenderCountTest {
     public void testLog() throws Exception {
         for (long i = 0; i < 60; ++i) {
             logger.info("Sequence: " + i);
-            logger.debug(RandomStringUtils.randomAscii(128, 512));
-            Thread.sleep(250);
+            logger.debug(RandomStringUtils.randomAscii(512));
+            logger.debug(RandomStringUtils.randomAscii(512));
         }
+
+        assertTrue("Expected at least 16 rollovers", rollover.await(10, TimeUnit.SECONDS));
+    }
+
+    @Override
+    public void rolloverTriggered(final String fileName) {}
+
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
     }
 }
