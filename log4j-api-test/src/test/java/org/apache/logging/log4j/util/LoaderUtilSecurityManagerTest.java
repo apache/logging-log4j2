@@ -16,32 +16,50 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.security.Permission;
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import java.security.Policy;
+import java.security.ProtectionDomain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
+@EnabledForJreRange(max = JRE.JAVA_17)
 @ResourceLock("java.lang.SecurityManager")
-public class LoaderUtilSecurityManagerTest {
-    @Rule
-    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
+@ResourceLock("java.security.Policy")
+class LoaderUtilSecurityManagerTest {
+    private static class TestPolicy extends Policy {
+        private final ProtectionDomain deniedDomain = LoaderUtilSecurityManagerTest.class.getProtectionDomain();
+        private final Permission deniedPermission = LoaderUtil.GET_CLASS_LOADER;
 
-    private static class TestSecurityManager extends SecurityManager {
         @Override
-        public void checkPermission(final Permission perm) {
-            if (perm.equals(LoaderUtil.GET_CLASS_LOADER)) {
-                throw new SecurityException("disabled");
-            }
+        public boolean implies(final ProtectionDomain domain, final Permission permission) {
+            return domain != deniedDomain || !permission.equals(deniedPermission);
         }
     }
 
     @Test
-    public void canGetClassLoaderThroughPrivileges() {
-        assertFalse(LoaderUtil.GET_CLASS_LOADER_DISABLED);
-        assertDoesNotThrow(() -> LoaderUtil.getClassLoader(LoaderUtilSecurityManagerTest.class, String.class));
+    void canGetClassLoaderThroughPrivileges() {
+        final ClassLoader expected = LoaderUtilSecurityManagerTest.class.getClassLoader();
+        final Policy previousPolicy = Policy.getPolicy();
+        final SecurityManager previousSecurityManager = System.getSecurityManager();
+        final TestPolicy policy = new TestPolicy();
+        final SecurityManager securityManager = new SecurityManager();
+        try {
+            Policy.setPolicy(policy);
+            System.setSecurityManager(securityManager);
+            LoaderUtil.GET_CLASS_LOADER_DISABLED.reset();
+            assertThrows(SecurityException.class, () -> securityManager.checkPermission(LoaderUtil.GET_CLASS_LOADER));
+            assertFalse(LoaderUtil.GET_CLASS_LOADER_DISABLED);
+            assertSame(expected, LoaderUtil.getClassLoader(LoaderUtilSecurityManagerTest.class, String.class));
+        } finally {
+            System.setSecurityManager(previousSecurityManager);
+            Policy.setPolicy(previousPolicy);
+            LoaderUtil.GET_CLASS_LOADER_DISABLED.reset();
+        }
     }
 }

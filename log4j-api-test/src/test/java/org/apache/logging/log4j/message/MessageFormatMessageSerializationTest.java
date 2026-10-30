@@ -16,27 +16,35 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.Arrays;
-import java.util.Collection;
-import org.apache.logging.log4j.test.AbstractSerializationTest;
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
-public class MessageFormatMessageSerializationTest extends AbstractSerializationTest {
+class MessageFormatMessageSerializationTest {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            {new MessageFormatMessage("Test")},
-            {new MessageFormatMessage("Test {0} {1}", "message", "test")},
-            {new MessageFormatMessage("{0}{1}{2}", 3, '.', 14L)}
-        });
+    static Stream<MessageFormatMessage> messages() {
+        return Stream.of(
+                new MessageFormatMessage("Test"),
+                new MessageFormatMessage("Test {0} {1}", "message", "test"),
+                new MessageFormatMessage("{0}{1}{2}", 3, '.', 14L));
     }
 
-    public MessageFormatMessageSerializationTest(final MessageFormatMessage message) {
-        super(message);
+    @ParameterizedTest
+    @MethodSource("messages")
+    void testSerializationRoundtripEquals(final MessageFormatMessage message) {
+        assertThat(message, serializesRoundTrip(message));
+    }
+
+    @ParameterizedTest
+    @MethodSource("messages")
+    void testSerializationRoundtripNoException(final MessageFormatMessage message) {
+        assertThat(message, serializesRoundTrip());
     }
 }
