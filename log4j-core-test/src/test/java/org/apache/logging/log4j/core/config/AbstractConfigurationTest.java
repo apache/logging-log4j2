@@ -97,24 +97,20 @@ class AbstractConfigurationTest {
     @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/3155")
     @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
-    void addLoggerAppenderAttachesTheRegisteredAppenderForADuplicateName(final LoggerContext context) {
+    void addLoggerAppenderAttachesTheGivenAppenderForADuplicateName(final LoggerContext context) {
         final Configuration config = context.getConfiguration();
         final Logger logger = context.getLogger("AbstractConfigurationTest.duplicateAppender");
         final ListAppender registered = new ListAppender("Duplicate");
         registered.start();
         config.addAppender(registered);
-        final ListAppender other = new ListAppender("Duplicate");
-        other.start();
+        final ListAppender given = new ListAppender("Duplicate");
+        given.start();
 
-        // the configuration owns one appender per name: the registered instance is attached, not the unmanaged one
-        config.addLoggerAppender(logger, other);
+        config.addLoggerAppender(logger, given);
+
         final Appender found = config.getAppender("Duplicate");
         assertThat(found).isSameAs(registered);
-        assertThat(logger.getAppenders()).hasSize(1).containsEntry("Duplicate", registered);
-
-        // attaching the registered instance itself changes nothing
-        config.addLoggerAppender(logger, registered);
-        assertThat(logger.getAppenders()).hasSize(1).containsEntry("Duplicate", registered);
+        assertThat(logger.getAppenders()).hasSize(1).containsEntry("Duplicate", given);
     }
 
     @Test

@@ -959,29 +959,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             return;
         }
         final String loggerName = logger.getName();
-        final Appender registered = appenders.putIfAbsent(appender.getName(), appender);
-        // The configuration owns a single appender per name: when another instance is already registered under
-        // this name, attach that one instead of an instance the configuration would never start or stop.
-        final Appender effective = registered == null ? appender : registered;
-        if (effective != appender) {
-            LOGGER.warn(
-                    "An appender named '{}' is already registered; attaching the registered instance to logger '{}' instead of the given one",
-                    appender.getName(),
-                    loggerName);
-        }
+        appenders.putIfAbsent(appender.getName(), appender);
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
-            lc.addAppender(effective, null, null);
+            lc.addAppender(appender, null, null);
         } else {
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addAppender(effective, null, null);
+            nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
             final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
             if (existing == null) {
                 setParents();
                 logger.getContext().updateLoggers();
             } else {
-                existing.addAppender(effective, null, null);
+                existing.addAppender(appender, null, null);
             }
         }
     }

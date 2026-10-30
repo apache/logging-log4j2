@@ -8,6 +8,6 @@
     <issue id="3155" link="https://github.com/apache/logging-log4j2/issues/3155"/>
     <issue id="4419" link="https://github.com/apache/logging-log4j2/pull/4419"/>
     <description format="asciidoc">
-        Fix `Logger.addAppender()` attaching an unregistered appender.
+        Fix `AbstractConfiguration` logger mutators losing changes to an existing `LoggerConfig`.
     </description>
 </entry>
