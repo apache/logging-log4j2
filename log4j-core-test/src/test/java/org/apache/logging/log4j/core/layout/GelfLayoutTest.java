@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -42,8 +46,11 @@ import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -305,6 +312,69 @@ class GelfLayoutTest {
         assertEquals(
                 "9223372036854775.807",
                 GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
+    }
+
+    // Characters that must be escaped in JSON, delimiter characters, and other unusual input
+    private static final String SPECIAL_CHARS = "\"\\/\b\f\n\r\t\u0000\u001F\u007F\u2028\u2029</script>\uD83D\uDE00";
+
+    private static GelfLayout createLayoutForSpecialChars(final boolean includeMapMessage) {
+        return GelfLayout.newBuilder()
+                .setHost(HOSTNAME)
+                .setCompressionType(CompressionType.OFF)
+                .setIncludeStacktrace(false)
+                .setIncludeThreadContext(true)
+                .setIncludeMapMessage(includeMapMessage)
+                .setIncludeNullDelimiter(true)
+                .setIncludeNewLineDelimiter(true)
+                .build();
+    }
+
+    private static void assertDelimitedOnlyAtTheEnd(final String output) {
+        assertThat(output.indexOf(Chars.NUL)).isEqualTo(output.length() - 2);
+        assertThat(output.indexOf(Chars.LF)).isEqualTo(output.length() - 1);
+    }
+
+    private static JsonNode parse(final String output) throws IOException {
+        return new ObjectMapper().readTree(output.substring(0, output.length() - 2));
+    }
+
+    @Test
+    void testSpecialCharsAreEscaped() throws IOException {
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("mdc" + SPECIAL_CHARS, "mdc" + SPECIAL_CHARS);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("logger" + SPECIAL_CHARS)
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("message" + SPECIAL_CHARS))
+                .setThreadName("thread" + SPECIAL_CHARS)
+                .setContextData(contextData)
+                .setThrown(new RuntimeException("thrown" + SPECIAL_CHARS))
+                .build();
+
+        final String output = createLayoutForSpecialChars(false).toSerializable(event);
+
+        assertDelimitedOnlyAtTheEnd(output);
+        final JsonNode json = parse(output);
+        assertThat(json.get("short_message").asText()).isEqualTo("message" + SPECIAL_CHARS);
+        assertThat(json.get("full_message").asText()).isEqualTo("java.lang.RuntimeException: thrown" + SPECIAL_CHARS);
+        assertThat(json.get("_logger").asText()).isEqualTo("logger" + SPECIAL_CHARS);
+        assertThat(json.get("_thread").asText()).isEqualTo("thread" + SPECIAL_CHARS);
+        assertThat(json.get("_mdc" + SPECIAL_CHARS).asText()).isEqualTo("mdc" + SPECIAL_CHARS);
+    }
+
+    @Test
+    void testSpecialCharsInMapMessageAreEscaped() throws IOException {
+        final StringMapMessage message = new StringMapMessage().with("map" + SPECIAL_CHARS, "map" + SPECIAL_CHARS);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLevel(Level.INFO)
+                .setMessage(message)
+                .build();
+
+        final String output = createLayoutForSpecialChars(true).toSerializable(event);
+
+        assertDelimitedOnlyAtTheEnd(output);
+        final JsonNode json = parse(output);
+        assertThat(json.get("_map" + SPECIAL_CHARS).asText()).isEqualTo("map" + SPECIAL_CHARS);
     }
 
     private void testRequiresLocation(final String messagePattern, final Boolean requiresLocation) {
