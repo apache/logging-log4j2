@@ -39,7 +39,7 @@ public final class SerializableMatchers {
 
     /**
      * Same as {@link #serializesRoundTrip(Matcher)} but extends the default deserialization
-     * allow-list on Java 8 (see {@link SerialUtil#deserialize(byte[], Collection)}).
+     * allowlist (see {@link SerialUtil#deserialize(byte[], Collection)}).
      */
     public static <T extends Serializable> Matcher<T> serializesRoundTrip(
             final Matcher<T> matcher, final Collection<String> allowedExtraClasses) {
@@ -64,8 +64,8 @@ public final class SerializableMatchers {
     }
 
     /**
-     * Same as {@link #serializesRoundTrip()} but extends the default deserialization allow-list on
-     * Java 8 (see {@link SerialUtil#deserialize(byte[], Collection)}).
+     * Same as {@link #serializesRoundTrip()} but extends the default deserialization allow-list
+     * (see {@link SerialUtil#deserialize(byte[], Collection)}).
      */
     public static Matcher<? super Serializable> serializesRoundTrip(final Collection<String> allowedExtraClasses) {
         return serializesRoundTrip(any(Serializable.class), allowedExtraClasses);

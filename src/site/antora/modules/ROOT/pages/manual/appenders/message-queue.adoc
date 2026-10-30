@@ -487,7 +487,8 @@ The legacy element names `JMS`, `JMSQueue`, and `JMSTopic` are still supported f
 The JNDI name of the
 https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/connectionfactory[`ConnectionFactory`].
 
-Only the `java:` protocol is supported.
+Only the `java:` protocol or a name without a scheme is supported.
+A name without a scheme is resolved by the provider set in <<JmsAppender-attr-providerURL,`providerURL`>>.
 
 | [[JmsAppender-attr-destinationBindingName]]destinationBindingName
 | https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Name.html[`Name`]
@@ -499,7 +500,8 @@ https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/queue[`Queue`]
 or a
 https://jakarta.ee/specifications/platform/8/apidocs/javax/jms/topic[`Topic`].
 
-Only the `java:` protocol is supported.
+Only the `java:` protocol or a name without a scheme is supported.
+A name without a scheme is resolved by the provider set in <<JmsAppender-attr-providerURL,`providerURL`>>.
 
 4+h| JNDI configuration (overrides system properties)
 
@@ -527,6 +529,7 @@ See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/C
 |
 |
 A configuration parameter for the <<JmsAppender-attr-factoryName,`InitialContextFactory`>>.
+It can point to a remote JNDI provider, so it must only point to a trusted provider.
 
 See https://docs.oracle.com/javase/{java-target-version}/docs/api/javax/naming/Context.html#PROVIDER_URL[PROVIDER_URL]
 for details.

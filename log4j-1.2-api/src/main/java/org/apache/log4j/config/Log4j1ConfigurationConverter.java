@@ -159,7 +159,7 @@ public final class Log4j1ConfigurationConverter {
     }
 
     protected void convert(final InputStream input, final OutputStream output) throws IOException {
-        final ConfigurationBuilder<?> builder = new Log4j1ConfigurationParser().buildConfigurationBuilder(input);
+        final ConfigurationBuilder<?> builder = new Log4j1ConfigurationParser(true).buildConfigurationBuilder(input);
         builder.writeXmlConfiguration(output);
     }
 
