@@ -598,7 +598,7 @@ xref:plugin-reference.adoc#org-apache-logging-log4j_log4j-core_org-apache-loggin
 ==== LoggerNameLevelRewritePolicy
 
 You can use this policy to change the log level of loggers from third-party libraries.
-The `LoggerNameLevelRewritePolicy` will rewrite the level of log event for a given logger name prefix.
+The `LoggerNameLevelRewritePolicy` will rewrite the level of log events for a given logger name and its children.
 
 [WARNING]
 ====
