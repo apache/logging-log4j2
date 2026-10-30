@@ -17,53 +17,19 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Compresses a file using Zip compression.
+ *
+ * @deprecated Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+ *             itself. Configure compression through the {@code compressionLevel} attribute of a rollover strategy
+ *             instead.
  */
+@Deprecated
 public final class ZipCompressAction extends AbstractAction {
 
-    private static final int BUF_SIZE = 8192;
-
-    /**
-     * Source file.
-     */
-    private final File source;
-
-    /**
-     * Destination file.
-     */
-    private final File destination;
-
-    /**
-     * If true, attempts to delete file on completion.
-     */
-    private final boolean deleteSource;
-
-    /**
-     * Compression level.
-     */
-    private final int level;
-
-    /**
-     * Validates that the compression level is in the valid range [-1, 9].
-     *
-     * @param level the compression level to validate
-     * @return the level if valid
-     * @throws IllegalArgumentException if level is not in the range [-1, 9]
-     */
-    private static int checkLevel(final int level) {
-        if (level < java.util.zip.Deflater.DEFAULT_COMPRESSION || level > 9) {
-            throw new IllegalArgumentException("Compression level must be in the range [-1, 9], got: " + level);
-        }
-        return level;
-    }
+    private final org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction delegate;
 
     /**
      * Creates new instance.
@@ -75,13 +41,8 @@ public final class ZipCompressAction extends AbstractAction {
      * @param level the compression level
      */
     public ZipCompressAction(final File source, final File destination, final boolean deleteSource, final int level) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
-        this.level = checkLevel(level);
+        this.delegate = new org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction(
+                source, destination, deleteSource, level);
     }
 
     /**
@@ -92,7 +53,7 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource, level);
+        return delegate.execute();
     }
 
     /**
@@ -108,30 +69,8 @@ public final class ZipCompressAction extends AbstractAction {
      */
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int level) throws IOException {
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destination))) {
-                zos.setLevel(level);
-
-                final ZipEntry zipEntry = new ZipEntry(source.getName());
-                zos.putNextEntry(zipEntry);
-
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    zos.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete " + source.toString() + '.');
-            }
-
-            return true;
-        }
-
-        return false;
+        return org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction.execute(
+                source, destination, deleteSource, level);
     }
 
     /**
@@ -141,28 +80,27 @@ public final class ZipCompressAction extends AbstractAction {
      */
     @Override
     protected void reportException(final Exception ex) {
-        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + delegate.getSource() + "'.", ex);
     }
 
     @Override
     public String toString() {
-        return ZipCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", level=" + level
-                + ", deleteSource=" + deleteSource + ']';
+        return delegate.toString();
     }
 
     public File getSource() {
-        return source;
+        return delegate.getSource();
     }
 
     public File getDestination() {
-        return destination;
+        return delegate.getDestination();
     }
 
     public boolean isDeleteSource() {
-        return deleteSource;
+        return delegate.isDeleteSource();
     }
 
     public int getLevel() {
-        return level;
+        return delegate.getLevel();
     }
 }

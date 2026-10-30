@@ -1465,8 +1465,11 @@ In EBNF form the syntax of a style expression is:
                    | <keyword>
 <hex> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
         | "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
-<keyword> ::= "normal" | "bold" | "dim" | "underline"
-            | "blink" | "reverse" | "hidden"
+<keyword> ::= "normal" | "reset" | "bold" | "intensity_bold" | "dim" | "faint" | "intensity_faint"
+            | "italic" | "underline" | "underline_double" | "underline_off"
+            | "blink" | "blink_slow" | "blink_fast" | "blink_off"
+            | "reverse" | "negative_on" | "negative_off" | "hidden" | "conceal_on" | "conceal_off"
+            | "bg_default"
             | "black" | "bg_black" | "bright_black" | "bg_bright_black"
             | "red" | "bg_red" | "bright_red" | "bg_bright_red"
             | "green" | "bg_green" | "bright_green" | "bg_bright_green"
@@ -1481,13 +1484,21 @@ For example, you can use `underline blue bg_bright_yellow` to specify a blue und
 
 The style specifiers have the following effects (see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters[Select Graphic Rendition] for details):
 
-`normal`:: Reverts all parameters to their default value
-`bold`:: Increases the font weight or the color intensity
-`dim`:: Decreases the fond weight or the color intensity
+`normal` / `reset`:: Reverts all parameters to their default value
+`bold` / `intensity_bold`:: Increases the font weight or the color intensity
+`dim` / `faint` / `intensity_faint`:: Decreases the font weight or the color intensity
+`italic`:: Renders the text in italic on terminals that support it
 `underline`:: Underlines the text on some terminals
-`blink`:: Causes the text to blink
-`reverse`:: Swaps foreground and background colors
-`hidden`:: Hides the text
+`underline_double`:: Double-underlines the text on terminals that support it
+`underline_off`:: Removes any underline
+`blink` / `blink_slow`:: Causes the text to blink
+`blink_fast`:: Causes the text to blink rapidly on terminals that support it
+`blink_off`:: Stops the text blinking
+`reverse` / `negative_on`:: Swaps foreground and background colors
+`negative_off`:: Restores the original foreground and background colors
+`hidden` / `conceal_on`:: Hides the text
+`conceal_off`:: Reveals hidden text
+`bg_default`:: Resets the background color to the terminal default
 
 [#text-colors]
 ==== Colors

@@ -16,59 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Objects;
 import java.util.zip.Deflater;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Compresses a file using GZ compression.
+ *
+ * @deprecated Since 2.27.0 this class only delegates to an internal implementation and is no longer used by Log4j
+ *             itself. Configure compression through the {@code compressionLevel} attribute of a rollover strategy
+ *             instead.
  */
+@Deprecated
 public final class GzCompressAction extends AbstractAction {
 
-    private static final int BUF_SIZE = 8192;
-
-    /**
-     * Source file.
-     */
-    private final File source;
-
-    /**
-     * Destination file.
-     */
-    private final File destination;
-
-    /**
-     * If true, attempt to delete file on completion.
-     */
-    private final boolean deleteSource;
-
-    /**
-     * GZIP compression level to use.
-     *
-     * @see Deflater#setLevel(int)
-     */
-    private final int compressionLevel;
-
-    private static int checkCompressionLevel(final int compressionLevel) {
-        final int minCompressionLevel = Deflater.DEFAULT_COMPRESSION;
-        final int maxCompressionLevel = Deflater.BEST_COMPRESSION;
-
-        if (compressionLevel < minCompressionLevel || compressionLevel > maxCompressionLevel) {
-            throw new IllegalArgumentException("GZIP compression level must be in the range ["
-                    + minCompressionLevel
-                    + ", "
-                    + maxCompressionLevel
-                    + "], got: "
-                    + compressionLevel);
-        }
-        return compressionLevel;
-    }
+    private final org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction delegate;
 
     /**
      * Creates a new instance.
@@ -79,13 +41,8 @@ public final class GzCompressAction extends AbstractAction {
      */
     public GzCompressAction(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(destination, "destination");
-
-        this.source = source;
-        this.destination = destination;
-        this.deleteSource = deleteSource;
-        this.compressionLevel = checkCompressionLevel(compressionLevel);
+        this.delegate = new org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction(
+                source, destination, deleteSource, compressionLevel);
     }
 
     /**
@@ -106,7 +63,7 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     public boolean execute() throws IOException {
-        return execute(source, destination, deleteSource, compressionLevel);
+        return delegate.execute();
     }
 
     /**
@@ -141,39 +98,8 @@ public final class GzCompressAction extends AbstractAction {
     public static boolean execute(
             final File source, final File destination, final boolean deleteSource, final int compressionLevel)
             throws IOException {
-        checkCompressionLevel(compressionLevel);
-        if (source.exists()) {
-            try (final FileInputStream fis = new FileInputStream(source);
-                    final OutputStream fos = new FileOutputStream(destination);
-                    final OutputStream gzipOut =
-                            new ConfigurableLevelGZIPOutputStream(fos, BUF_SIZE, compressionLevel);
-                    // Reduce native invocations by buffering data into GZIPOutputStream
-                    final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
-                final byte[] inbuf = new byte[BUF_SIZE];
-                int n;
-
-                while ((n = fis.read(inbuf)) != -1) {
-                    os.write(inbuf, 0, n);
-                }
-            }
-
-            if (deleteSource && !source.delete()) {
-                LOGGER.warn("Unable to delete {}.", source);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {
-
-        ConfigurableLevelGZIPOutputStream(final OutputStream out, final int bufSize, final int level)
-                throws IOException {
-            super(out, bufSize);
-            def.setLevel(level);
-        }
+        return org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction.execute(
+                source, destination, deleteSource, compressionLevel);
     }
 
     /**
@@ -183,24 +109,23 @@ public final class GzCompressAction extends AbstractAction {
      */
     @Override
     protected void reportException(final Exception ex) {
-        LOGGER.warn("Exception during compression of '" + source.toString() + "'.", ex);
+        LOGGER.warn("Exception during compression of '" + delegate.getSource() + "'.", ex);
     }
 
     @Override
     public String toString() {
-        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", deleteSource="
-                + deleteSource + ']';
+        return delegate.toString();
     }
 
     public File getSource() {
-        return source;
+        return delegate.getSource();
     }
 
     public File getDestination() {
-        return destination;
+        return delegate.getDestination();
     }
 
     public boolean isDeleteSource() {
-        return deleteSource;
+        return delegate.isDeleteSource();
     }
 }
