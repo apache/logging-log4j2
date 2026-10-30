@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Properties;
 import javax.naming.Context;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JmsSensitiveDataTest {
 
@@ -54,5 +54,12 @@ public class JmsSensitiveDataTest {
                 .contains(Context.PROVIDER_URL + "=test-provider");
 
         assertThat(jndiProperties.getProperty(Context.SECURITY_CREDENTIALS)).isEqualTo(credentials);
+    }
+
+    @Test
+    public void managerConfigurationToStringWithoutJndiProperties() {
+        final JmsManager.JmsManagerConfiguration configuration =
+                new JmsManager.JmsManagerConfiguration(null, "cf", "d", "u", null, false, 0);
+        assertThat(configuration.toString()).contains("jndiProperties=null");
     }
 }
