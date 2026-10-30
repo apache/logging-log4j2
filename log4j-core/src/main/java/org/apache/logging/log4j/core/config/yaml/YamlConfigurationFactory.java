@@ -33,7 +33,19 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
      */
     private static final String[] SUFFIXES = new String[] {".yml", ".yaml"};
 
-    private static final String[] dependencies = new String[] {
+    /**
+     * Classes required for Jackson 3.x support.
+     */
+    private static final String[] JACKSON3_DEPENDENCIES = new String[] {
+        "tools.jackson.databind.ObjectMapper",
+        "tools.jackson.databind.JsonNode",
+        "tools.jackson.dataformat.yaml.YAMLMapper"
+    };
+
+    /**
+     * Classes required for Jackson 2.x support.
+     */
+    private static final String[] JACKSON2_DEPENDENCIES = new String[] {
         "com.fasterxml.jackson.databind.ObjectMapper",
         "com.fasterxml.jackson.databind.JsonNode",
         "com.fasterxml.jackson.core.JsonParser",
@@ -42,17 +54,33 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
 
     private final boolean isActive;
 
+    private final boolean useJackson3;
+
     public YamlConfigurationFactory() {
-        for (final String dependency : dependencies) {
-            if (!Loader.isClassAvailable(dependency)) {
-                LOGGER.debug(
-                        "Missing dependencies for Yaml support, ConfigurationFactory {} is inactive",
-                        getClass().getName());
-                isActive = false;
-                return;
+        if (areClassesAvailable(JACKSON3_DEPENDENCIES)) {
+            LOGGER.debug("Using Jackson 3.x for Yaml support");
+            useJackson3 = true;
+            isActive = true;
+        } else if (areClassesAvailable(JACKSON2_DEPENDENCIES)) {
+            LOGGER.debug("Using Jackson 2.x for Yaml support");
+            useJackson3 = false;
+            isActive = true;
+        } else {
+            LOGGER.debug(
+                    "Missing dependencies for Yaml support, ConfigurationFactory {} is inactive",
+                    getClass().getName());
+            useJackson3 = false;
+            isActive = false;
+        }
+    }
+
+    private static boolean areClassesAvailable(final String[] classNames) {
+        for (final String className : classNames) {
+            if (!Loader.isClassAvailable(className)) {
+                return false;
             }
         }
-        isActive = true;
+        return true;
     }
 
     @Override
@@ -65,7 +93,9 @@ public class YamlConfigurationFactory extends ConfigurationFactory {
         if (!isActive()) {
             return null;
         }
-        return new YamlConfiguration(loggerContext, source);
+        return useJackson3
+                ? new Jackson3YamlConfiguration(loggerContext, source)
+                : new YamlConfiguration(loggerContext, source);
     }
 
     @Override
