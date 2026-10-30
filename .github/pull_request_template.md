@@ -2,7 +2,7 @@
 
 ## Checklist
 
-* Base your changes on `2.x` branch if you are targeting Log4j 2; use `main` otherwise
-* `./mvnw verify` succeeds ([the build instructions](https://logging.apache.org/log4j/2.x/development.html#building))
-* Non-trivial changes contain an entry file in the `src/changelog/.2.x.x` directory
-* Tests are provided
+- [ ] Base your changes on `2.x` branch if you are targeting Log4j 2; use `main` otherwise
+- [ ] `./mvnw verify` succeeds ([the build instructions](https://logging.apache.org/log4j/2.x/development.html#building))
+- [ ] Non-trivial changes contain an entry file in the `src/changelog/.2.x.x` directory
+- [ ] Tests are provided
