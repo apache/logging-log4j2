@@ -34,6 +34,8 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy;
+import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
@@ -157,8 +159,7 @@ public class PluginBuilder implements Builder<Object> {
         Objects.requireNonNull(this.node, "No Node object was set.");
     }
 
-    private static Builder<?> createBuilder(final Class<?> clazz)
-            throws InvocationTargetException, IllegalAccessException {
+    static Builder<?> createBuilder(final Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PluginBuilderFactory.class)
                     && Modifier.isStatic(method.getModifiers())
@@ -171,7 +172,7 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     private void injectFields(final Builder<?> builder) throws IllegalAccessException {
-        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        final List<Field> fields = getPluginFields(builder.getClass());
         AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         final StringBuilder log = new StringBuilder();
         for (final Field field : fields) {
@@ -231,7 +232,7 @@ public class PluginBuilder implements Builder<Object> {
     }
 
     public static boolean validateFields(final Builder<?> builder, final String errorPrefix) {
-        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        final List<Field> fields = getPluginFields(builder.getClass());
         AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         try {
             final String reason = validateFields(builder, fields);
@@ -244,6 +245,32 @@ public class PluginBuilder implements Builder<Object> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns the fields of the builder class hierarchy that have a plugin visitor or constraint annotation.
+     * <p>
+     *     Use reflection only on these fields.
+     *     In a GraalVM native image, the
+     *     {@link org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor} registers these fields for
+     *     reflection if their annotations are Log4j annotations.
+     *     It does not register the other fields, for example a static logger.
+     * </p>
+     */
+    static List<Field> getPluginFields(final Class<?> builderClass) {
+        final List<Field> fields = TypeUtil.getAllDeclaredFields(builderClass);
+        fields.removeIf(field -> !isPluginField(field));
+        return fields;
+    }
+
+    private static boolean isPluginField(final Field field) {
+        for (final Annotation annotation : field.getDeclaredAnnotations()) {
+            final Class<? extends Annotation> type = annotation.annotationType();
+            if (type.isAnnotationPresent(PluginVisitorStrategy.class) || type.isAnnotationPresent(Constraint.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
