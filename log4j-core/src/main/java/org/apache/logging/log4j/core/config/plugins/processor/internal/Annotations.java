@@ -34,17 +34,29 @@ public final class Annotations {
      * These are fields, methods or parameters that correspond to Log4j configuration attributes, elements, and other
      * injected elements.
      * <p>
+     *     This list must contain all the Log4j annotations that are annotated with
+     *     {@link org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy} or
+     *     {@link org.apache.logging.log4j.core.config.plugins.validation.Constraint}.
+     *     {@link org.apache.logging.log4j.core.config.plugins.util.PluginBuilder} uses reflection on the builder fields
+     *     that have these annotations.
+     * </p>
+     * <p>
      *     <strong>Note:</strong> The annotations listed here must also be declared in
      *     {@link org.apache.logging.log4j.core.config.plugins.processor.GraalVmProcessor}.
      * </p>
      */
     private static final Collection<String> PARAMETER_ANNOTATION_NAMES = Arrays.asList(
+            "org.apache.logging.log4j.core.config.plugins.PluginAttribute",
             "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute",
             "org.apache.logging.log4j.core.config.plugins.PluginConfiguration",
             "org.apache.logging.log4j.core.config.plugins.PluginElement",
             "org.apache.logging.log4j.core.config.plugins.PluginLoggerContext",
             "org.apache.logging.log4j.core.config.plugins.PluginNode",
-            "org.apache.logging.log4j.core.config.plugins.PluginValue");
+            "org.apache.logging.log4j.core.config.plugins.PluginValue",
+            "org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank",
+            "org.apache.logging.log4j.core.config.plugins.validation.constraints.Required",
+            "org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost",
+            "org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort");
     /**
      * These are static methods that must be reachable through reflection.
      * <p>
