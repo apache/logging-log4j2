@@ -1,0 +1,139 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'java'
+}
+
+layout.buildDirectory = file(providers.gradleProperty('consumerBuildDirectory').getOrElse('target'))
+
+def suppliedRepository = providers.gradleProperty('log4jRepository')
+def repositoryDirectory = suppliedRepository.isPresent()
+    ? file(suppliedRepository.get())
+    : layout.buildDirectory.dir('repository').get().asFile
+def log4jVersion = providers.gradleProperty('log4jVersion').getOrElse('2.27.0-SNAPSHOT')
+def artifacts = ['log4j-iostreams', 'log4j-jul', 'log4j-slf4j-impl']
+def annotationModules = [
+    'org.jspecify:jspecify',
+    'biz.aQute.bnd:biz.aQute.bnd.annotation',
+    'com.google.errorprone:error_prone_annotations',
+    'org.osgi:org.osgi.annotation.bundle',
+    'org.osgi:org.osgi.annotation.versioning'
+] as Set
+
+def expectedAnnotations = providers.gradleProperty('baseline').isPresent()
+    ? annotationModules
+    : annotationModules.findAll { it.startsWith('org.osgi:') } as Set
+
+def prepareRepository = tasks.register('prepareRepository') {
+    onlyIf { !suppliedRepository.isPresent() }
+    doLast {
+        def producerDirectory = file('../../..')
+        (['log4j-api', 'log4j-core'] + artifacts).each { artifact ->
+            def destination = new File(repositoryDirectory,
+                "org/apache/logging/log4j/${artifact}/${log4jVersion}")
+            def metadataFile = new File(producerDirectory, "${artifact}/target/publications/maven/module.json")
+            def jarFile = new File(producerDirectory, "${artifact}/target/${artifact}-${log4jVersion}.jar")
+            assert metadataFile.isFile() : metadataFile
+            assert jarFile.isFile() : jarFile
+            copy {
+                from(metadataFile)
+                into(destination)
+                rename { "${artifact}-${log4jVersion}.module" }
+            }
+            copy {
+                from(jarFile)
+                into(destination)
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        url = repositoryDirectory.toURI()
+        metadataSources { gradleMetadata() }
+        content { includeGroup('org.apache.logging.log4j') }
+    }
+    mavenCentral {
+        content { excludeGroup('org.apache.logging.log4j') }
+    }
+}
+
+dependencies {
+    artifacts.each { implementation("org.apache.logging.log4j:${it}:${log4jVersion}") }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    dependsOn(prepareRepository)
+    options.compilerArgs.addAll(['-proc:none', '-Xlint:classfile', '-Werror'])
+    options.release = 17
+}
+
+tasks.register('compileModule', JavaCompile) {
+    source = files(sourceSets.main.java, fileTree('src/modular/java'))
+    classpath = sourceSets.main.compileClasspath
+    destinationDirectory = layout.buildDirectory.dir('classes/modular')
+    modularity.inferModulePath = true
+}
+
+tasks.register('verifyMetadata') {
+    dependsOn(prepareRepository)
+    doLast {
+        artifacts.each { artifact ->
+            def metadataFile = new File(repositoryDirectory,
+                "org/apache/logging/log4j/${artifact}/${log4jVersion}/${artifact}-${log4jVersion}.module")
+            def metadata = new JsonSlurper().parse(metadataFile)
+            def dependencies = { String variant ->
+                (metadata.variants.find { it.name == variant }.dependencies ?: [])
+                    .collect { "${it.group}:${it.module}".toString() } as Set
+            }
+            def api = dependencies('apiElements')
+            def runtime = dependencies('runtimeElements')
+            assert api.intersect(annotationModules) == expectedAnnotations : artifact
+            assert api.contains('org.apache.logging.log4j:log4j-api') : artifact
+            assert runtime.contains('org.apache.logging.log4j:log4j-api') : artifact
+            assert runtime.intersect(annotationModules).isEmpty() : artifact
+            if (artifact == 'log4j-slf4j-impl') {
+                assert api.contains('org.slf4j:slf4j-api') : artifact
+                assert runtime.contains('org.slf4j:slf4j-api') : artifact
+                assert runtime.contains('org.apache.logging.log4j:log4j-core') : artifact
+            }
+        }
+    }
+}
+
+tasks.register('dependencyReport') {
+    dependsOn(prepareRepository)
+    doLast {
+        def report = [:]
+        [compile: configurations.compileClasspath, runtime: configurations.runtimeClasspath].each { name, configuration ->
+            report[name] = configuration.incoming.artifacts.artifacts
+                .collect { it.id.componentIdentifier.displayName }.unique().sort()
+        }
+        def output = layout.buildDirectory.file('dependency-graph.json').get().asFile
+        output.parentFile.mkdirs()
+        output.text = JsonOutput.prettyPrint(JsonOutput.toJson(report)) + '\n'
+        println(output.text)
+    }
+}
+
+tasks.named('check') {
+    dependsOn('compileJava', 'compileModule', 'verifyMetadata', 'dependencyReport')
+}

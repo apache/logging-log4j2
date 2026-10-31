@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="changed">
+  <issue id="4034" link="https://github.com/apache/logging-log4j2/issues/4034"/>
+  <description format="asciidoc">
+    Narrow the direct compile-only annotation dependencies in Gradle metadata for `log4j-iostreams`, `log4j-jul`, and `log4j-slf4j-impl` to their OSGi annotations.
+  </description>
+</entry>

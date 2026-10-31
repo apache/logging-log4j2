@@ -82,6 +82,24 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <configuration>
+          <compileOnlyApiDependencies combine.self="override">
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.bundle</artifactId>
+              <version>${osgi.annotation.bundle.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+              <version>${osgi.annotation.versioning.version}</version>
+            </dependency>
+          </compileOnlyApiDependencies>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
