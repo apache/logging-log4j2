@@ -6,6 +6,7 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
   <issue id="4441" link="https://github.com/apache/logging-log4j2/issues/4441"/>
+  <issue id="4442" link="https://github.com/apache/logging-log4j2/pull/4442"/>
   <description format="asciidoc">
     Fix plugin builders that fail in GraalVM native images, because some of their fields have no reflection metadata.
   </description>
