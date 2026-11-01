@@ -30,6 +30,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Random;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.compressors.CompressorStreamProvider;
@@ -96,6 +97,42 @@ public abstract class AbstractCompressActionTest {
         assertThat(action).isInstanceOf(CommonsCompressAction.class);
         assertThat(action.execute()).as("Compression succeeds.").isTrue();
         verifiedCompressedData(destination, algorithm);
+    }
+
+    /**
+     * Compresses text with repetitions at varying distances, so that different levels produce different sizes.
+     *
+     * @return The size of the compressed file.
+     */
+    protected static long compressedSizeOfText(String algorithm, Map<String, String> compressionOptions)
+            throws Exception {
+        return compressedBytesOfText(algorithm, compressionOptions).length;
+    }
+
+    /**
+     * Compresses the same text as {@link #compressedSizeOfText} and returns the compressed bytes.
+     */
+    protected static byte[] compressedBytesOfText(String algorithm, Map<String, String> compressionOptions)
+            throws Exception {
+        Path tempDirectory = Files.createTempDirectory(ROOT, "test-compress");
+        Path source = tempDirectory.resolve("source");
+        Path destination = tempDirectory.resolve("destination");
+        Random random = new Random(0);
+        String[] words = new String[512];
+        for (int i = 0; i < words.length; i++) {
+            words[i] = Long.toString(random.nextLong(), 36);
+        }
+        StringBuilder data = new StringBuilder();
+        while (data.length() < 4_000_000) {
+            data.append(words[random.nextInt(words.length)]).append(' ');
+        }
+        Files.writeString(source, data);
+        CompressActionFactory factory = PROVIDER.createFactoryForAlgorithm(algorithm);
+        assertThat(factory).isNotNull();
+        assertThat(factory.createCompressAction(source, destination, compressionOptions)
+                        .execute())
+                .isTrue();
+        return Files.readAllBytes(destination);
     }
 
     private static void writeTestData(final Path destination) throws IOException {

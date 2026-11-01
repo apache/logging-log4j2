@@ -25,12 +25,15 @@ import static org.apache.commons.compress.compressors.CompressorStreamFactory.LZ
 import static org.apache.commons.compress.compressors.CompressorStreamFactory.SNAPPY_FRAMED;
 import static org.apache.commons.compress.compressors.CompressorStreamFactory.XZ;
 import static org.apache.commons.compress.compressors.CompressorStreamFactory.ZSTANDARD;
+import static org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory.COMPRESSION_LEVEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
@@ -40,7 +43,9 @@ import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test the compression using the algorithms available without additional dependencies.
@@ -113,4 +118,116 @@ class CommonsCompressActionTest extends AbstractCompressActionTest {
                     .contains("missing dependency", "https://commons.apache.org/proper/commons-compress/index.html");
         });
     }
+
+    static Stream<Arguments> levels() {
+        return Stream.of(
+                Arguments.of(GZIP, "-1"),
+                Arguments.of(GZIP, "0"),
+                Arguments.of(GZIP, "9"),
+                Arguments.of(BZIP2, "1"),
+                Arguments.of(BZIP2, "9"),
+                Arguments.of(DEFLATE, "0"),
+                Arguments.of(DEFLATE, "9"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("levels")
+    void verify_compression_with_level(final String algorithm, final String level) throws Exception {
+        verifyCompressionUsingPathParams(algorithm, Map.of(COMPRESSION_LEVEL, level));
+        assertThat(statusListener.findStatusData(Level.WARN)).isEmpty();
+    }
+
+    @ParameterizedTest
+    @MethodSource("algorithms_with_levels")
+    void level_is_applied(final String algorithm) throws Exception {
+        final long stored = compressedSize(algorithm, Map.of(COMPRESSION_LEVEL, "0"));
+        final long best = compressedSize(algorithm, Map.of(COMPRESSION_LEVEL, "9"));
+        assertThat(best).isLessThan(stored);
+    }
+
+    static Stream<String> algorithms_with_levels() {
+        return Stream.of(GZIP, DEFLATE);
+    }
+
+    static Stream<Arguments> unsupported_levels() {
+        return Stream.of(
+                Arguments.of(GZIP, "10"),
+                Arguments.of(GZIP, "-2"),
+                Arguments.of(GZIP, "abc"),
+                Arguments.of(BZIP2, "0"),
+                Arguments.of(BZIP2, "abc"),
+                Arguments.of(BZIP2, "-1"),
+                Arguments.of(BZIP2, "10"),
+                Arguments.of(DEFLATE, "-1"),
+                Arguments.of(DEFLATE, "10"),
+                Arguments.of(DEFLATE, "abc"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("unsupported_levels")
+    void unsupported_level_falls_back_to_default_and_warns_once(final String algorithm, final String level)
+            throws Exception {
+        final long unspecified = compressedSize(algorithm, Map.of());
+        final CompressActionFactory factory = PROVIDER.createFactoryForAlgorithm(algorithm);
+        assertThat(factory).isNotNull();
+        for (int i = 0; i < 2; i++) {
+            final Path tempDirectory = Files.createTempDirectory(ROOT, "test-compress");
+            final Path source = tempDirectory.resolve("source");
+            final Path destination = tempDirectory.resolve("destination");
+            Files.writeString(source, REPETITIVE_DATA);
+            assertThat(factory.createCompressAction(source, destination, Map.of(COMPRESSION_LEVEL, level))
+                            .execute())
+                    .isTrue();
+            assertThat(Files.size(destination)).isEqualTo(unspecified);
+        }
+        assertThat(statusListener.findStatusData(Level.WARN)).hasSize(1).allSatisfy(data -> assertThat(
+                        data.getMessage().getFormattedMessage())
+                .contains("compression level '" + level + "'"));
+    }
+
+    static Stream<String> algorithms_without_levels() {
+        return Stream.of(SNAPPY_FRAMED, LZ4_BLOCK, LZ4_FRAMED, CustomCompressorStreamProvider.ALGORITHM);
+    }
+
+    @ParameterizedTest
+    @MethodSource("algorithms_without_levels")
+    void level_is_ignored_with_warning_for_algorithms_without_levels(final String algorithm) throws Exception {
+        verifyCompressionUsingPathParams(algorithm, Map.of(COMPRESSION_LEVEL, "5"));
+        assertThat(statusListener.findStatusData(Level.WARN)).hasSize(1).allSatisfy(data -> assertThat(
+                        data.getMessage().getFormattedMessage())
+                .contains("does not support compression levels"));
+    }
+
+    /**
+     * The fourth byte of a bzip2 stream is the block size, in units of 100 kB.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {"1", "5", "9"})
+    void bzip2_level_is_the_block_size(final String level) throws Exception {
+        final Path tempDirectory = Files.createTempDirectory(ROOT, "test-compress");
+        final Path source = tempDirectory.resolve("source");
+        final Path destination = tempDirectory.resolve("destination");
+        Files.writeString(source, REPETITIVE_DATA);
+        final CompressActionFactory factory = PROVIDER.createFactoryForAlgorithm(BZIP2);
+        assertThat(factory).isNotNull();
+        assertThat(factory.createCompressAction(source, destination, Map.of(COMPRESSION_LEVEL, level))
+                        .execute())
+                .isTrue();
+        final byte[] header = Arrays.copyOf(Files.readAllBytes(destination), 4);
+        assertThat(new String(header, StandardCharsets.US_ASCII)).isEqualTo("BZh" + level);
+    }
+
+    private static long compressedSize(final String algorithm, final Map<String, String> options) throws Exception {
+        final Path tempDirectory = Files.createTempDirectory(ROOT, "test-compress");
+        final Path source = tempDirectory.resolve("source");
+        final Path destination = tempDirectory.resolve("destination");
+        Files.writeString(source, REPETITIVE_DATA);
+        final CompressActionFactory factory = PROVIDER.createFactoryForAlgorithm(algorithm);
+        assertThat(factory).isNotNull();
+        assertThat(factory.createCompressAction(source, destination, options).execute())
+                .isTrue();
+        return Files.size(destination);
+    }
+
+    private static final String REPETITIVE_DATA = "Repetitive log line: ABCDEFGHIJKLMNOPQRSTUVWXYZ\n".repeat(2000);
 }

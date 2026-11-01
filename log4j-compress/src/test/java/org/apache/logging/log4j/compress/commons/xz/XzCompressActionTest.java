@@ -16,15 +16,22 @@
  */
 package org.apache.logging.log4j.compress.commons.xz;
 
+import static org.apache.logging.log4j.core.appender.rolling.action.CompressActionFactory.COMPRESSION_LEVEL;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Map;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.compress.commons.AbstractCompressActionTest;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * The XZ and LZMA algorithms have additional dependencies and requires a separate Surefire run.
  */
+@UsingStatusListener
 public class XzCompressActionTest extends AbstractCompressActionTest {
 
     static Stream<String> algorithms() {
@@ -42,4 +49,18 @@ public class XzCompressActionTest extends AbstractCompressActionTest {
     void verify_compression_using_String_params(String algorithm) throws Exception {
         verifyCompressionUsingStringParams(algorithm, Map.of());
     }
+
+    /**
+     * The 2.x rolling file appender does not apply the compression level to these algorithms either.
+     */
+    @ParameterizedTest
+    @MethodSource("algorithms")
+    void level_is_ignored_with_warning(String algorithm) throws Exception {
+        verifyCompressionUsingPathParams(algorithm, Map.of(COMPRESSION_LEVEL, "6"));
+        assertThat(statusListener.findStatusData(Level.WARN)).hasSize(1).allSatisfy(data -> assertThat(
+                        data.getMessage().getFormattedMessage())
+                .contains("does not support compression levels"));
+    }
+
+    private ListStatusListener statusListener;
 }
