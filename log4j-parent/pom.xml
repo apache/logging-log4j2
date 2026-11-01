@@ -139,7 +139,7 @@
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.14.0</xmlunit.version>
     <xz.version>1.12</xz.version>
-    <zstd.version>1.5.7-19</zstd.version>
+    <zstd.version>1.5.7-24</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
