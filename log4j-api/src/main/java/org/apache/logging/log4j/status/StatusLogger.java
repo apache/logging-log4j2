@@ -395,10 +395,66 @@ public class StatusLogger extends AbstractLogger {
      */
     static final class PropertiesUtilsDouble {
 
+        /**
+         * The names accepted for each property read by {@code StatusLogger}, mapped to the name of its constant.
+         * <p>
+         * Only these five properties need to be supported, hence a simple lookup table instead of a generic name
+         * normalization. The keys are lower-cased, matching is case-insensitive.
+         * </p>
+         */
+        private static final Map<String, String> PROPERTY_NAMES = createPropertyNames();
+
+        private static Map<String, String> createPropertyNames() {
+            final Map<String, String> names = new HashMap<>();
+            addPropertyNames(names, DEBUG_PROPERTY_NAME, "LOG4J_DEBUG", "log4j.debug");
+            addPropertyNames(
+                    names,
+                    MAX_STATUS_ENTRIES,
+                    "log4j2.statusEntries",
+                    "LOG4J_STATUS_ENTRIES",
+                    "log4j.statusLogger.statusEntries");
+            addPropertyNames(
+                    names,
+                    DEFAULT_STATUS_LISTENER_LEVEL,
+                    "log4j2.statusLoggerLevel",
+                    "LOG4J_STATUS_LOGGER_LEVEL",
+                    "log4j.statusLogger.level");
+            addPropertyNames(
+                    names,
+                    STATUS_DATE_FORMAT,
+                    "log4j2.statusLoggerDateFormat",
+                    "LOG4J_STATUS_LOGGER_DATE_FORMAT",
+                    "log4j.statusLogger.dateFormat");
+            addPropertyNames(
+                    names,
+                    STATUS_DATE_FORMAT_ZONE,
+                    "log4j2.statusLoggerDateFormatZone",
+                    "LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE",
+                    "log4j.statusLogger.dateFormatZone");
+            return Collections.unmodifiableMap(names);
+        }
+
+        private static void addPropertyNames(
+                final Map<String, String> names, final String propertyName, final String... otherNames) {
+            names.put(propertyName.toLowerCase(Locale.ROOT), propertyName);
+            for (final String otherName : otherNames) {
+                names.put(otherName.toLowerCase(Locale.ROOT), propertyName);
+            }
+        }
+
+        /**
+         * @param propertyName a property name in any of the accepted forms
+         * @return the name of the property constant, or {@code null} if the name is not one of the accepted ones
+         */
+        @Nullable
+        private static String resolvePropertyName(final String propertyName) {
+            return PROPERTY_NAMES.get(propertyName.toLowerCase(Locale.ROOT));
+        }
+
         @Nullable
         static String readProperty(final Map<String, Object> normalizedProperties, final String propertyName) {
-            final String normalizedPropertyName = normalizePropertyName(propertyName);
-            final Object value = normalizedProperties.get(normalizedPropertyName);
+            final String resolvedPropertyName = resolvePropertyName(propertyName);
+            final Object value = resolvedPropertyName != null ? normalizedProperties.get(resolvedPropertyName) : null;
             return (value instanceof String) ? (String) value : null;
         }
 
@@ -446,49 +502,15 @@ public class StatusLogger extends AbstractLogger {
             Map<String, Object> map = new HashMap<>();
             for (Properties properties : propertiesList) {
                 properties.forEach((name, value) -> {
-                    final boolean relevant = isRelevantPropertyName(name);
-                    if (relevant) {
-                        final String normalizedName = normalizePropertyName((String) name);
-                        map.put(normalizedName, value);
+                    if (name instanceof String) {
+                        final String resolvedName = resolvePropertyName((String) name);
+                        if (resolvedName != null) {
+                            map.put(resolvedName, value);
+                        }
                     }
                 });
             }
             return map;
-        }
-
-        /**
-         * Filter to exclude irrelevant property names (i.e., non-string and not {@code log4j}-prefixed) to speed up matching.
-         * @param propertyName a property name
-         * @return {@code true}, if the property name is relevant; {@code false}, otherwise
-         */
-        private static boolean isRelevantPropertyName(@Nullable final Object propertyName) {
-            return propertyName instanceof String && ((String) propertyName).matches("^(?i)log4j.*");
-        }
-
-        /**
-         * An imperfect property name normalization routine.
-         * <p>
-         * It is imperfect, because {@code foo.bar} would match with {@code fo.obar}.
-         * But it is good enough for the {@code StatusLogger} needs.
-         * </p>
-         *
-         * @param propertyName the input property name
-         * @return the normalized property name
-         */
-        private static String normalizePropertyName(final String propertyName) {
-            return propertyName
-                    // Remove separators:
-                    // - dots (properties)
-                    // - dashes (kebab-case)
-                    // - underscores (environment variables)
-                    .replaceAll("[._-]", "")
-                    // Replace all non-ASCII characters.
-                    // Don't remove, otherwise `fooàö` would incorrectly match with `foo`.
-                    // It is safe to replace them with dots, since we've just removed all dots above.
-                    .replaceAll("\\P{InBasic_Latin}", ".")
-                    // Lowercase ASCII – this is safe, since we've just removed all non-ASCII
-                    .toLowerCase(Locale.US)
-                    .replaceAll("^log4j2", "log4j");
         }
     }
 

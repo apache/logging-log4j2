@@ -44,11 +44,19 @@ class StatusLoggerPropertiesUtilDoubleTest {
         // System properties for version range `[3,)`
         "log4j2.StatusLogger.dateFormat",
         // Environment variables
-        "LOG4J_STATUS_LOGGER_DATE_FORMAT"
+        "LOG4J_STATUS_LOGGER_DATE_FORMAT",
+        // Log4j 3 property name
+        "log4j.statusLogger.dateFormat"
     };
 
-    private static final String[] NOT_MATCHING_PROPERTY_NAMES =
-            new String[] {"log4j2.StatusLogger$DateFormat", "log4j2.StàtusLögger.DateFormat"};
+    private static final String[] NOT_MATCHING_PROPERTY_NAMES = new String[] {
+        "log4j2.StatusLogger$DateFormat",
+        "log4j2.StàtusLögger.DateFormat",
+        // a different property
+        "log4j2.StatusLogger.dateFormatZone",
+        // only the listed names are accepted
+        "log4j2.status.logger.date.format"
+    };
 
     private static final class TestCase {
 
