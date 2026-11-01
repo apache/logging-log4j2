@@ -83,7 +83,7 @@
     <error-prone-annotations.version>2.38.0</error-prone-annotations.version>
     <felix.version>7.0.5</felix.version>
     <groovy.version>4.0.33</groovy.version>
-    <guava.version>33.7.1-jre</guava.version>
+    <guava.version>33.7.2-jre</guava.version>
     <h2.version>2.2.224</h2.version>
     <hamcrest.version>3.0</hamcrest.version>
     <HdrHistogram.version>2.2.2</HdrHistogram.version>
@@ -107,7 +107,7 @@
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>4.0.7</jctools.version>
     <jeromq.version>0.6.0</jeromq.version>
-    <jmdns.version>3.6.3</jmdns.version>
+    <jmdns.version>3.6.4</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <jspecify.version>1.0.1</jspecify.version>
     <junit.version>4.13.2</junit.version>
@@ -140,7 +140,7 @@
     <wiremock.version>2.35.2</wiremock.version>
     <xmlunit.version>2.10.4</xmlunit.version>
     <xz.version>1.10</xz.version>
-    <zstd.version>1.5.7-19</zstd.version>
+    <zstd.version>1.5.7-24</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
