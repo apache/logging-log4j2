@@ -214,4 +214,39 @@ class CronTriggeringPolicyTest {
             policy.stop(1, TimeUnit.SECONDS);
         }
     }
+
+    /**
+     * Initializes a policy for a file whose file time is offset from the current period's fire time.
+     */
+    private RollingFileManager initializeWithFileTimeOffset(final long offsetMillis) throws Exception {
+        final Date periodStart = new CronExpression(CRON_EXPRESSION).getPrevFireTime(new Date());
+        final RollingFileManager manager = mockManager(periodStart.getTime() + offsetMillis);
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
+        return manager;
+    }
+
+    /**
+     * Tests that evaluateOnStartup still rolls over a file created one millisecond or one second before the current
+     * period's fire time.
+     */
+    @Test
+    void testEvaluateOnStartupRollsFileCreatedJustBeforeFireTime() throws Exception {
+        verify(initializeWithFileTimeOffset(-1)).rollover(any(Date.class), any(Date.class));
+        verify(initializeWithFileTimeOffset(-1000)).rollover(any(Date.class), any(Date.class));
+    }
+
+    /**
+     * Tests that evaluateOnStartup does not roll over a file created one millisecond or one second after the current
+     * period's fire time.
+     */
+    @Test
+    void testEvaluateOnStartupDoesNotRollFileCreatedJustAfterFireTime() throws Exception {
+        verify(initializeWithFileTimeOffset(1), never()).rollover(any(Date.class), any(Date.class));
+        verify(initializeWithFileTimeOffset(1000), never()).rollover(any(Date.class), any(Date.class));
+    }
 }
