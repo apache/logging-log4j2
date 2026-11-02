@@ -18,6 +18,11 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -185,5 +190,32 @@ class CronTriggeringPolicyTest {
     void testFactoryMethodSequence() {
         testFactoryMethod();
         testFactoryMethod();
+    }
+
+    private RollingFileManager mockManager(final long fileTime) {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(fileTime);
+        when(manager.getPatternProcessor()).thenReturn(new PatternProcessor("target/testcmd6.log.%d{yyyy-MM-dd}"));
+        return manager;
+    }
+
+    /**
+     * Tests that evaluateOnStartup archives a file from a previous period under that period. Otherwise the next
+     * scheduled rollover, which archives under the current period, overwrites it.
+     */
+    @Test
+    void testEvaluateOnStartupArchivesFileUnderItsOwnPeriod() throws Exception {
+        final CronExpression cronExpression = new CronExpression(CRON_EXPRESSION);
+        final Date periodStart = cronExpression.getPrevFireTime(new Date());
+        final Date previousPeriodStart = cronExpression.getPrevFireTime(periodStart);
+        final long fileTime = previousPeriodStart.getTime() + TimeUnit.HOURS.toMillis(12);
+        final RollingFileManager manager = mockManager(fileTime);
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+            verify(manager).rollover(eq(previousPeriodStart), any(Date.class));
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
     }
 }

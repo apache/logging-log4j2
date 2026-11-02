@@ -76,7 +76,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
                 && lastRegularRoll != null
                 && lastRollForFile.before(lastRegularRoll)) {
             lastRollDate = lastRollForFile;
-            rollover();
+            manager.rollover(lastRollForFile, lastRegularRoll);
         }
 
         final ConfigurationScheduler scheduler = configuration.getScheduler();
