@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -144,7 +144,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             }
             final String trimmedCompressionLevelStr =
                     compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
-            final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
+            final int compressionLevel =
+                    Integers.parseInt(trimmedCompressionLevelStr, CompressActionSupport.UNSPECIFIED_COMPRESSION_LEVEL);
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor =
                     config != null ? config.getStrSubstitutor() : new StrSubstitutor();
@@ -215,7 +216,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         /**
          * Defines compression level.
          *
-         * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
+         * @param compressionLevelStr The native compression level; if omitted, uses the compressor's default.
          * @return This builder for chaining convenience
          * @since 2.26.0
          */
@@ -373,7 +374,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param min The minimum number of files to keep.
      * @param fileIndex If set to "max" (the default), files with a higher index will be newer than files with a smaller
      *            index. If set to "min", file renaming and the counter will follow the Fixed Window strategy.
-     * @param compressionLevelStr The compression level, 0 (less) through 9 (more); applies only to ZIP files.
+     * @param compressionLevelStr The native compression level; if omitted, uses the compressor's default.
      * @param customActions custom actions to perform asynchronously after rollover
      * @param stopCustomActionsOnError whether to stop executing asynchronous actions if an error occurs
      * @param config The Configuration.
@@ -482,8 +483,20 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 tempCompressedFilePatternString != null ? new PatternProcessor(tempCompressedFilePatternString) : null;
     }
 
+    /**
+     * Returns the configured compression level before format-specific resolution.
+     *
+     * @return the configured level, or {@link Integer#MIN_VALUE} if unspecified
+     */
     public int getCompressionLevel() {
         return this.compressionLevel;
+    }
+
+    @Override
+    void initializeCompressionLevel(final FileExtension extension) {
+        if (extension != null) {
+            resolveCompressionLevel(extension, compressionLevel);
+        }
     }
 
     public List<Action> getCustomActions() {
@@ -670,6 +683,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
         final FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
+            final int compressionLevel = resolveCompressionLevel(fileExtension, this.compressionLevel);
             final File renameToFile = new File(renameTo);
             renameTo = renameTo.substring(0, renameTo.length() - fileExtension.length());
             if (tempCompressedFilePattern != null) {
