@@ -690,7 +690,7 @@
               <bottom><![CDATA[<p align="center">
               Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
               All Rights Reserved.<br/>
-              Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of {organizationName}.
+              Apache, Log4j, and the Apache logo are trademarks or registered trademarks of {organizationName}.
               Oracle and Java are registered trademarks of Oracle and/or its affiliates.
               Other names may be trademarks of their respective owners.
             </p>]]></bottom>
