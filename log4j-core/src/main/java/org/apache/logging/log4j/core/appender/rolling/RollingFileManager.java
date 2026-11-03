@@ -765,7 +765,7 @@ public class RollingFileManager extends FileManager {
     }
 
     private static ScheduledExecutorService createAsyncExecutor(final ThreadFactory threadFactory) {
-        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, threadFactory);
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(0, threadFactory);
         executor.setKeepAliveTime(ASYNC_EXECUTOR_KEEP_ALIVE_MILLIS, TimeUnit.MILLISECONDS);
         executor.allowCoreThreadTimeOut(true);
         return executor;
