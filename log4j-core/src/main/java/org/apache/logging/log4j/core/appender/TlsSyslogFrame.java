@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import org.apache.logging.log4j.util.Chars;
@@ -30,8 +31,18 @@ public class TlsSyslogFrame {
     private final int byteLength;
 
     public TlsSyslogFrame(final String message) {
+        this(message, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Creates a frame whose length counts the message bytes in the supplied charset.
+     *
+     * @param message the message to frame
+     * @param charset the charset used to encode the message
+     */
+    public TlsSyslogFrame(final String message, final Charset charset) {
         this.message = message;
-        final byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        final byte[] messageBytes = message.getBytes(charset);
         byteLength = messageBytes.length;
     }
 
