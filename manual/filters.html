@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Filters :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/filters.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.1">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -534,33 +534,9 @@ until it reaches the logger that references the chosen appender.</p>
 </div>
 <div class="sect2">
 <h3 id="appender-control-stage"><a class="anchor" href="#appender-control-stage"></a>3. <code>AppenderControl</code> stage</h3>
-<div class="literalblock kroki-error">
+<div class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-start
-:LogEvent;
-
-group AppenderControl
-
-:AppenderControl#callAppender();
-
-if (Is less severe then appender reference level?) then (yes)
-    #pink:Discard;
-    detach
-else (no)
-    ' The label improves spacing
-    label a2
-endif
-if (Apply appender reference filter) then (DENY)
-    #pink:Discard;
-    detach
-else (not DENY)
-    ' The label improves spacing
-    label a1
-endif
-end group
-stop
-@enduml</pre>
+<img src="../_images/diag-0c23746e246efa4a462049e2adc4b0349185aa77.svg" alt="Diagram">
 </div>
 </div>
 <div class="paragraph">
@@ -581,24 +557,9 @@ of the appender reference.</p>
 </div>
 <div class="sect2">
 <h3 id="appender-stage"><a class="anchor" href="#appender-stage"></a>4. <code>Appender</code> stage (optional)</h3>
-<div class="literalblock kroki-error">
+<div class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-start
-:LogEvent;
-
-group Appender
-
-if (Apply appender filter) then (DENY)
-    #pink:Discard;
-    detach
-else (not DENY)
-    ' The label improves spacing
-    label a1
-endif
-end group
-#palegreen:Appender#append();
-@enduml</pre>
+<img src="../_images/diag-a15d9b3aaacbf863f81fe0dcb0ed21346b6c46ed.svg" alt="Diagram">
 </div>
 </div>
 <div class="paragraph">
@@ -3284,12 +3245,12 @@ While annotating your filter with <code>@Plugin</code>, you need to make sure th
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
-    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>
   <p>
-    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Apache, Log4j, and the Apache logo are trademarks or registered trademarks of The Apache Software Foundation.
     Oracle and Java are registered trademarks of Oracle and/or its affiliates.
     Other names may be trademarks of their respective owners.
   </p>

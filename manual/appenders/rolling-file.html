@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Rolling file appenders :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/appenders/rolling-file.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <meta name="generator" content="Antora 3.2.1">
 <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -1552,50 +1552,9 @@ It is <strong>not</strong> the default strategy of Log4j 2.</p>
 <div class="paragraph">
 <p>Assuming <code>min="1"</code> and <code>max="3"</code> the rotation of the log files is represented in the graph below:</p>
 </div>
-<div class="literalblock kroki-error">
+<div class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-class "Initial status" as initial {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-}
-class "1st rollover" as first {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-}
-class "2nd rollover" as second {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-}
-class "3rd rollover" as third {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-  app.3.log
-}
-class "4th rollover" as fourth {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-  app.3.log
-}
-
-object "Delete file" as delete
-
-initial::app.log -&gt; first::app.1.log
-
-first::app.log -&gt; second::app.1.log
-first::app.1.log -&gt; second::app.2.log
-
-second::app.log -&gt; third::app.1.log
-second::app.1.log -&gt; third::app.2.log
-second::app.2.log -&gt; third::app.3.log
-
-third::app.log -&gt; fourth::app.1.log
-third::app.1.log -&gt; fourth::app.2.log
-third::app.2.log -&gt; fourth::app.3.log
-third::app.3.log -[#red]-&gt; delete
-@enduml</pre>
+<img src="../../_images/diag-d5122741a680d765fa3170a444015b615a1fdafd.svg" alt="Diagram">
 </div>
 </div>
 </dd>
@@ -1623,50 +1582,9 @@ third::app.3.log -[#red]-&gt; delete
 <div class="paragraph">
 <p>Assuming <code>min="1"</code> and <code>max="3"</code> the rotation of the log files is represented in the graph below:</p>
 </div>
-<div class="literalblock kroki-error">
+<div class="imageblock kroki">
 <div class="content">
-<pre>@startuml
-class "Initial status" as initial {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-}
-class "1st rollover" as first {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-}
-class "2nd rollover" as second {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-}
-class "3rd rollover" as third {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-  app.3.log
-}
-class "4th rollover" as fourth {
-  &lt;color:green&gt;app.log&lt;/color&gt;
-  app.1.log
-  app.2.log
-  app.3.log
-}
-
-object "Delete file" as delete
-
-initial::app.log -&gt; first::app.1.log
-
-first::app.log -&gt; second::app.2.log
-first::app.1.log -&gt; second::app.1.log
-
-second::app.log -&gt; third::app.3.log
-second::app.1.log -&gt; third::app.1.log
-second::app.2.log -&gt; third::app.2.log
-
-third::app.log -&gt; fourth::app.3.log
-third::app.1.log -[#red]-&gt; delete
-third::app.2.log -&gt; fourth::app.1.log
-third::app.3.log -&gt; fourth::app.2.log
-@enduml</pre>
+<img src="../../_images/diag-35cc4e8101ffe76d0edc44ed334a6273018dc51b.svg" alt="Diagram">
 </div>
 </div>
 </dd>
@@ -3239,12 +3157,12 @@ appender.0.policy.type = TimeBaseTriggeringPolicy</code></pre>
 </div>
 <footer class="footer">
   <p>
-    Copyright © 1999-2025 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
-    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>
   <p>
-    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Apache, Log4j, and the Apache logo are trademarks or registered trademarks of The Apache Software Foundation.
     Oracle and Java are registered trademarks of Oracle and/or its affiliates.
     Other names may be trademarks of their respective owners.
   </p>
