@@ -16,37 +16,31 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests LOG4J2-1688 Multiple loggings of arguments are setting these arguments to null.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class Log4j2Jira1688Test {
-
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
 
     private ListAppender listAppender;
 
-    @Before
-    public void before() throws Exception {
-        listAppender = context.getListAppender("List");
+    @BeforeEach
+    public void before(LoggerContext context) {
+        listAppender = context.getConfiguration().getAppender("List");
     }
 
     private static Object[] createArray(final int size) {
@@ -58,7 +52,8 @@ public class Log4j2Jira1688Test {
     }
 
     @Test
-    public void testLog4j2Only() throws InterruptedException {
+    @LoggerContextSource("log4j-list.xml")
+    public void testLog4j2Only(LoggerContext context) throws InterruptedException {
         final ExtendedLogger log4JLogger = context.getLogger(this.getClass());
         final int limit = 11; // more than unrolled varargs
         final Object[] args = createArray(limit);
@@ -68,9 +63,9 @@ public class Log4j2Jira1688Test {
         log4JLogger.logIfEnabled("test", Level.ERROR, null, "test {}", args);
 
         listAppender.countDownLatch.await(1, TimeUnit.SECONDS);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertArrayEquals(originalArgs, args, Arrays.toString(args));
 
         log4JLogger.logIfEnabled("test", Level.ERROR, null, "test {}", args);
-        Assert.assertArrayEquals(Arrays.toString(args), originalArgs, args);
+        assertArrayEquals(originalArgs, args, Arrays.toString(args));
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,13 +29,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Assert;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.rules.ExternalResource;
 
 /**
  * This class should not perform logging using Log4j to avoid accidentally
  * loading or re-loading Log4j configurations.
  */
-public abstract class AbstractExternalFileCleaner extends ExternalResource {
+public abstract class AbstractExternalFileCleaner extends ExternalResource
+        implements BeforeEachCallback, AfterEachCallback {
 
     protected static final String CLEANER_MARKER = "CLEANER";
 
@@ -91,10 +96,20 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
     }
 
     @Override
+    public void afterEach(ExtensionContext context) {
+        after();
+    }
+
+    @Override
     protected void after() {
         if (cleanAfter()) {
             this.clean();
         }
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) {
+        before();
     }
 
     @Override
@@ -181,6 +196,7 @@ public abstract class AbstractExternalFileCleaner extends ExternalResource {
         }
     }
 
+    @SuppressFBWarnings("INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE")
     protected void printStackTrace(final Throwable t) {
         if (printStream != null) {
             t.printStackTrace(printStream);
