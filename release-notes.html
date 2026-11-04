@@ -472,6 +472,9 @@
 <p>Fix <code>NullPointerException</code> in <code>ConfigurationScheduler</code> for a frequently executing cron schedule. (<a href="https://github.com/apache/logging-log4j2/issues/2073">2073</a>, <a href="https://github.com/apache/logging-log4j2/pull/4118">4118</a>)</p>
 </li>
 <li>
+<p>Fix <code>AbstractConfiguration</code> logger mutators losing changes to an existing <code>LoggerConfig</code>. (<a href="https://github.com/apache/logging-log4j2/issues/3155">3155</a>, <a href="https://github.com/apache/logging-log4j2/pull/4419">4419</a>)</p>
+</li>
+<li>
 <p>Fix precision detection in legacy date &amp; time pattern formatting (<a href="https://github.com/apache/logging-log4j2/issues/3816">3816</a>, <a href="https://github.com/apache/logging-log4j2/pull/4220">4220</a>)</p>
 </li>
 <li>
@@ -575,6 +578,9 @@
 </li>
 <li>
 <p>Fix <code>LoggerNameLevelRewritePolicy</code> matching a sibling package that only shares a character prefix with the configured logger name, instead of a true descendant. (<a href="https://github.com/apache/logging-log4j2/issues/4412">4412</a>)</p>
+</li>
+<li>
+<p>Fix <code>Configurator.setAllLevels()</code> changing sibling loggers. (<a href="https://github.com/apache/logging-log4j2/issues/4418">4418</a>, <a href="https://github.com/apache/logging-log4j2/pull/4419">4419</a>)</p>
 </li>
 <li>
 <p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
