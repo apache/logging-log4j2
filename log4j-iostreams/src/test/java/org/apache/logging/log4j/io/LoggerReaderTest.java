@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,13 +24,18 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.CharBuffer;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerReaderTest extends AbstractStreamTest {
     protected StringReader wrapped;
     protected StringWriter read;
     protected Reader reader;
+
+    LoggerReaderTest(LoggerContext context) {
+        super(context);
+    }
 
     protected Reader createReader() {
         return IoBuilder.forLogger(getExtendedLogger())
@@ -39,7 +44,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
                 .buildReader();
     }
 
-    @Before
+    @BeforeEach
     public void createStream() {
         this.wrapped = new StringReader(FIRST + "\r\n" + LAST);
         this.read = new StringWriter();
@@ -72,7 +77,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
     @Test
     public void testRead_CharArray() throws Exception {
         final char[] chars = new char[FIRST.length()];
-        assertEquals("len", FIRST.length(), this.reader.read(chars));
+        assertEquals(FIRST.length(), this.reader.read(chars), "len");
         if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
@@ -83,7 +88,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
     @Test
     public void testRead_CharArray_Offset_Length() throws Exception {
         final char[] chars = new char[1024];
-        assertEquals("len", FIRST.length(), this.reader.read(chars, 0, FIRST.length()));
+        assertEquals(FIRST.length(), this.reader.read(chars, 0, FIRST.length()), "len");
         if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
@@ -95,7 +100,7 @@ public class LoggerReaderTest extends AbstractStreamTest {
     @Test
     public void testRead_CharBuffer() throws Exception {
         final CharBuffer chars = CharBuffer.allocate(1024);
-        assertEquals("len", FIRST.length() + LAST.length() + 2, this.reader.read(chars));
+        assertEquals(FIRST.length() + LAST.length() + 2, this.reader.read(chars), "len");
         this.reader.close();
         assertMessages(FIRST, LAST);
     }
@@ -121,11 +126,11 @@ public class LoggerReaderTest extends AbstractStreamTest {
         if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        assertEquals("carriage return", '\r', this.reader.read());
+        assertEquals('\r', this.reader.read(), "carriage return");
         if (!(this.reader instanceof BufferedReader)) {
             assertMessages();
         }
-        assertEquals("newline", '\n', this.reader.read());
+        assertEquals('\n', this.reader.read(), "newline");
         assertMessages(FIRST);
     }
 

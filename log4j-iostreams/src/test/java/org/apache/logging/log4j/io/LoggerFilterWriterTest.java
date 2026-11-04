@@ -18,8 +18,13 @@ package org.apache.logging.log4j.io;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import org.apache.logging.log4j.core.LoggerContext;
 
 public class LoggerFilterWriterTest extends AbstractLoggerWriterTest {
+
+    LoggerFilterWriterTest(LoggerContext context) {
+        super(context);
+    }
 
     @Override
     protected StringWriter createWriter() {

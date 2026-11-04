@@ -312,8 +312,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         }
         if (levelAndRefs != null) {
             loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+            properties.remove("");
         }
-        return loggerBuilder;
+        return processRemainingProperties(loggerBuilder, properties);
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
@@ -343,8 +344,10 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         addLoggersToComponent(loggerBuilder, properties);
         if (levelAndRefs != null) {
             loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+            properties.remove("");
         }
-        return addFiltersToComponent(loggerBuilder, properties);
+        addFiltersToComponent(loggerBuilder, properties);
+        return processRemainingProperties(loggerBuilder, properties);
     }
 
     private LayoutComponentBuilder createLayout(final String appenderName, final Properties properties) {
