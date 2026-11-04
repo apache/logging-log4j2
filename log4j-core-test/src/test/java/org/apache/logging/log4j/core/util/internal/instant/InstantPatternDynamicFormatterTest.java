@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.DynamicPatternSequence;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamic
 import org.apache.logging.log4j.core.util.internal.instant.InstantPatternDynamicFormatter.StaticPatternSequence;
 import org.apache.logging.log4j.util.Constants;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -374,11 +376,53 @@ class InstantPatternDynamicFormatterTest {
     @MethodSource("formatterInputs")
     void output_should_match_DateTimeFormatter(
             final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
+        assertOutputMatchesDateTimeFormatter(pattern, locale, timeZone, instant);
+    }
+
+    @ParameterizedTest
+    @MethodSource("formatterInputsBeforeTheEpoch")
+    void output_before_the_epoch_should_match_DateTimeFormatter(
+            final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
+        assertOutputMatchesDateTimeFormatter(pattern, locale, timeZone, instant);
+    }
+
+    private static void assertOutputMatchesDateTimeFormatter(
+            final String pattern, final Locale locale, final TimeZone timeZone, final MutableInstant instant) {
         final String log4jOutput = formatInstant(pattern, locale, timeZone, instant);
         final String javaOutput = DateTimeFormatter.ofPattern(pattern, locale)
                 .withZone(timeZone.toZoneId())
                 .format(instant);
         assertThat(log4jOutput).isEqualTo(javaOutput);
+    }
+
+    static Stream<Arguments> formatterInputsBeforeTheEpoch() {
+        return Stream.of(
+                        "s",
+                        "ss",
+                        "mm:ss",
+                        "HH:mm:ss.SSS",
+                        "yyyy-MM-dd HH:mm:ss,SSSSSS",
+                        "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+                .flatMap(pattern -> LongStream.of(-1, -59, -60, -61, -3_599, -3_601, -86_401, -1_000_000_000L)
+                        .mapToObj(epochSecond -> {
+                            final MutableInstant instant = new MutableInstant();
+                            instant.initFromEpochSecond(epochSecond, 123_456_789);
+                            return Arguments.of(pattern, Locale.US, TimeZone.getTimeZone("Europe/Paris"), instant);
+                        }));
+    }
+
+    @Test
+    void reused_formatter_should_not_mix_minutes_around_the_epoch() {
+        final InstantPatternFormatter formatter =
+                new InstantPatternDynamicFormatter("HH:mm:ss", Locale.US, TimeZone.getTimeZone("UTC"));
+        final MutableInstant afterTheEpoch = new MutableInstant();
+        afterTheEpoch.initFromEpochSecond(30, 0);
+        formatter.formatTo(new StringBuilder(), afterTheEpoch);
+        final MutableInstant beforeTheEpoch = new MutableInstant();
+        beforeTheEpoch.initFromEpochSecond(-30, 0);
+        final StringBuilder buffer = new StringBuilder();
+        formatter.formatTo(buffer, beforeTheEpoch);
+        assertThat(buffer).hasToString("23:59:30");
     }
 
     static Stream<Arguments> formatterInputs() {

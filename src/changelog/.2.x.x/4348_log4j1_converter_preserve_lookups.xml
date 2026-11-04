@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="4348" link="https://github.com/apache/logging-log4j2/issues/4348"/>
+  <issue id="4353" link="https://github.com/apache/logging-log4j2/pull/4353"/>
+  <description format="asciidoc">
+    Keep Log4j 1 variable indirection when converting a properties configuration, instead of capturing host system properties.
+  </description>
+</entry>

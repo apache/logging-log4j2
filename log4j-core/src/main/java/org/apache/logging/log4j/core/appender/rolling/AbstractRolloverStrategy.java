@@ -22,7 +22,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -50,6 +52,15 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     public static final Pattern PATTERN_COUNTER = Pattern.compile(".*%(?<ZEROPAD>0)?(?<PADDING>\\d+)?i.*");
 
     protected final StrSubstitutor strSubstitutor;
+
+    private final Map<FileExtension, Integer> resolvedCompressionLevels = new EnumMap<>(FileExtension.class);
+
+    void initializeCompressionLevel(final FileExtension extension) {}
+
+    synchronized int resolveCompressionLevel(final FileExtension extension, final int configuredLevel) {
+        return resolvedCompressionLevels.computeIfAbsent(
+                extension, format -> format.resolveCompressionLevel(configuredLevel));
+    }
 
     protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
         this.strSubstitutor = strSubstitutor;
