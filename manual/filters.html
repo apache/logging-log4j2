@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Filters :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/2.x/manual/filters.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.11">
+    <meta name="generator" content="Antora 3.2.2">
 <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -454,9 +454,31 @@ e.g., log event creation, population of context data, formatting, transfer throu
 </div>
 <div class="sect2">
 <h3 id="logger-stage"><a class="anchor" href="#logger-stage"></a>1. <code>Logger</code> stage</h3>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../_images/diag-2158b7cc88b372c32a9592f8cdbc1cc926bb8b80.svg" alt="Diagram">
+<pre>@startuml
+start
+group Logger
+
+:A Logger method;
+
+switch (Apply global filter)
+case (DENY)
+    #pink:Discard;
+    detach
+case (ACCEPT)
+case (NEUTRAL)
+    if (Is less severe than logger level?) then (yes)
+        #pink:Discard;
+        detach
+    else (no)
+        ' The label improves spacing
+        label a1
+    endif
+endswitch
+end group
+:Create LogEvent;
+stop</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -528,9 +550,29 @@ or
 </div>
 <div class="sect2">
 <h3 id="logger-config-stage"><a class="anchor" href="#logger-config-stage"></a>2. <code>LoggerConfig</code> stage</h3>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
 <div class="content">
-<img src="../_images/diag-4d55aeb99a0ae8707b4121b1f76e9544af16b3c4.svg" alt="Diagram">
+<pre>@startuml
+start
+:LogEvent;
+
+group LoggerConfig
+repeat
+
+:LoggerConfig#log();
+
+if (Apply logger filter) then (DENY)
+    #pink:Discard;
+    detach
+else (not DENY)
+    ' The label improves spacing
+    label a1
+endif
+repeat while (Go to parent logger?) is (yes)
+-&gt; no;
+end group
+stop
+@enduml</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3228,11 +3270,11 @@ While annotating your filter with <code>@Plugin</code>, you need to make sure th
 <footer class="footer">
   <p>
     Copyright © 1999-2026 <a href="https://www.apache.org/">The Apache Software Foundation</a>.
-    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Software License, Version 2.0</a>.
+    Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
     Please read our <a href="https://privacy.apache.org/policies/privacy-policy-public.html">privacy policy</a>.
   </p>
   <p>
-    Apache, Log4j, and the Apache feather logo are trademarks or registered trademarks of The Apache Software Foundation.
+    Apache, Log4j, and the Apache logo are trademarks or registered trademarks of The Apache Software Foundation.
     Oracle and Java are registered trademarks of Oracle and/or its affiliates.
     Other names may be trademarks of their respective owners.
   </p>
