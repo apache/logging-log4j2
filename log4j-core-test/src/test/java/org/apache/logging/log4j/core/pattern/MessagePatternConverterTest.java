@@ -205,6 +205,27 @@ class MessagePatternConverterTest {
     }
 
     @Test
+    void testHtmlMessageFormatEscapesText() {
+        final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"html"});
+        final Message msg = new SimpleMessage("<message> & \" '");
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg)
+                .build();
+        final StringBuilder sb = new StringBuilder("prefix:");
+        converter.format(event, sb);
+        assertEquals("prefix:&lt;message&gt; &amp; &quot; &apos;", sb.toString());
+    }
+
+    @Test
+    void testHtmlTextRendererEscapesString() {
+        final StringBuilder sb = new StringBuilder("prefix:");
+        new HtmlTextRenderer(null).render("<message> & \" '", sb, null);
+        assertEquals("prefix:&lt;message&gt; &amp; &quot; &apos;", sb.toString());
+    }
+
+    @Test
     void testStructuredDataFormatFull() {
         final MessagePatternConverter converter = MessagePatternConverter.newInstance(null, new String[] {"FULL"});
         final Message msg = new StructuredDataMessage("id", "message", "type").with("key", "val");
