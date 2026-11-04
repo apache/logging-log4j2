@@ -24,6 +24,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class MutableInstantTest {
 
@@ -240,5 +242,35 @@ class MutableInstantTest {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
                 .withZone(ZoneId.of("UTC"));
         assertEquals(formatter.format(javaInstant), formatter.format(log4jInstant));
+    }
+
+    /**
+     * The nano of second must stay in {@code [0, 1_000_000_000)}, as {@link MutableInstant#initFromEpochSecond} enforces,
+     * also for instants before the epoch.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // epochMilli, nanoOfMilli, expectedEpochSecond, expectedNanoOfSecond
+        "-1, 0, -1, 999000000",
+        "-999, 0, -1, 1000000",
+        "-1000, 0, -1, 0",
+        "-1001, 0, -2, 999000000",
+        "-61500, 789012, -62, 500789012",
+        // After the epoch, for comparison
+        "1, 5, 0, 1000005",
+        "61500, 789012, 61, 500789012"
+    })
+    void testInitFromEpochMilliNormalizesTheNanoOfSecond(
+            final long epochMilli,
+            final int nanoOfMilli,
+            final long expectedEpochSecond,
+            final int expectedNanoOfSecond) {
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(epochMilli, nanoOfMilli);
+
+        assertEquals(expectedEpochSecond, instant.getEpochSecond());
+        assertEquals(expectedNanoOfSecond, instant.getNanoOfSecond());
+        assertEquals(epochMilli, instant.getEpochMillisecond());
+        assertEquals(nanoOfMilli, instant.getNanoOfMillisecond());
     }
 }

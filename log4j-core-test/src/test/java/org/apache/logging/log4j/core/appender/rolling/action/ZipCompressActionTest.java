@@ -16,43 +16,58 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.zip.Deflater;
+import java.util.zip.ZipFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ZipCompressActionTest {
 
     @Test
-    void testRejectsCompressionLevelBelowRange(@TempDir File tempDir) {
-        File source = new File(tempDir, "invalid-low.log");
-        File dest = new File(tempDir, "invalid-low.log.zip");
-
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, -2));
+    void testFallsBackFromUnsupportedCompressionLevels(@TempDir File tempDir) throws IOException {
+        assertFallsBackToDefault(tempDir, "invalid-low.log", -2);
+        assertFallsBackToDefault(tempDir, "invalid-high.log", 10);
     }
 
     @Test
-    void testRejectsCompressionLevelAboveRange(@TempDir File tempDir) {
-        File source = new File(tempDir, "invalid-high.log");
-        File dest = new File(tempDir, "invalid-high.log.zip");
+    void testAcceptsCompressionLevelRangeBounds(@TempDir File tempDir) throws IOException {
+        File defaultSource = new File(tempDir, "default.log");
+        File defaultDestination = new File(tempDir, "default.log.zip");
+        File noCompressionSource = new File(tempDir, "no-compression.log");
+        File noCompressionDestination = new File(tempDir, "no-compression.log.zip");
+        File maximumSource = new File(tempDir, "maximum.log");
+        File maximumDestination = new File(tempDir, "maximum.log.zip");
+        writeContent(defaultSource, "default compression level");
+        writeContent(noCompressionSource, "no compression level");
+        writeContent(maximumSource, "maximum compression level");
 
-        assertThrows(IllegalArgumentException.class, () -> new ZipCompressAction(source, dest, true, 10));
+        assertTrue(
+                new ZipCompressAction(defaultSource, defaultDestination, true, Deflater.DEFAULT_COMPRESSION).execute());
+        assertTrue(new ZipCompressAction(noCompressionSource, noCompressionDestination, true, Deflater.NO_COMPRESSION)
+                .execute());
+        assertTrue(new ZipCompressAction(maximumSource, maximumDestination, true, Deflater.BEST_COMPRESSION).execute());
     }
 
     @Test
-    void testAcceptsCompressionLevelRangeBounds(@TempDir File tempDir) {
-        File source = new File(tempDir, "valid.log");
-        File dest = new File(tempDir, "valid.log.zip");
+    void testStaticExecuteReturnsFalseForMissingSourceBeforeResolvingLevel(@TempDir File tempDir) throws IOException {
+        File source = new File(tempDir, "missing.log");
+        File destination = new File(tempDir, "missing.log.zip");
 
-        new ZipCompressAction(source, dest, true, Deflater.DEFAULT_COMPRESSION);
-        new ZipCompressAction(source, dest, true, Deflater.NO_COMPRESSION);
-        new ZipCompressAction(source, dest, true, Deflater.BEST_COMPRESSION);
+        assertFalse(ZipCompressAction.execute(source, destination, true, 10));
+        assertFalse(destination.exists());
     }
 
     @Test
@@ -72,5 +87,63 @@ class ZipCompressActionTest {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(content);
         }
+    }
+
+    private static void assertFallsBackToDefault(
+            final File tempDir, final String sourceName, final int compressionLevel) throws IOException {
+        final File source = new File(tempDir, sourceName);
+        final File destination = new File(tempDir, sourceName + ".zip");
+        final File defaultDestination = new File(tempDir, sourceName + ".default.zip");
+        final byte[] content = new byte[65536];
+        final Random random = new Random(0);
+        random.nextBytes(content);
+        // Repeated blocks with varying distances distinguish the compression levels.
+        for (int i = 1024; i < content.length; i += 128) {
+            System.arraycopy(content, random.nextInt(i - 128), content, i, 128);
+        }
+        Files.write(source.toPath(), content);
+
+        assertTrue(new ZipCompressAction(source, defaultDestination, false, Deflater.DEFAULT_COMPRESSION).execute());
+        final byte[] defaultBytes = readDeflatedEntry(defaultDestination);
+        for (int level = Deflater.NO_COMPRESSION; level <= Deflater.BEST_COMPRESSION; level++) {
+            if (level == 6) { // The Deflater default is level 6.
+                continue;
+            }
+            assertTrue(new ZipCompressAction(source, destination, false, level).execute());
+            assertFalse(
+                    Arrays.equals(defaultBytes, readDeflatedEntry(destination)),
+                    "Test data must distinguish the default from level " + level);
+        }
+        assertTrue(new ZipCompressAction(source, destination, true, compressionLevel).execute());
+        assertTrue(destination.exists());
+        assertFalse(source.exists());
+        assertArrayEquals(defaultBytes, readDeflatedEntry(destination));
+    }
+
+    private static byte[] readDeflatedEntry(final File archive) throws IOException {
+        final byte[] bytes = Files.readAllBytes(archive.toPath());
+        final ByteBuffer header = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+        final int offset = 30 + (header.getShort(26) & 0xffff) + (header.getShort(28) & 0xffff);
+        try (ZipFile zip = new ZipFile(archive)) {
+            final int size = Math.toIntExact(zip.entries().nextElement().getCompressedSize());
+            // Compare the compressed payload, excluding timestamps in the ZIP headers.
+            return Arrays.copyOfRange(bytes, offset, offset + size);
+        }
+    }
+
+    @Test
+    void testDeprecatedClassKeepsPublicApi(@TempDir File tempDir) {
+        final File source = new File(tempDir, "source.log");
+        final File destination = new File(tempDir, "source.log.zip");
+
+        final ZipCompressAction action = new ZipCompressAction(source, destination, false, 5);
+
+        assertEquals(source, action.getSource());
+        assertEquals(destination, action.getDestination());
+        assertFalse(action.isDeleteSource());
+        assertEquals(5, action.getLevel());
+        assertEquals(
+                "ZipCompressAction[" + source + " to " + destination + ", level=5, deleteSource=false]",
+                action.toString());
     }
 }

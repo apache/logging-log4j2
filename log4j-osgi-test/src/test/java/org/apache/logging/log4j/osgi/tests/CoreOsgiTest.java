@@ -17,15 +17,21 @@
 package org.apache.logging.log4j.osgi.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.linkBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
+import java.io.File;
+import java.nio.file.Files;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.osgi.BundleContextSelector;
@@ -41,6 +47,29 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class CoreOsgiTest {
+
+    @Test
+    public void testDeprecatedCompressionActionsDelegateToInternalImplementations() throws Exception {
+        final File directory =
+                Files.createTempDirectory("log4j-osgi-compression").toFile();
+        final File source = new File(directory, "source.log");
+        final File gzip = new File(directory, "source.log.gz");
+        final File zip = new File(directory, "source.log.zip");
+        try {
+            Files.write(source.toPath(), "test".getBytes());
+            final Action gzipAction = new GzCompressAction(source, gzip, false, -31415);
+            final Action zipAction = new ZipCompressAction(source, zip, false, -31415);
+            assertTrue(gzipAction.execute());
+            assertTrue(zipAction.execute());
+            assertTrue(gzip.isFile());
+            assertTrue(zip.isFile());
+        } finally {
+            Files.deleteIfExists(source.toPath());
+            Files.deleteIfExists(gzip.toPath());
+            Files.deleteIfExists(zip.toPath());
+            Files.deleteIfExists(directory.toPath());
+        }
+    }
 
     @org.ops4j.pax.exam.Configuration
     public Option[] config() {

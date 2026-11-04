@@ -17,10 +17,12 @@
 package org.apache.logging.log4j.util.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -85,7 +87,7 @@ class SerializationUtilTest {
 
         final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
         setObjectInputFilter(in, "!" + Payload.class.getName());
-        assertThat(readParameter(in)).isNull();
+        assertThatThrownBy(() -> readParameter(in)).isInstanceOf(InvalidClassException.class);
     }
 
     @Test
@@ -97,7 +99,7 @@ class SerializationUtilTest {
 
         final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(data));
         setObjectInputFilter(in, "!" + Payload.class.getName());
-        assertThat(readParameter(in)).isNull();
+        assertThatThrownBy(() -> readParameter(in)).isInstanceOf(InvalidClassException.class);
     }
 
     private static byte[] serialize(final Serializable obj) throws IOException {

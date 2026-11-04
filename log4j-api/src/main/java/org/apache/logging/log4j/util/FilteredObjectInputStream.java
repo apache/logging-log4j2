@@ -35,7 +35,6 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  * <ul>
  * <li>primitive types,</li>
  * <li>{@code java.math.BigDecimal} and {@code java.math.BigInteger},</li>
- * <li>{@code java.rmi.MarshalledObject},</li>
  * <li>all classes whose name starts with {@code java.lang.}, {@code java.time.}, {@code java.util.}
  * or {@code org.apache.logging.log4j.}.</li>
  * </ul>

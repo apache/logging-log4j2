@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.security.KeyStore;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -89,6 +91,51 @@ class SslConfigurationFactoryTest {
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
+    }
+
+    @Test
+    void testStoreLocationWithoutTypeUsesDefaultType() {
+        final Properties props = new Properties();
+        props.setProperty(KEYSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.KEYSTORE_LOCATION);
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getKeyStoreConfig());
+        assertEquals(
+                SslConfigurationDefaults.KEYSTORE_TYPE,
+                configuration.getKeyStoreConfig().getKeyStoreType());
+    }
+
+    @Test
+    void testTrustStoreLocationWithoutTypeUsesDefaultType() {
+        final Properties props = new Properties();
+        props.setProperty(TRUSTSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.TRUSTSTORE_LOCATION);
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getTrustStoreConfig());
+        assertEquals(
+                SslConfigurationDefaults.KEYSTORE_TYPE,
+                configuration.getTrustStoreConfig().getKeyStoreType());
+    }
+
+    @Test
+    void testEmptyPasswordLoadsCertificateWithoutExplicitStoreType() throws Exception {
+        final Properties props = new Properties();
+        props.setProperty(KEYSTORE_LOCATION_PROP_NAME, SslKeyStoreConstants.KEYSTORE_P12_NOPASS_LOCATION);
+        props.setProperty(KEYSTORE_PASSWORD_PROP_NAME, "");
+
+        final SslConfiguration configuration =
+                SslConfigurationFactory.createSslConfiguration(new PropertiesUtil(props));
+
+        assertNotNull(configuration);
+        assertNotNull(configuration.getKeyStoreConfig());
+        final KeyStore loadedKeyStore = configuration.getKeyStoreConfig().getKeyStore();
+        assertNotNull(loadedKeyStore.getCertificate("1"));
     }
 
     static Stream<Arguments> windowsKeystoreConfigs() {

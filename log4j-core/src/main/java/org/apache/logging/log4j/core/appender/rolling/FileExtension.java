@@ -18,10 +18,16 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.zip.Deflater;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
-import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.Bzip2CompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.CompressActionSupport;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.DeflateCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.GzCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.ZipCompressAction;
+import org.apache.logging.log4j.core.appender.rolling.action.internal.ZstdCompressAction;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 
 /**
@@ -29,6 +35,11 @@ import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
  */
 public enum FileExtension {
     ZIP(".zip") {
+        @Override
+        int resolveCompressionLevel(final int level) {
+            return resolveDeflaterLevel("ZIP", level);
+        }
+
         @Override
         public Action createCompressAction(
                 final String renameTo,
@@ -40,6 +51,11 @@ public enum FileExtension {
     },
     GZ(".gz") {
         @Override
+        int resolveCompressionLevel(final int level) {
+            return resolveDeflaterLevel("GZIP", level);
+        }
+
+        @Override
         public Action createCompressAction(
                 final String renameTo,
                 final String compressedName,
@@ -50,24 +66,37 @@ public enum FileExtension {
     },
     BZIP2(".bz2") {
         @Override
-        public Action createCompressAction(
-                final String renameTo,
-                final String compressedName,
-                final boolean deleteSource,
-                final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
+        int resolveCompressionLevel(final int level) {
+            return CompressActionSupport.resolveCompressionLevel(
+                    "BZip2",
+                    level,
+                    BZip2CompressorOutputStream.MIN_BLOCKSIZE,
+                    BZip2CompressorOutputStream.MAX_BLOCKSIZE,
+                    BZip2CompressorOutputStream.MAX_BLOCKSIZE);
         }
-    },
-    DEFLATE(".deflate") {
+
         @Override
         public Action createCompressAction(
                 final String renameTo,
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
-            return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
+            return new Bzip2CompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
+        }
+    },
+    DEFLATE(".deflate") {
+        @Override
+        int resolveCompressionLevel(final int level) {
+            return resolveDeflaterLevel("Deflate", level);
+        }
+
+        @Override
+        public Action createCompressAction(
+                final String renameTo,
+                final String compressedName,
+                final boolean deleteSource,
+                final int compressionLevel) {
+            return new DeflateCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     PACK200(".pack200") {
@@ -77,7 +106,6 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zst", "pack200", or "deflate".
             return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
         }
     },
@@ -88,19 +116,27 @@ public enum FileExtension {
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
             return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
         }
     },
     ZSTD(".zst") {
+        @Override
+        int resolveCompressionLevel(final int level) {
+            try {
+                return ZstdCompressAction.resolveCompressionLevel(level);
+            } catch (final LinkageError unavailable) {
+                // Missing optional dependencies must only fail asynchronous compression.
+                return level;
+            }
+        }
+
         @Override
         public Action createCompressAction(
                 final String renameTo,
                 final String compressedName,
                 final boolean deleteSource,
                 final int compressionLevel) {
-            // One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
-            return new CommonsCompressAction("zstd", source(renameTo), target(compressedName), deleteSource);
+            return new ZstdCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     };
 
@@ -131,6 +167,15 @@ public enum FileExtension {
 
     public abstract Action createCompressAction(
             String renameTo, String compressedName, boolean deleteSource, int compressionLevel);
+
+    int resolveCompressionLevel(final int level) {
+        return level;
+    }
+
+    private static int resolveDeflaterLevel(final String format, final int level) {
+        return CompressActionSupport.resolveCompressionLevel(
+                format, level, Deflater.DEFAULT_COMPRESSION, Deflater.BEST_COMPRESSION, Deflater.DEFAULT_COMPRESSION);
+    }
 
     public String getExtension() {
         return extension;

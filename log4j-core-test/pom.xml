@@ -64,7 +64,7 @@
     <!-- Additional version of LMAX Disruptor to test -->
     <disruptor4.version>4.0.0</disruptor4.version>
     <json-unit.version>2.40.1</json-unit.version>
-    <bouncycastle.version>1.85</bouncycastle.version>
+    <bouncycastle.version>1.86</bouncycastle.version>
   </properties>
 
   <dependencyManagement>
@@ -432,7 +432,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;java.rmi.MarshalledObject;org.apache.logging.log4j.**;!*</argLine>
+              <argLine>-Djdk.serialFilter=java.lang.**;java.time.**;java.util.**;java.math.BigDecimal;java.math.BigInteger;org.apache.logging.log4j.**;!*</argLine>
               <groups>serialization</groups>
             </configuration>
           </execution>
@@ -461,6 +461,43 @@
               </classpathDependencyExcludes>
               <includes>
                 <include>**/YamlConfigurationFactoryMissingDependenciesIT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-with-jackson-3</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <additionalClasspathDependencies>
+                <dependency>
+                  <groupId>tools.jackson.dataformat</groupId>
+                  <artifactId>jackson-dataformat-yaml</artifactId>
+                  <version>${jackson3.version}</version>
+                </dependency>
+              </additionalClasspathDependencies>
+              <includes>
+                <include>**/YamlConfigurationFactoryJackson3IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>java9-variant-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>org/apache/logging/log4j/core/java9/*IT.java</include>
               </includes>
             </configuration>
           </execution>

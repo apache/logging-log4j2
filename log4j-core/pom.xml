@@ -65,10 +65,12 @@
       javax.mail.*;version="[1.6,2)";resolution:=optional,
       org.apache.commons.compress.*;resolution:=optional,
       org.apache.commons.csv;resolution:=optional,
+      org.apache.commons.io.*;resolution:=optional,
       org.apache.kafka.*;resolution:=optional,
       org.codehaus.stax2.*;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
+      tools.jackson.*;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
       javax.tools;resolution:=optional,
       <!-- `java.sql`, which depends on `java.logging` is optional -->
@@ -99,6 +101,9 @@
       org.apache.commons.csv;transitive=false,
       org.jspecify;transitive=false,
       org.zeromq.jeromq;transitive=false,
+      tools.jackson.core;transitive=false,
+      tools.jackson.databind;transitive=false,
+      tools.jackson.dataformat.yaml;transitive=false,
       <!-- A module descriptor is only available in version 1.2.16+, hence it is not detected -->
       com.conversantmedia.disruptor;substitute="disruptor";transitive=false;static=true,
       <!-- Filebased module names: MUST be static -->
@@ -193,6 +198,22 @@
       <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Alternative YAML support using Jackson 3.x (requires Java 17+) -->
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
     <dependency>
       <groupId>org.jctools</groupId>
@@ -227,51 +248,26 @@
   <build>
     <plugins>
 
-      <!-- Add Java 9+ code for the MRJ -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/log4j-core-java9</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
+          <!-- Compiles the Java 9 variants of some classes to `META-INF/versions/9`.
+               Bound to `prepare-package` so that `bnd-maven-plugin` (running at `process-classes`)
+               does not see the versioned classes.
+               The `Multi-Release: true` manifest entry is provided by the `bnd-multi-release` property above. -->
           <execution>
-            <id>unpack-classes</id>
+            <id>compile-java9</id>
             <goals>
-              <goal>unpack</goal>
+              <goal>compile</goal>
             </goals>
             <phase>prepare-package</phase>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-core-java9</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <release>9</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+              <multiReleaseOutput>true</multiReleaseOutput>
             </configuration>
           </execution>
         </executions>
