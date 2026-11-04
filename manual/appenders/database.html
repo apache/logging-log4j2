@@ -877,8 +877,9 @@ Otherwise, they will be ignored.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>useTls</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use TLS/SSL to connect to Cassandra. This is <code>false</code> by default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use TLS/SSL to connect to Cassandra. This is <code>false</code> by default. To verify the host name against the TLS
+certificate, set the <code>log4j2.sslVerifyHostName</code> system property to <code>true</code> (this setting is <code>false</code> by default).</p></td>
 </tr>
 </tbody>
 </table>
