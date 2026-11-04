@@ -39,6 +39,7 @@ public class TlsSyslogFrame {
      *
      * @param message the message to frame
      * @param charset the charset used to encode the message
+     * @since 2.27.0
      */
     public TlsSyslogFrame(final String message, final Charset charset) {
         this.message = message;
