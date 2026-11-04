@@ -967,9 +967,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.addAppender(appender, null, null);
+            }
         }
     }
 
@@ -984,6 +988,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
+        if (filter == null || logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
@@ -992,9 +999,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
             nlc.addFilter(filter);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.addFilter(filter);
+            }
         }
     }
 
@@ -1010,6 +1021,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public synchronized void setLoggerAdditive(
             final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+        if (logger == null) {
+            return;
+        }
         final String loggerName = logger.getName();
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
@@ -1017,9 +1031,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
             nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+            final LoggerConfig existing = loggerConfigs.putIfAbsent(loggerName, nlc);
+            if (existing == null) {
+                setParents();
+                logger.getContext().updateLoggers();
+            } else {
+                existing.setAdditive(additive);
+            }
         }
     }
 
