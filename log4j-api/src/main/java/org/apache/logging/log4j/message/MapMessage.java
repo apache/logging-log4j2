@@ -415,8 +415,33 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
                 sb.append(' ');
             }
             sb.append(data.getKeyAt(i)).append(Chars.EQ).append(Chars.DQUOTE);
+            final int valueStart = sb.length();
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
+            escapeStructuredDataValue(sb, valueStart);
             sb.append(Chars.DQUOTE);
+        }
+    }
+
+    private static void escapeStructuredDataValue(final StringBuilder sb, final int start) {
+        int escapeCount = 0;
+        for (int i = start; i < sb.length(); i++) {
+            final char c = sb.charAt(i);
+            if (c == Chars.DQUOTE || c == '\\' || c == ']') {
+                escapeCount++;
+            }
+        }
+        if (escapeCount == 0) {
+            return;
+        }
+        final int lastChar = sb.length() - 1;
+        sb.setLength(sb.length() + escapeCount);
+        int lastPos = sb.length() - 1;
+        for (int i = lastChar; i >= start; i--) {
+            final char c = sb.charAt(i);
+            sb.setCharAt(lastPos--, c);
+            if (c == Chars.DQUOTE || c == '\\' || c == ']') {
+                sb.setCharAt(lastPos--, '\\');
+            }
         }
     }
 
