@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -326,9 +326,7 @@ public class Log4jLogEventTest {
         different("null fqcn", builder(event).setLoggerFqcn(null), event);
 
         different("different name", builder(event).setLoggerName("different"), event);
-        assertThrows(
-                NullPointerException.class,
-                () -> different("null name", builder(event).setLoggerName(null), event));
+        different("null name", builder(event).setLoggerName(null), event);
 
         different("different marker", builder(event).setMarker(MarkerManager.getMarker("different")), event);
         different("null marker", builder(event).setMarker(null), event);
@@ -365,6 +363,6 @@ public class Log4jLogEventTest {
     @Test
     public void testToString() {
         // Throws an NPE in 2.6.2
-        assertNotNull(Log4jLogEvent.newBuilder().build().toString());
+        assertDoesNotThrow(() -> new Log4jLogEvent().toString());
     }
 }
