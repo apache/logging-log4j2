@@ -6,7 +6,8 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
     <issue id="4457" link="https://github.com/apache/logging-log4j2/issues/4457"/>
+    <issue id="4458" link="https://github.com/apache/logging-log4j2/pull/4458"/>
     <description format="asciidoc">
-        Return `null` from `JavaLookup` for an unknown key instead of throwing `IllegalArgumentException`, so that the default lookup is used.
+        Fix `${java:...}` logging an error for an unknown key.
     </description>
 </entry>
