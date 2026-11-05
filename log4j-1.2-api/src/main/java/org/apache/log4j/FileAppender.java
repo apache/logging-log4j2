@@ -307,7 +307,7 @@ public class FileAppender extends WriterAppender {
     /**
      * Sets the quiet writer being used.
      *
-     * This method is overriden by {@link RollingFileAppender}.
+     * This method is overridden by {@link RollingFileAppender}.
      */
     protected void setQWForFiles(final Writer writer) {
         this.qw = new QuietWriter(writer, errorHandler);
