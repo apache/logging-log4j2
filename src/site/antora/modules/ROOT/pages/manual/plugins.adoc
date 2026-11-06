@@ -188,8 +188,8 @@ This annotation validates that a value is non-empty.
 This covers a check for null as well as several other scenarios: empty `CharSequence` objects, empty arrays, empty `Collection` instances, and empty `Map` instances.
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/validation/constraints/ValidHost.html[`@ValidHost`]::
-This annotation validates that a value corresponds to a valid host name.
-This uses the same validation as https://docs.oracle.com/javase/{java-target-version}/docs/api/java/net/InetAddress.html#getByName-java.lang.String-[`InetAddress.getByName(String)`].
+This annotation validates that a value corresponds to a valid host name or IP address.
+A host name that is syntactically valid but does not resolve at validation time is accepted, since it may only appear in DNS later.
 
 link:../javadoc/log4j-core/org/apache/logging/log4j/core/config/plugins/validation/constraints/ValidPort.html[`@ValidPort`]::
 This annotation validates that a value corresponds to a valid port number between 0 and 65535.

@@ -21,13 +21,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.net.InetAddress;
 import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
 import org.apache.logging.log4j.core.config.plugins.validation.validators.ValidHostValidator;
 
 /**
- * Indicates that a plugin attribute must be a valid host. This relies on the same validation rules as
- * {@link InetAddress#getByName(String)}.
+ * Indicates that a plugin attribute must be a valid host. The value must be a syntactically valid host name or an IP
+ * address. A host name that does not resolve at validation time is accepted, since it may only appear in DNS later.
  *
  * @since 2.8
  */
