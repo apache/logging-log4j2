@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
@@ -46,6 +47,7 @@ import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
@@ -375,6 +377,39 @@ class GelfLayoutTest {
         assertDelimitedOnlyAtTheEnd(output);
         final JsonNode json = parse(output);
         assertThat(json.get("_map" + SPECIAL_CHARS).asText()).isEqualTo("map" + SPECIAL_CHARS);
+    }
+
+    @Test
+    void testSpecialCharsAreEscapedInEncode() throws IOException {
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("key", "ctx" + SPECIAL_CHARS);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLevel(Level.INFO)
+                .setMessage(new ParameterizedMessage("message{}", SPECIAL_CHARS))
+                .setContextData(contextData)
+                .build();
+        final GelfLayout layout = GelfLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
+                .setHost(HOSTNAME)
+                .setCompressionType(CompressionType.OFF)
+                .setIncludeThreadContext(false)
+                .setMessagePattern("%m")
+                .setAdditionalFields(new KeyValuePair[] {new KeyValuePair("field", "${ctx:key}")})
+                .setIncludeNullDelimiter(true)
+                .setIncludeNewLineDelimiter(true)
+                .build();
+        final SpyByteBufferDestination destination = new SpyByteBufferDestination(4096, 4096);
+
+        layout.encode(event, destination);
+
+        assertThat(destination.drainPoints).isEmpty();
+        final String output =
+                new String(destination.buffer.array(), 0, destination.buffer.position(), StandardCharsets.UTF_8);
+        assertDelimitedOnlyAtTheEnd(output);
+        final JsonNode json = parse(output);
+        assertThat(json.get("short_message").asText()).isEqualTo("message" + SPECIAL_CHARS);
+        assertThat(json.get("full_message").asText()).isEqualTo("message" + SPECIAL_CHARS);
+        assertThat(json.get("_field").asText()).isEqualTo("ctx" + SPECIAL_CHARS);
     }
 
     private void testRequiresLocation(final String messagePattern, final Boolean requiresLocation) {
