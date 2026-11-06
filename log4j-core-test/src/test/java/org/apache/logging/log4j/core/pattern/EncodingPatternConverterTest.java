@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 class EncodingPatternConverterTest {
 
@@ -119,5 +120,41 @@ class EncodingPatternConverterTest {
                 .handlesThrowable());
         assertTrue(EncodingPatternConverter.newInstance(configuration, new String[] {"%ex", "XML"})
                 .handlesThrowable());
+    }
+
+    @Test
+    @Timeout(2)
+    void testHtmlEscapeLargeInput() {
+        final String specialChars = "<>&\"'/";
+        final int repetitions = 10_000;
+        final StringBuilder rawMessage = new StringBuilder(specialChars.length() * repetitions);
+        for (int i = 0; i < repetitions; i++) {
+            rawMessage.append(specialChars);
+        }
+        final String message = rawMessage.toString();
+
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(EncodingPatternConverterTest.class.getName())
+                .setLevel(Level.DEBUG)
+                .setMessage(new SimpleMessage(message))
+                .build();
+
+        final LoggerContext ctx = LoggerContext.getContext();
+        final String[] options = new String[] {"%msg", "HTML"};
+        final EncodingPatternConverter converter =
+                EncodingPatternConverter.newInstance(ctx.getConfiguration(), options);
+        assertNotNull(converter, "Error creating converter");
+
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+
+        final String expected = message.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;")
+                .replace("/", "&#x2F;");
+
+        assertEquals(expected, sb.toString());
     }
 }

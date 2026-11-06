@@ -122,8 +122,9 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
                     if (escaped == null) {
                         toAppendTo.setCharAt(--j, c);
                     } else {
-                        toAppendTo.replace(j - escaped.length(), j, escaped);
-                        j -= escaped.length();
+                        for (int k = escaped.length() - 1; k >= 0; k--) {
+                            toAppendTo.setCharAt(--j, escaped.charAt(k));
+                        }
                     }
                 }
             }
