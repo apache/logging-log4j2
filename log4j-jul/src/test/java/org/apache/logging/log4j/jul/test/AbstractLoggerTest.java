@@ -17,14 +17,25 @@
 package org.apache.logging.log4j.jul.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Filter;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.jul.ApiLogger;
@@ -91,6 +102,103 @@ abstract class AbstractLoggerTest {
     @Test
     void testIsLoggable() {
         assertThat(logger.isLoggable(java.util.logging.Level.SEVERE)).isTrue();
+    }
+
+    @Test
+    void testIsLoggableSuppressesRecursiveEnablement() {
+        final Logger nestedLogger = Logger.getLogger(LOGGER_NAME + ".RecursiveEnablement");
+        final Configuration configuration = LoggerContext.getContext(false).getConfiguration();
+        final AtomicInteger calls = new AtomicInteger();
+        final AbstractFilter filter = new AbstractFilter() {
+            @Override
+            public Result filter(
+                    final org.apache.logging.log4j.core.Logger logger,
+                    final Level level,
+                    final Marker marker,
+                    final Object message,
+                    final Throwable throwable) {
+                assertThat(calls.incrementAndGet())
+                        .as("Global filter must not be re-entered through JUL isLoggable")
+                        .isEqualTo(1);
+                assertThat(nestedLogger.isLoggable(java.util.logging.Level.INFO))
+                        .isFalse();
+                return Result.NEUTRAL;
+            }
+        };
+        configuration.addFilter(filter);
+        try {
+            assertThat(logger.isLoggable(java.util.logging.Level.INFO)).isTrue();
+            assertThat(calls.get()).isEqualTo(1);
+        } finally {
+            configuration.removeFilter(filter);
+        }
+    }
+
+    @Test
+    void testIsLoggableRecoversAfterFilterException() {
+        final Configuration configuration = LoggerContext.getContext(false).getConfiguration();
+        final AtomicInteger calls = new AtomicInteger();
+        final IllegalStateException failure = new IllegalStateException("Filter failure");
+        final AbstractFilter filter = new AbstractFilter() {
+            @Override
+            public Result filter(
+                    final org.apache.logging.log4j.core.Logger logger,
+                    final Level level,
+                    final Marker marker,
+                    final Object message,
+                    final Throwable throwable) {
+                if (calls.incrementAndGet() == 1) {
+                    throw failure;
+                }
+                return Result.NEUTRAL;
+            }
+        };
+        configuration.addFilter(filter);
+        try {
+            assertThat(assertThrows(IllegalStateException.class, () -> logger.isLoggable(java.util.logging.Level.INFO)))
+                    .isSameAs(failure);
+            assertThat(logger.isLoggable(java.util.logging.Level.INFO)).isTrue();
+            assertThat(calls.get()).isEqualTo(2);
+        } finally {
+            configuration.removeFilter(filter);
+        }
+    }
+
+    @Test
+    void testIsLoggableDoesNotSuppressOtherThreads() throws Exception {
+        final Configuration configuration = LoggerContext.getContext(false).getConfiguration();
+        final CyclicBarrier barrier = new CyclicBarrier(2);
+        final AtomicInteger calls = new AtomicInteger();
+        final AbstractFilter filter = new AbstractFilter() {
+            @Override
+            public Result filter(
+                    final org.apache.logging.log4j.core.Logger logger,
+                    final Level level,
+                    final Marker marker,
+                    final Object message,
+                    final Throwable throwable) {
+                calls.incrementAndGet();
+                try {
+                    barrier.await(5, TimeUnit.SECONDS);
+                } catch (final Exception failure) {
+                    throw new IllegalStateException(failure);
+                }
+                return Result.NEUTRAL;
+            }
+        };
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
+        configuration.addFilter(filter);
+        try {
+            final Future<Boolean> first = executor.submit(() -> logger.isLoggable(java.util.logging.Level.INFO));
+            final Future<Boolean> second = executor.submit(() -> logger.isLoggable(java.util.logging.Level.INFO));
+            assertThat(first.get(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(second.get(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(calls.get()).isEqualTo(2);
+        } finally {
+            executor.shutdownNow();
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+            configuration.removeFilter(filter);
+        }
     }
 
     @Test
