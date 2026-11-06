@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.net;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
@@ -116,16 +115,10 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
         @Override
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
-            InetAddress inetAddress;
-            try {
-                inetAddress = InetAddress.getByName(data.host);
-            } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of " + data.host, ex);
-                return null;
-            }
             final OutputStream os =
                     new DatagramOutputStream(data.host, data.port, data.layout.getHeader(), data.layout.getFooter());
-            return new DatagramSocketManager(name, os, inetAddress, data.host, data.port, data.layout, data.bufferSize);
+            // Resolved on the first datagram, since the host may only appear in DNS later.
+            return new DatagramSocketManager(name, os, null, data.host, data.port, data.layout, data.bufferSize);
         }
     }
 }

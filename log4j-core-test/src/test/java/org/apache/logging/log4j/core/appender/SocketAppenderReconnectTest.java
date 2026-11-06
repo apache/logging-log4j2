@@ -22,12 +22,15 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ import java.util.stream.IntStream;
 import javax.net.ssl.SSLContext;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
@@ -135,6 +139,59 @@ class SocketAppenderReconnectTest {
                     // server.
                     primaryServer.close();
                     verifyLoggingSuccess(loggerContext, secondaryServer, errorHandler);
+                }
+
+            }
+
+            // Reset the host resolver
+            finally {
+                TcpSocketManager.setHostResolver(new HostResolver());
+            }
+        }
+    }
+
+    /**
+     * A host that only appears in DNS after startup must not drop the appender: the reconnector resolves it again.
+     *
+     * @see <a href="https://github.com/apache/logging-log4j2/issues/4309">#4309</a>
+     */
+    @Test
+    @UsingStatusListener // Suppresses `StatusLogger` output, unless there is a failure
+    void unresolvable_host_should_be_resolved_on_reconnect() throws Exception {
+        try (final LineReadingTcpServer server = new LineReadingTcpServer()) {
+
+            server.start("Main", EPHEMERAL_PORT);
+            final InetSocketAddress serverAddress =
+                    (InetSocketAddress) server.getServerSocket().getLocalSocketAddress();
+            final AtomicBoolean resolvable = new AtomicBoolean();
+            final HostResolver hostResolver = new HostResolver() {
+                @Override
+                public List<InetSocketAddress> resolveHost(final String host, final int port)
+                        throws UnknownHostException {
+                    if (!resolvable.get()) {
+                        throw new UnknownHostException(host);
+                    }
+                    return Collections.singletonList(serverAddress);
+                }
+            };
+            TcpSocketManager.setHostResolver(hostResolver);
+            try {
+
+                // Initialize the logger context while the host does not resolve.
+                final Configuration config = createConfiguration("loghost.invalid", EPHEMERAL_PORT, null);
+                try (final LoggerContext loggerContext = createStartedLoggerContext(config)) {
+
+                    // The appender must survive, otherwise there is nothing left to reconnect.
+                    final Appender appender = loggerContext.getConfiguration().getAppender(APPENDER_NAME);
+                    assertThat(appender)
+                            .as("appender dropped for an unresolvable host")
+                            .isNotNull();
+
+                    // Configure the error handler, publish the host, and verify the connection.
+                    final BufferingErrorHandler errorHandler = new BufferingErrorHandler();
+                    appender.setHandler(errorHandler);
+                    resolvable.set(true);
+                    verifyLoggingSuccess(loggerContext, server, errorHandler);
                 }
 
             }

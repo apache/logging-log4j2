@@ -16,8 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import java.net.IDN;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
@@ -32,6 +34,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ValidHostValidator implements ConstraintValidator<ValidHost> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private static final Pattern IPV4_LITERAL = Pattern.compile("\\d+(\\.\\d+){3}");
 
     private ValidHost annotation;
 
@@ -50,11 +54,35 @@ public class ValidHostValidator implements ConstraintValidator<ValidHost> {
             // InetAddress factory methods all have built in validation
             return true;
         }
+        final String host = value.toString();
         try {
-            InetAddress.getByName(value.toString());
+            InetAddress.getByName(host);
             return true;
         } catch (final UnknownHostException e) {
+            if (isValidHostName(host)) {
+                // The name may only appear in DNS later, e.g. a Kubernetes Service created after the JVM starts.
+                LOGGER.warn("Host '{}' cannot be resolved yet; it will be resolved when connecting", host);
+                return true;
+            }
             LOGGER.error(annotation.message(), e);
+            return false;
+        }
+    }
+
+    private static boolean isValidHostName(final String host) {
+        final String name = host.endsWith(".") ? host.substring(0, host.length() - 1) : host;
+        if (name.isEmpty() || name.length() > 253 || IPV4_LITERAL.matcher(name).matches()) {
+            return false;
+        }
+        for (final String label : name.split("\\.", -1)) {
+            if (label.isEmpty() || label.length() > 63 || label.startsWith("-") || label.endsWith("-")) {
+                return false;
+            }
+        }
+        try {
+            IDN.toASCII(name, IDN.USE_STD3_ASCII_RULES);
+            return true;
+        } catch (final IllegalArgumentException ignored) {
             return false;
         }
     }
