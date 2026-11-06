@@ -101,6 +101,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String)" class="member-name-link">TlsSyslogFrame</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.nio.charset.Charset)" class="member-name-link">TlsSyslogFrame</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates a frame whose length counts the message bytes in the supplied charset.</div>
+</div>
 </div>
 </section>
 </li>
@@ -148,6 +153,21 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;(java.lang.String)">
 <h3>TlsSyslogFrame</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TlsSyslogFrame</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.nio.charset.Charset)">
+<h3>TlsSyslogFrame</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TlsSyslogFrame</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</span></div>
+<div class="block">Creates a frame whose length counts the message bytes in the supplied charset.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>message</code> - the message to frame</dd>
+<dd><code>charset</code> - the charset used to encode the message</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
 </section>
 </li>
 </ul>
