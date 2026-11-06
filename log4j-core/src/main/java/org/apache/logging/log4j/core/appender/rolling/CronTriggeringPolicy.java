@@ -74,7 +74,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         if (checkOnStartup
                 && lastRollForFile != null
                 && lastRegularRoll != null
-                && lastRollForFile.before(lastRegularRoll)) {
+                && lastRollForFile.before(lastRegularRoll)
+                && fileTime != lastRegularRoll.getTime()) {
             lastRollDate = lastRollForFile;
             rollover();
         }
