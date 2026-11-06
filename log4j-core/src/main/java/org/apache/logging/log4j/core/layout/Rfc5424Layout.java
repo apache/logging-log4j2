@@ -305,7 +305,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         appendStructuredElements(buf, event);
         appendMessage(buf, event);
         if (useTlsMessageFormat) {
-            return new TlsSyslogFrame(buf.toString()).toString();
+            return new TlsSyslogFrame(buf.toString(), getCharset()).toString();
         }
         return buf.toString();
     }

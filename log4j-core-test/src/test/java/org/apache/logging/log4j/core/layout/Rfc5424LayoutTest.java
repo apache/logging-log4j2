@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -70,6 +72,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -846,6 +849,34 @@ class Rfc5424LayoutTest {
         final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
         final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
         assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"ISO-8859-1, café", "ISO-8859-1, \u20ac", "UTF-8, message", "UTF-8, café"})
+    void testTlsFrameLengthUsesLayoutCharset(final String charsetName, final String message) {
+        final Charset charset = Charset.forName(charsetName);
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("key", "value");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setTimeMillis(1L)
+                .setMessage(new SimpleMessage(message))
+                .setContextData(contextData)
+                .build();
+        final Rfc5424Layout.Rfc5424LayoutBuilder builder =
+                Rfc5424Layout.newBuilder().setCharset(charset).setNewLine(true);
+        final Rfc5424Layout unframedLayout = builder.build();
+        final byte[] expectedPayload = unframedLayout.toSerializable(event).getBytes(charset);
+        assertArrayEquals(expectedPayload, unframedLayout.toByteArray(event));
+
+        final Rfc5424Layout framedLayout = builder.setUseTlsMessageFormat(true).build();
+        final byte[] framedBytes = framedLayout.toByteArray(event);
+        final String frame = new String(framedBytes, charset);
+        final int separator = frame.indexOf(' ');
+        final int advertisedLength = Integer.parseInt(frame.substring(0, separator));
+        final int prefixLength = frame.substring(0, separator + 1).getBytes(charset).length;
+        final byte[] payload = Arrays.copyOfRange(framedBytes, prefixLength, framedBytes.length);
+        assertEquals(payload.length, advertisedLength);
+        assertArrayEquals(expectedPayload, payload);
     }
 
     private static Map<String, String> attributeMap(String... keyValuePairs) {
