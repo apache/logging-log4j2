@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -64,5 +66,33 @@ class JsonUtilsTest {
         final StringBuilder output = new StringBuilder();
         JsonUtils.quoteAsString(builder, output);
         assertEquals("\\u0000\\u0001\\u0002\\u0003\\u0004", output.toString());
+    }
+
+    @Test
+    void testQuotingMatchesJacksonForAllCodePoints() {
+        final JsonStringEncoder encoder = JsonStringEncoder.getInstance();
+        final SoftAssertions assertions = new SoftAssertions();
+        final StringBuilder output = new StringBuilder();
+        for (int codePoint = Character.MIN_CODE_POINT; codePoint <= Character.MAX_CODE_POINT; codePoint++) {
+            // Lone surrogates are not valid code points on their own
+            if (Character.getType(codePoint) == Character.SURROGATE) {
+                continue;
+            }
+            final String input = new String(Character.toChars(codePoint));
+            output.setLength(0);
+            JsonUtils.quoteAsString(input, output);
+            assertions
+                    .assertThat(output.toString())
+                    .as("codePoint=U+%04X", codePoint)
+                    .isEqualTo(new String(encoder.quoteAsString(input)));
+        }
+        assertions.assertAll();
+    }
+
+    @Test
+    void testQuotingSpecialCharacters() {
+        final StringBuilder output = new StringBuilder();
+        JsonUtils.quoteAsString("\"\\/\b\f\n\r\t\u001F", output);
+        assertEquals("\\\"\\\\/\\b\\f\\n\\r\\t\\u001F", output.toString());
     }
 }
