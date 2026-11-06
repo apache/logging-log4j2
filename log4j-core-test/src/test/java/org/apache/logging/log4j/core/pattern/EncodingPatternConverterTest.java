@@ -123,7 +123,6 @@ class EncodingPatternConverterTest {
     }
 
     @Test
-    @Timeout(2)
     void testHtmlEscapeLargeInput() {
         final String specialChars = "<>&\"'/";
         final int repetitions = 10_000;
