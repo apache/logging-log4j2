@@ -83,9 +83,17 @@ class RolloverStrategyCompressionLevelConfigTest {
         }
     }
 
+    /**
+     * The configurations with a {@code tempCompressedFilePattern} compress into a temporary file first, which is
+     * another code path of the strategies.
+     */
     @ParameterizedTest
     @ValueSource(
-            strings = {"RolloverStrategyCompressionLevelDefault.xml", "RolloverStrategyCompressionLevelDirectWrite.xml"
+            strings = {
+                "RolloverStrategyCompressionLevelDefault.xml",
+                "RolloverStrategyCompressionLevelDefaultTemp.xml",
+                "RolloverStrategyCompressionLevelDirectWrite.xml",
+                "RolloverStrategyCompressionLevelDirectWriteTemp.xml"
             })
     void configured_level_is_used_by_the_compressor(final String configuration) throws IOException {
         final long stored = compressedSize(configuration, "0");
