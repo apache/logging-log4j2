@@ -48,7 +48,9 @@ public class DatagramOutputStream extends OutputStream {
     private static final int SHIFT_3 = 24;
 
     private DatagramSocket datagramSocket;
-    private final InetAddress inetAddress;
+    private final String host;
+    private InetAddress inetAddress;
+    private boolean resolutionFailureLogged;
     private final int port;
 
     private final ByteArrayOutputStream data = new ByteArrayOutputStream();
@@ -64,17 +66,10 @@ public class DatagramOutputStream extends OutputStream {
      * @param port The port on the host.
      */
     public DatagramOutputStream(final String host, final int port, final byte[] header, final byte[] footer) {
+        this.host = host;
         this.port = port;
         this.header = header;
         this.footer = footer;
-        try {
-            inetAddress = InetAddress.getByName(host);
-        } catch (final UnknownHostException ex) {
-            final String msg = "Could not find host " + host;
-            LOGGER.error(msg, ex);
-            throw new AppenderLoggingException(msg, ex);
-        }
-
         try {
             datagramSocket = new DatagramSocket();
         } catch (final SocketException ex) {
@@ -102,20 +97,23 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void flush() throws IOException {
         try {
-            if ((this.data.size() > 0 || droppedLength > 0)
-                    && this.datagramSocket != null
-                    && this.inetAddress != null) {
-                if (footer != null) {
-                    copy(footer, 0, footer.length);
+            if (this.data.size() > 0 || droppedLength > 0) {
+                if (this.datagramSocket != null && this.inetAddress == null) {
+                    this.inetAddress = resolveHost();
                 }
-                if (droppedLength > 0) {
-                    LOGGER.warn(
-                            "UDP datagram of {} bytes exceeds the maximum of {} bytes and will be dropped",
-                            droppedLength,
-                            MAX_DATAGRAM_LENGTH);
-                } else {
-                    final byte[] payload = data.toByteArray();
-                    datagramSocket.send(new DatagramPacket(payload, payload.length, inetAddress, port));
+                if (this.datagramSocket != null && this.inetAddress != null) {
+                    if (footer != null) {
+                        copy(footer, 0, footer.length);
+                    }
+                    if (droppedLength > 0) {
+                        LOGGER.warn(
+                                "UDP datagram of {} bytes exceeds the maximum of {} bytes and will be dropped",
+                                droppedLength,
+                                MAX_DATAGRAM_LENGTH);
+                    } else {
+                        final byte[] payload = data.toByteArray();
+                        datagramSocket.send(new DatagramPacket(payload, payload.length, inetAddress, port));
+                    }
                 }
             }
         } finally {
@@ -135,6 +133,20 @@ public class DatagramOutputStream extends OutputStream {
             }
             datagramSocket.close();
             datagramSocket = null;
+        }
+    }
+
+    private InetAddress resolveHost() {
+        try {
+            return InetAddress.getByName(host);
+        } catch (final UnknownHostException ex) {
+            if (resolutionFailureLogged) {
+                LOGGER.debug("Could not resolve host {}; datagrams will be dropped until it resolves", host);
+            } else {
+                LOGGER.warn("Could not resolve host {}; datagrams will be dropped until it resolves", host);
+                resolutionFailureLogged = true;
+            }
+            return null;
         }
     }
 
