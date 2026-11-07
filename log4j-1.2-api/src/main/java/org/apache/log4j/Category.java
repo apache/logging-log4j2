@@ -35,6 +35,7 @@ import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -42,6 +43,7 @@ import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -51,6 +53,10 @@ import org.apache.logging.log4j.util.Strings;
 public class Category implements AppenderAttachable {
 
     private static final String FQCN = Category.class.getName();
+
+    private static boolean isFullCompatibilityEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
+    }
 
     /**
      * Tests if the named category exists (in the default hierarchy).
@@ -192,6 +198,9 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void addAppender(final Appender appender) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         if (appender != null) {
             if (LogManager.isLog4jCorePresent()) {
                 CategoryUtil.addAppender(logger, AppenderAdapter.adapt(appender));
@@ -572,6 +581,9 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAllAppenders() {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         if (aai != null) {
             final Vector appenders = new Vector();
             for (final Enumeration iter = aai.getAllAppenders(); iter != null && iter.hasMoreElements(); ) {
@@ -593,6 +605,9 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAppender(final Appender appender) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         if (appender == null || aai == null) {
             return;
         }
@@ -611,6 +626,9 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAppender(final String name) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         if (name == null || aai == null) {
             return;
         }
@@ -622,6 +640,9 @@ public class Category implements AppenderAttachable {
     }
 
     public void setAdditivity(final boolean additivity) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         if (LogManager.isLog4jCorePresent()) {
             CategoryUtil.setAdditivity(logger, additivity);
         }
@@ -635,6 +656,9 @@ public class Category implements AppenderAttachable {
     }
 
     public void setLevel(final Level level) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         setLevel(level != null ? level.getVersion2Level() : null);
     }
 
@@ -645,10 +669,16 @@ public class Category implements AppenderAttachable {
     }
 
     public void setPriority(final Priority priority) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         setLevel(priority != null ? priority.getVersion2Level() : null);
     }
 
     public void setResourceBundle(final ResourceBundle bundle) {
+        if (!isFullCompatibilityEnabled()) {
+            return;
+        }
         this.bundle = bundle;
     }
 
