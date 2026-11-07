@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
 class EncodingPatternConverterTest {
 
