@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+    <description format="asciidoc">
+        Stop allocating a `Long` per log event in the instant formatting cache used by `%d`.
+        The cache keyed its lookup through a `Function&lt;Instant, Long&gt;`, which boxed the extracted epoch on every
+        call; it now uses a `ToLongFunction&lt;Instant&gt;`.
+        Since the cache is only installed when thread locals are enabled, this allocation happened precisely in
+        garbage-free mode.
+        A failed formatting no longer leaves the cache serving a half-written buffer either.
+    </description>
+</entry>
