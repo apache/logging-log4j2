@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.jul;
 
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -26,6 +27,8 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Log4j API implementation of the JUL {@link Logger} class. <strong>Note that this implementation does
@@ -44,10 +47,13 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class ApiLogger extends Logger {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final AtomicBoolean MUTATOR_WARNING_REPORTED = new AtomicBoolean();
     private static final String MUTATOR_DISABLED =
-            "Ignoring call to `j.u.l.Logger.{}({})`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
+            "Ignoring call to `j.u.l.Logger.{}({})` from `{}`, since the Log4j API does not provide methods to modify the underlying implementation.\n"
                     + "To modify the configuration using JUL, use an `AbstractLoggerAdapter` appropriate for your logging implementation.\n"
-                    + "See https://logging.apache.org/log4j/3.x/log4j-jul.html#log4j.jul.loggerAdapter for more information.";
+                    + "Please report this to the maintainer of the calling class.\n"
+                    + "Set log4j2.julMutatorAccess=warn to see further calls, or ignore to silence these warnings.\n"
+                    + "See https://logging.apache.org/log4j/2.x/log4j-jul.html#log4j2.julLoggerAdapter for more information.";
 
     private final WrappedLogger logger;
     private static final String FQCN = ApiLogger.class.getName();
@@ -102,7 +108,7 @@ public class ApiLogger extends Logger {
 
     @Override
     public void setLevel(final Level newLevel) throws SecurityException {
-        LOGGER.warn(MUTATOR_DISABLED, "setLevel", newLevel);
+        warnMutatorAccess("setLevel", newLevel);
         // Some libraries rely on the following assertion:
         //
         // logger.setLevel(level);
@@ -125,20 +131,32 @@ public class ApiLogger extends Logger {
 
     @Override
     public void setUseParentHandlers(boolean useParentHandlers) {
-        LOGGER.warn(MUTATOR_DISABLED, "setUseParentHandlers", useParentHandlers);
+        warnMutatorAccess("setUseParentHandlers", useParentHandlers);
         super.setUseParentHandlers(useParentHandlers);
     }
 
     @Override
     public void addHandler(Handler handler) throws SecurityException {
-        LOGGER.warn(MUTATOR_DISABLED, "addHandler", handler);
+        warnMutatorAccess("addHandler", handler);
         super.addHandler(handler);
     }
 
     @Override
     public void removeHandler(Handler handler) throws SecurityException {
-        LOGGER.warn(MUTATOR_DISABLED, "removeHandler", handler);
+        warnMutatorAccess("removeHandler", handler);
         super.removeHandler(handler);
+    }
+
+    private static void warnMutatorAccess(final String method, final Object argument) {
+        final String mode = PropertiesUtil.getProperties().getStringProperty("log4j2.julMutatorAccess", "warn-once");
+        if ("ignore".equalsIgnoreCase(mode) || !LOGGER.isWarnEnabled()) {
+            return;
+        }
+        if (!"warn".equalsIgnoreCase(mode) && !MUTATOR_WARNING_REPORTED.compareAndSet(false, true)) {
+            return;
+        }
+        final StackTraceElement caller = StackLocatorUtil.calcLocation(FQCN);
+        LOGGER.warn(MUTATOR_DISABLED, method, argument, caller == null ? "unknown" : caller.getClassName());
     }
 
     @Override
