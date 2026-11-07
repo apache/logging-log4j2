@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -53,10 +54,32 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     private final CompressActionFactoryProvider compressActionFactoryProvider;
     protected final StrSubstitutor strSubstitutor;
 
+    /**
+     * Options passed to {@link CompressActionFactory#createCompressAction(java.nio.file.Path, java.nio.file.Path, Map)}.
+     */
+    private final Map<String, String> compressOptions;
+
     protected AbstractRolloverStrategy(
             CompressActionFactoryProvider compressActionFactoryProvider, final StrSubstitutor strSubstitutor) {
+        this(compressActionFactoryProvider, strSubstitutor, null);
+    }
+
+    /**
+     * @param compressionLevel The compression level or {@code null} to use the default level of the algorithm.
+     */
+    AbstractRolloverStrategy(
+            CompressActionFactoryProvider compressActionFactoryProvider,
+            final StrSubstitutor strSubstitutor,
+            final Integer compressionLevel) {
         this.compressActionFactoryProvider = compressActionFactoryProvider;
         this.strSubstitutor = strSubstitutor;
+        this.compressOptions = compressionLevel != null
+                ? Map.of(CompressActionFactory.COMPRESSION_LEVEL, compressionLevel.toString())
+                : Map.of();
+    }
+
+    Map<String, String> getCompressOptions() {
+        return compressOptions;
     }
 
     public StrSubstitutor getStrSubstitutor() {

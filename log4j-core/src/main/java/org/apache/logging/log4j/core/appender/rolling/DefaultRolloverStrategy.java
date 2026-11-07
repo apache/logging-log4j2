@@ -106,6 +106,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         @PluginBuilderAttribute(value = "tempCompressedFilePattern")
         private String tempCompressedFilePattern;
 
+        @PluginBuilderAttribute("compressionLevel")
+        private Integer compressionLevel;
+
         @PluginConfiguration
         private Configuration config;
 
@@ -151,6 +154,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     customActions,
                     stopCustomActionsOnError,
                     tempCompressedFilePattern,
+                    compressionLevel,
                     configuration);
         }
 
@@ -181,6 +185,25 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
          */
         public Builder setMin(final String min) {
             this.min = min;
+            return this;
+        }
+
+        public Integer getCompressionLevel() {
+            return compressionLevel;
+        }
+
+        /**
+         * Sets the compression level of archived files.
+         * <p>
+         *     The level must be in the native range of the compression algorithm. Unsupported values and algorithms
+         *     that do not support levels fall back to the default level of the algorithm with a warning.
+         * </p>
+         *
+         * @param compressionLevel The compression level or {@code null} for the default level.
+         * @return This builder for chaining convenience
+         */
+        public Builder setCompressionLevel(final Integer compressionLevel) {
+            this.compressionLevel = compressionLevel;
             return this;
         }
 
@@ -299,8 +322,9 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final Action[] customActions,
             final boolean stopCustomActionsOnError,
             final String tempCompressedFilePatternString,
+            final Integer compressionLevel,
             final Configuration configuration) {
-        super(CompressActionFactoryProvider.newInstance(configuration), strSubstitutor);
+        super(CompressActionFactoryProvider.newInstance(configuration), strSubstitutor, compressionLevel);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
         this.useMax = useMax;
@@ -512,11 +536,13 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 }
                 compressAction = new CompositeAction(
                         Arrays.asList(
-                                compressActionFactory.createCompressAction(renameTo, tmpCompressedName, Map.of()),
+                                compressActionFactory.createCompressAction(
+                                        renameTo, tmpCompressedName, getCompressOptions()),
                                 new FileRenameAction(tmpCompressedNameFile, renameToFile, true)),
                         true);
             } else {
-                compressAction = compressActionFactory.createCompressAction(renameTo, compressedName, Map.of());
+                compressAction =
+                        compressActionFactory.createCompressAction(renameTo, compressedName, getCompressOptions());
             }
         }
 
