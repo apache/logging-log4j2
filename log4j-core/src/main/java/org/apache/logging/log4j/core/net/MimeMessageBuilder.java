@@ -71,9 +71,17 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 
     public MimeMessageBuilder setSubject(final String subject) throws MessagingException {
         if (subject != null) {
-            message.setSubject(subject, StandardCharsets.UTF_8.name());
+            message.setSubject(sanitizeHeader(subject), StandardCharsets.UTF_8.name());
         }
         return this;
+    }
+
+    /**
+     * Removes CR and LF characters from the value of a header set from (possibly
+     * attacker-controlled) event data, to prevent header injection.
+     */
+    private static String sanitizeHeader(final String value) {
+        return value.indexOf('\r') >= 0 || value.indexOf('\n') >= 0 ? value.replaceAll("[\\r\\n]", " ") : value;
     }
 
     /**

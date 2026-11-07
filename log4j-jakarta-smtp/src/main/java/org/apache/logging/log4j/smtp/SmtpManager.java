@@ -212,9 +212,17 @@ public class SmtpManager extends MailManager {
         synchronized (msg) {
             msg.setContent(mp);
             msg.setSentDate(new Date());
-            msg.setSubject(subject);
+            msg.setSubject(sanitizeHeader(subject));
             Transport.send(msg);
         }
+    }
+
+    /**
+     * Removes CR and LF characters from the value of a header set from (possibly
+     * attacker-controlled) event data, to prevent header injection.
+     */
+    private static String sanitizeHeader(final String value) {
+        return value.indexOf('\r') >= 0 || value.indexOf('\n') >= 0 ? value.replaceAll("[\\r\\n]", " ") : value;
     }
 
     private synchronized void connect(final LogEvent appendEvent) {
