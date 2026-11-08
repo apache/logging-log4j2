@@ -16,7 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 /**
  * Facilitates implementations of {@link NoSqlConnection}.
@@ -29,6 +33,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>> implements NoSqlConnection<W, T> {
 
     private final AtomicBoolean closed = new AtomicBoolean();
+
+    /**
+     * Loads a reserved-field regular expression from a resource relative to the provider class.
+     *
+     * @param owner the provider class.
+     * @param resourceName the resource name.
+     * @return the compiled pattern for full-string matching.
+     * @throws IllegalStateException if the resource or pattern is missing or invalid.
+     * @since 2.27.0
+     */
+    protected static Pattern loadReservedFieldPattern(final Class<?> owner, final String resourceName) {
+        final String location = owner.getName() + ": " + resourceName;
+        try (InputStream input = owner.getResourceAsStream(resourceName)) {
+            if (input == null) {
+                throw new IllegalStateException("Missing reserved-field resource: " + location);
+            }
+            final Properties properties = new Properties();
+            properties.load(input);
+            final String regex = properties.getProperty("reservedFieldPattern");
+            if (regex == null || regex.trim().isEmpty()) {
+                throw new IllegalStateException("Missing reservedFieldPattern in " + location);
+            }
+            return Pattern.compile(regex);
+        } catch (final IOException | IllegalArgumentException e) {
+            throw new IllegalStateException("Invalid reserved-field resource: " + location, e);
+        }
+    }
 
     @Override
     public void close() {
