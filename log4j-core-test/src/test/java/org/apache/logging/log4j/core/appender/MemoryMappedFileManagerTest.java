@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,8 +26,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -90,5 +95,24 @@ class MemoryMappedFileManagerTest {
         }
         final int expected = initialLength * 2;
         assertEquals(expected, file.length(), "appended, not overwritten");
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,true", "true,false", "false,true", "false,false"})
+    void testWriteHeader(final boolean append, final boolean fileExists) throws IOException {
+        final File file = new File(tempDir, "memory-mapped-file.log");
+        if (fileExists) {
+            Files.write(file.toPath(), "EXISTING\n".getBytes(UTF_8));
+        }
+        final PatternLayout layout =
+                PatternLayout.newBuilder().setHeader("HEADER\n").build();
+
+        try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
+                file.getAbsolutePath(), append, false, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, layout)) {
+            manager.write("DATA\n".getBytes(UTF_8));
+        }
+
+        final String expected = (append && fileExists ? "EXISTING\n" : "HEADER\n") + "DATA\n";
+        assertEquals(expected, new String(Files.readAllBytes(file.toPath()), UTF_8));
     }
 }
