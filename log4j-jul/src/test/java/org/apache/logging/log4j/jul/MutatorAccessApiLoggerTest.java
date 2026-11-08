@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.stream.IntStream;
@@ -73,6 +74,10 @@ class MutatorAccessApiLoggerTest {
         }
     }
 
+    private ResourceBundle bundle() {
+        return ResourceBundle.getBundle("org.apache.logging.log4j.jul.MutatorMessages");
+    }
+
     @Test
     void warnReportsEveryMutatorAndCaller() {
         System.setProperty(PROPERTY, "WARN");
@@ -82,9 +87,11 @@ class MutatorAccessApiLoggerTest {
             logger.setUseParentHandlers(false);
             logger.addHandler(handler);
             logger.removeHandler(handler);
-            assertEquals(4, warnings.size());
+            logger.setResourceBundle(bundle());
+            logger.setResourceBundle(bundle());
+            assertEquals(6, warnings.size());
             for (String warning : warnings) {
-                assertTrue(warning.contains(getClass().getName()), warning);
+                assertTrue(warning.contains(getClass().getName() + ".warnReportsEveryMutatorAndCaller("), warning);
                 assertTrue(warning.contains("Please report this to the maintainer"));
             }
             assertEquals(java.util.logging.Level.FINE, logger.getLevel());
@@ -104,7 +111,10 @@ class MutatorAccessApiLoggerTest {
             logger.addHandler(handler);
             assertEquals(1, logger.getHandlers().length);
             logger.removeHandler(handler);
+            logger.setResourceBundle(bundle());
+            logger.setResourceBundle(bundle());
             assertTrue(warnings.isEmpty());
+            assertEquals(bundle(), logger.getResourceBundle());
             assertEquals(java.util.logging.Level.OFF, logger.getLevel());
         } finally {
             handler.close();
@@ -118,6 +128,7 @@ class MutatorAccessApiLoggerTest {
         IntStream.range(0, 100).parallel().forEach(i -> {
             logger.setLevel(java.util.logging.Level.INFO);
             other.setUseParentHandlers(false);
+            logger.setResourceBundle(bundle());
         });
         assertEquals(1, warnings.size());
         System.setProperty(PROPERTY, "warn-once");

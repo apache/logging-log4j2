@@ -101,8 +101,8 @@ If you need to modify log levels via JUL, you need to select `CoreLoggerAdapter`
 | Default value | `warn-once`
 |===
 
-Controls warnings from `ApiLogger` when code calls `setLevel`, `setUseParentHandlers`, `addHandler`, or `removeHandler`.
-The warning identifies the calling class.
+Controls warnings from `ApiLogger` when code calls `setLevel`, `setUseParentHandlers`, `addHandler`, `removeHandler`, or `setResourceBundle`.
+The warning identifies the calling class, method, and source location.
 
 `warn-once`:: Emit only the first warning across all `ApiLogger` instances sharing the same class loader.
 `warn`:: Emit a warning for every call.

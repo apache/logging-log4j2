@@ -155,15 +155,12 @@ public class ApiLogger extends Logger {
         if (!"warn".equalsIgnoreCase(mode) && !MUTATOR_WARNING_REPORTED.compareAndSet(false, true)) {
             return;
         }
-        final StackTraceElement caller = StackLocatorUtil.calcLocation(FQCN);
-        LOGGER.warn(MUTATOR_DISABLED, method, argument, caller == null ? "unknown" : caller.getClassName());
+        LOGGER.warn(MUTATOR_DISABLED, method, argument, StackLocatorUtil.calcLocation(FQCN));
     }
 
     @Override
     public void setResourceBundle(ResourceBundle bundle) {
-        LOGGER.warn(
-                "Ignoring call to `j.u.l.Logger.setResourceBundle({})`, since `o.a.l.l.jul.LogManager` currently does not support resource bundles.",
-                bundle);
+        warnMutatorAccess("setResourceBundle", bundle);
         super.setResourceBundle(bundle);
     }
 
