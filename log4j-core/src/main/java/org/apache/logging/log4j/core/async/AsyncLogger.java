@@ -145,8 +145,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final StackTraceElement location,
             final Message message,
             final Throwable throwable) {
-        final StackTraceElement resolvedLocation = location != null ? location : calcLocationIfRequested(fqcn);
-        getTranslatorType().log(fqcn, resolvedLocation, level, marker, message, throwable);
+        getTranslatorType().log(fqcn, location, level, marker, message, throwable);
     }
 
     abstract static class TranslatorType {
