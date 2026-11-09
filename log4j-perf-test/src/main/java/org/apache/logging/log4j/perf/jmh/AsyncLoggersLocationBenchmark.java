@@ -38,6 +38,12 @@ import org.openjdk.jmh.annotations.TearDown;
 @State(Scope.Thread)
 public class AsyncLoggersLocationBenchmark {
 
+    private static final StackTraceElement LOCATION = new StackTraceElement(
+            AsyncLoggersLocationBenchmark.class.getName(),
+            "throughputPrecomputedLocation",
+            "AsyncLoggersLocationBenchmark.java",
+            42);
+
     Logger logger;
 
     @Setup(Level.Trial)
@@ -64,5 +70,25 @@ public class AsyncLoggersLocationBenchmark {
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughputSimple() {
         logger.info(BenchmarkMessageParams.TEST);
+    }
+
+    /**
+     * Uses a log builder, without a location: the location is computed by the logger.
+     */
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void throughputLogBuilder() {
+        logger.atInfo().log(BenchmarkMessageParams.TEST);
+    }
+
+    /**
+     * Uses a log builder, with a precomputed location: no stack walk is needed.
+     */
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void throughputPrecomputedLocation() {
+        logger.atInfo().withLocation(LOCATION).log(BenchmarkMessageParams.TEST);
     }
 }
