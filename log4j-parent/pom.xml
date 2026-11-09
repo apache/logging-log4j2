@@ -151,6 +151,14 @@
          ===================================================== -->
     <!-- AssertJ and Mockito request different versions -->
     <byte-buddy.version>1.18.12</byte-buddy.version>
+    <!-- Add 'requires static' for annotation library dependencies
+    to make them visible at compile time to JPMS consumers. -->
+    <bnd-jpms-module-info>$[bnd-module-name];access=0;modules="
+      biz.aQute.bnd.annotation,
+      com.google.errorprone.annotations,
+      org.osgi.annotation.bundle,
+      org.osgi.annotation.versioning
+      "</bnd-jpms-module-info>
   </properties>
 
   <dependencyManagement>
@@ -694,7 +702,48 @@
           </execution>
         </executions>
       </plugin>
-
+      <!-- Expose annotation dependencies as compileOnlyApi for Gradle consumers. -->
+      <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <compileOnlyApiDependencies>
+            <dependency>
+              <groupId>org.jspecify</groupId>
+              <artifactId>jspecify</artifactId>
+              <version>${jspecify.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>biz.aQute.bnd</groupId>
+              <artifactId>biz.aQute.bnd.annotation</artifactId>
+              <version>${bnd.annotation.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_annotations</artifactId>
+              <version>${error-prone.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.bundle</artifactId>
+              <version>${osgi.annotation.bundle.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+              <version>${osgi.annotation.versioning.version}</version>
+            </dependency>
+          </compileOnlyApiDependencies>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gmm</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
