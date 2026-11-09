@@ -16,7 +16,7 @@
  */
 @Export
 @Open("org.apache.logging.log4j.core")
-@Version("2.21.0")
+@Version("2.22.0")
 package org.apache.logging.log4j.layout.template.json;
 
 import aQute.bnd.annotation.jpms.Open;
