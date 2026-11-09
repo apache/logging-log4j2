@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="4272" link="https://github.com/apache/logging-log4j2/pull/4272"/>
+  <issue id="4466" link="https://github.com/apache/logging-log4j2/pull/4466"/>
   <description format="asciidoc">
-    Use the default Java serialization for `SortedArrayStringMap`, except for its values.
+    Throw instead of ignoring nested objects rejected during deserialization of messages and log events.
   </description>
 </entry>

@@ -5,8 +5,8 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
-  <issue id="4274" link="https://github.com/apache/logging-log4j2/pull/4274"/>
+  <issue id="4466" link="https://github.com/apache/logging-log4j2/pull/4466"/>
   <description format="asciidoc">
-    Replace `ObjectArrayMessage` and `ParameterizedMessage` arguments that cannot be serialized with their string form.
+    The `SerialUtil` test helper now applies the deserialization allowlist also on Java 9 and later.
   </description>
 </entry>
