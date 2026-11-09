@@ -5,6 +5,7 @@
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
+    <issue id="4470" link="https://github.com/apache/logging-log4j2/pull/4470"/>
     <description format="asciidoc">
         Keep the caller location of events that asynchronous loggers log synchronously, because the ring buffer is full.
     </description>
