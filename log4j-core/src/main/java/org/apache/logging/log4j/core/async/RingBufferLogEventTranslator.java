@@ -56,7 +56,7 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     private String spanId;
     private String traceFlags;
 
-    // Due to the usage pattern of this class, these are effectively final
+    // Refreshed by `updateThreadValues()`, since the thread name and priority can change
     private long threadId = Thread.currentThread().getId();
     private String threadName = Thread.currentThread().getName();
     private int threadPriority = Thread.currentThread().getPriority();
@@ -176,12 +176,11 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
     }
     /**
      * Updates the cached thread values from the current thread.
-     *
-     * @deprecated since 2.25.0. {@link RingBufferLogEventTranslator} instances should only be used on the thread that
-     * created them. This method is retained for internal use to refresh the thread name after
-     * {@link Thread#setName(String)}.
+     * <p>
+     *     Since this class is only used on the thread that created it, this is only needed to pick up changes made
+     *     with {@link Thread#setName(String)} or {@link Thread#setPriority(int)}.
+     * </p>
      */
-    @Deprecated
     public void updateThreadValues() {
         final Thread currentThread = Thread.currentThread();
         this.threadId = currentThread.getId();
