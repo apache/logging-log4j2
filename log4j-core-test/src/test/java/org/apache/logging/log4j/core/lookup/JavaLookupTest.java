@@ -14,18 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util.internal;
+package org.apache.logging.log4j.core.lookup;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * Dummy class for compilation purposes only.
- */
-public final class SerializationUtil {
-    public static final List<String> REQUIRED_JAVA_CLASSES = List.of();
-    public static final List<String> REQUIRED_JAVA_PACKAGES = List.of();
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
 
-    public static String stripArray(final Class<?> clazz) {
-        return null;
+class JavaLookupTest {
+
+    @Test
+    void unknownKeyIsNotResolved() {
+        assertNull(new JavaLookup().lookup(null, "unknown"));
+    }
+
+    @Test
+    void unknownKeyFallsBackToTheDefaultLookup() {
+        final StrLookup lookup = new Interpolator(new MapLookup(Collections.singletonMap("unknown", "default")));
+        assertEquals("default", lookup.lookup("java:unknown"));
     }
 }

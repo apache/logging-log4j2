@@ -16,22 +16,26 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.util.StringBuilders;
+
 /**
- * TODO Renders an input as HTML output.
+ * Renders input text as HTML-escaped text.
  */
 public final class HtmlTextRenderer implements TextRenderer {
 
-    public HtmlTextRenderer(final String[] formats) {
-        // TODO Auto-generated constructor stub
-    }
+    public HtmlTextRenderer(final String[] formats) {}
 
     @Override
     public void render(final String input, final StringBuilder output, final String styleName) {
-        // TODO Auto-generated method stub
+        final int start = output.length();
+        output.append(input);
+        StringBuilders.escapeXml(output, start);
     }
 
     @Override
     public void render(final StringBuilder input, final StringBuilder output) {
-        // TODO Auto-generated method stub
+        final int start = output.length();
+        output.append(input);
+        StringBuilders.escapeXml(output, start);
     }
 }

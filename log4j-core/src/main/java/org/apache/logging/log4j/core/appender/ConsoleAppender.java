@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -97,9 +98,10 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             final Filter filter,
             final OutputStreamManager manager,
             final boolean ignoreExceptions,
+            final boolean immediateFlush,
             final Target target,
             final Property[] properties) {
-        super(name, layout, filter, ignoreExceptions, true, properties, manager);
+        super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         this.target = target;
     }
 
@@ -178,6 +180,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                 null,
                 getDefaultManager(layout),
                 true,
+                true,
                 DEFAULT_TARGET,
                 null);
     }
@@ -234,11 +237,20 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
                     ? getDirectOutputStream(target)
                     : follow ? getFollowOutputStream(target) : getDefaultOutputStream(target);
 
-            final String managerName = target.name() + '.' + follow + '.' + direct;
-            final OutputStreamManager manager =
-                    OutputStreamManager.getManager(managerName, new FactoryData(stream, managerName, layout), factory);
+            final boolean bufferedIo = isBufferedIo();
+            final int bufferSize = getBufferSize();
+            final String managerName = target.name() + '.' + follow + '.' + direct + '.' + bufferSize;
+            final OutputStreamManager manager = OutputStreamManager.getManager(
+                    managerName, new FactoryData(stream, managerName, layout, bufferSize), factory);
             return new ConsoleAppender(
-                    getName(), layout, getFilter(), manager, isIgnoreExceptions(), target, getPropertyArray());
+                    getName(),
+                    layout,
+                    getFilter(),
+                    manager,
+                    isIgnoreExceptions(),
+                    !bufferedIo || isImmediateFlush(),
+                    target,
+                    getPropertyArray());
         }
     }
 
@@ -246,7 +258,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         final OutputStream os = getDefaultOutputStream(ConsoleAppender.DEFAULT_TARGET);
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = ConsoleAppender.DEFAULT_TARGET.name() + ".false.false-" + COUNT.get();
-        return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
+        return OutputStreamManager.getManager(
+                managerName, new FactoryData(os, managerName, layout, Constants.ENCODER_BYTE_BUFFER_SIZE), factory);
     }
 
     private static OutputStream getDefaultOutputStream(Target target) {
@@ -333,6 +346,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         private final OutputStream os;
         private final String name;
         private final Layout<? extends Serializable> layout;
+        private final int bufferSize;
 
         /**
          * Constructor.
@@ -340,11 +354,17 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          * @param os The OutputStream.
          * @param type The name of the target.
          * @param layout A Serializable layout
+         * @param bufferSize The buffer size.
          */
-        public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
+        public FactoryData(
+                final OutputStream os,
+                final String type,
+                final Layout<? extends Serializable> layout,
+                final int bufferSize) {
             this.os = os;
             this.name = type;
             this.layout = layout;
+            this.bufferSize = bufferSize;
         }
     }
 
@@ -362,7 +382,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          */
         @Override
         public OutputStreamManager createManager(final String name, final FactoryData data) {
-            return new OutputStreamManager(data.os, data.name, data.layout, true);
+            return new OutputStreamManager(data.os, data.name, data.layout, true, data.bufferSize);
         }
     }
 

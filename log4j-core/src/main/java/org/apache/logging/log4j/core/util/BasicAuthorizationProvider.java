@@ -55,9 +55,9 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
         final String decryptor = props.getStringProperty(
                 PREFIXES, AUTH_PASSWORD_DECRYPTOR, () -> props.getStringProperty(PASSWORD_DECRYPTOR));
         // Password encoding
-        Charset passwordCharset = props.getCharsetProperty(BASIC_AUTH_ENCODING);
+        Charset passwordCharset = props.getCharsetProperty(BASIC_AUTH_ENCODING, null);
         if (passwordCharset == null) {
-            props.getCharsetProperty(SPRING_BASIC_AUTH_ENCODING, UTF_8);
+            passwordCharset = props.getCharsetProperty(SPRING_BASIC_AUTH_ENCODING, UTF_8);
         }
         if (decryptor != null) {
             try {

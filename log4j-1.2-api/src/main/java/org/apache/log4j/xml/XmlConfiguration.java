@@ -18,6 +18,7 @@ package org.apache.log4j.xml;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -60,7 +61,29 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Class Description goes here.
+ * A {@link Configuration} implementation that reads a Log4j 1 XML configuration file ({@code log4j.dtd} format) and
+ * translates it into Log4j 2 components.
+ * <p>
+ *     It is used both by {@link XmlConfigurationFactory}, when the {@code log4j.configuration} or
+ *     {@code log4j1.compatibility} properties are set, and by {@link DOMConfigurator}.
+ * </p>
+ * <p>
+ *     For backward compatibility with Log4j 1, the XML parser is configured to validate documents against the bundled
+ *     {@code log4j.dtd} and to resolve external XML entities. Configuration files must come from trusted sources: see
+ *     the
+ *     <a href="https://logging.apache.org/security.html#threat-common-sources-configuration">Log4j threat model</a>
+ *     for details.
+ * </p>
+ * <p>
+ *     Parsing and validation errors do not stop the configuration process; they are printed as warnings to the status
+ *     logger.
+ * </p>
+ * <p>
+ *     Since version <strong>2.27.0</strong>, external entities are resolved through
+ *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from local files or over the protocols allowed by the
+ *     <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.configurationAllowedProtocols">{@code log4j2.configurationAllowedProtocols}</a>
+ *     configuration property.
+ * </p>
  */
 public class XmlConfiguration extends Log4j1Configuration {
 
@@ -131,7 +154,8 @@ public class XmlConfiguration extends Log4j1Configuration {
             @Override
             @SuppressFBWarnings(
                     value = "XXE_DOCUMENT",
-                    justification = "The `DocumentBuilder` is configured to not resolve external entities.")
+                    justification =
+                            "External entities are resolved by `Log4jEntityResolver` through `ConfigurationSource`, the same way the configuration file itself is resolved. Configuration files must come from trusted sources.")
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
                 @SuppressWarnings("resource")
                 final // The ConfigurationSource and its caller manages the InputStream.
@@ -774,7 +798,21 @@ public class XmlConfiguration extends Log4j1Configuration {
                     break;
                 case APPENDER_TAG:
                     final Appender appender = parseAppender(currentElement);
-                    appenderMap.put(appender.getName(), appender);
+                    if (appender == null) {
+                        LOGGER.warn(
+                                "Could not create appender named [{}] of class [{}]; ignoring.",
+                                subst(currentElement.getAttribute(NAME_ATTR)),
+                                subst(currentElement.getAttribute(CLASS_ATTR)));
+                        break;
+                    }
+                    final String appenderName = appender.getName();
+                    if (appenderName == null) {
+                        LOGGER.warn(
+                                "Appender of class [{}] has a null name; ignoring.",
+                                subst(currentElement.getAttribute(CLASS_ATTR)));
+                        break;
+                    }
+                    appenderMap.put(appenderName, appender);
                     addAppender(AppenderAdapter.adapt(appender));
                     break;
                 default:

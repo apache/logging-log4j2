@@ -194,6 +194,7 @@ class RingBufferLogEventTest {
     }
 
     @Test
+    @Tag("serialization")
     void testSerializationDeserialization() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
         final String loggerName = "logger.name";
