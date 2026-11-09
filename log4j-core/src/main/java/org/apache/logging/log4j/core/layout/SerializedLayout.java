@@ -69,6 +69,8 @@ public final class SerializedLayout extends AbstractLayout<LogEvent> {
             oos.reset();
         } catch (final IOException ioe) {
             LOGGER.error("Serialization of LogEvent failed.", ioe);
+            // Do not return a partially serialized event
+            baos.reset();
         }
         return baos.toByteArray();
     }
