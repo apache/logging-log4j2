@@ -96,6 +96,9 @@ public final class RollingRandomAccessFileAppender
         @PluginBuilderAttribute
         private int maxRandomDelay;
 
+        @PluginBuilderAttribute
+        private boolean createOnDemand;
+
         @Override
         public RollingRandomAccessFileAppender build() {
             final String name = getName();
@@ -151,6 +154,7 @@ public final class RollingRandomAccessFileAppender
                             fileOwner,
                             fileGroup,
                             maxRandomDelay,
+                            createOnDemand,
                             getConfiguration());
             if (manager == null) {
                 return null;
@@ -257,6 +261,23 @@ public final class RollingRandomAccessFileAppender
          */
         public B setMaxRandomDelay(final int maxRandomDelay) {
             this.maxRandomDelay = maxRandomDelay;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
+        }
+
+        /**
+         * Sets whether the file and its parent directories are only created when the first log event is written.
+         *
+         * @since 2.27.0
+         */
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 

@@ -60,6 +60,9 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
         @PluginBuilderAttribute("append")
         private boolean append = true;
 
+        @PluginBuilderAttribute
+        private boolean createOnDemand;
+
         @PluginBuilderAttribute("regionLength")
         private int regionLength = MemoryMappedFileManager.DEFAULT_REGION_LENGTH;
 
@@ -85,7 +88,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(
-                    fileName, append, isImmediateFlush(), actualRegionLength, advertiseURI, layout);
+                    fileName, append, createOnDemand, isImmediateFlush(), actualRegionLength, advertiseURI, layout);
             if (manager == null) {
                 return null;
             }
@@ -109,6 +112,23 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
         public B setAppend(final boolean append) {
             this.append = append;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
+        }
+
+        /**
+         * Sets whether the file and its parent directories are only created when the first log event is written.
+         *
+         * @since 2.27.0
+         */
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 

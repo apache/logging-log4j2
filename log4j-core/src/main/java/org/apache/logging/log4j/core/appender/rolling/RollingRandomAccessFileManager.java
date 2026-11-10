@@ -41,7 +41,15 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
      */
     public static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
+    /**
+     * The file, or {@code null} if it is not open yet.
+     */
     private RandomAccessFile randomAccessFile;
+
+    /**
+     * {@code true}, if the next time the file is opened, its previous content must be discarded.
+     */
+    private boolean truncateOnOpen;
 
     @Deprecated
     public RollingRandomAccessFileManager(
@@ -174,10 +182,12 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 fileOwner,
                 fileGroup,
                 0,
+                false,
                 configuration);
     }
 
     /**
+     * @param createOnDemand if {@code true}, the file and its parent directories are only created on the first write.
      * @since 2.27.0
      */
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(
@@ -194,6 +204,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String fileOwner,
             final String fileGroup,
             final int maxRandomDelay,
+            final boolean createOnDemand,
             final Configuration configuration) {
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
@@ -214,34 +225,37 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                 file = new File(name);
                                 fileExistedBefore = file.exists();
 
-                                if (!append) {
+                                // With `createOnDemand` the file is left untouched until the first write.
+                                if (!append && !createOnDemand) {
                                     file.delete();
                                 }
                                 size = append ? file.length() : 0;
                                 if (file.exists()) {
                                     time = file.lastModified();
                                 }
-                                try {
-                                    FileUtils.makeParentDirs(file);
-                                    raf = new RandomAccessFile(name, "rw");
-                                    if (append) {
-                                        final long length = raf.length();
-                                        LOGGER.trace("RandomAccessFile {} seek to {}", name, length);
-                                        raf.seek(length);
-                                    } else {
-                                        LOGGER.trace("RandomAccessFile {} set length to 0", name);
-                                        raf.setLength(0);
-                                    }
-                                } catch (final IOException ex) {
-                                    LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
-                                    if (raf != null) {
-                                        try {
-                                            raf.close();
-                                        } catch (final IOException e) {
-                                            LOGGER.error("Cannot close RandomAccessFile {}", name, e);
+                                if (!createOnDemand) {
+                                    try {
+                                        FileUtils.makeParentDirs(file);
+                                        raf = new RandomAccessFile(name, "rw");
+                                        if (append) {
+                                            final long length = raf.length();
+                                            LOGGER.trace("RandomAccessFile {} seek to {}", name, length);
+                                            raf.seek(length);
+                                        } else {
+                                            LOGGER.trace("RandomAccessFile {} set length to 0", name);
+                                            raf.setLength(0);
                                         }
+                                    } catch (final IOException ex) {
+                                        LOGGER.error("Cannot access RandomAccessFile " + ex, ex);
+                                        if (raf != null) {
+                                            try {
+                                                raf.close();
+                                            } catch (final IOException e) {
+                                                LOGGER.error("Cannot close RandomAccessFile {}", name, e);
+                                            }
+                                        }
+                                        return null;
                                     }
-                                    return null;
                                 }
                             }
                             final boolean writeHeader = !append || file == null || !fileExistedBefore;
@@ -266,7 +280,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                     fileGroup,
                                     writeHeader);
                             rrm.setMaxRandomDelay(data.getMaxRandomDelay());
-                            if (rrm.isAttributeViewEnabled()) {
+                            // A `null` file is not open yet: `writeToDestination()` opens it on the first write.
+                            rrm.truncateOnOpen = raf == null && file != null && !append;
+                            if (raf != null && rrm.isAttributeViewEnabled()) {
                                 rrm.defineAttributeView(file.toPath());
                             }
                             return rrm;
@@ -331,6 +347,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
         if (isAttributeViewEnabled()) {
             defineAttributeView(Paths.get(fileName));
+        }
+        if (truncateOnOpen) {
+            truncateOnOpen = false;
+            randomAccessFile.setLength(0);
         }
         if (isAppend()) {
             randomAccessFile.seek(randomAccessFile.length());
