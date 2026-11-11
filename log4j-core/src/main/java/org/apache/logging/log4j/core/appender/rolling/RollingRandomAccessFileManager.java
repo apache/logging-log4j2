@@ -221,6 +221,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                             long time = System.currentTimeMillis();
                             RandomAccessFile raf = null;
                             boolean fileExistedBefore = false;
+                            boolean truncateOnOpen = false;
                             if (fileName != null) {
                                 file = new File(name);
                                 fileExistedBefore = file.exists();
@@ -256,6 +257,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                         }
                                         return null;
                                     }
+                                } else {
+                                    // A `null` file is not open yet: `writeToDestination()` opens it on the first
+                                    // write.
+                                    truncateOnOpen = !append;
                                 }
                             }
                             final boolean writeHeader = !append || file == null || !fileExistedBefore;
@@ -280,8 +285,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                                     fileGroup,
                                     writeHeader);
                             rrm.setMaxRandomDelay(data.getMaxRandomDelay());
-                            // A `null` file is not open yet: `writeToDestination()` opens it on the first write.
-                            rrm.truncateOnOpen = raf == null && file != null && !append;
+                            rrm.truncateOnOpen = truncateOnOpen;
                             if (raf != null && rrm.isAttributeViewEnabled()) {
                                 rrm.defineAttributeView(file.toPath());
                             }

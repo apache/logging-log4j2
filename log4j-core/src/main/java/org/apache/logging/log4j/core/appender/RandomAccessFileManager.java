@@ -48,7 +48,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
     private RandomAccessFile randomAccessFile;
 
     /**
-     * {@code true}, if the previous content of the file must be discarded when the file is opened.
+     * {@code true}, if the previous content of the file must be discarded when {@link #openFile()} opens it.
      */
     private boolean truncateOnOpen;
 
@@ -150,7 +150,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
                                         layout,
                                         writeHeader);
                                 // A `null` file is not open yet: `writeToDestination()` opens it on the first write.
-                                manager.truncateOnOpen = raf == null && !append;
+                                manager.truncateOnOpen = !append;
                                 return manager;
                             } catch (final Exception ex) {
                                 LOGGER.error("RandomAccessFileManager (" + name + ") " + ex, ex);
@@ -208,7 +208,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
             Closer.closeSilently(raf);
             throw e;
         }
-        truncateOnOpen = false;
         randomAccessFile = raf;
     }
 

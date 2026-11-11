@@ -27,6 +27,8 @@ import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -35,31 +37,39 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @see <a href="https://github.com/apache/logging-log4j2/issues/3083">#3083</a>
  */
+@UsingStatusListener
 class RandomAccessFileAppenderCreateOnDemandTest {
 
     private static final String MESSAGE = "Hello Log4j";
     private static final String OLD_CONTENT = "Old content, which is longer than the new message.";
 
-    private static RandomAccessFileAppender createAppender(
+    private static RandomAccessFileAppender.Builder<?> newBuilder(
             final Path logFile, final boolean append, final boolean createOnDemand) {
-        final RandomAccessFileAppender appender = RandomAccessFileAppender.newBuilder()
+        return RandomAccessFileAppender.newBuilder()
                 .setName("RandomAccessFileAppenderCreateOnDemandTest")
                 .setFileName(logFile.toString())
                 .setAppend(append)
                 .setCreateOnDemand(createOnDemand)
                 .setLayout(PatternLayout.newBuilder().withPattern("%m").build())
-                .setConfiguration(new NullConfiguration())
-                .build();
+                .setConfiguration(new NullConfiguration());
+    }
+
+    private static RandomAccessFileAppender createAppender(
+            final Path logFile, final boolean append, final boolean createOnDemand) {
+        final RandomAccessFileAppender appender =
+                newBuilder(logFile, append, createOnDemand).build();
         assertThat(appender).isNotNull();
         appender.start();
         return appender;
     }
 
-    private static LogEvent createEvent() {
+    private static LogEvent createEvent(final String message) {
         return Log4jLogEvent.newBuilder()
                 .setLoggerName("test")
                 .setLevel(Level.INFO)
-                .setMessage(new SimpleMessage(MESSAGE))
+                .setMessage(new SimpleMessage(message))
+                // the appender flushes the manager at the end of a batch
+                .setEndOfBatch(true)
                 .build();
     }
 
@@ -67,8 +77,15 @@ class RandomAccessFileAppenderCreateOnDemandTest {
         return new String(Files.readAllBytes(file), UTF_8);
     }
 
+    private static void assertNoStatusWarnings(final ListStatusListener listener) {
+        assertThat(listener.findStatusData(Level.WARN))
+                .extracting(data -> data.getMessage().getFormattedMessage())
+                .isEmpty();
+    }
+
     @Test
-    void fileIsNotCreatedBeforeFirstEvent(@TempDir final Path tempDir) throws Exception {
+    void fileIsNotCreatedBeforeFirstEvent(@TempDir final Path tempDir, final ListStatusListener listener)
+            throws Exception {
         final Path logDir = tempDir.resolve("onDemand");
         final Path logFile = logDir.resolve("test.log");
 
@@ -77,17 +94,18 @@ class RandomAccessFileAppenderCreateOnDemandTest {
             assertThat(logDir).doesNotExist();
             assertThat(logFile).doesNotExist();
 
-            appender.append(createEvent());
+            appender.append(createEvent(MESSAGE));
             assertThat(logFile).exists();
         } finally {
             appender.stop();
         }
 
         assertThat(contentOf(logFile)).isEqualTo(MESSAGE);
+        assertNoStatusWarnings(listener);
     }
 
     @Test
-    void fileIsNotCreatedWithoutEvents(@TempDir final Path tempDir) {
+    void fileIsNotCreatedWithoutEvents(@TempDir final Path tempDir, final ListStatusListener listener) {
         final Path logDir = tempDir.resolve("noEvents");
         final Path logFile = logDir.resolve("test.log");
 
@@ -96,25 +114,46 @@ class RandomAccessFileAppenderCreateOnDemandTest {
 
         assertThat(logDir).doesNotExist();
         assertThat(logFile).doesNotExist();
+        assertNoStatusWarnings(listener);
     }
 
     @Test
-    void existingFileIsAppendedTo(@TempDir final Path tempDir) throws Exception {
+    void fileIsNotCreatedByEmptyEvent(@TempDir final Path tempDir, final ListStatusListener listener) {
+        final Path logDir = tempDir.resolve("emptyEvent");
+        final Path logFile = logDir.resolve("test.log");
+
+        final RandomAccessFileAppender appender = createAppender(logFile, true, true);
+        try {
+            // Nothing is written, but the manager is flushed.
+            appender.append(createEvent(""));
+        } finally {
+            appender.stop();
+        }
+
+        assertThat(logDir).doesNotExist();
+        assertThat(logFile).doesNotExist();
+        assertNoStatusWarnings(listener);
+    }
+
+    @Test
+    void existingFileIsAppendedTo(@TempDir final Path tempDir, final ListStatusListener listener) throws Exception {
         final Path logFile = tempDir.resolve("append.log");
         Files.write(logFile, OLD_CONTENT.getBytes(UTF_8));
 
         final RandomAccessFileAppender appender = createAppender(logFile, true, true);
         try {
-            appender.append(createEvent());
+            appender.append(createEvent(MESSAGE));
         } finally {
             appender.stop();
         }
 
         assertThat(contentOf(logFile)).isEqualTo(OLD_CONTENT + MESSAGE);
+        assertNoStatusWarnings(listener);
     }
 
     @Test
-    void withoutAppendExistingFileIsKeptUntilFirstEvent(@TempDir final Path tempDir) throws Exception {
+    void withoutAppendExistingFileIsKeptUntilFirstEvent(@TempDir final Path tempDir, final ListStatusListener listener)
+            throws Exception {
         final Path logFile = tempDir.resolve("truncate.log");
         Files.write(logFile, OLD_CONTENT.getBytes(UTF_8));
 
@@ -122,16 +161,18 @@ class RandomAccessFileAppenderCreateOnDemandTest {
         try {
             assertThat(contentOf(logFile)).isEqualTo(OLD_CONTENT);
 
-            appender.append(createEvent());
+            appender.append(createEvent(MESSAGE));
         } finally {
             appender.stop();
         }
 
         assertThat(contentOf(logFile)).isEqualTo(MESSAGE);
+        assertNoStatusWarnings(listener);
     }
 
     @Test
-    void withoutAppendAndEventsExistingFileIsKept(@TempDir final Path tempDir) throws Exception {
+    void withoutAppendAndEventsExistingFileIsKept(@TempDir final Path tempDir, final ListStatusListener listener)
+            throws Exception {
         final Path logFile = tempDir.resolve("untouched.log");
         Files.write(logFile, OLD_CONTENT.getBytes(UTF_8));
 
@@ -139,10 +180,11 @@ class RandomAccessFileAppenderCreateOnDemandTest {
         appender.stop();
 
         assertThat(contentOf(logFile)).isEqualTo(OLD_CONTENT);
+        assertNoStatusWarnings(listener);
     }
 
     @Test
-    void fileIsCreatedEagerlyByDefault(@TempDir final Path tempDir) {
+    void fileIsCreatedEagerlyByDefault(@TempDir final Path tempDir, final ListStatusListener listener) {
         final Path logFile = tempDir.resolve("eager").resolve("test.log");
 
         final RandomAccessFileAppender appender = createAppender(logFile, true, false);
@@ -151,5 +193,6 @@ class RandomAccessFileAppenderCreateOnDemandTest {
         } finally {
             appender.stop();
         }
+        assertNoStatusWarnings(listener);
     }
 }

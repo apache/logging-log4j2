@@ -307,7 +307,6 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             byteBuffer = mappedBuffer;
             mappingOffset = position;
             randomAccessFile = raf;
-            truncateOnOpen = false;
         } catch (final IOException ex) {
             Closer.closeSilently(raf);
             // Do not continue: without a mapped region there is nowhere to write to.
@@ -448,7 +447,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
         remap();
-        return byteBuffer;
+        return mappedBuffer;
     }
 
     /**
