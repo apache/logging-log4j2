@@ -6,9 +6,8 @@
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="fixed">
     <issue id="4464" link="https://github.com/apache/logging-log4j2/issues/4464"/>
+    <issue id="4471" link="https://github.com/apache/logging-log4j2/pull/4471"/>
     <description format="asciidoc">
-        Escape the `newLineEscape` replacement in `Rfc5424Layout` structured data parameter values.
-        Receivers that do not decode RFC 5424 escapes will now see `\\n` instead of `\n`
-        in structured data when `newLineEscape` is set to `\n`.
+        Escape `newLineEscape` in RFC 5424 SD values, so `\n` is sent as `\\n`.
     </description>
 </entry>
