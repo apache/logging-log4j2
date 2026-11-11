@@ -8,8 +8,6 @@
     <issue id="4464" link="https://github.com/apache/logging-log4j2/issues/4464"/>
     <issue id="4471" link="https://github.com/apache/logging-log4j2/pull/4471"/>
     <description format="asciidoc">
-        Escape the `escapeNL` replacement in `Rfc5424Layout` structured data parameter values.
-        Receivers that do not decode RFC 5424 escapes will now see `\\n` instead of `\n`
-        in structured data when `escapeNL` is set to `\n`.
+        Escape `escapeNL` in RFC 5424 SD values, so `\n` is sent as `\\n`.
     </description>
 </entry>
