@@ -289,5 +289,4 @@ class CronTriggeringPolicyTest {
         verify(initializeWithFileTimeOffset(1), never()).rollover(any(Date.class), any(Date.class));
         verify(initializeWithFileTimeOffset(1000), never()).rollover(any(Date.class), any(Date.class));
     }
-
 }
