@@ -1179,9 +1179,10 @@ The default value of `stackTraceEnabled` is inherited from the parent JSON Templ
 
 [NOTE]
 ====
-This resolver is mostly intended as an emergency lever when all other JSON Template Layout resolvers fall short of addressing your need.
-If you find yourself using this, it is highly likely you are either doing something wrong, or JSON Template Layout needs some improvement.
-In either case, you are advised to share your use case with maintainers in one of {logging-services-url}/support.html[our support channels].
+Use this resolver when a `PatternLayout` pattern produces a string that you need but cannot produce with JSON Template Layout resolvers alone.
+For example, it can be useful to shorten a logger name with `%c{1.}`, reuse an existing pattern while migrating to JSON Template Layout, or use a custom `PatternLayout` converter.
+Because this resolver renders its output as a string, prefer dedicated JSON Template Layout resolvers when you need to preserve structured event data.
+If you need functionality that would be useful as a dedicated resolver, share your use case with maintainers through one of {logging-services-url}/support.html[our support channels].
 ====
 
 .See examples
