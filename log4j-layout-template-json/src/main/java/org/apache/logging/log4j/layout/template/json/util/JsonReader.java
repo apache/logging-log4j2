@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A simple JSON parser mapping tokens to basic Java types.
+ * A simple JSON parser mapping tokens to basic Java types. This is an internal
+ * implementation detail intended for trusted Log4j input, not a general-purpose
+ * parser for untrusted input.
  * <p>
  * The type mapping is as follows:
  * <p>
@@ -47,6 +49,8 @@ import java.util.Objects;
  * <a href="https://github.com/bolerio/mjson/blob/e7a4da2daa6e17a63ec057948bc30818e8f44686/src/java/mjson/Json.java#L2684">mjson</a>.
  */
 public final class JsonReader {
+
+    private static final int MAX_NESTING_DEPTH = 128;
 
     private enum Delimiter {
         OBJECT_START("{"),
@@ -86,6 +90,8 @@ public final class JsonReader {
     private int readTokenStartIndex = -1;
 
     private Object readToken;
+
+    private int nestingDepth;
 
     private final StringBuilder buffer;
 
@@ -269,54 +275,76 @@ public final class JsonReader {
     }
 
     private Map<String, Object> readObject() {
-        final Map<String, Object> object = new LinkedHashMap<>();
-        String key = readObjectKey();
-        while (readToken != Delimiter.OBJECT_END) {
-            expectDelimiter(Delimiter.COLON, readToken());
-            if (readToken != Delimiter.OBJECT_END) {
-                final Object value = readToken();
-                object.put(key, value);
-                if (readToken() == Delimiter.COMMA) {
-                    key = readObjectKey();
-                    if (key == null || Delimiter.exists(key)) {
-                        final String message = String.format(
-                                "was expecting an object key at index %d: %s", readTokenStartIndex, readToken);
-                        throw new IllegalArgumentException(message);
-                    } else if (object.containsKey(key)) {
-                        final String message =
-                                String.format("found duplicate object key at index %d: %s", readTokenStartIndex, key);
-                        throw new IllegalArgumentException(message);
+        checkNestingDepth();
+        nestingDepth++;
+        try {
+            final Map<String, Object> object = new LinkedHashMap<>();
+            String key = readObjectKey();
+            while (readToken != Delimiter.OBJECT_END) {
+                expectDelimiter(Delimiter.COLON, readToken());
+                if (readToken != Delimiter.OBJECT_END) {
+                    final Object value = readToken();
+                    object.put(key, value);
+                    if (readToken() == Delimiter.COMMA) {
+                        key = readObjectKey();
+                        if (key == null || Delimiter.exists(key)) {
+                            final String message = String.format(
+                                    "was expecting an object key at index %d: %s", readTokenStartIndex, readToken);
+                            throw new IllegalArgumentException(message);
+                        } else if (object.containsKey(key)) {
+                            final String message = String.format(
+                                    "found duplicate object key at index %d: %s", readTokenStartIndex, key);
+                            throw new IllegalArgumentException(message);
+                        }
+                    } else {
+                        expectDelimiter(Delimiter.OBJECT_END, readToken);
                     }
-                } else {
-                    expectDelimiter(Delimiter.OBJECT_END, readToken);
                 }
             }
+            return object;
+        } finally {
+            nestingDepth--;
         }
-        return object;
     }
 
     private List<Object> readArray() {
-        @SuppressWarnings("JdkObsolete")
-        final List<Object> array = new LinkedList<>();
-        readToken();
-        while (readToken != Delimiter.ARRAY_END) {
-            if (readToken instanceof Delimiter) {
-                final String message =
-                        String.format("was expecting an array element at index %d: %s", readTokenStartIndex, readToken);
-                throw new IllegalArgumentException(message);
-            }
-            array.add(readToken);
-            if (readToken() == Delimiter.COMMA) {
-                if (readToken() == Delimiter.ARRAY_END) {
+        checkNestingDepth();
+        nestingDepth++;
+        try {
+            @SuppressWarnings("JdkObsolete")
+            final List<Object> array = new LinkedList<>();
+            readToken();
+            while (readToken != Delimiter.ARRAY_END) {
+                if (readToken instanceof Delimiter) {
                     final String message = String.format(
-                            "was expecting an array element at index %d: %s", readTokenStartIndex, readToken);
+                            "was expecting an array element at index %d: %s",
+                            readTokenStartIndex, readToken);
                     throw new IllegalArgumentException(message);
                 }
-            } else {
-                expectDelimiter(Delimiter.ARRAY_END, readToken);
+                array.add(readToken);
+                if (readToken() == Delimiter.COMMA) {
+                    if (readToken() == Delimiter.ARRAY_END) {
+                        final String message = String.format(
+                                "was expecting an array element at index %d: %s",
+                                readTokenStartIndex, readToken);
+                        throw new IllegalArgumentException(message);
+                    }
+                } else {
+                    expectDelimiter(Delimiter.ARRAY_END, readToken);
+                }
             }
+            return array;
+        } finally {
+            nestingDepth--;
         }
-        return array;
+    }
+
+    private void checkNestingDepth() {
+        if (nestingDepth >= MAX_NESTING_DEPTH) {
+            final String message = String.format(
+                    "maximum JSON nesting depth of %d exceeded", MAX_NESTING_DEPTH);
+            throw new IllegalArgumentException(message);
+        }
     }
 
     private String readObjectKey() {
