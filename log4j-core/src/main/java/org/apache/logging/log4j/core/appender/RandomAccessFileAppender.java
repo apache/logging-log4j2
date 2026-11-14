@@ -58,6 +58,9 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         @PluginBuilderAttribute("append")
         private boolean append = true;
 
+        @PluginBuilderAttribute
+        private boolean createOnDemand;
+
         @PluginBuilderAttribute("advertise")
         private boolean advertise;
 
@@ -83,7 +86,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             final Layout<? extends Serializable> layout = getOrCreateLayout();
             final boolean immediateFlush = isImmediateFlush();
             final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
-                    fileName, append, immediateFlush, getBufferSize(), advertiseURI, layout, null);
+                    fileName, append, createOnDemand, immediateFlush, getBufferSize(), advertiseURI, layout, null);
             if (manager == null) {
                 return null;
             }
@@ -107,6 +110,23 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
 
         public B setAppend(final boolean append) {
             this.append = append;
+            return asBuilder();
+        }
+
+        /**
+         * @since 2.27.0
+         */
+        public boolean isCreateOnDemand() {
+            return createOnDemand;
+        }
+
+        /**
+         * Sets whether the file and its parent directories are only created when the first log event is written.
+         *
+         * @since 2.27.0
+         */
+        public B setCreateOnDemand(final boolean createOnDemand) {
+            this.createOnDemand = createOnDemand;
             return asBuilder();
         }
 

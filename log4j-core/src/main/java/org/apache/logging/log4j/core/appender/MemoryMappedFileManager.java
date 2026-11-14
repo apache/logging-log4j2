@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
@@ -62,9 +63,26 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private final boolean immediateFlush;
     private final int regionLength;
     private final String advertiseURI;
-    private final RandomAccessFile randomAccessFile;
+
+    /**
+     * The file, or {@code null} if it is not open yet.
+     */
+    private RandomAccessFile randomAccessFile;
+
+    /**
+     * The mapped region, or {@code null} if the file is not open yet.
+     * <p>
+     *     Until the file is opened, {@link #byteBuffer} is empty, so that the first write calls {@link #remap()}.
+     * </p>
+     */
     private MappedByteBuffer mappedBuffer;
+
     private long mappingOffset;
+
+    /**
+     * {@code true}, if the previous content of the file must be discarded when the file is opened.
+     */
+    private boolean truncateOnOpen;
 
     protected MemoryMappedFileManager(
             final RandomAccessFile file,
@@ -104,6 +122,25 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     /**
+     * Creates a manager, whose file is only opened and mapped on the first write.
+     */
+    private MemoryMappedFileManager(
+            final String fileName,
+            final OutputStream os,
+            final boolean append,
+            final boolean immediateFlush,
+            final int regionLength,
+            final String advertiseURI,
+            final Layout<? extends Serializable> layout,
+            final boolean writeHeader) {
+        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
+        this.immediateFlush = immediateFlush;
+        this.regionLength = regionLength;
+        this.advertiseURI = advertiseURI;
+        this.truncateOnOpen = !append;
+    }
+
+    /**
      * Returns the MemoryMappedFileManager.
      *
      * @param fileName The name of the file to manage.
@@ -121,18 +158,54 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final int regionLength,
             final String advertiseURI,
             final Layout<? extends Serializable> layout) {
+        return getFileManager(fileName, append, false, immediateFlush, regionLength, advertiseURI, layout);
+    }
+
+    /**
+     * Returns the MemoryMappedFileManager.
+     *
+     * @param fileName The name of the file to manage.
+     * @param append true if the file should be appended to, false if it should be overwritten.
+     * @param createOnDemand true if the file and its parent directories should only be created on the first write
+     * @param immediateFlush true if the contents should be flushed to disk on every write
+     * @param regionLength The mapped region length.
+     * @param advertiseURI the URI to use when advertising the file
+     * @param layout The layout.
+     * @return A MemoryMappedFileManager for the File.
+     * @since 2.27.0
+     */
+    public static MemoryMappedFileManager getFileManager(
+            final String fileName,
+            final boolean append,
+            final boolean createOnDemand,
+            final boolean immediateFlush,
+            final int regionLength,
+            final String advertiseURI,
+            final Layout<? extends Serializable> layout) {
         return narrow(
                 MemoryMappedFileManager.class,
                 getManager(
                         fileName,
                         (name, ignored) -> {
                             final File file = new File(name);
-                            if (!append) {
+                            // With `createOnDemand` the file is left untouched until the first write.
+                            if (!append && !createOnDemand) {
                                 file.delete();
                             }
 
                             final boolean writeHeader = !append || !file.exists();
                             final OutputStream os = NullOutputStream.getInstance();
+                            if (createOnDemand) {
+                                return new MemoryMappedFileManager(
+                                        name,
+                                        os,
+                                        append,
+                                        immediateFlush,
+                                        regionLength,
+                                        advertiseURI,
+                                        layout,
+                                        writeHeader);
+                            }
                             RandomAccessFile raf = null;
                             try {
                                 FileUtils.makeParentDirs(file);
@@ -181,20 +254,24 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         int currentOffset = offset;
         int currentLength = length;
-        while (currentLength > mappedBuffer.remaining()) {
-            final int chunk = mappedBuffer.remaining();
-            mappedBuffer.put(bytes, currentOffset, chunk);
+        while (currentLength > byteBuffer.remaining()) {
+            final int chunk = byteBuffer.remaining();
+            byteBuffer.put(bytes, currentOffset, chunk);
             currentOffset += chunk;
             currentLength -= chunk;
             remap();
         }
-        mappedBuffer.put(bytes, currentOffset, currentLength);
+        byteBuffer.put(bytes, currentOffset, currentLength);
 
         // no need to call flush() if force is true,
         // already done in AbstractOutputStreamAppender.append
     }
 
     private synchronized void remap() {
+        if (randomAccessFile == null) {
+            openAndMap();
+            return;
+        }
         final long offset = this.mappingOffset + mappedBuffer.position();
         final int length = mappedBuffer.remaining() + regionLength;
         try {
@@ -222,13 +299,50 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
     }
 
+    /**
+     * Opens the file and maps its first region.
+     * <p>
+     *     Only used, if the file was not opened when the manager was created.
+     * </p>
+     */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed file is based on a configuration value.")
+    private void openAndMap() {
+        RandomAccessFile raf = null;
+        try {
+            final File file = new File(getFileName());
+            FileUtils.makeParentDirs(file);
+            raf = new RandomAccessFile(file, "rw");
+            if (truncateOnOpen) {
+                raf.setLength(0);
+            }
+            final long position = raf.length();
+            raf.setLength(position + regionLength);
+            mappedBuffer = mmap(raf.getChannel(), getFileName(), position, regionLength);
+            byteBuffer = mappedBuffer;
+            mappingOffset = position;
+            randomAccessFile = raf;
+        } catch (final IOException ex) {
+            Closer.closeSilently(raf);
+            // Do not continue: without a mapped region there is nowhere to write to.
+            throw new AppenderLoggingException("Unable to open and map file " + getFileName(), ex);
+        }
+    }
+
     @Override
     public synchronized void flush() {
-        mappedBuffer.force();
+        if (mappedBuffer != null) {
+            mappedBuffer.force();
+        }
     }
 
     @Override
     public synchronized boolean closeOutputStream() {
+        if (randomAccessFile == null) {
+            // the file was never opened
+            return true;
+        }
         final long position = mappedBuffer.position();
         final long length = mappingOffset + position;
         try {
@@ -343,7 +457,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     public ByteBuffer getByteBuffer() {
-        return mappedBuffer;
+        return byteBuffer;
     }
 
     @Override

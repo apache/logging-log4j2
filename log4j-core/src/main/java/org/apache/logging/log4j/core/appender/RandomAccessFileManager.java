@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 
@@ -39,7 +41,16 @@ public class RandomAccessFileManager extends OutputStreamManager {
     static final int DEFAULT_BUFFER_SIZE = 256 * 1024;
 
     private final String advertiseURI;
-    private final RandomAccessFile randomAccessFile;
+
+    /**
+     * The file, or {@code null} if it is not open yet.
+     */
+    private RandomAccessFile randomAccessFile;
+
+    /**
+     * {@code true}, if the previous content of the file must be discarded when {@link #openFile()} opens it.
+     */
+    private boolean truncateOnOpen;
 
     protected RandomAccessFileManager(
             final LoggerContext loggerContext,
@@ -93,28 +104,59 @@ public class RandomAccessFileManager extends OutputStreamManager {
             final String advertiseURI,
             final Layout<? extends Serializable> layout,
             final Configuration configuration) {
+        return getFileManager(fileName, append, false, immediateFlush, bufferSize, advertiseURI, layout, configuration);
+    }
+
+    /**
+     * Returns the RandomAccessFileManager.
+     *
+     * @param fileName The name of the file to manage.
+     * @param append true if the file should be appended to, false if it should
+     *            be overwritten.
+     * @param createOnDemand true if the file and its parent directories should only be created on the first write
+     * @param immediateFlush true if the contents should be flushed to disk on every
+     *            write
+     * @param bufferSize The buffer size.
+     * @param advertiseURI the URI to use when advertising the file
+     * @param layout The layout.
+     * @param configuration The configuration.
+     * @return A RandomAccessFileManager for the File.
+     * @since 2.27.0
+     */
+    public static RandomAccessFileManager getFileManager(
+            final String fileName,
+            final boolean append,
+            final boolean createOnDemand,
+            final boolean immediateFlush,
+            final int bufferSize,
+            final String advertiseURI,
+            final Layout<? extends Serializable> layout,
+            final Configuration configuration) {
         return narrow(
                 RandomAccessFileManager.class,
                 getManager(
                         fileName,
                         (name, data) -> {
                             final File file = new File(name);
-                            if (!append) {
+                            // With `createOnDemand` the file is left untouched until the first write.
+                            if (!append && !createOnDemand) {
                                 file.delete();
                             }
 
                             final boolean writeHeader = !append || !file.exists();
                             final OutputStream os = NullOutputStream.getInstance();
-                            RandomAccessFile raf;
+                            RandomAccessFile raf = null;
                             try {
-                                FileUtils.makeParentDirs(file);
-                                raf = new RandomAccessFile(name, "rw");
-                                if (append) {
-                                    raf.seek(raf.length());
-                                } else {
-                                    raf.setLength(0);
+                                if (!createOnDemand) {
+                                    FileUtils.makeParentDirs(file);
+                                    raf = new RandomAccessFile(name, "rw");
+                                    if (append) {
+                                        raf.seek(raf.length());
+                                    } else {
+                                        raf.setLength(0);
+                                    }
                                 }
-                                return new RandomAccessFileManager(
+                                final RandomAccessFileManager manager = new RandomAccessFileManager(
                                         data.getLoggerContext(),
                                         raf,
                                         name,
@@ -123,6 +165,9 @@ public class RandomAccessFileManager extends OutputStreamManager {
                                         advertiseURI,
                                         layout,
                                         writeHeader);
+                                // A `null` file is not open yet: `writeToDestination()` opens it on the first write.
+                                manager.truncateOnOpen = !append;
+                                return manager;
                             } catch (final Exception ex) {
                                 LOGGER.error("RandomAccessFileManager (" + name + ") " + ex, ex);
                             }
@@ -152,11 +197,34 @@ public class RandomAccessFileManager extends OutputStreamManager {
     @Override
     protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
         try {
+            if (randomAccessFile == null) {
+                openFile();
+            }
             randomAccessFile.write(bytes, offset, length);
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
         }
+    }
+
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed file is based on a configuration value.")
+    private void openFile() throws IOException {
+        final File file = new File(getFileName());
+        FileUtils.makeParentDirs(file);
+        final RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        try {
+            if (truncateOnOpen) {
+                raf.setLength(0);
+            } else {
+                raf.seek(raf.length());
+            }
+        } catch (final IOException e) {
+            Closer.closeSilently(raf);
+            throw e;
+        }
+        randomAccessFile = raf;
     }
 
     @Override
@@ -167,6 +235,10 @@ public class RandomAccessFileManager extends OutputStreamManager {
     @Override
     public synchronized boolean closeOutputStream() {
         flush();
+        if (randomAccessFile == null) {
+            // the file was never opened
+            return true;
+        }
         try {
             randomAccessFile.close();
             return true;
