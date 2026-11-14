@@ -8,6 +8,6 @@
     <issue id="2020" link="https://github.com/apache/logging-log4j2/issues/2020"/>
     <issue id="4469" link="https://github.com/apache/logging-log4j2/pull/4469"/>
     <description format="asciidoc">
-        Fix `RandomAccessFile` and `MemoryMappedFile` appenders not writing the layout header to the file.
+        Fix missing header in `RandomAccessFile` and `MemoryMappedFile`.
     </description>
 </entry>
