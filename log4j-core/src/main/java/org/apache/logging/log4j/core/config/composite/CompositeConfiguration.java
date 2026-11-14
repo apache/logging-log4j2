@@ -165,7 +165,10 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             } else {
                 currentConfig = factory.getConfiguration(getLoggerContext(), config.getName(), sourceURI);
                 if (currentConfig == null) {
-                    LOGGER.warn("Unable to reload configuration {}, changes to it will be ignored", config.getName());
+                    LOGGER.warn(
+                            "Unable to reload configuration {}, keeping the current composite configuration",
+                            config.getName());
+                    return null;
                 }
             }
             configs.add((AbstractConfiguration) currentConfig);
