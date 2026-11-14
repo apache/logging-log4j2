@@ -805,6 +805,9 @@ Otherwise, the expansion of `${name:-default}` is substituted.
 To prevent the expansion of one of the expressions above, the initial `$` must be doubled as `$$`.
 
 The same rule applies to the `name` parameter: if it contains a `${` sequence, it must be escaped as `$${`.
+
+Inside an expression, a `$` also escapes a following `$`, `:`, `-` or `}` character, which then loses its special meaning.
+For example, if `tz` is undefined, `${tz:-%d{HH:mm:ss$}{GMT+00$}}` expands to `%d{HH:mm:ss}{GMT+00}`.
 ====
 
 .Property substitution example
