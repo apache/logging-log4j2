@@ -119,7 +119,6 @@ class RandomAccessFileAppenderCreateOnDemandTest {
 
         final RandomAccessFileAppender appender = createAppender(logFile, true, true);
         try {
-            // Nothing is written, but the manager is flushed.
             appender.append(createEvent(""));
         } finally {
             appender.stop();
