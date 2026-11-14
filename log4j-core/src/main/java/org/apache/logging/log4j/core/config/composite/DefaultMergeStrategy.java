@@ -269,6 +269,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
             final PluginType pluginType = pluginManager.getPluginType(FILTERS);
             final Node filtersNode = new Node(targetChildNode, FILTERS, pluginType);
             final Node node = new Node(filtersNode, sourceChildNode.getName(), sourceChildNode.getType());
+            node.getChildren().addAll(sourceChildNode.getChildren());
             node.getAttributes().putAll(sourceChildNode.getAttributes());
             final List<Node> children = filtersNode.getChildren();
             children.add(targetChildNode);
