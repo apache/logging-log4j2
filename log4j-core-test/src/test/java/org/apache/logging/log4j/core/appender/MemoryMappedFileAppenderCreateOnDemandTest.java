@@ -32,11 +32,6 @@ import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/**
- * Tests the {@code createOnDemand} attribute of {@link MemoryMappedFileAppender}.
- *
- * @see <a href="https://github.com/apache/logging-log4j2/issues/3083">#3083</a>
- */
 @UsingStatusListener
 class MemoryMappedFileAppenderCreateOnDemandTest {
 
