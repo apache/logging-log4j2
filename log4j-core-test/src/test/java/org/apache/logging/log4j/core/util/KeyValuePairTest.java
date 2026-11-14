@@ -25,10 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -79,7 +82,8 @@ class KeyValuePairTest {
     }
 
     @Test
-    void testKeylessPairIsOmittedFromGelfLayout() throws Exception {
+    @UsingStatusListener
+    void testKeylessPairIsOmittedFromGelfLayout(final ListStatusListener listener) throws Exception {
         final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<Configuration status=\"OFF\" name=\"KeyValuePairTest\">"
                 + "<Appenders>"
@@ -109,6 +113,8 @@ class KeyValuePairTest {
             assertTrue(payload.contains("\"short_message\":\"hello\""));
             assertFalse(payload.contains("bar"));
             assertFalse(payload.contains("null"));
+            assertTrue(listener.findStatusData(Level.ERROR).anyMatch(data -> "A key must be provided for KeyValuePair"
+                    .equals(data.getMessage().getFormattedMessage())));
         }
     }
 }

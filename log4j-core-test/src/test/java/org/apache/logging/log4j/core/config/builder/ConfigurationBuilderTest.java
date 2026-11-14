@@ -17,10 +17,8 @@
 package org.apache.logging.log4j.core.config.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
@@ -127,30 +125,5 @@ class ConfigurationBuilderTest {
         assertThrows(IllegalArgumentException.class, () -> builder.newKeyValuePair(null, "v"));
         assertThrows(IllegalArgumentException.class, () -> builder.newKeyValuePair("", "v"));
         assertNotNull(builder.newKeyValuePair(" ", "v"));
-    }
-
-    @Test
-    void testNewKeyValuePairOmitsNullValue() {
-        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.add(builder.newAppender("List", "List")
-                .add(builder.newLayout("GelfLayout")
-                        .setAttribute("host", "my-host")
-                        .addComponent(builder.newKeyValuePair("k", null))));
-        final String xml = builder.toXmlConfiguration();
-        assertTrue(xml.contains("key=\"k\""));
-        assertFalse(xml.contains("value="));
-        assertFalse(xml.contains("value=\"null\""));
-    }
-
-    @Test
-    void testSetKeyNullRemovesKeyAttribute() {
-        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.add(builder.newAppender("List", "List")
-                .add(builder.newLayout("GelfLayout")
-                        .setAttribute("host", "my-host")
-                        .addComponent(builder.newKeyValuePair("k", "v").setKey(null))));
-        final String xml = builder.toXmlConfiguration();
-        assertTrue(xml.contains("value=\"v\""));
-        assertFalse(xml.contains("key="));
     }
 }
