@@ -61,9 +61,25 @@ public class RandomAccessFileManager extends OutputStreamManager {
             final String advertiseURI,
             final Layout<? extends Serializable> layout,
             final boolean writeHeader) {
-        super(loggerContext, os, fileName, false, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
+        // `os` is not the file, so the header is written below instead
+        super(loggerContext, os, fileName, false, layout, false, ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
+        if (writeHeader) {
+            writeHeader();
+        }
+    }
+
+    /**
+     * Writes the layout's header to the file.
+     */
+    private void writeHeader() {
+        if (layout != null) {
+            final byte[] header = layout.getHeader();
+            if (header != null) {
+                write(header);
+            }
+        }
     }
 
     /**

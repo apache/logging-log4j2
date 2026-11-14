@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -24,9 +25,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -144,5 +149,30 @@ class RandomAccessFileManagerTest {
             final int expected = bytes.length * 2;
             assertEquals(expected, file.length(), "appended, not overwritten");
         }
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,true", "true,false", "false,true", "false,false"})
+    void testWriteHeader(final boolean append, final boolean fileExists) throws IOException {
+        final File file = new File(tempDir, "testWriteHeader.log");
+        if (fileExists) {
+            Files.write(file.toPath(), "EXISTING\n".getBytes(UTF_8));
+        }
+        final PatternLayout layout =
+                PatternLayout.newBuilder().setHeader("HEADER\n").build();
+
+        try (final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
+                file.getAbsolutePath(),
+                append,
+                true,
+                RandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                null,
+                layout,
+                null)) {
+            manager.write("DATA\n".getBytes(UTF_8));
+        }
+
+        final String expected = (append && fileExists ? "EXISTING\n" : "HEADER\n") + "DATA\n";
+        assertEquals(expected, new String(Files.readAllBytes(file.toPath()), UTF_8));
     }
 }

@@ -90,3 +90,23 @@ It disables the level mutators in the JUL `Logger` interface.
 Since version 2.24.0 the default value changed to `ApiLoggerAdapter`.
 If you need to modify log levels via JUL, you need to select `CoreLoggerAdapter` explicitly.
 ====
+
+[id=log4j2.julMutatorAccess]
+== `log4j2.julMutatorAccess`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_JUL_MUTATOR_ACCESS`
+| Type          | `String`
+| Default value | `warn-once`
+|===
+
+Controls warnings from `ApiLogger` when code calls `setLevel`, `setUseParentHandlers`, `addHandler`, `removeHandler`, or `setResourceBundle`.
+The warning identifies the calling class, method, and source location.
+
+`warn-once`:: Emit only the first warning across all `ApiLogger` instances sharing the same class loader.
+`warn`:: Emit a warning for every call.
+`ignore`:: Suppress these warnings.
+
+Values are case-insensitive. Unrecognized values use the `warn-once` behavior.
+This setting controls warning output only. To modify the Log4j Core configuration through JUL, use `CoreLoggerAdapter`.
