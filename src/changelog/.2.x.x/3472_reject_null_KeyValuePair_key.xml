@@ -7,6 +7,6 @@
        type="fixed">
   <issue id="3472" link="https://github.com/apache/logging-log4j2/issues/3472"/>
   <description format="asciidoc">
-    Reject a `KeyValuePair` with a `null` or empty key during construction and configuration.
+    Reject a `KeyValuePair` without a key at configuration time.
   </description>
 </entry>
