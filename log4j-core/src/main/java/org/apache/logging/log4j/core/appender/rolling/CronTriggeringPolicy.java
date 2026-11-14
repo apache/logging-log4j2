@@ -45,7 +45,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private final Configuration configuration;
     private final boolean checkOnStartup;
     private volatile Date lastRollDate;
-    private CronScheduledFuture<?> future;
+    private volatile CronScheduledFuture<?> future;
 
     private CronTriggeringPolicy(
             final CronExpression schedule, final boolean checkOnStartup, final Configuration configuration) {
@@ -88,7 +88,10 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
             scheduler.start();
         }
         lastRollDate = lastRegularRoll;
-        future = scheduler.scheduleWithCron(cronExpression, now, new CronTrigger());
+        synchronized (this) {
+            // The first fire can run before scheduleWithCron returns. rollover() waits until future is set.
+            future = scheduler.scheduleWithCron(cronExpression, now, new CronTrigger());
+        }
         LOGGER.debug(scheduler.toString());
     }
 
@@ -149,11 +152,15 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
+        final CronScheduledFuture<?> scheduledFuture;
+        synchronized (this) {
+            scheduledFuture = future;
+        }
         // If possible, use the time rollover was supposed to occur, not the actual time.
-        final Date rollTime = future != null ? future.getFireTime() : new Date();
+        final Date rollTime = scheduledFuture != null ? scheduledFuture.getFireTime() : new Date();
         manager.rollover(cronExpression.getPrevFireTime(rollTime), rollTime);
-        if (future != null) {
-            lastRollDate = future.getFireTime();
+        if (scheduledFuture != null) {
+            lastRollDate = scheduledFuture.getFireTime();
         }
     }
 
