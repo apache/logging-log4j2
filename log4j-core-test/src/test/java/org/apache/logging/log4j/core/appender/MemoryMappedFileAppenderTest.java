@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -44,9 +45,41 @@ import org.junit.jupiter.api.Test;
 @CleanUpFiles({
     "target/MemoryMappedFileAppenderTest.log",
     "target/MemoryMappedFileAppenderRemapTest.log",
-    "target/MemoryMappedFileAppenderLocationTest.log"
+    "target/MemoryMappedFileAppenderLocationTest.log",
+    "target/MemoryMappedFileAppenderImmediateFlushTrueTest.log",
+    "target/MemoryMappedFileAppenderImmediateFlushFalseTest.log"
 })
 class MemoryMappedFileAppenderTest {
+
+    @Test
+    void testImmediateFlushTrue() {
+        final MemoryMappedFileAppender app = MemoryMappedFileAppender.newBuilder()
+                .setName("testImmediateFlushTrue")
+                .setFileName("target/MemoryMappedFileAppenderImmediateFlushTrueTest.log")
+                .setRegionLength(256)
+                .setImmediateFlush(true)
+                .build();
+        try {
+            assertTrue(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
+
+    @Test
+    void testImmediateFlushFalse() {
+        final MemoryMappedFileAppender app = MemoryMappedFileAppender.newBuilder()
+                .setName("testImmediateFlushFalse")
+                .setFileName("target/MemoryMappedFileAppenderImmediateFlushFalseTest.log")
+                .setRegionLength(256)
+                .setImmediateFlush(false)
+                .build();
+        try {
+            assertFalse(app.getImmediateFlush());
+        } finally {
+            app.stop();
+        }
+    }
 
     @Test
     @LoggerContextSource("MemoryMappedFileAppenderTest.xml")
