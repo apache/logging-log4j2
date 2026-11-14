@@ -4,6 +4,7 @@
        xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
        type="changed">
     <issue id="3281" link="https://github.com/apache/logging-log4j2/issues/3281"/>
+    <issue id="4465" link="https://github.com/apache/logging-log4j2/pull/4465"/>
     <description format="asciidoc">
       Warn once about JUL mutator calls and name the calling class.
     </description>
