@@ -840,6 +840,53 @@ If you need to modify log levels via JUL, you need to select <code>CoreLoggerAda
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="log4j2.julMutatorAccess"><a class="anchor" href="#log4j2.julMutatorAccess"></a><code>log4j2.julMutatorAccess</code></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Env. variable</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LOG4J_JUL_MUTATOR_ACCESS</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Type</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Default value</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>warn-once</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Controls warnings from <code>ApiLogger</code> when code calls <code>setLevel</code>, <code>setUseParentHandlers</code>, <code>addHandler</code>, <code>removeHandler</code>, or <code>setResourceBundle</code>.
+The warning identifies the calling class, method, and source location.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>warn-once</code></dt>
+<dd>
+<p>Emit only the first warning across all <code>ApiLogger</code> instances sharing the same class loader.</p>
+</dd>
+<dt class="hdlist1"><code>warn</code></dt>
+<dd>
+<p>Emit a warning for every call.</p>
+</dd>
+<dt class="hdlist1"><code>ignore</code></dt>
+<dd>
+<p>Suppress these warnings.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Values are case-insensitive. Unrecognized values use the <code>warn-once</code> behavior.
+This setting controls warning output only. To modify the Log4j Core configuration through JUL, use <code>CoreLoggerAdapter</code>.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
