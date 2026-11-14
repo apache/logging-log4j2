@@ -35,12 +35,17 @@ import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @UsingStatusListener
 class RollingRandomAccessFileAppenderCreateOnDemandTest {
 
     private static final String MESSAGE = "Hello Log4j";
     private static final String OLD_CONTENT = "Old content, which is longer than the new message.";
+    private static final String HEADER = "Header";
+    private static final PatternLayout HEADER_LAYOUT =
+            PatternLayout.newBuilder().withPattern("%m").setHeader(HEADER).build();
 
     private static RollingRandomAccessFileAppender.Builder<?> newBuilder(
             final Path logFile, final boolean append, final boolean createOnDemand) {
@@ -206,6 +211,51 @@ class RollingRandomAccessFileAppenderCreateOnDemandTest {
         assertThat(contentOf(logFile)).isEqualTo(MESSAGE);
         assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(logFile)))
                 .isEqualTo("rw-r-----");
+        assertNoStatusWarnings(listener);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true,true", "true,false", "false,true", "false,false"})
+    void headerIsWrittenWhenOpenedFileIsEmpty(
+            final boolean append,
+            final boolean fileExists,
+            @TempDir final Path tempDir,
+            final ListStatusListener listener)
+            throws Exception {
+        final Path logFile = tempDir.resolve("header").resolve("test.log");
+        if (fileExists) {
+            Files.createDirectories(logFile.getParent());
+            Files.write(logFile, OLD_CONTENT.getBytes(UTF_8));
+        }
+
+        final RollingRandomAccessFileAppender appender =
+                newBuilder(logFile, append, true).setLayout(HEADER_LAYOUT).build();
+        assertThat(appender).isNotNull();
+        appender.start();
+        try {
+            appender.append(createEvent(MESSAGE));
+        } finally {
+            appender.stop();
+        }
+
+        final String expected = (append && fileExists ? OLD_CONTENT : HEADER) + MESSAGE;
+        assertThat(contentOf(logFile)).isEqualTo(expected);
+        assertNoStatusWarnings(listener);
+    }
+
+    @Test
+    void headerDoesNotCreateFileWithoutEvents(@TempDir final Path tempDir, final ListStatusListener listener) {
+        final Path logDir = tempDir.resolve("headerNoEvents");
+        final Path logFile = logDir.resolve("test.log");
+
+        final RollingRandomAccessFileAppender appender =
+                newBuilder(logFile, true, true).setLayout(HEADER_LAYOUT).build();
+        assertThat(appender).isNotNull();
+        appender.start();
+        appender.stop();
+
+        assertThat(logDir).doesNotExist();
+        assertThat(logFile).doesNotExist();
         assertNoStatusWarnings(listener);
     }
 

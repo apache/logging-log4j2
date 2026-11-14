@@ -143,7 +143,8 @@ public class RandomAccessFileManager extends OutputStreamManager {
                                 file.delete();
                             }
 
-                            final boolean writeHeader = !append || !file.exists();
+                            // With `createOnDemand` the header is written by `openFile()`.
+                            final boolean writeHeader = !createOnDemand && (!append || !file.exists());
                             final OutputStream os = NullOutputStream.getInstance();
                             RandomAccessFile raf = null;
                             try {
@@ -219,6 +220,13 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 raf.setLength(0);
             } else {
                 raf.seek(raf.length());
+            }
+            if (raf.length() == 0 && layout != null) {
+                final byte[] header = layout.getHeader();
+                if (header != null) {
+                    // write to the file, not to the buffer: the buffer may not be empty
+                    raf.write(header, 0, header.length);
+                }
             }
         } catch (final IOException e) {
             Closer.closeSilently(raf);

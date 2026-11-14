@@ -131,9 +131,9 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final boolean immediateFlush,
             final int regionLength,
             final String advertiseURI,
-            final Layout<? extends Serializable> layout,
-            final boolean writeHeader) {
-        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
+            final Layout<? extends Serializable> layout) {
+        // `os` is not the file, so the header is written by `openAndMap()` instead
+        super(os, fileName, layout, false, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
         this.immediateFlush = immediateFlush;
         this.regionLength = regionLength;
         this.advertiseURI = advertiseURI;
@@ -197,14 +197,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                             final OutputStream os = NullOutputStream.getInstance();
                             if (createOnDemand) {
                                 return new MemoryMappedFileManager(
-                                        name,
-                                        os,
-                                        append,
-                                        immediateFlush,
-                                        regionLength,
-                                        advertiseURI,
-                                        layout,
-                                        writeHeader);
+                                        name, os, append, immediateFlush, regionLength, advertiseURI, layout);
                             }
                             RandomAccessFile raf = null;
                             try {
@@ -323,6 +316,9 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             byteBuffer = mappedBuffer;
             mappingOffset = position;
             randomAccessFile = raf;
+            if (position == 0) {
+                writeHeader();
+            }
         } catch (final IOException ex) {
             Closer.closeSilently(raf);
             // Do not continue: without a mapped region there is nowhere to write to.
