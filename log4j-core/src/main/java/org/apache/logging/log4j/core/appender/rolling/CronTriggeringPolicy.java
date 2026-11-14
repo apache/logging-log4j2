@@ -44,7 +44,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private final CronExpression cronExpression;
     private final Configuration configuration;
     private final boolean checkOnStartup;
-    private volatile Date lastRollDate;
     private CronScheduledFuture<?> future;
 
     private CronTriggeringPolicy(
@@ -75,7 +74,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
                 && lastRollForFile != null
                 && lastRegularRoll != null
                 && lastRollForFile.before(lastRegularRoll)) {
-            lastRollDate = lastRollForFile;
             rollover();
         }
 
@@ -87,7 +85,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         if (!scheduler.isStarted()) {
             scheduler.start();
         }
-        lastRollDate = lastRegularRoll;
         future = scheduler.scheduleWithCron(cronExpression, now, new CronTrigger());
         LOGGER.debug(scheduler.toString());
     }
@@ -152,9 +149,6 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         // If possible, use the time rollover was supposed to occur, not the actual time.
         final Date rollTime = future != null ? future.getFireTime() : new Date();
         manager.rollover(cronExpression.getPrevFireTime(rollTime), rollTime);
-        if (future != null) {
-            lastRollDate = future.getFireTime();
-        }
     }
 
     @Override
