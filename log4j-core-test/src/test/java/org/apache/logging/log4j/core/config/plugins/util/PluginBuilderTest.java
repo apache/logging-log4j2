@@ -242,13 +242,6 @@ class PluginBuilderTest {
         }
     }
 
-    /**
-     * Has fields that do not allow reflection, like fields that have no metadata in a GraalVM native image.
-     * <p>
-     *     On Java 16 and later, reflection on the private fields of the {@link AtomicInteger} superclass fails,
-     *     because their JDK package is not open.
-     * </p>
-     */
     @SuppressWarnings("serial")
     private static final class JdkSubclassBuilder extends AtomicInteger implements Builder<Object> {
 
