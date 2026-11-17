@@ -130,9 +130,6 @@ class PluginBuilderTest {
         return builderClasses.stream();
     }
 
-    /**
-     * Checks that the GraalVM metadata of {@code log4j-core} registers all the fields that {@link PluginBuilder} uses.
-     */
     @ParameterizedTest
     @MethodSource("coreBuilderClasses")
     void pluginFieldsOfCoreBuildersAreRegisteredForGraalVm(final Class<?> builderClass) {
