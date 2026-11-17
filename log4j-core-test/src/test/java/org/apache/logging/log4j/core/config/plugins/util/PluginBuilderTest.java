@@ -70,9 +70,6 @@ class PluginBuilderTest {
     private static final String CORE_REACHABILITY_METADATA =
             "META-INF/native-image/log4j-generated/org.apache.logging.log4j/log4j-core/reflect-config.json";
 
-    /**
-     * The fields that the GraalVM metadata of {@code log4j-core} registers, as {@code <class name>#<field name>}.
-     */
     private static Set<String> coreRegisteredFields;
 
     @BeforeAll
