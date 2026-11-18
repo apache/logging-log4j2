@@ -77,7 +77,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             final Layout<? extends Serializable> layout,
             final boolean writeHeader)
             throws IOException {
-        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
+        // `os` is not the file, so the header is written below instead
+        super(os, fileName, layout, false, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
         this.immediateFlush = immediateFlush;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
@@ -85,6 +86,21 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         this.mappedBuffer = mmap(randomAccessFile.getChannel(), getFileName(), position, regionLength);
         this.byteBuffer = mappedBuffer;
         this.mappingOffset = position;
+        if (writeHeader) {
+            writeHeader();
+        }
+    }
+
+    /**
+     * Writes the layout's header to the mapped region.
+     */
+    private void writeHeader() {
+        if (layout != null) {
+            final byte[] header = layout.getHeader();
+            if (header != null) {
+                write(header);
+            }
+        }
     }
 
     /**

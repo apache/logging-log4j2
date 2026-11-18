@@ -305,7 +305,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         appendStructuredElements(buf, event);
         appendMessage(buf, event);
         if (useTlsMessageFormat) {
-            return new TlsSyslogFrame(buf.toString()).toString();
+            return new TlsSyslogFrame(buf.toString(), getCharset()).toString();
         }
         return buf.toString();
     }
@@ -442,7 +442,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         final String sdId = getId(id);
 
         if (sdElements.containsKey(sdId)) {
-            final StructuredDataElement union = sdElements.get(id.toString());
+            final StructuredDataElement union = sdElements.get(sdId);
             union.union(map);
             sdElements.put(sdId, union);
         } else {
@@ -604,7 +604,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 }
                 // No need to escape new lines, since parameter names cannot contain them.
                 final String safeKey = sanitizeParamName(entry.getKey());
-                final String safeValue = escapeNewlines(escapeParamValue(entry.getValue()), escapeNewLine);
+                final String safeValue = escapeParamValue(escapeNewlines(entry.getValue(), escapeNewLine));
                 StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }
@@ -1214,7 +1214,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private class StructuredDataElement {
 
-        private final Map<String, String> fields;
+        private Map<String, String> fields;
         private final boolean discardIfEmpty;
         private final String prefix;
 
@@ -1240,7 +1240,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         void union(final Map<String, String> addFields) {
-            this.fields.putAll(addFields);
+            // The current fields might be unmodifiable, e.g. those of a `StructuredDataMessage`
+            final Map<String, String> union = new HashMap<>(fields);
+            union.putAll(addFields);
+            this.fields = union;
         }
 
         Map<String, String> getFields() {
