@@ -131,6 +131,18 @@ class Rfc5424LayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
+    @Test
+    void testTimestampBeforeEpoch() {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().setAppName("app").build();
+        final LogEvent event = Log4jLogEvent.newBuilder().setTimeMillis(-1L)
+                .setMessage(new SimpleMessage("m")).build();
+        final String expectedTimestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.ofEpochMilli(-1L));
+        final String timestamp = layout.toSerializable(event).split(" ")[1];
+        assertEquals(expectedTimestamp, timestamp);
+    }
+
     /**
      * Test case for MDC conversion pattern.
      */
