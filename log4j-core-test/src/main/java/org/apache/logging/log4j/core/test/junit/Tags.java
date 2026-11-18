@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
+
 /**
  * Container for a Junit 5 tags used in tests.
  */
@@ -25,6 +27,12 @@ public final class Tags {
      * Tests that use LMAX Disruptor. Same name as the JUnit 4 category.
      */
     public static final String ASYNC_LOGGERS = "org.apache.logging.log4j.core.test.categories.AsyncLoggers";
+
+    /**
+     * Tests that deserialize Log4j classes.
+     */
+    @BaselineIgnore("2.25.6")
+    public static final String SERIALIZATION = "serialization";
 
     private Tags() {}
 }

@@ -20,6 +20,7 @@ import static org.apache.logging.log4j.test.SerializableMatchers.serializesRound
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.Serializable;
+import java.util.Collections;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ class SerializeTest {
 
     @Test
     void testLogger() {
-        assertThat((Serializable) logger, serializesRoundTrip());
+        // `Log4jLogger` lives outside the `org.apache.logging.log4j.` namespace covered by the allowlist
+        assertThat((Serializable) logger, serializesRoundTrip(Collections.singleton(Log4jLogger.class.getName())));
     }
 }

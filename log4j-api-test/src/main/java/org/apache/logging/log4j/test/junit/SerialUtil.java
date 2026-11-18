@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,12 +25,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
-import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Utility class to facilitate serializing and deserializing objects.
+ * <p>
+ * The input streams created by this class are used by two kinds of tests:
+ * </p>
+ * <ul>
+ * <li>If the {@code jdk.serialFilter} system property is set, they are plain {@link ObjectInputStream}s,
+ * to test deserialization with the process-wide filter recommended by OpenJDK.</li>
+ * <li>Otherwise, they are instances of {@link FilteredObjectInputStream}, to test that the
+ * serialized forms of Log4j classes only contain the classes it allows by default.
+ * This is <strong>not</strong> a recommendation to use {@link FilteredObjectInputStream}.</li>
+ * </ul>
  */
 public class SerialUtil {
 
@@ -68,11 +80,24 @@ public class SerialUtil {
      * @param data byte array representing the serialized object
      * @return the deserialized object
      */
-    @SuppressWarnings("unchecked")
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static <T> T deserialize(final byte[] data) {
+        return deserialize(data, Collections.emptySet());
+    }
+
+    /**
+     * Deserialize an object from the specified byte array (see the class Javadoc).
+     * @param data byte array representing the serialized object
+     * @param allowedExtraClasses fully-qualified class names to add to the default allowlist of
+     *     {@link FilteredObjectInputStream}
+     * @return the deserialized object
+     */
+    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    @BaselineIgnore("2.25.6")
+    public static <T> T deserialize(final byte[] data, final Collection<String> allowedExtraClasses) {
         try {
-            final ObjectInputStream ois = getObjectInputStream(data);
+            final ObjectInputStream ois = getObjectInputStream(data, allowedExtraClasses);
             return (T) ois.readObject();
         } catch (final Exception ex) {
             throw new IllegalStateException("Could not deserialize", ex);
@@ -80,25 +105,47 @@ public class SerialUtil {
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param data data to deserialize,
      * @return an object input stream.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(final byte[] data) throws IOException {
-        final ByteArrayInputStream bas = new ByteArrayInputStream(data);
-        return getObjectInputStream(bas);
+        return getObjectInputStream(data, Collections.emptySet());
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
+     * The supplied extra classes are only used by {@link FilteredObjectInputStream}.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    @BaselineIgnore("2.25.6")
+    public static ObjectInputStream getObjectInputStream(
+            final byte[] data, final Collection<String> allowedExtraClasses) throws IOException {
+        final ByteArrayInputStream bas = new ByteArrayInputStream(data);
+        return getObjectInputStream(bas, allowedExtraClasses);
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param stream stream of data to deserialize,
      * @return an object input stream.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(final InputStream stream) throws IOException {
-        return Constants.JAVA_MAJOR_VERSION == 8
-                ? new FilteredObjectInputStream(stream)
-                : new ObjectInputStream(stream);
+        return getObjectInputStream(stream, Collections.emptySet());
+    }
+
+    /**
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
+     * The supplied extra classes are only used by {@link FilteredObjectInputStream}.
+     */
+    @SuppressFBWarnings("OBJECT_DESERIALIZATION")
+    @BaselineIgnore("2.25.6")
+    public static ObjectInputStream getObjectInputStream(
+            final InputStream stream, final Collection<String> allowedExtraClasses) throws IOException {
+        return System.getProperty("jdk.serialFilter") != null
+                ? new ObjectInputStream(stream)
+                : new FilteredObjectInputStream(stream, allowedExtraClasses);
     }
 }

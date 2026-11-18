@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.UnserializableMessage;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -170,6 +171,7 @@ class ParameterizedMessageTest {
         return Stream.of(
                 "World",
                 new NonSerializable(),
+                new UnserializableMessage("World"),
                 new BigDecimal("123.456"),
                 // LOG4J2-3680
                 new RuntimeException(),
@@ -183,6 +185,14 @@ class ParameterizedMessageTest {
         final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
         assertThat(actual).isInstanceOf(ParameterizedMessage.class);
         assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
+    }
+
+    @Test
+    void testSerializableWithNullArguments() {
+        final Message expected = new ParameterizedMessage("Hello!", (Object[]) null, null);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual.getParameters()).isNull();
+        assertThat(actual.getFormattedMessage()).isEqualTo("Hello!");
     }
 
     /**
