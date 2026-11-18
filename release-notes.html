@@ -625,6 +625,9 @@
 <p>Improve performance when HTML-encoding large messages. (<a href="https://github.com/apache/logging-log4j2/issues/4460">4460</a>, <a href="https://github.com/apache/logging-log4j2/pull/4461">4461</a>)</p>
 </li>
 <li>
+<p>Escape <code>newLineEscape</code> in RFC 5424 SD values, so <code>\n</code> is sent as <code>\\n</code>. (<a href="https://github.com/apache/logging-log4j2/issues/4464">4464</a>, <a href="https://github.com/apache/logging-log4j2/pull/4471">4471</a>)</p>
+</li>
+<li>
 <p>Fix the <code>createOnDemand</code> behavior of <code>RollingFileAppender</code> to correctly defer file and directory creation until the first log event, while preserving eager creation when disabled. (<a href="https://github.com/apache/logging-log4j2/issues/2006">2006</a>, <a href="https://github.com/apache/logging-log4j2/pull/4072">4072</a>)</p>
 </li>
 <li>
