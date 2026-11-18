@@ -346,6 +346,65 @@ class Rfc5424LayoutTest {
         assertThat(layout.toSerializable(event)).contains("[mdc@32473 Amount=\"200.00\" loginId=\"JohnDoe\"]");
     }
 
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testMdcNewlineReplacementIsEscaped(final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout =
+                Rfc5424Layout.newBuilder().setNewLineEscape(replacement).build();
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("message"))
+                .setContextData(contextData)
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[mdc@32473 k=\"" + expected + "\"]");
+    }
+
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testStructuredDataNewlineReplacementIsEscaped(
+            final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder()
+                .setIncludeMDC(false)
+                .setNewLineEscape(replacement)
+                .build();
+        final StructuredDataMessage message = new StructuredDataMessage("test@32473", "message", "Audit");
+        message.put("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
+
+        assertThat(layout.toSerializable(event)).contains("[test@32473 k=\"" + expected + "\"]");
+    }
+
+    static Stream<Arguments> structuredDataEscapeCases() {
+        return Stream.of(
+                Arguments.of("A\r\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\r\nB", "\"", "A\\\"B"),
+                Arguments.of("A\nB", "]", "A\\]B"),
+                Arguments.of("A\r\nB", "\"\\]", "A\\\"\\\\\\]B"),
+                Arguments.of("A\"\\]\r\nB", "\\n", "A\\\"\\\\\\]\\\\nB"),
+                Arguments.of("A\"\\]B", "\\n", "A\\\"\\\\\\]B"),
+                Arguments.of("A\r\nB", "#012", "A#012B"),
+                Arguments.of("A\r\nB", "", "AB"),
+                Arguments.of("A\r\nB", null, "A\r\nB"),
+                Arguments.of("A\rB", "\\n", "A\rB"),
+                Arguments.of("", "\\n", ""),
+                Arguments.of("A\nB\nC", "\\n", "A\\\\nB\\\\nC"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\\n", "\"", "]"})
+    void testPlainMessageKeepsNewlineReplacement(final String replacement) {
+        final Rfc5424Layout layout =
+                Rfc5424Layout.newBuilder().setNewLineEscape(replacement).build();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("A\r\nB"))
+                .build();
+
+        assertThat(layout.toSerializable(event)).endsWith(" A" + replacement + "B");
+    }
+
     /**
      * Test case for escaping newlines and other SD PARAM-NAME special characters.
      */

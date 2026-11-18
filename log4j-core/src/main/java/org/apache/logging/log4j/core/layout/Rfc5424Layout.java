@@ -604,7 +604,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 }
                 // No need to escape new lines, since parameter names cannot contain them.
                 final String safeKey = sanitizeParamName(entry.getKey());
-                final String safeValue = escapeNewlines(escapeParamValue(entry.getValue()), escapeNewLine);
+                final String safeValue = escapeParamValue(escapeNewlines(entry.getValue(), escapeNewLine));
                 StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }
