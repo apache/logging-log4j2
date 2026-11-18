@@ -651,6 +651,14 @@ Both rollover strategies support the following configuration parameters:
 
 See <<RolloverStrategy-compress>> for more details.
 
+| [[RolloverStrategy-attr-compressionLevel]]compressionLevel
+| `int`
+|
+| Compression level of the archived files.
+If not set, the default level of the compression algorithm is used.
+
+See <<RolloverStrategy-compress-level>> for the supported values.
+
 | [[RolloverStrategy-attr-stopCustomActionsOnError]]stopCustomActionsOnError
 | `boolean`
 | `true`
@@ -964,6 +972,34 @@ If the <<RolloverStrategy-attr-tempCompressedFilePattern,`tempCompressedFilePatt
 
 * will be compressed and stored in the location given by `tempCompressedFilePattern`
 * and then it will be moved to the location given by <<attr-filePattern,`filePattern`>>.
+
+[#RolloverStrategy-compress-level]
+==== Compression levels
+
+The <<RolloverStrategy-attr-compressionLevel,`compressionLevel`>> attribute sets the compression level of the archived files.
+The value is passed unchanged to the compression algorithm, so its meaning and range depend on the algorithm:
+
+[cols="1m,4"]
+|===
+| Extension | Level
+
+| zip, gz
+| The `java.util.zip.Deflater` levels (`-1` for the default level, `0` to `9`).
+
+| deflate
+| `0` to `9`.
+
+| bzip2
+| The block size (`1` to `9`).
+
+| zstd
+| The Zstandard levels, including negative "fast" levels.
+Zstandard adjusts values outside of its range, without a warning.
+|===
+
+Other algorithms, such as `xz`, `lzma`, `lz4-*` and `snappy-framed`, do not support the attribute: Log4j logs a warning and uses the default level of the algorithm.
+
+If the level is not valid for the algorithm, Log4j also logs a warning once and uses the default level of the algorithm.
 
 [#AbstractPathAction]
 == Optional actions

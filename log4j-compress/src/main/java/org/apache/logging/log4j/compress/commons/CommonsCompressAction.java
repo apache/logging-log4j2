@@ -24,6 +24,7 @@ import java.util.Objects;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamProvider;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAction;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Compresses a file using bzip2 compression.
@@ -31,6 +32,11 @@ import org.apache.logging.log4j.core.appender.rolling.action.AbstractCompressAct
 final class CommonsCompressAction extends AbstractCompressAction {
 
     private final CompressorStreamProvider provider;
+
+    /**
+     * A valid compression level or {@code null}, if the default level of the algorithm should be used.
+     */
+    private final @Nullable Integer compressionLevel;
 
     /**
      * Compressor name. One of "gz", "bzip2", "xz", "pack200" or "deflate".
@@ -43,18 +49,27 @@ final class CommonsCompressAction extends AbstractCompressAction {
      * @param name The compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
      * @param source The file to compress, may not be null.
      * @param destination The compressed file, may not be null.
+     * @param compressionLevel The compression level or {@code null} for the default level of the algorithm.
      */
     CommonsCompressAction(
-            final CompressorStreamProvider provider, final String name, final Path source, final Path destination) {
+            final CompressorStreamProvider provider,
+            final String name,
+            final Path source,
+            final Path destination,
+            final @Nullable Integer compressionLevel) {
         super(source, destination);
         this.provider = Objects.requireNonNull(provider);
         this.name = Objects.requireNonNull(name, "name");
+        this.compressionLevel = compressionLevel;
     }
 
     @Override
     protected OutputStream wrapOutputStream(OutputStream stream) throws IOException {
         try {
-            return new BufferedOutputStream(provider.createCompressorOutputStream(name, stream), BUF_SIZE);
+            final OutputStream compressor = compressionLevel != null
+                    ? LevelAwareCompressors.wrap(name, stream, compressionLevel)
+                    : provider.createCompressorOutputStream(name, stream);
+            return new BufferedOutputStream(compressor, BUF_SIZE);
         } catch (final CompressorException error) {
             final String message = String.format("failed to wrap the output stream with the `%s` compressor", name);
             throw new IOException(message, error);

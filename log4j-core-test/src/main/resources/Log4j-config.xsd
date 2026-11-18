@@ -1107,7 +1107,7 @@
       <attribute name="compressionLevel" type="tns:IntegerType">
          <annotation>
             <documentation>
-               Sets the compression level, 0-9, where 0 = none, 1 = best speed, through 9 = best compression. Only implemented for ZIP files.
+               Sets the compression level of archived files, using the native levels of the compression algorithm. If not set or not supported, the default level of the algorithm is used.
             </documentation>
          </annotation>
       </attribute>
@@ -1154,7 +1154,7 @@
       <attribute name="compressionLevel" type="tns:IntegerType">
          <annotation>
             <documentation>
-               Sets the compression level, 0-9, where 0 = none, 1 = best speed, through 9 = best compression. Only implemented for ZIP files.
+               Sets the compression level of archived files, using the native levels of the compression algorithm. If not set or not supported, the default level of the algorithm is used.
             </documentation>
          </annotation>
       </attribute>

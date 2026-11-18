@@ -30,6 +30,17 @@ import org.jspecify.annotations.NullMarked;
 public interface CompressActionFactory {
 
     /**
+     * Name of the option that selects the compression level.
+     * <p>
+     *     The value is an integer in the native range of the algorithm. If the option is missing, or if the algorithm
+     *     does not support the requested level, the default level of the algorithm is used.
+     * </p>
+     *
+     * @since 3.0.0
+     */
+    String COMPRESSION_LEVEL = "compressionLevel";
+
+    /**
      * Returns an action that compresses a file.
      *
      * @param source The location of the file to compress.
