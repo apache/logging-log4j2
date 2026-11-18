@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Plugin reference :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/plugin-reference.html">
-    <meta name="generator" content="Antora 3.2.2">
+    <meta name="generator" content="Antora 3.2.3">
 <link rel="stylesheet" href="./_/css/site.css">
 <link rel="icon" href="./_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -5142,7 +5142,8 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DefaultRolloverStrategy_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy fileIndex=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DefaultRolloverStrategy compressionLevel=""
+                         fileIndex=""
                          max=""
                          min=""
                          stopCustomActionsOnError=""
@@ -5173,6 +5174,18 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets the compression level of archived files.</p>
+</div>
+<div class="paragraph">
+<p>The level must be in the native range of the compression algorithm.
+Unsupported values and algorithms that do not support levels fall back to the default level of the algorithm with a warning.</p>
+</div></div></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileIndex</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
@@ -5301,7 +5314,8 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 <h5 id="org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy_XML-snippet"><a class="anchor" href="#org-apache-logging-log4j_log4j-core_org-apache-logging-log4j-core-appender-rolling-DirectWriteRolloverStrategy_XML-snippet"></a>XML snippet</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DirectWriteRolloverStrategy maxFiles=""
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;DirectWriteRolloverStrategy compressionLevel=""
+                             maxFiles=""
                              stopCustomActionsOnError=""
                              tempCompressedFilePattern=""&gt;
     &lt;a-Action-implementation/&gt;&lt;!-- multiple occurrences allowed --&gt;
@@ -5330,6 +5344,18 @@ log" be the value of the <strong>ActiveFile</strong> option and "foo.
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compressionLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets the compression level of archived files.</p>
+</div>
+<div class="paragraph">
+<p>The level must be in the native range of the compression algorithm.
+Unsupported values and algorithms that do not support levels fall back to the default level of the algorithm with a warning.</p>
+</div></div></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxFiles</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>

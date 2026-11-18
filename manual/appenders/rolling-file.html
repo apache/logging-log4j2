@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Rolling file appenders :: Apache Log4j</title>
     <link rel="canonical" href="https://logging.apache.org/log4j/3.x/manual/appenders/rolling-file.html">
-    <meta name="generator" content="Antora 3.2.2">
+    <meta name="generator" content="Antora 3.2.3">
 <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/../_images/favicon.ico" type="image/x-icon">
 <!-- `@asciidoctor/tabs` extension styles -->
@@ -1360,6 +1360,14 @@ Use the <code>DirectWriteRolloverStrategy</code> instead by omitting the <code>f
 <p class="tableblock">See <a href="#RolloverStrategy-compress">Compressing archived files</a> for more details.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RolloverStrategy-attr-compressionLevel"></a>compressionLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compression level of the archived files.
+If not set, the default level of the compression algorithm is used.</p>
+<p class="tableblock">See <a href="#RolloverStrategy-compress-level">Compression levels</a> for the supported values.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RolloverStrategy-attr-stopCustomActionsOnError"></a>stopCustomActionsOnError</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
@@ -1739,6 +1747,50 @@ for more details.</p>
 <p>and then it will be moved to the location given by <a href="#attr-filePattern"><code>filePattern</code></a>.</p>
 </li>
 </ul>
+</div>
+<div class="sect3">
+<h4 id="RolloverStrategy-compress-level"><a class="anchor" href="#RolloverStrategy-compress-level"></a>Compression levels</h4>
+<div class="paragraph">
+<p>The <a href="#RolloverStrategy-attr-compressionLevel"><code>compressionLevel</code></a> attribute sets the compression level of the archived files.
+The value is passed unchanged to the compression algorithm, so its meaning and range depend on the algorithm:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Extension</th>
+<th class="tableblock halign-left valign-top">Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>zip, gz</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>java.util.zip.Deflater</code> levels (<code>-1</code> for the default level, <code>0</code> to <code>9</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deflate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code> to <code>9</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bzip2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The block size (<code>1</code> to <code>9</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>zstd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Zstandard levels, including negative "fast" levels.
+Zstandard adjusts values outside of its range, without a warning.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Other algorithms, such as <code>xz</code>, <code>lzma</code>, <code>lz4-*</code> and <code>snappy-framed</code>, do not support the attribute: Log4j logs a warning and uses the default level of the algorithm.</p>
+</div>
+<div class="paragraph">
+<p>If the level is not valid for the algorithm, Log4j also logs a warning once and uses the default level of the algorithm.</p>
+</div>
 </div>
 </div>
 </div>
