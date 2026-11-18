@@ -97,7 +97,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                     manager,
                     fileName,
                     isIgnoreExceptions(),
-                    false,
+                    isImmediateFlush(),
                     advertise ? getConfiguration().getAdvertiser() : null,
                     getPropertyArray());
         }
