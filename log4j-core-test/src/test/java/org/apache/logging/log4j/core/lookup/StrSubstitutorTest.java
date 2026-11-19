@@ -194,6 +194,7 @@ class StrSubstitutorTest {
         assertEquals("quick brown fox", sub.replace("${${name}}"));
         assertEquals("quick brown fox }", sub.replace("${undefined:-${animal} $}}"));
         assertEquals("quick brown fox:-}", sub.replace("${undefined:-${${name}}$:-$}}"));
+        assertEquals("a}b", sub.replace("${undefined:-${undefined2:-a$}b}}"));
     }
 
     @Test
@@ -210,9 +211,11 @@ class StrSubstitutorTest {
         final Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("dollars", "a$$b");
         valuesMap.put("brace", "a$}b");
+        valuesMap.put("dollar", "$");
         final StrSubstitutor sub = new StrSubstitutor(valuesMap);
         assertEquals("a$$b", sub.replace("${undefined:-${dollars}}"));
         assertEquals("a$}b", sub.replace("${undefined:-${brace}}"));
+        assertEquals("$-x", sub.replace("${undefined:-${dollar}-x}"));
     }
 
     @Test
@@ -235,6 +238,42 @@ class StrSubstitutorTest {
         assertEquals("$$ quick brown fox", sub.replace("$$ ${animal}"));
         assertEquals("a$:b c$-d e$}f", sub.replace("a$:b c$-d e$}f"));
         assertEquals("${animal}", sub.replace("$${animal}"));
+    }
+
+    @Test
+    void testEscapedCharactersAfterEscapedValueDelimiter() {
+        final String nameWithColon = "-a:b";
+        final String nameWithDelimiter = "-a:-b";
+        System.setProperty(nameWithColon, "colon");
+        System.setProperty(nameWithDelimiter, "delimiter");
+        try {
+            final StrSubstitutor sub = new StrSubstitutor(new Interpolator(new PropertiesLookup(new HashMap<>())));
+            assertEquals("colon", sub.replace("${sys:\\-a$:b}"));
+            assertEquals("delimiter", sub.replace("${sys:\\-a$:-b}"));
+            assertEquals("a}b", sub.replace("${sys:\\-log4j.undef:-a$}b}"));
+        } finally {
+            System.clearProperty(nameWithColon);
+            System.clearProperty(nameWithDelimiter);
+        }
+    }
+
+    @Test
+    void testEscapedClosingBraceWithoutValueEscapeDelimiter() {
+        final StrSubstitutor sub = new StrSubstitutor(
+                new MapLookup(new HashMap<>()),
+                StrMatcher.stringMatcher("${"),
+                StrMatcher.charMatcher('}'),
+                '$',
+                StrMatcher.stringMatcher(":-"),
+                null);
+        assertEquals("a}b", sub.replace("${undefined:-a$}b}"));
+    }
+
+    @Test
+    void testEscapedClosingBraceWithoutSubstitutionInVariables() {
+        final StrSubstitutor sub = new StrSubstitutor(new HashMap<>());
+        sub.setEnableSubstitutionInVariables(false);
+        assertEquals("a}b", sub.replace("${undefined:-a$}b}"));
     }
 
     @Test
