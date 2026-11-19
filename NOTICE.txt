@@ -7,6 +7,9 @@ The Apache Software Foundation (http://www.apache.org/).
 ResolverUtil.java
 Copyright 2005-2006 Tim Fennell
 
+CronExpression.java (originated from the Quartz scheduler)
+Copyright Terracotta, Inc.
+
 Dumbster SMTP test server
 Copyright 2004 Jason Paul Kitchen
 
