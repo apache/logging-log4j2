@@ -4107,6 +4107,7 @@ OTOH, a Writer cannot print byte streams.</p>
                   append=""
                   bufferedIo=""
                   bufferSize=""
+                  createOnDemand=""
                   fileName=""
                   ignoreExceptions=""
                   immediateFlush=""
@@ -4169,6 +4170,14 @@ OTOH, a Writer cannot print byte streams.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createOnDemand</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets whether the file and its parent directories are only created when the first log event is written.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileName</code></p></td>
@@ -4454,6 +4463,7 @@ OTOH, a Writer cannot print byte streams.</p>
                   append=""
                   bufferedIo=""
                   bufferSize=""
+                  createOnDemand=""
                   fileName=""
                   ignoreExceptions=""
                   immediateFlush=""
@@ -4515,6 +4525,14 @@ OTOH, a Writer cannot print byte streams.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createOnDemand</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets whether the file and its parent directories are only created when the first log event is written.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileName</code></p></td>
@@ -4821,6 +4839,7 @@ OTOH, a Writer cannot print byte streams.</p>
                          append=""
                          bufferedIo=""
                          bufferSize=""
+                         createOnDemand=""
                          fileGroup=""
                          fileName=""
                          fileOwner=""
@@ -4889,6 +4908,14 @@ OTOH, a Writer cannot print byte streams.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int?</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createOnDemand</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean?</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Sets whether the file and its parent directories are only created when the first log event is written.</p>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fileGroup</code></p></td>
@@ -22071,7 +22098,7 @@ toString(), or to output the value of a specific key within the property bundle 
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 </tr>

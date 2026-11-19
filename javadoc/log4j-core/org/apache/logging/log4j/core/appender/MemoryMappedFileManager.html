@@ -190,8 +190,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets this FileManager's content format specified by:</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="MemoryMappedFileManager.html" title="class in org.apache.logging.log4j.core.appender">MemoryMappedFileManager</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFileManager(java.lang.String,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFileManager(java.lang.String,boolean,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
  boolean&nbsp;append,
+ boolean&nbsp;createOnDemand,
  boolean&nbsp;immediateFlush,
  int&nbsp;regionLength,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
@@ -199,48 +200,58 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns the MemoryMappedFileManager.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFileName()" class="member-name-link">getFileName</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="MemoryMappedFileManager.html" title="class in org.apache.logging.log4j.core.appender">MemoryMappedFileManager</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFileManager(java.lang.String,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ boolean&nbsp;append,
+ boolean&nbsp;immediateFlush,
+ int&nbsp;regionLength,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
+ <a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns the MemoryMappedFileManager.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFileName()" class="member-name-link">getFileName</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the name of the File being managed.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRegionLength()" class="member-name-link">getRegionLength</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRegionLength()" class="member-name-link">getRegionLength</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the length of the memory mapped region.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#isEndOfBatch()" class="member-name-link">isEndOfBatch</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
-<div class="block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">end-of-batch on the event is used instead.</div>
-</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isImmediateFlush()" class="member-name-link">isImmediateFlush</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns <code>true</code> if the content of the buffer should be forced to the storage device on every write,
- <code>false</code> otherwise.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html" title="class or interface in java.nio" class="external-link">MappedByteBuffer</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#mmap(java.nio.channels.FileChannel,java.lang.String,long,int)" class="member-name-link">mmap</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/channels/FileChannel.html" title="class or interface in java.nio.channels" class="external-link">FileChannel</a>&nbsp;fileChannel,
- <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
- long&nbsp;start,
- int&nbsp;size)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setEndOfBatch(boolean)" class="member-name-link">setEndOfBatch</a><wbr>(boolean&nbsp;endOfBatch)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#isEndOfBatch()" class="member-name-link">isEndOfBatch</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
 <div class="block"><span class="deprecated-label">Deprecated.</span>
 <div class="deprecation-comment">end-of-batch on the event is used instead.</div>
 </div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#write(byte%5B%5D,int,int,boolean)" class="member-name-link">write</a><wbr>(byte[]&nbsp;bytes,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isImmediateFlush()" class="member-name-link">isImmediateFlush</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns <code>true</code> if the content of the buffer should be forced to the storage device on every write,
+ <code>false</code> otherwise.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html" title="class or interface in java.nio" class="external-link">MappedByteBuffer</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#mmap(java.nio.channels.FileChannel,java.lang.String,long,int)" class="member-name-link">mmap</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/channels/FileChannel.html" title="class or interface in java.nio.channels" class="external-link">FileChannel</a>&nbsp;fileChannel,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ long&nbsp;start,
+ int&nbsp;size)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setEndOfBatch(boolean)" class="member-name-link">setEndOfBatch</a><wbr>(boolean&nbsp;endOfBatch)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">end-of-batch on the event is used instead.</div>
+</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#write(byte%5B%5D,int,int,boolean)" class="member-name-link">write</a><wbr>(byte[]&nbsp;bytes,
  int&nbsp;offset,
  int&nbsp;length,
  boolean&nbsp;immediateFlush)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Some output streams synchronize writes while others do not.</div>
 </div>
 </div>
@@ -313,6 +324,33 @@ loadScripts(document, 'script');</script>
 <dd><code>layout</code> - The layout.</dd>
 <dt>Returns:</dt>
 <dd>A MemoryMappedFileManager for the File.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getFileManager(java.lang.String,boolean,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)">
+<h3>getFileManager</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="MemoryMappedFileManager.html" title="class in org.apache.logging.log4j.core.appender">MemoryMappedFileManager</a></span>&nbsp;<span class="element-name">getFileManager</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ boolean&nbsp;append,
+ boolean&nbsp;createOnDemand,
+ boolean&nbsp;immediateFlush,
+ int&nbsp;regionLength,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
+ <a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout)</span></div>
+<div class="block">Returns the MemoryMappedFileManager.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fileName</code> - The name of the file to manage.</dd>
+<dd><code>append</code> - true if the file should be appended to, false if it should be overwritten.</dd>
+<dd><code>createOnDemand</code> - true if the file and its parent directories should only be created on the first write</dd>
+<dd><code>immediateFlush</code> - true if the contents should be flushed to disk on every write</dd>
+<dd><code>regionLength</code> - The mapped region length.</dd>
+<dd><code>advertiseURI</code> - the URI to use when advertising the file</dd>
+<dd><code>layout</code> - The layout.</dd>
+<dt>Returns:</dt>
+<dd>A MemoryMappedFileManager for the File.</dd>
+<dt>Since:</dt>
+<dd>2.27.0</dd>
 </dl>
 </section>
 </li>

@@ -126,15 +126,23 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Builds the object after all configuration has been set.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertise(boolean)" class="member-name-link">setAdvertise</a><wbr>(boolean&nbsp;advertise)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isCreateOnDemand()" class="member-name-link">isCreateOnDemand</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiseURI(java.lang.String)" class="member-name-link">setAdvertiseURI</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertise(boolean)" class="member-name-link">setAdvertise</a><wbr>(boolean&nbsp;advertise)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAppend(boolean)" class="member-name-link">setAppend</a><wbr>(boolean&nbsp;append)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAdvertiseURI(java.lang.String)" class="member-name-link">setAdvertiseURI</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAppend(boolean)" class="member-name-link">setAppend</a><wbr>(boolean&nbsp;append)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCreateOnDemand(boolean)" class="member-name-link">setCreateOnDemand</a><wbr>(boolean&nbsp;createOnDemand)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets whether the file and its parent directories are only created when the first log event is written.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFileGroup(java.lang.String)" class="member-name-link">setFileGroup</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -391,6 +399,27 @@ implements <a href="../util/Builder.html" title="interface in org.apache.logging
 <section class="detail" id="setMaxRandomDelay(int)">
 <h3>setMaxRandomDelay</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setMaxRandomDelay</span><wbr><span class="parameters">(int&nbsp;maxRandomDelay)</span></div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isCreateOnDemand()">
+<h3>isCreateOnDemand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isCreateOnDemand</span>()</div>
+<dl class="notes">
+<dt>Since:</dt>
+<dd>2.27.0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setCreateOnDemand(boolean)">
+<h3>setCreateOnDemand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="RollingRandomAccessFileAppender.Builder.html" title="type parameter in RollingRandomAccessFileAppender.Builder">B</a></span>&nbsp;<span class="element-name">setCreateOnDemand</span><wbr><span class="parameters">(boolean&nbsp;createOnDemand)</span></div>
+<div class="block">Sets whether the file and its parent directories are only created when the first log event is written.</div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>2.27.0</dd>

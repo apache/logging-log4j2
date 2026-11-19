@@ -407,14 +407,37 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the FileManager.</div>
 </div>
 <div class="col-first odd-row-color"><code>static <a href="../appender/MemoryMappedFileManager.html" title="class in org.apache.logging.log4j.core.appender">MemoryMappedFileManager</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">MemoryMappedFileManager.</span><code><a href="../appender/MemoryMappedFileManager.html#getFileManager(java.lang.String,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+<div class="col-second odd-row-color"><span class="type-name-label">MemoryMappedFileManager.</span><code><a href="../appender/MemoryMappedFileManager.html#getFileManager(java.lang.String,boolean,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
  boolean&nbsp;append,
+ boolean&nbsp;createOnDemand,
  boolean&nbsp;immediateFlush,
  int&nbsp;regionLength,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
  <a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Returns the MemoryMappedFileManager.</div>
+</div>
+<div class="col-first even-row-color"><code>static <a href="../appender/MemoryMappedFileManager.html" title="class in org.apache.logging.log4j.core.appender">MemoryMappedFileManager</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">MemoryMappedFileManager.</span><code><a href="../appender/MemoryMappedFileManager.html#getFileManager(java.lang.String,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ boolean&nbsp;append,
+ boolean&nbsp;immediateFlush,
+ int&nbsp;regionLength,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
+ <a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Returns the MemoryMappedFileManager.</div>
+</div>
+<div class="col-first odd-row-color"><code>static <a href="../appender/RandomAccessFileManager.html" title="class in org.apache.logging.log4j.core.appender">RandomAccessFileManager</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RandomAccessFileManager.</span><code><a href="../appender/RandomAccessFileManager.html#getFileManager(java.lang.String,boolean,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+ boolean&nbsp;append,
+ boolean&nbsp;createOnDemand,
+ boolean&nbsp;immediateFlush,
+ int&nbsp;bufferSize,
+ <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;advertiseURI,
+ <a href="../Layout.html" title="interface in org.apache.logging.log4j.core">Layout</a>&lt;? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;&nbsp;layout,
+ <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns the RandomAccessFileManager.</div>
 </div>
 <div class="col-first even-row-color"><code>static <a href="../appender/RandomAccessFileManager.html" title="class in org.apache.logging.log4j.core.appender">RandomAccessFileManager</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">RandomAccessFileManager.</span><code><a href="../appender/RandomAccessFileManager.html#getFileManager(java.lang.String,boolean,boolean,int,java.lang.String,org.apache.logging.log4j.core.Layout,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
@@ -940,7 +963,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns a RollingFileManager.</div>
 </div>
 <div class="col-first even-row-color"><code>static <a href="../appender/rolling/RollingRandomAccessFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingRandomAccessFileManager</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RollingRandomAccessFileManager.</span><code><a href="../appender/rolling/RollingRandomAccessFileManager.html#getRollingRandomAccessFileManager(java.lang.String,java.lang.String,boolean,boolean,int,org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy,org.apache.logging.log4j.core.appender.rolling.RolloverStrategy,java.lang.String,org.apache.logging.log4j.core.Layout,java.lang.String,java.lang.String,java.lang.String,int,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getRollingRandomAccessFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
+<div class="col-second even-row-color"><span class="type-name-label">RollingRandomAccessFileManager.</span><code><a href="../appender/rolling/RollingRandomAccessFileManager.html#getRollingRandomAccessFileManager(java.lang.String,java.lang.String,boolean,boolean,int,org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy,org.apache.logging.log4j.core.appender.rolling.RolloverStrategy,java.lang.String,org.apache.logging.log4j.core.Layout,java.lang.String,java.lang.String,java.lang.String,int,boolean,org.apache.logging.log4j.core.config.Configuration)" class="member-name-link">getRollingRandomAccessFileManager</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePattern,
  boolean&nbsp;append,
  boolean&nbsp;immediateFlush,
@@ -953,6 +976,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileOwner,
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileGroup,
  int&nbsp;maxRandomDelay,
+ boolean&nbsp;createOnDemand,
  <a href="../config/Configuration.html" title="interface in org.apache.logging.log4j.core.config">Configuration</a>&nbsp;configuration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static <a href="../appender/rolling/RollingRandomAccessFileManager.html" title="class in org.apache.logging.log4j.core.appender.rolling">RollingRandomAccessFileManager</a></code></div>

@@ -656,6 +656,14 @@ file attribute view.</p></td>
 <a href="#FileAppender-attr-append"><code>RollingFile</code> Appender</a>.
 The log file cannot be opened by multiple applications at the same time.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="RandomAccessFileAppender-attr-createOnDemand"></a>createOnDemand</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the appender creates the file and its parent directories on-demand:
+the file is only created when a log event passes all filters and is routed to this appender.</p>
+<p class="tableblock">If <a href="#RandomAccessFileAppender-attr-append"><code>append</code></a> is <code>false</code>, the content of an existing file is only discarded when the first log event is written.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -695,6 +703,14 @@ The log file cannot be opened by multiple applications at the same time.</p></td
 <p class="tableblock">This setting does not give the same atomicity guarantees as for the
 <a href="#FileAppender-attr-append"><code>RollingFile</code> Appender</a>.
 The log file cannot be opened by multiple applications at the same time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MemoryMappedFileAppender-attr-createOnDemand"></a>createOnDemand</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, the appender creates the file and its parent directories on-demand:
+the file is only created when a log event passes all filters and is routed to this appender.</p>
+<p class="tableblock">If <a href="#MemoryMappedFileAppender-attr-append"><code>append</code></a> is <code>false</code>, the content of an existing file is only discarded when the first log event is written.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="MemoryMappedFileAppender-attr-regionLength"></a>regionLength</code></p></td>
