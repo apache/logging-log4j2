@@ -60,7 +60,9 @@ import org.jspecify.annotations.Nullable;
 @ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 @SupportedAnnotationTypes({
     "org.apache.logging.log4j.core.config.plugins.validation.Constraint",
+    "org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank",
     "org.apache.logging.log4j.core.config.plugins.Plugin",
+    "org.apache.logging.log4j.core.config.plugins.PluginAttribute",
     "org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute",
     "org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory",
     "org.apache.logging.log4j.core.config.plugins.PluginConfiguration",
@@ -69,7 +71,10 @@ import org.jspecify.annotations.Nullable;
     "org.apache.logging.log4j.core.config.plugins.PluginLoggerContext",
     "org.apache.logging.log4j.core.config.plugins.PluginNode",
     "org.apache.logging.log4j.core.config.plugins.PluginValue",
-    "org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy"
+    "org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy",
+    "org.apache.logging.log4j.core.config.plugins.validation.constraints.Required",
+    "org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost",
+    "org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort"
 })
 @SupportedOptions({"log4j.graalvm.groupId", "log4j.graalvm.artifactId", "log4j.plugin.processor.minAllowedMessageKind"})
 public class GraalVmProcessor extends AbstractProcessor {

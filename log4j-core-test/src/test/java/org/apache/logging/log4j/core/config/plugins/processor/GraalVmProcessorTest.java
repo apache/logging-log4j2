@@ -93,13 +93,18 @@ class GraalVmProcessorTest {
             "fields",
             asList(
                     asMap("name", "attribute"),
+                    asMap("name", "attributeField"),
                     asMap("name", "attributeWithoutPublicSetterButWithSuppressAnnotation"),
                     asMap("name", "config"),
                     asMap("name", "filters"),
                     asMap("name", "layout"),
                     asMap("name", "loggerContext"),
                     asMap("name", "node"),
+                    asMap("name", "notBlankOnly"),
                     asMap("name", "onMatch"),
+                    asMap("name", "requiredOnly"),
+                    asMap("name", "validHostOnly"),
+                    asMap("name", "validPortOnly"),
                     asMap("name", "value")));
     private static final String FAKE_PLUGIN_NESTED_NAME = FAKE_PLUGIN_NAME + "$Nested";
     private static final Object FAKE_PLUGIN_NESTED = onlyNoArgsConstructor(FAKE_PLUGIN_NESTED_NAME);
@@ -235,7 +240,7 @@ class GraalVmProcessorTest {
         }
         // The generated folder name should be deterministic and based solely on the descriptor content.
         // If the descriptor changes, this test and the expected folder name must be updated accordingly.
-        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("791e18c8"));
+        assertThat(reachabilityMetadataFolders).hasSize(1).containsExactly(path.resolve("19e2ae8c"));
         assertThat(reachabilityMetadataFolders.get(0).resolve("reflect-config.json"))
                 .as("Reachability metadata file")
                 .exists();
