@@ -593,7 +593,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                     sb.append(prefix);
                 }
                 final String safeKey = escapeNewlines(escapeSDParams(entry.getKey()), escapeNewLine);
-                final String safeValue = escapeNewlines(escapeSDParams(entry.getValue()), escapeNewLine);
+                final String safeValue = escapeSDParams(escapeNewlines(entry.getValue(), escapeNewLine));
                 StringBuilders.appendKeyDqValue(sb, safeKey, safeValue);
             }
         }

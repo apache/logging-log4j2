@@ -29,6 +29,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationProcessor;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -57,9 +59,12 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
@@ -262,6 +267,70 @@ class Rfc5424LayoutTest {
             root.removeAppender(appender);
             appender.stop();
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testMdcNewlineReplacementIsEscaped(final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEscapeNL(replacement)
+                .build();
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("message"))
+                .setContextData(contextData)
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[mdc@32473 k=\"" + expected + "\"]");
+    }
+
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testStructuredDataNewlineReplacementIsEscaped(
+            final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setIncludeMDC(false)
+                .setEscapeNL(replacement)
+                .build();
+        final StructuredDataMessage message = new StructuredDataMessage("test@32473", "message", "Audit");
+        message.put("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
+
+        assertThat(layout.toSerializable(event)).contains("[test@32473 k=\"" + expected + "\"]");
+    }
+
+    static Stream<Arguments> structuredDataEscapeCases() {
+        return Stream.of(
+                Arguments.of("A\r\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\r\nB", "\"", "A\\\"B"),
+                Arguments.of("A\nB", "]", "A\\]B"),
+                Arguments.of("A\r\nB", "\"\\]", "A\\\"\\\\\\]B"),
+                Arguments.of("A\"\\]\r\nB", "\\n", "A\\\"\\\\\\]\\\\nB"),
+                Arguments.of("A\"\\]B", "\\n", "A\\\"\\\\\\]B"),
+                Arguments.of("A\r\nB", "#012", "A#012B"),
+                Arguments.of("A\r\nB", "", "AB"),
+                Arguments.of("A\r\nB", null, "A\r\nB"),
+                Arguments.of("A\rB", "\\n", "A\rB"),
+                Arguments.of("", "\\n", ""),
+                Arguments.of("A\nB\nC", "\\n", "A\\\\nB\\\\nC"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\\n", "\"", "]"})
+    void testPlainMessageKeepsNewlineReplacement(final String replacement) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEscapeNL(replacement)
+                .build();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("A\r\nB"))
+                .build();
+
+        assertThat(layout.toSerializable(event)).endsWith(" A" + replacement + "B");
     }
 
     /**
