@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.Clock;
@@ -134,7 +133,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     @Override
     public void logMessage(
             final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        getTranslatorType().log(fqcn, level, marker, message, thrown);
+        getTranslatorType().log(fqcn, calcLocationIfRequested(fqcn), level, marker, message, thrown);
     }
 
     @Override
@@ -145,21 +144,13 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final StackTraceElement location,
             final Message message,
             final Throwable throwable) {
-        final StackTraceElement resolvedLocation = location != null ? location : calcLocationIfRequested(fqcn);
-        getTranslatorType().log(fqcn, resolvedLocation, level, marker, message, throwable);
+        getTranslatorType().log(fqcn, resolveLocation(fqcn, location), level, marker, message, throwable);
     }
 
     abstract static class TranslatorType {
         abstract void log(
                 final String fqcn,
                 final StackTraceElement location,
-                final Level level,
-                final Marker marker,
-                final Message message,
-                final Throwable thrown);
-
-        abstract void log(
-                final String fqcn,
                 final Level level,
                 final Marker marker,
                 final Message message,
@@ -177,16 +168,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 final Throwable thrown) {
             logWithThreadLocalTranslator(fqcn, location, level, marker, message, thrown);
         }
-
-        @Override
-        void log(
-                final String fqcn,
-                final Level level,
-                final Marker marker,
-                final Message message,
-                final Throwable thrown) {
-            logWithThreadLocalTranslator(fqcn, level, marker, message, thrown);
-        }
     };
 
     private final TranslatorType varargTranslatorType = new TranslatorType() {
@@ -198,18 +179,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 final Marker marker,
                 final Message message,
                 final Throwable thrown) {
-            logWithVarargTranslator(fqcn, location, level, marker, message, thrown);
-        }
-
-        @Override
-        void log(
-                final String fqcn,
-                final Level level,
-                final Marker marker,
-                final Message message,
-                final Throwable thrown) {
             // LOG4J2-1172: avoid storing non-JDK classes in ThreadLocals to avoid memory leaks in web apps
-            logWithVarargTranslator(fqcn, level, marker, message, thrown);
+            logWithVarargTranslator(fqcn, location, level, marker, message, thrown);
         }
     };
 
@@ -228,29 +199,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * unnecessary objects with each event.
      *
      * @param fqcn fully qualified name of the caller
-     * @param level level at which the caller wants to log the message
-     * @param marker message marker
-     * @param message the log message
-     * @param thrown a {@code Throwable} or {@code null}
-     */
-    private void logWithThreadLocalTranslator(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        // Implementation note: this method is tuned for performance. MODIFY WITH CARE!
-
-        final RingBufferLogEventTranslator translator = getCachedTranslator();
-        initTranslator(translator, fqcn, level, marker, message, thrown);
-        initTranslatorThreadValues(translator);
-        publish(translator);
-    }
-
-    /**
-     * Enqueues the specified log event data for logging in a background thread.
-     * <p>
-     * This re-uses a {@code RingBufferLogEventTranslator} instance cached in a {@code ThreadLocal} to avoid creating
-     * unnecessary objects with each event.
-     *
-     * @param fqcn fully qualified name of the caller
-     * @param location the Location of the caller.
+     * @param location the location of the caller or {@code null}
      * @param level level at which the caller wants to log the message
      * @param marker message marker
      * @param message the log message
@@ -282,7 +231,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
             AsyncQueueFullMessageUtil.logWarningToStatusLogger();
             logMessageInCurrentThread(
-                    translator.fqcn, translator.level, translator.marker, translator.message, translator.thrown);
+                    translator.fqcn,
+                    translator.getLocation(),
+                    translator.level,
+                    translator.marker,
+                    translator.message,
+                    translator.thrown);
             translator.clear();
             return;
         }
@@ -293,7 +247,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 break;
             case SYNCHRONOUS:
                 logMessageInCurrentThread(
-                        translator.fqcn, translator.level, translator.marker, translator.message, translator.thrown);
+                        translator.fqcn,
+                        translator.getLocation(),
+                        translator.level,
+                        translator.marker,
+                        translator.message,
+                        translator.thrown);
                 translator.clear();
                 break;
             case DISCARD:
@@ -331,38 +290,24 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 );
     }
 
-    private void initTranslator(
-            final RingBufferLogEventTranslator translator,
-            final String fqcn,
-            final Level level,
-            final Marker marker,
-            final Message message,
-            final Throwable thrown) {
-
-        translator.setBasicValues(
-                this,
-                name,
-                marker,
-                fqcn,
-                level,
-                message, //
-                // don't construct ThrowableProxy until required
-                thrown,
-
-                // needs shallow copy to be fast (LOG4J2-154)
-                ThreadContext.getImmutableStack(), //
-
-                // location (expensive to calculate)
-                calcLocationIfRequested(fqcn), //
-                CLOCK, //
-                nanoClock //
-                );
-    }
-
     private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
             translator.updateThreadValues();
         }
+    }
+
+    /**
+     * Returns the given location, or computes the caller location if none is given and it is requested.
+     * <p>
+     *   Called by the entry points of this logger, so that the stack walk starts as close to the caller as possible.
+     * </p>
+     *
+     * @param fqcn fully qualified caller name.
+     * @param location the location of the caller or {@code null}.
+     * @return the caller location or {@code null}.
+     */
+    private StackTraceElement resolveLocation(final String fqcn, final StackTraceElement location) {
+        return location != null ? location : calcLocationIfRequested(fqcn);
     }
 
     /**
@@ -385,49 +330,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * {@code ThreadLocal} to avoid memory leaks in web applications (see LOG4J2-1172).
      *
      * @param fqcn fully qualified name of the caller
-     * @param level level at which the caller wants to log the message
-     * @param marker message marker
-     * @param message the log message
-     * @param thrown a {@code Throwable} or {@code null}
-     */
-    private void logWithVarargTranslator(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
-        // Implementation note: candidate for optimization: exceeds 35 bytecodes.
-
-        final Disruptor<RingBufferLogEvent> disruptor = loggerDisruptor.getDisruptor();
-        if (disruptor == null) {
-            LOGGER.error("Ignoring log event after Log4j has been shut down.");
-            return;
-        }
-        // if the Message instance is reused, there is no point in freezing its message here
-        if (!isReused(message)) {
-            InternalAsyncUtil.makeMessageImmutable(message);
-        }
-        StackTraceElement location;
-        // calls the translateTo method on this AsyncLogger
-        if (!disruptor
-                .getRingBuffer()
-                .tryPublishEvent(
-                        this,
-                        this, // asyncLogger: 0
-                        (location = calcLocationIfRequested(fqcn)), // location: 1
-                        fqcn, // 2
-                        level, // 3
-                        marker, // 4
-                        message, // 5
-                        thrown)) { // 6
-            handleRingBufferFull(location, fqcn, level, marker, message, thrown);
-        }
-    }
-
-    /**
-     * Enqueues the specified log event data for logging in a background thread.
-     * <p>
-     * This creates a new varargs Object array for each invocation, but does not store any non-JDK classes in a
-     * {@code ThreadLocal} to avoid memory leaks in web applications (see LOG4J2-1172).
-     *
-     * @param fqcn fully qualified name of the caller
-     * @param location location of the caller.
+     * @param location the location of the caller or {@code null}
      * @param level level at which the caller wants to log the message
      * @param marker message marker
      * @param message the log message
@@ -512,16 +415,21 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * toString() method
      *
      * @param fqcn fully qualified caller name
+     * @param location location of the caller, if already computed
      * @param level log level
      * @param marker optional marker
      * @param message log message
      * @param thrown optional exception
      */
     void logMessageInCurrentThread(
-            final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable thrown) {
         // bypass RingBuffer and invoke Appender directly
-        final ReliabilityStrategy strategy = privateConfig.loggerConfig.getReliabilityStrategy();
-        strategy.log(this, getName(), fqcn, marker, level, message, thrown);
+        super.log(level, marker, fqcn, location, message, thrown);
     }
 
     private void handleRingBufferFull(
@@ -534,7 +442,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-1518, LOG4J2-2031
             // If queue is full AND we are in a recursive call, call appender directly to prevent deadlock
             AsyncQueueFullMessageUtil.logWarningToStatusLogger();
-            logMessageInCurrentThread(fqcn, level, marker, msg, thrown);
+            logMessageInCurrentThread(fqcn, location, level, marker, msg, thrown);
             return;
         }
         final EventRoute eventRoute = loggerDisruptor.getEventRoute(level);
@@ -550,7 +458,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                         thrown); // 6
                 break;
             case SYNCHRONOUS:
-                logMessageInCurrentThread(fqcn, level, marker, msg, thrown);
+                logMessageInCurrentThread(fqcn, location, level, marker, msg, thrown);
                 break;
             case DISCARD:
                 break;
