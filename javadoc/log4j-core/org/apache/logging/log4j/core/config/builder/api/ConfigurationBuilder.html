@@ -299,7 +299,7 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <div class="block">Returns a new <a href="FilterComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>FilterComponentBuilder</code></a> for creating a <code>Filter</code> component.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#newKeyValuePair(java.lang.String,java.lang.String)" class="member-name-link">newKeyValuePair</a><wbr>(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Returns a new <a href="PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> component.</div>
@@ -1011,7 +1011,7 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <li>
 <section class="detail" id="newKeyValuePair(java.lang.String,java.lang.String)">
 <h3>newKeyValuePair</h3>
-<div class="member-signature"><span class="return-type"><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></span>&nbsp;<span class="element-name">newKeyValuePair</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+<div class="member-signature"><span class="return-type"><a href="KeyValuePairComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api">KeyValuePairComponentBuilder</a></span>&nbsp;<span class="element-name">newKeyValuePair</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  @Nullable <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
 <div class="block">Returns a new <a href="PropertyComponentBuilder.html" title="interface in org.apache.logging.log4j.core.config.builder.api"><code>PropertyComponentBuilder</code></a> for creating a <a href="../../../util/KeyValuePair.html" title="class in org.apache.logging.log4j.core.util"><code>KeyValuePair</code></a> component.</div>
 <dl class="notes">
@@ -1020,8 +1020,6 @@ extends <a href="../../../util/Builder.html" title="interface in org.apache.logg
 <dd><code>value</code> - the value</dd>
 <dt>Returns:</dt>
 <dd>the new component builder instance</dd>
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if <code>key</code> is <code>null</code> or empty</dd>
 </dl>
 </section>
 </li>
