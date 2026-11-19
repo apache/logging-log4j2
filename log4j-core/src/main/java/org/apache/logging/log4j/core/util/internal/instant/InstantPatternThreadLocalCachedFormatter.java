@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import org.apache.logging.log4j.core.time.Instant;
 
 /**
@@ -31,22 +31,50 @@ import org.apache.logging.log4j.core.time.Instant;
  */
 final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFormatter {
 
+    /**
+     * The epoch instant of an empty cache. Colliding with it is harmless: it only costs one redundant formatting.
+     */
+    private static final long UNSET_EPOCH_INSTANT = -1L;
+
     private final InstantPatternFormatter formatter;
 
-    private final Function<Instant, Long> epochInstantExtractor;
+    /**
+     * Extracts the epoch instant the cache is keyed on.
+     * <p>
+     *     This is a {@link ToLongFunction}, and not a {@code Function<Instant, Long>}, on purpose: the latter would
+     *     box the extracted epoch on every single formatted instant, that is, on every single log event.
+     * </p>
+     */
+    private final ToLongFunction<Instant> epochInstantExtractor;
 
-    private final ThreadLocal<Object[]> epochInstantAndBufferRef =
-            ThreadLocal.withInitial(InstantPatternThreadLocalCachedFormatter::createEpochInstantAndBuffer);
+    private final ThreadLocal<CachedInstant> cachedInstantRef = ThreadLocal.withInitial(CachedInstant::new);
 
-    private static Object[] createEpochInstantAndBuffer() {
-        return new Object[] {-1L, new StringBuilder()};
+    /**
+     * The last instant a thread formatted, together with the output it produced for it.
+     * <p>
+     *     {@code StringBuilderEncoder} documents a preference for keeping only JDK types in {@link ThreadLocal}s, so
+     *     that a Log4j class loaded by an undeployed web application's class loader cannot be kept alive by a pooled
+     *     thread. That concern does not reach this class: the caching wrapper is only ever installed when
+     *     {@code Constants.ENABLE_THREADLOCALS} is set, and that flag is off for web applications precisely to
+     *     disable the thread locals which could leak a class loader.
+     * </p>
+     * <p>
+     *     Holding the epoch instant in a {@code long} field rather than in a boxed {@code Long} is what keeps this
+     *     cache allocation-free.
+     * </p>
+     */
+    private static final class CachedInstant {
+
+        private long epochInstant = UNSET_EPOCH_INSTANT;
+
+        private final StringBuilder buffer = new StringBuilder();
     }
 
     private final ChronoUnit precision;
 
     private InstantPatternThreadLocalCachedFormatter(
             final InstantPatternFormatter formatter,
-            final Function<Instant, Long> epochInstantExtractor,
+            final ToLongFunction<Instant> epochInstantExtractor,
             final ChronoUnit precision) {
         this.formatter = formatter;
         this.epochInstantExtractor = epochInstantExtractor;
@@ -87,19 +115,22 @@ final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFo
     public void formatTo(final StringBuilder buffer, final Instant instant) {
         requireNonNull(buffer, "buffer");
         requireNonNull(instant, "instant");
-        final Object[] epochInstantAndBuffer = epochInstantAndBufferRef.get();
-        final long prevEpochInstant = (long) epochInstantAndBuffer[0];
-        final StringBuilder localBuffer = (StringBuilder) epochInstantAndBuffer[1];
-        final long nextEpochInstant = epochInstantExtractor.apply(instant);
-        if (prevEpochInstant != nextEpochInstant) {
+        final CachedInstant cachedInstant = cachedInstantRef.get();
+        final StringBuilder localBuffer = cachedInstant.buffer;
+        final long nextEpochInstant = epochInstantExtractor.applyAsLong(instant);
+        if (cachedInstant.epochInstant != nextEpochInstant) {
             // We could have used `StringBuilders.trimToMaxSize()` on `localBuffer`.
             // That is, we wouldn't want exploded `StringBuilder`s in hundreds of `ThreadLocal`s.
             // Though we are formatting instants and always expect to produce strings of more or less the same length.
             // Hence, no need for truncation.
 
-            epochInstantAndBuffer[0] = nextEpochInstant;
+            // Invalidate the cache for as long as the buffer does not hold a complete output. Were `formatTo()` below
+            // to fail, leaving the previous epoch instant in place would make a later call for *that* instant hit the
+            // cache and read the buffer we are about to clobber here.
+            cachedInstant.epochInstant = UNSET_EPOCH_INSTANT;
             localBuffer.setLength(0);
             formatter.formatTo(localBuffer, instant);
+            cachedInstant.epochInstant = nextEpochInstant;
         }
         buffer.append(localBuffer);
     }
