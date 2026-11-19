@@ -92,6 +92,48 @@ public abstract class QueueFullAbstractTest {
         unlocker.join();
     }
 
+    protected void testQueueFullDoesNotDiscardOtherThreadsMessages(
+            final LoggerContext ctx, final BlockingAppender blockingAppender) throws Exception {
+        checkConfig(ctx);
+        final Logger logger = ctx.getLogger(getClass());
+
+        blockingAppender.countDownLatch = new CountDownLatch(1);
+        final Thread filler = new Thread(
+                () -> {
+                    for (int i = 0; i < MESSAGE_COUNT; i++) {
+                        logger.info("Filler message #{}", i);
+                    }
+                },
+                "filler");
+        filler.start();
+        awaitParked(filler);
+
+        final Thread other = new Thread(() -> logger.info("Other thread message"), "other");
+        other.start();
+        awaitParked(other);
+
+        blockingAppender.countDownLatch.countDown();
+        filler.join();
+        other.join();
+        logger.info("Last message");
+        while (blockingAppender.logEvents.stream()
+                .noneMatch(event -> "Last message".equals(event.getMessage().getFormattedMessage()))) {
+            Thread.yield();
+        }
+
+        assertThat(transform(blockingAppender.logEvents))
+                .hasSize(MESSAGE_COUNT + 2)
+                .contains("Other thread message");
+    }
+
+    private static void awaitParked(final Thread thread) {
+        Thread.State state = thread.getState();
+        while (state == Thread.State.NEW || state == Thread.State.RUNNABLE) {
+            Thread.yield();
+            state = thread.getState();
+        }
+    }
+
     protected void checkConfig(final LoggerContext ctx) throws Exception {}
 
     protected static void asyncTest(

@@ -319,19 +319,10 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     @Override
     public EventRoute getEventRoute(final Level logLevel) {
-        final int remainingCapacity = remainingDisruptorCapacity();
-        if (remainingCapacity < 0) {
+        if (hasLog4jBeenShutDown(disruptor)) {
             return EventRoute.DISCARD;
         }
         return asyncQueueFullPolicy.getRoute(backgroundThreadId, logLevel);
-    }
-
-    private int remainingDisruptorCapacity() {
-        final Disruptor<Log4jEventWrapper> temp = disruptor;
-        if (hasLog4jBeenShutDown(temp)) {
-            return -1;
-        }
-        return (int) temp.getRingBuffer().remainingCapacity();
     }
 
     /**
