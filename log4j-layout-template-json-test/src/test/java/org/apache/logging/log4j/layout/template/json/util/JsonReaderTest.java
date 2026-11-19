@@ -331,6 +331,36 @@ class JsonReaderTest {
                         })));
     }
 
+    @Test
+    void test_maximum_nesting_depth() {
+        for (final String[] delimiters : new String[][] {{"[", "]"}, {"{\"key\":", "}"}}) {
+            final String json = nestedJson(delimiters[0], delimiters[1], 128);
+            Assertions.assertThatCode(() -> JsonReader.read(json)).doesNotThrowAnyException();
+        }
+    }
+
+    @Test
+    void test_exceeding_maximum_nesting_depth() {
+        for (final String[] delimiters : new String[][] {{"[", "]"}, {"{\"key\":", "}"}}) {
+            final String json = nestedJson(delimiters[0], delimiters[1], 129);
+            Assertions.assertThatThrownBy(() -> JsonReader.read(json))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("maximum JSON nesting depth of 128 exceeded");
+        }
+    }
+
+    private String nestedJson(final String openingDelimiter, final String closingDelimiter, final int nestingDepth) {
+        final StringBuilder json = new StringBuilder();
+        for (int i = 0; i < nestingDepth; i++) {
+            json.append(openingDelimiter);
+        }
+        json.append("null");
+        for (int i = 0; i < nestingDepth; i++) {
+            json.append(closingDelimiter);
+        }
+        return json.toString();
+    }
+
     private void test(final String json, final Object expected) {
         // Wrapping the assertion one more time to decorate it with the input.
         Assertions.assertThatCode(
