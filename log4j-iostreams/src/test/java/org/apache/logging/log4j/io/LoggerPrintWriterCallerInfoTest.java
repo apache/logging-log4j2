@@ -19,12 +19,17 @@ package org.apache.logging.log4j.io;
 import java.io.PrintWriter;
 import java.util.Locale;
 import org.apache.logging.log4j.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private PrintWriter logOut;
+
+    LoggerPrintWriterCallerInfoTest(LoggerContext context) {
+        super(context);
+    }
 
     @Test
     public void close() {
@@ -118,7 +123,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         assertMessages("println", 1, "print_string");
     }
 
-    @Before
+    @BeforeEach
     public void setupStreams() {
         this.logOut = IoBuilder.forLogger(getLogger()).setLevel(Level.WARN).buildPrintWriter();
     }

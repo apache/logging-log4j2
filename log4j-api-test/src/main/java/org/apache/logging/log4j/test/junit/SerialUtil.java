@@ -25,11 +25,20 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import org.apache.logging.log4j.test.internal.annotation.SuppressFBWarnings;
-import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 
 /**
  * Utility class to facilitate serializing and deserializing objects.
+ * <p>
+ * The input streams created by this class are used by two kinds of tests:
+ * </p>
+ * <ul>
+ * <li>If the {@code jdk.serialFilter} system property is set, they are plain {@link ObjectInputStream}s,
+ * to test deserialization with the process-wide filter recommended by OpenJDK.</li>
+ * <li>Otherwise, they are instances of the deprecated {@link FilteredObjectInputStream}, to test that the
+ * serialized forms of Log4j classes only contain the classes it allows by default.
+ * This is <strong>not</strong> a recommendation to use {@link FilteredObjectInputStream}.</li>
+ * </ul>
  */
 public class SerialUtil {
 
@@ -80,7 +89,7 @@ public class SerialUtil {
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param data data to deserialize,
      * @return an object input stream.
      */
@@ -91,14 +100,14 @@ public class SerialUtil {
     }
 
     /**
-     * Creates an {@link ObjectInputStream} adapted to the current Java version.
+     * Creates an {@link ObjectInputStream} for the current kind of test (see the class Javadoc).
      * @param stream stream of data to deserialize,
      * @return an object input stream.
      */
     @SuppressFBWarnings("OBJECT_DESERIALIZATION")
     public static ObjectInputStream getObjectInputStream(final InputStream stream) throws IOException {
-        return Constants.JAVA_MAJOR_VERSION == 8
-                ? new FilteredObjectInputStream(stream)
-                : new ObjectInputStream(stream);
+        return System.getProperty("jdk.serialFilter") != null
+                ? new ObjectInputStream(stream)
+                : new FilteredObjectInputStream(stream);
     }
 }

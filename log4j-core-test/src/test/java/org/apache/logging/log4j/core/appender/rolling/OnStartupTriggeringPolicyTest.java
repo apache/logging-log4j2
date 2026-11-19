@@ -17,8 +17,13 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -38,6 +43,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests {@link OnStartupTriggeringPolicy}.
@@ -50,6 +57,46 @@ class OnStartupTriggeringPolicyTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void testFileCreatedAfterJvmStartIsNotOlderThanStartTimeAtSecondPrecision() {
+        final long startupTime = 1755031147175L;
+        final long fileCreationTime = 1755031147480L;
+        final long fileTime = RollingFileManager.alignMillisToSecond(fileCreationTime);
+        assertFalse(OnStartupTriggeringPolicy.isFileOlderThanStartup(fileTime, startupTime));
+        assertTrue(OnStartupTriggeringPolicy.isFileOlderThanStartup(fileTime - 1000, startupTime));
+        assertFalse(OnStartupTriggeringPolicy.isFileOlderThanStartup(1755031147900L, 1755031147600L));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1755031147200, 1755031147000, false",
+        "1755031147600, 1755031147900, false",
+        "1755031147000, 1755031147000, false",
+        "1755031147200, 1755031146000, true",
+        "1755031147600, 1755031147000, true"
+    })
+    void testInitializeRollsOnlyFilesOlderThanStartup(
+            final long startTime, final long fileTime, final boolean expectedRollover) {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(fileTime);
+        when(manager.getFileSize()).thenReturn(1L);
+
+        new OnStartupTriggeringPolicy(1, startTime).initialize(manager);
+
+        verify(manager, times(expectedRollover ? 1 : 0)).rollover();
+    }
+
+    @Test
+    void testCreatePolicyRollsFileOlderThanJvmStart() {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(0L);
+        when(manager.getFileSize()).thenReturn(1L);
+
+        OnStartupTriggeringPolicy.createPolicy(1).initialize(manager);
+
+        verify(manager).rollover();
+    }
 
     @Test
     void testPolicy() throws Exception {

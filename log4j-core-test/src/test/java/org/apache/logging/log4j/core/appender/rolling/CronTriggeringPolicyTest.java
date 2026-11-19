@@ -16,15 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.CronExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 class CronTriggeringPolicyTest {
 
@@ -70,6 +76,38 @@ class CronTriggeringPolicyTest {
     @Test
     void testBuilderOnce() {
         testBuilder();
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    void testBuilderWithoutFileNameInitializesPromptly() {
+        // @formatter:off
+        final RollingFileAppender raf = RollingFileAppender.newBuilder()
+                .setName("test4")
+                .setFilePattern("target/testcmd4.log.%d{yyyy-MM-dd}")
+                .setPolicy(CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), "0 0 0 ? * SUN"))
+                .setConfiguration(configuration)
+                .build();
+        // @formatter:on
+        assertNotNull(raf);
+    }
+
+    @Test
+    void testDirectWriteFileNameUsesPeriodStart() throws Exception {
+        final String schedule = "0 0 0 ? * SUN";
+        // @formatter:off
+        final RollingFileAppender raf = RollingFileAppender.newBuilder()
+                .setName("test5")
+                .setFilePattern("target/testcmd5.log-%d{yyyyMMdd}")
+                .setPolicy(CronTriggeringPolicy.createPolicy(configuration, Boolean.FALSE.toString(), schedule))
+                .setConfiguration(configuration)
+                .build();
+        // @formatter:on
+        assertNotNull(raf);
+
+        final Date periodStart = new CronExpression(schedule).getPrevFireTime(new Date());
+        final String expected = "target/testcmd5.log-" + new SimpleDateFormat("yyyyMMdd").format(periodStart);
+        assertEquals(expected, raf.getManager().getFileName());
     }
 
     /**

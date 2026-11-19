@@ -42,6 +42,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -268,6 +269,7 @@ class MutableLogEventTest {
     }
 
     @Test
+    @Tag("serialization")
     void testJavaIoSerializable() {
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextData(CONTEXT_DATA);
@@ -312,6 +314,7 @@ class MutableLogEventTest {
     }
 
     @Test
+    @Tag("serialization")
     void testJavaIoSerializableWithThrown() {
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextData(CONTEXT_DATA);

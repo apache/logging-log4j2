@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junitpioneer.jupiter.Issue;
 
 /**
  * {@link RootThrowablePatternConverter} tests.
@@ -46,6 +48,17 @@ class RootThrowablePatternConverterTest {
 
         PropertyTest() {
             super("%rEx", THROWING_METHOD);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"short.className", "short.methodName", "short.lineNumber", "short.fileName"})
+        @Issue("https://github.com/apache/logging-log4j2/issues/4334")
+        void short_properties_should_not_fail_when_root_cause_has_empty_stack_trace(final String propertyName) {
+            final RuntimeException rootCause = new RuntimeException("root");
+            rootCause.setStackTrace(new StackTraceElement[0]);
+            final RuntimeException wrapper = new RuntimeException("wrapper", rootCause);
+            final String output = convert("%rEx{" + propertyName + "}", wrapper);
+            assertThat(output).isEmpty();
         }
     }
 
@@ -64,8 +77,13 @@ class RootThrowablePatternConverterTest {
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "		... 3 more",
+            "java.lang.Throwable: Empty test throwable",
+            "	Wrapped by: foo.TestFriendlyException: r_c_S [localized]",
+            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+            "		... 3 more",
             "Wrapped by: foo.TestFriendlyException: r [localized]",
             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
@@ -136,8 +154,13 @@ class RootThrowablePatternConverterTest {
                             "	Wrapped by: foo.TestFriendlyException: r_c_s [localized]",
                             "		... suppressed 2 lines",
                             "		... 3 more",
+                            "java.lang.Throwable: Empty test throwable",
+                            "	Wrapped by: foo.TestFriendlyException: r_c_S [localized]",
+                            "		...",
+                            "		... 3 more",
                             "Wrapped by: foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	... suppressed 2 lines",
                             "	at " + TestFriendlyException.ORG_APACHE_REPLACEMENT_STACK_TRACE_ELEMENT,
                             "	Suppressed: foo.TestFriendlyException: r_s_c [localized]",
@@ -175,8 +198,13 @@ class RootThrowablePatternConverterTest {
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "		... 3 more",
+                            "java.lang.Throwable: Empty test throwable",
+                            "	Wrapped by: foo.TestFriendlyException: r_c_S [localized]",
+                            "		at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
+                            "		... 3 more",
                             "Wrapped by: foo.TestFriendlyException: r [localized]",
                             "	at " + TestFriendlyException.NAMED_MODULE_STACK_TRACE_ELEMENT,
+                            "\tat " + TestFriendlyException.NON_EXISTENT_CLASS_STACK_TRACE_ELEMENT,
                             "	at foo.TestFriendlyException.create(TestFriendlyException.java:0)",
                             "	at foo.TestFriendlyException.<clinit>(TestFriendlyException.java:0)",
                             "	...",

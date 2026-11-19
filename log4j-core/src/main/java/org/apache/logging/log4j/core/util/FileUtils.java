@@ -123,10 +123,10 @@ public final class FileUtils {
             Files.createDirectories(dir.toPath());
         } catch (FileAlreadyExistsException e) {
             if (!dir.isDirectory()) {
-                throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
+                throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.", e);
             }
         } catch (Exception e) {
-            throw new IOException("Could not create directory " + dir.getAbsolutePath());
+            throw new IOException("Could not create directory " + dir.getAbsolutePath(), e);
         }
     }
 

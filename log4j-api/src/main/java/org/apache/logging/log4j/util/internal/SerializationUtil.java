@@ -25,9 +25,9 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
@@ -37,39 +37,19 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
  */
 public final class SerializationUtil {
 
-    private static final String DEFAULT_FILTER_CLASS =
-            "org.apache.logging.log4j.util.internal.DefaultObjectInputFilter";
     private static final Method setObjectInputFilter;
     private static final Method getObjectInputFilter;
-    private static final Method newObjectInputFilter;
 
     static {
-        Method[] methods = ObjectInputStream.class.getMethods();
         Method setMethod = null;
         Method getMethod = null;
-        for (final Method method : methods) {
+        for (final Method method : ObjectInputStream.class.getMethods()) {
             if (method.getName().equals("setObjectInputFilter")) {
                 setMethod = method;
             } else if (method.getName().equals("getObjectInputFilter")) {
                 getMethod = method;
             }
         }
-        Method newMethod = null;
-        try {
-            if (setMethod != null) {
-                final Class<?> clazz = Class.forName(DEFAULT_FILTER_CLASS);
-                methods = clazz.getMethods();
-                for (final Method method : methods) {
-                    if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
-                        newMethod = method;
-                        break;
-                    }
-                }
-            }
-        } catch (final ClassNotFoundException ex) {
-            // Ignore the exception
-        }
-        newObjectInputFilter = newMethod;
         setObjectInputFilter = setMethod;
         getObjectInputFilter = getMethod;
     }
@@ -77,8 +57,6 @@ public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_CLASSES = Arrays.asList(
             "java.math.BigDecimal",
             "java.math.BigInteger",
-            // for Message delegate
-            "java.rmi.MarshalledObject",
             // all primitives
             "boolean",
             "byte",
@@ -92,39 +70,88 @@ public final class SerializationUtil {
     public static final List<String> REQUIRED_JAVA_PACKAGES =
             Arrays.asList("java.lang.", "java.time.", "java.util.", "org.apache.logging.log4j.");
 
-    public static void writeWrappedObject(final Serializable obj, final ObjectOutputStream out) throws IOException {
+    /**
+     * Writes the result of {@link #wrapObject} to the output stream.
+     *
+     * @param obj The object to write.
+     * @param fallback Provides the value to write if {@code obj} cannot be serialized.
+     * @param out The output stream.
+     */
+    public static void writeWrappedObject(
+            final Object obj, final Supplier<Serializable> fallback, final ObjectOutputStream out) throws IOException {
+        out.writeObject(wrapObject(obj, fallback));
+    }
+
+    /**
+     * Serializes an object into a byte array.
+     * <p>
+     *     If the object is neither {@code null} nor {@link Serializable}, or its serialization fails, the value returned by
+     *     {@code fallback} is serialized instead. Failed serializations are logged as warnings.
+     * </p>
+     *
+     * @param obj The object to serialize.
+     * @param fallback Provides the value to serialize if {@code obj} cannot be serialized.
+     * @return The serialized form of {@code obj} or of the fallback value.
+     */
+    public static byte[] wrapObject(final Object obj, final Supplier<Serializable> fallback) throws IOException {
+        if (obj == null || obj instanceof Serializable) {
+            try {
+                return toByteArray((Serializable) obj);
+            } catch (final IOException | RuntimeException e) {
+                StatusLogger.getLogger()
+                        .warn("Unable to serialize an object of type {}, using a fallback value.", obj.getClass(), e);
+            }
+        }
+        return toByteArray(fallback.get());
+    }
+
+    private static byte[] toByteArray(final Serializable obj) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
-            oos.flush();
-            out.writeObject(bout.toByteArray());
         }
+        return bout.toByteArray();
     }
 
+    /**
+     * Reads an object written by {@link #writeWrappedObject}.
+     *
+     * @param in The input stream.
+     * @return The object or {@code null}.
+     * @see #unwrapObject
+     */
+    public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        return unwrapObject(in, (byte[]) in.readObject());
+    }
+
+    /**
+     * Deserializes an object serialized by {@link #wrapObject}.
+     *
+     * <p>The object is read from a nested stream, filtered in the same way as {@code in}.
+     * If the class of the object is not available, {@code null} is returned and a warning is logged.
+     * Other errors, including classes rejected by the filter, are thrown.</p>
+     *
+     * @param in The input stream that contained {@code data}.
+     * @param data The serialized object.
+     * @return The object or {@code null}.
+     */
     @SuppressFBWarnings(
             value = "OBJECT_DESERIALIZATION",
-            justification =
-                    "Object deserialization uses either Java 9 native filter or our custom filter to limit the kinds of classes deserialized.")
-    public static Object readWrappedObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        assertFiltered(in);
-        final byte[] data = (byte[]) in.readObject();
+            justification = "The nested stream is filtered in the same way as the outer stream.")
+    @SuppressWarnings("deprecation")
+    public static Object unwrapObject(final ObjectInputStream in, final byte[] data) throws IOException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
-        final ObjectInputStream ois;
-        if (in instanceof FilteredObjectInputStream) {
-            ois = new FilteredObjectInputStream(bin, ((FilteredObjectInputStream) in).getAllowedClasses());
-        } else {
-            try {
-                final Object obj = getObjectInputFilter.invoke(in);
-                final Object filter = newObjectInputFilter.invoke(null, obj);
-                ois = new ObjectInputStream(bin);
-                setObjectInputFilter.invoke(ois, filter);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
-            }
-        }
+        final ObjectInputStream ois = in instanceof FilteredObjectInputStream
+                ? new FilteredObjectInputStream(bin, ((FilteredObjectInputStream) in).getAllowedClasses())
+                : new ObjectInputStream(bin);
+        copyObjectInputFilter(in, ois);
         try {
             return ois.readObject();
+        } catch (final IOException e) {
+            // Includes classes rejected by the stream's filter
+            throw e;
         } catch (final Exception | LinkageError e) {
+            // The class is not available or not compatible
             StatusLogger.getLogger().warn("Ignoring {} during deserialization", e.getMessage());
             return null;
         } finally {
@@ -132,10 +159,60 @@ public final class SerializationUtil {
         }
     }
 
-    public static void assertFiltered(final java.io.ObjectInputStream stream) {
-        if (!(stream instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
-            throw new IllegalArgumentException(
-                    "readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+    /**
+     * Serializes each element of an array with {@link #wrapObject}.
+     *
+     * <p>Elements that cannot be serialized are replaced by their {@link String#valueOf(Object)} representation.</p>
+     *
+     * @param array An array or {@code null}.
+     * @return The serialized elements or {@code null}.
+     */
+    public static byte[][] wrapObjects(final Object[] array) throws IOException {
+        if (array == null) {
+            return null;
+        }
+        final byte[][] wrapped = new byte[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            final Object item = array[i];
+            wrapped[i] = wrapObject(item, () -> String.valueOf(item));
+        }
+        return wrapped;
+    }
+
+    /**
+     * Deserializes each element of an array serialized by {@link #wrapObjects}.
+     *
+     * @param in The input stream that contained {@code wrapped}.
+     * @param wrapped The serialized elements or {@code null}.
+     * @return The deserialized elements or {@code null}.
+     * @see #unwrapObject
+     */
+    public static Object[] unwrapObjects(final ObjectInputStream in, final byte[][] wrapped) throws IOException {
+        if (wrapped == null) {
+            return null;
+        }
+        final Object[] array = new Object[wrapped.length];
+        for (int i = 0; i < wrapped.length; i++) {
+            array[i] = unwrapObject(in, wrapped[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Applies the {@code ObjectInputFilter} of {@code source} to {@code target} on Java 9 or later.
+     */
+    private static void copyObjectInputFilter(final ObjectInputStream source, final ObjectInputStream target)
+            throws StreamCorruptedException {
+        if (setObjectInputFilter == null) {
+            return;
+        }
+        try {
+            final Object filter = getObjectInputFilter.invoke(source);
+            if (filter != null) {
+                setObjectInputFilter.invoke(target, filter);
+            }
+        } catch (final IllegalAccessException | InvocationTargetException ex) {
+            throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
         }
     }
 

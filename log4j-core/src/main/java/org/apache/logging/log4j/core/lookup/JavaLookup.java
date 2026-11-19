@@ -110,7 +110,7 @@ public class JavaLookup extends AbstractLookup {
             case "locale":
                 return getLocale();
             default:
-                throw new IllegalArgumentException(key);
+                return null;
         }
     }
 }
