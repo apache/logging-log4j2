@@ -239,6 +239,15 @@ If `true`, the appender starts writing at the end of the file.
 This setting does not give the same atomicity guarantees as for the
 <<FileAppender-attr-append,`RollingFile` Appender>>.
 The log file cannot be opened by multiple applications at the same time.
+
+| [[RandomAccessFileAppender-attr-createOnDemand]]createOnDemand
+| `boolean`
+| `false`
+|
+If `true`, the appender creates the file and its parent directories on-demand:
+the file is only created when a log event passes all filters and is routed to this appender.
+
+If <<RandomAccessFileAppender-attr-append,`append`>> is `false`, the content of an existing file is only discarded when the first log event is written.
 |===
 
 Unlike the <<FileAppender,`File` appender>>, this appender always uses an internal buffer of size <<attr-bufferSize,`bufferSize`>>.
@@ -265,6 +274,15 @@ If `true`, the appender starts writing at the end of the file.
 This setting does not give the same atomicity guarantees as for the
 <<FileAppender-attr-append,`RollingFile` Appender>>.
 The log file cannot be opened by multiple applications at the same time.
+
+| [[MemoryMappedFileAppender-attr-createOnDemand]]createOnDemand
+| `boolean`
+| `false`
+|
+If `true`, the appender creates the file and its parent directories on-demand:
+the file is only created when a log event passes all filters and is routed to this appender.
+
+If <<MemoryMappedFileAppender-attr-append,`append`>> is `false`, the content of an existing file is only discarded when the first log event is written.
 
 | [[MemoryMappedFileAppender-attr-regionLength]]regionLength
 | `int`
