@@ -16,17 +16,20 @@
  */
 package org.apache.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link LogManager}.
  */
+@SetTestProperty(key = "log4j1.compatibility", value = "true")
 class LogManagerTest {
 
     private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
@@ -46,5 +49,21 @@ class LogManagerTest {
         assertTrue(names.contains(SIMPLE_NAME));
         assertTrue(names.contains(SIMPLE_NAME + ".foo"));
         assertTrue(names.contains(SIMPLE_NAME + ".foo.bar"));
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testResetConfigurationCompatibilityDisabled() {
+        assertDoesNotThrow(
+                () -> LogManager.resetConfiguration(),
+                "resetConfiguration should be a no-op and not throw exceptions when compatibility is off");
+    }
+
+    @Test
+    @SetTestProperty(key = "log4j1.compatibility", value = "false")
+    void testShutdownCompatibilityDisabled() {
+        assertDoesNotThrow(
+                () -> LogManager.shutdown(),
+                "shutdown should be a no-op and not throw exceptions when compatibility is off");
     }
 }
