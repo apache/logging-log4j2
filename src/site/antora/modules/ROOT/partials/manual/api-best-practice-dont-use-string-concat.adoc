@@ -15,13 +15,8 @@
     limitations under the License.
 ////
 
-If you are using `String` concatenation while logging, you are doing something very wrong and dangerous!
-
-* [ ] Don't use `String` concatenation to format arguments!
-This circumvents the handling of arguments by message type and layout.
-More importantly, **this approach is prone to attacks!**
-Imagine `userId` being provided by the user with the following content:
-`placeholders for non-existing args to trigger failure: {} {} \{dangerousLookup}`
+* [ ] Don't use `String` concatenation to format arguments:
+the log message will be formatted, even if the logger is not enabled, and you will suffer a performance penalty!
 +
 [source,java]
 ----
@@ -33,4 +28,11 @@ Imagine `userId` being provided by the user with the following content:
 [source,java]
 ----
 /* GOOD */ LOGGER.info("failed for user ID `{}`", userId);
+----
+
+* [x] Use message lambdas
++
+[source,java]
+----
+/* GOOD */ LOGGER.info(() -> "failed for user ID: " + userId);
 ----
