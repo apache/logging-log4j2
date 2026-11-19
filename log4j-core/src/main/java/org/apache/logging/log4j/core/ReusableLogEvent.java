@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringMap;
@@ -62,10 +61,4 @@ public interface ReusableLogEvent extends LogEvent {
     void setThreadPriority(final int threadPriority);
 
     void setNanoTime(final long nanoTime);
-
-    /**
-     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code ReusableLogEvent}.
-     * @param builder the builder whose fields to populate
-     */
-    void initializeBuilder(final Log4jLogEvent.Builder builder);
 }
