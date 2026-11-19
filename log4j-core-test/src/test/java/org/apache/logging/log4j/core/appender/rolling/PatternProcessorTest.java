@@ -31,6 +31,7 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -402,5 +403,33 @@ class PatternProcessorTest {
     @ValueSource(strings = {"%d{UNIX}", "%d{UNIX_MILLIS}"})
     void does_not_throw_with_unix_pattern(final String pattern) {
         assertDoesNotThrow(() -> new PatternProcessor(pattern));
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            quoteCharacter = '"',
+            value = {
+                "logs/app-%d{yyyy-MM-dd}.log, DAILY",
+                "logs/app-%d{yyyy-MM-'W'W}.log, WEEKLY",
+                "logs/app-%d{yyyy-MM-dd'_logs'}.log, DAILY",
+                "logs/app-%d{yyyy-MM-dd'_o''clock'}.log, DAILY",
+                "logs/app-%d{yyyy-'week'ww}.log, WEEKLY",
+                "logs/app-%d{yyyy-MM'm'}.log, MONTHLY"
+            })
+    void frequency_ignores_letters_in_quoted_literals(
+            final String pattern, final RolloverFrequency expectedFrequency) {
+        final PatternProcessor pp = new PatternProcessor(pattern);
+        assertEquals(expectedFrequency, pp.getFrequency());
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    void testGetNextTimeDailyIgnoresLettersInQuotedLiterals() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd'_logs'}.log.gz");
+        final Instant initial = parseLocalDateTime("2014-03-04T02:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        final Instant expected = parseLocalDateTime("2014-03-05T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 }

@@ -324,11 +324,13 @@ public class PatternProcessor {
         }
     }
 
-    private RolloverFrequency calculateFrequency(final String pattern) {
+    private RolloverFrequency calculateFrequency(final String datePattern) {
         // The UNIX and UNIX_MILLIS converters do not have a pattern
-        if (pattern == null) {
+        if (datePattern == null) {
             return null;
         }
+        // Letters inside quoted literals (e.g., `'_logs'`) are not date fields
+        final String pattern = removeQuotedLiterals(datePattern);
         if (patternContains(pattern, MILLIS_CHAR)) {
             return RolloverFrequency.EVERY_MILLISECOND;
         }
@@ -372,6 +374,26 @@ public class PatternProcessor {
 
     private boolean patternContains(final String pattern, final char character) {
         return pattern.indexOf(character) >= 0;
+    }
+
+    /**
+     * Removes the quoted literals (e.g., {@code 'T'}) from a date pattern.
+     * <p>
+     * An escaped apostrophe ({@code ''}) toggles the quoting state twice, hence it is removed too.
+     * </p>
+     */
+    private static String removeQuotedLiterals(final String pattern) {
+        final StringBuilder builder = new StringBuilder(pattern.length());
+        boolean quoted = false;
+        for (int i = 0; i < pattern.length(); i++) {
+            final char c = pattern.charAt(i);
+            if (c == '\'') {
+                quoted = !quoted;
+            } else if (!quoted) {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
     }
 
     public RolloverFrequency getFrequency() {
