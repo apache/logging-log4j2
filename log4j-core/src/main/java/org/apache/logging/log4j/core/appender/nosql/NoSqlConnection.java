@@ -27,6 +27,18 @@ import java.io.Closeable;
  */
 public interface NoSqlConnection<W, T extends NoSqlObject<W>> extends Closeable {
     /**
+     * Indicates whether a root-level field must not be copied from a
+     * {@link org.apache.logging.log4j.message.MapMessage MapMessage} into a database document.
+     *
+     * @param fieldName the root-level field name.
+     * @return {@code true} if the field is reserved by this provider.
+     * @since 2.27.0
+     */
+    default boolean isReservedFieldName(final String fieldName) {
+        return false;
+    }
+
+    /**
      * Instantiates and returns a {@link NoSqlObject} instance whose properties can be configured before ultimate
      * insertion via {@link #insertObject(NoSqlObject)}.
      *
