@@ -24,6 +24,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
@@ -34,6 +35,20 @@ class DatagramOutputStreamTest {
     private static final String LOOPBACK = "127.0.0.1";
     private static final int ENCODER_CHUNK_SIZE = 8 * 1024;
     private static final int MAX_DATAGRAM_PAYLOAD = 65_507;
+
+    @Test
+    @UsingStatusListener
+    void unresolvableHostShouldBeReportedOnceAndRetried(final ListStatusListener statusListener) throws Exception {
+        try (DatagramOutputStream out = new DatagramOutputStream("loghost.invalid", 1, null, null)) {
+            out.write("dropped".getBytes(StandardCharsets.UTF_8));
+            assertDoesNotThrow(out::flush);
+            assertDoesNotThrow(out::flush);
+        }
+        assertThat(statusListener.getStatusData())
+                .filteredOn(data -> data.getLevel() == Level.WARN
+                        && data.getMessage().getFormattedMessage().contains("Could not resolve host"))
+                .hasSize(1);
+    }
 
     @Test
     @UsingStatusListener
