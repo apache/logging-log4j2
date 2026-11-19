@@ -1,0 +1,9 @@
+# .apache-magpie.lock - committed; the project's pin.
+# Edited only by /magpie-setup; do not modify by hand.
+
+method:   git-tag
+url:      https://github.com/apache/magpie.git
+
+ref:      0.1.0
+commit:   1890a13d0d3a3b0b2a9c83efb7dcdc837a07795d
+families: pr-management, issue, repo-health, contributor-growth
