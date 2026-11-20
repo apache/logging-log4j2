@@ -39,7 +39,7 @@ final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFo
             ThreadLocal.withInitial(InstantPatternThreadLocalCachedFormatter::createEpochInstantAndBuffer);
 
     private static Object[] createEpochInstantAndBuffer() {
-        return new Object[] {-1L, new StringBuilder()};
+        return new Object[] {null, new StringBuilder()};
     }
 
     private final ChronoUnit precision;
@@ -88,10 +88,10 @@ final class InstantPatternThreadLocalCachedFormatter implements InstantPatternFo
         requireNonNull(buffer, "buffer");
         requireNonNull(instant, "instant");
         final Object[] epochInstantAndBuffer = epochInstantAndBufferRef.get();
-        final long prevEpochInstant = (long) epochInstantAndBuffer[0];
+        final Long prevEpochInstant = (Long) epochInstantAndBuffer[0];
         final StringBuilder localBuffer = (StringBuilder) epochInstantAndBuffer[1];
         final long nextEpochInstant = epochInstantExtractor.apply(instant);
-        if (prevEpochInstant != nextEpochInstant) {
+        if (prevEpochInstant == null || prevEpochInstant != nextEpochInstant) {
             // We could have used `StringBuilders.trimToMaxSize()` on `localBuffer`.
             // That is, we wouldn't want exploded `StringBuilder`s in hundreds of `ThreadLocal`s.
             // Though we are formatting instants and always expect to produce strings of more or less the same length.

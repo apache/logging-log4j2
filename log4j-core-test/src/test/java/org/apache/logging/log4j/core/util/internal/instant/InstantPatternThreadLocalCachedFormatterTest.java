@@ -296,6 +296,24 @@ class InstantPatternThreadLocalCachedFormatterTest {
     }
 
     @Test
+    void should_format_pre_epoch_instants() {
+        final InstantPatternFormatter milliFormatter = new InstantPatternDynamicFormatter(
+                "HH:mm:ss.SSS", Locale.ROOT, TimeZone.getTimeZone("UTC"));
+        final InstantPatternFormatter secondFormatter = new InstantPatternDynamicFormatter(
+                "HH:mm:ss", Locale.ROOT, TimeZone.getTimeZone("UTC"));
+
+        final InstantFormatter cachedMilliFormatter =
+                InstantPatternThreadLocalCachedFormatter.ofMilliPrecision(milliFormatter);
+        final InstantFormatter cachedSecondFormatter =
+                InstantPatternThreadLocalCachedFormatter.ofSecondPrecision(secondFormatter);
+
+        assertThat(cachedMilliFormatter.format(createInstant(-1, 0))).isEqualTo("23:59:59.999");
+        assertThat(cachedMilliFormatter.format(createInstant(-1, 0))).isEqualTo("23:59:59.999");
+        assertThat(cachedSecondFormatter.format(createInstant(-1_000, 0))).isEqualTo("23:59:59");
+        assertThat(cachedSecondFormatter.format(createInstant(-1_000, 0))).isEqualTo("23:59:59");
+    }
+
+    @Test
     @Issue("https://github.com/apache/logging-log4j2/issues/3792")
     void should_be_thread_safe() throws Exception {
         // Instead of randomly testing the thread safety, we test that the current implementation does not
