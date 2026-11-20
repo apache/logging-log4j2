@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Looks up values from the log event.
@@ -65,7 +66,8 @@ public class EventLookup extends AbstractLookup {
                 return event.getLoggerName();
             }
             case "Message": {
-                return event.getMessage().getFormattedMessage();
+                final Message message = event.getMessage();
+                return message != null ? message.getFormattedMessage() : null;
             }
             default: {
                 return null;

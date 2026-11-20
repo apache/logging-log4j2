@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.lookup;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -62,6 +63,17 @@ class EventLookupTest {
                 .build();
         final String value = strLookup.lookup(event, "Message");
         assertEquals(msg, value);
+    }
+
+    @Test
+    void testLookupEventMessageWithNullMessage() {
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName(this.getClass().getName()) //
+                .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
+                .setLevel(Level.INFO) //
+                .build();
+        final String value = strLookup.lookup(event, "Message");
+        assertNull(value);
     }
 
     @Test
