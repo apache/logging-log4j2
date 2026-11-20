@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
@@ -67,6 +68,7 @@ public final class NetUtils {
     }
 
     private static String getHostname(final Function<? super InetAddress, ? extends String> callback) {
+        final long start = System.nanoTime();
         try {
             final InetAddress address = InetAddress.getLocalHost();
             return address == null ? UNKNOWN_LOCALHOST : callback.apply(address);
@@ -91,6 +93,16 @@ public final class NetUtils {
             }
             LOGGER.error("Could not determine local host name", uhe);
             return UNKNOWN_LOCALHOST;
+        } finally {
+            warnIfHostnameResolutionSlow(System.nanoTime() - start);
+        }
+    }
+
+    static void warnIfHostnameResolutionSlow(final long elapsedNanos) {
+        if (elapsedNanos > TimeUnit.MILLISECONDS.toNanos(100)) {
+            LOGGER.warn(
+                    "Local hostname resolution took {} ms. Check your local hostname resolution settings.",
+                    TimeUnit.NANOSECONDS.toMillis(elapsedNanos));
         }
     }
 
