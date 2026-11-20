@@ -403,15 +403,28 @@ public class StatusLogger extends AbstractLogger {
         }
 
         static Map<String, Object> readAllAvailableProperties() {
-            final Properties systemProperties = System.getProperties();
+            final Properties systemProperties = readSystemProperties();
             final Properties environmentProperties = readEnvironmentProperties();
             final Properties fileProvidedProperties = readPropertiesFile(PROPERTIES_FILE_NAME);
             return normalizeProperties(systemProperties, environmentProperties, fileProvidedProperties);
         }
 
+        private static Properties readSystemProperties() {
+            try {
+                return System.getProperties();
+            } catch (final SecurityException ignored) {
+                // Continue with the other sources when access is denied.
+                return new Properties();
+            }
+        }
+
         private static Properties readEnvironmentProperties() {
             final Properties properties = new Properties();
-            properties.putAll(System.getenv());
+            try {
+                properties.putAll(System.getenv());
+            } catch (final SecurityException ignored) {
+                // Continue with the other sources when access is denied.
+            }
             return properties;
         }
 
