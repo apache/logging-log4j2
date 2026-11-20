@@ -350,8 +350,9 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
      * @param key the key
      * @param value the value
      * @return the new component builder instance
+     * @throws IllegalArgumentException if {@code key} is {@code null} or empty
      */
-    KeyValuePairComponentBuilder newKeyValuePair(@Nullable String key, @Nullable String value);
+    KeyValuePairComponentBuilder newKeyValuePair(String key, @Nullable String value);
 
     /**
      * Returns a new {@link CustomLevelComponentBuilder} for creating a {@link CustomLevels} component.

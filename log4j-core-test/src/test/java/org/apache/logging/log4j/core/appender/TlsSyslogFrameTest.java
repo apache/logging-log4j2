@@ -19,9 +19,13 @@ package org.apache.logging.log4j.core.appender;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.util.Chars;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class TlsSyslogFrameTest {
     private static final String TEST_MESSAGE = "The quick brown fox jumps over the lazy dog";
@@ -42,11 +46,27 @@ class TlsSyslogFrameTest {
         assertNotEquals(first.hashCode(), second.hashCode());
     }
 
-    @Test
-    void testToString() {
-        final TlsSyslogFrame frame = new TlsSyslogFrame(TEST_MESSAGE);
-        final int length = TEST_MESSAGE.getBytes(StandardCharsets.UTF_8).length;
-        final String expected = Integer.toString(length) + Chars.SPACE + TEST_MESSAGE;
+    @ParameterizedTest
+    @ValueSource(strings = {TEST_MESSAGE, "café", "", "\uD83D\uDE00"})
+    void testToString(final String message) {
+        final TlsSyslogFrame frame = new TlsSyslogFrame(message);
+        final int length = message.getBytes(StandardCharsets.UTF_8).length;
+        final String expected = Integer.toString(length) + Chars.SPACE + message;
         assertEquals(expected, frame.toString());
+        assertEquals(new TlsSyslogFrame(message, StandardCharsets.UTF_8).toString(), frame.toString());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "ISO-8859-1, café, 4",
+        "UTF-8, café, 5",
+        "UTF-16LE, café, 8",
+        "ISO-8859-1, '', 0",
+        "UTF-8, \uD83D\uDE00, 4",
+        "UTF-16LE, \uD83D\uDE00, 4"
+    })
+    void testToStringWithCharset(final String charsetName, final String message, final int length) {
+        final TlsSyslogFrame frame = new TlsSyslogFrame(message, Charset.forName(charsetName));
+        assertEquals(Integer.toString(length) + Chars.SPACE + message, frame.toString());
     }
 }

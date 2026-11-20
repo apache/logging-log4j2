@@ -57,6 +57,7 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.jspecify.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
@@ -458,10 +459,16 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return new DefaultPropertyComponentBuilder(this, name, value);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException if {@code key} is {@code null} or empty
+     */
     @Override
-    public KeyValuePairComponentBuilder newKeyValuePair(final @Nullable String key, final @Nullable String value) {
-        return new DefaultKeyValuePairComponentBuilder(this).setKey(key).setValue(value);
+    public KeyValuePairComponentBuilder newKeyValuePair(final String key, final @Nullable String value) {
+        return new DefaultKeyValuePairComponentBuilder(this)
+                .setKey(Assert.requireNonEmpty(key, "A key must be provided for KeyValuePair"))
+                .setValue(value);
     }
 
     /** {@inheritDoc} */

@@ -18,6 +18,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -185,5 +191,79 @@ class CronTriggeringPolicyTest {
     void testFactoryMethodSequence() {
         testFactoryMethod();
         testFactoryMethod();
+    }
+
+    private RollingFileManager mockManager(final long fileTime) {
+        final RollingFileManager manager = mock(RollingFileManager.class);
+        when(manager.getFileTime()).thenReturn(fileTime);
+        when(manager.getPatternProcessor()).thenReturn(mock(PatternProcessor.class));
+        return manager;
+    }
+
+    @Test
+    void testEvaluateOnStartupArchivesFileUnderItsOwnPeriod() throws Exception {
+        final CronExpression cronExpression = new CronExpression(CRON_EXPRESSION);
+        final Date periodStart = cronExpression.getPrevFireTime(new Date());
+        final Date previousPeriodStart = cronExpression.getPrevFireTime(periodStart);
+        final long fileTime = previousPeriodStart.getTime() + TimeUnit.HOURS.toMillis(12);
+        final RollingFileManager manager = mockManager(fileTime);
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+            verify(manager).rollover(eq(previousPeriodStart), any(Date.class));
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    void testEvaluateOnStartupDoesNotRollFileCreatedAtFireTime() throws Exception {
+        final Date periodStart = new CronExpression(CRON_EXPRESSION).getPrevFireTime(new Date());
+        final RollingFileManager manager = mockManager(periodStart.getTime());
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+            verify(manager, never()).rollover(any(Date.class), any(Date.class));
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    void testEvaluateOnStartupArchivesFileCreatedAtFireTimeUnderItsOwnPeriod() throws Exception {
+        final CronExpression cronExpression = new CronExpression(CRON_EXPRESSION);
+        final Date previousPeriodStart = cronExpression.getPrevFireTime(cronExpression.getPrevFireTime(new Date()));
+        final RollingFileManager manager = mockManager(previousPeriodStart.getTime());
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+            verify(manager).rollover(eq(previousPeriodStart), any(Date.class));
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
+    }
+
+    private RollingFileManager initializeWithFileTimeOffset(final long offsetMillis) throws Exception {
+        final Date periodStart = new CronExpression(CRON_EXPRESSION).getPrevFireTime(new Date());
+        final RollingFileManager manager = mockManager(periodStart.getTime() + offsetMillis);
+        final CronTriggeringPolicy policy = createPolicy();
+        try {
+            policy.initialize(manager);
+        } finally {
+            policy.stop(1, TimeUnit.SECONDS);
+        }
+        return manager;
+    }
+
+    @Test
+    void testEvaluateOnStartupRollsFileCreatedJustBeforeFireTime() throws Exception {
+        verify(initializeWithFileTimeOffset(-1)).rollover(any(Date.class), any(Date.class));
+        verify(initializeWithFileTimeOffset(-1000)).rollover(any(Date.class), any(Date.class));
+    }
+
+    @Test
+    void testEvaluateOnStartupDoesNotRollFileCreatedJustAfterFireTime() throws Exception {
+        verify(initializeWithFileTimeOffset(1), never()).rollover(any(Date.class), any(Date.class));
+        verify(initializeWithFileTimeOffset(1000), never()).rollover(any(Date.class), any(Date.class));
     }
 }
