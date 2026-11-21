@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
-import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
 import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
 
 /**
@@ -33,10 +32,13 @@ import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
  */
 public final class ZstdCompressAction extends AbstractCompressAction {
 
+    private static final int ZSTD_CLEVEL_MIN = -131072;
+    private static final int ZSTD_CLEVEL_MAX = 22;
+
     /**
      * Zstandard compression level to use.
      *
-     * @see ZstdCompressorOutputStream.Builder#setLevel(int)
+     * @see ZstdCompressorOutputStream#ZstdCompressorOutputStream(OutputStream, int)
      */
     private final int compressionLevel;
 
@@ -54,7 +56,7 @@ public final class ZstdCompressAction extends AbstractCompressAction {
             return compressionLevel;
         }
         return CompressActionSupport.resolveCompressionLevel(
-                "Zstd", compressionLevel, ZstdConstants.ZSTD_CLEVEL_MIN, ZstdConstants.ZSTD_CLEVEL_MAX, 0);
+                "Zstd", compressionLevel, ZSTD_CLEVEL_MIN, ZSTD_CLEVEL_MAX, 0);
     }
 
     /**
@@ -77,10 +79,7 @@ public final class ZstdCompressAction extends AbstractCompressAction {
             throw new IOException("Zstandard compression is not available: zstd-jni is missing.");
         }
         final int level = resolveCompressionLevel(compressionLevel);
-        return ZstdCompressorOutputStream.builder()
-                .setOutputStream(output)
-                .setLevel(level)
-                .get();
+        return new ZstdCompressorOutputStream(output, level);
     }
 
     /**
