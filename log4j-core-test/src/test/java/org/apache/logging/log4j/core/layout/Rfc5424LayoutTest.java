@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.layout;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -70,6 +72,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -311,6 +314,95 @@ class Rfc5424LayoutTest {
             root.removeAppender(appender);
             appender.stop();
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Transfer", "Transfer@32473"})
+    void testCollectionMergesElementsWithSameId(final String id) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+        final StructuredDataMessage msg = new StructuredDataMessage(id, "Transfer Complete", "Audit");
+        msg.put("Amount", "200.00");
+        final StructuredDataMessage msg2 = new StructuredDataMessage(id, null, "Audit");
+        msg2.put("ToAccount", "123456");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new StructuredDataCollectionMessage(Arrays.asList(msg, msg2)))
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[Transfer@32473 Amount=\"200.00\" ToAccount=\"123456\"]");
+    }
+
+    @Test
+    void testMdcElementMergesStructuredDataWithSameId() {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("loginId", "JohnDoe");
+        final StructuredDataMessage msg = new StructuredDataMessage("mdc", "Transfer Complete", "Audit");
+        msg.put("Amount", "200.00");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(msg)
+                .setContextData(contextData)
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[mdc@32473 Amount=\"200.00\" loginId=\"JohnDoe\"]");
+    }
+
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testMdcNewlineReplacementIsEscaped(final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout =
+                Rfc5424Layout.newBuilder().setNewLineEscape(replacement).build();
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("message"))
+                .setContextData(contextData)
+                .build();
+
+        assertThat(layout.toSerializable(event)).contains("[mdc@32473 k=\"" + expected + "\"]");
+    }
+
+    @ParameterizedTest
+    @MethodSource("structuredDataEscapeCases")
+    void testStructuredDataNewlineReplacementIsEscaped(
+            final String value, final String replacement, final String expected) {
+        final Rfc5424Layout layout = Rfc5424Layout.newBuilder()
+                .setIncludeMDC(false)
+                .setNewLineEscape(replacement)
+                .build();
+        final StructuredDataMessage message = new StructuredDataMessage("test@32473", "message", "Audit");
+        message.put("k", value);
+        final LogEvent event = Log4jLogEvent.newBuilder().setMessage(message).build();
+
+        assertThat(layout.toSerializable(event)).contains("[test@32473 k=\"" + expected + "\"]");
+    }
+
+    static Stream<Arguments> structuredDataEscapeCases() {
+        return Stream.of(
+                Arguments.of("A\r\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\nB", "\\n", "A\\\\nB"),
+                Arguments.of("A\r\nB", "\"", "A\\\"B"),
+                Arguments.of("A\nB", "]", "A\\]B"),
+                Arguments.of("A\r\nB", "\"\\]", "A\\\"\\\\\\]B"),
+                Arguments.of("A\"\\]\r\nB", "\\n", "A\\\"\\\\\\]\\\\nB"),
+                Arguments.of("A\"\\]B", "\\n", "A\\\"\\\\\\]B"),
+                Arguments.of("A\r\nB", "#012", "A#012B"),
+                Arguments.of("A\r\nB", "", "AB"),
+                Arguments.of("A\r\nB", null, "A\r\nB"),
+                Arguments.of("A\rB", "\\n", "A\rB"),
+                Arguments.of("", "\\n", ""),
+                Arguments.of("A\nB\nC", "\\n", "A\\\\nB\\\\nC"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\\n", "\"", "]"})
+    void testPlainMessageKeepsNewlineReplacement(final String replacement) {
+        final Rfc5424Layout layout =
+                Rfc5424Layout.newBuilder().setNewLineEscape(replacement).build();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setMessage(new SimpleMessage("A\r\nB"))
+                .build();
+
+        assertThat(layout.toSerializable(event)).endsWith(" A" + replacement + "B");
     }
 
     /**
@@ -816,6 +908,34 @@ class Rfc5424LayoutTest {
         final String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
         final Rfc5424Layout layout = Rfc5424Layout.newBuilder().build();
         assertThat(layout.getLocalHostName()).isEqualTo(fqdn);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"ISO-8859-1, café", "ISO-8859-1, \u20ac", "UTF-8, message", "UTF-8, café"})
+    void testTlsFrameLengthUsesLayoutCharset(final String charsetName, final String message) {
+        final Charset charset = Charset.forName(charsetName);
+        final StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("key", "value");
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setTimeMillis(1L)
+                .setMessage(new SimpleMessage(message))
+                .setContextData(contextData)
+                .build();
+        final Rfc5424Layout.Rfc5424LayoutBuilder builder =
+                Rfc5424Layout.newBuilder().setCharset(charset).setNewLine(true);
+        final Rfc5424Layout unframedLayout = builder.build();
+        final byte[] expectedPayload = unframedLayout.toSerializable(event).getBytes(charset);
+        assertArrayEquals(expectedPayload, unframedLayout.toByteArray(event));
+
+        final Rfc5424Layout framedLayout = builder.setUseTlsMessageFormat(true).build();
+        final byte[] framedBytes = framedLayout.toByteArray(event);
+        final String frame = new String(framedBytes, charset);
+        final int separator = frame.indexOf(' ');
+        final int advertisedLength = Integer.parseInt(frame.substring(0, separator));
+        final int prefixLength = frame.substring(0, separator + 1).getBytes(charset).length;
+        final byte[] payload = Arrays.copyOfRange(framedBytes, prefixLength, framedBytes.length);
+        assertEquals(payload.length, advertisedLength);
+        assertArrayEquals(expectedPayload, payload);
     }
 
     private static Map<String, String> attributeMap(String... keyValuePairs) {

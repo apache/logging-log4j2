@@ -81,7 +81,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <error-prone-annotations.version>2.51.0</error-prone-annotations.version>
-    <felix.version>7.0.5</felix.version>
+    <felix.version>8.0.0</felix.version>
     <groovy.version>4.0.33</groovy.version>
     <guava.version>33.7.2-jre</guava.version>
     <h2.version>2.2.224</h2.version>

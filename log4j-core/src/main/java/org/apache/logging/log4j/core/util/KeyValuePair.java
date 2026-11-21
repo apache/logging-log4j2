@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  * Key/Value pair configuration item.
@@ -42,9 +43,10 @@ public final class KeyValuePair {
      * Constructs a key/value pair. The constructor should only be called from test classes.
      * @param key The key.
      * @param value The value.
+     * @throws IllegalArgumentException if {@code key} is {@code null} or empty
      */
     public KeyValuePair(final String key, final String value) {
-        this.key = key;
+        this.key = Assert.requireNonEmpty(key, "A key must be provided for KeyValuePair");
         this.value = value;
     }
 
@@ -77,6 +79,7 @@ public final class KeyValuePair {
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<KeyValuePair> {
 
         @PluginBuilderAttribute
+        @Required(message = "A key must be provided for KeyValuePair")
         private String key;
 
         @PluginBuilderAttribute

@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.config.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
@@ -115,5 +117,13 @@ class ConfigurationBuilderTest {
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
         assertEquals(expectedXml, xmlConfiguration);
+    }
+
+    @Test
+    void testNewKeyValuePairRejectsNullOrEmptyKey() {
+        final ConfigurationBuilder<?> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        assertThrows(IllegalArgumentException.class, () -> builder.newKeyValuePair(null, "v"));
+        assertThrows(IllegalArgumentException.class, () -> builder.newKeyValuePair("", "v"));
+        assertNotNull(builder.newKeyValuePair(" ", "v"));
     }
 }
