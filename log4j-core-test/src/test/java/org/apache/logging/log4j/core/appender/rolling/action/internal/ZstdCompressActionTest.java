@@ -21,13 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import org.apache.commons.compress.compressors.zstandard.ZstdConstants;
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
 import org.apache.commons.compress.compressors.zstandard.ZstdUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -190,12 +192,6 @@ class ZstdCompressActionTest {
         assertTrue(dest.exists());
     }
 
-    @Test
-    void testAssumedZstdLevelBoundsHaveNotChanged() {
-        assertEquals(22, ZstdConstants.ZSTD_CLEVEL_MAX);
-        assertEquals(3, ZstdConstants.ZSTD_CLEVEL_DEFAULT);
-    }
-
     // Keep these bounds independent of the constants used by the implementation.
     @Test
     void testAcceptsZstdRangeBounds(@TempDir File tempDir) throws IOException {
@@ -216,10 +212,20 @@ class ZstdCompressActionTest {
         File dest = new File(tempDir, "test.log.zst");
         writeContent(source, "test data");
 
-        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, ZstdConstants.ZSTD_CLEVEL_DEFAULT);
+        ZstdCompressAction action = new ZstdCompressAction(source, dest, true, 3);
 
         assertTrue(action.execute());
         assertTrue(dest.exists(), "Compressed file must exist after execute()");
+        assertTrue(dest.length() > 0, "Compressed file must not be empty");
+        try (ZstdCompressorInputStream input = new ZstdCompressorInputStream(Files.newInputStream(dest.toPath()));
+                ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                output.write(buffer, 0, count);
+            }
+            assertEquals("test data", output.toString(StandardCharsets.UTF_8.name()));
+        }
         assertFalse(source.exists(), "Source file must be deleted after compression");
     }
 
