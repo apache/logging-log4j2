@@ -23,13 +23,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ScriptFilter;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorTest;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,6 +45,8 @@ import org.junitpioneer.jupiter.Issue;
 
 @SetTestProperty(key = "log4j2.scriptEnableLanguages", value = "groovy")
 class AbstractConfigurationTest {
+
+    private static final String MISMATCHED_KEY = "AbstractConfigurationTest.mismatch";
 
     @Test
     void propertiesCanComeLast() {
@@ -83,6 +92,127 @@ class AbstractConfigurationTest {
         assertThat(scriptFilter.toString())
                 .as("Script name should match the one in the config")
                 .isEqualTo("GLOBAL_FILTER");
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void addLoggerAppenderAttachesTheGivenAppenderForADuplicateName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final Logger logger = context.getLogger("AbstractConfigurationTest.duplicateAppender");
+        final ListAppender registered = new ListAppender("Duplicate");
+        registered.start();
+        config.addAppender(registered);
+        final ListAppender given = new ListAppender("Duplicate");
+        given.start();
+
+        config.addLoggerAppender(logger, given);
+
+        final Appender found = config.getAppender("Duplicate");
+        assertThat(found).isSameAs(registered);
+        assertThat(logger.getAppenders()).hasSize(1).containsEntry("Duplicate", given);
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void addLoggerFilterCreatesTheLoggerConfigOnceAndIgnoresNullArguments(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final Logger logger = context.getLogger("AbstractConfigurationTest.filter");
+        final int loggerConfigsBefore = config.getLoggers().size();
+        final Filter filter = ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY);
+
+        config.addLoggerFilter(null, filter);
+        config.addLoggerFilter(logger, null);
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+
+        config.addLoggerFilter(logger, filter);
+        config.addLoggerFilter(
+                logger, ThresholdFilter.createFilter(Level.WARN, Filter.Result.ACCEPT, Filter.Result.DENY));
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore + 1);
+        final LoggerConfig created = config.getLoggerConfig(logger.getName());
+        assertThat(created.getName()).isEqualTo(logger.getName());
+        assertThat(created.getParent()).isSameAs(config.getRootLogger());
+        assertThat(logger.get()).isSameAs(created);
+        assertThat(logger.filterCount()).isEqualTo(2);
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void setLoggerAdditiveCreatesTheLoggerConfigOnceAndIgnoresANullLogger(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final Logger logger = context.getLogger("AbstractConfigurationTest.additive");
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.setLoggerAdditive(null, false);
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+
+        config.setLoggerAdditive(logger, false);
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore + 1);
+        assertThat(logger.get().getName()).isEqualTo(logger.getName());
+        assertThat(logger.get().getParent()).isSameAs(config.getRootLogger());
+        assertThat(logger.isAdditive()).isFalse();
+
+        config.setLoggerAdditive(logger, true);
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore + 1);
+        assertThat(logger.isAdditive()).isTrue();
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void addLoggerAppenderUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
+        final ListAppender appender = new ListAppender("Mismatch");
+        appender.start();
+
+        config.addLoggerAppender(context.getLogger(MISMATCHED_KEY), appender);
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+        assertThat(registered.getAppenders()).containsEntry("Mismatch", appender);
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void addLoggerFilterUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.addLoggerFilter(
+                context.getLogger(MISMATCHED_KEY),
+                ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY));
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+        assertThat(registered.hasFilter()).isTrue();
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/3155")
+    @LoggerContextSource(value = "log4j-test2.xml", reconfigure = ReconfigurationPolicy.AFTER_EACH)
+    void setLoggerAdditiveUpdatesALoggerConfigRegisteredUnderAnotherName(final LoggerContext context) {
+        final Configuration config = context.getConfiguration();
+        final LoggerConfig registered = registerUnderAnotherName(config);
+        final int loggerConfigsBefore = config.getLoggers().size();
+
+        config.setLoggerAdditive(context.getLogger(MISMATCHED_KEY), false);
+
+        assertThat(config.getLoggers()).hasSize(loggerConfigsBefore);
+        assertThat(registered.isAdditive()).isFalse();
+    }
+
+    /**
+     * Registers a LoggerConfig under a key that differs from its name, so the logger mutators find it through
+     * {@code putIfAbsent} instead of creating a new one.
+     */
+    private static LoggerConfig registerUnderAnotherName(final Configuration config) {
+        final LoggerConfig registered = new LoggerConfig("AbstractConfigurationTest.other", Level.INFO, true);
+        config.addLogger(MISMATCHED_KEY, registered);
+        return registered;
     }
 
     private static class TestConfiguration extends AbstractConfiguration {

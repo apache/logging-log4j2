@@ -24,7 +24,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.internal.annotation.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -36,7 +35,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class JndiManager extends AbstractManager {
 
-    private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String PREFIX = "log4j2.enableJndi";
     private static final String JAVA_SCHEME = "java";
 
@@ -107,7 +105,7 @@ public class JndiManager extends AbstractManager {
      * @return the default JndiManager
      */
     public static JndiManager getDefaultManager() {
-        return getManager(JndiManager.class.getName(), FACTORY, null);
+        return createManager(JndiManager.class.getName(), null);
     }
 
     /**
@@ -117,7 +115,7 @@ public class JndiManager extends AbstractManager {
      * @return a default JndiManager
      */
     public static JndiManager getDefaultManager(final String name) {
-        return getManager(name, FACTORY, null);
+        return createManager(name, null);
     }
 
     /**
@@ -147,7 +145,7 @@ public class JndiManager extends AbstractManager {
                 securityPrincipal,
                 securityCredentials,
                 additionalProperties);
-        return getManager(createManagerName(), FACTORY, properties);
+        return createManager(JndiManager.class.getName(), properties);
     }
 
     /**
@@ -159,11 +157,20 @@ public class JndiManager extends AbstractManager {
      * @since 2.9
      */
     public static JndiManager getJndiManager(final Properties properties) {
-        return getManager(createManagerName(), FACTORY, properties);
+        return createManager(JndiManager.class.getName(), properties);
     }
 
-    private static String createManagerName() {
-        return JndiManager.class.getName() + '@' + JndiManager.class.hashCode();
+    private static JndiManager createManager(final String name, final Properties properties) {
+        if (!isJndiEnabled()) {
+            throw new IllegalStateException(
+                    String.format("JNDI must be enabled by setting one of the %s* properties to true", PREFIX));
+        }
+        try {
+            return new JndiManager(name, new InitialContext(properties));
+        } catch (final NamingException e) {
+            LOGGER.error("Error creating JNDI InitialContext for '{}'.", name, e);
+            throw new IllegalStateException("Unable to create JNDI InitialContext for '" + name + "'", e);
+        }
     }
 
     /**
@@ -225,7 +232,7 @@ public class JndiManager extends AbstractManager {
     }
 
     @Override
-    protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         return JndiCloser.closeSilently(this.context);
     }
 
@@ -255,23 +262,6 @@ public class JndiManager extends AbstractManager {
             LOGGER.warn("Invalid JNDI URI - {}", name);
         }
         return null;
-    }
-
-    private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
-
-        @Override
-        public JndiManager createManager(final String name, final Properties data) {
-            if (!isJndiEnabled()) {
-                throw new IllegalStateException(
-                        String.format("JNDI must be enabled by setting one of the %s* properties to true", PREFIX));
-            }
-            try {
-                return new JndiManager(name, new InitialContext(data));
-            } catch (final NamingException e) {
-                LOGGER.error("Error creating JNDI InitialContext for '{}'.", name, e);
-                return null;
-            }
-        }
     }
 
     @Override

@@ -29,6 +29,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.naming.Context;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -116,7 +117,13 @@ public class JmsManager extends AbstractManager {
 
         @Override
         public String toString() {
-            return "JmsManagerConfiguration [jndiProperties=" + jndiProperties + ", connectionFactoryName="
+            Properties maskedJndiProperties = jndiProperties;
+            if (jndiProperties != null && jndiProperties.containsKey(Context.SECURITY_CREDENTIALS)) {
+                maskedJndiProperties = new Properties();
+                maskedJndiProperties.putAll(jndiProperties);
+                maskedJndiProperties.setProperty(Context.SECURITY_CREDENTIALS, "*****");
+            }
+            return "JmsManagerConfiguration [jndiProperties=" + maskedJndiProperties + ", connectionFactoryName="
                     + connectionFactoryName + ", destinationName=" + destinationName + ", userName=" + userName
                     + ", immediateFail=" + immediateFail + ", retry=" + retry + ", reconnectIntervalMillis="
                     + reconnectIntervalMillis + "]";

@@ -322,13 +322,28 @@ public final class Configurator {
         final Configuration config = loggerContext.getConfiguration();
         boolean set = setLevel(parentLogger, level, config);
         for (final Map.Entry<String, LoggerConfig> entry : config.getLoggers().entrySet()) {
-            if (entry.getKey().startsWith(parentLogger)) {
+            if (isChildLogger(parentLogger, entry.getKey())) {
                 set |= setLevel(entry.getValue(), level);
             }
         }
         if (set) {
             loggerContext.updateLoggers();
         }
+    }
+
+    /**
+     * Checks whether {@code loggerName} is {@code parentLogger} itself or one of its descendants in the dot-separated
+     * logger hierarchy. A plain {@code startsWith} check would also match an unrelated sibling that merely shares a
+     * character prefix, for instance {@code com.foobar} for a parent of {@code com.foo}.
+     */
+    private static boolean isChildLogger(final String parentLogger, final String loggerName) {
+        if (!loggerName.startsWith(parentLogger)) {
+            return false;
+        }
+        return parentLogger.isEmpty()
+                || parentLogger.endsWith(".")
+                || loggerName.length() == parentLogger.length()
+                || loggerName.charAt(parentLogger.length()) == '.';
     }
 
     /**

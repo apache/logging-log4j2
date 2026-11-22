@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="https://logging.apache.org/xml/ns"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           https://logging.apache.org/xml/ns
+           https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="3660" link="https://github.com/apache/logging-log4j2/issues/3660"/>
+  <issue id="4081" link="https://github.com/apache/logging-log4j2/pull/4081"/>
+  <description format="asciidoc">
+    Improve DST handling in `CronExpression`, including boundary and short-day behavior, with added DST transition tests
+  </description>
+</entry>

@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
@@ -106,6 +107,58 @@ class SmtpAppenderTest {
 
         builder.setSubject(subject);
         assertEquals(subject, builder.build().getSubject());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void testCreateAppenderForwardsMailAttributes() throws Exception {
+        final SmtpAppender appender = SmtpAppender.createAppender(
+                new DefaultConfiguration(),
+                "Test",
+                "to@example.com",
+                "cc@example.com",
+                "bcc@example.com",
+                "from@example.com",
+                "replyTo@example.com",
+                "Subject Pattern %m",
+                "smtps",
+                HOST,
+                "4711",
+                "username",
+                "password",
+                "false",
+                "3",
+                null,
+                null,
+                null);
+        assertNotNull(appender);
+        assertEquals("Test", appender.getName());
+
+        final SmtpAppender expected = SmtpAppender.newBuilder()
+                .setName("Test")
+                .setTo("to@example.com")
+                .setCc("cc@example.com")
+                .setBcc("bcc@example.com")
+                .setFrom("from@example.com")
+                .setReplyTo("replyTo@example.com")
+                .setSubject("Subject Pattern %m")
+                .setSmtpProtocol("smtps")
+                .setSmtpHost(HOST)
+                .setSmtpPort(4711)
+                .setSmtpUsername("username")
+                .setSmtpPassword("password")
+                .setSmtpDebug(false)
+                .setBufferSize(3)
+                .build();
+        assertNotNull(expected);
+        assertEquals(expected.getManager().getName(), appender.getManager().getName());
+        final java.lang.reflect.Field field = SmtpManager.class.getDeclaredField("session");
+        field.setAccessible(true);
+        final javax.mail.Session session = (javax.mail.Session) field.get(appender.getManager());
+        assertEquals(
+                "password",
+                session.requestPasswordAuthentication(null, 0, "smtps", null, null)
+                        .getPassword());
     }
 
     @Test
