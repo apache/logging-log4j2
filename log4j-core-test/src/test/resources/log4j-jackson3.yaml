@@ -18,13 +18,14 @@ Configuration:
   name: Jackson3Test
   Appenders:
     List:
-      name: LIST
+      name: yes
   Loggers:
     Logger:
       - name: org.example
         level: debug
-        additivity: false
+        additivity: on
+        includeLocation: yes
         AppenderRef:
-          ref: LIST
+          ref: yes
     Root:
       level: error

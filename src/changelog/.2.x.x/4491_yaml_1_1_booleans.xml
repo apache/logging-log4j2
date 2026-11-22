@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="https://logging.apache.org/xml/ns"
+       xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
+       type="fixed">
+  <issue id="4491" link="https://github.com/apache/logging-log4j2/issues/4491"/>
+  <description format="asciidoc">
+    Fix YAML 1.1 boolean aliases, such as <code>yes</code> and <code>on</code>, being parsed as false in Jackson 3 YAML configurations.
+  </description>
+</entry>

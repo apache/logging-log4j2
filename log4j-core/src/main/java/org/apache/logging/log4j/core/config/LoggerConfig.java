@@ -920,7 +920,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return !AsyncLoggerContextSelector.isSelected();
             }
         }
-        return Boolean.parseBoolean(includeLocationConfigValue);
+        final String value =
+                YamlBooleanAliases.normalizeBooleanAttribute(configuration, Boolean.TYPE, includeLocationConfigValue);
+        return Boolean.parseBoolean(value);
     }
 
     protected final boolean hasAppenders() {
