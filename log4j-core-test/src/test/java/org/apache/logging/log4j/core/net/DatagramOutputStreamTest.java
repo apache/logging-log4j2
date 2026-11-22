@@ -160,4 +160,16 @@ class DatagramOutputStreamTest {
                     .hasMessage("Range [%s, %s + %s) out of bounds for length 8", offset, offset, length);
         }
     }
+
+    @Test
+    void writeIntShouldWriteSingleByte() throws Exception {
+        try (DatagramSocket receiver = createReceiver()) {
+            try (DatagramOutputStream out = new DatagramOutputStream(LOOPBACK, receiver.getLocalPort(), null, null)) {
+                out.write(0x41424344);
+                out.write('E');
+                out.flush();
+            }
+            assertThat(receive(receiver)).containsExactly(0x44, 'E');
+        }
+    }
 }

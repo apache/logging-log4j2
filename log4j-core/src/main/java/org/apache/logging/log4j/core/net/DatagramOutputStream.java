@@ -46,10 +46,6 @@ public class DatagramOutputStream extends OutputStream {
      */
     private static final int MAX_DATAGRAM_LENGTH = 65_507;
 
-    private static final int SHIFT_1 = 8;
-    private static final int SHIFT_2 = 16;
-    private static final int SHIFT_3 = 24;
-
     private DatagramSocket datagramSocket;
     private final InetAddress inetAddress;
     private final int port;
@@ -98,7 +94,8 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(final int i) throws IOException {
-        copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
+        // As specified by `OutputStream`, writes only the low-order byte of `i`
+        copy(new byte[] {(byte) i}, 0, 1);
     }
 
     @Override
