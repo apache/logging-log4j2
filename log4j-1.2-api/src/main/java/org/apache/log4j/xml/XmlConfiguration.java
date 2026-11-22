@@ -18,7 +18,6 @@ package org.apache.log4j.xml;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -77,12 +76,6 @@ import org.xml.sax.SAXParseException;
  * <p>
  *     Parsing and validation errors do not stop the configuration process; they are printed as warnings to the status
  *     logger.
- * </p>
- * <p>
- *     Since version <strong>2.27.0</strong>, external entities are resolved through
- *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from local files or over the protocols allowed by the
- *     <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.configurationAllowedProtocols">{@code log4j2.configurationAllowedProtocols}</a>
- *     configuration property.
  * </p>
  */
 public class XmlConfiguration extends Log4j1Configuration {
@@ -155,7 +148,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             @SuppressFBWarnings(
                     value = "XXE_DOCUMENT",
                     justification =
-                            "External entities are resolved by `Log4jEntityResolver` through `ConfigurationSource`, the same way the configuration file itself is resolved. Configuration files must come from trusted sources.")
+                            "External entities are resolved by the XML parser, as in Log4j 1. Configuration files must come from trusted sources.")
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
                 @SuppressWarnings("resource")
                 final // The ConfigurationSource and its caller manages the InputStream.
