@@ -23,15 +23,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.Permission;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+import java.util.PropertyPermission;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class StatusLoggerPropertiesUtilDoubleTest {
@@ -118,5 +125,55 @@ class StatusLoggerPropertiesUtilDoubleTest {
         final String propertiesFileName = StatusLoggerPropertiesUtilDoubleTest.class.getSimpleName() + ".properties";
         final Properties actualProperties = StatusLogger.PropertiesUtilsDouble.readPropertiesFile(propertiesFileName);
         assertThat(actualProperties).containsExactlyEntriesOf(singletonMap("foo", "bar"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"false, false, WARN", "true, false, WARN", "false, true, TRACE", "true, true, ERROR"})
+    @ResourceLock(Resources.GLOBAL)
+    @EnabledForJreRange(
+            max = JRE.JAVA_17,
+            disabledReason = "Later JDKs require opting in to SecurityManager support at startup")
+    void initializes_using_available_properties(
+            final boolean denySystemProperties, final boolean denyEnvironment, final String expectedLevel)
+            throws Exception {
+        restoreSystemProperties(() -> {
+            System.setProperty(StatusLogger.DEFAULT_STATUS_LISTENER_LEVEL, "TRACE");
+            withEnvironmentVariable("LOG4J_STATUS_LOGGER_LEVEL", "WARN").execute(() -> {
+                final URL apiLocation =
+                        StatusLogger.class.getProtectionDomain().getCodeSource().getLocation();
+                // Each case must initialize a fresh StatusLogger, independently of other tests.
+                try (final URLClassLoader loader = new URLClassLoader(new URL[] {apiLocation}, null)) {
+                    final SecurityManager previous = System.getSecurityManager();
+                    final SecurityManager securityManager = new SecurityManager() {
+                        @Override
+                        public void checkPermission(final Permission permission) {
+                            if ((denySystemProperties
+                                            && permission instanceof PropertyPermission
+                                            && "*".equals(permission.getName()))
+                                    || (denyEnvironment
+                                            && permission instanceof RuntimePermission
+                                            && "getenv.*".equals(permission.getName()))) {
+                                throw new SecurityException("Denied: " + permission);
+                            }
+                        }
+                    };
+                    final Object logger;
+                    try {
+                        System.setSecurityManager(securityManager);
+                        logger = loader.loadClass(StatusLogger.class.getName())
+                                .getMethod("getLogger")
+                                .invoke(null);
+                    } finally {
+                        System.setSecurityManager(previous);
+                    }
+                    assertThat(logger).isNotNull();
+                    assertThat(logger.getClass()
+                                    .getMethod("getLevel")
+                                    .invoke(logger)
+                                    .toString())
+                            .isEqualTo(expectedLevel);
+                }
+            });
+        });
     }
 }
