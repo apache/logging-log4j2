@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.rmi.MarshalledObject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +38,6 @@ import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.core.util.NanoClock;
-import org.apache.logging.log4j.core.util.internal.WrappedObjects;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -1129,7 +1129,9 @@ public class Log4jLogEvent implements LogEvent {
         private final Level level;
         private final String loggerName;
         // transient since 2.8
-        private transient Message message;
+        private final transient Message message;
+        /** @since 2.8 */
+        private MarshalledObject<Message> marshalledMessage;
         /** @since 2.8 */
         private String messageString;
 
@@ -1218,17 +1220,18 @@ public class Log4jLogEvent implements LogEvent {
             return result;
         }
 
-        private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
-            this.messageString = message.getFormattedMessage();
-            s.defaultWriteObject();
-            // Messages that cannot be serialized are replaced with a `SimpleMessage`
-            WrappedObjects.writeWrappedObject(message, () -> new SimpleMessage(messageString), s);
+        private static MarshalledObject<Message> marshall(final Message msg) {
+            try {
+                return new MarshalledObject<>(msg);
+            } catch (final Exception ex) {
+                return null;
+            }
         }
 
-        private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-            in.defaultReadObject();
-            final Object wrapped = WrappedObjects.readWrappedObject(in);
-            message = wrapped instanceof Message ? (Message) wrapped : null;
+        private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
+            this.messageString = message.getFormattedMessage();
+            this.marshalledMessage = marshall(message);
+            s.defaultWriteObject();
         }
 
         /**
@@ -1260,7 +1263,14 @@ public class Log4jLogEvent implements LogEvent {
         }
 
         private Message message() {
-            return message != null ? message : new SimpleMessage(messageString);
+            if (marshalledMessage != null) {
+                try {
+                    return marshalledMessage.get();
+                } catch (final Exception ex) {
+                    // ignore me
+                }
+            }
+            return new SimpleMessage(messageString);
         }
     }
 }

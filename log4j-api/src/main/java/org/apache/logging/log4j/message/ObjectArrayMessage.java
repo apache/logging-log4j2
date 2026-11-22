@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Handles messages that contain an Object[].
@@ -36,7 +35,7 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  */
 public final class ObjectArrayMessage implements Message {
 
-    private static final long serialVersionUID = 3470900984521271892L;
+    private static final long serialVersionUID = -5903272448334166185L;
 
     private transient Object[] array;
     private transient String arrayString;
@@ -119,7 +118,7 @@ public final class ObjectArrayMessage implements Message {
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        array = SerializationUtil.unwrapObjects(in, (byte[][]) in.readObject());
+        array = (Object[]) in.readObject();
     }
 
     @Override
@@ -129,6 +128,6 @@ public final class ObjectArrayMessage implements Message {
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeObject(SerializationUtil.wrapObjects(array));
+        out.writeObject(array);
     }
 }

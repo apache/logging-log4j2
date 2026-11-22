@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,34 +40,34 @@ import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.SerialUtil;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.test.junit.ThreadContextRule;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  *
  */
-@UsingThreadContextMap
-@UsingThreadContextStack
-class SerializedLayoutTest {
+public class SerializedLayoutTest {
     private static final String DAT_PATH = "target/test-classes/serializedEvent.dat";
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    @BeforeAll
-    static void setupClass() {
+    @Rule
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
+
+    @BeforeClass
+    public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
     }
 
-    @AfterAll
-    static void cleanupClass() {
+    @AfterClass
+    public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
@@ -85,8 +85,7 @@ class SerializedLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    @Tag("serialization")
-    void testLayout() {
+    public void testLayout() {
         final Map<String, Appender> appenders = root.getAppenders();
         for (final Appender appender : appenders.values()) {
             root.removeAppender(appender);
@@ -126,7 +125,8 @@ class SerializedLayoutTest {
         assertFalse(data.isEmpty());
         int i = 0;
         for (final byte[] item : data) {
-            assertEquals(expected[i], SerialUtil.deserialize(item).toString(), "Incorrect event");
+            assertEquals(
+                    "Incorrect event", expected[i], SerialUtil.deserialize(item).toString());
             ++i;
         }
         for (final Appender app : appenders.values()) {
@@ -135,7 +135,7 @@ class SerializedLayoutTest {
     }
 
     @Test
-    void testSerialization() throws Exception {
+    public void testSerialization() throws Exception {
         final SerializedLayout layout = SerializedLayout.createLayout();
         final Throwable throwable = new LoggingException("Test");
         final LogEvent event = Log4jLogEvent.newBuilder() //
@@ -154,8 +154,7 @@ class SerializedLayoutTest {
     }
 
     @Test
-    @Tag("serialization")
-    void testDeserialization() throws Exception {
+    public void testDeserialization() throws Exception {
         testSerialization();
         final File file = new File(DAT_PATH);
         final FileInputStream fis = new FileInputStream(file);

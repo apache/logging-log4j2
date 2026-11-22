@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
@@ -124,10 +125,12 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        SerializationUtil.writeWrappedObject(obj, this::getFormattedMessage, out);
+        SerializationUtil.writeWrappedObject(
+                obj instanceof Serializable ? (Serializable) obj : String.valueOf(obj), out);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
         obj = SerializationUtil.readWrappedObject(in);
     }
