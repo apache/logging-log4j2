@@ -509,6 +509,40 @@
 
   <profiles>
 
+    <!-- Extends the `java8-tests` profile in `log4j-parent`, which only modifies the `default-test` run:
+         the `jdk.serialFilter` of the `test-serial-filter` run must work on all supported JDKs, including Java 8. -->
+    <profile>
+
+      <id>java8-tests</id>
+
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test-serial-filter</id>
+                <configuration>
+                  <jdkToolchain>
+                    <version>[1.8, 9)</version>
+                  </jdkToolchain>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
     <!-- Fixes incompatible with Java 8 -->
     <profile>
 
