@@ -56,7 +56,6 @@ class WrappedObjectsTest {
     @Test
     @SuppressWarnings("deprecation")
     void readWrappedObjectUsesAllowlistOfOuterFilteredStream() throws Exception {
-        // `Payload` is in `org.apache.logging.log4j.`, so it is only rejected if the allowlist is used
         final byte[] data = writeWrapped(new Payload());
 
         final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(data));
