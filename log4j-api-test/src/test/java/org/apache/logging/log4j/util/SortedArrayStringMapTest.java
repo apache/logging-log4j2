@@ -103,11 +103,33 @@ class SortedArrayStringMapTest {
     }
 
     @Test
+    void testDeserializedMapCanBeModified() {
+        final SortedArrayStringMap empty = deserialize(serialize(new SortedArrayStringMap()));
+        empty.putValue("a", "avalue");
+        assertEquals("avalue", empty.getValue("a"));
+
+        final SortedArrayStringMap original = new SortedArrayStringMap();
+        original.putValue("a", "avalue");
+        final SortedArrayStringMap copy = deserialize(serialize(original));
+        // Grows beyond the deserialized capacity
+        for (int i = 0; i < 10; i++) {
+            copy.putValue("key" + i, "value" + i);
+        }
+        assertEquals(11, copy.size());
+        assertEquals("avalue", copy.getValue("a"));
+    }
+
+    @Test
     void testSerializationOfNonSerializableValue() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
-        original.putValue("unserializable", new Object());
+        original.putValue("unserializable", new Object() {
+            @Override
+            public String toString() {
+                return "unserializable value";
+            }
+        });
 
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
@@ -115,7 +137,7 @@ class SortedArrayStringMapTest {
         final SortedArrayStringMap expected = new SortedArrayStringMap();
         expected.putValue("a", "avalue");
         expected.putValue("B", "Bvalue");
-        expected.putValue("unserializable", null);
+        expected.putValue("unserializable", "unserializable value");
         assertEquals(expected, copy);
     }
 
