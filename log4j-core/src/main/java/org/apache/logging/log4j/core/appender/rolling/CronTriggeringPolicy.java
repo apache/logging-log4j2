@@ -151,7 +151,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private void rollover() {
         // If possible, use the time rollover was supposed to occur, not the actual time.
         final Date rollTime = future != null ? future.getFireTime() : new Date();
-        manager.rollover(cronExpression.getPrevFireTime(rollTime), rollTime);
+        manager.rollover(cronExpression.getPrevFireTime(rollTime), lastRollDate);
         if (future != null) {
             lastRollDate = future.getFireTime();
         }

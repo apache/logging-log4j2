@@ -4,9 +4,9 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
+       type="fixed">
     <issue id="4226" link="https://github.com/apache/logging-log4j2/pull/4226"/>
     <description format="asciidoc">
-        `CronTriggeringPolicy` no longer delays startup, and names direct write files after the rollover period rather than the startup time.
+        Fix the startup delay of `CronTriggeringPolicy` when the appender has no current file.
     </description>
 </entry>
