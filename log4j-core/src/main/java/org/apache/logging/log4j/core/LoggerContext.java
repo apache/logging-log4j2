@@ -304,7 +304,7 @@ public class LoggerContext extends AbstractLifeCycle
                     this.setStarting();
                     reconfigure();
                     if (this.configuration.isShutdownHookEnabled()) {
-                        setUpShutdownHook();
+                        setUpShutdownHook(this.configuration);
                     }
                     this.setStarted();
                 }
@@ -326,7 +326,7 @@ public class LoggerContext extends AbstractLifeCycle
             try {
                 if (this.isInitialized() || this.isStopped()) {
                     if (config.isShutdownHookEnabled()) {
-                        setUpShutdownHook();
+                        setUpShutdownHook(config);
                     }
                     this.setStarted();
                 }
@@ -338,7 +338,7 @@ public class LoggerContext extends AbstractLifeCycle
         LOGGER.info("{}[name={}] started with configuration {}.", getClass().getSimpleName(), getName(), config);
     }
 
-    private void setUpShutdownHook() {
+    private void setUpShutdownHook(final Configuration configuration) {
         if (shutdownCallback == null) {
             final LoggerContextFactory factory = instanceFactory.getInstance(LoggerContextFactory.class);
             if (factory instanceof ShutdownCallbackRegistry) {
@@ -346,7 +346,7 @@ public class LoggerContext extends AbstractLifeCycle
                 // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
                 ExecutorServices.ensureInitialized();
                 try {
-                    final long shutdownTimeoutMillis = this.configuration.getShutdownTimeoutMillis();
+                    final long shutdownTimeoutMillis = configuration.getShutdownTimeoutMillis();
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
                         @Override
                         public void run() {
