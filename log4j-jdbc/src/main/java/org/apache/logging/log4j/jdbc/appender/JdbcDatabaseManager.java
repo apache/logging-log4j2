@@ -748,32 +748,23 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         }
     }
 
-    private void setFields(final MapMessage<?, ?> mapMessage) throws SQLException {
+    private void setColumnMappingFromMap(final int j, final ColumnMapping mapping, final MapMessage<?, ?> mapMessage)
+            throws SQLException {
         final IndexedReadOnlyStringMap map = mapMessage.getIndexedReadOnlyStringMap();
-        final String simpleName = statement.getClass().getName();
-        int j = 1; // JDBC indices start at 1
-        if (this.factoryData.columnMappings != null) {
-            for (final ColumnMapping mapping : this.factoryData.columnMappings) {
-                if (mapping.getLiteralValue() == null) {
-                    final String source = mapping.getSource();
-                    final String key = Strings.isEmpty(source) ? mapping.getName() : source;
-                    final Object value = map.getValue(key);
-                    if (logger().isTraceEnabled()) {
-                        final String valueStr =
-                                value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
-                        logger().trace(
-                                        "{} setObject({}, {}) for key '{}' and mapping '{}'",
-                                        simpleName,
-                                        j,
-                                        valueStr,
-                                        key,
-                                        mapping.getName());
-                    }
-                    setStatementObject(j, mapping.getNameKey(), value);
-                    j++;
-                }
-            }
+        final String source = mapping.getSource();
+        final String key = Strings.isEmpty(source) ? mapping.getName() : source;
+        final Object value = map.getValue(key);
+        if (logger().isTraceEnabled()) {
+            final String valueStr = value instanceof String ? "\"" + value + "\"" : Objects.toString(value, null);
+            logger().trace(
+                            "{} setObject({}, {}) for key '{}' and mapping '{}'",
+                            statement.getClass().getName(),
+                            j,
+                            valueStr,
+                            key,
+                            mapping.getName());
         }
+        setStatementObject(j, mapping.getNameKey(), value);
     }
 
     /**
@@ -846,13 +837,16 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
             // Clear in case there are leftovers.
             statement.clearParameters();
-            final Message message = event.getMessage();
-            if (message instanceof MapMessage<?, ?>) {
-                setFields((MapMessage<?, ?>) message);
-            }
             int j = 1; // JDBC indices start at 1
             if (this.factoryData.columnMappings != null) {
+                final Message message = event.getMessage();
+                final MapMessage<?, ?> mapMessage =
+                        message instanceof MapMessage<?, ?> ? (MapMessage<?, ?>) message : null;
                 for (final ColumnMapping mapping : this.factoryData.columnMappings) {
+                    // Literal SQL is already in the statement and has no placeholder.
+                    if (Strings.isNotEmpty(mapping.getLiteralValue())) {
+                        continue;
+                    }
                     if (ThreadContextMap.class.isAssignableFrom(mapping.getType())
                             || ReadOnlyStringMap.class.isAssignableFrom(mapping.getType())) {
                         this.statement.setObject(j++, event.getContextData().toMap());
@@ -875,6 +869,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                                         mapping.getTypeConverter().convert(layout.toSerializable(event), null);
                                 setStatementObject(j++, mapping.getNameKey(), value);
                             }
+                        } else if (mapMessage != null) {
+                            setColumnMappingFromMap(j++, mapping, mapMessage);
+                        } else {
+                            j++;
                         }
                     }
                 }
