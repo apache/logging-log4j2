@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -50,6 +51,69 @@ class DefaultThreadContextMapTest extends ThreadContextMapSuite {
     @Test
     void singleValue() {
         singleValue(createThreadContextMap());
+    }
+
+    @Test
+    void removeLastKeyClearsThreadLocal() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap();
+        map.put("key", "value");
+        assertThat(map.getImmutableMapOrNull()).isNotNull();
+
+        map.remove("key");
+
+        assertTrue(map.isEmpty());
+        assertThat(map.getImmutableMapOrNull()).isNull();
+    }
+
+    @Test
+    void removeMultipleKeysClearsThreadLocal() {
+        final DefaultThreadContextMap map = createMap();
+
+        map.remove("key");
+
+        assertFalse(map.isEmpty());
+        assertEquals("value2", map.get("key2"));
+        assertThat(map.getImmutableMapOrNull()).isNotNull();
+
+        map.remove("key2");
+
+        assertTrue(map.isEmpty());
+        assertThat(map.getImmutableMapOrNull()).isNull();
+    }
+
+    @Test
+    void removeAllKeysClearsThreadLocal() {
+        final DefaultThreadContextMap map = createMap();
+
+        map.removeAll(Arrays.asList("key", "key2"));
+
+        assertTrue(map.isEmpty());
+        assertThat(map.getImmutableMapOrNull()).isNull();
+    }
+
+    @Test
+    void removeAllRetainsThreadLocalForRemainingKeys() {
+        final DefaultThreadContextMap map = createMap();
+
+        map.removeAll(Arrays.asList("key"));
+
+        assertFalse(map.isEmpty());
+        assertEquals("value2", map.get("key2"));
+        assertThat(map.getImmutableMapOrNull()).isNotNull();
+    }
+
+    @Test
+    void repeatedRemovalKeepsThreadLocalCleared() {
+        final DefaultThreadContextMap map = new DefaultThreadContextMap();
+        map.put("key", "value");
+
+        map.remove("key");
+        map.remove("key");
+        map.removeAll(Arrays.asList("key"));
+        map.removeAll(Arrays.asList("key"));
+
+        assertTrue(map.isEmpty());
+        assertThat(map.getImmutableMapOrNull()).isNull();
     }
 
     @Test

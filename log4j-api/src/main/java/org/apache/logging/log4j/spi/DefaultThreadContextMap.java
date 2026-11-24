@@ -21,6 +21,7 @@ import static org.apache.logging.log4j.internal.map.UnmodifiableArrayBackedMap.g
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.logging.log4j.internal.map.UnmodifiableArrayBackedMap;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -93,7 +94,12 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     public void remove(final String key) {
         final Object[] state = localState.get();
         if (state != null) {
-            localState.set(getMap(state).copyAndRemove(key).getBackingArray());
+            final UnmodifiableArrayBackedMap map = getMap(state).copyAndRemove(key);
+            if (map.isEmpty()) {
+                localState.remove();
+            } else {
+                localState.set(map.getBackingArray());
+            }
         }
     }
 
@@ -103,7 +109,12 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     public void removeAll(final Iterable<String> keys) {
         final Object[] state = localState.get();
         if (state != null) {
-            localState.set(getMap(state).copyAndRemoveAll(keys).getBackingArray());
+            final UnmodifiableArrayBackedMap map = getMap(state).copyAndRemoveAll(keys);
+            if (map.isEmpty()) {
+                localState.remove();
+            } else {
+                localState.set(map.getBackingArray());
+            }
         }
     }
 
