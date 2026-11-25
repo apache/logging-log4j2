@@ -366,6 +366,9 @@ public class XmlConfiguration extends Log4j1Configuration {
         appender = parseAppender(element);
         if (appender != null) {
             appenderMap.put(appenderName, appender);
+            // Register the appender so `getAppender` finds it: `parseChildrenOfLoggerElement` looks
+            // the appender up through `getAppender` when attaching it to a logger.
+            addAppender(AppenderAdapter.adapt(appender));
         }
         return appender;
     }
@@ -797,23 +800,10 @@ public class XmlConfiguration extends Log4j1Configuration {
                     LOGGER.warn("Log4j 1 logger factories are not supported by Log4j 2 and will be ignored.");
                     break;
                 case APPENDER_TAG:
-                    final Appender appender = parseAppender(currentElement);
-                    if (appender == null) {
-                        LOGGER.warn(
-                                "Could not create appender named [{}] of class [{}]; ignoring.",
-                                subst(currentElement.getAttribute(NAME_ATTR)),
-                                subst(currentElement.getAttribute(CLASS_ATTR)));
-                        break;
-                    }
-                    final String appenderName = appender.getName();
-                    if (appenderName == null) {
-                        LOGGER.warn(
-                                "Appender of class [{}] has a null name; ignoring.",
-                                subst(currentElement.getAttribute(CLASS_ATTR)));
-                        break;
-                    }
-                    appenderMap.put(appenderName, appender);
-                    addAppender(AppenderAdapter.adapt(appender));
+                    // Appenders are created on demand when a logger references them (see
+                    // `findAppenderByName`), as in Log4j 1's `DOMConfigurator`. Top-level
+                    // `<appender>` elements are ignored here, so appenders no logger
+                    // references are never created or started.
                     break;
                 default:
                     quietParseUnrecognizedElement(null, currentElement, props);

@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -43,7 +44,10 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -112,6 +116,35 @@ class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertNull(configuration.getAppender("bad"), "Invalid appender should not be registered");
         final Appender list = configuration.getAppender("list");
         assertNotNull(list, "Valid list appender should be registered");
+    }
+
+    @Test
+    @UsingStatusListener
+    void testUnreferencedAppendersAreNotCreated(final ListStatusListener listener) throws Exception {
+        final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/log4j1-unreferenced-appender.xml");
+        final Configuration configuration = loggerContext.getConfiguration();
+        assertNull(configuration.getAppender("unused"), "Unreferenced appender should not be registered");
+        assertNull(
+                configuration.getAppender("bad"),
+                "Unreferenced appender with an unloadable class should not be registered");
+        assertNotNull(configuration.getAppender("list"), "Referenced appender should be registered");
+        final List<StatusData> errors = listener.findStatusData(Level.ERROR).toList();
+        assertTrue(errors.isEmpty(), () -> "Unexpected error status messages: " + errors);
+    }
+
+    @Test
+    void testReferencedAppenderDefinedAfterLogger() throws Exception {
+        final LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/log4j1-appender-after-logger.xml");
+        final Configuration configuration = loggerContext.getConfiguration();
+        final Appender appender = configuration.getAppender("late");
+        assertNotNull(appender, "Referenced appender defined after its logger should be registered");
+        final Logger logger = LogManager.getLogger("test");
+        logger.debug("This is a test of the root logger");
+        final ListAppender listAppender = (ListAppender) ((AppenderAdapter.Adapter) appender).getAppender();
+        final List<String> messages = listAppender.getMessages();
+        assertTrue(messages != null && !messages.isEmpty(), "No messages");
     }
 
     @Override
