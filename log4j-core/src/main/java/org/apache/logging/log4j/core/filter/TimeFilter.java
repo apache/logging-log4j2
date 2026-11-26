@@ -88,11 +88,13 @@ public final class TimeFilter extends AbstractFilter {
         this.startTime = start;
         this.endTime = end;
         this.timeZone = timeZone;
-        this.start = ZonedDateTime.of(now, startTime, timeZone)
+        // The current overnight interval may have started yesterday.
+        final LocalDate startDate = end.isBefore(start) ? now.minusDays(1) : now;
+        this.start = ZonedDateTime.of(startDate, startTime, timeZone)
                 .withEarlierOffsetAtOverlap()
                 .toInstant()
                 .toEpochMilli();
-        long endMillis = ZonedDateTime.of(now, endTime, timeZone)
+        long endMillis = ZonedDateTime.of(startDate, endTime, timeZone)
                 .withEarlierOffsetAtOverlap()
                 .toInstant()
                 .toEpochMilli();
@@ -124,8 +126,19 @@ public final class TimeFilter extends AbstractFilter {
         if (currentTimeMillis <= end) {
             return;
         }
-        final LocalDate date =
+        LocalDate date =
                 Instant.ofEpochMilli(currentTimeMillis).atZone(timeZone).toLocalDate();
+        if (endTime.isBefore(startTime)) {
+            // The first event after an idle period may belong to yesterday's interval.
+            final LocalDate previousDate = date.minusDays(1);
+            final long previousStart = ZonedDateTime.of(previousDate, startTime, timeZone)
+                    .withEarlierOffsetAtOverlap()
+                    .toInstant()
+                    .toEpochMilli();
+            if (currentTimeMillis <= previousStart + duration) {
+                date = previousDate;
+            }
+        }
         this.start = ZonedDateTime.of(date, startTime, timeZone)
                 .withEarlierOffsetAtOverlap()
                 .toInstant()
