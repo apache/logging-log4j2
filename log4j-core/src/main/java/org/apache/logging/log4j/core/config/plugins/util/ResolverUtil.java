@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
+/*
+ * This file originated from Log4j 1.x.
+ * Copyright 2005-2006 Tim Fennell.
+ */
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
