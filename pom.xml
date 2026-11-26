@@ -318,6 +318,8 @@
     <site-log4j-api.version>2.26.1</site-log4j-api.version>
     <site-log4j-core.version>2.26.1</site-log4j-core.version>
     <site-log4j-layout-template-json.version>2.26.1</site-log4j-layout-template-json.version>
+    <!-- Latest release of the long-term support line -->
+    <site-log4j-lts.version>2.25.6</site-log4j-lts.version>
 
     <!-- =================
          Common properties
