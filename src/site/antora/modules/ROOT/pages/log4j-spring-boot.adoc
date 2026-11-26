@@ -16,7 +16,14 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 ////
 = Log4j Spring Boot Support
 
-This module provides enhanced support for Spring Boot beyond what Spring Boot itself provides.
+This module provides enhanced support for Spring Boot 2.
+
+[IMPORTANT]
+====
+Spring Boot 3 and later provide the xref:manual/lookups.adoc#SpringBootLookup3[`spring` lookup], the `SpringProfile` arbiter and the Spring `Environment` as a source of Log4j properties themselves.
+Remove `log4j-spring-boot` when upgrading to Spring Boot 3 or later.
+With Spring Boot 4, it can prevent the application from starting.
+====
 
 == Overview
 

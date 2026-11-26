@@ -24,4 +24,7 @@
 | Default value | `false`
 |===
 
-Disables the usage of the Spring Boot `Log4j2CloudConfigLoggingSystem`.
+Disables the usage of the Spring Boot `Log4j2SpringBootLoggingSystem`.
+
+With Spring Boot 3 or later, this does not disable the module's `spring` lookup and `SpringProfile` arbiter, which then cannot access the Spring `Environment`.
+Remove `log4j-spring-boot` instead.

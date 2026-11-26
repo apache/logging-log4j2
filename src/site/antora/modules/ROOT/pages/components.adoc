@@ -476,6 +476,11 @@ https://docs.spring.io/spring-boot/api/java/org/springframework/boot/logging/Log
 implementation.
 See xref:log4j-spring-boot.adoc[] for more details.
 
+[IMPORTANT]
+====
+Don't deploy this artifact with Spring Boot 3 or later, which provides these features itself.
+====
+
 include::partial$components/log4j-spring-boot.adoc[]
 
 [#log4j-spring-cloud-config-client]

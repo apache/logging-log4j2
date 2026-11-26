@@ -206,7 +206,7 @@ include::partial$manual/systemproperties/properties-log4j-jul.adoc[leveloffset=+
 [id=properties-log4j-spring-boot]
 === Log4j Spring Boot properties
 
-The Log4j Spring Boot module supports the following configuration properties:
+The xref:log4j-spring-boot.adoc[Log4j Spring Boot module], for Spring Boot 2 only, supports the following configuration properties:
 
 include::partial$manual/systemproperties/properties-log4j-spring-boot.adoc[leveloffset=+2]
 
@@ -243,8 +243,8 @@ Log4j provides the following implementations:
 | [[SpringPropertySource]]SpringPropertySource
 | -100
 | standard
-| log4j-spring
-| Delegates property resolution to a Spring https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html[`Environment`]. See xref:log4j-spring-boot.adoc[] for details.
+| log4j-spring-boot
+| Delegates property resolution to a Spring https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html[`Environment`] in Spring Boot 2. See xref:log4j-spring-boot.adoc[] for details.
 
 | SystemPropertiesPropertySource
 | 0
