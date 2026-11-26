@@ -32,6 +32,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginLoggerContext;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidHost;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 
 /**
  * Test plugin class for unit tests.
@@ -69,6 +73,21 @@ public class FakePlugin {
         @PluginBuilderAttribute
         @SuppressWarnings("log4j.public.setter")
         private int attributeWithoutPublicSetterButWithSuppressAnnotation;
+
+        @PluginAttribute("attributeField")
+        private String attributeField;
+
+        @Required
+        private String requiredOnly;
+
+        @NotBlank
+        private String notBlankOnly;
+
+        @ValidHost
+        private String validHostOnly;
+
+        @ValidPort
+        private int validPortOnly;
 
         @PluginElement("layout")
         private Layout<? extends Serializable> layout;
