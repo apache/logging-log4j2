@@ -14,6 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Utility classes used by the JSON Template Layout. In particular,
+ * {@link org.apache.logging.log4j.layout.template.json.util.JsonReader} is an
+ * internal parser intended for trusted Log4j input, not untrusted input.
+ */
 @Export
 @Version("2.25.3")
 @Open("org.apache.logging.log4j.core")
