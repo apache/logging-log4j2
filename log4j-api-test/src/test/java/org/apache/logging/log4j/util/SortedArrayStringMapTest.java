@@ -232,6 +232,32 @@ class SortedArrayStringMapTest {
     }
 
     @Test
+    void testPutAll_intoClearedMapWithSmallerCapacityThenPutValue() {
+        final SortedArrayStringMap reused = new SortedArrayStringMap(4);
+        reused.putValue("x", "xvalue");
+        reused.clear();
+
+        // Larger capacity (e.g. garbage-free thread context map) but only 4 entries
+        final SortedArrayStringMap source = new SortedArrayStringMap(16);
+        source.putValue("a", "avalue");
+        source.putValue("b", "bvalue");
+        source.putValue("c", "cvalue");
+        source.putValue("d", "dvalue");
+
+        reused.putAll(source);
+        assertDoesNotThrow(
+                () -> reused.putValue("e", "evalue"),
+                "Adding element must grow arrays instead of throwing ArrayIndexOutOfBoundsException");
+
+        assertEquals(5, reused.size());
+        assertEquals("avalue", reused.getValue("a"));
+        assertEquals("bvalue", reused.getValue("b"));
+        assertEquals("cvalue", reused.getValue("c"));
+        assertEquals("dvalue", reused.getValue("d"));
+        assertEquals("evalue", reused.getValue("e"));
+    }
+
+    @Test
     void testPutAll_overwritesSameKeys2() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "aORIG");
