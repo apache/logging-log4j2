@@ -354,62 +354,80 @@
 <article class="doc">
 <h1 class="page">Release notes</h1>
 <div class="sect1">
-<h2 id="release-notes-2-x-x"><a class="anchor" href="#release-notes-2-x-x"></a>2.x.x</h2>
+<h2 id="release-notes-2-25-6"><a class="anchor" href="#release-notes-2-25-6"></a>2.25.6</h2>
 <div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Release date</dt>
+<dd>
+<p>2026-11-26</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p>This release&#8230;&#8203;</p>
+<p>This is a patch release of the <code>2.25.x</code> long-term support line.
+It contains the changes listed below, made since <code>2.25.5</code>, the previous release of the <code>2.25.x</code> line.
+The same changes will also be part of <code>2.26.2</code>.</p>
+</div>
+<div class="paragraph">
+<p>This release fixes the HTML escaping of the <code>log:dump</code> JSP tag and hardens deserialization in response to
+<a href="https://guide.sonatype.com/vulnerability/sonatype-2026-006746">sonatype-2026-006746</a>.
+The hardening only matters to applications that deserialize <strong>untrusted</strong> data using the internal <code>FilteredObjectInputStream</code> class, without an <code>ObjectInputFilter</code>:
+a practice we advise against in our <a href="https://logging.apache.org/security/faq.html#deserialization">Security FAQ</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The serialized form of some classes, such as <code>Log4jLogEvent</code> and <code>ParameterizedMessage</code>, changes:
+data serialized by <code>2.25.5</code> or earlier cannot be deserialized by <code>2.25.6</code>, and vice versa.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-changed"><a class="anchor" href="#release-notes-2-x-x-changed"></a>Changed</h3>
+<h3 id="release-notes-2-25-6-fixed"><a class="anchor" href="#release-notes-2-25-6-fixed"></a>Fixed</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>The <code>SerialUtil</code> test helper now applies the deserialization allowlist also on Java 9 and later. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>The <code>SerialUtil</code> test helper now applies the deserialization allowlist also on Java 9 and later. (<a href="https://github.com/apache/logging-log4j2/pull/4270">4270</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>When deserializing with <code>FilteredObjectInputStream</code>, also apply the <code>ObjectInputFilter</code> of the outer stream to nested objects. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>When deserializing with <code>ObjectInputStream</code>, stop adding the Log4j allowlist to the <code>ObjectInputFilter</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>When deserializing with <code>ObjectInputStream</code>, stop adding the Log4j allowlist to the <code>ObjectInputFilter</code>. (<a href="https://github.com/apache/logging-log4j2/pull/4365">4365</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p><code>FilteredObjectInputStream</code> now rejects dynamic proxy classes. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p><code>FilteredObjectInputStream</code> now rejects dynamic proxy classes. (<a href="https://github.com/apache/logging-log4j2/pull/4269">4269</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>Align the serialization format of <code>Log4jLogEvent</code> with that of <code>ObjectMessage</code>: log events serialized by earlier versions can no longer be deserialized. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>Align the serialization format of <code>Log4jLogEvent</code> with that of <code>ObjectMessage</code>: log events serialized by earlier versions can no longer be deserialized. (<a href="https://github.com/apache/logging-log4j2/pull/4271">4271</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>Use the default Java serialization for <code>SortedArrayStringMap</code>, except for its values. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>Use the default Java serialization for <code>SortedArrayStringMap</code>, except for its values. (<a href="https://github.com/apache/logging-log4j2/pull/4272">4272</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>Throw instead of ignoring nested objects rejected during deserialization of messages and log events. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>Throw instead of ignoring nested objects rejected during deserialization of messages and log events. (<a href="https://github.com/apache/logging-log4j2/pull/4271">4271</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
 </li>
 <li>
-<p>Replace <code>ObjectArrayMessage</code> and <code>ParameterizedMessage</code> arguments that cannot be serialized with their string form. (<a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+<p>Replace <code>ObjectArrayMessage</code> and <code>ParameterizedMessage</code> arguments that cannot be serialized with their string form. (<a href="https://github.com/apache/logging-log4j2/pull/4274">4274</a>, <a href="https://github.com/apache/logging-log4j2/pull/4466">4466</a>)</p>
+</li>
+<li>
+<p>Fix HTML-escaped <code>log:dump</code> JSP tag attributes to prevent XSS (<a href="https://github.com/apache/logging-log4j2/pull/4316">4316</a>, <a href="https://github.com/apache/logging-log4j2/pull/4387">4387</a>)</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="release-notes-2-x-x-fixed"><a class="anchor" href="#release-notes-2-x-x-fixed"></a>Fixed</h3>
+<h3 id="release-notes-2-25-6-updated"><a class="anchor" href="#release-notes-2-25-6-updated"></a>Updated</h3>
 <div class="ulist">
 <ul>
-<li>
-<p>Fix HTML-escaped <code>log:dump</code> JSP tag attributes to prevent XSS (<a href="https://github.com/apache/logging-log4j2/pull/4316">4316</a>)</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="release-notes-2-x-x-updated"><a class="anchor" href="#release-notes-2-x-x-updated"></a>Updated</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Update <code>ch.qos.logback:logback-classic</code> to version <code>1.3.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>ch.qos.logback:logback-core</code> to version <code>1.3.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
 <li>
 <p>Update <code>com.conversantmedia:disruptor</code> to version <code>1.2.21</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
@@ -423,34 +441,16 @@
 <p>Update <code>com.github.luben:zstd-jni</code> to version <code>1.5.7-26</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
 </li>
 <li>
-<p>Update <code>com.google.code.java-allocation-instrumenter:java-allocation-instrumenter</code> to version <code>3.3.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>com.google.guava:guava-testlib</code> to version <code>33.7.2-jre</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
-</li>
-<li>
 <p>Update <code>com.google.guava:guava</code> to version <code>33.7.2-jre</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
 </li>
 <li>
 <p>Update <code>commons-logging:commons-logging</code> to version <code>1.3.6</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 <li>
-<p>Update <code>jakarta.activation:jakarta.activation-api</code> to version <code>2.1.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>jakarta.mail:jakarta.mail-api</code> to version <code>2.1.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.activemq:activemq-broker</code> to version <code>6.1.8</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle</code> to version <code>1.3.8</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
+<p>Update <code>io.fabric8:docker-maven-plugin</code> to version <code>0.49.0</code> (<a href="https://github.com/apache/logging-log4j2/pull/4291">4291</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.commons:commons-csv</code> to version <code>1.14.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.groovy:groovy-bom</code> to version <code>4.0.33</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 <li>
 <p>Update <code>org.apache.kafka:kafka-clients</code> to version <code>3.9.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
@@ -459,19 +459,7 @@
 <p>Update <code>org.apache.maven.wrapper:maven-wrapper</code> to version <code>3.3.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 <li>
-<p>Update <code>org.apache.maven:apache-maven</code> to version <code>3.9.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.maven:maven-core</code> to version <code>3.9.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.apache.maven:maven-model</code> to version <code>3.9.16</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.assertj:assertj-core</code> to version <code>3.27.7</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.codehaus.plexus:plexus-utils</code> to version <code>3.6.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
+<p>Update <code>org.apache.maven:apache-maven</code> to version <code>3.10.2</code> (<a href="https://github.com/apache/logging-log4j2/pull/4531">4531</a>)</p>
 </li>
 <li>
 <p>Update <code>org.eclipse.angus:angus-activation</code> to version <code>2.0.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
@@ -480,40 +468,13 @@
 <p>Update <code>org.eclipse.angus:jakarta.mail</code> to version <code>2.0.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 <li>
-<p>Update <code>org.eclipse.platform:org.eclipse.osgi</code> to version <code>3.23.200</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
 <p>Update <code>org.jctools:jctools-core</code> to version <code>4.0.7</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.jmdns:jmdns</code> to version <code>3.6.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
-</li>
-<li>
-<p>Update <code>org.junit.jupiter:junit-jupiter-engine</code> to version <code>5.13.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.junit:junit-bom</code> to version <code>5.13.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.maven:rewrite-maven-plugin</code> to version <code>6.0.5</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.openrewrite.recipe:rewrite-migrate-java</code> to version <code>3.0.1</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.slf4j:slf4j-nop</code> to version <code>2.0.20</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
 </li>
 <li>
 <p>Update <code>org.springframework.cloud:spring-cloud-context</code> to version <code>4.3.3</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 <li>
 <p>Update <code>org.xerial.snappy:snappy-java</code> to version <code>1.1.10.12</code> (<a href="https://github.com/apache/logging-log4j2/pull/4501">4501</a>)</p>
-</li>
-<li>
-<p>Update <code>org.xmlunit:xmlunit-core</code> to version <code>2.10.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
-</li>
-<li>
-<p>Update <code>org.xmlunit:xmlunit-matchers</code> to version <code>2.10.4</code> (<a href="https://github.com/apache/logging-log4j2/pull/4314">4314</a>)</p>
 </li>
 </ul>
 </div>
