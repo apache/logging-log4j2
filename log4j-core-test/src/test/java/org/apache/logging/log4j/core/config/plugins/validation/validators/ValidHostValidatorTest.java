@@ -68,6 +68,20 @@ class ValidHostValidatorTest {
         assertTrue(hostAndPort.isValid());
     }
 
+    @Test
+    void testUnresolvableHostName() {
+        node.getAttributes().put("host", "loghost.invalid");
+        node.getAttributes().put("port", "1");
+        assertNotNull(buildPlugin(), "a host that is not in DNS yet must be accepted");
+    }
+
+    @Test
+    void testMalformedHostName() {
+        node.getAttributes().put("host", "not a host");
+        node.getAttributes().put("port", "1");
+        assertNull(buildPlugin());
+    }
+
     private HostAndPort buildPlugin() {
         return (HostAndPort) new PluginBuilder(plugin)
                 .withConfiguration(new NullConfiguration())

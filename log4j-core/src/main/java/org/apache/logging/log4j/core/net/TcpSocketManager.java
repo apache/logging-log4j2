@@ -268,7 +268,7 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 writeAndFlush(bytes, offset, length, immediateFlush);
             } catch (final IOException causeEx) {
-                final String config = inetAddress + ":" + port;
+                final String config = host + ":" + port;
                 if (retry && reconnector == null) {
                     reconnector = createReconnector();
                     try {
@@ -530,20 +530,16 @@ public class TcpSocketManager extends AbstractSocketManager {
         @SuppressWarnings("resource")
         @Override
         public M createManager(final String name, final T data) {
-            InetAddress inetAddress;
-            OutputStream os;
-            try {
-                inetAddress = InetAddress.getByName(data.host);
-            } catch (final UnknownHostException ex) {
-                LOGGER.error("Could not find address of {}: {}", data.host, ex, ex);
-                return null;
-            }
             Socket socket = null;
+            OutputStream os;
             try {
                 // LOG4J2-1042
                 socket = createSocket(data);
                 os = socket.getOutputStream();
-                return createManager(name, os, socket, inetAddress, data);
+                return createManager(name, os, socket, socket.getInetAddress(), data);
+            } catch (final UnknownHostException ex) {
+                LOGGER.error("Could not find address of {}: {}", data.host, ex.getLocalizedMessage());
+                os = NullOutputStream.getInstance();
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
                 os = NullOutputStream.getInstance();
@@ -552,7 +548,8 @@ public class TcpSocketManager extends AbstractSocketManager {
                 Closer.closeSilently(socket);
                 return null;
             }
-            return createManager(name, os, null, inetAddress, data);
+            // Retry resolution on the reconnector thread: the host may only appear in DNS later.
+            return createManager(name, os, null, null, data);
         }
 
         @SuppressWarnings("unchecked")
