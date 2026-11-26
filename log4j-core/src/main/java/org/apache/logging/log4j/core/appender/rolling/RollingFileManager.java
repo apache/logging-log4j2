@@ -591,6 +591,7 @@ public class RollingFileManager extends FileManager {
         getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
         getPatternProcessor().setCurrentFileTime(prevRollTime.getTime());
         rollover();
+        getPatternProcessor().setPrevFileTime(prevRollTime.getTime());
     }
 
     public synchronized void rollover() {
