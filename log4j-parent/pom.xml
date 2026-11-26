@@ -1276,6 +1276,36 @@
 
     </profile>
 
+    <!--
+      ~ Skip starting and stopping the Docker containers used by integration tests when tests are skipped.
+      ~ Maven can only activate a profile on a single property, so we need one profile for each property.
+      -->
+    <profile>
+      <id>skip-docker-on-skip-tests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <docker.skip>true</docker.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>skip-docker-on-maven-test-skip</id>
+      <activation>
+        <property>
+          <name>maven.test.skip</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <docker.skip>true</docker.skip>
+      </properties>
+    </profile>
+
   </profiles>
 
 </project>
