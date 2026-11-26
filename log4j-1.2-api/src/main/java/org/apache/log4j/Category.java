@@ -363,7 +363,9 @@ public class Category implements AppenderAttachable {
                     .map(AppenderWrapper::adapt)
                     .collect(Collectors.toSet()));
         }
-        return aai == null ? NullEnumeration.getInstance() : aai.getAllAppenders();
+        synchronized (this) {
+            return aai == null ? NullEnumeration.getInstance() : aai.getAllAppenders();
+        }
     }
 
     /**
@@ -377,7 +379,9 @@ public class Category implements AppenderAttachable {
         if (LogManager.isLog4jCorePresent()) {
             return AppenderWrapper.adapt(CategoryUtil.getAppenders(logger).get(name));
         }
-        return aai != null ? aai.getAppender(name) : null;
+        synchronized (this) {
+            return aai != null ? aai.getAppender(name) : null;
+        }
     }
 
     public Priority getChainedPriority() {
@@ -486,7 +490,9 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public boolean isAttached(final Appender appender) {
-        return aai == null ? false : aai.isAttached(appender);
+        synchronized (this) {
+            return aai != null && aai.isAttached(appender);
+        }
     }
 
     public boolean isDebugEnabled() {
@@ -572,16 +578,20 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAllAppenders() {
-        if (aai != null) {
-            final Vector appenders = new Vector();
-            for (final Enumeration iter = aai.getAllAppenders(); iter != null && iter.hasMoreElements(); ) {
-                appenders.add(iter.nextElement());
+        final Vector<Appender> appenders;
+        synchronized (this) {
+            if (aai == null) {
+                return;
+            }
+            appenders = new Vector<>();
+            for (final Enumeration<?> iter = aai.getAllAppenders(); iter != null && iter.hasMoreElements(); ) {
+                appenders.add((Appender) iter.nextElement());
             }
             aai.removeAllAppenders();
-            for (final Object appender : appenders) {
-                fireRemoveAppenderEvent((Appender) appender);
-            }
             aai = null;
+        }
+        for (final Appender appender : appenders) {
+            fireRemoveAppenderEvent(appender);
         }
     }
 
@@ -593,11 +603,17 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAppender(final Appender appender) {
-        if (appender == null || aai == null) {
+        if (appender == null) {
             return;
         }
-        final boolean wasAttached = aai.isAttached(appender);
-        aai.removeAppender(appender);
+        final boolean wasAttached;
+        synchronized (this) {
+            if (aai == null) {
+                return;
+            }
+            wasAttached = aai.isAttached(appender);
+            aai.removeAppender(appender);
+        }
         if (wasAttached) {
             fireRemoveAppenderEvent(appender);
         }
@@ -611,11 +627,17 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void removeAppender(final String name) {
-        if (name == null || aai == null) {
+        if (name == null) {
             return;
         }
-        final Appender appender = aai.getAppender(name);
-        aai.removeAppender(name);
+        final Appender appender;
+        synchronized (this) {
+            if (aai == null) {
+                return;
+            }
+            appender = aai.getAppender(name);
+            aai.removeAppender(name);
+        }
         if (appender != null) {
             fireRemoveAppenderEvent(appender);
         }
