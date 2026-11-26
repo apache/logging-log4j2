@@ -17,6 +17,20 @@
 
 = Download
 :dist-url: https://downloads.apache.org/logging/log4j/{log4j-core-version}
+:dist-lts-url: https://downloads.apache.org/logging/log4j/{log4j-lts-version}
+
+Two Log4j release lines are currently maintained:
+
+Latest (`{log4j-core-version}`)::
+The most recent release, containing all the new features and fixes.
+We recommend it for all users.
+
+Long-term support, LTS (`{log4j-lts-version}`)::
+The latest release of the `2.25.x` line, which only receives bug and security fixes.
+It is meant for users that cannot upgrade to the latest release, and for libraries that only depend on the Log4j API:
+since older versions of the Log4j API are compatible with newer implementations, depending on the LTS line lets the application choose which Log4j version to use.
+
+See <<versions>> for the maintenance status of each release line.
 
 You can manually download all published Log4j distributions, verify them, and see their licensing information by following the instructions in {logging-services-url}/download.html[the Download page] of {logging-services-url}[Logging Services].
 
@@ -31,23 +45,27 @@ Proceed to xref:release-notes.adoc[].
 [#source-distribution]
 == Source distribution
 
-You can download the source code of the latest Log4j release using the links below:
+You can download the source code of the latest Log4j releases using the links below:
 
 .Source distribution files
-[cols="2h,5"]
+[%header,cols="2h,5,5"]
 |===
+| | Latest | LTS
 
 | Sources
 | {dist-url}/apache-log4j-{log4j-core-version}-src.zip[apache-log4j-{log4j-core-version}-src.zip]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-src.zip[apache-log4j-{log4j-lts-version}-src.zip]
 
 | Checksum
 | {dist-url}/apache-log4j-{log4j-core-version}-src.zip.sha512[apache-log4j-{log4j-core-version}-src.zip.sha512]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-src.zip.sha512[apache-log4j-{log4j-lts-version}-src.zip.sha512]
 
 | Signature
 | {dist-url}/apache-log4j-{log4j-core-version}-src.zip.asc[apache-log4j-{log4j-core-version}-src.zip.asc]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-src.zip.asc[apache-log4j-{log4j-lts-version}-src.zip.asc]
 
 | Signing keys
-| https://downloads.apache.org/logging/KEYS[KEYS]
+2+| https://downloads.apache.org/logging/KEYS[KEYS]
 |===
 
 [#binary-distribution]
@@ -69,20 +87,24 @@ Binary distribution archive::
 All the artifacts in the ASF Nexus repository are also available in a single ZIP archive:
 +
 .Binary distribution files
-[cols="2h,5"]
+[%header,cols="2h,5,5"]
 |===
+| | Latest | LTS
 
 | Binaries
 | {dist-url}/apache-log4j-{log4j-core-version}-bin.zip[apache-log4j-{log4j-core-version}-bin.zip]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-bin.zip[apache-log4j-{log4j-lts-version}-bin.zip]
 
 | Checksum
 | {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.sha512[apache-log4j-{log4j-core-version}-bin.zip.sha512]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-bin.zip.sha512[apache-log4j-{log4j-lts-version}-bin.zip.sha512]
 
 | Signature
 | {dist-url}/apache-log4j-{log4j-core-version}-bin.zip.asc[apache-log4j-{log4j-core-version}-bin.zip.asc]
+| {dist-lts-url}/apache-log4j-{log4j-lts-version}-bin.zip.asc[apache-log4j-{log4j-lts-version}-bin.zip.asc]
 
 | Signing keys
-| https://downloads.apache.org/logging/KEYS[KEYS]
+2+| https://downloads.apache.org/logging/KEYS[KEYS]
 |===
 
 [NOTE]
@@ -125,7 +147,7 @@ Refer to xref:versioning.adoc[] for details.
 |
 |
 
-| 2.26.x
+| 2.27.x
 | [development]#AD#
 |
 |
@@ -133,13 +155,21 @@ Refer to xref:versioning.adoc[] for details.
 |
 |
 
+| 2.26.x
+| [active]#AM#
+| 2.26.1
+| 2026-05-02
+|
+|
+| Latest
+
 | 2.25.x
 | [active]#AM#
-| 2.25.3
-| 2025-12-15
+| 2.25.6
+| 2025-06-13
 |
 |
-|
+| Long-term support (LTS)
 
 | 2.24.x
 | [eom]#EOM#
@@ -196,16 +226,23 @@ Refer to xref:versioning.adoc[] for details.
 |
 |
 
-| 2.26.x
+| 2.27.x
 | [development]#AD#
 |
 |
 |
 |
 
+| 2.26.x
+| [active]#AM#
+| 2.26.1
+| 2026-05-02
+|
+|
+
 | 2.25.x
 | [active]#AM#
-| 2.25.2
+| 2.25.6
 | 2025-06-13
 |
 |

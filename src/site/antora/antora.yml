@@ -67,6 +67,7 @@ asciidoc:
     log4j-api-version: "1.2.3-api"
     log4j-core-version: "1.2.3-core"
     log4j-layout-template-json-version: "1.2.3-layout-template-json"
+    log4j-lts-version: "1.2.3-lts"
     logback-version: "1.2.3-logback"
     slf4j-version: "1.2.3-slf4j"
 nav:
