@@ -4,7 +4,8 @@
        xsi:schemaLocation="
            https://logging.apache.org/xml/ns
            https://logging.apache.org/xml/ns/log4j-changelog-0.xsd"
-       type="changed">
+       type="fixed">
+  <issue id="4270" link="https://github.com/apache/logging-log4j2/pull/4270"/>
   <issue id="4466" link="https://github.com/apache/logging-log4j2/pull/4466"/>
   <description format="asciidoc">
     The `SerialUtil` test helper now applies the deserialization allowlist also on Java 9 and later.
