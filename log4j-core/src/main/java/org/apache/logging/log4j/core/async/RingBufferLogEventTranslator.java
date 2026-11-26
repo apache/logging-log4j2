@@ -174,6 +174,11 @@ public class RingBufferLogEventTranslator implements EventTranslator<RingBufferL
                 TraceContextProviderService.getSpanId(),
                 TraceContextProviderService.getTraceFlags());
     }
+
+    StackTraceElement getLocation() {
+        return location;
+    }
+
     /**
      * Updates the cached thread values from the current thread.
      *
