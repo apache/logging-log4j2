@@ -20,7 +20,11 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This patch release fixes the HTML escaping of the `log:dump` JSP tag and hardens deserialization in response to
+This is a patch release of the `2.25.x` long-term support line.
+It contains the changes listed below, made since `2.25.5`, the previous release of the `2.25.x` line.
+The same changes will also be part of `2.26.2`.
+
+This release fixes the HTML escaping of the `log:dump` JSP tag and hardens deserialization in response to
 https://guide.sonatype.com/vulnerability/sonatype-2026-006746[sonatype-2026-006746].
 The hardening only matters to applications that deserialize **untrusted** data using the internal `FilteredObjectInputStream` class, without an `ObjectInputFilter`:
 a practice we advise against in our {logging-services-url}/security/faq.html#deserialization[Security FAQ].
