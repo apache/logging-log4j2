@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.YamlBooleanAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -44,7 +45,8 @@ public class PluginBuilderAttributeVisitor extends AbstractPluginVisitor<PluginB
         final Map<String, String> attributes = node.getAttributes();
         final String rawValue = removeAttributeValue(attributes, name, this.aliases);
         final String replacedValue = this.substitutor.replace(event, rawValue);
-        final Object value = convert(replacedValue, null);
+        final Object value = convert(
+                YamlBooleanAliases.normalizeBooleanAttribute(configuration, conversionType, replacedValue), null);
         final Object debugValue = this.annotation.sensitive() ? "*****" : value;
         StringBuilders.appendKeyDqValue(log, name, debugValue);
         return value;

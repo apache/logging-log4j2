@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.YamlBooleanAliases;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
@@ -91,7 +92,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     isAdditivity(),
                     getProperties(),
                     getConfig(),
-                    shouldIncludeLocation(getIncludeLocation()));
+                    shouldIncludeLocation(getIncludeLocation(), getConfig()));
         }
     }
 
@@ -283,7 +284,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 additive,
                 properties,
                 config,
-                shouldIncludeLocation(includeLocation));
+                shouldIncludeLocation(includeLocation, config));
     }
 
     /**
@@ -321,7 +322,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 additivity,
                 properties,
                 config,
-                shouldIncludeLocation(includeLocation));
+                shouldIncludeLocation(includeLocation, config));
     }
 
     /**
@@ -336,6 +337,13 @@ public class AsyncLoggerConfig extends LoggerConfig {
     // Note: for asynchronous loggers, includeLocation default is FALSE
     private static boolean shouldIncludeLocation(final String includeLocationConfigValue) {
         return Boolean.parseBoolean(includeLocationConfigValue);
+    }
+
+    private static boolean shouldIncludeLocation(
+            final String includeLocationConfigValue, final Configuration configuration) {
+        final String value =
+                YamlBooleanAliases.normalizeBooleanAttribute(configuration, Boolean.TYPE, includeLocationConfigValue);
+        return shouldIncludeLocation(value);
     }
 
     /**
@@ -363,7 +371,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                         isAdditivity(),
                         getProperties(),
                         getConfig(),
-                        shouldIncludeLocation(getIncludeLocation()));
+                        shouldIncludeLocation(getIncludeLocation(), getConfig()));
             }
         }
 
@@ -396,7 +404,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     additive,
                     properties,
                     config,
-                    shouldIncludeLocation(includeLocation));
+                    shouldIncludeLocation(includeLocation, config));
         }
 
         /**
@@ -422,7 +430,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                     additive,
                     properties,
                     config,
-                    shouldIncludeLocation(includeLocation));
+                    shouldIncludeLocation(includeLocation, config));
         }
     }
 }
