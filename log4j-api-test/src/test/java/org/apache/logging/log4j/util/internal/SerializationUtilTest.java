@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -81,6 +82,7 @@ class SerializationUtilTest {
     }
 
     @Test
+    @Tag("serialization")
     @EnabledForJreRange(min = JRE.JAVA_9)
     void readWrappedObjectUsesObjectInputFilterOfOuterStream() throws Exception {
         final byte[] data = serialize(new ObjectMessage(new Payload()));
@@ -91,6 +93,7 @@ class SerializationUtilTest {
     }
 
     @Test
+    @Tag("serialization")
     @EnabledForJreRange(min = JRE.JAVA_9)
     @SuppressWarnings("deprecation")
     void readWrappedObjectUsesObjectInputFilterOfOuterFilteredStream() throws Exception {

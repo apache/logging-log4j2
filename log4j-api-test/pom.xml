@@ -156,6 +156,26 @@
         <configuration>
           <excludedGroups>performance,smoke</excludedGroups>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <excludedGroups>performance,smoke,serialization</excludedGroups>
+            </configuration>
+          </execution>
+          <!-- The java8-tests profile switches only default-test to Java 8.
+               Run the ObjectInputFilter tests on the build JDK. -->
+          <execution>
+            <id>test-serial-filter</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <groups>serialization</groups>
+              <reportNameSuffix>serial-filter</reportNameSuffix>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Runs the tests for the Java 9 variants of `log4j-api` classes.
