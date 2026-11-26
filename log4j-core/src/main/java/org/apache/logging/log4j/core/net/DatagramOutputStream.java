@@ -40,12 +40,11 @@ public class DatagramOutputStream extends OutputStream {
 
     /**
      * IPv4 UDP payload limit (65,535 - 8 UDP - 20 IP). {@link DatagramSocket#send} rejects larger packets.
+     * <p>
+     *     Longer datagrams are truncated to this length: RFC 5424 receivers must tolerate truncated messages.
+     * </p>
      */
     private static final int MAX_DATAGRAM_LENGTH = 65_507;
-
-    private static final int SHIFT_1 = 8;
-    private static final int SHIFT_2 = 16;
-    private static final int SHIFT_3 = 24;
 
     private DatagramSocket datagramSocket;
     private final InetAddress inetAddress;
@@ -53,7 +52,10 @@ public class DatagramOutputStream extends OutputStream {
 
     private final ByteArrayOutputStream data = new ByteArrayOutputStream();
 
-    private long droppedLength;
+    /**
+     * Number of bytes of the current datagram that did not fit in {@link #MAX_DATAGRAM_LENGTH}.
+     */
+    private long truncatedLength;
 
     private final byte[] header;
     private final byte[] footer;
@@ -86,12 +88,14 @@ public class DatagramOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(final byte[] bytes, final int offset, final int length) throws IOException {
+        checkFromIndexSize(offset, length, bytes.length);
         copy(bytes, offset, length);
     }
 
     @Override
     public synchronized void write(final int i) throws IOException {
-        copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
+        // As specified by `OutputStream`, writes only the low-order byte of `i`
+        copy(new byte[] {(byte) i}, 0, 1);
     }
 
     @Override
@@ -102,25 +106,22 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void flush() throws IOException {
         try {
-            if ((this.data.size() > 0 || droppedLength > 0)
-                    && this.datagramSocket != null
-                    && this.inetAddress != null) {
+            if (data.size() > 0 && datagramSocket != null && inetAddress != null) {
                 if (footer != null) {
                     copy(footer, 0, footer.length);
                 }
-                if (droppedLength > 0) {
+                if (truncatedLength > 0) {
                     LOGGER.warn(
-                            "UDP datagram of {} bytes exceeds the maximum of {} bytes and will be dropped",
-                            droppedLength,
+                            "UDP datagram truncated from {} to {} bytes",
+                            data.size() + truncatedLength,
                             MAX_DATAGRAM_LENGTH);
-                } else {
-                    final byte[] payload = data.toByteArray();
-                    datagramSocket.send(new DatagramPacket(payload, payload.length, inetAddress, port));
                 }
+                final byte[] payload = data.toByteArray();
+                datagramSocket.send(new DatagramPacket(payload, payload.length, inetAddress, port));
             }
         } finally {
             data.reset();
-            droppedLength = 0;
+            truncatedLength = 0;
             if (header != null) {
                 copy(header, 0, header.length);
             }
@@ -130,7 +131,7 @@ public class DatagramOutputStream extends OutputStream {
     @Override
     public synchronized void close() throws IOException {
         if (datagramSocket != null) {
-            if (data.size() > 0 || droppedLength > 0) {
+            if (data.size() > 0) {
                 flush();
             }
             datagramSocket.close();
@@ -138,11 +139,24 @@ public class DatagramOutputStream extends OutputStream {
         }
     }
 
-    private void copy(final byte[] bytes, final int offset, final int length) {
-        if (droppedLength > 0 || (long) data.size() + length > MAX_DATAGRAM_LENGTH) {
-            droppedLength = (droppedLength > 0 ? droppedLength : data.size()) + length;
-            return;
+    /**
+     * Java 8 equivalent of {@code Objects.checkFromIndexSize}, with the same exception message.
+     */
+    private static void checkFromIndexSize(final int fromIndex, final int size, final int length) {
+        if ((length | fromIndex | size) < 0 || size > length - fromIndex) {
+            throw new IndexOutOfBoundsException(
+                    String.format("Range [%s, %<s + %s) out of bounds for length %s", fromIndex, size, length));
         }
-        data.write(bytes, offset, length);
+    }
+
+    /**
+     * Appends as many bytes as still fit in the datagram and counts the remaining ones as truncated.
+     */
+    private void copy(final byte[] bytes, final int offset, final int length) {
+        final int copied = Math.min(length, MAX_DATAGRAM_LENGTH - data.size());
+        if (copied > 0) {
+            data.write(bytes, offset, copied);
+        }
+        truncatedLength += length - copied;
     }
 }
