@@ -25,6 +25,10 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -73,6 +77,22 @@ class NetUtilsTest {
 
         assertNotNull(uri, "The URI should not be null.");
         assertEquals("file:/D:/path/to/something/on/windows", uri.toString(), "The URI is not correct.");
+    }
+
+    @Test
+    @UsingStatusListener
+    void warnsOnlyForSlowHostnameResolution(final ListStatusListener listener) {
+        NetUtils.warnIfHostnameResolutionSlow(TimeUnit.MILLISECONDS.toNanos(99));
+        NetUtils.warnIfHostnameResolutionSlow(TimeUnit.MILLISECONDS.toNanos(100));
+        assertThat(listener.findStatusData(Level.WARN, ".*hostname resolution.*")).isEmpty();
+
+        NetUtils.warnIfHostnameResolutionSlow(TimeUnit.MILLISECONDS.toNanos(101));
+        assertThat(listener.findStatusData(Level.WARN, ".*hostname resolution.*"))
+                .singleElement()
+                .satisfies(data -> {
+                    assertThat(data.getLevel()).isEqualTo(Level.WARN);
+                    assertThat(data.getMessage().getFormattedMessage()).contains("101 ms");
+                });
     }
 
     @Test
