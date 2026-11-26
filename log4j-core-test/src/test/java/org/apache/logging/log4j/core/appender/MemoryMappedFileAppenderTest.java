@@ -34,6 +34,9 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests that logged strings appear in the file, that the initial file size is the specified region length,
@@ -118,7 +121,23 @@ class MemoryMappedFileAppenderTest {
                 both(hasSize(2))
                         .and(
                                 contains(
-                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:105): Test log1",
-                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:108): Test log2")));
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:108): Test log1",
+                                        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppenderTest.testMemMapLocation(MemoryMappedFileAppenderTest.java:111): Test log2")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testImmediateFlush(final boolean immediateFlush, @TempDir final Path tempDir) {
+        final MemoryMappedFileAppender appender = MemoryMappedFileAppender.newBuilder()
+                .setName("MemoryMappedFileAppenderTest")
+                .setFileName(tempDir.resolve("MemoryMappedFileAppenderImmediateFlushTest.log")
+                        .toString())
+                .setImmediateFlush(immediateFlush)
+                .build();
+        try {
+            assertEquals(immediateFlush, appender.getImmediateFlush());
+        } finally {
+            appender.stop();
+        }
     }
 }
