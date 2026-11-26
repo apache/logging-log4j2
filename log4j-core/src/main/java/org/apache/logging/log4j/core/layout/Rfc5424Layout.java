@@ -126,7 +126,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final String escapeNewLine;
     private final boolean useTlsMessageFormat;
 
-    private long lastTimestamp = -1;
+    private long lastTimestamp = Long.MIN_VALUE;
     private String timestamppStr;
 
     private final List<PatternFormatter> exceptionFormatters;
