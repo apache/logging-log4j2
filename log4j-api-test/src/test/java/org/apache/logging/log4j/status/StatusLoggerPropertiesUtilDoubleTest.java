@@ -23,10 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
+import java.security.Permission;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+import java.util.PropertyPermission;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -110,6 +113,97 @@ class StatusLoggerPropertiesUtilDoubleTest {
             assertThat(actualValue).describedAs("" + testCase).isEqualTo(expectedValue);
         } else {
             assertThat(actualValue).describedAs("" + testCase).isNull();
+        }
+    }
+
+    static Stream<String> systemPropertyNames() {
+        return Stream.of(
+                "log4j2.debug",
+                "log4j2.status.entries",
+                "log4j2.statusEntries",
+                "log4j2.StatusLogger.level",
+                "log4j2.statusLoggerLevel",
+                "log4j2.StatusLogger.dateFormat",
+                "log4j2.StatusLogger.DateFormat",
+                "log4j2.statusLoggerDateFormat",
+                "log4j2.StatusLogger.dateFormatZone",
+                "log4j2.statusLoggerDateFormatZone");
+    }
+
+    static Stream<String> environmentVariableNames() {
+        return Stream.of(
+                "LOG4J_DEBUG",
+                "LOG4J_STATUS_ENTRIES",
+                "LOG4J_STATUS_LOGGER_LEVEL",
+                "LOG4J_STATUS_LOGGER_DATE_FORMAT",
+                "LOG4J_STATUS_LOGGER_DATE_FORMAT_ZONE");
+    }
+
+    @ParameterizedTest
+    @MethodSource("systemPropertyNames")
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void system_properties_should_be_read_one_by_one_if_bulk_access_is_denied(final String propertyName)
+            throws Exception {
+        restoreSystemProperties(() -> {
+            System.setProperty(propertyName, "foo");
+            final Map<String, Object> normalizedProperties =
+                    readAllAvailablePropertiesDenying(new PropertyPermission("*", "read,write"));
+            assertThat(readProperty(normalizedProperties, propertyName)).isEqualTo("foo");
+        });
+    }
+
+    @Test
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void system_property_should_be_skipped_if_access_is_denied() throws Exception {
+        restoreSystemProperties(() -> {
+            System.setProperty("log4j2.debug", "true");
+            final Map<String, Object> normalizedProperties = readAllAvailablePropertiesDenying(
+                    new PropertyPermission("*", "read,write"), new PropertyPermission("log4j2.debug", "read"));
+            assertThat(readProperty(normalizedProperties, "log4j2.debug")).isNull();
+        });
+    }
+
+    @ParameterizedTest
+    @MethodSource("environmentVariableNames")
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void environment_variables_should_be_read_one_by_one_if_bulk_access_is_denied(final String variableName)
+            throws Exception {
+        withEnvironmentVariable(variableName, "bar").execute(() -> {
+            final Map<String, Object> normalizedProperties =
+                    readAllAvailablePropertiesDenying(new RuntimePermission("getenv.*"));
+            assertThat(readProperty(normalizedProperties, variableName)).isEqualTo("bar");
+        });
+    }
+
+    @Test
+    @ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+    void environment_variable_should_be_skipped_if_access_is_denied() throws Exception {
+        withEnvironmentVariable("LOG4J_DEBUG", "true").execute(() -> {
+            final Map<String, Object> normalizedProperties = readAllAvailablePropertiesDenying(
+                    new RuntimePermission("getenv.*"), new RuntimePermission("getenv.LOG4J_DEBUG"));
+            assertThat(readProperty(normalizedProperties, "LOG4J_DEBUG")).isNull();
+        });
+    }
+
+    private static Map<String, Object> readAllAvailablePropertiesDenying(final Permission... deniedPermissions) {
+        final SecurityManager securityManager = new SecurityManager() {
+            @Override
+            public void checkPermission(final Permission permission) {
+                if (Arrays.asList(deniedPermissions).contains(permission)) {
+                    throw new SecurityException("denied: " + permission);
+                }
+            }
+        };
+        final SecurityManager previousSecurityManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(securityManager);
+        } catch (final UnsupportedOperationException error) {
+            Assumptions.abort("The JVM does not allow setting a security manager");
+        }
+        try {
+            return readAllAvailableProperties();
+        } finally {
+            System.setSecurityManager(previousSecurityManager);
         }
     }
 
