@@ -38,6 +38,22 @@ class MongoDb4ProviderTest {
     private static final String DATABASE_NAME = "loggingTest";
 
     @Test
+    void reservesOnlyExactRootIdField() {
+        final MongoDb4Provider provider = MongoDb4Provider.newBuilder()
+                .setConnectionStringSource(CON_STR_DB_COLL)
+                .build();
+        try (final MongoDb4Connection connection = provider.getConnection()) {
+            assertThat(connection.isReservedFieldName("_id")).isTrue();
+            for (final String fieldName :
+                    new String[] {"_idSuffix", "prefix_id", "_custom", "_id\n", "$inc", "user.id"}) {
+                assertThat(connection.isReservedFieldName(fieldName))
+                        .as(fieldName)
+                        .isFalse();
+            }
+        }
+    }
+
+    @Test
     void createProviderWithDatabaseAndCollectionProvidedViaConfig() {
         MongoDb4Provider provider = MongoDb4Provider.newBuilder()
                 .setConnectionStringSource(CON_STR_WO_DB)

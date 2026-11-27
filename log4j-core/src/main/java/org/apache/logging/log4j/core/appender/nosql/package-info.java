@@ -22,7 +22,7 @@
  * {@link org.apache.logging.log4j.core.appender.nosql.NoSqlProvider NoSqlProvider}.
  */
 @Export
-@Version("2.20.1")
+@Version("2.27.0")
 package org.apache.logging.log4j.core.appender.nosql;
 
 import org.osgi.annotation.bundle.Export;

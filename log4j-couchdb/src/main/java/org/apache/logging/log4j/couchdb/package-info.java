@@ -19,7 +19,7 @@
  */
 @Export
 @Open("org.apache.logging.log4j.core")
-@Version("2.20.1")
+@Version("2.27.0")
 package org.apache.logging.log4j.couchdb;
 
 import aQute.bnd.annotation.jpms.Open;
