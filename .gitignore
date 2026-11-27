@@ -41,3 +41,35 @@ node_modules
 package-lock.json
 # Maven extensions
 /.mvn/extensions.xml
+
+# Magpie snapshot (framework artifact, not part of this project)
+/.apache-magpie
+
+# Local machine pin file (drift detection)
+/.apache-magpie.local.lock
+
+# Personal per-developer overrides (never committed)
+/.apache-magpie-local/
+
+# Trusted external skill sources (snapshot and per-machine pin)
+/.apache-magpie-sources/
+/.apache-magpie.sources.local.lock
+
+# Per-machine Claude Code settings (sandbox allowlist entries)
+/.claude/settings.local.json
+
+# Byte-compiled artifacts
+__pycache__/
+*.pyc
+
+# Agent guard hook (framework-synced, not adopter artifact)
+/.claude/hooks/agent-guard.py
+/.claude/hooks/guards.d/
+
+# Framework skill symlinks (one block per skills directory used)
+/.agents/skills/magpie-*
+!/.agents/skills/magpie-setup
+/.claude/skills/magpie-*
+!/.claude/skills/magpie-setup
+/.github/skills/magpie-*
+!/.github/skills/magpie-setup
