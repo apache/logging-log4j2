@@ -30,7 +30,7 @@
 
   <root>
     <priority value ="trace" />
-    <appender-ref ref="syslog" />
+    <appender-ref ref="socket" />
   </root>
 
 </log4j:configuration>
