@@ -23,6 +23,12 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * The StructuredData identifier.
+ * <p>
+ * The name and the enterprise number must be printable US ASCII characters and may not contain a space, {@code =},
+ * {@code ]}, {@code "} or {@code @}, as described in
+ * <a href="https://datatracker.ietf.org/doc/html/rfc5424#section-6.3.2">RFC 5424 section 6.3.2</a>.
+ * The constructors throw an {@link IllegalArgumentException} for any other value.
+ * </p>
  */
 public class StructuredDataId implements Serializable, StringBuilderFormattable {
 
@@ -113,9 +119,13 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         if (index > 0) {
             this.name = name.substring(0, index);
             this.enterpriseNumber = name.substring(index + 1).trim();
+            validatePart("enterprise number", enterpriseNumber);
         } else {
             this.name = name;
             this.enterpriseNumber = RESERVED;
+        }
+        if (name != null) {
+            validatePart("structured id name", this.name);
         }
         this.required = required;
         this.optional = optional;
@@ -176,6 +186,8 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         if (RESERVED.equals(enterpriseNumber)) {
             throw new IllegalArgumentException("No enterprise number was supplied");
         }
+        validatePart("structured id name", name);
+        validatePart("enterprise number", enterpriseNumber);
         this.name = name;
         this.enterpriseNumber = enterpriseNumber;
         final String id = name + AT_SIGN + enterpriseNumber;
@@ -206,6 +218,20 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
             final String[] optional,
             final int maxLength) {
         this(name, String.valueOf(enterpriseNumber), required, optional, maxLength);
+    }
+
+    private static void validatePart(final String label, final String value) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("No " + label + " was supplied");
+        }
+        for (int i = 0; i < value.length(); i++) {
+            final char c = value.charAt(i);
+            if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"' || c == '@') {
+                throw new IllegalArgumentException("The " + label
+                        + " must contain printable US ASCII characters and may not contain a space, =, ], \" or "
+                        + AT_SIGN + ": " + value);
+            }
+        }
     }
 
     /**
