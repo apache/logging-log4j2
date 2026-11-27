@@ -14,6 +14,20 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+[id=log4j2.configurationEnableXInclude]
+== `log4j2.configurationEnableXInclude`
+
+[cols="1h,5"]
+|===
+| Env. variable | `LOG4J_CONFIGURATION_ENABLE_XINCLUDE`
+| Type          | `boolean`
+| Default value | `false`
+|===
+
+If set to `true`, enables https://www.w3.org/TR/xinclude/[XInclude] processing in XML configuration files.
+
+See xref:manual/configuration.adoc#xinclude[XInclude] for details.
+
 [id=log4j2.configurationFactory]
 == `log4j2.configurationFactory`
 
