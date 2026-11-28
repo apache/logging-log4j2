@@ -79,6 +79,10 @@ import org.xml.sax.SAXParseException;
  *     logger.
  * </p>
  * <p>
+ *     Appenders are created on demand, when an {@code <appender-ref>} element points to them, like Log4j 1's
+ *     {@link DOMConfigurator}: an {@code <appender>} element that nothing references is never instantiated.
+ * </p>
+ * <p>
  *     Since version <strong>2.27.0</strong>, external entities are resolved through
  *     {@link ConfigurationSource#fromUri(URI)}, so they can only be retrieved from local files or over the protocols allowed by the
  *     <a href="https://logging.apache.org/log4j/2.x/manual/systemproperties.html#log4j2.configurationAllowedProtocols">{@code log4j2.configurationAllowedProtocols}</a>
@@ -351,7 +355,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             final Node node = list.item(t);
             final NamedNodeMap map = node.getAttributes();
             final Node attrNode = map.getNamedItem("name");
-            if (appenderName.equals(attrNode.getNodeValue())) {
+            if (attrNode != null && appenderName.equals(attrNode.getNodeValue())) {
                 element = (Element) node;
                 break;
             }
@@ -366,6 +370,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         appender = parseAppender(element);
         if (appender != null) {
             appenderMap.put(appenderName, appender);
+            addAppender(AppenderAdapter.adapt(appender));
         }
         return appender;
     }
@@ -797,23 +802,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                     LOGGER.warn("Log4j 1 logger factories are not supported by Log4j 2 and will be ignored.");
                     break;
                 case APPENDER_TAG:
-                    final Appender appender = parseAppender(currentElement);
-                    if (appender == null) {
-                        LOGGER.warn(
-                                "Could not create appender named [{}] of class [{}]; ignoring.",
-                                subst(currentElement.getAttribute(NAME_ATTR)),
-                                subst(currentElement.getAttribute(CLASS_ATTR)));
-                        break;
-                    }
-                    final String appenderName = appender.getName();
-                    if (appenderName == null) {
-                        LOGGER.warn(
-                                "Appender of class [{}] has a null name; ignoring.",
-                                subst(currentElement.getAttribute(CLASS_ATTR)));
-                        break;
-                    }
-                    appenderMap.put(appenderName, appender);
-                    addAppender(AppenderAdapter.adapt(appender));
+                    // Appenders are created on demand by findAppenderByName, when a logger references them.
                     break;
                 default:
                     quietParseUnrecognizedElement(null, currentElement, props);
