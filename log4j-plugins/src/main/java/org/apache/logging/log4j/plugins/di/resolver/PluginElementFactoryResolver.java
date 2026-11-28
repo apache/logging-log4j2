@@ -81,12 +81,12 @@ public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
             final Node child = iterator.next();
             if (nodeElementMatchesNameOrType(child, name, aliases, componentType)) {
                 final Object value = child.getObject();
+                iterator.remove();
                 if (value == null) {
                     LOGGER.error(
                             "Skipping null child object with name {} in element {}", child.getName(), node.getName());
                     continue;
                 }
-                iterator.remove();
                 if (value.getClass().isArray()) {
                     return Cast.cast(value);
                 }
