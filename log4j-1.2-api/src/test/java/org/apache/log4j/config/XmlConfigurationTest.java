@@ -18,6 +18,7 @@ package org.apache.log4j.config;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.ListAppender;
@@ -34,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -43,13 +46,19 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test configuration from XML.
  */
 @SetTestProperty(key = "log4j1.compatibility", value = "true")
+@UsingStatusListener
 class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".xml";
@@ -104,7 +113,7 @@ class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     }
 
     @Test
-    void testInvalidAppenderDoesNotNpe() throws Exception {
+    void testInvalidAppenderDoesNotNpe(final ListStatusListener statusListener) throws Exception {
         final LoggerContext loggerContext =
                 assertDoesNotThrow(() -> TestConfigurator.configure("target/test-classes/log4j1-invalid-appender.xml"));
         final Configuration configuration = loggerContext.getConfiguration();
@@ -112,6 +121,56 @@ class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertNull(configuration.getAppender("bad"), "Invalid appender should not be registered");
         final Appender list = configuration.getAppender("list");
         assertNotNull(list, "Valid list appender should be registered");
+        assertFalse(
+                statusListener.findStatusData(Level.ERROR).anyMatch(data -> mentions(data, "DoesNotExistAppender")),
+                "Unreferenced appender should not be reported");
+    }
+
+    private static boolean mentions(final StatusData data, final String text) {
+        return data.getMessage().getFormattedMessage().contains(text)
+                || (data.getThrowable() != null
+                        && data.getThrowable().toString().contains(text));
+    }
+
+    @Test
+    void testUnreferencedAppendersAreNotCreated() throws Exception {
+        final File file = new File("target/unreferenced-appender.log");
+        Files.deleteIfExists(file.toPath());
+        final Configuration configuration = TestConfigurator.configure(
+                        "target/test-classes/log4j1-unreferenced-appender.xml")
+                .getConfiguration();
+        assertNull(configuration.getAppender("file"), "Unreferenced FileAppender should not be created");
+        assertFalse(file.exists(), "Unreferenced FileAppender should not create its file");
+        assertNull(configuration.getAppender("custom"), "Unreferenced appender should not be created");
+        assertEquals(0, CountingAppender.INSTANCES.get(), "Unreferenced appender should not be instantiated");
+        assertNotNull(configuration.getAppender("list"), "Referenced appender should be created");
+    }
+
+    @Test
+    void testUnnamedAppenderIsIgnored() throws Exception {
+        final Configuration configuration = TestConfigurator.configure(
+                        "target/test-classes/log4j1-unnamed-appender.xml")
+                .getConfiguration();
+        assertNull(configuration.getAppender(""), "Unnamed appender should not be registered");
+        assertNotNull(configuration.getAppender("list"), "Referenced appender should be created");
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "target/test-classes/log4j1-appender-before-logger.xml",
+                "target/test-classes/log4j1-appender-after-logger.xml"
+            })
+    void testReferencedAppenderIsCreated(final String configFile) throws Exception {
+        final Configuration configuration =
+                TestConfigurator.configure(configFile).getConfiguration();
+        final Appender appender = configuration.getAppender("list");
+        assertNotNull(appender, "Referenced appender should be created");
+        final ListAppender listAppender = (ListAppender) ((AppenderAdapter.Adapter) appender).getAppender();
+        LogManager.getLogger("test").debug("Referenced appender");
+        final List<String> messages = listAppender.getMessages();
+        assertEquals(1, messages.size(), "Referenced appender should receive the event");
+        assertEquals("Referenced appender", messages.get(0));
     }
 
     @Override
