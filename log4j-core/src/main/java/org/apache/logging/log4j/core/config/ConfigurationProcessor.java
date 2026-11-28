@@ -74,6 +74,11 @@ public class ConfigurationProcessor {
                 node.setObject(withNode(node, this::instantiate));
             }
         }
+        if (type != null && node.getObject() == null) {
+            // The plugin object was not created: its attributes and children were only
+            // partially consumed, so they do not indicate invalid input.
+            return null;
+        }
         verifyAttributesConsumed(node);
         verifyChildrenConsumed(node);
         return node.getObject();
